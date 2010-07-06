@@ -528,16 +528,13 @@ class ProfileNetworking extends ProfileField
 
     public function get($flags, $limit = null)
     {
-        if (!$flags) {
-            $flags = Profile::NETWORKING_ALL;
-        }
         $nws = array();
         $nb = 0;
         foreach ($this->networks as $id => $nw) {
             if (($flags & Profile::NETWORKING_WEB) && $nw['network_type']->hasFlag('web') ||
                 ($flags & Profile::NETWORKING_IM) && $nw['network_type']->hasFlag('im') ||
                 ($flags & Profile::NETWORKING_SOCIAL) && $nw['network_type']->hasFlag('social') ||
-                ($flags & Profile::NETWORKING_ALL)) {
+                ($flags == Profile::NETWORKING_ALL)) {
                 $nws[$id] = $nw;
                 ++$nb;
                 if (isset($limit) && $nb >= $limit) {
