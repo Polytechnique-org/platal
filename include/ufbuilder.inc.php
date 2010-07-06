@@ -724,7 +724,7 @@ class UFBF_Town extends UFBF_Text
                 return new PFC_False();
             }
         } else {
-            $byname = new UFC_AddressText(null, UFC_Address::CONTAINS, UFC_Address::TYPE_ANY, $flags, null, $this->val);
+            $byname = new UFC_AddressText(null, XDB::WILDCARD_CONTAINS, UFC_Address::TYPE_ANY, $flags, null, $this->val);
             $byzip  = new UFC_AddressField($this->val, UFC_AddressField::FIELD_ZIPCODE, UFC_Address::TYPE_ANY, $flags);
             if ($this->type & self::TYPE_ANY) {
                 return new PFC_Or($byname, $byzip);
