@@ -60,8 +60,8 @@
     </div>
 
     <div class="edu">
-      {foreach from=$profile->nationalities() item=nat}
-      <img src='images/flags/{$nat}.gif' alt='{$nat}' height='11' title='{$nat}' />&nbsp;
+      {foreach from=$profile->nationalities() item=country key=code}
+      <img src='images/flags/{$code}.gif' alt='{$code}' height='11' title='{$country}' />&nbsp;
       {/foreach}
       {$profile->promo()}{*
       *}{foreach from=$profile->getExtraEducations(4) item=edu}, {display_education edu=$edu profile=$profile}{/foreach}{*
