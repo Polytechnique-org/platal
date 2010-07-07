@@ -51,6 +51,8 @@ class DirEnum
 
     const NETWORKS       = 'networking';
 
+    const MEDALS         = 'medals';
+
     static private $enumerations = array();
 
     static private function init($type)
