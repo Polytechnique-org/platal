@@ -238,6 +238,9 @@ abstract class DirEnumeration
     }
     // }}}
 
+    /** Builds a list of query parts for searching @$text in @$field :
+     * field LIKE 'text%', field LIKE '% text%', field LIKE '%-text%'
+     */
     private function mkTests($field, $text)
     {
         $tests = array();
@@ -624,6 +627,18 @@ class DE_Networking extends DirEnumeration
 
     protected $ac_join   = 'INNER JOIN profile_networking ON (profile_networking.nwid = profile_networking_enum.nwid)';
     protected $ac_unique = 'profile_networking.pid';
+}
+// }}}
+
+/** MEDALS
+ */
+// {{{ class DE_Medals
+class DE_Medals extends DirEnumeration
+{
+    protected $from = 'profile_medal_enum';
+
+    protected $ac_join = 'INNER JOIN profile_medals ON (profile_medals.mid = profile_medal_enum.id)';
+    protected $ac_unique = 'profile_medals.pid';
 }
 // }}}
 
