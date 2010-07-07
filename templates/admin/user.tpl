@@ -389,7 +389,7 @@ $(document).ready(function() {
         <input type="text" name="email" size="29" maxlength="60" value="" />
       </td>
       <td class="action">
-        <input type="hidden" name="uid" value="{$mr.uid}" />
+        <input type="hidden" name="uid" value="{$user->id()}" />
         <input type="hidden" name="del_fwd" value="" />
         <input type="hidden" name="clean_fwd" value="" />
         <input type="hidden" name="activate_fwd" value="" />
