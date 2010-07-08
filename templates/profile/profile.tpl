@@ -62,7 +62,8 @@ function chgMainWinLoc(strPage)
 
     {/if}
 
-    {assign var=networking value=$profile->getNetworking(0)}
+    {* 458752 stands for 0x70000 = Profile::NETWORKING_ALL *}
+    {assign var=networking value=$profile->getNetworking(458752)}
     {if count($networking) > 0}
       <h2>Sur le web...</h2>
       {foreach from=$networking item=network}
