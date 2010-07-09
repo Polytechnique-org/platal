@@ -69,7 +69,7 @@ class PayPal
             'email'      => S::user()->bestEmail()
         );
 
-        $res = XDB::query("SELECT  pa.text, gl.name AS city, pa.postalCode AS zip, pa.countryiId AS country,
+        $res = XDB::query("SELECT  pa.text, gl.name AS city, pa.postalCode AS zip, pa.countryId AS country,
                                    IF(pp1.display_tel != '', pp1.display_tel, pp2.display_tel) AS night_phone_b
                              FROM  profile_addresses AS pa
                         LEFT JOIN  profile_phones    AS pp1 ON (pp1.pid = pa.pid AND pp1.link_type = 'address'
