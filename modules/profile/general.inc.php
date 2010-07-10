@@ -126,6 +126,11 @@ class ProfileSettingSearchNames implements ProfileSetting
                     $value[] = $sn;
                 } while ($sn = $sn_all->next());
             }
+            require_once 'validations.inc.php';
+            $namesRequest = ProfileValidate::get_typed_requests($page->pid(), 'usage');
+            if (count($namesRequest) > 0) {
+                Platal::page()->assign('validation', true);
+            }
             $value = $this->clean($value);
         } else {
             require_once 'name.func.inc.php';

@@ -22,7 +22,7 @@
 
 <table class="bicol" style="margin-bottom: 1em" summary="Profil : Noms">
   <tr>
-    <th colspan="3">Noms</th>
+    <th colspan="3">Noms{if $validation} <small>(validations en attente de modération)</small>{/if}</th>
   </tr>
   <tr>
     <td class="titre">
