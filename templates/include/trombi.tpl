@@ -37,7 +37,7 @@
       {/if}
       <br />
       <a href="{if $urlmainsite}{$urlmainsite}{/if}profile/{$p.forlife}" class="popup2">
-        <span {if $p.name_tooltip}class="hinted" title="{$p.name_tooltip}"{/if}>{$p.name_display}</span>{if $trombi_show_promo} ({$p.promo_display}){/if}
+        {$p.name_display}{if $trombi_show_promo} ({$p.promo_display}){/if}
       </a>
     </td>
   {if $loop eq "3"}

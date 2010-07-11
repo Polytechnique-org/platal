@@ -31,7 +31,7 @@ function smarty_function_profile($params, &$smarty)
         $user = User::getWithUID($user);
     }
 
-    $name = pl_entities($user->fullName());
+    $name = pl_entities($user->directoryName());
     if ($with_sex && $user->isFemale()) {
         $name = '&bull;' . $name;
     }

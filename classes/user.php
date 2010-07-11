@@ -287,6 +287,22 @@ class User extends PlUser
         return $this->profile()->lastName();
     }
 
+    public function fullName($with_promo = false)
+    {
+        if (!$this->hasProfile()) {
+            return $this->full_name;
+        }
+        return $this->profile()->fullName($with_promo);
+    }
+
+    public function directoryName()
+    {
+        if (!$this->hasProfile()) {
+            return $this->full_name;
+        }
+        return $this->profile()->directory_name;
+    }
+
     /** Return the main profile attached with this account if any.
      */
     public function profile()

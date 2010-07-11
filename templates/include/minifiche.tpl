@@ -55,7 +55,7 @@
     <div class="nom">
       {if $profile->isFemale()}&bull;{/if}
       {if !$dead && $registered}<a href="profile/{$profile->hrid()}" class="popup2">{/if}
-      {$profile->full_name}
+      {$profile->directory_name}
       {if !$dead && $registered}</a>{/if}
     </div>
 

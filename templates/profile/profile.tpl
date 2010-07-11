@@ -86,10 +86,7 @@ function chgMainWinLoc(strPage)
   <div id="fiche_identite" class="part">
     <div class="civilite">
       {if $profile->isFemale()}&bull;{/if}
-        <span {if $profile->name_tooltip neq ""}class="hinted" title="{$profile->name_tooltip}"{/if}>{$profile->shortName()}</span>
-      {if $logged}
-        {if $profile->nickname} (alias {$profile->nickname}){/if}
-      {/if}
+        {if $logged}{$profile->private_name}{else}{$profile->public_name}{/if}
 
       {if $logged}
         &nbsp;{if !$profile->isDead()}<a href="vcard/{$owner->login()}.vcf">{*

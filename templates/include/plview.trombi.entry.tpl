@@ -33,9 +33,7 @@
 {else}
 <td class="center" style="vertical-align: bottom; padding-bottom: 15px">
   <a href="profile/{$profile->hrid()}" class="popup2">
-    <span {if $profile->name_tooltip}class="hinted"
-    title="{$profile->directory_name}"{/if}>{$profile->directory_name}</span> 
-    {if $trombi_with_promo && $profile->promo()}({$profile->promo()}){/if}
+    {$profile->private_name} {if $trombi_with_promo && $profile->promo()}({$profile->promo()}){/if}
   </a>
 </td>
 {/if}
