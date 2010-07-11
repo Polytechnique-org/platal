@@ -121,7 +121,7 @@
     {assign var=address value=$profile->getMainAddress()}
     {assign var=web     value=$profile->getWebSite()}
     {assign var=job     value=$profile->getMainJob()}
-    {if $web || $profile->mobile || ($address && $address->country) || $job || !$registered}
+    {if $web || $profile->mobile || ($address && $address->country) || $job || !$registered || $user->lost}
     <table cellspacing="0" cellpadding="0">
       {if $web}
       <tr>
