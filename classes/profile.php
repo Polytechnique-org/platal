@@ -198,6 +198,14 @@ class Profile
         return $this->owner;
     }
 
+    public function isActive()
+    {
+        if ($this->owner()) {
+            return $this->owner->isActive();
+        }
+        return false;
+    }
+
     public function promo()
     {
         return $this->promo;

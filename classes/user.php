@@ -260,6 +260,11 @@ class User extends PlUser
                                    WHERE  a.uid = {?}', $this->id());
     }
 
+    public function isActive()
+    {
+        return $this->state == 'active';
+    }
+
     /** Overload PlUser::promo(): there no promo defined for a user in the current
      * schema. The promo is a field from the profile.
      */
