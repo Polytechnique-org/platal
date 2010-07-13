@@ -47,9 +47,10 @@ abstract class Geocoder {
                                 WHERE  name = {?}",
                               $address[$area . 'Name']);
             if ($res->numRows() == 0) {
-                $address[$area . 'Id'] = XDB::execute("INSERT INTO  " . $databases[$area] . " (name, country)
-                                                            VALUES  ({?}, {?})",
-                                                      $address[$area . 'Name'], $address['countryId']);
+                XDB::execute('INSERT INTO  ' . $databases[$area] . ' (name, country)
+                                   VALUES  ({?}, {?})',
+                             $address[$area . 'Name'], $address['countryId']);
+                $address[$area . 'Id'] = XDB::insertId();
             } else {
                 $address[$area . 'Id'] = $res->fetchOneCell();
             }
