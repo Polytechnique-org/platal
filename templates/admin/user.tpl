@@ -26,7 +26,7 @@
   {xsrf_token_field}
   <div class="center">
     <input type="hidden" name="uid" value="{$smarty.request.uid}" />
-    Confirmer la suppression de l'utilisateur {$smarty.request.uid} ({$mr.prenom} {$mr.nom} - X{$mr.promo})&nbsp;&nbsp;
+    Confirmer la suppression de l'utilisateur {$smarty.request.uid} ({$user->fullName()})&nbsp;&nbsp;
     <input type="submit" name="u_kill" value="continuer" />
   </div>
 </form>
@@ -116,7 +116,7 @@ $(document).ready(function() {
           Inscrit le {$user->registration_date|date_format}
         </div>
         <div style="float: left; text-align: left">
-          {icon name=user_gray} {$mr.hruid} (uid {$user->id()})
+          {icon name=user_gray} {$user->hruid} (uid {$user->id()})
         </div>
         <input type="hidden" name="uid" value="{$user->id()}" />
       </th>
@@ -309,7 +309,7 @@ $(document).ready(function() {
         <input type="text" name="email" size="29" maxlength="60" value="" />
       </td>
       <td class="action">
-        <input type="hidden" name="uid" value="{$mr.uid}" />
+        <input type="hidden" name="uid" value="{$user->id()}" />
         <input type="hidden" name="del_alias" value="" />
         <input type="submit" name="add_alias" value="Ajouter" />
       </td>
@@ -389,7 +389,7 @@ $(document).ready(function() {
         <input type="text" name="email" size="29" maxlength="60" value="" />
       </td>
       <td class="action">
-        <input type="hidden" name="uid" value="{$mr.uid}" />
+        <input type="hidden" name="uid" value="{$user->id()}" />
         <input type="hidden" name="del_fwd" value="" />
         <input type="hidden" name="clean_fwd" value="" />
         <input type="hidden" name="activate_fwd" value="" />
@@ -490,7 +490,7 @@ $(document).ready(function() {
     </tr>
     <tr class="center">
       <td colspan="3">
-        <input type="hidden" name="uid" value="{$mr.uid}" />
+        <input type="hidden" name="uid" value="{$user->id()}" />
         <input type="submit" name="b_edit" value="Modifier" />
       </td>
     </tr>
@@ -524,7 +524,7 @@ $(document).ready(function() {
     </tr>
     <tr>
       <td class="center">
-        <input type="text" name="login" size="40" maxlength="255" value="{$smarty.request.login|default:$mr.forlife}" />
+        <input type="text" name="login" size="40" maxlength="255" value="{$smarty.request.login|default:$user->hruid}" />
       </td>
     </tr>
     <tr>

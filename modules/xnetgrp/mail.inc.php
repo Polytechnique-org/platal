@@ -67,7 +67,7 @@ function _send_xnet_mail($user, $body, $wiki, $mailer, $replyto = null)
 
     $text = str_ireplace(array('<cher>', '<nom>', '<prenom>'),
                          array($dear, $lastname, $firstname), $body);
-    $mailer->addTo($user);
+    $mailer->setTo($user);
     if ($replyto) {
         $mailer->addHeader('Reply-To', $replyto);
     }
@@ -100,11 +100,11 @@ function send_xnet_mails($from, $sujet, $body, $wiki, $tos, $replyto = null, $up
         } else {
             $email = $user;
         }
-        if ($sent[$email]) {
-            continue;
+
+        if (!isset($sent[$email])) {
+            _send_xnet_mail($user, $body, $wiki, $mailer, $replyto);
+            $sent[$email] = true;
         }
-        _send_xnet_mail($user, $body, $wiki, $mailer, $replyto);
-        $sent[$email] = true;
     }
 }
 

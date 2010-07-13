@@ -11,7 +11,7 @@ WD=/home/web/prod/platal/bin/cron
 0 22 * * *      web     cd $WD; ./phones.check.php > /dev/null
 
 # inscription report
-0  6 * * 1	web	cd $WD; ./rapports_inscription.php
+0  6 * * 1	web	cd $WD; ./registrations.php
 
 # notifs
 0  2 * * *	web	cd $WD; ./notifs.birthday.php

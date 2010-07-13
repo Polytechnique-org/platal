@@ -148,6 +148,10 @@ class User extends PlUser
 
     protected static function loadMainFieldsFromUIDs(array $uids, $respect_order = true)
     {
+        if (empty($uids)) {
+            return PlIteratorUtils::emptyIterator();
+        }
+
         global $globals;
         $joins = '';
         $fields = array();

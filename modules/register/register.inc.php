@@ -152,9 +152,9 @@ function createAliases(&$subState)
                              SET  expire = ADDDATE(NOW(), INTERVAL 1 MONTH)
                            WHERE  alias = {?}', $emailXorg);
             XDB::execute('REPLACE INTO  homonyms (homonyme_id, uid)
-                                VALUES  ({?}, {?})', $h_id, $h_id);
+                                VALUES  ({?}, {?})', $subState->i('uid'), $h_id);
             XDB::execute('REPLACE INTO  homonyms (homonyme_id, uid)
-                                VALUES  ({?}, {?})', $h_id, $uid);
+                                VALUES  ({?}, {?})', $h_id, $subState->i('uid'));
             $res = XDB::query('SELECT  alias
                                  FROM  aliases
                                 WHERE  uid = {?} AND expire IS NULL', $h_id);

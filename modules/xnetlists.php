@@ -224,7 +224,7 @@ class XnetListsModule extends ListsModule
         $ann = XDB::fetchColumn('SELECT  uid
                                    FROM  group_members
                                   WHERE  asso_id = {?}', $globals->asso('id'));
-        $users = User::getBuildUsersWithUIDs($ann, 'promo,full_name');
+        $users = User::getBulkUsersWithUIDs($ann);
 
         $not_in_list = array();
         foreach ($users as $user) {
