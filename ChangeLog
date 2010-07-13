@@ -1,6 +1,43 @@
 ================================================================================
 VERSION 1.0.1                                                         XX XX XXXX
 
+From 1.0.0 branch:
+    * AXLetter:
+        - Fix unsubscription                                               -XEL
+
+    * Carnet:
+        - Fix inaccessible carnet/panel in case of profile update          -FRU
+        - Fix notification email                                           -JAC
+
+    * Events:
+        - Fix promotion_ml reminder                                        -FRU
+
+    * Lists:
+        - Fix inclusion of banana for achives and moderation preview       -FRU
+
+    * Profile:
+        - Fix entreprise validation                                        -JAC
+        - Fix name validation                                              -XEL
+        - Fix orange validation                                            -XEL
+        - Fix vcards                                                       -FRU
+        - Fix geocoding                                                    -JAC
+
+    * Newsletter:
+        - Fix user selection                                               -FRU
+
+    * Register:
+        - Fix calls to missing functions                                   -JAC
+
+    * Search:
+        - Fix filtering by promotion                                       -XEL
+        - Fix search by address                                            -XEL
+
+    * XnetGrp:
+        - Fix name in unsubscription notification                          -JAC
+        - Fix mailer sending O(n^2) mails                                  -VZA
+
+    * XnetList:
+        - Fix group directory synchronization page                         -JAC
 
 ================================================================================
 VERSION 1.0.0                                                         30 06 2010
