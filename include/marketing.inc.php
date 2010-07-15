@@ -186,18 +186,12 @@ class Marketing
         }
     }
 
-    static public function getAliveUsersCount()
-    {
-        $uf = new UserFilter(new PFC_Not(new UFC_Dead()));
-        return $uf->getTotalCount();
-    }
-
     static public function relance(PlUser &$user, $nbx = -1)
     {
         global $globals;
 
         if ($nbx < 0) {
-            $nbx = self::getAliveUsersCount();
+            $nbx = $globals->core->NbIns;
         }
 
         $res = XDB::fetchOneCell('SELECT  r.date, r.email, r.bestalias
@@ -291,7 +285,6 @@ class AnnuaireMarketing implements MarketingEngine
         $page->assign('intro', $this->getIntro());
         $page->assign('u', $user);
         $page->assign('sign', $this->getSignature());
-        $page->assign('num_users', Marketing::getAliveUsersCount());
         $page->assign('personal_notes', $this->getPersonalNotes());
     }
 

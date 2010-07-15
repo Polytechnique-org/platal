@@ -317,7 +317,8 @@ class MarketingModule extends PLModule
         $page->changeTpl('marketing/relance.tpl');
 
         if (Post::has('relancer')) {
-            $nbdix = Marketing::getAliveUsersCount();
+            global $globals;
+            $nbdix = $globals->core->NbIns;
 
             $sent  = Array();
             $users = User::getBulkUsersWithUIDs($_POST['relance']);
