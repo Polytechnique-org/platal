@@ -269,7 +269,7 @@ class XnetEventsModule extends PLModule
         }
         if ($updated !== false) {
             $page->trigSuccess('Ton inscription à l\'événement a été mise à jour avec succès.');
-            subscribe_lists_event($total, S::i('uid'), $evt, $paid);
+            subscribe_lists_event(S::i('uid'), $evt, ($total > 0 ? 1 : 0), 0);
         }
         $page->assign('event', get_event_detail($eid));
     }
@@ -547,11 +547,12 @@ class XnetEventsModule extends PLModule
 
             // change the price paid by a participant
             if (Env::v('adm') == 'prix' && $member) {
+                $amount = strtr(Env::v('montant'), ',', '.');
                 XDB::execute("UPDATE group_event_participants
                                  SET paid = paid + {?}
                                WHERE uid = {?} AND eid = {?} AND item_id = 1",
-                        strtr(Env::v('montant'), ',', '.'),
-                        $member->uid, $evt['eid']);
+                             $amount, $member->uid, $evt['eid']);
+                subscribe_lists_event($member->uid, $evt, 1, $amount);
             }
 
             // change the number of personns coming with a participant
@@ -566,26 +567,28 @@ class XnetEventsModule extends PLModule
 
                 foreach ($nbs as $id => $nb) {
                     $nb = max(intval($nb), 0);
-                    XDB::execute("REPLACE INTO group_event_participants
-                                        VALUES ({?}, {?}, {?}, {?}, {?}, {?})",
-                                  $evt['eid'], $member->uid, $id, $nb, '', $id == 1 ? $paid : 0);
+                    XDB::execute('REPLACE INTO  group_event_participants
+                                        VALUES  ({?}, {?}, {?}, {?}, {?}, {?})',
+                                 $evt['eid'], $member->uid, $id, $nb, '', $id == 1 ? $paid : 0);
                 }
 
-                $res = XDB::query("SELECT COUNT(uid) AS cnt, SUM(nb) AS nb
-                                     FROM group_event_participants
-                                    WHERE uid = {?} AND eid = {?}
-                                 GROUP BY uid",
-                                            $member->uid, $evt['eid']);
+                $res = XDB::query('SELECT  COUNT(uid) AS cnt, SUM(nb) AS nb
+                                     FROM  group_event_participants
+                                    WHERE  uid = {?} AND eid = {?}
+                                 GROUP BY  uid',
+                                  $member->uid, $evt['eid']);
                 $u = $res->fetchOneAssoc();
                 if ($u['cnt'] == 1 && $paid == 0 && Post::v('cancel')) {
                     XDB::execute("DELETE FROM group_event_participants
                                         WHERE uid = {?} AND eid = {?}",
                                     $member->uid, $evt['eid']);
                     $u = 0;
+                    subscribe_lists_event($member->uid, $evt, -1, $paid);
                 } else {
+                    var_dump($u);
                     $u = $u['cnt'] ? $u['nb'] : null;
+                    subscribe_lists_event($member->uid, $evt, ($u > 0 ? 1 : 0), $paid);
                 }
-                subscribe_lists_event($u, $member->uid, $evt, $paid);
             }
 
             $evt = get_event_detail($eid, $item_id);

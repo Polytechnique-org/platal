@@ -173,11 +173,19 @@ function get_event_participants(&$evt, $item_id, array $tri = array(), $count = 
 // }}}
 
 //  {{{ function subscribe_lists_event()
-function subscribe_lists_event($participate, $uid, $evt, $paid, $payment = null)
+/** Subscribes user to various event related mailing lists.
+ *
+ * @param $uid: user's id.
+ * @param evt: events data, in particular ids of the lists at stake.
+ * @param participate: indicates if the user takes part at the event or not;
+ *      -1 means he did not answer, 0 means no, and 1 means yes.
+ * @param paid: has the user already payed anything?
+ *      0 means no, a positive amount means yes.
+ * @param payment: is this function called from a payment page?
+ *      If true, only payment related lists should be updated.
+ */
+function subscribe_lists_event($uid, $evt, $participate, $paid, $payment = false)
 {
-    global $globals;
-    $page =& Platal::page();
-
     $participant_list  = $evt['participant_list'];
     $absent_list       = $evt['absent_list'];
     $unpayed_list      = $evt['booked_unpayed_list'];
@@ -189,8 +197,8 @@ function subscribe_lists_event($participate, $uid, $evt, $paid, $payment = null)
     function subscribe($list, $email)
     {
         if ($list && $email) {
-            XDB::execute("REPLACE INTO  virtual_redirect
-                                VALUES  ({?},{?})",
+            XDB::execute('REPLACE INTO  virtual_redirect
+                                VALUES  ({?}, {?})',
                          $list, $email);
         }
     }
@@ -198,31 +206,45 @@ function subscribe_lists_event($participate, $uid, $evt, $paid, $payment = null)
     function unsubscribe($list, $email)
     {
         if ($list && $email) {
-            XDB::execute("DELETE FROM  virtual_redirect
-                                WHERE  vid = {?} AND redirect = {?}",
+            XDB::execute('DELETE FROM  virtual_redirect
+                                WHERE  vid = {?} AND redirect = {?}',
                          $list, $email);
         }
     }
 
-    if (is_null($payment)) {
-        if (is_null($participate)) {
+    /** If $payment is not null, we do not retrieve the value of $participate,
+     * thus we do not alter participant and absent lists.
+     */
+    if ($payment === true) {
+        if ($paid > 0) {
+            unsubscribe($unpayed_list, $email);
+            subscribe($payed_list, $email);
+        }
+    } else {
+        switch ($participate) {
+          case -1:
             unsubscribe($participant_list, $email);
+            unsubscribe($unpayed_list, $email);
+            unsubscribe($payed_list, $email);
             subscribe($absent_list, $email);
-        } elseif ($participate) {
+            break;
+          case 0:
+            unsubscribe($participant_list, $email);
+            unsubscribe($absent_list, $email);
+            unsubscribe($unpayed_list, $email);
+            unsubscribe($payed_list, $email);
+            break;
+          case 1:
             subscribe($participant_list, $email);
             unsubscribe($absent_list, $email);
-        } else {
-            unsubscribe($participant_list, $email);
-            unsubscribe($absent_list, $email);
-        }
-    }
-    if ($paid > 0) {
-        unsubscribe($unpayed_list, $email);
-        subscribe($payed_list, $email);
-    } else {
-        unsubscribe($payed_list, $email);
-        if (!is_null($participate)) {
-            subscribe($unpayed_list, $email);
+            if ($paid > 0) {
+                unsubscribe($unpayed_list, $email);
+                subscribe($payed_list, $email);
+            } else {
+                subscribe($unpayed_list, $email);
+                unsubscribe($payed_list, $email);
+            }
+            break;
         }
     }
 }

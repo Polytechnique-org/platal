@@ -226,7 +226,7 @@ class PaymentModule extends PLModule
         if ($eid = $res->fetchOneCell()) {
             require_once dirname(__FILE__) . '/xnetevents/xnetevents.inc.php';
             $evt = get_event_detail($eid);
-            subscribe_lists_event(0, $uid, $evt, $montant, true);
+            subscribe_lists_event($uid, $evt, 1, $montant, true);
         }
 
         /* on genere le mail de confirmation */
@@ -319,7 +319,7 @@ class PaymentModule extends PLModule
         if ($eid = $res->fetchOneCell()) {
             require_once dirname(__FILE__) . '/xnetevents/xnetevents.inc.php';
             $evt = get_event_detail($eid);
-            subscribe_lists_event(0, $user->id(), $evt, $montant, true);
+            subscribe_lists_event($user->id(), $evt, 1, $montant, true);
         }
 
         /* on genere le mail de confirmation */
@@ -414,7 +414,7 @@ class PaymentModule extends PLModule
         if ($eid = $res->fetchOneCell()) {
             require_once dirname(__FILE__) . '/xnetevents/xnetevents.inc.php';
             $evt = get_event_detail($eid);
-            subscribe_lists_event(0, $uid, $evt, $montant, true);
+            subscribe_lists_event($user->id(), $evt, 1, $montant, true);
         }
 
         /* on genere le mail de confirmation */
