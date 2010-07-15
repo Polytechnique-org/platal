@@ -139,8 +139,8 @@
 
   </tr>
 
-  {foreach from=$members item=xs key=promo}
-  {foreach from=$xs item=x name=all}
+  {foreach from=$members item=users key=promo}
+  {foreach from=$users item=user}
   <tr>
     <td class='titre' style="width: 20%">
       {if $smarty.foreach.all.first}
@@ -148,20 +148,19 @@
       {/if}
     </td>
     <td>
-      {if $promo && strpos($x.l, '@') === false}
-      {if $x.b}<a href="https://www.polytechnique.org/marketing/broken/{$x.l}">{icon name=error}</a>{/if}
-      <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
-      {elseif $x.x}
-      <a href="{$platal->ns}member/{$x.x}">{if $x.n|trim}{$x.n}{else}{$x.l}{/if}</a>
-      {elseif $x.n}
-      {$x.n}
+      {if $promo && $user.x}
+      {profile user=$user.x promo=false}
+      {elseif $user.x}
+      <a href="{$platal->ns}member/{$user.x}">{if $user.n|trim}{$x.n}{else}{$user.l}{/if}</a>
+      {elseif $user.n}
+      {$user.n}
       {else}
-      {$x.l}
+      {$user.l}
       {/if}
     </td>
-    {if $x.p}
+    {if $user.p}
     <td class="right">
-      {$x.p}
+      {$user.p}
     </td>
     {/if}
   </tr>
