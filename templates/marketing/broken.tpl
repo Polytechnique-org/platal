@@ -28,7 +28,7 @@
 
 {elseif $user && !$user->alive}
 <p class="erreur">
-  {$user->fullName()} (X{$user->promo()}) est malheureusement décédé{if $user->isFemale()}e{/if}.
+  {$user->fullName("promo")} est malheureusement décédé{if $user->isFemale()}e{/if}.
   Nous ne réaliserons maintenance sur son adresse Polytechnique.org qu'à la demande explicite
   de sa famille. Pour tout renseignement, merci de <a href="mailto:contact@polytechnique.org">
   contacter le support</a>.
@@ -36,7 +36,7 @@
 
 {elseif $user}
 <h1>
-  Recherche d'adresses pour {$user->fullName()} (X{$user->promo()}).
+  Recherche d'adresses pour {$user->fullName("promo")}.
 </h1>
 
 {if !$user->email}
@@ -70,7 +70,7 @@
 <form method="post" action="{$platal->path}">
   {xsrf_token_field}
   <table class="bicol" summary="Fiche camarade">
-    <tr><th colspan="2">Proposition d'adresse pour<br />{$user->fullName()} (X{$user->promo()})</th></tr>
+    <tr><th colspan="2">Proposition d'adresse pour<br />{$user->fullName("promo")}</th></tr>
     <tr class="pair">
       <td>Adresse email&nbsp;:</td>
       <td>
