@@ -668,13 +668,14 @@ class EmailModule extends PLModule
                 $page->assign('neuneu', true);
             } else {
                 $page->assign('email',$email);
-                $x = XDB::fetchOneAssoc("SELECT  e1.uid, e1.panne != 0 AS panne,
-                                                 (count(e2.uid) + IF(FIND_IN_SET('googleapps', eo.storage), 1, 0)) AS nb_mails
-                                           FROM  emails as e1
+                $x = XDB::fetchOneAssoc("SELECT  e1.uid, e1.panne != 0 AS panne, a.hruid,
+                                                 (COUNT(e2.uid) + IF(FIND_IN_SET('googleapps', eo.storage), 1, 0)) AS nb_mails
+                                           FROM  emails        AS e1
                                      INNER JOIN  email_options AS eo ON (eo.uid = e1.uid)
-                                      LEFT JOIN  emails as e2 ON(e1.uid = e2.uid
-                                                 AND FIND_IN_SET('active', e2.flags)
-                                                 AND e1.email != e2.email)
+                                     INNER JOIN  accounts      AS a  ON (e1.uid = a.uid)
+                                      LEFT JOIN  emails        AS e2 ON (e1.uid = e2.uid
+                                                                         AND FIND_IN_SET('active', e2.flags)
+                                                                         AND e1.email != e2.email)
                                           WHERE  e1.email = {?}
                                        GROUP BY  e1.uid", $email);
                 if ($x) {
