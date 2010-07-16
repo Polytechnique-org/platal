@@ -113,7 +113,11 @@ $(document).ready(function() {
     <tr>
       <th colspan="2">
         <div style="float: right; text-align: right">
+          {if $user->state eq 'pending'}
+          Non-inscrit
+          {else}
           Inscrit le {$user->registration_date|date_format}
+          {/if}
         </div>
         <div style="float: left; text-align: left">
           {icon name=user_gray} {$user->hruid} (uid {$user->id()})
