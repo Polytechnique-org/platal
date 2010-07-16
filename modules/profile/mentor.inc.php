@@ -171,6 +171,7 @@ class ProfileSettingMentor extends ProfilePage
         $page->assign('countryList', XDB::iterator("SELECT  iso_3166_1_a2, countryFR
                                                       FROM  geoloc_countries
                                                   ORDER BY  countryFR"));
+        $page->assign('hrpid', $this->profile->hrpid);
     }
 }
 
