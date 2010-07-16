@@ -462,17 +462,43 @@ class AdminModule extends PLModule
             }
         }
         if (!empty($to_update)) {
-            // TODO: fetch the initial values of the fields, and eventually send
-            // a summary of the changes to an admin.
+            $res = XDB::query('SELECT  *
+                                 FROM  accounts
+                                WHERE  uid = {?}', $user->id());
+            $oldValues = $res->fetchAllAssoc();
+            $oldValues = $oldValues[0];
+
             $set = array();
+            $diff = array();
             foreach ($to_update as $k => $value) {
-                $set[] = XDB::format($k . ' = {?}', $value);
+                $value = XDB::format('{?}', $value);
+                $set[] = $k . ' = ' . $value;
+                $diff[$k] = array($oldValues[$k], trim($value, "'"));
+                unset($oldValues[$k]);
             }
             XDB::execute('UPDATE  accounts
                              SET  ' . implode(', ', $set) . ' 
                            WHERE  uid = ' . XDB::format('{?}', $user->id()));
             $page->trigSuccess('Données du compte mise à jour avec succès');
             $user = User::getWithUID($user->id());
+
+            /* Formats the $diff and send it to the site administrators. The rules are the folowing:
+             *  -formats: password, token, weak_password
+             */
+            foreach (array('password', 'token', 'weak_password') as $key) {
+                if (isset($diff[$key])) {
+                    $diff[$key] = array('old value', 'new value');
+                } else {
+                    $oldValues[$key] = 'old value';
+                }
+            }
+
+            $mail = new PlMailer('admin/useredit.mail.tpl');
+            $mail->assign('admin', S::user()->hruid);
+            $mail->assign('hruid', $user->hruid);
+            $mail->assign('diff', $diff);
+            $mail->assign('oldValues', $oldValues);
+            $mail->send();
         }
         // }}}
 

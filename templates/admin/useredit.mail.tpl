@@ -26,24 +26,17 @@
 {to addr=#to#}
 {subject text="INTERVENTION de $admin"}
 {elseif $mail_part eq 'wiki'}
-{if $deletion}
-L'utilisateur {$user} a été désinscrit de plat/al.
-{else}
-Le profil du camarade {$old.prenom} {$old.nom} ({$old.promo}) a été édité.\\
+
+Le compte de l'utilisateur {$hruid} a été édité.\\
 Les champs suivants ont été changés :
-{foreach from=$old item=value key=field}
-{if $value neq $new[$field]}
-* '''{$field}''' : {$value} -> {$new[$field]}
-{/if}
+{foreach from=$diff item=values key=field}
+* '''{$field}''' : {$values.0} -> {$values.1}
 {/foreach}
 
 Et ceux qui n'ont pas changé :
-{foreach from=$old item=value key=field}
-{if $value eq $new[$field]}
+{foreach from=$oldValues item=value key=field}
 * '''{$field}''' : {$value}
-{/if}
 {/foreach}
-{/if}
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}
