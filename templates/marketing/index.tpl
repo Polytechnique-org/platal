@@ -40,27 +40,27 @@
 <br />
 
 <p>
-Nombre d'X vivants d'après notre base de données&nbsp;: {$stats.vivants}<br />
-Nombre d'X vivants inscrits à Polytechnique.org&nbsp;: {$stats.inscrits}<br />
-Soit un pourcentage d'inscrits de&nbsp;: {$stats.ins_rate} %<br />
+nombre d'X vivants d'après notre base de données&nbsp;: {$statistics.alive}<br />
+nombre d'X vivants inscrits à Polytechnique.org&nbsp;: {$statistics.registered}<br />
+Soit un pourcentage d'inscrits de&nbsp;: {$statistics.registeredRate} %<br />
 </p>
 
 <p>
 Parmi ceux-ci&nbsp;:<br />
-Nombre d'X vivants depuis 1972 d'après notre base de données&nbsp;: {$stats.vivants72}<br />
-Nombre d'X vivants depuis 1972 inscrits à Polytechnique.org&nbsp;: {$stats.inscrits72}<br />
-Soit un pourcentage d'inscrits de&nbsp;: {$stats.ins72_rate} %<br />
+nombre d'X vivants depuis 1972 d'après notre base de données&nbsp;: {$statistics.alive72}<br />
+nombre d'X vivants depuis 1972 inscrits à Polytechnique.org&nbsp;: {$statistics.registered72}<br />
+Soit un pourcentage d'inscrits de&nbsp;: {$statistics.registeredRate72} %<br />
 </p>
 
 <p>
-Nombre de Polytechniciennes vivantes&nbsp;: {$stats.vivantes}<br />
-Nombre de Polytechniciennes vivantes et inscrites&nbsp;: {$stats.inscrites}<br />
-Soit un pourcentage d'inscrites de&nbsp;: {$stats.inse_rate} %<br />
+nombre de Polytechniciennes vivantes&nbsp;: {$statistics.womenAlive}<br />
+nombre de Polytechniciennes vivantes et inscrites&nbsp;: {$statistics.womenRegistered}<br />
+Soit un pourcentage d'inscrites de&nbsp;: {$statistics.womenRegisteredRate} %<br />
 </p>
 
 <p>
-Nombre d'<a href="marketing/this_week">inscrits ces 7 derniers jours</a>&nbsp;: {$nbInsSem}<br />
-Nombre d'<a href="marketing/relance">inscriptions en cours</a> (2ème phase non terminée)&nbsp;: {$nbInsEnCours}
+nombre d'<a href="marketing/this_week">inscrits ces 7 derniers jours</a>&nbsp;: {$registrations.week}<br />
+nombre d'<a href="marketing/relance">inscriptions en cours</a> (2ème phase non terminée)&nbsp;: {$registrations.pending}
 </p>
 
 <table class="bicol">
@@ -69,34 +69,37 @@ Nombre d'<a href="marketing/relance">inscriptions en cours</a> (2ème phase non 
   </tr>
   <tr>
     <td>&nbsp;</td>
-    <td class="titre">Abouti</td>
     <td class="titre">Non abouti</td>
+    <td class="titre">Abouti</td>
     <td class="titre">Total</td>
   </tr>
   <tr>
     <td>Personnel</td>
-    <td>{$nbInsMarketOkPerso}</td>
-    <td>{$nbInsMarketNoPerso}</td>
-    <td>{$nbInsMarketOkPerso+$nbInsMarketNoPerso}</td>
+    <td>{$marketings.noPerso}</td>
+    <td rowspan="3" style="vertical-align: middle">{$marketings.ok}</td>
+    <td rowspan="3" style="vertical-align: middle">{$marketings.ok+$marketings.noPerso+$marketings.noXorg+$marketings.noAX}</td>
   </tr>
   <tr>
     <td>Par Polytechnique.org</td>
-    <td>{$nbInsMarketOkXorg}</td>
-    <td>{$nbInsMarketNoXorg}</td>
-    <td>{$nbInsMarketOkXorg+$nbInsMarketNoXorg}</td>
+    <td>{$marketings.noXorg}</td>
+  </tr>
+  <tr>
+    <td>Par l'AX</td>
+    <td>{$marketings.noAX}</td>
   </tr>
   <tr>
     <td>Cette semaine</td>
-    <td>{$nbInsMarketOkWeek}</td>
-    <td>{$nbInsMarketNoWeek}</td>
-    <td>{$nbInsMarketOkWeek+$nbInsMarketNoWeek}</td>
+    <td>{$marketings.noWeek}</td>
+    <td>{$marketings.okWeek}</td>
+    <td>{$marketings.okWeek+$marketings.noWeek}</td>
   </tr>
   <tr>
     <td class="titre">Total</td>
-    <td>{$nbInsMarketOkPerso+$nbInsMarketOkXorg}</td>
-    <td>{$nbInsMarketNoPerso+$nbInsMarketNoXorg}</td>
-    <td>{$nbInsMarketOkPerso+$nbInsMarketOkXorg+$nbInsMarketNoPerso+$nbInsMarketNoXorg}</td>
+    <td>{$marketings.noPerso+$marketings.noXorg+$marketings.noAX}</td>
+    <td>{$marketings.ok}</td>
+    <td>{$marketings.ok+$marketings.noPerso+$marketings.noXorg+$marketings.noAX}</td>
   </tr>
 </table>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+

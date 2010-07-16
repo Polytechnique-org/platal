@@ -39,9 +39,62 @@ class MarketingModule extends PLModule
     function handler_marketing(&$page)
     {
         $page->changeTpl('marketing/index.tpl');
-
         $page->setTitle('Marketing');
-        $page->trigWarning("Les statistiques sont momentanéement désactivées");
+
+        $alive = new UserFilter(new PFC_Not(new UFC_Dead()));
+        $registered = new UserFilter(new PFC_And(new UFC_Registered(), new PFC_Not(new UFC_Dead())));
+        $alive72 = new UserFilter(new PFC_And(new UFC_Promo('>=', UserFilter::GRADE_ING, 1972), new PFC_Not(new UFC_Dead())));
+        $registered72 = new UserFilter(new PFC_And(new UFC_Registered(), new UFC_Promo('>=', UserFilter::GRADE_ING, 1972), new PFC_Not(new UFC_Dead())));
+        $aliveWomen = new UserFilter(new PFC_And(new UFC_Sex(User::GENDER_FEMALE) , new PFC_Not(new UFC_Dead())));
+        $registeredWomen = new UserFilter(new PFC_And(new UFC_Registered(), new UFC_Sex(User::GENDER_FEMALE), new PFC_Not(new UFC_Dead())));
+        $statistics = array(
+            'alive'           => $alive->getTotalCount(),
+            'registered'      => $registered->getTotalCount(),
+            'alive72'         => $alive72->getTotalCount(),
+            'registered72'    => $registered72->getTotalCount(),
+            'womenAlive'      => $aliveWomen->getTotalCount(),
+            'womenRegistered' => $registeredWomen->getTotalCount(),
+        );
+        $statistics['registeredRate']      = $statistics['registered'] / $statistics['alive'] * 100;
+        $statistics['registeredRate72']    = $statistics['registered72'] / $statistics['alive72'] * 100;
+        $statistics['womenRegisteredRate'] = $statistics['womenRegistered'] / $statistics['womenAlive'] * 100;
+
+        $registeredWeek = new UserFilter(new PFC_And(new UFC_Registered(false, '>=', strtotime('1 week ago')), new PFC_Not(new UFC_Dead())));
+        $registrationPending = XDB::fetchOneCell('SELECT  COUNT(*)
+                                                    FROM  register_pending');
+        $registrations = array(
+            'week'    => $registeredWeek->getTotalCount(),
+            'pending' => $registrationPending,
+        );
+
+        $ok = XDB::fetchOneCell('SELECT  COUNT(*)
+                                   FROM  register_mstats
+                                  WHERE  success != \'0000-00-00\'');
+        $okWeek = XDB::fetchOneCell('SELECT  COUNT(*)
+                                       FROM  register_mstats
+                                      WHERE  success >= {?}', strtotime('1 week ago'));
+        $res = XDB::fetchAllAssoc('SELECT  type, COUNT(*) as count
+                                     FROM  register_marketing
+                                 GROUP BY  type');
+        $no = array();
+        foreach ($res as $value) {
+            $no[$value['type']] = $value['count'];
+        }
+        $no['week'] = XDB::fetchOneCell('SELECT  COUNT(*)
+                                           FROM  register_marketing
+                                          WHERE  last >= {?}', strtotime('1 week ago'));
+        $marketings = array(
+            'ok'      => $ok,
+            'okWeek'  => $okWeek,
+            'noPerso' => (isset($no['user']) ? $no['user'] : 0),
+            'noXorg'  => (isset($no['staff']) ? $no['staff'] : 0),
+            'noAX'    => (isset($no['ax']) ? $no['ax'] : 0),
+            'noWeek'  => $no['week'],
+        );
+
+        $page->assign('statistics', $statistics);
+        $page->assign('registrations', $registrations);
+        $page->assign('marketings', $marketings);
     }
 
     function handler_private(&$page, $hruid = null,
