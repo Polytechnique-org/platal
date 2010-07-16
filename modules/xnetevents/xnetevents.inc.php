@@ -124,7 +124,7 @@ function get_event_participants(&$evt, $item_id, array $tri = array(), $count = 
                                          WHERE  ep.eid = {?} AND nb > 0 ' . $append . '
                                       GROUP BY  ep.uid', $eid);
     $uf = new UserFilter(new PFC_True(), $tri);
-    $users = User::getBulkUsersWithUIDs($uf->filter(array_keys($query), $count, $offset));
+    $users = User::getBulkUsersWithUIDs($uf->filter(array_keys($query), new PlLimit($count, $offset)));
     $tab = array();
     foreach ($users as $user) {
         $uid = $user->id();

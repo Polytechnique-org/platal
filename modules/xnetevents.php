@@ -641,7 +641,7 @@ class XnetEventsModule extends PLModule
         $page->assign('absents', $absents);
         $page->assign('participants',
                       get_event_participants($evt, $item_id, UserFilter::sortByName(),
-                                             new PLLimit(NB_PER_PAGE), $ofs * NB_PER_PAGE));
+                                             NB_PER_PAGE, $ofs * NB_PER_PAGE));
     }
 }
 
