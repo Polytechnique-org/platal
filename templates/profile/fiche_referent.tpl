@@ -71,8 +71,10 @@
     {foreach from=$jobs item="job"}
       <h2>{$job->company->name}</h2>
       {include file="include/emploi.tpl" job=$job}
-      {if $job->address()}
-        {include file="geoloc/address.tpl" address=$job->address titre="Adresse&nbsp;: " for=$job->company->name}
+      {if $job->address}
+        {include file="geoloc/address.tpl" address=$job->address titre="Adresse&nbsp;: " for=$job->company->name phones=$job->phones pos="left"}
+      {elseif $job->phones}
+        {display_phones tels=$job->phones}
       {/if}
       <div class="spacer">&nbsp;</div>
     {/foreach}
@@ -81,7 +83,7 @@
   {if $profile->cv}
   <div class="part">
     <h2>Curriculum Vitae&nbsp;: </h2>
-    <div style="padding: 0 2ex">{$profile->cv|smarty:nodefaults}</div>
+    <div style="padding: 0 2ex">{$profile->cv|miniwiki:title|smarty:nodefaults}</div>
   </div>
   {/if}
 

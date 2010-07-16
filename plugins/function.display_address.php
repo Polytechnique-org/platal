@@ -41,8 +41,19 @@ function smarty_function_display_address($param, &$smarty)
     require_once('geocoding.inc.php');
     $adr = $param['adr'];
     $txtad = $adr->text;
-    if (!$txtad && !$adr->phones() && !count($adr->phones())) {
-        return "";
+    if (!$txtad) {
+        $txthtml = '';
+        if ($adr->phones() && count($adr->phones())) {
+            require_once 'function.display_phones.php';
+            $txthtml .= smarty_function_display_phones(array('tels' => $adr->phones()), $smarty);
+        } elseif (isset($param['phones']) && count($param['phones'])) {
+            require_once 'function.display_phones.php';
+            $txthtml .=  smarty_function_display_phones(array('tels' => $param['phones']), $smarty);
+        }
+        if (!isset($param['nodiv']) && $txthtml != '' && isset($param['pos'])) {
+            $txthtml = '<div class="adresse" style="float: ' . $param['pos'] . '">' . $txthtml . '</div>';
+        }
+        return $txthtml;
     }
 
     $lines = explode("\n", $txtad);

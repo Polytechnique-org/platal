@@ -259,8 +259,8 @@ class Job
     public $id;
 
     public $company = null;
-    private $phones = array();
-    private $address = null;
+    public $phones = array();
+    public $address = null;
 
     public $jobid;
 
