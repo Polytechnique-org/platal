@@ -102,7 +102,7 @@ class GoogleAppsModule extends PLModule
                 $password_sync = Post::b('password_sync');
                 $redirect_mails = Post::b('redirect_mails');
                 if ($password_sync) {
-                    $password = S::v('password');
+                    $password = $user->password();
                 } else {
                     $password = Post::v('response2');
                 }
