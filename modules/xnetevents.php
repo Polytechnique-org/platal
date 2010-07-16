@@ -618,9 +618,9 @@ class XnetEventsModule extends PLModule
                                               WHERE  p.eid = {?} AND p2.eid IS NULL
                                            GROUP BY  p.uid', $evt['eid']);
 
-        $ofs   = Env::i('offset');
-        $tot   = (Env::v('initiale') ? $tot : $nb_tot);
-        $nbp   = ceil($tot / NB_PER_PAGE);
+        $ofs = Env::i('offset');
+        $tot = (is_null($evt['nb_tot']) ? $evt['nb'] : $evt['nb_tot']);
+        $nbp = ceil($tot / NB_PER_PAGE);
         if ($nbp > 1) {
             $links = array();
             if ($ofs) {
@@ -629,7 +629,7 @@ class XnetEventsModule extends PLModule
             for ($i = 1 ; $i <= $nbp; $i++) {
                 $links[(string)$i] = $i - 1;
             }
-            if ($ofs < $nbp) {
+            if ($ofs < $nbp - 1) {
                 $links['suivant'] = $ofs+1;
             }
             $page->assign('links', $links);
