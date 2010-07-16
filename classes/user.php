@@ -401,32 +401,58 @@ class User extends PlUser
      */
     private function fetchMarketingData()
     {
-        if (isset($this->last_known_email)) {
+        if (isset($this->pending_registration_date)) {
             return;
         }
-        // FIXME: We should fetch the last known email as well as the pending registration email (they aren't the same !)
-        $infos = XDB::fetchOneAssoc('SELECT  IF (MAX(m.last) > p.relance, MAX(m.last), p.relance) AS last_relance,
-                                             p.email AS last_known_email
-                                       FROM  register_pending AS p
-                                  LEFT JOIN  register_marketing AS m ON (p.uid = m.uid)
-                                      WHERE  p.uid = {?}
-                                   GROUP BY  p.uid', $this->id());
-        if (!$infos) {
-            $infos = array('last_relance' => null, 'last_known_email' => null);
+        $infos = XDB::fetchOneAssoc('SELECT  rp.date AS pending_registration_date, rp.email AS pending_registration_email,
+                                             rm.last AS last_marketing_date, rm.email AS last_marketing_email
+                                       FROM  accounts           AS a
+                                  LEFT JOIN  register_pending   AS rp ON (rp.uid = a.uid)
+                                  LEFT JOIN  register_marketing AS rm ON (rm.uid = a.uid AND rm.last != \'0000-00-00\')
+                                      WHERE  a.uid = {?}
+                                   ORDER BY  rm.last DESC', $this->id());
+        if (is_null($infos)) {
+            $infos = array(
+                'pending_registration_date'  => null,
+                'pending_registration_email' => null,
+                'last_marketing_date'        => null,
+                'last_marketing_email'       => null
+            );
         }
         $this->fillFromArray($infos);
     }
 
-    public function lastMarketingRelance()
+    public function pendingRegistrationDate()
     {
         $this->fetchMarketingData();
-        return $this->last_relance;
+        return $this->pending_registration_date;
+    }
+
+    public function pendingRegistrationEmail()
+    {
+        $this->fetchMarketingData();
+        return $this->pending_registration_email;
+    }
+
+    public function lastMarketingDate()
+    {
+        $this->fetchMarketingData();
+        return $this->last_marketing_date;
+    }
+
+    public function lastMarketingEmail()
+    {
+        $this->fetchMarketingData();
+        return $this->last_marketing_email;
     }
 
     public function lastKnownEmail()
     {
         $this->fetchMarketingData();
-        return $this->last_known_email;
+        if ($this->pending_registration_email > $this->last_marketing_date) {
+            return $this->pending_registration_email;
+        }
+        return $this->last_marketing_email;
     }
 
 

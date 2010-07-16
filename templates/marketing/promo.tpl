@@ -49,10 +49,10 @@
       <td>{profile user=$it}</td>
       <td>{if $it->lastKnownEmail()}{mailto address=$it->lastKnownEmail()}{/if}</td>
       <td class="center">
-        {if $it->lastMarketingRelance() && $it->lastMarketingRelance() != '0000-00-00'}
-        Relance le&nbsp;: {$it->lastMarketingRelance()}
-        {elseif $it->lastKnownEmail()}
-        En cours&nbsp;: {$it->lastKnownEmail()}
+        {if $it->pendingRegistrationDate() > $it->lastMarketingDate()}
+        En cours&nbsp;: {$it->pendingRegistrationEmail()}
+        {elseif $it->lastMarketingDate() && $it->lastMarketingDate() != '0000-00-00'}
+        Relance le&nbsp;: {$it->lastMarketingDate()}
         {else}
         -
         {/if}
