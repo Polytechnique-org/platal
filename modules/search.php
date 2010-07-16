@@ -169,6 +169,9 @@ class SearchModule extends PLModule
             if ($nb_tot > $globals->search->private_max) {
                 $this->form_prepare();
                 $page->trigError('Recherche trop générale.');
+            } else if ($nb_tot == 0) {
+                $this->form_prepare();
+                $page->trigError('Il n\'existe personne correspondant à ces critères dans la base !');
             }
         }
 
