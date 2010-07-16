@@ -939,7 +939,7 @@ class UFC_Job_Company implements UserFilterCondition
     public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addJobCompanyFilter();
-        $cond  = $sub . '.' . $this->type . ' = ' . XDB::format('{?}', $this->value);
+        $cond  = $sub . '.' . $this->type . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->value);
         return $cond;
     }
 }
