@@ -435,6 +435,7 @@ class AdminModule extends PLModule
             }
             if (!Post::blank('hashpass')) {
                 $to_update['password'] = Post::s('hashpass');
+                require_once 'googleapps.inc.php';
                 $account = new GoogleAppsAccount($user);
                 if ($account->active() && $account->sync_password) {
                     $account->set_password(Post::s('hashpass'));
