@@ -36,8 +36,10 @@
 <script type="text/javascript">
 //<![CDATA[
 function encryptPassword() {
-  $('[name=hashpass]').val(hash_encrypt($('[name=new_plain_password]').val()));
-  $('[name=new_plain_password]').val('');
+  if ($('[name=new_plain_password]').val() != '********') {
+    $('[name=hashpass]').val(hash_encrypt($('[name=new_plain_password]').val()));
+    $('[name=new_plain_password]').val('');
+  }
 }
 
 function del_alias(alias) {
