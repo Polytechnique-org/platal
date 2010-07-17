@@ -22,7 +22,7 @@
 
 <h1>Perdus de vue</h1>
 
-<p>Ces {$lost_emails->total()} camarades n'ont pas ou plus d'adresse email valides</p>
+<p>Ces {$lost_emails->total()} camarades n'ont pas ou plus d'adresse email valides.</p>
 
 <table class="bicol">
   <tr>
