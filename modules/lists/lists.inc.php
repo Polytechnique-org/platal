@@ -38,12 +38,11 @@ function list_sort_owners(&$members, $tri_promo = true)
             if (!$promo) {
                 $promo = 'non-X';
             }
-            $broken = false; # XXX: fill it with the good value if the user has no valid email
             $key = $tri_promo ? ($promo != 'non-X' ? $promo : 0) : strtoupper(@$nom{0});
             if ($tri_promo) {
                 $promo = null;
             }
-            $membres[$key][$nom.$mem] = Array('n' => $nom, 'l' => $mem, 'p' => $promo, 'x' => $uid, 'b' => $broken);
+            $membres[$key][$nom.$mem] = array('n' => $nom, 'l' => $mem, 'p' => $promo, 'x' => $uid);
         }
     }
 
