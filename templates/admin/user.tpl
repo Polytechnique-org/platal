@@ -35,10 +35,9 @@
 
 <script type="text/javascript">
 //<![CDATA[
-function doEditUser() {
-  document.forms.auth.hashpass.value = hash_encrypt(document.forms.edit.password.value);
-  document.forms.auth.password.value = "";
-  document.forms.auth.submit();
+function encryptPassword() {
+  $('[name=hashpass]').val(hash_encrypt($('[name=new_plain_password]').val()));
+  $('[name=new_plain_password]').val('');
 }
 
 function del_alias(alias) {
@@ -148,11 +147,11 @@ $(document).ready(function() {
       <td class="titre">Mot de passe</td>
       <td>
         <div style="float: left">
-          <input type="text" name="newpass_clair" size="10" maxlength="256" value="********" />
+          <input type="text" name="new_plain_password" size="10" maxlength="256" value="********" />
           <input type="hidden" name="hashpass" value="" />
         </div>
         <div style="float: left; margin-top: 5px;">
-          {checkpasswd prompt="newpass_clair" submit="dummy_none"}
+          {checkpasswd prompt="new_plain_password" submit="dummy_none"}
         </div>
       </td>
     </tr>
@@ -233,8 +232,7 @@ $(document).ready(function() {
     </tr>
     <tr class="impair">
       <td colspan="2" class="center">
-        {* TODO: on 'update_account', update the hashpass field before sending the form. *}
-        <input type="submit" name="update_account" value="Mettre à jour" />
+        <input type="submit" name="update_account" value="Mettre à jour" onclick="encryptPassword()" />
         <input type="submit" name="su_account" value="Prendre l'identité" />
         <input type="submit" name="log_account" value="Consulter les logs" />
       </td>
