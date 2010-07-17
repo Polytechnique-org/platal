@@ -33,7 +33,7 @@ function list_sort_owners(&$members, $tri_promo = true)
             $membres[0][] = array('l' => $mem, 'p' => (!$tri_promo ? 'inconnue' : null));
         } else {
             $uid = $user->id();
-            $nom = $user->fullName(); # XXX: Get a notion of 'last name' here, I want to sort user by lastnames
+            $nom = $user->directoryName();
             $promo = $user->promo();
             if (!$promo) {
                 $promo = 'non-X';
