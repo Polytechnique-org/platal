@@ -202,9 +202,9 @@ function set_profile_display(&$display_names, Profile $profile)
     $owner = $profile->owner();
     if ($owner) {
         XDB::execute('UPDATE  accounts
-                         SET  full_name = {?}
+                         SET  full_name = {?}, directory_name = {?}
                        WHERE  uid = {?}',
-                     $display_names['public_name'], $owner->id());
+                     $display_names['public_name'], $display_names['directory_name'], $owner->id());
     }
 }
 
