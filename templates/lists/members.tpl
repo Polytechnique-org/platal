@@ -140,7 +140,7 @@
   </tr>
 
   {foreach from=$members item=users key=promo}
-  {foreach from=$users item=user}
+  {foreach from=$users item=user name=all}
   <tr>
     <td class='titre' style="width: 20%">
       {if $smarty.foreach.all.first}
