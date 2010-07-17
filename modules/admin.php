@@ -435,11 +435,10 @@ class AdminModule extends PLModule
             }
             if (!Post::blank('hashpass')) {
                 $to_update['password'] = Post::s('hashpass');
-                // TODO: Propagate the password update to GoogleApps, when required. Eg:
-                // $account = new GoogleAppsAccount($user);
-                // if ($account->active() && $account->sync_password) {
-                //     $account->set_password($pass_encrypted);
-                // }
+                $account = new GoogleAppsAccount($user);
+                if ($account->active() && $account->sync_password) {
+                    $account->set_password(Post::s('hashpass'));
+                }
             }
             if (!Post::blank('weak_password')) {
                 $to_update['weak_password'] = Post::s('weak_password');
