@@ -130,7 +130,7 @@ class NamesReq extends ProfileValidate
     {
         require_once 'name.func.inc.php';
 
-        set_profile_display($this->display_names, $this->profile->id());
+        set_profile_display($this->display_names, $this->profile);
 
         if (!is_null($this->profileOwner)) {
             set_alias_names($this->sn_new, $this->sn_old, $this->profile->id(),

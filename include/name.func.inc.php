@@ -189,7 +189,7 @@ function build_sort_name(&$search_names, &$sn_types)
     return $name;
 }
 
-function set_profile_display(&$display_names, $pid)
+function set_profile_display(&$display_names, Profile $profile)
 {
     XDB::execute("UPDATE  profile_display
                      SET  public_name = {?}, private_name = {?},
@@ -197,10 +197,8 @@ function set_profile_display(&$display_names, $pid)
                    WHERE  pid = {?}",
                  $display_names['public_name'], $display_names['private_name'],
                  $display_names['directory_name'], $display_names['short_name'],
-                 $display_names['sort_name'], $pid);
+                 $display_names['sort_name'], $profile->id());
 
-    /* XXX: Inefficient, should directly take the profile as parameter */
-    $profile = Profile::get($pid);
     $owner = $profile->owner();
     if ($owner) {
         XDB::execute('UPDATE  accounts

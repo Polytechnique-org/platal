@@ -231,7 +231,7 @@ class ProfileSettingSearchNames implements ProfileSetting
             $display_names = array();
             build_display_names($display_names, $this->search_names,
                                 $page->profile->isFemale(), $this->private_name_end);
-            set_profile_display($display_names, $page->pid());
+            set_profile_display($display_names, $page->profile);
         }
     }
 
