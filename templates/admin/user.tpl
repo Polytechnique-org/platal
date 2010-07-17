@@ -127,15 +127,15 @@ $(document).ready(function() {
     </tr>
     <tr>
       <td class="titre">Nom complet</td>
-      <td><input type="text" name="full_name" maxlength="255" value="{$user->fullName()}" /></td>
+      <td>{if $hasProfile}{$user->fullName()}{else}<input type="text" name="full_name" maxlength="255" value="{$user->fullName()}" />{/if}</td>
     </tr>
     <tr>
       <td class="titre">Nom annuaire</td>
-      <td><input type="text" name="directory_name" maxlength="255" value="{$user->directoryName()}" /></td>
+      <td>{if $hasProfile}{$user->directoryName()}{else}<input type="text" name="directory_name" maxlength="255" value="{$user->directoryName()}" />{/if}</td>
     </tr>
     <tr>
       <td class="titre">Nom affiché</td>
-      <td><input type="text" name="display_name" maxlength="255" value="{$user->displayName()}" /></td>
+      <td>{if $hasProfile}{$user->displayName()}{else}<input type="text" name="display_name" maxlength="255" value="{$user->displayName()}" />{/if}</td>
     </tr>
     <tr>
       <td class="titre">Sexe</td>

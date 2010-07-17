@@ -413,20 +413,25 @@ class AdminModule extends PLModule
         if (Post::has('disable_weak_access')) {
             $to_update['weak_password'] = null;
         } else if (Post::has('update_account')) {
-            if (Post::s('full_name') != $user->fullName()) {
-                // XXX: Update profile if a profile is associated
-                $to_update['full_name'] = Post::s('full_name');
-            }
-            if (Post::s('display_name') != $user->displayName()) {
-                // XXX: Update profile if a profile is associated
-                $to_update['display_name'] = Post::s('display_name');
-            }
-            if (Post::s('directory_name') != $user->directoryName()) {
-                // XXX: Update profile if a profile is associated
-                $to_update['directory_name'] = Post::s('directory_name');
+            if (!$user->hasProfile()) {
+                if (Post::s('full_name') != $user->fullName()) {
+                    $to_update['full_name'] = Post::s('full_name');
+                }
+                if (Post::s('display_name') != $user->displayName()) {
+                    $to_update['display_name'] = Post::s('display_name');
+                }
+                if (Post::s('directory_name') != $user->directoryName()) {
+                    $to_update['directory_name'] = Post::s('directory_name');
+                }
             }
             if (Post::s('sex') != ($user->isFemale() ? 'female' : 'male')) {
                 $to_update['sex'] = Post::s('sex');
+                if ($user->hasProfile()) {
+                    XDB::execute('UPDATE  profiles
+                                     SET  sex = {?}
+                                   WHERE  pid = {?}',
+                                 Post::s('sex'), $user->profile()->id());
+                }
             }
             if (!Post::blank('hashpass')) {
                 $to_update['password'] = Post::s('hashpass');
@@ -669,6 +674,7 @@ class AdminModule extends PLModule
         }
 
         $page->assign('user', $user);
+        $page->assign('hasProfile', $user->hasProfile());
 
         // Displays forum bans.
         $res = XDB::query("SELECT  write_perm, read_perm, comment
