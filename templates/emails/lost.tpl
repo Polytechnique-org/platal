@@ -26,10 +26,12 @@
 
 <table class="bicol">
   <tr>
-    <th>Utilisateur</th>
+    <th colspan="2">Utilisateur</th>
   </tr>
+  {assign var="promo" value=""}
   {iterate from=$lost_emails item="looser"}
     <tr class="{cycle values="pair,impair"}">
+      <td>{if $promo neq $looser.promo}{assign var="promo" value=$looser.promo}{$promo}{/if}</td>
       <td>
         <a href="profile/{$looser.hruid}" class="popup2">{$looser.hruid}</a>
       </td>

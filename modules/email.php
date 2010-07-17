@@ -794,15 +794,16 @@ class EmailModule extends PLModule
     {
         $page->changeTpl('emails/lost.tpl');
 
-        // TODO: Order by promo.
         $page->assign('lost_emails',
-                      XDB::iterator("SELECT  a.uid, a.hruid
-                                       FROM  accounts AS a
-                                 INNER JOIN  email_options AS eo ON (eo.uid = a.uid)
-                                  LEFT JOIN  emails   AS e ON (a.uid = e.uid AND FIND_IN_SET('active', e.flags))
-                                      WHERE  e.uid IS NULL AND FIND_IN_SET('googleapps', eo.storage) = 0 AND
-                                             a.state = 'active'
-                                   ORDER BY  a.hruid"));
+                      XDB::iterator('SELECT  a.uid, a.hruid, pd.promo
+                                       FROM  accounts         AS a
+                                 INNER JOIN  email_options    AS eo ON (eo.uid = a.uid)
+                                  LEFT JOIN  emails           AS e  ON (a.uid = e.uid AND FIND_IN_SET(\'active\', e.flags))
+                                  LEFT JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET(\'owner\', perms))
+                                  LEFT JOIN  profile_display  AS pd ON (ap.pid = pd.pid)
+                                      WHERE  e.uid IS NULL AND FIND_IN_SET(\'googleapps\', eo.storage) = 0
+                                             AND a.state = \'active\'
+                                   ORDER BY  pd.promo, a.hruid'));
     }
 
     function handler_broken_addr(&$page)
