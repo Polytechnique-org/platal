@@ -421,6 +421,10 @@ class AdminModule extends PLModule
                 // XXX: Update profile if a profile is associated
                 $to_update['display_name'] = Post::s('display_name');
             }
+            if (Post::s('directory_name') != $user->directoryName()) {
+                // XXX: Update profile if a profile is associated
+                $to_update['directory_name'] = Post::s('directory_name');
+            }
             if (Post::s('sex') != ($user->isFemale() ? 'female' : 'male')) {
                 $to_update['sex'] = Post::s('sex');
             }

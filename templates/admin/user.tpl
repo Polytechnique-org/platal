@@ -130,6 +130,10 @@ $(document).ready(function() {
       <td><input type="text" name="full_name" maxlength="255" value="{$user->fullName()}" /></td>
     </tr>
     <tr>
+      <td class="titre">Nom annuaire</td>
+      <td><input type="text" name="directory_name" maxlength="255" value="{$user->directoryName()}" /></td>
+    </tr>
+    <tr>
       <td class="titre">Nom affiché</td>
       <td><input type="text" name="display_name" maxlength="255" value="{$user->displayName()}" /></td>
     </tr>

@@ -93,6 +93,14 @@
         <input type="text" value="{$user->fullName()}" name="full_name" size="40"{if $user->profile()} disabled="disabled"{/if} />
       </td>
     </tr>
+    <tr class="impair">
+      <td class="titre">
+        Nom annuaire&nbsp;:
+      </td>
+      <td>
+        <input type="text" value="{$user->directoryName()}" name="directory_name" size="40"{if $user->profile()} disabled="disabled"{/if} />
+      </td>
+    </tr>
     <tr id="sexe" class="impair" {if $user->type eq "virtual"}style="display: none"{/if}>
       <td class="titre">
         Sexe&nbsp;:

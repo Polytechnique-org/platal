@@ -867,9 +867,9 @@ class XnetGrpModule extends PLModule
             $from_email = $user->forlifeEmail();
             if (!$user->profile()) {
                 XDB::query('UPDATE  accounts
-                               SET  full_name = {?}, display_name = {?}, sex = {?}, email = {?}, type = {?}
+                               SET  full_name = {?}, directory_name = {?}, display_name = {?}, sex = {?}, email = {?}, type = {?}
                              WHERE  uid = {?}',
-                            Post::v('full_name'), Post::v('display_name'), (Post::v('sex') == 'male')?'male':'female', Post::v('email'), (Post::v('type') == 'xnet')?'xnet':'virtual',
+                            Post::t('full_name'), Post::t('directory_name'), Post::t('display_name'), (Post::v('sex') == 'male')?'male':'female', Post::v('email'), (Post::v('type') == 'xnet')?'xnet':'virtual',
                             $user->id());
                 if (XDB::affectedRows()) {
                     $page->trigSuccess('Données de l\'utilisateur mise à jour.');

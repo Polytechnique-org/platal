@@ -179,7 +179,7 @@ class User extends PlUser
                                       CONCAT(af.alias, \'@' . $globals->mail->domain2 . '\') AS forlife_alternate,
                                       IF (ab.alias IS NULL, a.email, CONCAT(ab.alias, \'@' . $globals->mail->domain . '\')) AS bestalias,
                                       CONCAT(ab.alias, \'@' . $globals->mail->domain2 . '\') AS bestalias_alternate,
-                                      a.full_name, a.display_name, a.sex = \'female\' AS gender,
+                                      a.full_name, a.directory_name, a.display_name, a.sex = \'female\' AS gender,
                                       IF(a.state = \'active\', at.perms, \'\') AS perms,
                                       a.email_format, a.is_admin, a.state, a.type, a.skin,
                                       FIND_IN_SET(\'watch\', a.flags) AS watch, a.comment,
@@ -307,7 +307,7 @@ class User extends PlUser
     public function directoryName()
     {
         if (!$this->hasProfile()) {
-            return $this->full_name;
+            return $this->directory_name;
         }
         return $this->profile()->directory_name;
     }
