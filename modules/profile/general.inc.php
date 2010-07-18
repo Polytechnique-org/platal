@@ -558,9 +558,6 @@ class ProfileSettingGeneral extends ProfilePage
                         LEFT JOIN  profile_phones        AS pp ON (pp.pid = p.pid AND link_type = 'user')
                             WHERE  p.pid = {?}", $this->pid());
         $this->values = $res->fetchOneAssoc();
-        if ($this->owner) {
-            $this->values['yourself'] = $this->owner->displayName();
-        }
 
         // Retreive photo informations
         $res = XDB::query("SELECT  pub
