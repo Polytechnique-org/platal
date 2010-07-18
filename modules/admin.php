@@ -778,7 +778,8 @@ class AdminModule extends PLModule
                     if ($infos = self::formatNewUser($page, $line, $separator, $promotion, 6)) {
                         $sex = self::formatSex($page, $infos[3], $line);
                         if (!is_null($sex)) {
-                            $name = $infos[1] . ' ' . $infos[0];
+                            $fullName = $infos[1] . ' ' . $infos[0];
+                            $directoryName = $infos[0] . ' ' . $infos[1];
                             $birthDate = self::formatBirthDate($infos[2]);
                             $xorgId = Profile::getXorgId($infos[4]);
                             if (is_null($xorgId)) {
@@ -799,13 +800,13 @@ class AdminModule extends PLModule
                             XDB::execute('INSERT INTO  profile_display (pid, yourself, public_name, private_name,
                                                                         directory_name, short_name, sort_name, promo)
                                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                                         $pid, $infos[1], $name, $name, $name, $name, $infos[0] . ' ' . $infos[1], $promo);
+                                         $pid, $infos[1], $fullName, $fullName, $directoryName, $fullName, $directoryName, $promo);
                             XDB::execute('INSERT INTO  profile_education (pid, eduid, degreeid, entry_year, grad_year, flags)
                                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?})',
                                          $pid, $eduSchools[Profile::EDU_X], $degreeid, $entry_year, $grad_year, 'primary');
-                            XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, full_name, display_name, sex)
+                            XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, full_name, directory_name, display_name, sex)
                                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                                         $infos['hrid'], $type, 0, 'active', $name, $infos[1], $sex);
+                                         $infos['hrid'], $type, 0, 'active', $fullName, $directoryName, $infos[1], $sex);
                             $uid = XDB::insertId();
                             XDB::execute('INSERT INTO  account_profiles (uid, pid, perms)
                                                VALUES  ({?}, {?}, {?})',
@@ -820,9 +821,11 @@ class AdminModule extends PLModule
                     if ($infos = self::formatNewUser($page, $line, $separator, $type, 4)) {
                         $sex = self::formatSex($page, $infos[3], $line);
                         if (!is_null($sex)) {
-                            XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, email, full_name, display_name, sex)
+                            $fullName = $infos[1] . ' ' . $infos[0];
+                            $directoryName = $infos[0] . ' ' . $infos[1];
+                            XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, email, full_name, directory_name, display_name, sex)
                                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                                         $infos['hrid'], $type, 0, 'active', $infos[2], $infos[1] . ' ' . $infos[0], $infos[1], $sex);
+                                         $infos['hrid'], $type, 0, 'active', $infos[2], $fullName, $directoryName, $infos[1], $sex);
                             $newAccounts[$infos['hrid']] = $infos[1] . ' ' . $infos[0];
                         }
                     }
