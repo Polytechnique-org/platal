@@ -279,6 +279,38 @@ class ProfileSettingJob extends ProfileSettingGeocoding
     }
 }
 
+class ProfileSettingCorps implements ProfileSetting
+{
+    public function value(ProfilePage &$page, $field, $value, &$success)
+    {
+        $success = true;
+        if (is_null($value)) {
+            $res = XDB::query("SELECT  original_corpsid AS original, current_corpsid AS current,
+                                       rankid AS rank, corps_pub AS pub
+                                 FROM  profile_corps
+                                WHERE  pid = {?}",
+                            $page->pid());
+            return $res->fetchOneAssoc();
+        }
+        return $value;
+    }
+
+    public function save(ProfilePage &$page, $field, $value)
+    {
+        XDB::execute('REPLACE INTO  profile_corps (original_corpsid, current_corpsid, rankid, corps_pub, pid)
+                            VALUES  ({?}, {?}, {?}, {?}, {?})',
+                      $value['original'], $value['current'], $value['rank'], $value['pub'], $page->pid());
+    }
+
+    public function getText($value)
+    {
+        $corpsList = DirEnum::getOptions(DirEnum::CORPS);
+        $rankList  = DirEnum::getOptions(DirEnum::CORPSRANKS);
+        return 'Corps actuel : ' . $corpsList[$value['current']] . ' , rang : ' . $corpsList[$value['rank']]
+            . ' , corps d\'origine : ' . $corpsList[$value['original']] . ' , affichage : ' . $value['pub'];
+    }
+}
+
 class ProfileSettingJobs extends ProfilePage
 {
     protected $pg_template = 'profile/jobs.tpl';
@@ -287,8 +319,7 @@ class ProfileSettingJobs extends ProfilePage
     {
         parent::__construct($wiz);
         $this->settings['cv'] = null;
-        /* TODO: ProfileSettingCorps, required for notifications. */
-        $this->settings['corps'] = null;
+        $this->settings['corps'] = new ProfileSettingCorps();
         $this->settings['jobs'] = new ProfileSettingJob();
         $this->watched = array('cv' => true, 'jobs' => true, 'corps' => true);
     }
@@ -301,14 +332,6 @@ class ProfileSettingJobs extends ProfilePage
                             WHERE  pid = {?}",
                           $this->pid());
         $this->values['cv'] = $res->fetchOneCell();
-
-        // Checkout the corps
-        $res = XDB::query("SELECT  original_corpsid AS original, current_corpsid AS current,
-                                   rankid AS rank, corps_pub AS pub
-                             FROM  profile_corps
-                            WHERE  pid = {?}",
-                        $this->pid());
-        $this->values['corps'] = $res->fetchOneAssoc();
 
         // Build the jobs tree
         $res = XDB::iterRow("SELECT  j.id, j.jobid, je.name, j.sectorid, j.subsectorid, j.subsubsectorid,
@@ -484,13 +507,6 @@ class ProfileSettingJobs extends ProfilePage
                              SET  cv = {?}
                            WHERE  pid = {?}",
                          $this->values['cv'], $this->pid());
-        }
-
-        if ($this->changed['corps']) {
-            XDB::execute('REPLACE INTO  profile_corps (original_corpsid, current_corpsid, rankid, corps_pub, pid)
-                                VALUES  ({?}, {?}, {?}, {?}, {?})',
-                          $this->values['corps']['original'], $this->values['corps']['current'],
-                          $this->values['corps']['rank'], $this->values['corps']['pub'], $this->pid());
         }
     }
 
