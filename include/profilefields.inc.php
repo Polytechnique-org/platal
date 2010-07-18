@@ -46,7 +46,8 @@ abstract class ProfileField
      * @param $pids An array of pids
      * @param $visibility The level of visibility fetched fields must have
      * @return a PlIterator yielding data suitable for a "new ProfileBlah($data)"
-     * XXX MUST be reimplemented for each kind of ProfileField
+     *
+     * MUST be reimplemented for each kind of ProfileField.
      */
     public static function fetchData(array $pids, ProfileVisibility $visibility)
     {
@@ -935,7 +936,6 @@ class CompanyList
             self::$companies[$row['id']] = $cp;
         }
 
-        // TODO: determine whether there can be phones attached to a hq's address
         // Add phones to hq
         if (count($newcompanies)) {
             $it = XDB::iterator('SELECT  search_tel AS search, display_tel AS display, comment, link_id, tel_type AS type, link_type, tel_id AS id

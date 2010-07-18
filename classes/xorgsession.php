@@ -86,7 +86,7 @@ class XorgSession extends PlSession
                           $login);
         if (list($uid, $password) = $res->fetchOneRow()) {
             $expected_response = sha1("$uname:$password:" . S::v('challenge'));
-            /* XXX: Deprecates len(password) > 10 conversion */
+            /* Deprecates len(password) > 10 conversion. */
             if ($response != $expected_response) {
                 if (!S::logged()) {
                     Platal::page()->trigError('Mot de passe ou nom d\'utilisateur invalide');

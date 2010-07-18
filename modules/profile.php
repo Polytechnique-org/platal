@@ -76,7 +76,9 @@ class ProfileModule extends PLModule
         );
     }
 
-    /* XXX COMPAT */
+    /* Function needed for compatibility reasons.
+     * TODO: removes calls to fiche.php?user=blah.machin.2083 and then removes this.
+     */
     function handler_fiche(&$page)
     {
         return $this->handler_profile($page, Env::v('user'));

@@ -179,7 +179,7 @@ class AXLetterModule extends PLModule
                     }
                     $page->trigSuccess("Les adresses soumises correspondent à un total de " . count(array_unique($ids)) . " camarades.");
                 }
-                // XXX : no break here, since Vérifier is a subcase of Aperçu.
+                // No break here, since Vérifier is a subcase of Aperçu.
               case 'Aperçu':
                 $this->load('axletter.inc.php');
                 $al = new AXLetter(array($id, $short_name, $subject, $title, $body, $signature,

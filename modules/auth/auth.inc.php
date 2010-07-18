@@ -34,7 +34,7 @@ function gpex_make($chlg, $privkey, $datafields, $charset)
 
     $user =& S::user();
     if ($user->hasProfile()) {
-        // XXX: Transition table for auth.
+        /* Transition table for authentification. */
         $personnal_data = $user->profile()->data();
         $personnal_data['matricule'] = $personnal_data['xorg_id'];
         $personnal_data['matricule_ax'] = $personnal_data['ax_id'];
