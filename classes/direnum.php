@@ -40,6 +40,9 @@ class DirEnum
     const EDUDEGREES     = 'educationdegrees';
     const EDUFIELDS      = 'educationfields';
 
+    const CORPS          = 'corps';
+    const CORPSRANKS     = 'corpsranks';
+
     const NATIONALITIES  = 'nationalities';
     const COUNTRIES      = 'countries';
     const ADMINAREAS     = 'adminareas';
@@ -522,6 +525,32 @@ class DE_EducationFields extends DirEnumeration
 
     protected $ac_join   = 'INNER JOIN profile_education ON (profile_education.fieldid = profile_education_field_enum.id)';
     protected $ac_unique = 'profile_education.pid';
+}
+// }}}
+
+// {{{ class DE_Corps
+class DE_Corps extends DirEnumeration
+{
+    protected $idfield   = 'corps_enum.id';
+    protected $valfield  = 'corps_enum.name';
+    protected $valfield2 = 'corps_enum.abbrev';
+    protected $from      = 'corps_enum';
+
+    protected $ac_unique = 'corps.pid';
+    protected $ac_join   = 'INNER JOIN corps ON (corps.current_corpsid = corps_enum.id)';
+}
+// }}}
+
+// {{{ class DE_CorpsRanks
+class DE_CorpsRanks extends DirEnumeration
+{
+    protected $idfield   = 'corps_rank_enum.id';
+    protected $valfield  = 'corps_rank_enum.name';
+    protected $valfield2 = 'corps_rank_enum.abbrev';
+    protected $from      = 'corps_rank_enum';
+
+    protected $ac_unique = 'corps.pid';
+    protected $ac_join   = 'INNER JOIN corps ON (corps.rankid = corps_rank_enum.id)';
 }
 // }}}
 
