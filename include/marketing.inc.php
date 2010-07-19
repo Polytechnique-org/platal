@@ -173,7 +173,7 @@ class Marketing
         if ($res->numRows() == 0) {
             return null;
         }
-        list ($uid, $email, $type, $data, $from, $senderi, $personal_notes) = $res->fetchOneRow();
+        list ($uid, $email, $type, $data, $from, $sender, $personal_notes) = $res->fetchOneRow();
         return new Marketing($uid, $email, $type, $data, $from, $sender, $personal_notes);
     }
 
