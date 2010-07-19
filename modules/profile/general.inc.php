@@ -662,7 +662,7 @@ class ProfileSettingGeneral extends ProfilePage
         $page->assign('edu_fields', $res->fetchAllAssoc());
 
         require_once "emails.combobox.inc.php";
-        fill_email_combobox($page, $this->owner, $this->profile);
+        fill_email_combobox($page, $this->owner);
 
         $res = XDB::query("SELECT  nw.nwid AS type, nw.name
                              FROM  profile_networking_enum AS nw

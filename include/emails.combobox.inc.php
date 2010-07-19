@@ -23,9 +23,12 @@ function fill_email_combobox(PlPage& $page, $user = null, $profile = null)
 {
     global $globals;
 
-    if (is_null($user) && is_null($profile)) {
+    if (is_null($user)) {
         $user = S::user();
-        $profile = $user->profile();
+    }
+    if (is_null($profile)) {
+        /* Always refetch the profile. */
+        $profile = $user->profile(true);
     }
     $email_type = "directory";
 

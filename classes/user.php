@@ -314,9 +314,9 @@ class User extends PlUser
 
     /** Return the main profile attached with this account if any.
      */
-    public function profile()
+    public function profile($forceFetch = false)
     {
-        if (!$this->_profile_fetched) {
+        if (!$this->_profile_fetched || $forceFetch) {
             $this->_profile_fetched = true;
             $this->_profile = Profile::get($this);
         }

@@ -513,7 +513,7 @@ class ProfileSettingJobs extends ProfilePage
     public function _prepare(PlPage &$page, $id)
     {
         require_once 'emails.combobox.inc.php';
-        fill_email_combobox($page, $this->owner, $this->profile);
+        fill_email_combobox($page, $this->owner);
 
         $res = XDB::query("SELECT  id, name AS label
                              FROM  profile_job_sector_enum");
