@@ -81,24 +81,34 @@ class XnetGrpModule extends PLModule
                             Env::i('unread'), S::i('uid'));
                 pl_redirect("#art" . Env::i('unread'));
             }
-            // XXX: Fix promo_min; promo_max
-            $arts = XDB::iterator("SELECT  a.*, FIND_IN_SET('photo', a.flags) AS photo
+
+            /* TODO: refines this filter on promotions by using userfilter. */
+            $user = S::user();
+            if ($user->hasProfile()) {
+                $promo = XDB::format('{?}', $user->profile()->entry_year);
+                $minCondition = ' OR promo_min <= ' . $promo;
+                $maxCondition = ' OR promo_max >= ' . $promo;
+            } else {
+                $minCondition = '';
+                $maxCondition = '';
+            }
+            $arts = XDB::iterator('SELECT  a.*, FIND_IN_SET(\'photo\', a.flags) AS photo
                                      FROM  group_announces      AS a
                                 LEFT JOIN  group_announces_read AS r ON (r.uid = {?} AND r.announce_id = a.id)
                                     WHERE  asso_id = {?} AND expiration >= CURRENT_DATE()
-                                           AND (promo_min = 0 OR promo_min <= {?})
-                                           AND (promo_max = 0 OR promo_max >= {?})
+                                           AND (promo_min = 0' . $minCondition . ')
+                                           AND (promo_max = 0' . $maxCondition . ')
                                            AND r.announce_id IS NULL
-                                 ORDER BY  a.expiration",
-                                   S::i('uid'), $globals->asso('id'), S::i('promo'), S::i('promo'));
-            $index = XDB::iterator("SELECT  a.id, a.titre, r.uid IS NULL AS nonlu
+                                 ORDER BY  a.expiration',
+                                   S::i('uid'), $globals->asso('id'));
+            $index = XDB::iterator('SELECT  a.id, a.titre, r.uid IS NULL AS nonlu
                                       FROM  group_announces      AS a
                                  LEFT JOIN  group_announces_read AS r ON (a.id = r.announce_id AND r.uid = {?})
                                      WHERE  asso_id = {?} AND expiration >= CURRENT_DATE()
-                                            AND (promo_min = 0 OR promo_min <= {?})
-                                            AND (promo_max = 0 OR promo_max >= {?})
-                                  ORDER BY  a.expiration",
-                                   S::i('uid'), $globals->asso('id'), S::i('promo'), S::i('promo'));
+                                            AND (promo_min = 0' . $minCondition . ')
+                                            AND (promo_max = 0' . $maxCondition . ')
+                                  ORDER BY  a.expiration',
+                                   S::i('uid'), $globals->asso('id'));
             $page->assign('article_index', $index);
         } else {
             $arts = XDB::iterator("SELECT  *, FIND_IN_SET('photo', flags) AS photo

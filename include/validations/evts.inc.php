@@ -134,6 +134,7 @@ class EvtReq extends Validate
 
     public function commit()
     {
+        /* TODO: refines this filter on promotions by using userfilter. */
         if (XDB::execute("INSERT INTO  announces
                          SET  uid = {?}, creation_date=NOW(), titre={?}, texte={?},
                               expiration={?}, promo_min={?}, promo_max={?}, flags=CONCAT(flags,',valide,wiki')",

@@ -26,6 +26,7 @@ function visibilityChange(box)
 {
     var state = (box.checked ? 'none' : '');
     document.getElementById('promo_titre').style.display = state;
+    document.getElementById('promo_explanation').style.display = state;
     document.getElementById('promo_min_tr').style.display = state;
     document.getElementById('promo_max_tr').style.display = state;
     document.getElementById('promo_range_tr').style.display = state;
@@ -163,7 +164,10 @@ function visibilityChange(box)
       </td>
     </tr>
     <tr id="promo_titre" {if $art.public}style="display: none"{/if}>
-      <th colspan="2">Promotions cibles</th>
+      <th colspan="2">Promotions d'entrée cibles</th>
+    </tr>
+    <tr id="promo_explanation" {if $art.public}style="display: none"{/if}>
+      <td colspan="2"><span class="smaller">{icon name=information} par exemple 2004 pour les X2004</span></td>
     </tr>
     {include file="include/field.promo.tpl" promo_min=$art.promo_min promo_max=$art.promo_max}
     {if $art.public}

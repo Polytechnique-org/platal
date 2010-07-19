@@ -175,6 +175,7 @@ class AXLetter extends MassMailer
         if (!$this->_promo_min && !$this->_promo_max && !$this->_subset) {
             return '1';
         }
+        /* TODO: refines this filter on promotions by using userfilter. */
         $where = array();
         if ($this->_promo_min) {
             $where[] = "((ni.uid = 0 AND ni.promo >= {$this->_promo_min}) OR (ni.uid != 0 AND u.promo >= {$this->_promo_min}))";
