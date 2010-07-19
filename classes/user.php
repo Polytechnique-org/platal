@@ -212,35 +212,6 @@ class User extends PlUser
         $this->fillFromArray(self::loadMainFieldsFromUIDs(array($this->uid))->next());
     }
 
-    // Specialization of the fillFromArray method, to implement hacks to enable
-    // lazy loading of user's main properties from the session.
-    // TODO(vzanotti): remove the conversion hacks once the old codebase will
-    // stop being used actively.
-    protected function fillFromArray(array $values)
-    {
-        // Also, if display_name and full_name are not known, but the user's
-        // surname and last name are, we can construct the former two.
-        if (isset($values['prenom']) && isset($values['nom'])) {
-            if (!isset($values['display_name'])) {
-                $values['display_name'] = ($values['prenom'] ? $values['prenom'] : $values['nom']);
-            }
-            if (!isset($values['full_name'])) {
-                $values['full_name'] = $values['prenom'] . ' ' . $values['nom'];
-            }
-        }
-
-        // We also need to convert the gender (usually named "femme"), and the
-        // email format parameter (valued "texte" instead of "text").
-        if (isset($values['femme'])) {
-            $values['gender'] = (bool) $values['femme'];
-        }
-        if (isset($values['mail_fmt'])) {
-            $values['email_format'] = $values['mail_fmt'];
-        }
-
-        parent::fillFromArray($values);
-    }
-
     // Specialization of the buildPerms method
     // This function build 'generic' permissions for the user. It does not take
     // into account page specific permissions (e.g X.net group permissions)
