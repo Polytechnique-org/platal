@@ -134,6 +134,12 @@ abstract class PlPage extends Smarty
             $this->_page_typ = SKINNED;
         }
 
+        if ($this->_page_type == SIMPLE) {
+            $this->assign('simple', true);
+        } else {
+            $this->assign('simple', false);
+        }
+
         switch ($this->_page_type) {
           case NO_SKIN:
             if (!($globals->debug & DEBUG_SMARTY)) {
@@ -143,8 +149,6 @@ abstract class PlPage extends Smarty
             exit;
 
           case SIMPLE:
-            $this->assign('simple', true);
-
           case SKINNED:
             $this->register_modifier('escape_html', 'escape_html');
             $this->default_modifiers = Array('@escape_html');
