@@ -20,21 +20,21 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if mail_part eq "wiki"}
+{if $mail_part eq "wiki"}
 Cordialement,\\
 -- \\
 l'équipe de Polytechnique.org\\
 Le portail des élèves & anciens élèves de l'École polytechnique
-{elseif mail_part eq "text"}
+{elseif $mail_part eq "text"}
 Cordialement,
 -- 
 l'équipe de Polytechnique.org
 Le portail des élèves & anciens élèves de l'École polytechnique
-{elseif mail_part eq "html"}
+{elseif $mail_part eq "html"}
 Cordialement,<br />
 -- <br />
 l'équipe de Polytechnique.org<br />
 Le portail des élèves & anciens élèves de l'École polytechnique
-{/if}
+{elseif $mail_part eq "escaped_html"}Cordialement,<br />-- <br />l&#39;équipe de Polytechnique.org<br />Le portail des élèves & anciens élèves de l&#39;École polytechnique{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

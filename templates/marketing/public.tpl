@@ -95,8 +95,8 @@ peut sans aucun doute l'aider à se décider&nbsp;!
         </label><br />
         <label>
           <input type="radio" name="origine" value="staff"
-                 onclick='$("#sender").html("{$xorg_signature}"); $("#tr_perso").hide();
-                          $("#personal_notes_display").hide();' />
+                 onclick='$("#sender").html("{include file=include/signature.mail.tpl mail_part=$mail_part}");
+                          $("#tr_perso").hide(); $("#personal_notes_display").hide();' />
           au nom de l'équipe Polytechnique.org
         </label>
       </td>

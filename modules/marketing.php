@@ -313,6 +313,7 @@ class MarketingModule extends PLModule
             require_once 'marketing.inc.php';
 
             $sender = User::getSilent(S::v('uid'));
+            $perso_signature = 'Cordialement,<br />-- <br />' . $sender->fullName();
             $market = new AnnuaireMarketing(null, true);
             $text = $market->getText(array(
                 'sexe'           => $user->isFemale(),
@@ -322,11 +323,10 @@ class MarketingModule extends PLModule
             $text = str_replace('%%hash%%', '', $text);
             $text = str_replace('%%personal_notes%%', '<em id="personal_notes_display"></em>', $text);
             $text = str_replace('%%sender%%',
-                                "<span id=\"sender\">" . $sender->fullName() . '</span>', $text);
+                                '<span id="sender">' . $perso_signature . '</span>', $text);
             $page->assign('text', nl2br($text));
-            // TODO (JAC): define a unique Xorg signature for all the emails we send.
-            $page->assign('xorg_signature', "L'équipe de Polytechnique.org,<br />Le portail des élèves & anciens élèves de l'École polytechnique");
-            $page->assign('perso_signature', $sender->fullName());
+            $page->assign('perso_signature', $perso_signature);
+            $page->assign('mail_part', 'escaped_html');
         }
     }
 

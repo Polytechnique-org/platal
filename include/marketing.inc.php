@@ -77,7 +77,7 @@ class Marketing
         global $globals;
 
         if ($from == 'staff' || !($user = User::getSilent($sender))) {
-            return '"L\'équipe de Polytechnique.org" <register@' . $globals->mail->domain . '>';
+            return "\"L'équipe de Polytechnique.org\" <register@" . $globals->mail->domain . '>';
         }
         return '"' . $user->fullName() . '" <' . $user->bestEmail() . '>';
     }
@@ -116,7 +116,7 @@ class Marketing
         }
         $sender = substr($this->sender_mail, 1, strpos($this->sender_mail, '"', 2)-1);
         $text = str_replace(array('%%hash%%', '%%sender%%', '%%personal_notes%%'),
-                            array($this->hash, $this->sender_mail, ''), $text);
+                            array($this->hash, "Cordialement,\n-- \n" . $this->sender_mail, ''), $text);
         $mailer = new PlMailer();
         $mailer->setFrom($this->sender_mail);
         $mailer->addTo($this->user['mail']);
@@ -136,7 +136,8 @@ class Marketing
         $this->engine->process($this->user);
         if ($valid) {
             require_once 'validations.inc.php';
-            $valid = new MarkReq(User::getSilent($this->sender), $this->user['user'], $this->user['mail'],
+            $sender = User::getSilent($this->sender);
+            $valid = new MarkReq($sender, $this->user['user'], $this->user['mail'],
                                  $this->from == 'user', $this->type, $this->data, $this->personal_notes);
             $valid->submit();
         }
@@ -248,10 +249,12 @@ class AnnuaireMarketing implements MarketingEngine
                      . "Pour y figurer, il te suffit de visiter cette page ou de copier cette adresse "
                      . "dans la barre de ton navigateur :";
         if ($from === null) {
-            $this->signature = "L'équipe de Polytechnique.org,\n"
-                             . "Le portail des élèves & anciens élèves de l'École polytechnique";
+            $page = new XorgPage();
+            $page->changeTpl('include/signature.mail.tpl', NO_SKIN);
+            $page->assign('mail_part', 'text');
+            $this->signature = $page->raw();
         } else {
-            $this->signature = "%%sender%%";
+            $this->signature = '%%sender%%';
         }
         if (is_null($personal_notes) || $personal_notes == '') {
             $this->personal_notes = '%%personal_notes%%';

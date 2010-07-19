@@ -37,8 +37,6 @@ N'hésite pas à parler de Polytechnique.org à nos camarades pas encore inscrit
 {$personal_notes}
 À bientôt sur Polytechnique.org <https://www.polytechnique.org>,
 
-Bien cordialement,
--- 
 {$sign}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
