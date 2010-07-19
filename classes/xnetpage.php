@@ -55,6 +55,8 @@ class XnetPage extends PlPage
     {
         if (!$this->nomenu) {
             $this->useMenu();
+        } else {
+            $this->assign('menu', false);
         }
         $this->_run('xnet/skin.tpl');
     }
