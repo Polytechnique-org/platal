@@ -41,7 +41,7 @@ while ($account = $res->next()) {
         "UPDATE  gapps_accounts
             SET  l_userid = {?}
           WHERE  g_account_name = {?}",
-        $account['id'], $account['g_account_name']);
+        $account['uid'], $account['g_account_name']);
 }
 
 /* Emits a warning for GApps accounts without local uid. */
@@ -68,7 +68,7 @@ while ($nickname = $res->next()) {
         "UPDATE  gapps_nicknames
             SET  l_userid = {?}
           WHERE  g_account_name = {?}",
-        $nickname['id'], $nickname['g_account_name']);
+        $nickname['uid'], $nickname['g_account_name']);
 }
 
 /* Emits a warning for nicknames without local uid. */
@@ -101,7 +101,7 @@ while ($nickname = $res->next()) {
             "INSERT  INTO gapps_queue
                 SET  q_recipient_id = {?}, p_entry_date = NOW(), p_notbefore_date = NOW(),
                      p_priority = 'offline', j_type = 'n_create', j_parameters = {?}",
-            $nickname['id'],
+            $nickname['uid'],
             json_encode($nickname));
     }
 }
@@ -118,7 +118,7 @@ while ($nickname = $res->next()) {
         "INSERT  INTO gapps_queue
             SET  q_recipient_id = {?}, p_entry_date = NOW(), p_notbefore_date = NOW(),
                  p_priority = 'offline', j_type = 'n_delete', j_parameters = {?}",
-        $nickname['id'],
+        $nickname['uid'],
         json_encode($nickname));
 }
 

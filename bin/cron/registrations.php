@@ -5,14 +5,13 @@ require 'connect.db.inc.php';
 
 $message = '';
 
-$res = XDB::iterRow("SELECT  al.alias, pd.promo, e.email
+$res = XDB::iterRow("SELECT  a.hruid, pd.promo, e.email
                        FROM  accounts AS a
                  INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
                  INNER JOIN  profile_display  AS pd ON (ap.pid = pd.pid)
-                  LEFT JOIN  aliases          AS al ON (a.uid =a.uid AND al.type = 'a_vie')
                   LEFT JOIN  emails           AS e  ON (a.uid = e.uid AND NOT FIND_IN_SET('filter', e.flags))
                       WHERE  a.registration_date > {?}
-                   GROUP BY  al.alias
+                   GROUP BY  a.hruid
                    ORDER BY  pd.promo",
        date("Ymd000000", strtotime('last Monday')));
 if ($count = $res->total()) {
