@@ -91,16 +91,20 @@ class User extends PlUser
                 return $res->fetchOneCell();
             }
 
-            /** TODO: implements this by inspecting the profile.
             if (preg_match('/^(.*)\.([0-9]{4})$/u', $mbox, $matches)) {
                 $res = XDB::query('SELECT  a.uid
-                                     FROM  accounts AS a
-                               INNER JOIN  aliases AS al ON (al.id = a.uid AND al.type IN ('alias', 'a_vie'))
-                                    WHERE  al.alias = {?} AND a.promo = {?}', $matches[1], $matches[2]);
+                                     FROM  accounts          AS a
+                               INNER JOIN  aliases           AS al ON (al.uid = a.uid AND al.type IN (\'alias\', \'a_vie\'))
+                               INNER JOIN  account_profiles  AS ap ON (a.uid = ap.uid AND FIND_IN_SET(\'owner\', ap.perms))
+                               INNER JOIN  profiles          AS p  ON (p.pid = ap.pid)
+                               INNER JOIN  profile_education AS pe ON (p.pid = pe.pid AND FIND_IN_SET(\'primary\', pe.flags))
+                                    WHERE  p.hrpid = {?} OR ((pe.entry_year <= {?} AND pe.grad_year >= {?}) AND al.alias = {?})
+                                 GROUP BY  a.uid',
+                                   $matches[0], $matches[2], $matches[2], $matches[1]);
                 if ($res->numRows() == 1) {
                     return $res->fetchOneCell();
                 }
-            }*/
+            }
 
             throw new UserNotFoundException();
         }
