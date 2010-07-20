@@ -619,13 +619,13 @@ class EmailModule extends PLModule
             $storage = new EmailStorage(S::user(), 'imap');
             $storage->activate();
             $page->assign('ok', true);
-            $page->assign('prenom', S::v('prenom'));
-            $page->assign('sexe', S::v('femme'));
+            $page->assign('yourself', S::user()->displayName());
+            $page->assign('sexe', S::user()->isFemale());
         } else if (!S::logged() && $user) {
             $storage = new EmailStorage($user, 'imap');
             $storage->activate();
             $page->assign('ok', true);
-            $page->assign('prenom', $user->displayName());
+            $page->assign('yourself', $user->displayName());
             $page->assign('sexe', $user->isFemale());
         }
     }

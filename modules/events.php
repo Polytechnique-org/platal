@@ -40,7 +40,7 @@ class EventsModule extends PLModule
     {
         global $globals;
         // Add a new special tip when changing plat/al version
-        if ($globals->version != S::v('last_version') && is_null($exclude)) {
+        if ($globals->version != S::user()->last_version && is_null($exclude)) {
             XDB::execute('UPDATE accounts
                              SET last_version = {?}
                            WHERE uid = {?}',
@@ -126,7 +126,7 @@ class EventsModule extends PLModule
         // Direct link to the RSS feed, when available.
         if (S::hasAuthToken()) {
             $page->setRssLink('Polytechnique.org :: News',
-                              '/rss/'.S::v('hruid') .'/'.S::v('token').'/rss.xml');
+                              '/rss/' . S::v('hruid') . '/' . S::user()->token . '/rss.xml');
         }
 
         // Hide the read event, and reload the page to get to the next event.

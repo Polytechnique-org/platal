@@ -45,7 +45,7 @@ par les administrateurs avant d'être transmis aux membres de la liste.  Une lis
 l'accord préalable des responsables du groupe.
 </p>
 <p class="descr">
-La dernière colonne du tableau t'indique si tu es inscrit{if $smarty.session.femme}e{/if} ou non à
+La dernière colonne du tableau t'indique si tu es inscrit{if $smarty.session.user->gender}e{/if} ou non à
 la liste. Dans le premier cas, une croix rouge te permet de te désabonner. Dans le second cas, une
 croix verte te permet de t'inscrire, après accord des responsables si l'inscription est modérée.
 </p>
@@ -101,7 +101,7 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscrip
 </table>
 
 <p class="descr">
-{icon name=wrench title="Modérateur"} tu es {if $smarty.session.femme}modératrice{else}moderateur{/if} sur cette liste.<br />
+{icon name=wrench title="Modérateur"} tu es {if $smarty.session.user->gender}modératrice{else}moderateur{/if} sur cette liste.<br />
 {icon name=weather_cloudy title="Liste privée"} cette liste est invisible aux non-membres de la liste. S'en désabonner
 t'empêcherait de t'y réabonner par la suite sans l'aide d'un administrateur.
 </p>

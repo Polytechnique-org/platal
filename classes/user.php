@@ -187,9 +187,10 @@ class User extends PlUser
                                       IF(a.state = \'active\', at.perms, \'\') AS perms,
                                       a.email_format, a.is_admin, a.state, a.type, a.skin,
                                       FIND_IN_SET(\'watch\', a.flags) AS watch, a.comment,
-                                      a.weak_password IS NOT NULL AS weak_access,
-                                      a.token IS NOT NULL AS token_access,
-                                      (e.email IS NULL AND NOT FIND_IN_SET(\'googleapps\', eo.storage)) AND a.state != \'pending\' AS lost
+                                      a.weak_password IS NOT NULL AS weak_access, g.g_account_name IS NOT NULL AS googleapps,
+                                      a.token IS NOT NULL AS token_access, a.token, a.last_version,
+                                      (e.email IS NULL AND NOT FIND_IN_SET(\'googleapps\', eo.storage)) AND a.state != \'pending\' AS lost,
+                                      UNIX_TIMESTAMP(s.start) AS lastlogin, s.host, UNIX_TIMESTAMP(fp.last_seen) AS banana_last
                                       ' . $fields . '
                                 FROM  accounts AS a
                           INNER JOIN  account_types AS at ON (at.type = a.type)
@@ -198,6 +199,10 @@ class User extends PlUser
                            LEFT JOIN  aliases AS ah ON (ah.uid = a.uid AND ah.type = \'homonyme\')
                            LEFT JOIN  emails AS e ON (e.uid = a.uid AND e.flags = \'active\')
                            LEFT JOIN  email_options AS eo ON (eo.uid = a.uid)
+                           LEFT JOIN  gapps_accounts AS g ON (a.uid = g.l_userid AND g.g_status = \'active\')
+                           LEFT JOIN  log_last_sessions AS ls ON (ls.uid = a.uid)
+                           LEFT JOIN  log_sessions AS s ON (s.id = ls.id)
+                           LEFT JOIN  forum_profiles AS fp ON (fp.uid = a.uid)
                                    ' . $joins . '
                                WHERE  a.uid IN (' . implode(', ', $uids) . ')
                             GROUP BY  a.uid
@@ -269,6 +274,14 @@ class User extends PlUser
             return '';
         }
         return $this->profile()->lastName();
+    }
+
+    public function displayName()
+    {
+        if (!$this->hasProfile()) {
+            return $this->display_name;
+        }
+        return $this->profile()->yourself;
     }
 
     public function fullName($with_promo = false)
@@ -443,7 +456,6 @@ class User extends PlUser
                      $format, $this->uid);
         $this->email_format = $format;
     }
-
 
     /** Get watch informations
      */

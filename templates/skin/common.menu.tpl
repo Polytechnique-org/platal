@@ -55,7 +55,7 @@
 <div class="menu_title">Services</div>
 <div class="menu_item"><a href="emails/send">Envoyer un email</a></div>
 <div class="menu_item"><a href="banana/">Forums &amp; PA</a></div>
-{if $smarty.session.googleapps}
+{if $smarty.session.user->googleapps}
 <div class="menu_item"><a href="http://gmail.polytechnique.org/">Emails Google Apps</a></div>
 {/if}
 <div class="menu_item"><a href="lists">Listes de diffusion</a></div>

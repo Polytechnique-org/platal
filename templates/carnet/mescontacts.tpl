@@ -62,10 +62,10 @@
   </li>
   <li>
     Le calendrier des anniversaires&nbsp;:
-    <a href="carnet/contacts/ical/{$smarty.session.hruid}/{$smarty.session.token}/anniv-x.ics">
+    <a href="carnet/contacts/ical/{$smarty.session.hruid}/{$smarty.session.user->token}/anniv-x.ics">
       {icon name=calendar_view_day title='Anniversaires au format iCal'}
     </a>
-    <a href="carnet/contacts/csv/birthday/{$smarty.session.hruid}/{$smarty.session.token}/anniv-x.csv">
+    <a href="carnet/contacts/csv/birthday/{$smarty.session.hruid}/{$smarty.session.user->token}/anniv-x.csv">
       {icon name=outlook title='Anniversaires au format Outlook'}
     </a>
   </li>
@@ -75,7 +75,7 @@
       {icon name=vcard title='Carte de visite au format vCard'}
     </a>
     (<a href="carnet/contacts/vcard/MesContactsXorg.vcf">sans les photos</a>)
-    <a href="carnet/contacts/csv/{$smarty.session.hruid}/{$smarty.session.token}/MesContactsXorg.csv">
+    <a href="carnet/contacts/csv/{$smarty.session.hruid}/{$smarty.session.user->token}/MesContactsXorg.csv">
       {icon name=outlook title='Contacts au format Outlook'}
     </a>
   </li>

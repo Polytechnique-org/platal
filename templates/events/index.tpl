@@ -27,17 +27,17 @@
 {else}
 
 <h1 id='pagetop'>
-Bienvenue {$smarty.session.display_name}{if $birthday}
+Bienvenue {$smarty.session.user->displayName()}{if $birthday}
   &nbsp;et joyeux anniversaire de la part de toute l'équipe&nbsp;!
 {else},
 {/if}
 </h1>
 
-{if $smarty.session.host}
+{if $smarty.session.user->host}
 <div class="smaller">
   {if $birthday}T{else}t{/if}a connexion précédente date du
-  <strong>{$smarty.session.lastlogin|date_format:"%x, %X"}</strong>
-  depuis la machine <strong>{$smarty.session.host}</strong>.
+  <strong>{$smarty.session.user->lastlogin|date_format:"%x, %X"}</strong>
+  depuis la machine <strong>{$smarty.session.user->host}</strong>.
 </div>
 {/if}
 
@@ -52,8 +52,8 @@ Bienvenue {$smarty.session.display_name}{if $birthday}
     <tr class="pair" style="height: 18px">
       <td class="half titre" style="height: 18px; padding-top: 1px; padding-bottom: 1px;">
         {if $smarty.foreach.events.first}
-        {if $smarty.session.token}
-        <a href="rss/{$smarty.session.hruid}/{$smarty.session.token}/rss.xml" style="display:block;float:right" title="Annonces">
+        {if $smarty.session.user->token}
+        <a href="rss/{$smarty.session.hruid}/{$smarty.session.user->token}/rss.xml" style="display:block;float:right" title="Annonces">
           {icon name=feed title='fil rss'}
         </a>
         {else}
@@ -92,8 +92,8 @@ Bienvenue {$smarty.session.display_name}{if $birthday}
     {if !$has_evts}
     <tr>
       <td class="half">
-        {if $smarty.session.token}
-        <a href="rss/{$smarty.session.hruid}/{$smarty.session.token}/rss.xml" style="display:block;float:right" title="Annonces">
+        {if $smarty.session.user->token}
+        <a href="rss/{$smarty.session.hruid}/{$smarty.session.user->token}/rss.xml" style="display:block;float:right" title="Annonces">
           {icon name=feed title='fil rss'}
         </a>
         {else}

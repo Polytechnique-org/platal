@@ -22,7 +22,7 @@
 
 <h1>Fil RSS</h1>
 
-{if !$smarty.session.token}
+{if !$smarty.session.user->token}
 <p>
   Tu viens de cliquer sur le lien d'activation des fils RSS. Les fils RSS du site
   ne sont pas activés dans tes préférences.
@@ -52,11 +52,11 @@ En voici les adresses&nbsp;:
 <ul>
   <li>
   Anonces sur la page d'entrée&nbsp;:
-  <a href="rss/{$smarty.session.hruid}/{$smarty.session.token}/rss.xml" title="Annonces">{icon name=feed title='fil rss'}</a>
+  <a href="rss/{$smarty.session.hruid}/{$smarty.session.user->token}/rss.xml" title="Annonces">{icon name=feed title='fil rss'}</a>
   </li>
   <li>
   Ton carnet polytechnicien&nbsp;:
-  <a href="carnet/rss/{$smarty.session.hruid}/{$smarty.session.token}/rss.xml" title="Notifications">{icon name=feed title='fil rss'}</a>
+  <a href="carnet/rss/{$smarty.session.hruid}/{$smarty.session.user->token}/rss.xml" title="Notifications">{icon name=feed title='fil rss'}</a>
   </li>
 </ul>
 <p>

@@ -107,7 +107,7 @@ class XnetSession extends XorgSession
                              LIMIT  1", $user->id());
         $sess = $res->fetchOneAssoc();
         $_SESSION = array_merge($_SESSION, $sess);
-        $this->makePerms(S::s('perms'), S::b('is_admin'));
+        $this->makePerms(S::s('perms'), S::user()->is_admin);
         S::kill('challenge');
         S::kill('loginX');
         S::kill('may_update');

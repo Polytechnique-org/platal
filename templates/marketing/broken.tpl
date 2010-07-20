@@ -48,13 +48,13 @@
 {elseif $user->last}
 <p>
   {$user->fullName()} a encore des adresses de redirection actives malgré des pannes détectées sur certaines d'entre elles. Si
-  tu es sûr{if $smarty.session.femme}e{/if} que son adresse Polytechnique.org est en panne, tu peux proposer une nouvelle
+  tu es sûr{if $smarty.session.user->gender}e{/if} que son adresse Polytechnique.org est en panne, tu peux proposer une nouvelle
   adresse email à ajouter à ses redirections. Merci d'ajouter un commentaire pour nous indiquer la raison de cette proposition.
 </p>
 {else}
 <p>
   Nous n'avons actuellement enregistré aucune panne sur les adresses de redirection de {$user->fullName()}. Si tu es 
-  sûr{if $smarty.session.femme}e{/if} que son adresse de redirection actuelle est en panne, tu peux nous proposer
+  sûr{if $smarty.session.user->gender}e{/if} que son adresse de redirection actuelle est en panne, tu peux nous proposer
   une nouvelle adresse, accompagnée d'un commentaire nous expliquant les raisons exactes de cette proposition.
 </p>
 {/if}

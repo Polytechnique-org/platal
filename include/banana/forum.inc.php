@@ -101,7 +101,7 @@ class ForumsBanana extends Banana
         $time = null;
         if (!is_null($this->params) && isset($this->params['updateall'])) {
             $time = intval($this->params['updateall']);
-            S::set('banana_last', $time);
+            S::user()->banana_last = $time;
         }
 
         $infos = $this->fetchProfile();
@@ -119,7 +119,7 @@ class ForumsBanana extends Banana
         Banana::$profile['signature']               = $infos['sig'];
         Banana::$profile['display']                 = $infos['threads'];
         Banana::$profile['autoup']                  = $infos['maj'];
-        Banana::$profile['lastnews']                = S::v('banana_last');
+        Banana::$profile['lastnews']                = S::user()->banana_last;
         Banana::$profile['subscribe']               = $req->fetchColumn();
         Banana::$tree_unread = $infos['tree_unread'];
         Banana::$tree_read = $infos['tree_read'];

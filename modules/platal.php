@@ -113,10 +113,10 @@ class PlatalModule extends PLModule
     function __set_rss_state($state)
     {
         if ($state) {
-            S::set('token', rand_url_id(16));
+            S::user()->token = rand_url_id(16);
             XDB::execute('UPDATE  accounts
                              SET  token = {?}
-                           WHERE  uid = {?}', S::s('token'), S::i('uid'));
+                           WHERE  uid = {?}', S::user()->token, S::i('uid'));
         } else {
             S::kill('token');
             XDB::execute('UPDATE  accounts
@@ -133,7 +133,6 @@ class PlatalModule extends PLModule
         if (Post::has('email_format')) {
             $fmt = Post::s('email_format');
             S::user()->setEmailFormat($fmt);
-            S::set('email_format', $fmt);
         }
 
         if (Post::has('rss')) {

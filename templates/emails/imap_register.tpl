@@ -22,7 +22,7 @@
 
 {if $ok}
 <p>
-  {if $sexe}Chère{else}Cher{/if} {$prenom},
+  {if $sexe}Chère{else}Cher{/if} {$yourself},
 </p>
 
 <p>

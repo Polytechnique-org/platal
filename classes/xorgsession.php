@@ -190,35 +190,8 @@ class XorgSession extends PlSession
             S::set('auth', AUTH_MDP);
         }
 
-        // Retrieves main user properties.
-        /** TODO: Move needed informations to account tables */
-        /** TODO: Currently suppressed data are matricule, promo */
-        /** TODO: Use the User object to fetch all this */
-        $res  = XDB::query("SELECT  a.uid, a.hruid, a.display_name, a.full_name,
-                                    a.sex = 'female' AS femme, a.email_format,
-                                    a.token, FIND_IN_SET('watch', a.flags) AS watch_account,
-                                    UNIX_TIMESTAMP(fp.last_seen) AS banana_last,
-                                    a.last_version, g.g_account_name IS NOT NULL AS googleapps,
-                                    UNIX_TIMESTAMP(s.start) AS lastlogin, s.host,
-                                    a.is_admin, at.perms
-                              FROM  accounts          AS a
-                        INNER JOIN  account_types     AS at ON (a.type = at.type)
-                         LEFT JOIN  watch             AS w  ON (w.uid = a.uid)
-                         LEFT JOIN  forum_profiles    AS fp ON (fp.uid = a.uid)
-                         LEFT JOIN  gapps_accounts    AS g  ON (a.uid = g.l_userid AND g.g_status = 'active')
-                         LEFT JOIN  log_last_sessions AS ls ON (ls.uid = a.uid)
-                         LEFT JOIN  log_sessions      AS s  ON(s.id = ls.id)
-                             WHERE  a.uid = {?} AND a.state = 'active'", $user->id());
-        if ($res->numRows() != 1) {
-            return false;
-        }
-
-        $sess = $res->fetchOneAssoc();
-        $perms = $sess['perms'];
-        unset($sess['perms']);
-
-        // Loads the data into the real session.
-        $_SESSION = array_merge($_SESSION, $sess);
+        // Loads uid and hruid into the session for developement conveniance.
+        $_SESSION = array_merge($_SESSION, array('uid' => $user->id(), 'hruid' => $user->hruid));
 
         // Starts the session's logger, and sets up the permanent cookie.
         if (S::suid()) {
@@ -235,7 +208,7 @@ class XorgSession extends PlSession
         }
 
         // Finalizes the session setup.
-        $this->makePerms($perms, S::b('is_admin'));
+        $this->makePerms($user->perms, $user->is_admin);
         $this->securityChecks();
         $this->setSkin();
         $this->updateNbNotifs();

@@ -1140,7 +1140,7 @@ class AdminModule extends PLModule
     {
         if (S::hasAuthToken()) {
            $page->setRssLink('Changement Récents',
-                             '/Site/AllRecentChanges?action=rss&user=' . S::v('hruid') . '&hash=' . S::v('token'));
+                             '/Site/AllRecentChanges?action=rss&user=' . S::v('hruid') . '&hash=' . S::user()->token);
         }
 
         // update wiki perms
