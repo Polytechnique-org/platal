@@ -210,13 +210,13 @@ function chgMainWinLoc(strPage)
       {/if}
       {if $address->hasFlag('current')}
       {include file="geoloc/address.tpl" address=$address titre_div=true titre=$address_name|@cat:" actuelle&nbsp;:"
-               for="`$profile->firstname` `$profile->lastname`" pos=$pos}
+               for="`$profile->firstname` `$profile->lastname`" pos=$pos phones=null}
       {elseif $address->hasFlag('secondary')}
       {include file="geoloc/address.tpl" address=$address titre_div=true titre=$address_name|@cat:" secondaire&nbsp;:"
-               for="`$profile->firstname` `$profile->lastname`" pos=$pos}
+               for="`$profile->firstname` `$profile->lastname`" pos=$pos phones=null}
       {else}
       {include file="geoloc/address.tpl" address=$address titre_div=true titre=$address_name|@cat:" principale&nbsp;:"
-               for="`$profile->firstname` `$profile->lastname`" pos=$pos}
+               for="`$profile->firstname` `$profile->lastname`" pos=$pos phones=null}
       {/if}
       {if $smarty.foreach.addresses.iteration is even}<div class="spacer"></div>{/if}
     {/foreach}
@@ -230,11 +230,11 @@ function chgMainWinLoc(strPage)
     {foreach from=$jobs item="job" key="i"}
       {if $i neq 0}<hr />{/if}
       {include file="include/emploi.tpl" job=$job}
-      {assign var=phones value=$job->phones()}
+      {assign var=jobPhones value=$job->phones()}
       {if $job->address()}
-        {include file="geoloc/address.tpl" address=$job->address() titre="Adresse&nbsp;: " for=$job->company->name pos="left" phones=$phones}
-      {elseif $phones}
-        {display_phones tels=$phones}
+        {include file="geoloc/address.tpl" address=$job->address() titre="Adresse&nbsp;: " for=$job->company->name pos="left" phones=$jobPhones}
+      {elseif $jobPhones|@count neq 0}
+        {display_phones tels=$jobPhones}
       {/if}
       <div class="spacer">&nbsp;</div>
     {/foreach}
