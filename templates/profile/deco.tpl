@@ -36,7 +36,7 @@
         <select name="medal_sel" onchange="updateMedal()">
           <option value=''>&nbsp;</option>
           {foreach from=$medal_list key=type item=list}
-          <optgroup label="{$trad[$type]}&hellip;">
+          <optgroup label="{$fullType[$type]}&hellip;">
             {foreach from=$list item=m}
             <option value="{$m.id}">{$m.text}</option>
             {/foreach}

@@ -126,21 +126,24 @@ class ProfileSettingDecos extends ProfilePage
 
     public function _prepare(PlPage &$page, $id)
     {
-        $res    = XDB::iterator("SELECT  *, FIND_IN_SET('validation', flags) AS validate
-                                   FROM  profile_medal_enum
-                               ORDER BY  type, text");
-        $mlist  = array();
+        $res = XDB::iterator('SELECT  *, FIND_IN_SET(\'validation\', flags) AS validate
+                                FROM  profile_medal_enum
+                            ORDER BY  type, text');
+        $mlist = array();
         while ($tmp = $res->next()) {
             $mlist[$tmp['type']][] = $tmp;
         }
         $page->assign('medal_list', $mlist);
-        $trad = Array('ordre'      => 'Ordres',
-                      'croix'      => 'Croix',
-                      'militaire'  => 'Médailles militaires',
-                      'honneur'    => 'Médailles d\'honneur',
-                      'resistance' => 'Médailles de la résistance',
-                      'prix'       => 'Prix');
-        $page->assign('trad', $trad);
+        $fullType = array(
+            'ordre'      => 'Ordres',
+            'croix'      => 'Croix',
+            'militaire'  => 'Médailles militaires',
+            'honneur'    => 'Médailles d\'honneur',
+            'resistance' => 'Médailles de la résistance',
+            'prix'       => 'Prix',
+            'sport'      => 'Médailles sportives'
+        );
+        $page->assign('fullType', $fullType);
     }
 }
 
