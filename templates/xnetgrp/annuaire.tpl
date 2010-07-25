@@ -149,13 +149,12 @@ Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
 </p>
 {/if}
 
-{if $broken}
+{* TODO: only displays following paragraph when required, ie when there is at least one concerned user in the displayed page *}
 <p class="smaller">
   {icon name=error}&nbsp;Un camarade signalé par ce symbole n'a plus d'adresse de redirection et ne peut donc
   plus être contacté via son adresse polytechnique.org. Si tu connais sa nouvelle adresse, tu peux nous la communiquer en
   cliquant sur le symbole.
 </p>
-{/if}
 
 {/if}
 
