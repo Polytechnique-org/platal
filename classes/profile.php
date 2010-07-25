@@ -155,10 +155,12 @@ class Profile
     const FETCH_MENTOR_SECTOR  = 0x000040;
     const FETCH_MENTOR_COUNTRY = 0x000080;
     const FETCH_PHONES         = 0x000100;
+    const FETCH_JOB_TERMS      = 0x000200;
+    const FETCH_MENTOR_TERMS   = 0x000400;
 
     const FETCH_MINIFICHES   = 0x00012D; // FETCH_ADDRESSES | FETCH_EDU | FETCH_JOBS | FETCH_NETWORKING | FETCH_PHONES
 
-    const FETCH_ALL          = 0x0001FF; // OR of FETCH_*
+    const FETCH_ALL          = 0x0007FF; // OR of FETCH_*
 
     private $fetched_fields  = 0x000000;
 
@@ -481,8 +483,8 @@ class Profile
 
     private function fetched($field)
     {
-        if (!array_key_exists($field, ProfileField::$fields)) {
-            Platal::page()->kill("Invalid field: $field");
+        if (($fields | self::FETCH_ALL) != self::FETCH_ALL) {
+            Platal::page()->kill("Invalid fetched fields: $fields");
         }
 
         return ($this->fetched_fields & $field);
@@ -494,6 +496,9 @@ class Profile
      */
     private function getProfileField($field)
     {
+        if (!array_key_exists($field, ProfileField::$fields)) {
+            Platal::page()->kill("Invalid field: $field");
+        }
         if ($this->fetched($field)) {
             return null;
         } else {
@@ -521,6 +526,9 @@ class Profile
 
         if ($this->addresses != null && $this->jobs != null) {
             $this->jobs->addAddresses($this->addresses);
+        }
+        if ($this->jobs != null && $this->jobterms != null) {
+            $this->jobs->addJobTerms($this->jobterms);
         }
     }
 
@@ -732,6 +740,15 @@ class Profile
         return array_pop($job);
     }
 
+    /** JobTerms
+     */
+    private $jobterms = null;
+    public function setJobTerms(ProfileJobTerms $jobterms)
+    {
+        $this->jobterms = $jobterms;
+        $this->consolidateFields();
+    }
+
     /* Mentoring
      */
     private $mentor_sectors = null;
@@ -771,6 +788,34 @@ class Profile
             return $this->mentor_countries->countries;
         }
     }
+
+    /** List of job terms to specify mentoring */
+    private $mentor_terms = null;
+    /**
+     * set job terms to specify mentoring
+     * @param $terms a ProfileMentoringTerms object listing terms only for this profile
+     */
+    public function setMentoringTerms(ProfileMentoringTerms $terms)
+    {
+        $this->mentor_terms = $terms;
+    }
+    /**
+     * get all job terms that specify mentoring
+     * @return an array of JobTerms objects
+     */
+    public function getMentoringTerms()
+    {
+        if ($this->mentor_terms == null && !$this->fetched(self::FETCH_MENTOR_TERMS)) {
+            $this->setMentoringTerms($this->getProfileField(self::FETCH_MENTOR_TERMS));
+        }
+
+        if ($this->mentor_terms == null) {
+            return array();
+        } else {
+            return $this->mentor_terms->get();
+        }
+    }
+
 
     /* Binets
      */
@@ -1124,6 +1169,8 @@ class ProfileIterator implements PlIterator
     private $fields;
     private $visibility;
 
+    const FETCH_ALL    = 0x000033F; // FETCH_ADDRESSES | FETCH_CORPS | FETCH_EDU | FETCH_JOBS | FETCH_MEDALS | FETCH_NETWORKING | FETCH_PHONES | FETCH_JOB_TERMS
+
     public function __construct(PlIterator $it, array $pids, $fields = 0x0000, ProfileVisibility $visibility = null)
     {
         require_once 'profilefields.inc.php';
@@ -1142,39 +1189,12 @@ class ProfileIterator implements PlIterator
         $callbacks[0] = PlIteratorUtils::arrayValueCallback('pid');
         $cb = PlIteratorUtils::objectPropertyCallback('pid');
 
-        if ($fields & Profile::FETCH_ADDRESSES) {
-            $callbacks[Profile::FETCH_ADDRESSES] = $cb;
-            $subits[Profile::FETCH_ADDRESSES] = new ProfileFieldIterator('ProfileAddresses', $pids, $visibility);
-        }
-
-        if ($fields & Profile::FETCH_CORPS) {
-            $callbacks[Profile::FETCH_CORPS] = $cb;
-            $subits[Profile::FETCH_CORPS] = new ProfileFieldIterator('ProfileCorps', $pids, $visibility);
-        }
-
-        if ($fields & Profile::FETCH_EDU) {
-            $callbacks[Profile::FETCH_EDU] = $cb;
-            $subits[Profile::FETCH_EDU] = new ProfileFieldIterator('ProfileEducation', $pids, $visibility);
-        }
-
-        if ($fields & Profile::FETCH_JOBS) {
-            $callbacks[Profile::FETCH_JOBS] = $cb;
-            $subits[Profile::FETCH_JOBS] = new ProfileFieldIterator('ProfileJobs', $pids, $visibility);
-        }
-
-        if ($fields & Profile::FETCH_MEDALS) {
-            $callbacks[Profile::FETCH_MEDALS] = $cb;
-            $subits[Profile::FETCH_MEDALS] = new ProfileFieldIterator('ProfileMedals', $pids, $visibility);
-        }
-
-        if ($fields & Profile::FETCH_NETWORKING) {
-            $callbacks[Profile::FETCH_NETWORKING] = $cb;
-            $subits[Profile::FETCH_NETWORKING] = new ProfileFieldIterator('ProfileNetworking', $pids, $visibility);
-        }
-
-        if ($fields & Profile::FETCH_PHONES) {
-            $callbacks[Profile::FETCH_PHONES] = $cb;
-            $subits[Profile::FETCH_PHONES] = new ProfileFieldIterator('ProfilePhones', $pids, $visibility);
+        $fields = $fields & self::FETCH_ALL;
+        for ($field = 1; $field < $fields; $field *= 2) {
+            if (($fields & $field) ) {
+                $callbacks[$field] = $cb;
+                $subits[$field] = new ProfileFieldIterator($field, $pids, $visibility);
+            }
         }
 
         $this->iterator = PlIteratorUtils::parallelIterator($subits, $callbacks, 0);
@@ -1199,6 +1219,9 @@ class ProfileIterator implements PlIterator
         }
         if ($this->hasData(Profile::FETCH_JOBS, $vals)) {
             $pf->setJobs($vals[Profile::FETCH_JOBS]);
+        }
+        if ($this->hasData(Profile::FETCH_JOB_TERMS, $vals)) {
+            $pf->setJobTerms($vals[Profile::FETCH_JOB_TERMS]);
         }
 
         if ($this->hasData(Profile::FETCH_CORPS, $vals)) {

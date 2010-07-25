@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 {javascript name=ajax}
-{assign var=sectors value=$profile->getMentoringSectors()}
+{assign var=terms value=$profile->getMentoringTerms()}
 {assign var=countries value=$profile->getMentoringCountries()}
 <div id="fiche">
 <div id="fiche_referent">
@@ -33,7 +33,7 @@
   </div>
   <div class="spacer"></div>
 
-  {if $profile->expertise != '' || $sectors|count || $countries|count }
+  {if $profile->expertise != '' || $terms|count || $countries|count }
   <div id="part">
     <h2>Informations de référent&nbsp;:</h2>
     {if $profile->expertise}
@@ -42,12 +42,12 @@
       <span>{$profile->expertise|nl2br}</span>
     </div>
     {/if}
-    {if $sectors|count}
+    {if $terms|count}
     <div class="rubrique_referent">
-      <em>Secteurs&nbsp;:</em><br />
+      <em>Mots-clefs&nbsp;:</em><br />
       <ul>
-        {foreach from=$sectors item="sector" key="i"}
-        <li>{$sector.sector}{if $sector.subsector != ''} ({$sector.subsector}){/if}</li>
+        {foreach from=$terms item="term"}
+        <li>{$term->full_name}</li>
         {/foreach}
       </ul>
     </div>

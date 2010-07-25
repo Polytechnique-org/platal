@@ -109,7 +109,8 @@ class ProfileSettingJob extends ProfileSettingGeocoding
                 'tel'     => '',
                 'pub'     => 'private',
                 'comment' => '',
-            )),
+            ),
+            'terms'            => array()),
         );
     }
 
@@ -145,6 +146,26 @@ class ProfileSettingJob extends ProfileSettingGeocoding
                 $job['sector_error'] = true;
             } else {
                 list($job['sector'], $job['subSector'], $job['subSubSector']) = $res->fetchOneRow();
+            }
+        }
+        if (count($job['terms'])) {
+            $termsid = array();
+            foreach ($job['terms'] as $term) {
+                if (!$term['full_name']) {
+                    $termsid[] = $term['jtid'];
+                }
+            }
+            if (count($termsid)) {
+                $res = XDB::query("SELECT  jtid, full_name
+                                    FROM  profile_job_term_enum
+                                   WHERE  jtid IN {?}",
+                                 $termsid);
+                $term_id_to_name = $res->fetchAllAssoc('jtid', false);
+                foreach ($job['terms'] as &$term) {
+                    if (!$term['full_name']) {
+                        $term['full_name'] = $term_id_to_name[$term['jtid']];
+                    }
+                }
             }
         }
         if ($job['name']) {
@@ -233,6 +254,7 @@ class ProfileSettingJob extends ProfileSettingGeocoding
                             WHERE  pid = {?} AND type = 'job'",
                      $page->pid());
         Phone::deletePhones($page->pid(), Phone::LINK_JOB);
+        $terms_values = array();
         foreach ($value as $id => &$job) {
             if (isset($job['name']) && $job['name']) {
                 if (isset($job['jobid']) && $job['jobid']) {
@@ -251,7 +273,16 @@ class ProfileSettingJob extends ProfileSettingGeocoding
                 $address = new ProfileSettingAddress();
                 $address->saveAddress($page->pid(), $id, $job['w_address'], 'job');
                 Phone::savePhones($job['w_phone'], $page->pid(), Phone::LINK_JOB, $id);
+                if (isset($job['terms'])) {
+                    foreach ($job['terms'] as $term) {
+                        $terms_values[] = '('.XDB::escape($page->pid()).', '. XDB::escape($id).', '.XDB::escape($term['jtid']).', "original")';
+                    }
+                }
             }
+        }
+        if (count($terms_values) > 0) {
+            XDB::execute('INSERT INTO  profile_job_term (pid, jid, jtid, computed)
+                               VALUES  '.implode(', ', $terms_values));
         }
     }
 
@@ -418,6 +449,32 @@ class ProfileSettingJobs extends ProfilePage
             while ($phone = $it->next()) {
                 $this->values['jobs'][$phone->linkId()]['w_phone'][$phone->id()] = $phone->toFormArray();
             }
+            $res = XDB::iterator("SELECT  e.jtid, e.full_name, j.jid AS jobid
+                                    FROM  profile_job_term_enum AS e
+                              INNER JOIN  profile_job_term AS j USING(jtid)
+                                   WHERE  pid = {?}
+                                ORDER BY  j.jid",
+                                 $this->pid());
+            $i = 0;
+            $jobNb = count($this->values['jobs']);
+            while ($term = $res->next()) {
+                $jobid = $term['jobid'];
+                while ($i < $jobNb && $this->values['jobs'][$i]['id'] < $jobid) {
+                    $i++;
+                }
+                if ($i >= $jobNb) {
+                    break;
+                }
+                $job =& $this->values['jobs'][$i];
+                if ($job['id'] != $jobid) {
+                    continue;
+                }
+                if (!isset($job['terms'])) {
+                    $job['terms'] = array();
+                }
+                $job['terms'][] = $term;
+            }
+
             foreach ($this->values['jobs'] as $id => &$job) {
                 $phone = new Phone();
                 if (!isset($job['w_phone'])) {

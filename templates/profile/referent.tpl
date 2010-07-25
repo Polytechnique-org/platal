@@ -34,6 +34,8 @@ Actuellement, {$mentors_number} mentors et référents se sont déclarés sur {#
 </p>
 
 {javascript name=ajax}
+{javascript name=jquery.jstree}
+{javascript name=jobtermstree}
 <script type="text/javascript">//<![CDATA[
 
 var baseurl = platal_baseurl + "referent/";
@@ -64,6 +66,12 @@ function setSSectors()
     Ajax2.update_html('country_chg', baseurl + 'country/' + sect + '/' + ssect);
 }
 
+function toggleJobTermsTree()
+{
+  $('#mentoring_terms').closest('tr').toggle();
+  return false;
+}
+
 {/literal}
 //]]></script>
 
@@ -71,35 +79,17 @@ function setSSectors()
   <table cellpadding="0" cellspacing="0" summary="Formulaire de recherche de referents" class="bicol">
     <tr class="impair">
       <td class="titre">
-        Secteur de compétence<br />du référent
+        Mot-clef&nbsp;:
       </td>
       <td>
-        <select name="sector" id="sect_field" onchange="setSector(this.value)">
-          <option name=""></option>
-          {html_options options=$sectors selected=$sectorSelection}
-        </select>
+        <input type="text" name="jobterm_text" id="term_search" size="32"/>
+        <input type="hidden" name="jobterm" />
+        <a id="jobTermsTreeToggle" href="#">{icon name=table title="Tous les mots-clefs"}</a>
       </td>
     </tr>
-    <tr class="impair" style="display: none" id="scat">
-      <td class="titre">
-        Sous-secteur
-      </td>
-      <td id="ssect_chg">
-      </td>
-    </tr>
-    <tr class="pair" style="display: none" id="country">
-      <td class="titre">
-        Pays bien connu du référent
-      </td>
-      <td id="country_chg">
-      </td>
-    </tr>
-    <tr class="impair" style="display: none" id="keywords">
-      <td class="titre">
-        Expertise (rentre un ou plusieurs mots clés)
-      </td>
-      <td >
-        <input type="text" name="expertise" size="30" value="{$expertise_champ}" />
+    <tr class="impair" style="display:none">
+      <td colspan="2">
+        <div id="mentoring_terms"></div>
       </td>
     </tr>
   </table>
@@ -109,6 +99,17 @@ function setSSectors()
 </form>
 
 <script type="text/javascript">
-setSector(document.getElementById('sect_field').value);
+{literal}
+$(function() {
+  createJobTermsTree('#mentoring_terms', 'profile/ajax/tree/jobterms/mentors', 'mentor', 'searchForJobTerm');
+  $("#term_search").autocomplete(baseurl + "autocomplete",
+  {
+    "selectOnly":1,
+    "matchSubset":0,
+    "width":$("#term_search").width()
+  });
+  $('#jobTermsTreeToggle').click(toggleJobTermsTree);
+});
+{/literal}
 </script>
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

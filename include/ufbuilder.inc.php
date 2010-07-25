@@ -181,6 +181,7 @@ class UFB_AdvancedSearch extends UserFilterBuilder
             new UFBF_JobSector('sector', 'Poste'),
             new UFBF_JobDescription('jobdescription', 'Fonction'),
             new UFBF_JobCv('cv', 'CV'),
+            new UFBF_JobTerms('jobterm', 'Mots-clefs'),
 
             new UFBF_Nationality('nationaliteTxt', 'nationalite', 'Nationalité'),
             new UFBF_Binet('binetTxt', 'binet', 'Binet'),
@@ -838,6 +839,16 @@ class UFBF_JobSector extends UFBF_Mixed
         } else {
             return new UFC_Job_Sectorization($this->val, UserFilter::JOB_SUBSUBSECTOR);
         }
+    }
+}
+// }}}
+
+// {{{ class UFBF_JobTerms
+class UFBF_JobTerms extends UFBF_Index
+{
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_Job_Terms($this->val);
     }
 }
 // }}}

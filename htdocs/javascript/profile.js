@@ -566,6 +566,125 @@ function addEntreprise(id)
     $('.entreprise_' + id).toggle();
 }
 
+/**
+ * Adds a job term in job profile page
+ * @param jobid id of profile's job among his different jobs
+ * @param jtid id of job term to add
+ * @param full_name full text of job term
+ * @return false if the term already exist for this job, true otherwise
+ */
+function addJobTerm(jobid, jtid, full_name)
+{
+    var termid = 0;
+    var parentpath;
+    var formvarname;
+    if (jobid < 0) {
+        parentpath = '';
+        jobid = '';
+        formvarname = 'terms';
+    } else {
+        parentpath = '#job_'+jobid+' ';
+        formvarname = 'jobs['+jobid+'][terms]';
+    }
+    var lastJobTerm = $(parentpath + '.job_term:last');
+    if (lastJobTerm.length != 0) {
+        termid = parseInt(lastJobTerm.children('input').attr('name').replace(/^(jobs\[[0-9]+\]\[terms\]|terms)\[([0-9]+)\]\[jtid\]/, '$2')) + 1;
+        if ($('#job'+jobid+'_term'+jtid).length > 0) {
+            return false;
+        }
+    }
+    var newdiv = '<div class="job_term" id="job'+jobid+'_term'+jtid+'">'+
+        '<span>'+full_name+'</span>'+
+        '<input type="hidden" name="'+formvarname+'['+termid+'][jtid]" value="'+jtid+'" />'+
+        '<img title="Retirer ce mot-clef" alt="retirer" src="images/icons/cross.gif" />'+
+        '</div>';
+    if (lastJobTerm.length == 0) {
+        $(parentpath + '.job_terms').prepend(newdiv);
+    } else {
+        lastJobTerm.after(newdiv);
+    }
+    $('#job'+jobid+'_term'+jtid+' img').css('cursor','pointer').click(removeJobTerm);
+    return true;
+}
+
+/**
+ * Remove a job term in job profile page.
+ * Must be called from a button in a div containing the term
+ */
+function removeJobTerm()
+{
+    $(this).parent().remove();
+}
+
+/**
+ * Prepare display for autocomplete suggestions in job terms
+ * @param row an array of (title of term, id of term)
+ * @return text to display
+ * If id is negative, it is because there are too much terms to
+ * be displayed.
+ */
+function displayJobTerm(row)
+{
+    if (row[1] < 0) {
+        return '... <em>précise ta recherche</em> ...';
+    }
+    return row[0];
+}
+
+/**
+ * Function called when a job term has been selected from autocompletion
+ * in search
+ * @param li is the list item (<li>) that has been clicked
+ * The context is the jsquery autocomplete object.
+ */
+function selectJobTerm(li)
+{
+    if (li.extra[0] < 0) {
+        return;
+    }
+    var jobid = this.extraParams.jobid;
+    addJobTerm(jobid,li.extra[0],$(li).text());
+    var search_input;
+    if (jobid < 0) {
+        search_input = $('.term_search')[0];
+    } else {
+        search_input = $('#job_'+jobid+' .term_search')[0];
+    }
+    search_input.value = '';
+    search_input.focus();
+}
+
+/**
+ * Function to show or hide a terms tree in job edition
+ * @param jobid is the id of the job currently edited
+ */
+function toggleJobTermsTree(jobid)
+{
+    var treepath;
+    if (jobid < 0) {
+        treepath = '';
+    } else {
+        treepath = '#job_'+jobid+' ';
+    }
+    treepath += '.term_tree';
+    if ($(treepath + ' ul').length > 0) {
+        $(treepath).empty().removeClass().addClass('term_tree');
+        return;
+    }
+    createJobTermsTree(treepath, 'profile/ajax/tree/jobterms/all', 'job' + jobid, 'chooseJobTerm');
+}
+
+/**
+ * Function called when a job term is chosen from terms tree
+ * @param treeid is the full id of the tree (must look like job3)
+ * @param jtid is the id of the job term chosen
+ * @param fullname is the complete name (understandable without context) of the term
+ */
+function chooseJobTerm(treeid, jtid, fullname)
+{
+    addJobTerm(treeid.replace(/^job(.*)$/, '$1'), jtid, fullname);
+}
+
 // {{{1 Skills
 
 function addSkill(cat)

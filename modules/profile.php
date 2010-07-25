@@ -44,6 +44,8 @@ class ProfileModule extends PLModule
             'profile/ajax/skill'         => $this->make_hook('ajax_skill',                 AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/searchname'    => $this->make_hook('ajax_searchname',            AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/buildnames'    => $this->make_hook('ajax_buildnames',            AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/tree/jobterms' => $this->make_hook('ajax_tree_job_terms',        AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/jobterms'           => $this->make_hook('jobterms',                   AUTH_COOKIE, 'user', NO_AUTH),
             'javascript/education.js'    => $this->make_hook('education_js',               AUTH_COOKIE),
             'javascript/grades.js'       => $this->make_hook('grades_js',                  AUTH_COOKIE),
             'profile/medal'              => $this->make_hook('medal',                      AUTH_PUBLIC),
@@ -55,6 +57,7 @@ class ProfileModule extends PLModule
             'referent/search'            => $this->make_hook('ref_search',                 AUTH_COOKIE),
             'referent/ssect'             => $this->make_hook('ref_sect',                   AUTH_COOKIE, 'user', NO_AUTH),
             'referent/country'           => $this->make_hook('ref_country',                AUTH_COOKIE, 'user', NO_AUTH),
+            'referent/autocomplete'      => $this->make_hook('ref_autocomplete',           AUTH_COOKIE, 'user', NO_AUTH),
 
             'groupes-x'                  => $this->make_hook('xnet',                       AUTH_COOKIE),
             'groupes-x/logo'             => $this->make_hook('xnetlogo',                   AUTH_PUBLIC),
@@ -446,7 +449,6 @@ class ProfileModule extends PLModule
             $page->assign('jobpref', $jobpref);
         }
     }
-
     function handler_ajax_sub_sector(&$page, $id, $ssect, $sssect = -1)
     {
         pl_content_headers("text/html");
@@ -457,6 +459,23 @@ class ProfileModule extends PLModule
         $page->assign('id', $id);
         $page->assign('subSubSectors', $res);
         $page->assign('sel', $sssect);
+    }
+
+    /**
+     * Page for url "profile/ajax/tree/jobterms". Display a JSon page containing
+     * the sub-branches of a branch in the job terms tree.
+     * @param $page the Platal page
+     * @param $filter filter helps to display only jobterms that are contained in jobs or in mentors
+     *
+     * @param Env::i('jtid') job term id of the parent branch, if none trunk will be used
+     * @param Env::v('attrfunc') the name of a javascript function that will be called when a branch
+     * is chosen
+     * @param Env::v('treeid') tree id that will be given as first argument of attrfunc function
+     * the second argument will be the chosen job term id and the third one the chosen job full name.
+     */
+    function handler_ajax_tree_job_terms(&$page, $filter = JobTerms::ALL)
+    {
+        JobTerms::ajaxGetBranch(&$page, $filter);
     }
 
     function handler_ajax_alternates(&$page, $id, $sssect)
@@ -566,17 +585,11 @@ class ProfileModule extends PLModule
 
         $page->setTitle('Emploi et Carrières');
 
-        // Retrieval of sector names
-        $sectors = XDB::fetchAllAssoc('id', 'SELECT  pjse.id, pjse.name
-                                               FROM  profile_job_sector_enum AS pjse
-                                         INNER JOIN  profile_mentor_sector AS pms ON (pms.sectorid = pjse.id)
-                                           GROUP BY  pjse.id
-                                           ORDER BY  pjse.name');
-        $page->assign_by_ref('sectors', $sectors);
-
         // nb de mentors
-        $res = XDB::query("SELECT count(*) FROM profile_mentor");
+        $res = XDB::query("SELECT count(distinct pid) FROM profile_mentor_term");
         $page->assign('mentors_number', $res->fetchOneCell());
+
+        $page->addJsLink('jquery.autocomplete.js');
 
         // On vient d'un formulaire
         require_once 'ufbuilder.inc.php';
@@ -625,6 +638,85 @@ class ProfileModule extends PLModule
                            GROUP BY  iso_3166_1_a2
                            ORDER BY  countryFR", $sect, $ssect);
         $page->assign('list', $it);
+    }
+
+    /**
+     * Page for url "referent/autocomplete". Display an "autocomplete" page (plain/text with values
+     * separated by "|" chars) for jobterms in referent (mentor) search.
+     * @see handler_jobterms
+     */
+    function handler_ref_autocomplete(&$page)
+    {
+        $this->handler_jobterms(&$page, 'mentor');
+    }
+
+    /**
+     * Page for url "profile/jobterms" (function also used for "referent/autocomplete" @see
+     * handler_ref_autocomplete). Displays an "autocomplete" page (plain text with values
+     * separated by "|" chars) for jobterms to add in profile.
+     * @param $page the Platal page
+     * @param $type set to 'mentor' to display the number of mentors for each term and order
+     *  by descending number of mentors.
+     *
+     * @param Env::v('q') the text that has been typed and to complete automatically
+     */
+    function handler_jobterms(&$page, $type = 'nomentor')
+    {
+        pl_content_headers("text/plain");
+
+        $q = Env::v('q').'%';
+        $tokens = JobTerms::tokenize($q);
+        if (count($tokens) == 0) {
+            exit;
+        }
+        sort($tokens);
+        $q_normalized = implode(' ', $tokens);
+
+        // try to look in cached results
+        $cache = XDB::query('SELECT  result
+                               FROM  search_autocomplete
+                              WHERE  name = {?} AND
+                                     query = {?} AND
+                                     generated > NOW() - INTERVAL 1 DAY',
+                            $type, $q_normalized);
+        if ($res = $cache->fetchOneCell()) {
+            echo $res;
+            die();
+        }
+
+        $joins = JobTerms::token_join_query($tokens, 'e');
+        if ($type == 'mentor') {
+            $count = ', COUNT(DISTINCT pid) AS nb';
+            $countjoin = ' LEFT JOIN  profile_job_term_relation AS r ON(r.jtid_1 = e.jtid) LEFT JOIN  profile_mentor_term AS m ON(r.jtid_2 = m.jtid)';
+            $countorder = 'nb DESC, ';
+        } else {
+            $count = $countjoin = $countorder = '';
+        }
+        $list = XDB::iterator('SELECT  e.jtid AS id, e.full_name AS field'.$count.'
+                                 FROM  profile_job_term_enum AS e '.$joins.$countjoin.'
+                             GROUP BY  e.jtid
+                             ORDER BY  '.$countorder.'field
+                                LIMIT  11');
+        $nbResults = 0;
+        $res = '';
+        while ($result = $list->next()) {
+            $nbResults++;
+            if ($nbResults == 11) {
+                $res .= $q."|-1\n";
+            } else {
+                $res .= $result['field'].'|';
+                if ($count) {
+                    $res .= $result['nb'].'|';
+                }
+                $res .= $result['id'];
+            }
+            $res .= "\n";
+        }
+        XDB::query('REPLACE INTO  search_autocomplete
+                          VALUES  ({?}, {?}, {?}, NOW())',
+                    $type, $q_normalized, $res);
+        echo $res;
+        exit();
     }
 
     function handler_xnet(&$page)

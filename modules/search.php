@@ -218,7 +218,7 @@ class SearchModule extends PLModule
             'city'               => DirEnum::LOCALITIES,
             'countryTxt'         => DirEnum::COUNTRIES,
             'entreprise'         => DirEnum::COMPANIES,
-            'secteurTxt'         => DirEnum::SECTORS,
+            'jobtermTxt'         => DirEnum::JOBTERMS,
             'description'        => DirEnum::JOBDESCRIPTION,
             'nationaliteTxt'     => DirEnum::NATIONALITIES,
             'schoolTxt'          => DirEnum::EDUSCHOOLS,
@@ -304,6 +304,22 @@ class SearchModule extends PLModule
           case 'secteur':
             $ids = DirEnum::getOptionsIter(DirEnum::SECTORS);
             break;
+          case 'jobterm':
+            if (Env::has('jtid')) {
+                JobTerms::ajaxGetBranch(&$page, JobTerms::ONLY_JOBS);
+                return;
+            } else {
+                pl_content_headers('text/xml');
+                echo '<div>'; // global container so that response is valid xml
+                echo '<input name="jobtermTxt" type="text" style="display:none" size="32" />';
+                echo '<input name="jobterm" type="hidden"/>';
+                echo '<div class="term_tree"></div>'; // container where to create the tree
+                echo '<script type="text/javascript" src="javascript/jquery.jstree.js"></script>';
+                echo '<script type="text/javascript" src="javascript/jobtermstree.js"></script>';
+                echo '<script type="text/javascript">createJobTermsTree(".term_tree", "search/list/jobterm", "search", "searchForJobTerm");</script>';
+                echo '</div>';
+                exit();
+            }
           default: exit();
         }
         if (isset($idVal)) {

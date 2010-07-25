@@ -84,6 +84,13 @@
       });
   }
 
+  // when choosing a job term in tree, hide tree and set job term field
+  function searchForJobTerm(treeid, jtid, full_name) {
+    $(".term_tree").remove();
+    $("input[name='jobtermTxt']").val(full_name).addClass("hidden_valid").show();
+    $("input[name='jobterm']").val(jtid);
+  }
+
   // when choosing autocomplete from list, must validate
   function select_autocomplete(name) {
       nameRealField = name.replace(/Txt$/, '');
@@ -305,12 +312,12 @@
       <td><input type="text" class="autocomplete" name="description" size="32" value="{$smarty.request.description}" /></td>
     </tr>
     <tr>
-      <td>Secteur</td>
+      <td>Mots-clefs</td>
       <td>
-        <input name="secteurTxt" type="text" class="autocomplete" style="display:none" size="32"
-               value="{$smarty.request.secteurTxt}"/>
-        <input name="secteur" class="autocompleteTarget" type="hidden" value="{$smarty.request.secteur}"/>
-        <a href="secteur" class="autocompleteToSelect">{icon name="table" title="Tous les secteurs"}</a>
+        <input name="jobtermTxt" type="text" class="autocomplete{if $smarty.request.jobterm} hidden_valid{/if}" style="display:none" size="32"
+               value="{$smarty.request.jobtermTxt}"/>
+        <input name="jobterm" class="autocompleteTarget" type="hidden" value="{$smarty.request.jobterm}"/>
+        <a href="jobterm" class="autocompleteToSelect">{icon name="table" title="Tous les mots-clefs"}</a>
       </td>
     </tr>
     <tr>

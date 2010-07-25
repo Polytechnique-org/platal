@@ -51,6 +51,7 @@ class DirEnum
     const COMPANIES      = 'companies';
     const SECTORS        = 'sectors';
     const JOBDESCRIPTION = 'jobdescription';
+    const JOBTERMS       = 'jobterms';
 
     const NETWORKS       = 'networking';
 
@@ -643,6 +644,30 @@ class DE_JobDescription extends DirEnumeration
     protected $idfield  = 'profile_job.pid';
 
     protected $ac_unique = 'profile_job.pid';
+}
+// }}}
+
+// {{{ class DE_JobTerms
+class DE_JobTerms extends DirEnumeration
+{
+    // {{{ function getAutoComplete
+    public function getAutoComplete($text)
+    {
+        $tokens = JobTerms::tokenize($text.'%');
+        if (count($tokens) == 0) {
+            return PlIteratorUtils::fromArray(array());
+        }
+        $token_join = JobTerms::token_join_query($tokens, 'e');
+        return XDB::iterator('SELECT  e.jtid AS id, e.full_name AS field, COUNT(DISTINCT p.pid) AS nb
+                                 FROM  profile_job_term_enum AS e
+                           INNER JOIN  profile_job_term_relation AS r ON (r.jtid_1 = e.jtid)
+                           INNER JOIN  profile_job_term AS p ON (r.jtid_2 = p.jtid)
+                           '.$token_join.'
+                             GROUP BY  e.jtid
+                             ORDER BY  nb DESC, field
+                                LIMIT ' . self::AUTOCOMPLETE_LIMIT);
+    }
+    // }}}
 }
 // }}}
 

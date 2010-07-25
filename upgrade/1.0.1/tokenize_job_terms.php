@@ -1,13 +1,13 @@
 #!/usr/bin/php5
 <?php
 require_once 'connect.db.inc.php';
-require_once 'profil.func.inc.php';
+require_once 'class/jobterms.php';
 
 $globals->debug = 0; //do not store backtraces
 
 $terms = XDB::iterator('SELECT `jtid`, `name` FROM `profile_job_term_enum`');
 while ($term = $terms->next()) {
-    $tokens = array_unique(tokenize_job_term($term['name']));
+    $tokens = array_unique(JobTerms::tokenize($term['name']));
     if (!count($tokens)) {
         continue;
     }

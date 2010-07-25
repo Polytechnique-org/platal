@@ -19,31 +19,42 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class ProfileSettingSectors implements ProfileSetting
+/** Terms associated to profile mentoring */
+class ProfileSettingTerms implements ProfileSetting
 {
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
         $success = true;
         if (is_null($value)) {
             $value = array();
-            $res = XDB::iterRow("SELECT  m.sectorid, m.subsectorid, ss.name
-                                   FROM  profile_mentor_sector      AS m
-                             INNER JOIN  profile_job_sector_enum    AS s  ON (m.sectorid = s.id)
-                             INNER JOIN  profile_job_subsector_enum AS ss ON (s.id = ss.sectorid AND m.subsectorid = ss.id)
-                                  WHERE  m.pid = {?}",
+            $res = XDB::query('SELECT  e.jtid, e.full_name
+                                 FROM  profile_mentor_term   AS m
+                           INNER JOIN  profile_job_term_enum AS e  ON (m.jtid = e.jtid)
+                                WHERE  m.pid = {?}',
                                 $page->pid());
-            while (list($s, $ss, $ssname) = $res->next()) {
-                if (!isset($value[$s])) {
-                    $value[$s] = array($ss => $ssname);
-                } else {
-                    $value[$s][$ss] = $ssname;
-                }
-            }
+            $value = $res->fetchAllAssoc();
         } elseif (!is_array($value)) {
             $value = array();
-        } elseif (count($value) > 10) {
-            Platal::page()->trigError("Le nombre de secteurs d'expertise est limité à 10.");
+        } elseif (count($value) > 20) {
+            Platal::page()->trigError("Le nombre de mots clefs d'expertise est limité à 20.");
             $success = false;
+        } else {
+            $missing_full_names = array();
+            foreach ($value as &$term) if (empty($term['full_name'])) {
+                $missing_full_names[] = $term['jtid'];
+            }
+            if (count($missing_full_names)) {
+                $res = XDB::query('SELECT  jtid, full_name
+                                     FROM  profile_job_term_enum
+                                    WHERE  jtid IN {?}',
+                                    $missing_full_names);
+                $term_id_to_name = $res->fetchAllAssoc('jtid', false);
+                foreach ($value as &$term) {
+                    if (empty($term['full_name'])) {
+                        $term['full_name'] = $term_id_to_name[$term['jtid']];
+                    }
+                }
+            }
         }
         ksort($value);
         foreach ($value as &$sss) {
@@ -55,29 +66,27 @@ class ProfileSettingSectors implements ProfileSetting
     public function save(ProfilePage &$page, $field, $value)
     {
 
-        XDB::execute("DELETE FROM  profile_mentor_sector
+        XDB::execute("DELETE FROM  profile_mentor_term
                             WHERE  pid = {?}",
                      $page->pid());
         if (!count($value)) {
             return;
         }
-        foreach ($value as $id => $sect) {
-            foreach ($sect as $sid => $name) {
-                XDB::execute("INSERT INTO  profile_mentor_sector (pid, sectorid, subsectorid)
-                                   VALUES  ({?}, {?}, {?})",
-                             $page->pid(), $id, $sid);
-            }
+        $mentor_term_values = array();
+        foreach ($value as &$term) {
+            $mentor_term_values[] = '('.XDB::escape($page->pid()).', '.XDB::escape($term['jtid']).')';
         }
+        XDB::execute('INSERT INTO  profile_mentor_term (pid, jtid)
+                           VALUES  '.implode(',', $mentor_term_values));
+
     }
 
     public function getText($value) {
-        $sectors = array();
-        foreach ($value as $sector) {
-            foreach ($sector as $subsector) {
-                $sectors[] = $subsector;
-            }
+        $terms = array();
+        foreach ($value as &$term) {
+            $terms[] = $term['full_name'];
         }
-        return implode(', ', $sectors);
+        return implode(', ', $terms);
     }
 }
 
@@ -132,7 +141,7 @@ class ProfileSettingMentor extends ProfilePage
     {
         parent::__construct($wiz);
         $this->settings['expertise'] = null;
-        $this->settings['sectors'] = new ProfileSettingSectors();
+        $this->settings['terms'] = new ProfileSettingTerms();
         $this->settings['countries'] = new ProfileSettingCountry();
     }
 
@@ -165,9 +174,6 @@ class ProfileSettingMentor extends ProfilePage
 
     public function _prepare(PlPage &$page, $id)
     {
-        $page->assign('sectorList', XDB::iterator('SELECT  id, name
-                                                     FROM  profile_job_sector_enum'));
-
         $page->assign('countryList', XDB::iterator("SELECT  iso_3166_1_a2, countryFR
                                                       FROM  geoloc_countries
                                                   ORDER BY  countryFR"));

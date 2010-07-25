@@ -980,6 +980,35 @@ class UFC_Job_Sectorization implements UserFilterCondition
 }
 // }}}
 
+// {{{ class UFC_Job_Terms
+/** Filters users based on the job terms they assigned to one of their
+ * jobs.
+ * @param $val The ID of the job term, or an array of such IDs
+ */
+class UFC_Job_Terms implements UserFilterCondition
+{
+    private $val;
+
+    public function __construct($val)
+    {
+        if (!is_array($val)) {
+            $val = array($val);
+        }
+        $this->val = $val;
+    }
+
+    public function buildCondition(PlFilter &$uf)
+    {
+        $sub = $uf->addJobTermsFilter(count($this->val));
+        $conditions = array();
+        foreach ($this->val as $i => $jtid) {
+            $conditions[] = $sub[$i] . ' = ' . XDB::escape($jtid);
+        }
+        return implode(' AND ', $conditions);
+    }
+}
+// }}}
+
 // {{{ class UFC_Job_Description
 /** Filters users based on their job description
  * @param $description The text being searched for
@@ -2473,6 +2502,7 @@ class UserFilter extends PlFilter
      * pjsse => profile_job_subsector_enum
      * pjssse => profile_job_subsubsector_enum
      * pja => profile_job_alternates
+     * pjt => profile_job_terms
      */
     private $with_pj = false;
     private $with_pje = false;
@@ -2480,6 +2510,7 @@ class UserFilter extends PlFilter
     private $with_pjsse = false;
     private $with_pjssse = false;
     private $with_pja = false;
+    private $with_pjt = 0;
 
     public function addJobFilter()
     {
@@ -2513,6 +2544,22 @@ class UserFilter extends PlFilter
         }
     }
 
+    /**
+     * Adds a filter on job terms of profile.
+     * @param $nb the number of job terms to use
+     * @return an array of the fields to filter (one for each term).
+     * Code using this function should used returned field as is (contains table and field name).
+     */
+    public function addJobTermsFilter($nb = 1)
+    {
+        $this->with_pjt = $nb;
+        $jobtermstable = array();
+        for ($i = 1; $i <= $nb; ++$i) {
+            $jobtermstable[] = 'pjtr_'.$i.'.jtid_1';
+        }
+        return $jobtermstable;
+    }
+
     protected function jobJoins()
     {
         $joins = array();
@@ -2533,6 +2580,12 @@ class UserFilter extends PlFilter
         }
         if ($this->with_pja) {
             $joins['pja'] = PlSqlJoin::left('profile_job_alternates', '$ME.subsubsectorid = pj.subsubsectorid');
+        }
+        if ($this->with_pjt > 0) {
+            for ($i = 1; $i <= $this->with_pjt; ++$i) {
+                $joins['pjt_'.$i] = PlSqlJoin::left('profile_job_term', '$ME.pid = $PID');
+                $joins['pjtr_'.$i] = PlSqlJoin::left('profile_job_term_relation', '$ME.jtid_2 = pjt_'.$i.'.jtid');
+            }
         }
         return $joins;
     }

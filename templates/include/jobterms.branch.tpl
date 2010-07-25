@@ -19,42 +19,23 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-{if $job->company || $job->sector || $job->subsector ||
-  $job->subsubsector || $job->description || $job->user_email}
-      <div class="adresse" style="float: left">
-      	<table>
-        {if $job->company || $job->user_site}
-        <tr>
-          <td><em>Ent/Org&nbsp;: </em></td>
-          <td><strong>{if $job->company->url}<a href='{$job->company->url}'>{$job->company->name}</a>{else}{$job->company->name}{/if}
-          {if $job->user_site} [<a href='{$job->user_site}'>Page perso</a>]{/if}</strong></td>
-        </tr>
-        {/if}
-        {if count($job->terms)}
-        <tr>
-          <td><em>Mots-clefs&nbsp;: </em></td>
-          <td><ul>
-            {foreach from=$job->terms item=term}
-            <li><strong>{$term->full_name}</strong></li>
-            {/foreach}
-          </ul></td>
-        </tr>
-        {/if}
+[
+{iterate from=$subTerms item=term}
+  {if $started},{/if}
+  {assign var=started value=1}
+  {ldelim}
+    "data" :
+    {ldelim}
+      "title" : "{$term.name|replace:'"':'\\"'}{if $filter} ({$term.nb} {$filter}{if $term.nb > 1}s{/if}){/if}",
+      "attr" : {ldelim}
+        {if $attrfunc}"href" : "javascript:{$attrfunc}('{$treeid}','{$term.jtid}',\"{$term.full_name|replace:'"':'\\\\\\"'}\")",{/if}
+        "title" : "{$term.full_name|replace:'"':'\\"'}"
+      {rdelim}
+    {rdelim},
+    "attr" : {ldelim} "id" : "job_terms_tree_{$treeid}_{$term.jtid}" {rdelim},
+    "state": "closed"
+  {rdelim}
+{/iterate}
+]
 
-        {if $job->description}
-        <tr>
-          <td><em>Fonction&nbsp;: </em></td>
-          <td><strong>{$job->description}</strong></td>
-        </tr>
-        {/if}
-        {if $job->user_email}
-        <tr>
-          <td><em>Email&nbsp;: </em></td>
-          <td><strong>{$job->user_email}</strong></td>
-        </tr>
-        {/if}
-        </table>
-      </div>
-{/if}
-
-{* vim:set et sws=2 sts=2 sw=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

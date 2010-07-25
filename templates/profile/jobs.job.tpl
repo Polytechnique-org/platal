@@ -20,6 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<script type="text/javascript" src="javascript/jquery.jstree.js"></script>
 {assign var=jobid value="job_"|cat:$i}
 {assign var=jobpref value="jobs[`$i`]"}
 {assign var=sector_text value="sector_text_"|cat:$i}
@@ -116,11 +117,31 @@
       <td colspan="2" class="center" style="font-style: italic">Ta place dans l'entreprise</td>
     </tr>
     <tr class="pair {$sector_text}">
-      <td class="titre">Secteur d'activité</td>
-      <td>
-        <input type="text" class="sectorName {if $job.sector_error}error{/if}" size="35" maxlength="100"
-               name="{$jobpref}[subSubSectorName]" value="{$job.subSubSectorName}" />
-        <a href="javascript:displayAllSector({$i})">{icon name="table" title="Tous les secteurs"}</a>
+      <td class="titre">Mots-clefs</td>
+      <td class="job_terms">
+        <input type="text" class="term_search" size="35"/>
+        <a href="javascript:toggleJobTermsTree({$i})">{icon name="table" title="Tous les mots-clefs"}</a>
+        <script type="text/javascript">
+        /* <![CDATA[ */
+        $(function() {ldelim}
+          {foreach from=$job.terms item=term}
+          addJobTerm("{$i}", "{$term.jtid}", "{$term.full_name|replace:'"':'\\"'}");
+          {/foreach}
+          $('#job_{$i} .term_search').autocomplete(platal_baseurl + 'profile/jobterms',
+            {ldelim}
+              "formatItem" : displayJobTerm,
+              "extraParams" : {ldelim} "jobid" : "{$i}" {rdelim},
+              "width" : $('#job_{$i} .term_search').width()*2,
+              "onItemSelect" : selectJobTerm,
+              "matchSubset" : false
+            {rdelim});
+        {rdelim});
+        /* ]]> */
+        </script>
+      </td>
+    </tr>
+    <tr class="pair">
+      <td colspan="2" class="term_tree">
       </td>
     </tr>
     <tr class="pair {$sector}" style="display: none">

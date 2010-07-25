@@ -35,6 +35,8 @@ abstract class ProfileField
         Profile::FETCH_PHONES         => 'ProfilePhones',
         Profile::FETCH_MENTOR_SECTOR  => 'ProfileMentoringSectors',
         Profile::FETCH_MENTOR_COUNTRY => 'ProfileMentoringCountries',
+        Profile::FETCH_JOB_TERMS      => 'ProfileJobTerms',
+        Profile::FETCH_MENTOR_TERMS   => 'ProfileMentoringTerms',
     );
 
     /** The profile to which this field belongs
@@ -92,6 +94,9 @@ class ProfileFieldIterator implements PlIterator
 
     public function __construct($cls, array $pids, ProfileVisibility $visibility)
     {
+        if (is_numeric($cls) && isset(ProfileField::$fields[$cls])) {
+            $cls = ProfileField::$fields[$cls];
+        }
         $this->data = call_user_func(array($cls, 'fetchData'), $pids, $visibility);
         $this->cls = $cls;
     }
@@ -169,6 +174,7 @@ class Job
     public $company = null;
     public $phones = array();
     public $address = null;
+    public $terms = array();
 
     public $jobid;
 
@@ -217,6 +223,30 @@ class Job
     {
         if ($address->link_type == Address::LINK_JOB && $address->link_id == $this->id && $address->pid == $this->pid) {
             $this->address = $address;
+        }
+    }
+
+    public function addTerm(JobTerm &$term)
+    {
+        $this->terms[$term->jtid] = $term;
+    }
+}
+// }}}
+// {{{ class JobTerm
+class JobTerm
+{
+    public $jtid;
+    public $full_name;
+    public $pid;
+    public $jid;
+
+    /** Fields are:
+     * pid, jid, jtid, full_name
+     */
+    public function __construct($data)
+    {
+        foreach ($data as $key => $val) {
+            $this->$key = $val;
         }
     }
 }
@@ -776,9 +806,64 @@ class ProfileJobs extends ProfileField
             $this->company = $companies[$job->jobid];
         }
     }
+
+    public function addJobTerms(ProfileJobTerms $jobterms)
+    {
+        $terms = $jobterms->get();
+        foreach ($terms as $term) {
+            if ($this->pid == $term->pid && array_key_exists($term->jid, $this->jobs)) {
+                $this->jobs[$term->jid]->addTerm(&$term);
+            }
+        }
+    }
 }
 // }}}
+// {{{ class ProfileJobTerms                          [ Field ]
+class ProfileJobTerms extends ProfileField
+{
+    private $jobterms = array();
 
+    public function __construct(PlInnerSubIterator $it)
+    {
+        $this->pid = $it->value();
+        while ($term = $it->next()) {
+            $this->jobterms[] = new JobTerm($term);
+        }
+    }
+
+    public function get()
+    {
+        return $this->jobterms;
+    }
+
+    public static function fetchData(array $pids, ProfileVisibility $visibility)
+    {
+        $data = XDB::iterator('SELECT  jt.jtid, jte.full_name, jt.pid, jt.jid
+                                 FROM  profile_job_term AS jt
+                           INNER JOIN  profile_job AS j ON (jt.pid = j.pid AND jt.jid = j.id)
+                            LEFT JOIN  profile_job_term_enum AS jte USING(jtid)
+                                WHERE  jt.pid IN {?} AND j.pub IN {?}
+                             ORDER BY  ' . XDB::formatCustomOrder('jt.pid', $pids),
+                                 $pids, $visibility->levels());
+        return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
+    }
+}
+// }}}
+// {{{ class ProfileMentoringTerms                    [ Field ]
+class ProfileMentoringTerms extends ProfileJobTerms
+{
+    public static function fetchData(array $pids, ProfileVisibility $visibility)
+    {
+        $data = XDB::iterator('SELECT  mt.jtid, jte.full_name, mt.pid
+                                 FROM  profile_mentor_term AS mt
+                            LEFT JOIN  profile_job_term_enum AS jte USING(jtid)
+                                WHERE  mt.pid IN {?}
+                             ORDER BY  ' . XDB::formatCustomOrder('mt.pid', $pids),
+                                $pids);
+        return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
+    }
+}
+// }}}
 // {{{ class CompanyList
 class CompanyList
 {
