@@ -27,8 +27,8 @@ function smarty_compiler_icon($tag_attrs, &$compiler)
 
     if (isset($title)) {
         $title = pl_entities(trim($title, '\'"'), ENT_QUOTES);
-        $alt = 'alt="'.$title.'"';
-        $title = 'title="'. $title.'" ';
+        $alt = 'alt="' . $title . '"';
+        $title = 'title="' . $title . '" ';
     }
 
     $name = pl_entities(trim($name, '\'"'), ENT_QUOTES);
@@ -38,7 +38,10 @@ function smarty_compiler_icon($tag_attrs, &$compiler)
         $name = $globals->baseurl . '/' . $name;
     }
 
-    return "?><img src='$name' $alt $title /><?php";
+    if (isset($title)) {
+      return "?><img src=\"$name\" $alt $title /><?php";
+    }
+    return "?><img src=\"$name\" $alt /><?php";
 }
 
 /* vim: set expandtab enc=utf-8: */
