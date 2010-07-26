@@ -139,6 +139,7 @@
 
   </tr>
 
+  {assign var=lostCount value=0}
   {foreach from=$members item=users key=promo}
   {foreach from=$users item=user name=all}
   <tr>
@@ -149,6 +150,7 @@
     </td>
     <td>
       {if $promo && $user.x}
+      {if $user.b}{assign var=lostCount value=$lostCount+1}{/if}
       {profile user=$user.x promo=false}
       {elseif $user.x}
       <a href="{$platal->ns}member/{$user.x}">{if $user.n|trim}{$x.n}{else}{$user.l}{/if}</a>
@@ -167,6 +169,15 @@
   {/foreach}
   {/foreach}
 </table>
+
+{if $lostCount > 0}
+<p class="smaller">
+  {icon name=error}&nbsp;Un camarade signalé par ce symbole n'a plus d'adresse de redirection et ne peut donc
+  plus être contacté via son adresse polytechnique.org. Si tu connais sa nouvelle adresse, tu peux nous la communiquer en
+  cliquant sur le symbole.
+</p>
+{/if}
+
 {/if}
 
 

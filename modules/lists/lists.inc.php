@@ -30,7 +30,7 @@ function list_sort_owners(&$members, $tri_promo = true)
     foreach($members as $mem) {
         $user = User::getSilent($mem);
         if (!$user) {
-            $membres[0][] = array('l' => $mem, 'p' => (!$tri_promo ? 'inconnue' : null));
+            $membres[0][] = array('l' => $mem, 'p' => (!$tri_promo ? 'inconnue' : null), 'n' => null, 'x' => null, 'b' => null);
         } else {
             $uid = $user->id();
             $nom = $user->directoryName();
@@ -42,7 +42,7 @@ function list_sort_owners(&$members, $tri_promo = true)
             if ($tri_promo) {
                 $promo = null;
             }
-            $membres[$key][$nom.$mem] = array('n' => $nom, 'l' => $mem, 'p' => $promo, 'x' => $uid);
+            $membres[$key][$nom.$mem] = array('n' => $nom, 'l' => $mem, 'p' => $promo, 'x' => $uid, 'b' => $user->lost);
         }
     }
 

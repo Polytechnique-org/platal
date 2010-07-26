@@ -102,9 +102,11 @@ Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
     <th>Actions</th>
     {/if}
   </tr>
+  {assign var=lostCount value=0}
   {foreach from=$users item=user}
   <tr>
     <td>
+      {if $user->lost}{assign var=lostCount value=$lostCount+1}{/if}
       {profile user=$user promo=false}
     </td>
     <td>
@@ -149,12 +151,13 @@ Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
 </p>
 {/if}
 
-{* TODO: only displays following paragraph when required, ie when there is at least one concerned user in the displayed page *}
+{if $lostCount > 0}
 <p class="smaller">
   {icon name=error}&nbsp;Un camarade signalé par ce symbole n'a plus d'adresse de redirection et ne peut donc
   plus être contacté via son adresse polytechnique.org. Si tu connais sa nouvelle adresse, tu peux nous la communiquer en
   cliquant sur le symbole.
 </p>
+{/if}
 
 {/if}
 
