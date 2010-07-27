@@ -19,26 +19,27 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function select_options($table,$valeur,$champ="text",$pad=false,
-                        $where="",$join="",$group="")
+function select_options($table, $value, $field, $pad, $where, $join, $group)
 {
-    $fields = 't.id,' . $champ;
-    $order = $champ;
+    $fields = 't.id,' . $field;
+    $order = $field;
     if ($group) {
         $fields .= ',' . $group;
         $order = $group . ',' . $order;
+    } else {
+        $fields .= ', NULL';
     }
     $sql = "SELECT $fields FROM $table AS t $join $where ORDER BY $order";
     $res = XDB::iterRow($sql);
     $sel = ' selected="selected"';
 
-    // on ajoute une entree vide si $pad est vrai
-    $html = "";
+    // An empty entry is added when $pad is true.
+    $html = '';
     if ($pad) {
-        $html.= '<option value="0"'.($valeur==0?$sel:"")."></option>\n";
+        $html .= '<option value="0"' . ($value == 0 ? $sel : '') . ">&nbsp;</option>\n";
     }
     $optgrp = null;
-    while (list($my_id,$my_text,$my_grp) = $res->next()) {
+    while (list($my_id, $my_text, $my_grp) = $res->next()) {
         if ($my_grp != $optgrp) {
             if (!is_null($optgrp)) {
                 $html .= '</optgroup>';
@@ -47,7 +48,7 @@ function select_options($table,$valeur,$champ="text",$pad=false,
             $optgrp = $my_grp;
         }
         $html .= sprintf("<option value=\"%s\" %s>%s</option>\n",
-                         $my_id, $valeur==$my_id ? $sel : "", pl_entities($my_text));
+                         $my_id, $value == $my_id ? $sel : '', pl_entities($my_text));
     }
     if (!is_null($optgrp)) {
         $html .= '</optgroup>';
@@ -56,16 +57,19 @@ function select_options($table,$valeur,$champ="text",$pad=false,
 }
 
 function smarty_function_select_db_table($params, &$smarty) {
-    if(empty($params['table']))
+    if (empty($params['table']) || empty($params['valeur'])) {
         return;
-    if(empty($params['champ']))
+    }
+    if (empty($params['champ'])) {
         $params['champ'] = 'text';
-    if(empty($params['pad']) || !($params['pad']))
-        $pad = false;
-    else
-        $pad = true;
-    if(empty($params['where']))
-        $params['where'] = '';
+    }
+    foreach (array('where', 'join', 'group') as $value) {
+        if (empty($params[$value])) {
+            $params[$value] = '';
+        }
+    }
+    $pad = (!empty($params['pad']) && $params['pad']);
+
     return select_options($params['table'], $params['valeur'], $params['champ'], $pad,
                           $params['where'], $params['join'], $params['group']);
 }
