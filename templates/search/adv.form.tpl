@@ -298,15 +298,6 @@ checked="checked"{/if}/>Chercher uniquement les adresses où les camarades sont 
       <td><input type="text" class="autocomplete" name="entreprise" size="32" value="{$smarty.request.entreprise}" /></td>
     </tr>
     <tr>
-      <td>Fonction</td>
-      <td>
-        <input name="fonctionTxt" type="text" class="autocomplete" style="display:none" size="32"
-               value="{$smarty.request.fonctionTxt}"/>
-        <input name="fonction" class="autocompleteTarget" type="hidden" value="{$smarty.request.fonction}"/>
-        <a href="fonction" class="autocompleteToSelect">{icon name="table" title="Toutes les fonctions"}</a>
-      </td>
-    </tr>
-    <tr>
       <td>Description</td>
       <td><input type="text" class="autocomplete" name="description" size="32" value="{$smarty.request.description}" /></td>
     </tr>
