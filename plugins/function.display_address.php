@@ -101,7 +101,7 @@ function smarty_function_display_address($param, &$smarty)
     if ($adr->phones() != null) {
         require_once 'function.display_phones.php';
         $txthtml .= smarty_function_display_phones(array('tels' => $adr->phones()),$smarty);
-    } else if ($param['phones'] != null) {
+    } else if (isset($param['phones']) && count($param['phones'])) {
         require_once 'function.display_phones.php';
         $txthtml .= smarty_function_display_phones(array('tels' => $param['phones']),$smarty);
     }
