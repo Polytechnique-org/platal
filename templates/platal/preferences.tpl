@@ -61,7 +61,7 @@
   </tr>
   <tr class="impair">
     <td class="half">
-      {if $smarty.session.user->email_format eq html}
+      {if $smarty.session.user->email_format eq 'html'}
       <h3>
         <a href="javascript:dynpostkv('prefs','email_format','text')">Recevoir les emails en format texte</a>
       </h3>

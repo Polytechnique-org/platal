@@ -30,6 +30,11 @@
               </td>
               <td class="inscrits">
                 {$globals->core->NbIns|number_format} polytechniciens sur le web
+                {if t($smarty.request.quick)}
+                  {assign var=requestQuick value=$smarty.request.quick}
+                {else}
+                  {assign var=requestQuick value="Recherche dans l\'annuaire"}
+                {/if}
                 <form action="search" method="get">
                     <div>
                         <button id="quick_button" type="submit" style="display: none"
@@ -37,10 +42,10 @@
                           OK
                         </button>
                         <input type="text" size="20" name="quick" id="quick" class="quick_search"
-                               value="{$smarty.request.quick|default:'Recherche dans l\'annuaire'}"
+                               value="{$requestQuick}"
                                onfocus="if (this.value === 'Recherche dans l\'annuaire') this.value='';
                                         $('#quick_button').show()"
-                               onblur="if (this.value === '') this.value='{$smarty.request.quick|default:'Recherche dans l\'annuaire'|escape:javascript}'"
+                               onblur="if (this.value === '') this.value='{$requestQuick|escape:javascript}'"
                                />
                     </div>
                 </form>

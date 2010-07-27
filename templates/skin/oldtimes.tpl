@@ -29,7 +29,7 @@
   <body>
     {include core=plpage.devel.tpl}
 
-    {if $smarty.session.suid}
+    {if t($smarty.session.suid)}
     <table id="suid" cellpadding="0" cellspacing="0">
       <tr>
         <td>

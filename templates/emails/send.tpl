@@ -218,7 +218,7 @@
         <div style="float: right; width: 40%;">
           <select id="to_contacts" name="to_contacts[]" multiple="multiple" style="width: 100%; height: 5em">
           {foreach key=key item=contact from=$contacts}
-          {if in_array($contact->hrpid,$smarty.request.to_contacts)}
+          {if t($smarty.request.to_contacts) && in_array($contact->hrpid,$smarty.request.to_contacts)}
           <option value="{$contact->hrpid}">
             {$contact->full_name}
           </option>
@@ -235,7 +235,7 @@
           <br />
           <select id="cc_contacts" name="cc_contacts[]" multiple="multiple" style="width: 100%; height: 5em">
           {foreach key=key item=contact from=$contacts}
-          {if in_array($contact->hrpid,$smarty.request.cc_contacts)}
+          {if t($smarty.request.cc_contacts) && in_array($contact->hrpid,$smarty.request.cc_contacts)}
           <option value="{$contact->hrpid}">
             {$contact->full_name}
           </option>
@@ -263,7 +263,8 @@
         <div style="float: right; width: 40%">
           <select id="contacts" name="all_contacts[]" multiple="multiple" style="height: 10em; width: 100%">
             {foreach item=contact from=$contacts}
-            {if !in_array($contact->hrpid,$smarty.request.to_contacts) && !in_array($contact->hrpid,$smarty.request.cc_contacts)}
+            {if !(isset($smarty.request.to_contacts|smarty:nodefaults) && isset($smarty.request.cc_contacts|smarty:nodefaults)) ||
+                (!in_array($contact->hrpid,$smarty.request.to_contacts) && !in_array($contact->hrpid,$smarty.request.cc_contacts))}
             <option value="{$contact->hrpid}">
               {$contact->full_name}
             </option>

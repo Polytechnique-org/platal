@@ -31,7 +31,7 @@
     {if !$simple}
       {include file=skin/common.bandeau.tpl}
     {/if}
-    {if $smarty.session.suid}
+    {if t($smarty.session.suid)}
     <div id="suid">
       <a href="exit">
         Quitter le SU sur {$smarty.session.hruid} ({$smarty.session.perms->flags()})

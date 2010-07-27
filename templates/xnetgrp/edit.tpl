@@ -56,10 +56,10 @@
       </td>
       <td>
         <select name="cat">
-          <option value="groupesx" {if $asso->cat eq GroupesX}selected="selected"{/if}>Groupes X</option>
-          <option value="binets" {if $asso->cat eq Binets}selected="selected"{/if}>Binets</option>
-          <option value="promotions" {if $asso->cat eq Promotions}selected="selected"{/if}>Promotions</option>
-          <option value="institutions" {if $asso->cat eq Institutions}selected="selected"{/if}>Institutions</option>
+          <option value="groupesx" {if $asso->cat eq 'GroupesX'}selected="selected"{/if}>Groupes X</option>
+          <option value="binets" {if $asso->cat eq 'Binets'}selected="selected"{/if}>Binets</option>
+          <option value="promotions" {if $asso->cat eq 'Promotions'}selected="selected"{/if}>Promotions</option>
+          <option value="institutions" {if $asso->cat eq 'Institutions'}selected="selected"{/if}>Institutions</option>
         </select>
       </td>
     </tr>

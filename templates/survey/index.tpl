@@ -22,6 +22,8 @@
 
 <h1>Sondages</h1>
 
+{* Survey::MODE_ALL equals 0. *}
+{assign var=SurveyMODE_ALL value=0}
 <table class="bicol">
   <tr>
     <th>
@@ -29,7 +31,7 @@
     </th>
   </tr>
   {iterate item=s from=$survey_current}
-  {if $smarty.session.auth || $s.mode == Survey::MODE_ALL}
+  {if $smarty.session.auth || $s.mode == $SurveyMODE_ALL}
   <tr class="{cycle name=cs_cycle values="impair,pair"}">
     <td class="half">
       &bull;
@@ -58,7 +60,7 @@
     </th>
   </tr>
   {iterate item=s from=$survey_old}
-    {if $smarty.session.auth || $s.mode == Survey::MODE_ALL}
+    {if $smarty.session.auth || $s.mode == $SurveyMODE_ALL}
   <tr class="{cycle name=os_cycle values="impair,pair"}">
     <td class="half">
       &bull;

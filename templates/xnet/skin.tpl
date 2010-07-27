@@ -110,7 +110,7 @@
               {/if}
             {/foreach}
           {/foreach}
-          {assign var=asso_id value=$asso->id}
+          {if t($asso)}{assign var=asso_id value=$asso->id}{/if}
           {if $asso && $is_admin ||
                       ($smarty.session.suid && ($smarty.session.suid.perms->hasFlag('admin') ||
                                                 $smarty.session.suid.may_update[$asso_id]))}
