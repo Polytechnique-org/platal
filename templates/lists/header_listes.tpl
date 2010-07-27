@@ -29,17 +29,17 @@
   <tr>
     <td><strong>Liste {$platal->argv[1]}&nbsp;:</strong></td>
     <td>
-      {if $on neq members}
+      {if $on neq 'members'}
       [<a href='{$platal->ns}lists/members/{$platal->argv[1]}'>liste des membres</a>]
       {else}
       [liste des membres]
       {/if}
-      {if $on neq trombi}
+      {if $on neq 'trombi'}
       [<a href='{$platal->ns}lists/annu/{$platal->argv[1]}'>annuaire/trombi</a>]
       {else}
       [annuaire/trombi]
       {/if}
-      {if $on neq archives}
+      {if $on neq 'archives'}
       [<a href='{$platal->ns}lists/archives/{$platal->argv[1]}'>archives</a>]
       {else}
       [archives]
@@ -50,22 +50,22 @@
   <tr>
     <td><strong>Administrer la liste&nbsp;:</strong></td>
     <td>
-      {if $on neq moderate}
+      {if $on neq 'moderate'}
       [<a href='{$platal->ns}lists/moderate/{$platal->argv[1]}'>modération</a>]
       {else}
       [modération]
       {/if}
-      {if $on neq admin}
+      {if $on neq 'admin'}
       [<a href='{$platal->ns}lists/admin/{$platal->argv[1]}'>ajout/retrait de membres</a>]
       {else}
       [ajout/retrait de membres]
       {/if}
-      {if $on neq options}
+      {if $on neq 'options'}
       [<a href='{$platal->ns}lists/options/{$platal->argv[1]}'>options</a>]
       {else}
       [options]
       {/if}
-      {if $on neq delete}
+      {if $on neq 'delete'}
       [<a href='{$platal->ns}lists/delete/{$platal->argv[1]}'>détruire</a>]
       {else}
       [détruire liste]
@@ -78,12 +78,12 @@
   <tr>
     <td><strong>Administrer (avancé)&nbsp;:</strong></td>
     <td>
-      {if $on neq soptions}
+      {if $on neq 'soptions'}
       [<a href='{$platal->ns}lists/soptions/{$platal->argv[1]}'>options avancées</a>]
       {else}
       [options avancées]
       {/if}
-      {if $on neq check}
+      {if $on neq 'check'}
       [<a href='{$platal->ns}lists/check/{$platal->argv[1]}'>vérifications</a>]
       {else}
       [vérifications]
@@ -94,7 +94,7 @@
   {if $it_is_xnet && ($details.own || $is_admin)}
   <tr>
     <td><strong>Synchroniser&nbsp;:</strong></td>
-    {if $on neq sync}
+    {if $on neq 'sync'}
     <td>[<a href="{$platal->ns}lists/sync/{$platal->argv[1]}">synchroniser avec l'annuaire</a>]</td>
     {else}
     <td>[synchroniser avec l'annuaire]</td>
