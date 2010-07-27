@@ -102,11 +102,11 @@ Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
     <th>Actions</th>
     {/if}
   </tr>
-  {assign var=lostCount value=0}
+  {assign var=lostUsers value=false}
   {foreach from=$users item=user}
   <tr>
     <td>
-      {if $user->lost}{assign var=lostCount value=$lostCount+1}{/if}
+      {if $user->lost}{assign var=lostUsers value=true}{/if}
       {profile user=$user promo=false}
     </td>
     <td>
@@ -151,7 +151,7 @@ Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
 </p>
 {/if}
 
-{if $lostCount > 0}
+{if $lostUsers}
 <p class="smaller">
   {icon name=error}&nbsp;Un camarade signalé par ce symbole n'a plus d'adresse de redirection et ne peut donc
   plus être contacté via son adresse polytechnique.org. Si tu connais sa nouvelle adresse, tu peux nous la communiquer en
