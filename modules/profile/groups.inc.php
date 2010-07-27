@@ -122,7 +122,7 @@ class ProfileSettingGroups extends ProfilePage
                                                     WHERE  a.inscriptible != 0
                                                            AND (a.cat = 'GroupesX' OR a.cat = 'Institutions')
                                                  ORDER BY  a.cat, a.dom, a.nom"));
-        $page->assign('old', (int) date('Y') >= $page->profile->grad_year);
+        $page->assign('old', (int) date('Y') >= $this->profile->grad_year);
     }
 }
 
