@@ -152,6 +152,8 @@ function chgMainWinLoc(strPage)
       {/if}
       <div class='spacer'></div>
     </div>
+    {else}
+    <div class='spacer'></div>
     {/if}
 
     <div class='formation'>
