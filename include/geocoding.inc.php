@@ -93,6 +93,10 @@ class GMapsGeocoder extends Geocoder {
 
     // Maximum number of Geocoding calls to the Google Maps API.
     const MAX_GMAPS_RPC_CALLS = 5;
+    // Maximum levenshtein distance authorized between input and geocoded text in a single line.
+    const MAX_LINE_DISTANCE = 5;
+    // Maximum levenshtein distance authorized between input and geocoded text in the whole text.
+    const MAX_TOTAL_DISTANCE = 6;
 
     public function getGeocodedAddress(array $address) {
         $address = $this->prepareAddress($address);
@@ -134,16 +138,7 @@ class GMapsGeocoder extends Geocoder {
     // cleans up the final informations.
     private function getUpdatedAddress(array $address, array $geocodedData, $extraLines) {
         $this->fillAddressWithGeocoding(&$address, $geocodedData);
-
-        // If the accuracy is 6, it means only the street has been gecoded
-        // but not the number, thus we need to fix it.
-        if ($address['accuracy'] == 6) {
-            $this->fixStreetNumber($address);
-        }
-
-        // We can now format the address.
         $this->formatAddress($address, $extraLines);
-
         return $address;
     }
 
@@ -323,20 +318,23 @@ class GMapsGeocoder extends Geocoder {
         $countGeoloc = count($arrayGeoloc);
         $countText   = count($arrayText);
 
+        $totalDistance = 0;
         if (($countText > $countGeoloc) || ($countText < $countGeoloc - 1)
             || (($countText == $countGeoloc - 1)
                 && ($arrayText[$countText - 1] == strtoupper($address['country'])))) {
             $same = false;
         } else {
             for ($i = 0; $i < $countGeoloc && $i < $countText; ++$i) {
-                if (levenshtein($arrayText[$i], trim($arrayGeoloc[$i])) > 3) {
+                $lineDistance = levenshtein($arrayText[$i], trim($arrayGeoloc[$i]));
+                $totalDistance += $lineDistance;
+                if ($lineDistance > self::MAX_LINE_DISTANCE || $totalDistance > self::MAX_TOTAL_DISTANCE) {
                     $same = false;
+                    break;
                 }
             }
         }
+
         if ($same) {
-            $address['text'] = $address['geoloc'];
-            $address['postalText'] = $address['geocodedPostalText'];
             unset($address['geoloc'], $address['geocodedPostalText']);
         } else {
             $address['geoloc'] = str_replace("\n", "\r\n", $address['geoloc']);
@@ -418,38 +416,6 @@ class GMapsGeocoder extends Geocoder {
             return implode("\n", array_slice($textLines, 0, -1));
         }
         return $address['text'];
-    }
-
-    // Search for the lign from the given address that is the closest to the geocoded thoroughfareName
-    // and replaces the corresponding lign in the geocoded text by it.
-    static protected function fixStreetNumber(&$address)
-    {
-        if (isset($address['thoroughfareName'])) {
-            $thoroughfareName  = $address['thoroughfareName'];
-            $thoroughfareToken = strtoupper(trim(preg_replace(array("/[,\"'#~:;_\-]/", "/\r\n/"),
-                                                              array("", "\n"), $thoroughfareName)));
-            $geolocLines = explode("\n", $address['geoloc']);
-            $textLines   = explode("\n", $address['text']);
-            $mindist = strlen($thoroughfareToken);
-            $minpos  = 0;
-            $pos     = 0;
-            foreach ($textLines as $i => $token) {
-                if (($l = levenshtein(strtoupper(trim(preg_replace(array("/[,\"'#~:;_\-]/", "/\r\n/"),
-                                                                   array("", "\n"), $token))),
-                                      $thoroughfareToken)) < $mindist) {
-                    $mindist = $l;
-                    $minpos  = $i;
-                }
-            }
-            foreach ($geolocLines as $i => $line) {
-                if (strtoupper(trim($thoroughfareName)) == strtoupper(trim($line))) {
-                    $pos = $i;
-                    break;
-                }
-            }
-            $geolocLines[$pos] = $textLines[$minpos];
-            $address['geoloc'] = implode("\n", $geolocLines);
-        }
     }
 }
 
