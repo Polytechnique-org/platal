@@ -111,14 +111,15 @@
             {/foreach}
           {/foreach}
           {if t($asso)}{assign var=asso_id value=$asso->id}{/if}
+          {if t($smarty.session.suid)}{assign var=suid value=true}{else}{assign var=suid value=false}{/if}
           {if $asso && $is_admin ||
-                      ($smarty.session.suid && ($smarty.session.suid.perms->hasFlag('admin') ||
+                      ($suid && ($smarty.session.suid.perms->hasFlag('admin') ||
                                                 $smarty.session.suid.may_update[$asso_id]))}
           <h1>Voir le site comme&hellip;</h1>
           <form method="post" action="{$platal->ns}change_rights">
             <div>
               <select name="right" onchange="this.form.submit()" style="margin: 0; padding: 0">
-                {if hasPerm('admin') || ($smarty.session.suid && $smarty.session.suid.perms->hasFlag('admin'))}
+                {if hasPerm('admin') || ($suid && $smarty.session.suid.perms->hasFlag('admin'))}
                 <option value="admin" {if hasPerm('admin')}selected="selected"{/if}>Administrateur</option>
                 {/if}
                 <option value="anim" {if $is_admin && !hasPerm('admin')}selected="selected"{/if}>Animateur</option>
