@@ -1000,6 +1000,26 @@ class Profile
             || $name == self::DN_SHORT || $name == self::DN_SORT;
     }
 
+    /** Returns the closest "accounts only" name type for $name
+     */
+    public static function getAccountEquivalentName($name)
+    {
+        switch ($name)
+        {
+        case self::DN_DIRECTORY:
+        case self::DN_SORT:
+            return 'directory_name';
+        case self::DN_FULL:
+        case self::DN_PUBLIC:
+            return 'full_name';
+        case self::DN_PRIVATE:
+        case self::DN_SHORT:
+        case self::DN_YOURSELF:
+        default:
+            return 'display_name';
+        }
+    }
+
     public static function getNameTypeId($type, $for_sql = false)
     {
         if (!S::has('name_types')) {

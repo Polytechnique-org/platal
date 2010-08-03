@@ -1401,7 +1401,13 @@ class UFO_Name extends UserFilterOrder
     {
         if (Profile::isDisplayName($this->type)) {
             $sub = $uf->addDisplayFilter();
-            return 'pd' . $sub . '.' . $this->type;
+            $token = 'pd' . $sub . '.' . $this->type;
+            if ($uf->accountsRequired()) {
+                $account_token = Profile::getAccountEquivalentName($this->type);
+                return 'IFNULL(' . $token . ', a.' . $account_token . ')';
+            } else {
+                return $token;
+            }
         } else {
             $sub = $uf->addNameFilter($this->type, $this->variant);
             if ($this->particle) {
@@ -1980,9 +1986,19 @@ class UserFilter extends PlFilter
         $this->with_accounts = true;
     }
 
+    public function accountsRequired()
+    {
+        return $this->with_accounts;
+    }
+
     public function requireProfiles()
     {
         $this->with_profiles = true;
+    }
+
+    public function profilesRequired()
+    {
+        return $this->with_profiles;
     }
 
     protected function accountJoins()
