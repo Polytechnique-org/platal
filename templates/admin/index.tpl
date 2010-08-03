@@ -81,7 +81,7 @@
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/icons">Icônes</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="sql_errors">Erreurs MySQL</a>
+      <a href="site_errors">Erreurs d'exécution</a>
     </td>
   </tr>
 
