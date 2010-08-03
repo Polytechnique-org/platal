@@ -676,7 +676,7 @@ class User extends PlUser
         }
 
         $mmlist = new MMList($this);
-        $mmlist->kill($alias, $clearAll);
+        $mmlist->kill($this->hruid, $clearAll);
     }
 
     // Merge all infos in other user and then clean this one
