@@ -949,15 +949,19 @@ class AdminModule extends PLModule
                                   WHERE  pd.promo = {?}', $promo);
             while (list($pid, $name, $death) = $res->next()) {
                 $val = Env::v('death_' . $pid);
-                if($val == $death || empty($val)) {
+                if ($val == $death) {
                     continue;
                 }
 
+                if (empty($val)) {
+                    $val = null;
+                }
                 XDB::execute('UPDATE  profiles
                                  SET  deathdate = {?}, deathdate_rec = NOW()
                                WHERE  pid = {?}', $val, $pid);
-                $page->trigSuccess('Ajout du décès de ' . $name . ' le ' . $val . '.');
-                if($death == '0000-00-00' || empty($death)) {
+
+                $page->trigSuccess('Édition du décès de ' . $name . ' (' . ($val ? $val : 'ressuscité') . ').');
+                if ($val && ($death == '0000-00-00' || empty($death))) {
                     $profile = Profile::get($pid);
                     $profile->clear();
                     $profile->owner()->clear(false);
@@ -970,7 +974,7 @@ class AdminModule extends PLModule
                           INNER JOIN  profile_display AS pd ON (p.pid = pd.pid)
                                WHERE  pd.promo = {?}
                             ORDER BY  pd.sort_name', $promo);
-        $page->assign('decedes', $res);
+        $page->assign('profileList', $res);
     }
 
     function handler_dead_but_active(&$page)

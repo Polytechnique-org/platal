@@ -26,13 +26,13 @@
       <td>
         Promotion&nbsp;:
         <input type="text" name="promo" value="{$promo}" size="5" maxlength="5" />
-        <input type="submit" value="GO" />
+        <input type="submit" value="Afficher" />
       </td>
     </tr>
   </table>
 </form>
 
-{if t($decedes)}
+{if t($profileList)}
 <form action="admin/deaths/{$promo}/validate" id="deathDateList" method="post">
   {xsrf_token_field}
   <table class="bicol" summary="liste des dates de décès">
@@ -40,11 +40,11 @@
       <th>Nom</th>
       <th>Date de décès</th>
     </tr>
-    {iterate item=x from=$decedes}
+    {iterate item=profile from=$profileList}
     <tr class="{cycle values="impair,pair"}">
-      <td>{$x.directory_name}</td>
+      <td>{$profile.directory_name}</td>
       <td class="center">
-        <input type="text" class="deathDate" name="death_{$x.pid}" value="{$x.deathdate}" size="10" maxlength="10" />
+        <input type="text" name="death_{$profile.pid}" value="{$profile.deathdate}" size="10" maxlength="10" />
       </td>
     </tr>
     {/iterate}
@@ -55,19 +55,6 @@
     </tr>
   </table>
 </form>
-
-<script type="text/javascript">//<![CDATA[
-  {literal}
-  $('input.deathDate').change(function () {
-    $(this).addClass('sendDate');
-  });
-  
-  $('#deathDateList').submit(function () {
-    // Avoid sending useless data to the webserver
-    $('input.deathDate').not('.sendDate').attr('disabled', true);
-  });
-  {/literal}
-//]]></script>
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
