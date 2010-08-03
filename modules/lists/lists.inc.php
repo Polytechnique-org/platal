@@ -74,16 +74,17 @@ function list_sort_members($members, $tri_promo = true)
 }
 
 // }}}
+// {{{ function list_fetch_basic_info
 
-function list_fetch_names($members)
+function list_fetch_basic_info($members)
 {
     $res = array();
     foreach ($members as $member) {
         $user = User::getSilent($member);
         if (!$user) {
-            $res[] = $member;
+            $res[] = $member . ',,';
         } else {
-            $res[] = $user->fullName();
+            $res[] = $user->forlifeEmail() . ',' . $user->directoryName() . ',' . $user->promo();
         }
     }
     return $res;

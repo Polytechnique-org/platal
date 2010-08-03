@@ -356,13 +356,11 @@ class ListsModule extends PLModule
         }
         $this->prepare_client($page);
         $members = $this->client->get_members($liste);
-        $list = list_fetch_names(list_extract_members($members[1]));
+        $list = list_fetch_basic_info(list_extract_members($members[1]));
         pl_content_headers("text/x-csv");
 
-        echo "email,nom,prenom,promo\n";
-        foreach ($list as $member) {
-            echo @$member['email'] . ',' . @$member['nom'] . ',' . @$member['prenom'] . ',' . @$member['promo'] . "\n";
-        }
+        echo "email,nom,promo\n";
+        echo implode("\n", $list);
         exit;
     }
 
