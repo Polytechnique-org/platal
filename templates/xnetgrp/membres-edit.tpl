@@ -71,7 +71,7 @@
         Type d'utilisateur&nbsp;:
       </td>
       <td>
-        <select name="type" onchange="showInformations(this); return true"{if $user->profile()} disabled="disabled"{/if}>
+        <select name="type" onchange="showInformations(this); return true">
           <option value="xnet" {if $user->type neq 'virtual'}selected="selected"{/if}>Personne physique</option>
           <option value="virtual" {if $user->type eq "virtual"}selected="selected"{/if}>Personne morale</option>
         </select>
@@ -82,7 +82,7 @@
         Nom affiché&nbsp;:
       </td>
       <td>
-        <input type="text" value="{$user->displayName()}" name="display_name" size="40"{if $user->profile()} disabled="disabled"{/if} />
+        <input type="text" value="{$user->displayName()}" name="display_name" size="40" />
       </td>
     </tr>
     <tr class="impair">
@@ -90,7 +90,7 @@
         Nom complet&nbsp;:
       </td>
       <td>
-        <input type="text" value="{$user->fullName()}" name="full_name" size="40"{if $user->profile()} disabled="disabled"{/if} />
+        <input type="text" value="{$user->fullName()}" name="full_name" size="40" />
       </td>
     </tr>
     <tr class="impair">
@@ -98,7 +98,7 @@
         Nom annuaire&nbsp;:
       </td>
       <td>
-        <input type="text" value="{$user->directoryName()}" name="directory_name" size="40"{if $user->profile()} disabled="disabled"{/if} />
+        <input type="text" value="{$user->directoryName()}" name="directory_name" size="40" />
       </td>
     </tr>
     <tr id="sexe" class="impair" {if $user->type eq "virtual"}style="display: none"{/if}>
@@ -106,18 +106,20 @@
         Sexe&nbsp;:
       </td>
       <td>
-        <select name="sex"{if $user->profile()} disabled="disabled"{/if}>
+        <select name="sex">
           <option value="male"{if !$user->isFemale()} selected="selected"{/if}>Homme</option>
           <option value="female"{if $user->isFemale()} selected="selected"{/if}>Femme</option>
         </select>
       </td>
     </tr>
+    {/if}
+    {if !$user->profile() || !$user->perms}
     <tr class="impair">
       <td class="titre">
         Email&nbsp;:
       </td>
       <td>
-        <input type="text" value="{$user->forlifeEmail()}" name="email" size="40"{if $user->profile()} disabled="disabled"{/if} />
+        <input type="text" value="{$user->forlifeEmail()}" name="email" size="40" />
       </td>
     </tr>
     {/if}

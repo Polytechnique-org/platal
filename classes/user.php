@@ -179,11 +179,11 @@ class User extends PlUser
         $uids = array_map(array('XDB', 'escape'), $uids);
 
         return XDB::iterator('SELECT  a.uid, a.hruid, a.registration_date, ah.alias AS homonym,
-                                      IF (af.alias IS NULL, a.email, CONCAT(af.alias, \'@' . $globals->mail->domain . '\')) AS forlife,
-                                      CONCAT(af.alias, \'@' . $globals->mail->domain2 . '\') AS forlife_alternate,
-                                      IF (ab.alias IS NULL, a.email, CONCAT(ab.alias, \'@' . $globals->mail->domain . '\')) AS bestalias,
-                                      CONCAT(ab.alias, \'@' . $globals->mail->domain2 . '\') AS bestalias_alternate,
-                                      a.full_name, a.directory_name, a.display_name, a.sex = \'female\' AS gender,
+                                      IF (af.alias IS NULL, NULL, CONCAT(af.alias, \'@' . $globals->mail->domain . '\')) AS forlife,
+                                      IF (af.alias IS NULL, NULL, CONCAT(af.alias, \'@' . $globals->mail->domain2 . '\')) AS forlife_alternate,
+                                      IF (ab.alias IS NULL, NULL, CONCAT(ab.alias, \'@' . $globals->mail->domain . '\')) AS bestalias,
+                                      IF (ab.alias IS NULL, NULL, CONCAT(ab.alias, \'@' . $globals->mail->domain2 . '\')) AS bestalias_alternate,
+                                      a.email, a.full_name, a.directory_name, a.display_name, a.sex = \'female\' AS gender,
                                       IF(a.state = \'active\', at.perms, \'\') AS perms,
                                       a.email_format, a.is_admin, a.state, a.type, a.skin,
                                       FIND_IN_SET(\'watch\', a.flags) AS watch, a.comment,
@@ -681,61 +681,93 @@ class User extends PlUser
 
     // Merge all infos in other user and then clean this one
     public function mergeIn(User &$newuser) {
-        if ($this->profile() || !$newuser->id()) {
-            // don't disable user with profile in this way
+        if ($this->profile()) {
+            // Don't disable user with profile in this way.
+            global $globals;
+            Platal::page()->trigError('Impossible de fusionner les comptes ' . $this->hruid . ' et ' . $newuser->hruid .
+                                      '. Contacte support@' . $globals->mail->domain . '.');
             return false;
         }
-        // TODO check all tables to see if there is no other info to use
 
-        $newemail = $newuser->forlifeEmail();
-        if (!$newemail && $this->forlifeEmail()) {
-            XDB::execute("UPDATE  accounts
-                             SET  email = {?}
-                           WHERE  uid = {?} AND email IS NULL",
-                    $this->forlifeEmail(), $newuser->id());
-            $newemail = $this->forlifeEmail();
-        }
-
-        // change email used in aliases and mailing lists
-        if ($this->forlifeEmail() != $newemail && $this->forlifeEmail()) {
-            // virtual_redirect (email aliases)
-            XDB::execute("DELETE  v1
-                            FROM  virtual_redirect AS v1, virtual_redirect AS v2
-                           WHERE  v1.vid = v2.vid AND v1.redirect = {?} AND v2.redirect = {?}",
-                    $this->forlifeEmail(), $newemail);
-            XDB::execute("UPDATE  virtual_redirect
-                             SET  redirect = {?}
-                           WHERE  redirect = {?}",
-                    $newemail, $this->forlifeEmail());
-
-            // require_once 'mmlist.php';
-
-            // group mailing lists
-            $group_domains = XDB::fetchColumn("SELECT  g.mail_domain
-                          FROM  groups AS g
-                    INNER JOIN  group_members AS gm ON(g.id = gm.asso_id)
-                         WHERE  g.mail_domain != '' AND gm.uid = {?}",
-                    $this->id());
-            foreach ($group_domains as $mail_domain) {
-                $mmlist = new MMList($this, $mail_domain);
-                $mmlist->replace_email_in_all($this->forlifeEmail(), $newmail);
+        if ($this->forlifeEmail()) {
+            // If the new user is not registered and does not have already an email address,
+            // we need to give him the old user's email address if he has any.
+            if (!$newuser->perms) {
+                XDB::execute('UPDATE  accounts
+                                 SET  email = {?}
+                               WHERE  uid = {?} AND email IS NULL',
+                             $this->forlifeEmail(), $newuser->id());
             }
-            // main domain lists
-            $mmlist = new MMList($this);
-            $mmlist->replace_email_in_all($this->forlifeEmail(), $newmail);
+            $newemail = XDB::fetchOneCell('SELECT  email
+                                             FROM  accounts
+                                            WHERE  uid = {?}',
+                                          $newuser->id());
+
+            // Change email used in aliases and mailing lists.
+            if ($this->forlifeEmail() != $newemail) {
+                // virtual_redirect (email aliases)
+                XDB::execute('DELETE  v1
+                                FROM  virtual_redirect AS v1, virtual_redirect AS v2
+                               WHERE  v1.vid = v2.vid AND v1.redirect = {?} AND v2.redirect = {?}',
+                             $this->forlifeEmail(), $newemail);
+                XDB::execute('UPDATE  virtual_redirect
+                                 SET  redirect = {?}
+                               WHERE  redirect = {?}',
+                             $newemail, $this->forlifeEmail());
+
+                // group mailing lists
+                $group_domains = XDB::fetchColumn('SELECT  g.mail_domain
+                                                     FROM  groups        AS g
+                                               INNER JOIN  group_members AS gm ON(g.id = gm.asso_id)
+                                                    WHERE  g.mail_domain != \'\' AND gm.uid = {?}',
+                                                  $this->id());
+                foreach ($group_domains as $mail_domain) {
+                    $mmlist = new MMList($this, $mail_domain);
+                    $mmlist->replace_email_in_all($this->forlifeEmail(), $newemail);
+                }
+                // main domain lists
+                $mmlist = new MMList($this);
+                $mmlist->replace_email_in_all($this->forlifeEmail(), $newemail);
+            }
         }
 
-        // group_members (xnet group membership)
-        XDB::execute("DELETE  g1
-                        FROM  group_members AS g1, group_members AS g2
-                       WHERE  g1.uid = {?} AND g2.uid = {?} AND g1.asso_id = g2.asso_id",
-                    $this->id(), $newuser->id());
-        XDB::execute("UPDATE  group_members
-                         SET  uid = {?}
-                       WHERE  uid = {?}",
-                    $this->id(), $newuser->id());
+        // Updates user in following tables.
+        foreach (array('group_announces', 'payment_transactions', 'log_sessions') as $table) {
+            XDB::execute('UPDATE  ' . $table . '
+                             SET  uid = {?}
+                           WHERE  uid = {?}',
+                         $newuser->id(), $this->id());
+        }
+        XDB::execute('UPDATE  group_events
+                         SET  organisateur_uid = {?}
+                       WHERE  organisateur_uid = {?}',
+                     $newuser->id(), $this->id());
 
-        XDB::execute("DELETE FROM accounts WHERE uid = {?}", $this->id());
+        // Merges user in following tables, ie updates when possible, then deletes remaining occurences of the old user.
+        foreach (array('group_announces_read', 'group_event_participants', 'group_member_sub_requests', 'group_members') as $table) {
+            XDB::execute('UPDATE IGNORE  ' . $table . '
+                                    SET  uid = {?}
+                                  WHERE  uid = {?}',
+                         $newuser->id(), $this->id());
+            XDB::execute('DELETE FROM  ' . $table . '
+                                WHERE  uid = {?}',
+                         $this->id());
+        }
+
+        // Eventually updates last session id and deletes old user's accounts entry.
+        $lastSession = XDB::fetchOneCell('SELECT  id
+                                            FROM  log_sessions
+                                           WHERE  uid = {?}
+                                        ORDER BY  start DESC
+                                           LIMIT  1',
+                                         $newuser->id());
+        XDB::execute('UPDATE  log_last_sessions
+                         SET  id = {?}
+                       WHERE  uid = {?}',
+                     $newuser->id());
+        XDB::execute('DELETE FROM  accounts
+                            WHERE  uid = {?}',
+                     $this->id());
 
         return true;
     }

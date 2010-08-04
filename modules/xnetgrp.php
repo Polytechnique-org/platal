@@ -636,55 +636,66 @@ class XnetGrpModule extends PLModule
 
         S::assert_xsrf_token();
 
-        // Finds or creates account
+        // Finds or creates account: first cases are for users with an account.
         if (!User::isForeignEmailAddress($email)) {
-            // standard x account
+            // Standard account
             $user = User::get($email);
         } else if (!isvalid_email($email)) {
             // email might not be a regular email but an alias or a hruid
             $user = User::get($email);
             if (!$user) {
                 // need a valid email address
-                $page->trigError("«&nbsp;<strong>$email</strong>&nbsp;» n'est pas une adresse email valide.");
+                $page->trigError('«&nbsp;<strong>' . $email . '</strong>&nbsp;» n\'est pas une adresse email valide.');
                 return;
             }
         } else if (Env::v('x') && Env::i('userid')) {
-            // user is an x but might not yet be registered
             $user = User::getWithUID(Env::i('userid'));
             if (!$user) {
-                $page->trigError("Utilisateur invalide");
+                $page->trigError('Utilisateur invalide.');
                 return;
             }
-            // add email for marketing if unknown
-            if ($user->state == 'pending' && Env::v('market')) {
-                $market = Marketing::get($user->uid, $email);
-                if (!$market) {
-                    $market = new Marketing($user->uid, $email, 'group', $globals->asso('nom'),
-                                            Env::v('market_from'), S::v('uid'));
-                    $market->add();
+
+            // User has an account but is not yet registered.
+            if ($user->state == 'pending') {
+                // Add email in account table.
+                XDB::query('UPDATE  accounts
+                               SET  email = {?}
+                             WHERE  uid = {?} AND email IS NULL',
+                           Post::t('email'), $user->id());
+                // Add email for marketing if required.
+                if (Env::v('market')) {
+                    $market = Marketing::get($user->uid, $email);
+                    if (!$market) {
+                        $market = new Marketing($user->uid, $email, 'group', $globals->asso('nom'),
+                                                Env::v('market_from'), S::v('uid'));
+                        $market->add();
+                    }
                 }
             }
         } else {
-            // user is not an x
-            $hruid = strtolower(str_replace('@','.',$email).'.ext');
-            // might already exists (in another group for example)
+            // User is of type xnet.
+            list($firstname, $lastname) = explode('@', $email);
+            $hruid = User::makeHrid($firstname, $lastname, 'ext');
+            // User might already have an account (in another group for example).
             $user = User::get($hruid);
+
+            // If the user has no account yet, creates new account: build names from email address.
             if (empty($user)) {
-                // creates new account: build names from email address
                 $display_name = ucwords(strtolower(substr($hruid, strpos('.', $hruid))));
-                $full_name = ucwords(strtolower(str_replace('.', ' ',substr($email, strpos('@', $email)))));
-                XDB::execute("INSERT INTO accounts (hruid, display_name, full_name, email, type)
-                    VALUES({?}, {?}, {?}, {?}, 'xnet')",
-                    $hruid, $display_name, $full_name, $email);
+                $full_name = ucwords(strtolower(str_replace('.', ' ', substr($email, strpos('@', $email)))));
+                XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, email, type)
+                                   VALUES  ({?}, {?}, {?}, {?}, \'xnet\')',
+                             $hruid, $display_name, $full_name, $email);
                 $user = User::get($hruid);
             }
         }
+
         if ($user) {
-            XDB::execute("REPLACE INTO  group_members (uid, asso_id)
-                                VALUES  ({?}, {?})",
+            XDB::execute('REPLACE INTO  group_members (uid, asso_id)
+                                VALUES  ({?}, {?})',
                          $user->id(), $globals->asso('id'));
             $this->removeSubscriptionRequest($user->id());
-            pl_redirect("member/" . $user->login());
+            pl_redirect('member/' . $user->login());
         }
     }
 
@@ -700,16 +711,16 @@ class XnetGrpModule extends PLModule
             }
         }
         if (empty($users)) {
-            list($nom, $prenom) = str_replace(array('-', ' ', "'"), '%', array(Env::t('nom'), Env::t('prenom')));
+            list($lastname, $firstname) = str_replace(array('-', ' ', "'"), '%', array(Env::t('nom'), Env::t('prenom')));
             $cond = new PFC_And(new PFC_Not(new UFC_Registered()));
-            if (!empty($nom)) {
-                $cond->addChild(new UFC_Name(Profile::LASTNAME, $nom, UFC_Name::CONTAINS));
+            if (!empty($lastname)) {
+                $cond->addChild(new UFC_Name(Profile::LASTNAME, $lastname, UFC_Name::CONTAINS));
             }
-            if (!empty($prenom)) {
-                $cond->addChild(new UFC_Name(Profile::FIRSTNAME, $prenom, UFC_Name::CONTAINS));
+            if (!empty($firstname)) {
+                $cond->addChild(new UFC_Name(Profile::FIRSTNAME, $firstname, UFC_Name::CONTAINS));
             }
-            if (Env::i('promo')) {
-                $cond->addChild(new UFC_Promo('=', UserFilter::GRADE_ING, Env::i('promo')));
+            if (Env::t('promo')) {
+                $cond->addChild(new UFC_Promo('=', UserFilter::DISPLAY, Env::t('promo')));
             }
             $uf = new UserFilter($cond);
             $users = $uf->getUsers(new PlLimit(30));
@@ -824,7 +835,7 @@ class XnetGrpModule extends PLModule
 
     private function changeLogin(PlPage &$page, PlUser &$user, MMList &$mmlist, $login)
     {
-        // Search the uid of the user...
+        // Search the user's uid.
         $xuser = User::getSilent($login);
         if (!$xuser) {
             $accounts = User::getPendingAccounts($login);
@@ -836,16 +847,16 @@ class XnetGrpModule extends PLModule
                 return false;
             }
             $xuser = User::getSilent($accounts[0]['uid']);
-            $sub = false;
         }
 
         if (!$xuser) {
             return false;
         }
 
-        $user->mergeIn($xuser);
-
-        return $xuser->login();
+        if ($user->mergeIn($xuser)) {
+            return $xuser->login();
+        }
+        return $user->login();
     }
 
     function handler_admin_member(&$page, $user)
@@ -877,13 +888,20 @@ class XnetGrpModule extends PLModule
             $from_email = $user->forlifeEmail();
             if (!$user->profile()) {
                 XDB::query('UPDATE  accounts
-                               SET  full_name = {?}, directory_name = {?}, display_name = {?}, sex = {?}, email = {?}, type = {?}
+                               SET  full_name = {?}, directory_name = {?}, display_name = {?},
+                                    sex = {?}, email = {?}, type = {?}
                              WHERE  uid = {?}',
-                            Post::t('full_name'), Post::t('directory_name'), Post::t('display_name'), (Post::v('sex') == 'male')?'male':'female', Post::v('email'), (Post::v('type') == 'xnet')?'xnet':'virtual',
-                            $user->id());
-                if (XDB::affectedRows()) {
-                    $page->trigSuccess('Données de l\'utilisateur mise à jour.');
-                }
+                           Post::t('full_name'), Post::t('directory_name'), Post::t('display_name'),
+                           (Post::t('sex') == 'male') ? 'male' : 'female', Post::t('email'),
+                           (Post::t('type') == 'xnet') ? 'xnet' : 'virtual', $user->id());
+            } else if (!$user->perms) {
+                XDB::query('UPDATE  accounts
+                               SET  email = {?}
+                             WHERE  uid = {?}',
+                           Post::t('email'), $user->id());
+            }
+            if (XDB::affectedRows()) {
+                $page->trigSuccess('Données de l\'utilisateur mise à jour.');
             }
 
             // Update group params for user
@@ -895,11 +913,13 @@ class XnetGrpModule extends PLModule
                              WHERE  uid = {?} AND asso_id = {?}',
                             ($perms == 'admin') ? 'admin' : 'membre', $comm,
                             $user->id(), $globals->asso('id'));
-                if ($perms != $user->group_perms) {
-                    $page->trigSuccess('Permissions modifiées&nbsp;!');
-                }
-                if ($comm != $user->group_comm) {
-                    $page->trigSuccess('Commentaire mis à jour.');
+                if (XDB::affectedRows()) {
+                    if ($perms != $user->group_perms) {
+                        $page->trigSuccess('Permissions modifiées&nbsp;!');
+                    }
+                    if ($comm != $user->group_comm) {
+                        $page->trigSuccess('Commentaire mis à jour.');
+                    }
                 }
             }
 

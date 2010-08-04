@@ -80,6 +80,7 @@ function searchX()
     <tr>
       <td colspan="2">
         <input type="checkbox" id="x" name="x" onchange="xStateChange(this);" />
+        {* TODO: adapts text for masters and doctorates when required. *}
         <label for="x">Coche cette case s'il s'agit d'un X non inscrit à Polytechnique.org.</label>
       </td>
     </tr>
@@ -93,7 +94,8 @@ function searchX()
     </tr>
     <tr id="xpromo" style="display: none">
       <td class="titre">Promotion&nbsp;:</td>
-      <td><input type="text" id="promo" name="promo" size="4" value="" onkeyup="searchX();" /></td>
+      {* TODO: add examples for masters and doctorates when required. *}
+      <td><input type="text" id="promo" name="promo" size="4" value="" onkeyup="searchX();" /> <small>(X2004)</small></td>
     </tr>
     <tr id="xsearch" style="display: none" class="pair">
       <td colspan="2" id="search_result">

@@ -329,7 +329,7 @@ class RegisterModule extends PLModule
         //
         XDB::execute("UPDATE  accounts
                          SET  password = {?}, state = 'active',
-                              registration_date = NOW()
+                              registration_date = NOW(), email = NULL
                        WHERE  uid = {?}", $password, $uid);
         XDB::execute("UPDATE  profiles
                          SET  birthdate = {?}, last_change = NOW()
