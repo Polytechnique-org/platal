@@ -31,6 +31,11 @@ function EnCryptedResponse() {
             return false;
         exit;
     }
+    if (differentTypes(pw1)) {
+        alert ("\nErreur : le nouveau mot de passe doit comporter au moins deux types de caractères parmi les suivants : lettres minuscules, lettres majuscules, chiffres, caractères spéciaux.")
+            return false;
+        exit;
+    }
 
     str = hash_encrypt(document.forms.changepass.nouveau.value);
     document.forms.changepass2.response2.value = str;

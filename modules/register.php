@@ -248,7 +248,7 @@ class RegisterModule extends PLModule
         }
 
         $page->changeTpl('register/step' . $subState->i('step') . '.tpl');
-        $page->addJsLink('motdepasse.js');
+        $page->addJsLink('password.js');
         if (isset($error)) {
             $page->trigError($error);
         }

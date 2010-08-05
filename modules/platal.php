@@ -224,12 +224,12 @@ class PlatalModule extends PLModule
             S::logger()->log('passwd');
             Platal::session()->setAccessCookie(true);
 
-            $page->changeTpl('platal/motdepasse.success.tpl');
+            $page->changeTpl('platal/password.success.tpl');
             $page->run();
         }
 
-        $page->changeTpl('platal/motdepasse.tpl');
-        $page->addJsLink('motdepasse.js');
+        $page->changeTpl('platal/password.tpl');
+        $page->addJsLink('password.js');
         $page->setTitle('Mon mot de passe');
     }
 
@@ -387,8 +387,8 @@ Adresse de secours : " . Post::v('email') : ""));
             S::logger($uid)->log("passwd", "");
             $page->changeTpl('platal/tmpPWD.success.tpl');
         } else {
-            $page->changeTpl('platal/motdepasse.tpl');
-            $page->addJsLink('motdepasse.js');
+            $page->changeTpl('platal/password.tpl');
+            $page->addJsLink('password.js');
         }
     }
 

@@ -41,7 +41,7 @@ class GoogleAppsModule extends PLModule
         require_once("emails.inc.php");
         require_once("googleapps.inc.php");
         $page->changeTpl('googleapps/index.tpl');
-        $page->addJsLink('motdepasse.js');
+        $page->addJsLink('password.js');
         $page->setTitle('Compte Google Apps');
 
         $user = S::user();

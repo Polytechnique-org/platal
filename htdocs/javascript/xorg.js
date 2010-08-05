@@ -271,27 +271,42 @@ function getType(c) {
     }
 }
 
-function checkPassword(box, okLabel) {
+function differentTypes(password) {
     var prev = 0;
+
+    for (i = 0 ; i < password.length ; ++i) {
+        var type = getType(password.charAt(i));
+        if (prev != 0 && prev != type) {
+            return true;
+        }
+        prev = type;
+    }
+    return false;
+}
+
+function passwordStrength(password) {
     var prop = 0;
-    var pass = box.value;
-    var types = Array(0, 0, 0, 0, 0);
+    var prev = 0;
     var firstType = true;
-    for (i = 0 ; i < pass.length ; ++i) {
-        type = getType(pass.charAt(i));
+    var types = Array(0, 0, 0, 0, 0);
+
+    for (i = 0 ; i < password.length ; ++i) {
+        var type = getType(password.charAt(i));
         if (prev != 0 && prev != type) {
             prop += 5;
+            firstType = false;
         }
         prop += i;
         if (types[type] == 0 && !firstType) {
             prop += 15;
-        } else {
-            firstType = false;
         }
         types[type]++;
         prev = type;
     }
-    if (pass.length < 6) {
+    if (password.length < 6) {
+        prop *= 0.75;
+    }
+    if (firstType) {
         prop *= 0.75;
     }
     if (prop > 100) {
@@ -299,6 +314,14 @@ function checkPassword(box, okLabel) {
     } else if (prop < 0) {
         prop = 0;
     }
+
+    return prop;
+}
+
+function checkPassword(box, okLabel) {
+    var password = box.value;
+    var prop = passwordStrength(password);
+
     if (prop >= 60) {
         color = "#4f4";
         bgcolor = "#050";
@@ -320,7 +343,7 @@ function checkPassword(box, okLabel) {
            .parent().stop()
                     .animate({ backgroundColor: bgcolor }, 750);
     var submitButton = $(":submit[name='" + passwordprompt_submit + "']");
-    if (ok && pass.length >= 6) {
+    if (ok && password.length >= 6 && differentTypes(password)) {
         submitButton.attr("value", okLabel);
         submitButton.removeAttr("disabled");
     } else {
