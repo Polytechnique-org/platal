@@ -90,10 +90,10 @@
         <span class="smaller">au moins 6 caractères</span>
       </td>
       <td>
-        <input type="hidden" name="response2" />
-        <input type="password" size="10" maxlength="256" name="password" /><br/>
+        <input type="hidden" name="pwhash" />
+        <input type="password" size="10" maxlength="256" name="password1" /><br/>
         <input type="password" size="10" maxlength="256" name="password2" /> (retape ton mot de passe)<br />
-        {checkpasswd prompt="password" text="Terminer la pré-inscription"}
+        {checkpasswd prompt="password1" text="Terminer la pré-inscription"}
       </td>
     </tr>
   </table>
@@ -132,16 +132,10 @@
     </tr>
     <tr class="impair">
       <td class="center">
-        <input type="submit" name="submitn" value="Continuer" onclick="EncryptedResponseInNestedForm(); return false;" />
+        <input type="submit" name="submitn" value="Continuer" onclick="return hashResponse('password1', 'password2', true);" />
       </td>
     </tr>
   </table>
-</form>
-<form action="register" id="changepass">
-  <div>
-    <input type="hidden" name="nouveau" />
-    <input type="hidden" name="nouveau2" />
-  </div>
 </form>
 {/if}
 

@@ -179,7 +179,7 @@ class RegisterModule extends PLModule
                     $subState->set('services', $services);
 
                     // Validate the password.
-                    if (!Post::v('response2', false)) {
+                    if (!Post::v('pwhash', false)) {
                         $error[] = "Le mot de passe n'est pas valide.";
                     }
 
@@ -211,7 +211,7 @@ class RegisterModule extends PLModule
                         $subState->set('birthdate', sprintf("%04d-%02d-%02d",
                                                             intval($birth[2]), intval($birth[1]), intval($birth[0])));
                         $subState->set('email', Post::t('email'));
-                        $subState->set('password', Post::t('response2'));
+                        $subState->set('password', Post::t('pwhash'));
 
                         // Update the current alert if the birthdate is incorrect,
                         // or if the IP address of the user has been banned.

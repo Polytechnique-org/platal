@@ -202,10 +202,10 @@ class PlatalModule extends PLModule
     {
         global $globals;
 
-        if (Post::has('response2'))  {
+        if (Post::has('pwhash') && Post::t('pwhash'))  {
             S::assert_xsrf_token();
 
-            S::set('password', $password = Post::v('response2'));
+            S::set('password', $password = Post::t('pwhash'));
             XDB::execute('UPDATE  accounts
                              SET  password = {?}
                            WHERE  uid={?}', $password,
@@ -365,8 +365,8 @@ Adresse de secours : " . Post::v('email') : ""));
         }
 
         $uid = $ligne["uid"];
-        if (Post::has('response2')) {
-            $password = Post::v('response2');
+        if (Post::has('pwhash') && Post::t('pwhash')) {
+            $password = Post::t('pwhash');
             XDB::query('UPDATE  accounts
                            SET  password={?}
                          WHERE  uid = {?} AND state = \'active\'',

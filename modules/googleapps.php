@@ -69,9 +69,9 @@ class GoogleAppsModule extends PLModule
                 } else {
                     $account->set_password_sync(false);
                 }
-            } elseif ($action == 'password' && Post::has('response2') && !$account->sync_password) {
+            } elseif ($action == 'password' && Post::has('pwhash') && Post::t('pwhash') && !$account->sync_password) {
                 S::assert_xsrf_token();
-                $account->set_password(Post::v('response2'));
+                $account->set_password(Post::t('pwhash'));
             }
 
             if ($action == 'suspend' && Post::has('suspend') && $account->active()) {
@@ -104,7 +104,7 @@ class GoogleAppsModule extends PLModule
                 if ($password_sync) {
                     $password = $user->password();
                 } else {
-                    $password = Post::v('response2');
+                    $password = Post::t('pwhash');
                 }
 
                 $account->create($password_sync, $password, $redirect_mails);

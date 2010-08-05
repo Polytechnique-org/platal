@@ -37,14 +37,15 @@
 <br />
 <fieldset style="width: 70%; margin-left: 15%">
   <legend>{icon name=lock} Saisie du nouveau mot de passe</legend>
-  <form action="{$smarty.server.REQUEST_URI}" method="post" id="changepass">
+  <form action="{$smarty.server.REQUEST_URI}" method="post">
+  {xsrf_token_field}
     <table style="width: 100%">
       <tr>
         <td class="titre">
           Mot de passe&nbsp;:
         </td>
         <td>
-          <input type="password" size="10" maxlength="256" name="nouveau" />
+          <input type="password" size="10" maxlength="256" name="new1" />
         </td>
       </tr>
       <tr>
@@ -52,7 +53,7 @@
           Retape-le une fois&nbsp;:
         </td>
         <td>
-          <input type="password" size="10" maxlength="256" name="nouveau2" />
+          <input type="password" size="10" maxlength="256" name="new2" />
         </td>
       </tr>
       <tr>
@@ -60,21 +61,16 @@
           Sécurité
         </td>
         <td>
-          {checkpasswd prompt="nouveau" submit="submitn"}
+          {checkpasswd prompt="new1" submit="submitn"}
         </td>
       </tr>
       <tr>
         <td colspan="2" class="center">
-          <input type="submit" value="Changer" name="submitn" onclick="EnCryptedResponse(); return false;" />
+          <input type="hidden" name="pwhash" value="" />
+          <input type="submit" value="Changer" name="submitn" onclick="return hashResponse('new1', 'new2', true);" />
         </td>
       </tr>
     </table>
-  </form>
-  <form action="{$smarty.server.REQUEST_URI}" method="post" id="changepass2">
-  <div>
-  {xsrf_token_field}
-  <input type="hidden" name="response2"  value="" />
-  </div>
   </form>
 </fieldset>
 

@@ -18,37 +18,29 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function EnCryptedResponse() {
-    pw1 = document.forms.changepass.nouveau.value;
-    pw2 = document.forms.changepass.nouveau2.value;
-    if (pw1 != pw2) {
-        alert ("\nErreur : les deux champs ne sont pas identiques !")
+function hashResponse(password1, password2, hasConfirmation) {
+    pw1 = $('[name=' + password1 + ']').val();
+    if (hasConfirmation) {
+        pw2 = $('[name=' + password2 + ']').val();
+        if (pw1 != pw2) {
+            alert("\nErreur : les deux champs ne sont pas identiques !");
             return false;
-        exit;
+        }
+        $('[name=' + password2 + ']').val('');
     }
     if (pw1.length < 6) {
-        alert ("\nErreur : le nouveau mot de passe doit faire au moins 6 caractères !")
-            return false;
-        exit;
+        alert("\nErreur : le nouveau mot de passe doit faire au moins 6 caractères !");
+        return false;
     }
-    if (differentTypes(pw1)) {
-        alert ("\nErreur : le nouveau mot de passe doit comporter au moins deux types de caractères parmi les suivants : lettres minuscules, lettres majuscules, chiffres, caractères spéciaux.")
-            return false;
-        exit;
+    if (!differentTypes(pw1)) {
+        alert ("\nErreur : le nouveau mot de passe doit comporter au moins deux types de caractères parmi les suivants : lettres minuscules, lettres majuscules, chiffres, caractères spéciaux.");
+        return false;
     }
 
-    str = hash_encrypt(document.forms.changepass.nouveau.value);
-    document.forms.changepass2.response2.value = str;
-
-    alert ("Le mot de passe que tu as rentré va être chiffré avant de nous parvenir par Internet ! Ainsi il ne circulera pas en clair.");
-    document.forms.changepass2.submit();
+    alert("Le mot de passe que tu as rentré va être chiffré avant de nous parvenir par Internet ! Ainsi il ne circulera pas en clair.");
+    $('[name=' + password1 + ']').val('');
+    $('[name=pwhash]').val(hash_encrypt(pw1));
     return true;
-}
-
-function EncryptedResponseInNestedForm() {
-    $('[name=nouveau]').val($('[name=password]').val());
-    $('[name=nouveau2]').val($('[name=password2]').val());
-    EnCryptedResponse();
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

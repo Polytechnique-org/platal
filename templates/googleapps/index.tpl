@@ -99,19 +99,19 @@
       </tr>
       <tr class="impair">
         <td colspan="2">
-          <form action="#" method="post" id="changepass">
+          <form action="#" method="post">
           <table class="tinybicol">
             <tr>
               <td class="titre">Nouveau mot de passe</td>
-              <td><input type="password" name="nouveau" onfocus="document.forms.changepass2.password_sync[1].checked = true;" /></td>
+              <td><input type="password" name="new1" onfocus="document.forms.changepass2.password_sync[1].checked = true;" /></td>
             </tr>
             <tr>
               <td class="titre">Vérification</td>
-              <td><input type="password" name="nouveau2" onfocus="document.forms.changepass2.password_sync[1].checked = true;" /></td>
+              <td><input type="password" name="new2" onfocus="document.forms.changepass2.password_sync[1].checked = true;" /></td>
             </tr>
             <tr>
               <td class="titre">Sécurité</td>
-              <td>{checkpasswd prompt="nouveau" submit="create_account" text="Créer mon compte !"}</td>
+              <td>{checkpasswd prompt="new" submit="create_account" text="Créer mon compte !"}</td>
             </tr>
           </table>
           </form>
@@ -173,8 +173,8 @@
         {if $password_sync}
           <input type="submit" value="Créer mon compte !" />
         {else}
-          <input type="hidden" name="response2"  value="" />
-          <input type="submit" name="create_account" value="Créer mon compte !" onclick="EnCryptedResponse(); return false;" />
+          <input type="hidden" name="pwhash" value="" />
+          <input type="submit" name="create_account" value="Créer mon compte !" onclick="return hashResponse('new1', 'new2', true);" />
         {/if}
       </td>
     </tr>
@@ -360,30 +360,31 @@
   {else}
   <tr class="impair"><td colspan="2">
     Changer le mot de passe de ton compte Google Apps&nbsp;:<br /><br />
-    <form action="googleapps/password" method="post" id="changepass">
+    <form action="googleapps/password" method="post">
+      {xsrf_token_field}
       <table class="bicol">
         <tr>
           <td class="titre">Nouveau mot de passe</td>
-          <td><input type="password" name="nouveau" /></td>
+          <td><input type="password" name="new1" /></td>
         </tr>
         <tr>
           <td class="titre">Vérification</td>
-          <td><input type="password" name="nouveau2" /></td>
+          <td><input type="password" name="new2" /></td>
         </tr>
         <tr>
           <td class="titre">Sécurité</td>
-          <td>{checkpasswd prompt="nouveau" submit="create_account" text="Changer mon mot de passe"}</td>
+          <td>{checkpasswd prompt="new1" submit="create_account" text="Changer mon mot de passe"}</td>
         </tr>
         <tr>
           <td></td>
-          <td><input type="submit" name="create_account" value="Changer" onclick="EnCryptedResponse(); return false;" /></td>
+          <td>
+            <input type="hidden" name="pwhash" value="" />
+            <input type="submit" name="create_account" value="Changer" onclick="return hashResponse('new1', 'new2', true);" />
+          </td>
         </tr>
       </table>
     </form>
-    <form action="googleapps/password" method="post" id="changepass2">
-      {xsrf_token_field}
-      <input type="hidden" name="response2"  value="" />
-    </form><br />
+    <br />
     Pour une sécurité optimale, ton mot de passe circule de manière sécurisée (https).
     Il est chiffré irréversiblement sur nos serveurs, ainsi que sur ceux de Google.
   </td></tr>
