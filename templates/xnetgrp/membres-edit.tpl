@@ -28,6 +28,7 @@
       document.getElementById('prenom').style.display = state;
       document.getElementById('sexe').style.display = state;
       document.getElementById('make_X').style.display = state;
+      document.getElementById('password').style.display = state;
   }
 
   function showXInput(box)
@@ -133,6 +134,18 @@
       </td>
     </tr>
     {if $user->type eq 'xnet'}
+    <tr class="impair" id="password">
+      <td class="titre">Mot de passe&nbsp;:</td>
+      <td>
+        <div style="float: left">
+          <input type="text" name="new_plain_password" size="10" maxlength="256" value="********" />
+          <input type="hidden" name="pwhash" value="" />
+        </div>
+        <div style="float: left; margin-top: 5px;">
+          {checkpasswd prompt="new_plain_password" submit="dummy_none"}
+        </div>
+      </td>
+    </tr>
     <tr id="make_X">
       <td colspan="2">
         <span id="make_X_cb">
@@ -199,10 +212,10 @@
 
   <div class="center">
     <br />
-    <input type="submit" name='change' value="Valider ces changements" />
+    <input type="submit" name='change' value="Valider ces changements" onclick="return hashResponse('new_plain_password', false, false);" />
     &nbsp;
     <input type="reset" value="Annuler ces changements" />
-  </div>                                                                      
+  </div>
 
 </form>
 

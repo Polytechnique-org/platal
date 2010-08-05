@@ -894,6 +894,13 @@ class XnetGrpModule extends PLModule
                            Post::t('full_name'), Post::t('directory_name'), Post::t('display_name'),
                            (Post::t('sex') == 'male') ? 'male' : 'female', Post::t('email'),
                            (Post::t('type') == 'xnet') ? 'xnet' : 'virtual', $user->id());
+                // If user is of type xnet and new password is given.
+                if (!Post::blank('pwhash') && Post::t('type') == 'xnet') {
+                    XDB::query('UPDATE  accounts
+                                   SET  password = {?}
+                                 WHERE  uid = {?}',
+                               Post::t('pwhash'), $user->id());
+                }
             } else if (!$user->perms) {
                 XDB::query('UPDATE  accounts
                                SET  email = {?}
@@ -980,6 +987,7 @@ class XnetGrpModule extends PLModule
             }
         }
 
+        $page->addJsLink('password.js');
         $page->assign('user', $user);
         $page->assign('listes', $mmlist->get_lists($user->forlifeEmail()));
         $page->assign('alias', $user->emailAliases($globals->asso('mail_domain'), 'user', true));
