@@ -433,12 +433,12 @@ class AdminModule extends PLModule
                                  Post::s('sex'), $user->profile()->id());
                 }
             }
-            if (!Post::blank('hashpass')) {
-                $to_update['password'] = Post::s('hashpass');
+            if (!Post::blank('pwhash')) {
+                $to_update['password'] = Post::s('pwhash');
                 require_once 'googleapps.inc.php';
                 $account = new GoogleAppsAccount($user);
                 if ($account->active() && $account->sync_password) {
-                    $account->set_password(Post::s('hashpass'));
+                    $account->set_password(Post::s('pwhash'));
                 }
             }
             if (!Post::blank('weak_password')) {
@@ -640,6 +640,7 @@ class AdminModule extends PLModule
 
         $page->addJsLink('jquery.ui.core.js');
         $page->addJsLink('jquery.ui.tabs.js');
+        $page->addJsLink('password.js');
 
         // Displays last login and last host information.
         $res = XDB::query("SELECT  start, host

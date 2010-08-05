@@ -35,13 +35,6 @@
 
 <script type="text/javascript">
 //<![CDATA[
-function encryptPassword() {
-  if ($('[name=new_plain_password]').val() != '********') {
-    $('[name=hashpass]').val(hash_encrypt($('[name=new_plain_password]').val()));
-    $('[name=new_plain_password]').val('');
-  }
-}
-
 function del_alias(alias) {
   document.forms.alias.del_alias.value = alias;
   document.forms.alias.submit();
@@ -150,7 +143,7 @@ $(document).ready(function() {
       <td>
         <div style="float: left">
           <input type="text" name="new_plain_password" size="10" maxlength="256" value="********" />
-          <input type="hidden" name="hashpass" value="" />
+          <input type="hidden" name="pwhash" value="" />
         </div>
         <div style="float: left; margin-top: 5px;">
           {checkpasswd prompt="new_plain_password" submit="dummy_none"}
@@ -234,7 +227,7 @@ $(document).ready(function() {
     </tr>
     <tr class="impair">
       <td colspan="2" class="center">
-        <input type="submit" name="update_account" value="Mettre à jour" onclick="encryptPassword()" />
+        <input type="submit" name="update_account" value="Mettre à jour" onclick="return hashResponse('new_plain_password', false, false);" />
         <input type="submit" name="su_account" value="Prendre l'identité" />
         <input type="submit" name="log_account" value="Consulter les logs" />
       </td>
