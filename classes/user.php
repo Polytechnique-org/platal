@@ -586,6 +586,15 @@ class User extends PlUser
                                   $this->id());
     }
 
+    public function hasSingleGroup()
+    {
+        $groupNb = XDB::fetchOneCell('SELECT  COUNT(DISTINCT(asso_id))
+                                        FROM  group_members
+                                       WHERE  uid = {?}',
+                                     $this->id());
+        return ($groupNb == 1);
+    }
+
     /**
      * Clears a user.
      *  *always deletes in: account_lost_passwords, register_marketing,

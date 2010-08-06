@@ -144,6 +144,13 @@
         <div style="float: left; margin-top: 5px;">
           {checkpasswd prompt="new_plain_password" submit="dummy_none"}
         </div>
+        {if !$onlyGroup}
+        <div style="clear: both">
+          <small class="error">
+            Attention, cet utilisateur est inscrit à d'autres groupes, changer son mot de passe modifiera aussi ses accès aux autres groupes.
+          </small>
+        </div>
+        {/if}
       </td>
     </tr>
     <tr id="make_X">

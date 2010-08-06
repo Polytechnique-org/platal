@@ -988,6 +988,7 @@ class XnetGrpModule extends PLModule
         }
 
         $page->addJsLink('password.js');
+        $page->assign('onlyGroup', $user->hasSingleGroup());
         $page->assign('user', $user);
         $page->assign('listes', $mmlist->get_lists($user->forlifeEmail()));
         $page->assign('alias', $user->emailAliases($globals->asso('mail_domain'), 'user', true));
