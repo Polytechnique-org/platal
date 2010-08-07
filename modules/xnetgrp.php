@@ -790,12 +790,11 @@ class XnetGrpModule extends PLModule
     {
         $page->changeTpl('xnetgrp/membres-del.tpl');
         $user = S::user();
-        $uid  = S::user()->id();
-        if (empty($uid)) {
+        if (empty($user)) {
             return PL_NOT_FOUND;
         }
         $page->assign('self', true);
-        $page->assign('user', $uid);
+        $page->assign('user', $user);
 
         if (!Post::has('confirm')) {
             return;
@@ -803,10 +802,18 @@ class XnetGrpModule extends PLModule
             S::assert_xsrf_token();
         }
 
+        $hasSingleGroup = $user->hasSingleGroup();
+
         if ($this->unsubscribe($user)) {
-            $page->trigSuccess('Vous avez été désinscrit du groupe avec succès.');
+            $page->trigSuccess('Tu as été désinscrit du groupe avec succès.');
         } else {
-            $page->trigWarning('Vous avez été désinscrit du groupe, mais des erreurs se sont produites lors des désinscriptions des alias et des listes de diffusion.');
+            $page->trigWarning('Tu as été désinscrit du groupe, mais des erreurs se sont produites lors des désinscriptions des alias et des listes de diffusion.');
+        }
+        if ($user->type == 'xnet' && $hasSingleGroup && Post::has('accountDeletion')) {
+            XDB::execute('DELETE FROM  acounts
+                                WHERE  uid = {?}',
+                         $user->id());
+            $page->trigSuccess('Ton compte a bien été supprimé.');
         }
         $page->assign('is_member', is_member(true));
     }
@@ -818,6 +825,7 @@ class XnetGrpModule extends PLModule
         if (empty($user)) {
             return PL_NOT_FOUND;
         }
+        $page->assign('self', false);
         $page->assign('user', $user);
 
         if (!Post::has('confirm')) {

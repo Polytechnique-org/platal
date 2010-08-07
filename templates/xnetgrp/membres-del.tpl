@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $smarty.post.confirm}
+{if t($smarty.post.confirm)}
 
 <p class="descr">
 {if !$self}
@@ -46,13 +46,19 @@
     {if $self}
     Êtes-vous sûr de vouloir vous désinscrire du groupe {$asso->nom} et de toutes
     les listes de diffusion associées&nbsp;?
+    {if $user->type eq 'xnet' && $user->hasSingleGroup()}
+    <br />C'est le seul groupe auquel tu es actuellement inscrit sur polytechnique.net.
+    Si, malgré cela, tu souhaites garder ton accès à Polytechnique.net, décoche la case
+    ci-dessous.<br />
+    <label><input type="checkbox" name="accountDeletion" checked="checked" />Supprimer mon compte.</label>
+    {/if}
     {else}
     Êtes-vous sûr de vouloir supprimer {$user->fullName()} du groupe,
     lui retirer tous les droits associés à son statut de membre
     et le désabonner de toutes les listes de diffusion du groupe&nbsp;?
     {/if}
     </p>
-    <input type='submit' name='confirm' value='Oui, je {if $self}me{else}le{/if} désinscris complètement du groupe !' />
+    <input type="submit" name="confirm" value="Oui, je {if $self}me{else}le{/if} désinscris complètement du groupe !" />
   </div>
 </form>
 
