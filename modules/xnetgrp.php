@@ -834,10 +834,33 @@ class XnetGrpModule extends PLModule
             S::assert_xsrf_token();
         }
 
+        $hasSingleGroup = $user->hasSingleGroup();
+
         if ($this->unsubscribe($user)) {
             $page->trigSuccess("{$user->fullName()} a été désinscrit du groupe&nbsp;!");
         } else {
             $page->trigWarning("{$user->fullName()} a été désinscrit du groupe, mais des erreurs subsistent&nbsp;!");
+        }
+
+        // Either deletes or notifies site administrators if it was the last group
+        // of a xnet account.
+        if ($user->type == 'xnet' && $hasSingleGroup) {
+            if ($user->state == 'pending') {
+                // If the user has never logged in the site, we delete her account.
+                XDB::execute('DELETE FROM  acounts
+                                    WHERE  uid = {?}',
+                             $user->id());
+            } else {
+                // It the user has already logged in the site, we notify site
+                // administrators that there is a new xnet account without any
+                // group.
+                global $globals;
+                $mailer = new PlMailer('xnetgrp/unsubscription.mail.tpl');
+                $mailer->assign('user', $user);
+                $mailer->assign('groupId', $globals->asso('id'));
+                $mailer->assign('groupName', $globals->asso('nom'));
+                $mailer->send();
+            }
         }
     }
 
