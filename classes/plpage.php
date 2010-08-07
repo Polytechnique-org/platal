@@ -246,6 +246,34 @@ abstract class PlPage extends Smarty
     }
 
     // }}}
+    // {{{ function trigRedirect
+
+    // Acts as trig(), but replaces the template with a simple one displaying
+    // the error messages and a "continue" link.
+    private function trigRedirect($msg, $continue, $type = 'errors')
+    {
+        $this->trig($msg, $type);
+        $this->coreTpl('msgredirect.tpl');
+        $this->assign('continue', $continue);
+        $this->run();
+    }
+
+    public function trigErrorRedirect($msg, $continue)
+    {
+        $this->trigRedirect($msg, $continue, 'errors');
+    }
+
+    public function trigWarningRedirect($msg, $continue)
+    {
+        $this->trigRedirect($msg, $continue, 'warnings');
+    }
+
+    public function trigSuccessRedirect($msg, $continue)
+    {
+        $this->trigRedirect($msg, $continue, 'success');
+    }
+
+    // }}}
     // {{{ function kill()
 
     public function kill($msg, $type = 'errors')
