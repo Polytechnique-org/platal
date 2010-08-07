@@ -595,6 +595,15 @@ class User extends PlUser
         return ($groupNb == 1);
     }
 
+    public function inGroup($asso_id)
+    {
+        $res = XDB::fetchOneCell('SELECT  COUNT(*)
+                                    FROM  group_members
+                                   WHERE  uid = {?} AND asso_id = {?}',
+                                 $this->id(), $asso_id);
+        return ($res > 0);
+    }
+
     /**
      * Clears a user.
      *  *always deletes in: account_lost_passwords, register_marketing,

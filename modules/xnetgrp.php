@@ -863,12 +863,16 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
 
-        $page->changeTpl('xnetgrp/membres-edit.tpl');
-
         $user = User::getSilent($user);
         if (empty($user)) {
             return PL_NOT_FOUND;
         }
+
+        if (!$user->inGroup($globals->asso('id'))) {
+            pl_redirect('annuaire');
+        }
+
+        $page->changeTpl('xnetgrp/membres-edit.tpl');
 
         $mmlist = new MMList($user, $globals->asso('mail_domain'));
 
