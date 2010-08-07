@@ -94,6 +94,8 @@
   <tr class="impair">
     <td class="titre">Comptes</td>
     <td>
+      <a href="admin/account/types">Types de comptes</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/add_accounts">Ajout de comptes</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/user">Édition</a>
