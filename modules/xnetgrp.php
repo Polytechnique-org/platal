@@ -825,6 +825,13 @@ class XnetGrpModule extends PLModule
         if (empty($user)) {
             return PL_NOT_FOUND;
         }
+
+        global $globals;
+
+        if (!$user->inGroup($globals->asso('id'))) {
+            pl_redirect('annuaire');
+        }
+
         $page->assign('self', false);
         $page->assign('user', $user);
 
@@ -854,7 +861,6 @@ class XnetGrpModule extends PLModule
                 // It the user has already logged in the site, we notify site
                 // administrators that there is a new xnet account without any
                 // group.
-                global $globals;
                 $mailer = new PlMailer('xnetgrp/unsubscription.mail.tpl');
                 $mailer->assign('user', $user);
                 $mailer->assign('groupId', $globals->asso('id'));
