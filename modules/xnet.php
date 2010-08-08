@@ -238,6 +238,13 @@ class XnetModule extends PLModule
         if (Post::has('change')) {
             S::assert_xsrf_token();
 
+            if ($user->groupCount() == 0 && Post::t('delete') == 'OUI') {
+                XDB::execute('DELETE FROM  accounts
+                                    WHERE  uid = {?}',
+                             $user->id());
+                pl_redirect('index');
+            }
+
             // Convert user status to X
             if (!Post::blank('login_X')) {
                 $forlife = $this->changeLogin($page, $user, Post::t('login_X'));

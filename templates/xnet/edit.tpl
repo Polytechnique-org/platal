@@ -100,6 +100,12 @@
       </td>
     </tr>
   </table>
+  {if $user->groupCount() eq 0}
+  <p>
+    Supprimer mon compte&nbsp;:&nbsp;<input type="text" name="delete" value="NON" size="3" maxlength="3" /><br />
+    <small>(Écrire « OUI » en majuscule pour que la suppression soit prise en compte.)</small>
+  </p>
+  {/if}
 
   <div class="center">
     <br />

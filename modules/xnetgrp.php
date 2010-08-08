@@ -802,7 +802,7 @@ class XnetGrpModule extends PLModule
             S::assert_xsrf_token();
         }
 
-        $hasSingleGroup = $user->hasSingleGroup();
+        $hasSingleGroup = ($user->groupCount() == 1);
 
         if ($this->unsubscribe($user)) {
             $page->trigSuccess('Tu as été désinscrit du groupe avec succès.');
@@ -841,7 +841,7 @@ class XnetGrpModule extends PLModule
             S::assert_xsrf_token();
         }
 
-        $hasSingleGroup = $user->hasSingleGroup();
+        $hasSingleGroup = ($user->groupCount() == 1);
 
         if ($this->unsubscribe($user)) {
             $page->trigSuccess("{$user->fullName()} a été désinscrit du groupe&nbsp;!");
@@ -1029,7 +1029,7 @@ class XnetGrpModule extends PLModule
         }
 
         $page->addJsLink('password.js');
-        $page->assign('onlyGroup', $user->hasSingleGroup());
+        $page->assign('onlyGroup', ($user->groupCount() == 1));
         $page->assign('user', $user);
         $page->assign('listes', $mmlist->get_lists($user->forlifeEmail()));
         $page->assign('alias', $user->emailAliases($globals->asso('mail_domain'), 'user', true));

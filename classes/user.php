@@ -586,13 +586,12 @@ class User extends PlUser
                                   $this->id());
     }
 
-    public function hasSingleGroup()
+    public function groupCount()
     {
-        $groupNb = XDB::fetchOneCell('SELECT  COUNT(DISTINCT(asso_id))
-                                        FROM  group_members
-                                       WHERE  uid = {?}',
-                                     $this->id());
-        return ($groupNb == 1);
+        return XDB::fetchOneCell('SELECT  COUNT(DISTINCT(asso_id))
+                                    FROM  group_members
+                                   WHERE  uid = {?}',
+                                 $this->id());
     }
 
     public function inGroup($asso_id)

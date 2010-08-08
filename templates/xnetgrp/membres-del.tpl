@@ -46,7 +46,7 @@
     {if $self}
     Êtes-vous sûr de vouloir vous désinscrire du groupe {$asso->nom} et de toutes
     les listes de diffusion associées&nbsp;?
-    {if $user->type eq 'xnet' && $user->hasSingleGroup()}
+    {if $user->type eq 'xnet' && $user->groupCount() eq 1}
     <br />C'est le seul groupe auquel tu es actuellement inscrit sur polytechnique.net.
     Si, malgré cela, tu souhaites garder ton accès à Polytechnique.net, décoche la case
     ci-dessous.<br />
