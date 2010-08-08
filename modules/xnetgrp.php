@@ -870,7 +870,7 @@ class XnetGrpModule extends PLModule
         }
     }
 
-    private function changeLogin(PlPage &$page, PlUser &$user, MMList &$mmlist, $login)
+    private function changeLogin(PlPage &$page, PlUser &$user, $login)
     {
         // Search the user's uid.
         $xuser = User::getSilent($login);
@@ -918,7 +918,7 @@ class XnetGrpModule extends PLModule
 
             // Convert user status to X
             if (!Post::blank('login_X')) {
-                $forlife = $this->changeLogin($page, $user, $mmlist, Post::t('login_X'));
+                $forlife = $this->changeLogin($page, $user, Post::t('login_X'));
                 if ($forlife) {
                     pl_redirect('member/' . $forlife);
                 }
