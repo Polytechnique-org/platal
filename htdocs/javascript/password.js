@@ -21,6 +21,9 @@
 function hashResponse(password1, password2, hasConfirmation) {
     pw1 = $('[name=' + password1 + ']').val();
 
+    if (pw1 == '********') {
+        return true;
+    }
     if (hasConfirmation) {
         pw2 = $('[name=' + password2 + ']').val();
         if (pw1 != pw2) {
@@ -28,8 +31,6 @@ function hashResponse(password1, password2, hasConfirmation) {
             return false;
         }
         $('[name=' + password2 + ']').val('');
-    } else if (pw1 == '********') {
-        return true;
     }
 
     if (pw1.length < 6) {

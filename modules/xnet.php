@@ -33,6 +33,7 @@ class XnetModule extends PLModule
             'plan'        => $this->make_hook('plan',      AUTH_PUBLIC),
             'photo'       => $this->make_hook('photo',     AUTH_MDP),
             'autologin'   => $this->make_hook('autologin', AUTH_MDP),
+            'edit'        => $this->make_hook('edit',      AUTH_MDP, 'user'),
 
             'Xnet'        => $this->make_wiki_hook(),
         );
@@ -219,6 +220,53 @@ class XnetModule extends PLModule
         pl_content_headers("text/javascript");
         echo '$.ajax({ url: "'.$url.'?forceXml=1", dataType: "xml", success: function(xml) { $("body",xml).insertBefore("body"); $("body:eq(1)").remove(); }});';
         exit;
+    }
+
+    function handler_edit(&$page)
+    {
+        global $globals;
+
+        $user = S::user();
+        if (empty($user)) {
+            return PL_NOT_FOUND;
+        }
+        if ($user->type != 'xnet') {
+            pl_redirect('index');
+        }
+
+        $page->changeTpl('xnet/edit.tpl');
+        if (Post::has('change')) {
+            S::assert_xsrf_token();
+
+            // Convert user status to X
+            if (!Post::blank('login_X')) {
+                $forlife = $this->changeLogin($page, $user, Post::t('login_X'));
+                if ($forlife) {
+                    pl_redirect('index');
+                }
+            }
+
+            // Update user info
+            XDB::query('UPDATE  accounts
+                           SET  full_name = {?}, directory_name = {?}, display_name = {?},
+                                sex = {?}, email = {?}
+                         WHERE  uid = {?}',
+                       Post::t('full_name'), Post::t('directory_name'), Post::t('display_name'),
+                       (Post::t('sex') == 'male') ? 'male' : 'female', Post::t('email'), $user->id());
+            // If user is of type xnet and new password is given.
+            if (!Post::blank('pwhash')) {
+                XDB::query('UPDATE  accounts
+                               SET  password = {?}
+                             WHERE  uid = {?}',
+                           Post::t('pwhash'), $user->id());
+            }
+            if (XDB::affectedRows()) {
+                $page->trigSuccess('Données mises à jour.');
+            }
+        }
+
+        $page->addJsLink('password.js');
+        $page->assign('user', $user);
     }
 }
 
