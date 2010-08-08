@@ -949,7 +949,7 @@ class XnetGrpModule extends PLModule
                            Post::t('email'), $user->id());
             }
             if (XDB::affectedRows()) {
-                $page->trigSuccess('Données de l\'utilisateur mise à jour.');
+                $page->trigSuccess('Données de l\'utilisateur mises à jour.');
             }
 
             // Update group params for user
