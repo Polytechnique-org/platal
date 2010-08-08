@@ -78,7 +78,10 @@ function check_email($email, $message)
 
 function check_account()
 {
-    return S::user()->watch;
+    if (S::user()) {
+        return S::user()->watch;
+    }
+    return false;
 }
 
 function check_redirect($red = null)
