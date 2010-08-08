@@ -265,7 +265,7 @@ while (<FILE>)
   s/\tès /\t/g;
   s/\tof /\t/g;
   s/( )+(\t)/\t/g;
-  
+
 
   # On remet dans l'ordre lorsque le diplôme se situe après l'université
   s/Manag\.Vanderblit/Vanderbilt University\tManagement/;

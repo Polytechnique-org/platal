@@ -27,7 +27,7 @@
   Votre désinscription aux envois exceptionnels de l'AX a été réalisée avec
   succès. Si vous désirez vous réinscrire, merci de contacter
   <a href="mailto:info@amicale.polytechnique.org">l'AX</a>. Vous pouvez également
-  le faire en vous <a href="register">inscrivant à Polytechnique.org</a> (pour 
+  le faire en vous <a href="register">inscrivant à Polytechnique.org</a> (pour
   les X uniquement).
 </p>
 {else}

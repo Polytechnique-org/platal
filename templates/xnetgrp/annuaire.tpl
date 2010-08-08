@@ -30,14 +30,14 @@ Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
   {if $is_admin}
   <li>
     <a href="{$platal->ns}member/new">
-      {icon name=add title="Ajouter un membre"} 
+      {icon name=add title="Ajouter un membre"}
       Ajouter un membre
     </a>
   </li>
   {if $asso->has_ml}
   <li>
     <a href="{$platal->ns}admin/annuaire">
-      {icon name=wand title="Synchroniser"} 
+      {icon name=wand title="Synchroniser"}
       Synchroniser annuaire et listes de diffusion
     </a>
   </li>
@@ -45,13 +45,13 @@ Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
   {/if}
   <li>
     <a href="{$platal->ns}annuaire/csv/{$asso->diminutif}.csv">
-      {icon name=page_excel title="Fichier Excel"} 
+      {icon name=page_excel title="Fichier Excel"}
       Obtenir au format Excel
     </a>
   </li>
   <li>
     <a href="{$platal->ns}annuaire/vcard/photos/{$asso->diminutif}.vcf">
-      {icon name=vcard title="Carte de visite"} 
+      {icon name=vcard title="Carte de visite"}
       Ajouter les membres à ton carnet d'adresse
     </a>
     (<a href="{$platal->ns}annuaire/vcard/{$asso->diminutif}.vcf">sans les photos</a>)

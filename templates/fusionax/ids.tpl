@@ -73,7 +73,7 @@ $(document).ready(function() {
             $('#fusion-reload a').click(function(a) {
                 document.location = a.currentTarget.href;
                 document.location.reload();
-            }); 
+            });
         });
         return false;
     });

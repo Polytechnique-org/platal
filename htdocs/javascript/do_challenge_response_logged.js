@@ -20,7 +20,7 @@
 
 function doChallengeResponse() {
     var new_pass = hash_encrypt(document.forms.login.password.value);
-    
+
     str = document.forms.loginsub.username.value + ":" +
         hash_encrypt(document.forms.login.password.value) + ":" +
         document.forms.loginsub.challenge.value;

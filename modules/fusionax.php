@@ -196,7 +196,7 @@ class FusionAxModule extends PLModule
         return XDB::affectedRows() / 2;
     }
 
-    /* Cherche les les anciens présents dans Xorg avec un matricule_ax ne correspondant à rien dans la base de l'AX 
+    /* Cherche les les anciens présents dans Xorg avec un matricule_ax ne correspondant à rien dans la base de l'AX
      * (mises à part les promo 1921 et 1923 qui ne figurent pas dans les données de l'AX)*/
     private static function find_wrong_in_xorg($limit = 10)
     {

@@ -450,7 +450,7 @@ abstract class UFBF_Mixed extends UFB_Field
             }
             $this->val = array($index);
         } else {
-            $indexes = DirEnum::getIDs($this->direnum, $ufb->t($this->envfield), 
+            $indexes = DirEnum::getIDs($this->direnum, $ufb->t($this->envfield),
                 $ufb->b('exact') ? XDB::WILDCARD_EXACT : XDB::WILDCARD_CONTAINS);
             if (count($indexes) == 0) {
                 return false;

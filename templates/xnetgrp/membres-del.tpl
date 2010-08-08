@@ -31,7 +31,7 @@
 </p>
 
 {else}
- 
+
 <h1>{$asso->nom}&nbsp;: gestion des membres</h1>
 
 <h2>

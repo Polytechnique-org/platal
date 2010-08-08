@@ -42,7 +42,7 @@
 <form action="{$platal->ns}subscribe/valid" method="post">
   <table class="tinybicol">
     <tr>
-      <th><a href="javascript:toggleSelection()">{icon name="arrow_refresh" title="Inverser la sélection"}</a></th> 
+      <th><a href="javascript:toggleSelection()">{icon name="arrow_refresh" title="Inverser la sélection"}</a></th>
       <th>Prénom Nom (Promotion)</th>
       <th>Date de demande</th>
       <th></th>

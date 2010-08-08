@@ -65,10 +65,10 @@ class BPLCCyberPlus
         $prefix = ($pay->flags->hasflag('unique')) ? str_pad("",15,"0") : rand_url_id();
         $fullref = substr("$prefix-{$pay->id}",-12); // FIXME : check for duplicates
         $ts = time();
-		$trans_date = date("YmdHis", $ts); 
+		$trans_date = date("YmdHis", $ts);
 		$trans_id = date("His", $ts); // FIXME : check for duplicates
                			   			
-        // contenu du formulaire        
+        // contenu du formulaire
         $this->urlform = "https://systempay.cyberpluspaiement.com/vads-payment/";
         $this->infos['commercant'] = Array(
             'vads_site_id' => $globals->money->cyperplus_account,
@@ -91,7 +91,7 @@ class BPLCCyberPlus
             'vads_ctx_mode' => $globals->money->cyperplus_prod,
             'vads_page_action' => 'PAYMENT',
             'vads_action_mode' => 'INTERACTIVE');
-        
+
         // calcul de la clé d'acceptation en entrée
         $all_params = array_merge($this->infos['commercant'],$this->infos['client'],$this->infos['commande'],$this->infos['divers']);
         ksort($all_params);

@@ -50,9 +50,9 @@ function setSector(sector)
     } else {
         Ajax.update_html('ssect_chg', baseurl + 'ssect/' + sector);
         Ajax2.update_html('country_chg', baseurl + 'country/' + sector);
-        document.getElementById('scat').style.display = ''; 
-        document.getElementById('country').style.display = ''; 
-        document.getElementById('keywords').style.display = ''; 
+        document.getElementById('scat').style.display = '';
+        document.getElementById('country').style.display = '';
+        document.getElementById('keywords').style.display = '';
         document.getElementById('search_referent').disabled = '';
     }
 }

@@ -44,13 +44,13 @@
       {literal}
       $(document).ready(function() {
         function hidePromo(value) {
-          if (value == "0" || value == "") { 
-            $("#ln_promo").hide(); 
+          if (value == "0" || value == "") {
+            $("#ln_promo").hide();
             $("#ln_promo_exp").hide();
-          } else { 
+          } else {
             $("#ln_promo").show();
             $("#ln_promo_exp").show();
-          } 
+          }
         }
         $("[name='survey_question[mode]']").change(function() { hidePromo(this.value); });
         hidePromo({/literal}"{$survey_current.mode}"{literal});

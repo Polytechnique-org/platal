@@ -10,7 +10,7 @@ function ax_load_object(&$obj, $from)
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
-class Ancien 
+class Ancien
 {
     public $NOM_PATR;
     public $PART_NOM;
@@ -34,7 +34,7 @@ class Ancien
     public $NUM_FORMATION = 0;
     public $Erreur;
 
-    public function __construct($aa) 
+    public function __construct($aa)
     {
         if ($aa<>'') {
             ax_load_object($this, $aa);
@@ -210,7 +210,7 @@ class Adresse
     public $TEL;
     public $FAX;
 
-    public function __construct($aa) 
+    public function __construct($aa)
     {
         ax_load_object($this, $aa);
     }
@@ -240,17 +240,17 @@ class Activite
     }
 }
 
-class Formation 
+class Formation
 {
     public $LIBELLE;
 
-    public function __construct($aa) 
+    public function __construct($aa)
     {
         ax_load_object($this, $aa);
     }
 }
 
-function xml_get_children($vals, &$i) 
+function xml_get_children($vals, &$i)
 {
     $children = array();
     if (isset($vals[$i]['value'])) $children[] = $vals[$i]['value'];

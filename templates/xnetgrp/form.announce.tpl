@@ -39,7 +39,7 @@
   <tr>
     {if $art.photo}
     <td rowspan="{if ($is_logged || $admin) && $art.contacts}3{else}2{/if}" style="width: 100px">
-      <img src="{$platal->ns}announce/photo/{$art.id}" alt="{$art.titre}" style="width: 100px" /> 
+      <img src="{$platal->ns}announce/photo/{$art.id}" alt="{$art.titre}" style="width: 100px" />
     </td>
     {/if}
     <td style="padding-bottom: 1em">

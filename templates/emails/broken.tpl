@@ -50,7 +50,7 @@ correspondant si tu veux que nous puissions te répondre.
 <h2>Patte cassée</h2>
   <p>
     Désolé, mais ton correspondant, {$x.user->fullName()},
-    n'a actuellement <span class="erreur">aucune adresse email de redirection 
+    n'a actuellement <span class="erreur">aucune adresse email de redirection
       active autre que celle que tu viens de rentrer.</span>
     Nous t'invitons à prendre contact avec lui autrement que par email,
     l'idéal étant de l'informer si possible que sa patte Polytechnique.org est cassée&nbsp;!

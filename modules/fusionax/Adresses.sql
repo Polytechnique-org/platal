@@ -39,7 +39,7 @@ SET
 `Date_maj` = CONCAT(SUBSTRING(@StringDate_maj,7),'-',SUBSTRING(@StringDate_maj,4,2),'-',SUBSTRING(@StringDate_maj,1,2));
 
 LOAD DATA LOCAL INFILE 'Activites.txt' INTO TABLE `fusionax_adresses` FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\r\n'
-(provenance, id_ancien, @Code_etab, @Raison_sociale, @Libelle_fonctio, @Annuaire, 
+(provenance, id_ancien, @Code_etab, @Raison_sociale, @Libelle_fonctio, @Annuaire,
 Ligne1, Ligne2, Ligne3, code_postal, ville, zip_cedex, etat_distr, pays, tel, fax, @StringDate_maj)
 SET
 `Type_adr` = 'E',

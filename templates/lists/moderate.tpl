@@ -188,11 +188,11 @@ $('.checkboxToggle').click(function (event)
     if (event.target.tagName === 'INPUT') {
       return;
     }
-    
+
     var checkbox = $(this).parent().find(':checkbox');
-    
+
     checkbox = checkbox.attr('checked', !checkbox.attr('checked'));
-    
+
     event.stopPropagation();
   });
 {/literal}

@@ -38,11 +38,11 @@
     <a href="search/adv">recherche avancée</a>
   </strong>
   </li>
-  
+
   <li>Effectuer une nouvelle <strong>
     <a href="search">recherche simple</a>
   </strong>
   </li>
 </ul>
-  
+
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

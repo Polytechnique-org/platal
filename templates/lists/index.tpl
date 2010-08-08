@@ -29,7 +29,7 @@
 <ul>
   <li>Pour demander ton inscription à une liste de diffusion, il suffit
     de cliquer sur l'icône {icon name=add} située en fin de ligne.</li>
-  <li>Si la liste est à inscription modérée, l'icône {icon name=flag_orange title="en cours"} 
+  <li>Si la liste est à inscription modérée, l'icône {icon name=flag_orange title="en cours"}
     apparaîtra tant que ton inscription n'aura pas été validée par un modérateur.</li>
   <li>Pour te désinscrire d'une liste dont tu es membre, il suffit de cliquer sur la croix
     {icon name=cross title="désinscription"} située en fin de ligne.</li>

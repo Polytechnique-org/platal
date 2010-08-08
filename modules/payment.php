@@ -264,7 +264,7 @@ class PaymentModule extends PLModule
     function handler_cyber2_return(&$page, $uid = null)
     {
         global $globals, $platal;
-        
+
         /* on vérifie la signature */
         $vads_params = array();
         foreach($_REQUEST as $key => $value)
@@ -275,7 +275,7 @@ class PaymentModule extends PLModule
         //if($signature != Env::v('signature')) {
         //    cb_erreur("signature invalide");
         //}
-        
+
         /* on extrait les informations sur l'utilisateur */
         $user = User::get(Env::v('vads_cust_id'));
         if (!$user) {
@@ -294,7 +294,7 @@ class PaymentModule extends PLModule
         if (!list($conf_mail, $conf_title, $conf_text) = $res->fetchOneRow()) {
             cb_erreur("référence de commande inconnue");
         }
-        
+
         /* on extrait le montant */
         if (Env::v('vads_currency') != "978") {
             cb_erreur("monnaie autre que l'euro");
@@ -305,13 +305,13 @@ class PaymentModule extends PLModule
         if (Env::v('vads_result') != "00") {
             cb_erreur("erreur lors du paiement : ?? (".Env::v('vads_result').")");
         }
-        
+
         /* on fait l'insertion en base de donnees */
         XDB::execute("INSERT INTO  payment_transactions (id, uid, ref, fullref, amount, pkey, comment)
                            VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})",
                      Env::v('vads_trans_date'), $user->id(), $ref, Env::v('vads_order_id'), $montant, "", Env::v('vads_order_info'));
         echo "Paiement stored.\n";
-        
+
         // We check if it is an Xnet payment and then update the related ML.
         $res = XDB::query('SELECT  eid
                              FROM  group_events

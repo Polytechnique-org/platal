@@ -6,8 +6,8 @@ require_once 'connect.db.inc.php';
 require_once 'marketing.inc.php';
 
 $opts = getopt('f:l:m:');
-if (($opts['f'] && $opts['f'] == '-') || empty($opts['f'])) { 
-    $file = 'php://stdin'; 
+if (($opts['f'] && $opts['f'] == '-') || empty($opts['f'])) {
+    $file = 'php://stdin';
 } else {
     $file = $opts['f'];
 }

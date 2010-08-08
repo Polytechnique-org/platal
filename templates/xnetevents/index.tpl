@@ -24,7 +24,7 @@
 <h1>{$asso->nom}&nbsp;: Événements</h1>
 {else}
 <h1>
-  {$asso->nom}&nbsp;: 
+  {$asso->nom}&nbsp;:
   {if $archive}[<a href="{$platal->ns}events">Événements</a>] {else}Événements {/if}
   {if $archive}Archives {else}[<a href="{$platal->ns}events/archive">Archives</a>] {/if}
 </h1>

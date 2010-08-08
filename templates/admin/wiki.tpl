@@ -51,10 +51,10 @@
   function toggle_folder() {
     me = this;
     if ($(this).attr("class") == "wiki_category")
-        me = $("../img.wiki_root", me)[0]; 
+        me = $("../img.wiki_root", me)[0];
     var cat=$.trim($(me).parent().text().replace(/(.*)\([0-9]+\)/, "$1"));
     if ($(me).attr('src') == "images/k1.gif") {
-      deplie(me, cat);  
+      deplie(me, cat);
     }
     replie(me, cat);
     setTimeout("toggle = 0;", 10);

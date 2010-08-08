@@ -187,7 +187,7 @@ class XnetModule extends PLModule
         $page->assign('cat', $cat);
         $page->assign('dom', $dom);
 
-        $res  = XDB::query("SELECT  id,nom 
+        $res  = XDB::query("SELECT  id,nom
                               FROM  group_dom
                              WHERE  FIND_IN_SET({?}, cat)
                           ORDER BY  nom", $cat);

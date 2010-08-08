@@ -47,7 +47,7 @@ Parfois on ne sait plus si le nom qu'on recherche s'écrit «&nbsp;Lenormand&nbs
 </p>
 <p>
 Pour éviter ce genre d'écueils, il suffit de chercher&nbsp;: <code>Le Normand</code><br />
-En effet, le moteur de recherche va alors chercher tous les utilisateurs dont le nom 
+En effet, le moteur de recherche va alors chercher tous les utilisateurs dont le nom
 contient 'Le' <strong>et</strong> 'Normand' sans distinction de casse et sans tenir compte des accents.
 </p>
 <p>

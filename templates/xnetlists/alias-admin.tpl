@@ -23,7 +23,7 @@
 <p>[<a href='{$platal->ns}lists'>retour à la page des listes</a>]</p>
 
 <h1>Membres de {$platal->argv[1]}</h1>
-      
+
 <table class='tinybicol'>
   {if $mem|@count}
   {foreach from=$mem item=m}

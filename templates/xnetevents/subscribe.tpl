@@ -39,7 +39,7 @@
 
 {if $admin || $event.show_participants}
 <p class='descr'>
-  Tu peux 
+  Tu peux
   <a href="{$platal->ns}events/admin/{$event.eid}">
     consulter la liste des participants
     {icon name=group title="Liste des participants"}</a>
@@ -98,7 +98,7 @@
           {elseif $event.paid < $event.topay}
           Tu dois encore payer {math equation="a-b" a=$event.topay b=$event.paid|replace:'.':','}&nbsp;&euro;
           (tu as déjà payé {$event.paid|replace:'.':','}&nbsp;&euro;).
-          {else} 
+          {else}
           Tu as déjà payé {$event.paid|replace:'.':','}&nbsp;&euro; pour ton inscription.
           {/if}
         </div>

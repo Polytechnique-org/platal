@@ -202,7 +202,7 @@
     <input type="submit" name='change' value="Valider ces changements" />
     &nbsp;
     <input type="reset" value="Annuler ces changements" />
-  </div>                                                                      
+  </div>
 
 </form>
 
