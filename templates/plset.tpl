@@ -35,15 +35,15 @@
   ]
   {/if}
 </h1>
-<h1 style="display: block; float: right"> 
-  {if !$plset_count} 
-  Aucune entrée 
-  {elseif $plset_count eq 1} 
-  1 entrée 
-  {else} 
-  {$plset_count} entrées 
-  {/if} 
-</h1> 
+<h1 style="display: block; float: right">
+  {if !$plset_count}
+  Aucune entrée
+  {elseif $plset_count eq 1}
+  1 entrée
+  {else}
+  {$plset_count} entrées
+  {/if}
+</h1>
 </div>
 
 <div id="plset_content" style="clear: both">

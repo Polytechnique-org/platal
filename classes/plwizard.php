@@ -158,8 +158,8 @@ class PlWizard
 
     public function apply(PlPage &$smarty, $baseurl, $pgid = null, $mode = 'normal')
     {
-        if ($this->stateless && (isset($this->lookup[$pgid]) || isset($this->pages[$pgid]))) { 
-            $curpage = is_numeric($pgid) ? $pgid : $this->lookup[$pgid]; 
+        if ($this->stateless && (isset($this->lookup[$pgid]) || isset($this->pages[$pgid]))) {
+            $curpage = is_numeric($pgid) ? $pgid : $this->lookup[$pgid];
         } else if ($this->stateless && is_null($pgid)) {
             $curpage = 0;
         } else {

@@ -220,7 +220,7 @@ class PLTableEditor
     {
         $this->whereclause = $whereclause;
     }
-    
+
     // set an action when trying to delete row
     public function on_delete($action = NULL, $message = NULL)
     {

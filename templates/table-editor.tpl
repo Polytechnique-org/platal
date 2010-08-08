@@ -107,7 +107,7 @@
     <tr class="impair">
       <th colspan="2">
         {if $id !== null}
-            modification de l'entrée 
+            modification de l'entrée
         {else}
             nouvelle entrée
         {/if}

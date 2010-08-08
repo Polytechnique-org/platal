@@ -99,7 +99,7 @@ val3_1{$smarty.session.csv_separator|default:";"}val3_2{$smarty.session.csv_sepa
   </div>
   {elseif $csv_page eq 'values'}
   <div class="center">
-    Action à effectuer si l'entrée existe&nbsp;: 
+    Action à effectuer si l'entrée existe&nbsp;:
     <select name="csv_action" onchange="this.form.submit()">
       <option value="insert" {if $smarty.session.csv_action eq 'insert'}selected="selected"{/if}>
         ne rien faire

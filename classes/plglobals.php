@@ -192,10 +192,10 @@ class PlGlobals
     /** Change dynamic config file
      * @param conf array of keys and values to add or replace
      * @param category name of category to change
-     * 
+     *
      * Opens the dynamic conf file and set values from conf in specified
      * category. Updates config vars too.
-     */ 
+     */
     public function changeDynamicConfig($conf, $category = 'Core')
     {
         $dynamicfile = $this->spoolroot.'/spool/conf/platal.dynamic.conf';
@@ -238,7 +238,7 @@ class PlGlobals
                     if (isset($conflower[strtolower($k)])) {
                         $array[$same][$k] = $v;
                     }
-                } 
+                }
             }
         }
         // writes the file over

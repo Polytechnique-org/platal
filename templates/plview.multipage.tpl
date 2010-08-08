@@ -32,7 +32,7 @@
   {/if}
   {section name=page loop=$plview->pages+1 start=1}
   {if $smarty.section.page.index eq $plview->page}
-  <span style="color: red">{$plview->page}</span> 
+  <span style="color: red">{$plview->page}</span>
   {else}
   <a href="{$platal->pl_self()}{$plset_search}order={$order}&amp;page={$smarty.section.page.index}#pl_set_top">{$smarty.section.page.index}</a>
   {/if}
