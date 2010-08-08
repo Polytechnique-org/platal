@@ -103,8 +103,6 @@
       <a href="admin/homonyms">Homonymes</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/deaths">Décès</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/account/types">Types</a>
     </td>
   </tr>
   <tr class="impair">
