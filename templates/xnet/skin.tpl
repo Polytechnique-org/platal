@@ -112,7 +112,7 @@
           {/foreach}
           {if t($asso)}{assign var=asso_id value=$asso->id}{/if}
           {if t($smarty.session.suid)}{assign var=suid value=true}{else}{assign var=suid value=false}{/if}
-          {if $asso && $is_admin ||
+          {if t($asso) && $is_admin ||
                       ($suid && ($smarty.session.suid.perms->hasFlag('admin') ||
                                                 $smarty.session.suid.may_update[$asso_id]))}
           <h1>Voir le site comme&hellip;</h1>
