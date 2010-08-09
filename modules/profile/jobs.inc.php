@@ -72,7 +72,7 @@ class ProfileSettingJob extends ProfileSettingGeocoding
                 'changed'                 => '0',
                 'removed'                 => '0',
             ),
-            'hq_phone'         => '',
+            'hq_fixed'         => '',
             'hq_fax'           => '',
             'subSubSectorName' => null,
             'sector'           => '0',
@@ -168,11 +168,7 @@ class ProfileSettingJob extends ProfileSettingGeocoding
             }
         }
         $job['w_address']['pub'] = $this->pub->value($page, 'address_pub', $job['w_address']['pub'], $s);
-        if (!isset($job['w_phone'])) {
-            $job['w_phone'] = array();
-        }
-        $profiletel = new ProfileSettingPhones('pro', $jobid);
-        $job['w_phone'] = $profiletel->value($page, 'tel', $job['w_phone'], $s);
+        $job['w_phone'] = Phone::formatFormArray($job['w_phone'], $s);
 
         unset($job['removed']);
         unset($job['new']);
@@ -229,19 +225,14 @@ class ProfileSettingJob extends ProfileSettingGeocoding
 
     public function save(ProfilePage &$page, $field, $value)
     {
-        // TODO: use address and phone classes to update profile_job_enum and profile_phones once they are done.
-
-        require_once 'profil.func.inc.php';
-
+        // TODO: use address class to update profile_job_enum once it is done.
         XDB::execute("DELETE FROM  profile_job
                             WHERE  pid = {?}",
                      $page->pid());
         XDB::execute("DELETE FROM  profile_addresses
                             WHERE  pid = {?} AND type = 'job'",
                      $page->pid());
-        XDB::execute("DELETE FROM  profile_phones
-                            WHERE  pid = {?} AND link_type = 'pro'",
-                     $page->pid());
+        Phone::deletePhones($page->pid(), Phone::LINK_JOB);
         foreach ($value as $id => &$job) {
             if (isset($job['name']) && $job['name']) {
                 if (isset($job['jobid']) && $job['jobid']) {
@@ -259,8 +250,7 @@ class ProfileSettingJob extends ProfileSettingGeocoding
                 }
                 $address = new ProfileSettingAddress();
                 $address->saveAddress($page->pid(), $id, $job['w_address'], 'job');
-                $profiletel = new ProfileSettingPhones('pro', $id);
-                $profiletel->saveTels($page->pid(), 'tel', $job['w_phone']);
+                Phone::savePhones($job['w_phone'], $page->pid(), Phone::LINK_JOB, $id);
             }
         }
     }
@@ -269,11 +259,11 @@ class ProfileSettingJob extends ProfileSettingGeocoding
         $jobs = array();
         foreach ($value as $id => $job) {
             $address = new ProfileSettingAddress();
-            $phones = new ProfileSettingPhones('pro', $id);
+            $phones = Phone::formArrayToString($job['w_phone']);
             $jobs[] = 'Entreprise : ' . $job['name'] . ', secteur : ' . $job['subSubSectorName']
                     . ', description : ' . $job['description'] . ', web : ' . $job['w_url']
                     . ', email : ' . $job['w_email']
-                    . ', ' . $phones->getText($job['w_phone']) . ', ' .  $address->getText($job['w_address']);
+                    . ($phones ? ', ' . $phones : '') . ', ' .  $address->getText($job['w_address']);
         }
         return implode(' ; ' , $jobs);
     }
@@ -424,45 +414,20 @@ class ProfileSettingJobs extends ProfilePage
                 );
             }
 
-            $res = XDB::iterator("SELECT  link_id AS jobid, tel_type AS type, pub, display_tel AS tel, comment
-                                    FROM  profile_phones
-                                   WHERE  pid = {?} AND link_type = 'pro'
-                                ORDER BY  link_id",
-                                 $this->pid());
-            $i = 0;
-            $jobNb = count($this->values['jobs']);
-            while ($phone = $res->next()) {
-                $jobid = $phone['jobid'];
-                while ($i < $jobNb && $this->values['jobs'][$i]['id'] < $jobid) {
-                    $i++;
-                }
-                if ($i >= $jobNb) {
-                    break;
-                }
-                $job =& $this->values['jobs'][$i];
-                if (!isset($job['w_phone'])) {
-                    $job['w_phone'] = array();
-                }
-                if ($job['id'] == $jobid) {
-                    $job['w_phone'][] = $phone;
-                }
+            $it = Phone::iterate(array($this->pid()), array(Phone::LINK_JOB));
+            while ($phone = $it->next()) {
+                $this->values['jobs'][$phone->linkId()]['w_phone'][$phone->id()] = $phone->toFormArray();
             }
             foreach ($this->values['jobs'] as $id => &$job) {
+                $phone = new Phone();
                 if (!isset($job['w_phone'])) {
-                    $job['w_phone'] = array(
-                        0 => array(
-                            'type'    => 'fixed',
-                            'tel'     => '',
-                            'pub'     => 'private',
-                            'comment' => '',
-                        )
-                    );
+                    $job['w_phone'] = array(0 => $phone->toFormArray());
                 }
             }
 
             $job['w_email_new'] = '';
-            if (!isset($job['hq_phone'])) {
-                $job['hq_phone'] = '';
+            if (!isset($job['hq_fixed'])) {
+                $job['hq_fixed'] = '';
             }
             if (!isset($job['hq_fax'])) {
                 $job['hq_fax'] = '';

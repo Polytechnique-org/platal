@@ -32,11 +32,7 @@ class ProfileSettingAddress extends ProfileSettingGeocoding
 
     private function cleanAddress(ProfilePage &$page, $addrid, array &$address)
     {
-        if (!isset($address['tel'])) {
-            $address['tel'] = array();
-        }
-        $profiletel           = new ProfileSettingPhones('address', $addrid);
-        $address['tel']       = $profiletel->value($page, 'tel',       $address['tel'],       $s);
+        $address['tel']       = Phone::formatFormArray($address['tel'], $s);
         $address['current']   = $this->bool->value($page, 'current',   $address['current'],   $s);
         $address['temporary'] = $this->bool->value($page, 'temporary', $address['temporary'], $s);
         $address['secondary'] = $this->bool->value($page, 'secondary', $address['secondary'], $s);
@@ -118,25 +114,22 @@ class ProfileSettingAddress extends ProfileSettingGeocoding
         XDB::execute("DELETE FROM  profile_addresses
                             WHERE  pid = {?} AND type = 'home'",
                      $page->pid());
-        XDB::execute("DELETE FROM  profile_phones
-                            WHERE  pid = {?} AND link_type = 'address'",
-                     $page->pid());
+        Phone::deletePhones($page->pid(), Phone::LINK_ADDRESS);
         foreach ($value as $addrid => &$address) {
             $this->saveAddress($page->pid(), $addrid, $address, 'home');
-            $profiletel = new ProfileSettingPhones('address', $addrid);
-            $profiletel->saveTels($page->pid(), 'tel', $address['tel']);
+            Phone::savePhones($address['tel'], $page->pid(), Phone::LINK_ADDRESS, $addrid);
         }
     }
 
     public function getText($value) {
         $addresses = array();
         foreach ($value as $addrid => $address) {
-            $phones = new ProfileSettingPhones('address', $addrid);
+            $phones = Phone::formArrayToString($address['tel']);
             $addresses[] = 'Adresse : ' . $address['text'] . ', affichage : ' . $address['pub']
                          . ', commentaire : ' . $address['comment'] . ', actuelle : ' . ($address['current'] ? 'oui' : 'non')
                          . ', temporaire : ' . ($address['temporary'] ? 'oui' : 'non') . ', secondaire : '
                          . ($address['secondary'] ? 'oui' : 'non') . ', conctactable par courier : '
-                         . ($address['mail'] ? 'oui' : 'non') . ', ' . $phones->getText($address['tel']);
+                         . ($address['mail'] ? 'oui' : 'non') . ($phones ? ', ' . $phones : '');
         }
         return implode(' ; ' , $addresses);
     }
@@ -174,45 +167,23 @@ class ProfileSettingAddresses extends ProfilePage
             $this->values['addresses'] = $res->fetchAllAssoc();
         }
 
-        $res = XDB::iterator("SELECT  link_id AS addrid, tel_type AS type, pub, display_tel AS tel, comment
-                                FROM  profile_phones
-                               WHERE  pid = {?} AND link_type = 'address'
-                            ORDER BY  link_id",
-                             $this->pid());
-        $i = 0;
-        $adrNb = count($this->values['addresses']);
-        while ($tel = $res->next()) {
-            $addrid = $tel['addrid'];
-            unset($tel['addrid']);
-            while ($i < $adrNb && $this->values['addresses'][$i]['id'] < $addrid) {
-                $i++;
-            }
-            if ($i >= $adrNb) {
-                break;
-            }
-            $address =& $this->values['addresses'][$i];
-            if (!isset($address['tel'])) {
-                $address['tel'] = array();
-            }
-            if ($address['id'] == $addrid) {
-                $address['tel'][] = $tel;
-            }
+        // Adds phones to addresses.
+        $it = Phone::iterate(array($this->pid()), array(Phone::LINK_ADDRESS));
+        while ($phone = $it->next()) {
+            $this->values['addresses'][$phone->linkId()]['tel'][$phone->id()] = $phone->toFormArray();
         }
+
+        // Properly formats addresses.
         foreach ($this->values['addresses'] as $id => &$address) {
+            $phone = new Phone();
             if (!isset($address['tel'])) {
-                $address['tel'] = array(
-                                 0 => array(
-                                     'type'    => 'fixed',
-                                     'tel'     => '',
-                                     'pub'     => 'private',
-                                     'comment' => '',
-                                     )
-                                 );
+                $address['tel'] = array(0 => $phone->toFormArray());
             }
             unset($address['id']);
             $address['changed'] = 0;
             $address['removed'] = 0;
         }
+        //var_dump($this->values['addresses']['tel']);
     }
 }
 

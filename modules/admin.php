@@ -1369,14 +1369,12 @@ class AdminModule extends PLModule
         }
 
         if (Env::has('edit')) {
-            // TODO: use address and phone classes to update profile_job_enum and profile_phones once they are done.
+            // TODO: use address class to update profile_job_enum once it is done.
 
             S::assert_xsrf_token();
             $selectedJob = Env::has('selectedJob');
 
-            XDB::execute("DELETE FROM  profile_phones
-                                WHERE  pid = {?} AND link_type = 'hq'",
-                         $id);
+            Phone::deletePhones(0, Phone::LINK_COMPANY, $id);
             XDB::execute("DELETE FROM  profile_addresses
                                 WHERE  jobid = {?} AND type = 'hq'",
                          $id);
@@ -1392,11 +1390,8 @@ class AdminModule extends PLModule
 
                 $page->trigSuccess("L'entreprise a bien été remplacée.");
             } else {
-                require_once 'profil.func.inc.php';
                 require_once 'geocoding.inc.php';
 
-                $display_tel = format_display_number(Env::v('tel'), $error_tel);
-                $display_fax = format_display_number(Env::v('fax'), $error_fax);
                 $gmapsGeocoder = new GMapsGeocoder();
                 $address = array('text' => Env::t('address'));
                 $address = $gmapsGeocoder->getGeocodedAddress($address);
@@ -1411,12 +1406,12 @@ class AdminModule extends PLModule
                              Env::t('name'), Env::t('acronym'), Env::t('url'), Env::t('email'),
                              Env::t('NAF_code'), Env::i('AX_code'), Env::i('holdingId'), $id);
 
-                XDB::execute("INSERT INTO  profile_phones (pid, link_type, link_id, tel_id, tel_type,
-                                           search_tel, display_tel, pub)
-                                   VALUES  ({?}, 'hq', 0, 0, 'fixed', {?}, {?}, 'public'),
-                                           ({?}, 'hq', 0, 1, 'fax', {?}, {?}, 'public')",
-                             $id, format_phone_number(Env::v('tel')), $display_tel,
-                             $id, format_phone_number(Env::v('fax')), $display_fax);
+                $phone = new Phone(array('display' => Env::v('tel'), 'link_id' => $id, 'id' => 0, 'type' => 'fixed',
+                                         'link_type' => Phone::LINK_COMPANY, 'pub' => 'public'));
+                $fax = new Phone(array('display' => Env::v('fax'), 'link_id' => $id, 'id' => 1, 'type' => 'fax',
+                                         'link_type' => Phone::LINK_COMPANY, 'pub' => 'public'));
+                $phone->save();
+                $fax->save();
 
                 XDB::execute("INSERT INTO  profile_addresses (jobid, type, id, accuracy,
                                                               text, postalText, postalCode, localityId,

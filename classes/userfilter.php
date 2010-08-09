@@ -1080,10 +1080,11 @@ class UFC_Phone implements UserFilterCondition
 
     public function __construct($number, $num_type = self::NUM_ANY, $phone_type = self::PHONE_ANY)
     {
-        require_once('profil.func.inc.php');
-        $this->number = $number;
+        $phone = new Phone('display' => $number);
+        $phone->format();
+        $this->number = $phone->search();
         $this->num_type = $num_type;
-        $this->phone_type = format_phone_number($phone_type);
+        $this->phone_type = $phone_type;
     }
 
     public function buildCondition(PlFilter &$uf)

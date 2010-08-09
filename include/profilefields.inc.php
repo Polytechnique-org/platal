@@ -124,99 +124,6 @@ class ProfileFieldIterator implements PlIterator
 }
 // }}}
 
-// {{{ class Phone
-class Phone
-{
-    const TYPE_FAX    = 'fax';
-    const TYPE_FIXED  = 'fixed';
-    const TYPE_MOBILE = 'mobile';
-    public $type;
-
-    public $search;
-    public $display;
-    public $comment = '';
-
-    const LINK_JOB     = 'pro';
-    const LINK_ADDRESS = 'address';
-    const LINK_PROFILE = 'user';
-    const LINK_COMPANY = 'hq';
-    public $link_type;
-    public $link_id;
-
-    public $id;
-
-    /** Fields are :
-     * $type, $search, $display, $link_type, $link_id, $comment, $pid, $id
-     */
-    public function __construct($data)
-    {
-        foreach ($data as $key => $val) {
-            $this->$key = $val;
-        }
-    }
-
-    /** Returns the unique ID of a phone
-     * This ID will allow to link it to an address, a user or a job
-     * The format is address_addressId_phoneId (where phoneId is the id
-     * of the phone in the list of those associated with the address)
-     */
-    public function uid() {
-        return $this->link_type . '_' . $this->link_id . '_' . $this->id;
-    }
-
-    public function hasFlags($flags) {
-        return $this->hasType($flags) && $this->hasLink($flags);
-    }
-
-    /** Returns true if this phone's type matches the flags
-     */
-    public function hasType($flags) {
-        $flags = $flags & Profile::PHONE_TYPE_ANY;
-        return (
-            ($flags == Profile::PHONE_TYPE_ANY)
-            ||
-            (($flags & Profile::PHONE_TYPE_FAX) && $this->type == self::TYPE_FAX)
-            ||
-            (($flags & Profile::PHONE_TYPE_FIXED) && $this->type == self::TYPE_FIXED)
-            ||
-            (($flags & Profile::PHONE_TYPE_MOBILE) && $this->type == self::TYPE_MOBILE)
-        );
-    }
-
-    /** User accessible version of the type
-     */
-    public function displayType($short = false)
-    {
-        switch ($this->type) {
-          case Phone::TYPE_FIXED:
-            return $short ? 'Tél' : 'Fixe';
-          case Phone::TYPE_FAX:
-            return 'Fax';
-          case Phone::TYPE_MOBILE:
-            return $short ? 'Mob' : 'Mobile';
-          default:
-            return $this->type;
-        }
-    }
-
-    /** Returns true if this phone's link matches the flags
-     */
-    public function hasLink($flags) {
-        $flags = $flags & Profile::PHONE_LINK_ANY;
-        return (
-            ($flags == Profile::PHONE_LINK_ANY)
-            ||
-            (($flags & Profile::PHONE_LINK_COMPANY) && $this->link_type == self::LINK_COMPANY)
-            ||
-            (($flags & Profile::PHONE_LINK_JOB) && $this->link_type == self::LINK_JOB)
-            ||
-            (($flags & Profile::PHONE_LINK_ADDRESS) && $this->link_type == self::LINK_ADDRESS)
-            ||
-            (($flags & Profile::PHONE_LINK_PROFILE) && $this->link_type == self::LINK_PROFILE)
-        );
-    }
-}
-// }}}
 // {{{ class Company
 class Company
 {
@@ -239,7 +146,7 @@ class Company
 
     public function setPhone(Phone &$phone)
     {
-        if ($phone->link_type == Phone::LINK_COMPANY && $phone->link_id == $this->id) {
+        if ($phone->linkType() == Phone::LINK_COMPANY && $phone->linkId() == $this->id) {
             $this->phone = $phone;
         }
     }
@@ -301,8 +208,8 @@ class Job
 
     public function addPhone(Phone &$phone)
     {
-        if ($phone->link_type == Phone::LINK_JOB && $phone->link_id == $this->id && $phone->pid == $this->pid) {
-            $this->phones[$phone->uid()] = $phone;
+        if ($phone->linkType() == Phone::LINK_JOB && $phone->linkId() == $this->id && $phone->pid() == $this->pid) {
+            $this->phones[$phone->uniqueId()] = $phone;
         }
     }
 
@@ -362,9 +269,9 @@ class Address
     public function addPhone(Phone &$phone)
     {
         if (
-            $phone->link_type == Phone::LINK_ADDRESS && $phone->link_id == $this->id &&
-            ($this->link_type == self::LINK_COMPANY || $phone->pid == $this->pid) ) {
-            $this->phones[$phone->uid()] = $phone;
+            $phone->linkType() == Phone::LINK_ADDRESS && $phone->linkId() == $this->id &&
+            ($this->link_type == self::LINK_COMPANY || $phone->pid() == $this->pid) ) {
+            $this->phones[$phone->uniqueId()] = $phone;
         }
     }
 
@@ -656,7 +563,7 @@ class ProfileMentoringCountries extends ProfileField
  * 3) attach addresses to jobs and profiles
  */
 
-// {{{ Database schema (profile_address, profile_phones, profile_jobs)
+// {{{ Database schema (profile_address, profile_jobs)
 /** The database for this is very unclear, so here is a little schema :
  * profile_job describes a Job, links to:
  * - a Profile, through `pid`
@@ -684,33 +591,11 @@ class ProfileMentoringCountries extends ProfileField
  *              with that of the row of profile_job for the related job)
  *   - `id` is the id of the job to which we refer (i.e `profile_job.id`)
  *
- * profile_phone describes a Phone, which can be related to an Address,
- * a Job, a Profile or a Company:
- * - for a Profile:
- *   - `link_type` is set to 'user'
- *   - `link_id` is set to 0
- *   - `pid` is set to the id of the related Profile
- *
- * - for a Company:
- *   - `link_type` is set to 'hq'
- *   - `link_id` is set to the id of the related Company
- *   - `pid` is set to 0
- *
- * - for an Address (this is only possible for a *personal* address)
- *   - `link_type` is set to 'address'
- *   - `link_id` is set to the related Address `id`
- *   - `pid` is set to the related Address `pid`
- *
- * - for a Job:
- *   - `link_type` is set to 'pro'
- *   - `link_id` is set to the related Job `id` (not `jobid`)
- *   - `pid` is set to the related Job `pid`
- *
+ * For the documentation of the phone table, please see classes/phone.php.
  *
  * The possible relations are as follow:
  * An Address can be linked to a Company, a Profile, a Job
  * A Job is linked to a Company and a Profile
- * A Phone can be linked to a Company, a Profile, a Job, or a Profile-related Address
  */
 // }}}
 
@@ -777,8 +662,8 @@ class ProfileAddresses extends ProfileField
     {
         $p = $phones->get(Profile::PHONE_LINK_ADDRESS | Profile::PHONE_TYPE_ANY);
         foreach ($p as $phone) {
-            if ($phone->link_type == Phone::LINK_ADDRESS && array_key_exists($phone->link_id, $this->addresses)) {
-                $this->addresses[$phone->link_id]->addPhone($phone);
+            if ($phone->linkType() == Phone::LINK_ADDRESS && array_key_exists($phone->linkId(), $this->addresses)) {
+                $this->addresses[$phone->linkId()]->addPhone($phone);
             }
         }
     }
@@ -815,12 +700,8 @@ class ProfilePhones extends ProfileField
 
     public static function fetchData(array $pids, ProfileVisibility $visibility)
     {
-        $data = XDB::iterator('SELECT  tel_type AS type, search_tel AS search, display_tel AS display, link_type, comment, pid, link_id, tel_id AS id
-                                 FROM  profile_phones
-                                WHERE  pid IN {?} AND pub IN {?}
-                             ORDER BY  ' . XDB::formatCustomOrder('pid', $pids),
-                                 $pids, $visibility->levels());
-        return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
+        $it = Phone::iterate($pids, array(), array(), $visibility->levels());
+        return PlIteratorUtils::subIterator($it->value(), PlIteratorUtils::arrayValueCallback('pid'));
     }
 }
 // }}}
@@ -873,8 +754,8 @@ class ProfileJobs extends ProfileField
     {
         $p = $phones->get(Profile::PHONE_LINK_JOB | Profile::PHONE_TYPE_ANY);
         foreach ($p as $phone) {
-            if ($phone->link_type == Phone::LINK_JOB && array_key_exists($phone->link_id, $this->jobs)) {
-                $this->jobs[$phone->link_id]->addPhone($phone);
+            if ($phone->linkType() == Phone::LINK_JOB && array_key_exists($phone->linkId(), $this->jobs)) {
+                $this->jobs[$phone->linkId()]->addPhone($phone);
             }
         }
     }
@@ -938,13 +819,9 @@ class CompanyList
 
         // Add phones to hq
         if (count($newcompanies)) {
-            $it = XDB::iterator('SELECT  search_tel AS search, display_tel AS display, comment, link_id, tel_type AS type, link_type, tel_id AS id
-                                   FROM  profile_phones
-                                  WHERE  link_id IN {?} AND link_type = \'hq\'',
-                                    $newcompanies);
-            while ($row = $it->next()) {
-                $p = new Phone($row);
-                self::$companies[$row['link_id']]->setPhone($p);
+            $it = Phone::iterate(array(), array(Phone::LINK_COMPANY), $newcompanies);
+            while ($phone = $it->next()) {
+                self::$companies[$phone->linkId()]->setPhone($phone);
             }
         }
 

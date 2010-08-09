@@ -381,7 +381,7 @@ function renumberPhone(prefname, prefid, i)
     $('#' + id).find('div.titre').html('N°' + i);
     $('#' + id).find('a.removeTel').attr('href', 'javascript:removeTel(\'' + prefname + '\',\'' + prefid + '\',' + telid + ')');
     $('#' + id).find('select').attr('name', telpref + '[type]');
-    $('#' + id).find("[name='" + telprefOld + "[tel]']").attr('name', telpref + '[tel]');
+    $('#' + id).find("[name='" + telprefOld + "[display]']").attr('name', telpref + '[display]');
     $('#' + id).find("[name='" + telprefOld + "[comment]']").attr('name', telpref + '[comment]');
     $('#' + id).find('a.removePhoneComment').attr('href', 'javascript:removePhoneComment(' + id + ',' + telpref + ')');
     $('#' + id).find('#' + idOld + '_addComment').attr('id', id + '_addComment');

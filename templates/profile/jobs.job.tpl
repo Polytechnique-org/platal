@@ -101,7 +101,7 @@
       <td class="titre">Téléphone</td>
       <td>
         <input type="text" maxlength="28" {if $job.hq_tel_error}class="error"{/if}
-               name="{$jobpref}[hq_phone]" value="{$job.hq_phone}" />
+               name="{$jobpref}[hq_fixed]" value="{$job.hq_fixed}" />
       </td>
     </tr>
     <tr class="{$entreprise}" style="display: none">

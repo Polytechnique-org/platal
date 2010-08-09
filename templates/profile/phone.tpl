@@ -29,7 +29,7 @@
     <option value="mobile"{if $tel.type eq 'mobile'} selected="selected"{/if}>Mobile</option>
     <option value="fax"{if $tel.type eq 'fax'} selected="selected"{/if}>Fax</option>
   </select>
-  <input type="text" size="19" maxlength="28" name="{$telpref}[tel]" {if $tel.error}class="error"{/if} value="{$tel.tel}" />
+  <input type="text" size="19" maxlength="28" name="{$telpref}[display]" {if $tel.error}class="error"{/if} value="{$tel.display}" />
   <a class="removeTel" href="javascript:removeTel('{$prefname}','{$prefid}','{$telid}')">
     {icon name=cross title="Supprimer ce numéro de téléphone"}
   </a>

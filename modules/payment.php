@@ -108,7 +108,6 @@ class PaymentModule extends PLModule
     {
         global $globals;
 
-        require_once 'profil.func.inc.php' ;
         $this->load('money.inc.php');
 
         if (!empty($GLOBALS['IS_XNET_SITE'])) {

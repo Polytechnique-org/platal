@@ -2,10 +2,9 @@
 <?php
 
 require './connect.db.inc.php';
-require_once 'profil.func.inc.php';
 
 $globals->debug = 0; // do not store backtraces
-
+// TODO: Improve this using Phone::iterate.
 
 function do_update_by_block($values)
 {
@@ -76,14 +75,15 @@ foreach ($prefixes as $i => $prefix) {
             $values = '';
             $i = 0;
             while ($phone = $res->next()) {
-                $disp = format_display_number($phone['search_tel'], $error, array('format' => $format, 'phoneprf' => $prefix));
+                $phone = new Phone('display' => $phone['display_tel']);
+                $phone->format(array('format' => $format, 'phoneprf' => $prefix));
                 if ($values != '') {
                     $values .= ",\n";
                 }
                 $values .= "('"   . addslashes($phone['pid']) . "', '" . addslashes($phone['link_type'])
                     . "', '" . addslashes($phone['link_id'])
                     . "', '" . addslashes($phone['tel_id']) . "', '" . addslashes($phone['tel_type'])
-                    . "', '" . addslashes($phone['search_tel']) . "', '" . addslashes($disp)
+                    . "', '" . addslashes($phone['search_tel']) . "', '" . addslashes($phone->display)
                     . "', '" . addslashes($phone['pub']) . "', '" . addslashes($phone['comment']) . "')";
                 $i++;
                 if ($i == 1000) {

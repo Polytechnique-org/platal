@@ -159,14 +159,13 @@ class EntrReq extends ProfileValidate
 
     public function commit()
     {
-        // TODO: use address and phone classes to update profile_job_enum and profile_phones once they are done.
+        // TODO: use address update profile_job_enum once it is done.
 
         $res = XDB::query('SELECT  id
                              FROM  profile_job_enum
                             WHERE  name = {?}',
                           $this->name);
         if ($res->numRows() != 1) {
-            require_once 'profil.func.inc.php';
             require_once 'geocoding.inc.php';
 
             XDB::execute('INSERT INTO  profile_job_enum (name, acronym, url, email, holdingid, NAF_code, AX_code)
@@ -175,14 +174,12 @@ class EntrReq extends ProfileValidate
                          $this->holdingid, $this->NAF_code, $this->AX_code);
 
             $jobid = XDB::insertId();
-            $display_tel = format_display_number($this->tel, $error_tel);
-            $display_fax = format_display_number($this->fax, $error_fax);
-            XDB::execute("INSERT INTO  profile_phones (pid, link_type, link_id, tel_id, tel_type,
-                                       search_tel, display_tel, pub)
-                               VALUES  ({?}, 'hq', 0, 0, 'fixed', {?}, {?}, 'public'),
-                                       ({?}, 'hq', 0, 1, 'fax', {?}, {?}, 'public')",
-                         $jobid, format_phone_number($this->tel), $display_tel,
-                         $jobid, format_phone_number($this->fax), $display_fax);
+            $phone = new Phone(array('link_type' => 'hq', 'link_id' => $jobid, 'id' => 0,
+                                     'type' => 'fixed', 'display' => $this->tel, 'pub' => 'public'));
+            $fax   = new Phone(array('link_type' => 'hq', 'link_id' => $jobid, 'id' => 1,
+                                     'type' => 'fax', 'display' => $this->fax, 'pub' => 'public'));
+            $phone->save();
+            $fax->save();
 
             $gmapsGeocoder = new GMapsGeocoder();
             $address = $gmapsGeocoder->getGeocodedAddress($this->address);

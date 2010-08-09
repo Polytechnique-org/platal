@@ -100,124 +100,37 @@ class ProfileSettingNumber extends ProfileNoSave
     }
 }
 
-
-class ProfileSettingTel extends ProfileNoSave
-{
-    public function value(ProfilePage &$page, $field, $value, &$success)
-    {
-        if (is_null($value)) {
-            return isset($page->values[$field]) ? $page->values[$field] : S::v($field);
-        }
-        require_once('profil.func.inc.php');
-        $value = format_phone_number($value);
-        if($value == '') {
-            $success = true;
-            return $value;
-        }
-        $value = format_display_number($value,$error);
-        $success = !$error;
-        if (!$success) {
-            Platal::page()->trigError('Le préfixe international du numéro de téléphone est inconnu. ');
-        }
-        return $value;
-    }
-}
-
 class ProfileSettingPhones implements ProfileSetting
 {
-    private $tel;
-    private $pub;
-    protected $link_type;
-    protected $link_id;
-
-    public function __construct($type, $link_id)
-    {
-        $this->tel = new ProfileSettingTel();
-        $this->pub = new ProfileSettingPub();
-        $this->link_type = $type;
-        $this->link_id   = $link_id;
-    }
-
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
         $success = true;
+        $phones = array();
+
         if (is_null($value)) {
-            $value = array();
-            $res = XDB::iterator('SELECT  display_tel AS tel, tel_type AS type, pub, comment
-                                    FROM  profile_phones
-                                   WHERE  pid = {?} AND link_type = {?}
-                                ORDER BY  tel_id',
-                                 $page->pid(), $this->link_type);
-            if ($res->numRows() > 0) {
-                $value = $res->fetchAllAssoc();
-            } else {
-                $value = array(
-                        0 => array(
-                            'type'    => 'fixed',
-                            'tel'     => '',
-                            'pub'     => 'private',
-                            'comment' => '',
-                            )
-                        );
+            $it = Phone::iterate(array($page->pid()), array(Phone::LINK_PROFILE), array(0));
+            while ($phone = $it->next()) {
+                $success = ($phone->format() && $success);
+                $phones[] = $phone->toFormArray();
             }
+            if (count($phones) == 0) {
+                $phone = new Phone();
+                $phones[] = $phone->toFormArray();
+            }
+            return $phones;
         }
 
-        foreach ($value as $key=>&$phone) {
-            $phone['pub'] = $this->pub->value($page, 'pub', $phone['pub'], $s);
-            $phone['tel'] = $this->tel->value($page, 'tel', $phone['tel'], $s);
-            if(!isset($phone['type']) || ($phone['type'] != 'fixed' && $phone['type'] != 'mobile' && $phone['type'] != 'fax')) {
-                $phone['type'] = 'fixed';
-                $s = false;
-            }
-            if (!$s) {
-                $phone['error'] = true;
-                $success = false;
-            }
-            if (!isset($phone['comment'])) {
-                $phone['comment'] = '';
-            }
-        }
-
-        return $value;
-    }
-
-    private function saveTel($pid, $telid, array &$phone)
-    {
-        if ($phone['tel'] != '') {
-            XDB::execute("INSERT INTO  profile_phones (pid, link_type, link_id, tel_id, tel_type,
-                                       search_tel, display_tel, pub, comment)
-                               VALUES  ({?}, {?}, {?}, {?}, {?},
-                                       {?}, {?}, {?}, {?})",
-                         $pid, $this->link_type, $this->link_id, $telid, $phone['type'],
-                         format_phone_number($phone['tel']), $phone['tel'], $phone['pub'], $phone['comment']);
-        }
+        return Phone::formatFormArray($value, $success);
     }
 
     public function save(ProfilePage &$page, $field, $value)
     {
-        XDB::execute("DELETE FROM  profile_phones
-                            WHERE  pid = {?} AND link_type = {?} AND link_id = {?}",
-                     $page->pid(), $this->link_type, $this->link_id);
-        $this->saveTels($page->pid(), $field, $value);
-    }
-
-    //Only saves phones without a delete operation
-    public function saveTels($pid, $field, $value)
-    {
-        foreach ($value as $telid=>&$phone) {
-            $this->saveTel($pid, $telid, $phone);
-        }
+        Phone::deletePhones($page->pid(), Phone::LINK_PROFILE);
+        Phone::savePhones($value, $page->pid(), Phone::LINK_PROFILE);
     }
 
     public function getText($value) {
-        $phones = array();
-        foreach ($value as $phone) {
-            if ($phone['tel'] != '') {
-                $phones[] = 'type : ' . $phone['type'] .', numéro : ' . $phone['tel']
-                          . ', commentaire : « ' . $phone['comment'] . ' », affichage : ' . $phone['pub'];
-            }
-        }
-        return implode(' ; ' , $phones);
+        return Phone::formArrayToString($value);
     }
 }
 

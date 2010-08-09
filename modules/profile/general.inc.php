@@ -537,7 +537,7 @@ class ProfileSettingGeneral extends ProfilePage
         $this->settings['email_directory_new']
                                   = new ProfileSettingEmailDirectory();
         $this->settings['networking'] = new ProfileSettingNetworking();
-        $this->settings['tels']   = new ProfileSettingPhones('user', 0);
+        $this->settings['tels']   = new ProfileSettingPhones();
         $this->settings['edus']   = new ProfileSettingEdu();
         $this->settings['promo']  = new ProfileSettingPromo();
         $this->watched= array('freetext' => true, 'tels' => true,
@@ -550,12 +550,10 @@ class ProfileSettingGeneral extends ProfilePage
     {
         // Checkout all data...
         $res = XDB::query("SELECT  p.nationality1, p.nationality2, p.nationality3, p.birthdate,
-                                   pp.display_tel as mobile, pp.pub as mobile_pub,
                                    p.email_directory as email_directory, pd.promo AS promo_display,
                                    p.freetext, p.freetext_pub, p.ax_id AS matricule_ax, pd.yourself
                              FROM  profiles              AS p
                        INNER JOIN  profile_display       AS pd ON (pd.pid = p.pid)
-                        LEFT JOIN  profile_phones        AS pp ON (pp.pid = p.pid AND link_type = 'user')
                             WHERE  p.pid = {?}", $this->pid());
         $this->values = $res->fetchOneAssoc();
 
