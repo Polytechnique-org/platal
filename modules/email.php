@@ -194,7 +194,7 @@ class EmailModule extends PLModule
             if ($user->hasProfile()) {
                 XDB::execute("UPDATE  profiles
                                  SET  alias_pub = {?}
-                               WHERE  pid = {?}", 
+                               WHERE  pid = {?}",
                             $value, $user->profile()->id());
             }
             $visibility = ($value == 'public');

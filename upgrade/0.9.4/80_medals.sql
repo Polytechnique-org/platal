@@ -36,7 +36,6 @@ insert into profile_medals (type, text, img)
             ('ordre',     'Ordre du Mérite Agricole',                   'ordre_ma.jpg'),
             ('ordre',     'Ordre du Mérite Maritime',                   'ordre_mm.jpg'),
             ('ordre',     'Ordre des Arts et des Lettres',              'ordre_al.jpg'),
-            
             ('croix',     'Croix de Guerre 1914 - 1918',                'croix_1418.jpg'),
             ('croix',     'Croix de Guerre 1939 - 1945',                'croix_3945.jpg'),
             ('croix',     'Croix des T. O. E.',                         'croix_toe.jpg'),

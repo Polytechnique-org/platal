@@ -36,7 +36,7 @@
         </a>
       </td>
     </tr>
-    <script type="text/javascript">//<![CDATA[ 
+    <script type="text/javascript">//<![CDATA[
       var id = new Array();
       id['choices'] = {$survey_current.choices|@count};
       id['subquestions'] = {$survey_current.subquestions|@count};
@@ -44,18 +44,18 @@
       function newField(name, tid)
       {
         fid = "t" + id[name];
-        $("#" + name + "_" + tid).before('<div id="' + name + '_' + fid + '">' 
+        $("#" + name + "_" + tid).before('<div id="' + name + '_' + fid + '">'
             + '<input id="' + name + '_' + fid + '_field" type="text" name="survey_question[' + name + '][' + fid + ']" size="50" maxlength="200" value="" />&nbsp;'
             + '<a href="javascript:removeField(&quot;' + name + '&quot;,&quot;' + fid + '&quot;)"><img src="images/icons/delete.gif" alt="" title="Supprimer" /></a>'
-            + '</div>'); 
-        id[name]++; 
+            + '</div>');
+        id[name]++;
         $("#" + name + "_" + fid + "_field").focus();
       }
       function removeField(name, tid)
       {
         $("#" + name + "_" + tid).remove();
       }
-      {/literal} 
-    //]]></script> 
+      {/literal}
+    //]]></script>
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

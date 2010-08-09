@@ -105,7 +105,7 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscrip
 {icon name=weather_cloudy title="Liste privée"} cette liste est invisible aux non-membres de la liste. S'en désabonner
 t'empêcherait de t'y réabonner par la suite sans l'aide d'un administrateur.
 </p>
-        
+
 <h2>Voici les alias existants pour le groupe {$asso->nom}&nbsp;:</h2>
 
 <table cellspacing="0" cellpadding="0" class='large'>

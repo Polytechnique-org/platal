@@ -22,7 +22,7 @@
 
 
 <h1>
-{if $actif}Modification du mot de passe SMTP/NNTP{else}Activation de ton compte SMTP/NNTP{/if}  
+{if $actif}Modification du mot de passe SMTP/NNTP{else}Activation de ton compte SMTP/NNTP{/if}
 </h1>
 
 {literal}
@@ -101,7 +101,7 @@
 <p>
   {icon name=error title="Attention"} Nous te déconseillons fortement d'utiliser le même
   mot de passe que pour la connexion au site. En effet, ce mot de passe sert à accéder à des
-  services <em>moins</em> sécurisés, ce qui nécessite son enregistrement en clair dans 
+  services <em>moins</em> sécurisés, ce qui nécessite son enregistrement en clair dans
   notre base de données.
 </p>
 
@@ -111,7 +111,7 @@
 </p>
 {include wiki=Xorg.NNTPSecurise}
 {elseif $smarty.request.doc eq "smtp"}
-<p> 
+<p>
   <a href="{$platal->pl_self()}?doc=nntp">Pourquoi et comment</a> utiliser le serveur NNTP de {#globals.core.sitename#}.<br />
 </p>
 {include wiki=Xorg.SMTPSecurise}

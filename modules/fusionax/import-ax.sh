@@ -5,7 +5,7 @@
 #unrar e -inul export_4D.txt.rar
 cp /home/x2004jacob/export*utf8.TXT .
 
-# séparation en fichiers de tables 
+# séparation en fichiers de tables
 cat export_total* | grep ^AD > Adresses.txt
 cat export_total* | grep ^AN > Anciens.txt
 cat export_total* | grep ^FO > Formations.txt

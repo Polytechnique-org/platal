@@ -55,9 +55,9 @@
         range.innerHTML = "L\'annonce est destinée à la promotion " + min + ".";
       } else {
         range.innerHTML = "L\'annonce est destinée aux promotions de " + min + " à " + max + ' (incluses).';
-      } 
+      }
       return true;
-    } 
+    }
     {/literal}
 //]]></script>
       <input type="text" name="{$min_field_name|default:"promo_min"}" id="{$prefix}promo_min"

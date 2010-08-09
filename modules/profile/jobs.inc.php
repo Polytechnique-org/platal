@@ -459,7 +459,7 @@ class ProfileSettingJobs extends ProfilePage
                     );
                 }
             }
- 
+
             $job['w_email_new'] = '';
             if (!isset($job['hq_phone'])) {
                 $job['hq_phone'] = '';

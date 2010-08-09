@@ -42,7 +42,7 @@ Les différentes règles sont appliquées par ordre de priorité décroissante.
 
 {literal}
 <script type="text/javascript">
-  $('#body td table tr').each(function() { 
+  $('#body td table tr').each(function() {
     var uidcell = $('td:eq(3)',this);
     if (uidcell.length != 1) {
       return;

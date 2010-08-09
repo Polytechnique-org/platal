@@ -122,7 +122,7 @@
   </tr>
   {iterate item=art from=$article_index}
   <tr>
-    <td>&bull; 
+    <td>&bull;
     {if $art.nonlu}
       <a href="{$platal->ns}#art{$art.id}"><strong>
     {else}

@@ -30,7 +30,7 @@
       <div class="cat {if $cat eq institutions}sel{/if}"><a href="groups/institutions">Institutions</a></div>
       <div class="cat {if $cat eq promotions}sel{/if}"><a href="groups/promotions">Promotions</a></div>
     </td>
-    
+
     {if $doms}
     <td style="vertical-align: top">
       {foreach from=$doms item=g}

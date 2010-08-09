@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $referer || $platal->pl_self() neq 'login'}
+{if t($referer) || $platal->pl_self() neq 'login'}
 <h1>
   Accès restreint
 </h1>
@@ -52,7 +52,7 @@
       <td>
         <input type="text" name="username" size="20" maxlength="50" value="{insert name="getUserName"}" />&nbsp;@&nbsp;<select name="domain">
           <option value="login">{#globals.mail.domain#} / {#globals.mail.domain2#}</option>
-          <option value="alias" {if $smarty.cookies.ORGdomain eq alias}selected="selected"{/if}>
+          <option value="alias" {if t($smarty.cookies.ORGdomain) eq "alias"}selected="selected"{/if}>
             {#globals.mail.alias_dom#} / {#globals.mail.alias_dom2#}
           </option>
         </select>
@@ -135,7 +135,7 @@
   en clair entre chez toi et Polytechnique.org, ce qui assure une confidentialité maximale.
   {else}
   {icon name=lock_open} Tu utilises actuellement une connexion HTTP non sécurisée. Toutes les informations
-  (<strong>excepté le mot de passe de connexion au site</strong>) circulent en clair entre chez toi et 
+  (<strong>excepté le mot de passe de connexion au site</strong>) circulent en clair entre chez toi et
   Polytechnique.org. Tu peux basculer sur une connexion sécurisée en cliquant sur le lien
   <div class="center">
   <a href="https://{#globals.core.secure_domain#}{$smarty.server.REQUEST_URI}">

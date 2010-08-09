@@ -41,12 +41,12 @@
       <tr>
         <td class="titre">Promotions&nbsp;:</td>
         <td>
-          {if $survey.promos eq "#"} 
+          {if $survey.promos eq "#"}
           <span class="erreur">erreur</span>
-          {elseif $survey.promos eq ""} 
-          aucune restriction 
-          {else} 
-          {$survey.promos} 
+          {elseif $survey.promos eq ""}
+          aucune restriction
+          {else}
+          {$survey.promos}
           {/if}
         </td>
       </tr>

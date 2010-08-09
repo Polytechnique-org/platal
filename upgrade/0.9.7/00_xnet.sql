@@ -1,7 +1,7 @@
 ALTER TABLE virtual CHANGE `type` `type` ENUM('user', 'list', 'dom', 'evt') DEFAULT 'user' NOT NULL;
 
 ALTER TABLE groupex.asso ADD `pub` ENUM( 'public', 'private' ) DEFAULT 'public' NOT NULL AFTER `ax` ;
-INSERT INTO virtual_domains VALUES ('evts.polytechnique.org'); 
+INSERT INTO virtual_domains VALUES ('evts.polytechnique.org');
 
 use groupex;
 

@@ -60,7 +60,7 @@
 <p>
   Tu trouveras ici les interruptions de service de Polytechnique.org qui ont été
   constatées <strong>durant les trois dernières semaines</strong>, ou qui sont prévues dans le futur.
-  Il est à noter qu'à ce jour la quasi-totalité des coupures proviennent 
+  Il est à noter qu'à ce jour la quasi-totalité des coupures proviennent
   de défaillances du réseau de l'École, où nos serveurs sont hébergés (rupture de la
   connexion internet de l'École, problème électrique&hellip;).
 </p>

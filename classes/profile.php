@@ -1068,7 +1068,7 @@ class Profile
 
     /** The school identifier consists of 6 digits. The first 3 represent the
      * promotion entry year. The last 3 indicate the student's rank.
-     * 
+     *
      * Our identifier consists of 8 digits and both half have the same role.
      * This enables us to deal with bigger promotions and with a wider range
      * of promotions.

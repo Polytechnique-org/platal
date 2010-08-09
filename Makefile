@@ -55,7 +55,7 @@ core:
 ## conf
 ##
 
-conf: spool/templates_c spool/mails_c classes/platalglobals.php configs/platal.cron htdocs/.htaccess spool/conf spool/tmp 
+conf: spool/templates_c spool/mails_c classes/platalglobals.php configs/platal.cron htdocs/.htaccess spool/conf spool/tmp
 
 spool/templates_c spool/mails_c spool/uploads spool/conf spool/tmp spool/run:
 	mkdir -p $@

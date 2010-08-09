@@ -249,7 +249,7 @@ Ton inscription à [METS LE NOM DE L'ÉVÉNEMENT ICI] a bien été enregistrée 
     </tr>
   {/foreach}
   </table>
- 
+
   <div class="center">
     {if $evt.eid}<input type="hidden" name="organisateur_uid" value="{$evt.organisateur_uid}" />{/if}
     <input type="submit" name="valid" value="Valider" />

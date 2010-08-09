@@ -359,7 +359,7 @@
 					function() {
 						$(this).removeClass("ac_over");
 					}
-				).click(function(e) { 
+				).click(function(e) {
 					e.preventDefault();
 					e.stopPropagation();
 					selectItem(this)
@@ -394,7 +394,7 @@
 		};
 
 		function makeUrl(q) {
-			var sep = options.url.indexOf('?') == -1 ? '?' : '&'; 
+			var sep = options.url.indexOf('?') == -1 ? '?' : '&';
 			var url = options.url + sep + "q=" + encodeURI(q);
 			for (var i in options.extraParams) {
 				url += "&" + i + "=" + encodeURI(options.extraParams[i]);
@@ -546,7 +546,7 @@
 			autoFill: false,
 			width: 0
 		}, $.fn.autocomplete.defaults, options);
-	    
+
 		options.width = parseInt(options.width, 10);
 		
 		return this.each(function() {

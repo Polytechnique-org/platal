@@ -449,7 +449,7 @@ Adresse de secours : " . Post::v('email') : ""));
         }
     }
 
-    function handler_review(&$page, $action = null, $mode = null) 
+    function handler_review(&$page, $action = null, $mode = null)
     {
         // Include X-XRDS-Location response-header for Yadis discovery
         global $globals;

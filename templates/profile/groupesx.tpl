@@ -22,9 +22,9 @@
 
 <h1>Mes groupes X sur Polytechnique.net</h1>
 
-<p class="center"> 
-[<a href="http://www.polytechnique.net/login/plan">Tous les groupes X</a>] 
-</p> 
+<p class="center">
+[<a href="http://www.polytechnique.net/login/plan">Tous les groupes X</a>]
+</p>
 
 {foreach from=$assos item="asso"}
 <div style="width:48%;float:left" >

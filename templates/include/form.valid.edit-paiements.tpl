@@ -28,7 +28,7 @@
 <input type="submit" name="preview" value="Aperçu" onclick="previewWiki('msg_{$valid->id()}', 'preview_{$valid->id()}', true, 'preview_{$valid->id()}'); return false;" /><br />
 <strong>Site&nbsp;:</strong> <input type="text" name="pay_site" size="45" value="{$valid->site}" />
 <br>
-<strong>Montant&nbsp;:</strong> <input type="text" name="pay_montant" size="5" value="{$valid->montant}" /> 
+<strong>Montant&nbsp;:</strong> <input type="text" name="pay_montant" size="5" value="{$valid->montant}" />
 (min <input type="text" name="pay_montant_min" size="5" value="{$valid->montant_min}" />
 &nbsp;->&nbsp; max <input type="text" name="pay_montant_max" size="5" value="{$valid->montant_max}" />)
 

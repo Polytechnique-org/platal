@@ -69,7 +69,7 @@
       </th>
     </tr>
     <tr>
-      <td class="titre"> 
+      <td class="titre">
         Nom <span class="smaller">(à l'X)</span>
       </td>
       <td>

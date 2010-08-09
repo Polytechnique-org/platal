@@ -53,7 +53,7 @@
 </p>
 {else}
 <p>
-  Nous n'avons actuellement enregistré aucune panne sur les adresses de redirection de {$user->fullName()}. Si tu es 
+  Nous n'avons actuellement enregistré aucune panne sur les adresses de redirection de {$user->fullName()}. Si tu es
   sûr{if $smarty.session.user->gender}e{/if} que son adresse de redirection actuelle est en panne, tu peux nous proposer
   une nouvelle adresse, accompagnée d'un commentaire nous expliquant les raisons exactes de cette proposition.
 </p>

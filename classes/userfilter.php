@@ -1584,7 +1584,7 @@ class UFO_Hrpid extends UserFilterOrder
  * when referring to the joined table.
  *
  * For example, if data from profile_job must be available to filter results,
- * the UFC object will call $uf-addJobFilter(), which will set the 'with_pj' var and 
+ * the UFC object will call $uf-addJobFilter(), which will set the 'with_pj' var and
  * return 'pj', the short name to use when referring to profile_job; when building
  * the query, calling the jobJoins function will return an array containing a single
  * row:
@@ -2302,7 +2302,7 @@ class UserFilter extends PlFilter
                 if (!is_array($key)) {
                     $key = array($key);
                 }
-                $joins['e' . $sub] = PlSqlJoin::left('emails', '$ME.uid = $UID AND $ME.flags != \'filter\' 
+                $joins['e' . $sub] = PlSqlJoin::left('emails', '$ME.uid = $UID AND $ME.flags != \'filter\'
                                                                AND $ME.email IN {?}', $key);
             }
         }
@@ -2317,7 +2317,7 @@ class UserFilter extends PlFilter
                 if (!is_array($key)) {
                     $key = array($key);
                 }
-                $joins['al' . $sub] = PlSqlJoin::left('aliases', '$ME.uid = $UID AND $ME.type IN (\'alias\', \'a_vie\') 
+                $joins['al' . $sub] = PlSqlJoin::left('aliases', '$ME.uid = $UID AND $ME.type IN (\'alias\', \'a_vie\')
                                                                   AND $ME.alias IN {?}', $key);
             }
         }

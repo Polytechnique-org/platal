@@ -1,5 +1,5 @@
 <MultiPg>
-<NoDoc>    
+<NoDoc>
 <UseLocalTime>
 <MsgLocalDateFmt>
 %d-%m-%y
@@ -198,7 +198,7 @@ MY-SUBJNA
 <FieldsBeg>
     <table class="bicol" cellpadding="0" cellspacing="0">
 </FieldsBeg>
- 
+
 <LabelBeg>
       <tr>
 	<td class="right">
@@ -209,7 +209,7 @@ MY-SUBJNA
 <LabelEnd>
 	</td>
 </LabelEnd>
-   
+
 <FldBeg>
 	<td>
 </FldBeg>
@@ -227,7 +227,7 @@ subject:strong
         </td>
       </tr>
 </FldEnd>
-     
+
 <FieldsEnd>
     </table>
 </FieldsEnd>
@@ -259,7 +259,7 @@ subject:strong
 <!-- ------------------------------------------------------------------------ -->
 
 <TIdxPgSSMarkup>
-    
+
 </TIdxPgSSMarkup>
 
 <TIdxPgBegin>
@@ -437,7 +437,7 @@ date
 
 
 <IdxPgSSMarkup>
-    
+
 </IdxPgSSMarkup>
 
 <IdxPgBegin>

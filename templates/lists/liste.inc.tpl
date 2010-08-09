@@ -30,7 +30,7 @@
   {/if}
 </td>
 <td>
-  <a href='{$platal->ns}lists/members/{$liste.list}'>{$liste.list}</a> 
+  <a href='{$platal->ns}lists/members/{$liste.list}'>{$liste.list}</a>
 </td>
 <td>
   {$liste.desc|smarty:nodefaults}<br/>

@@ -33,7 +33,7 @@
 <strong>Si vous êtes un recruteur ou une entreprise, / if you are a recruiter or a company,</strong>
 <ul>
   <li class="spaced">
-    vous avez la possibilité 
+    vous avez la possibilité
     <strong><a href="http://www.manageurs.com/?langue=fr">d'utiliser le site
         Manageurs.com</a></strong> pour rentrer en contact avec les
     polytechniciens, mettre en ligne des offres d'emploi, consulter l'annuaire

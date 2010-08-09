@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
- 
+
 <table cellpadding="8" cellspacing="2" style="width:100%;">
   {foreach from=$trombi_list item=p}
   {cycle values="1,2,3" assign="loop"}

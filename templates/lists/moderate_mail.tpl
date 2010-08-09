@@ -45,7 +45,7 @@
         <input type='hidden' name='mid' value='{$smarty.get.mid}' />
         <input type='submit' name='mok' value='Accepter !'
           onclick="return confirm('Es-tu sûr de vouloir Envoyer cet email sur la liste&nbsp;?')"/>&nbsp;
-        <input type='submit' name='mno' value='Refuser !' 
+        <input type='submit' name='mno' value='Refuser !'
           onclick="return confirm('Es-tu sûr de vouloir Refuser cet email&nbsp;?')"/>&nbsp;
         <input type='submit' name='mdel' value='Spam !' style='color:red;'
           onclick="return confirm('Es-tu sûr de vouloir Détruire cet email&nbsp;?')"/>

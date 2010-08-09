@@ -49,7 +49,7 @@ masculin ou féminin, par son prénom, ou son nom.
   }
   {/literal}
 //]]></script>
- 
+
 <form action="{$platal->ns}mail" method="post" enctype="multipart/form-data" onsubmit="return check(this);">
   {xsrf_token_field}
   <table class='bicol'>

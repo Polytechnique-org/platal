@@ -169,10 +169,10 @@
 <form action="emails/send" method="post" enctype="multipart/form-data" id="form_mail" onsubmit="return check(this);">
   {xsrf_token_field}
   <table class="bicol" cellpadding="2" cellspacing="0">
-    <tr> 
+    <tr>
       <th colspan="2">Destinataires</th>
     </tr>
-    <tr> 
+    <tr>
       <td class="titre">de&nbsp;:</td>
       <td>
         <input type='hidden' name='signature' value='1' />
@@ -183,19 +183,19 @@
 {/if}' />
       </td>
     </tr>
-    <tr> 
+    <tr>
       <td class="titre">à&nbsp;:</td>
       <td>
         <input type='text' name='to' size='60' value="{$smarty.request.to}" />
       </td>
     </tr>
-    <tr> 
+    <tr>
       <td class="titre">copie&nbsp;:</td>
       <td>
         <input type='text' name='cc' size='60' value="{$smarty.request.cc}" />
       </td>
     </tr>
-    <tr> 
+    <tr>
       <td class="titre">copie cachée&nbsp;:</td>
       <td>
         <input type='text' name='bcc' size='60' value="{$smarty.request.bcc}" />

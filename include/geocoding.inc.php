@@ -343,7 +343,7 @@ class GMapsGeocoder extends Geocoder {
         $address['text'] = str_replace("\n", "\r\n", $address['text']);
         $address['postalText'] = str_replace("\n", "\r\n", $address['postalText']);
     }
- 
+
     // Returns the address formated for postal use.
     // The main rules are (cf AFNOR XPZ 10-011):
     // -everything in upper case;

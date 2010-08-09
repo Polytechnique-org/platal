@@ -32,7 +32,7 @@
   Tu n'as pour le moment aucun homonyme dans notre base de données. Nous allons
   donc te donner l'adresse <strong>{$smarty.session.subState.bestalias}@{#globals.mail.domain#}</strong>,
   en plus de ton adresse à vie <strong>{$smarty.session.subState.forlife}@{#globals.mail.domain#}</strong>.
-  Note que tu pourrais perdre l'adresse <strong>{$smarty.session.subState.bestalias}@{#globals.mail.domain#}</strong> 
+  Note que tu pourrais perdre l'adresse <strong>{$smarty.session.subState.bestalias}@{#globals.mail.domain#}</strong>
   si un homonyme s'inscrivait, même si cela reste assez rare.
   </p>
   {else}
@@ -42,14 +42,14 @@
   de ton adresse à vie <strong>{$smarty.session.subState.forlife}@{#globals.mail.domain#}</strong>.
   </p>
   {/if}
-  
+
   <p>
   Ces adresses sont des redirections vers une ou plusieurs adresses email de ton choix.
   Indiques-en une pour terminer ton inscription. Tu pourras la modifier ou ajouter d'autres
   adresses une fois inscrit.
   </p>
   <p>
-  Attention, cette adresse doit <strong>impérativement être valide</strong> pour que nous puissions 
+  Attention, cette adresse doit <strong>impérativement être valide</strong> pour que nous puissions
   t'envoyer tes informations de connexion.
   </p>
 

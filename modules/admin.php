@@ -486,7 +486,7 @@ class AdminModule extends PLModule
                 unset($oldValues[$k]);
             }
             XDB::execute('UPDATE  accounts
-                             SET  ' . implode(', ', $set) . ' 
+                             SET  ' . implode(', ', $set) . '
                            WHERE  uid = ' . XDB::format('{?}', $user->id()));
             $page->trigSuccess('Données du compte mise à jour avec succès');
             $user = User::getWithUID($user->id());
@@ -1131,7 +1131,7 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
 
-    function handler_account_types(&$page, $action = 'list', $id = null) 
+    function handler_account_types(&$page, $action = 'list', $id = null)
     {
         $page->setTitle('Administration - Types de comptes');
         $page->assign('title', 'Gestion des types de comptes');

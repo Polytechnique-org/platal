@@ -23,7 +23,7 @@
 <h2>Fusion des annuaires X.org - AX</h2>
 <ul>
 <li>Voir la <a href="Fusion">documentation</a></li>
-<li><a href="fusionax/import">Import de la base AX</a> {if $lastimport} - (dernier import le {$lastimport}){/if}</li> 
+<li><a href="fusionax/import">Import de la base AX</a> {if $lastimport} - (dernier import le {$lastimport}){/if}</li>
 <li>Mise en <a href="fusionax/ids">correspondance simple</a></li>
 <li>Création des <a href="fusionax/view">VIEW annexes nécessaires aux corrélations</a></li>
 <li>Corrélation des <a href="fusionax/deceased">dates de décès</a></li>

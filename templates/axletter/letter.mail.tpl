@@ -58,8 +58,8 @@ ne plus recevoir : &lt;https://www.polytechnique.org/ax/out{if $hash}/{$hash}{/i
 {if $is_mail}
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"> 
-  <head>  
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
     <title>Lettre d'information de l'AX</title>
     <style type="text/css">
       {literal}
