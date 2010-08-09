@@ -665,7 +665,7 @@ class UFBF_Registered extends UFBF_Enum
         if ($this->val == 1) {
             return new UFC_Registered();
         } else if ($this->val == 2) {
-            return new PFC_Not(UFC_Registered());
+            return new PFC_Not(new UFC_Registered());
         }
     }
 }
