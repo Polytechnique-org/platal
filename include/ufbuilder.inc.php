@@ -682,7 +682,7 @@ class UFBF_Dead extends UFBF_Enum
     protected function buildUFC(UserFilterBuilder &$ufb)
     {
         if ($this->val == 1) {
-            return new PFC_Not(UFC_Dead());
+            return new PFC_Not(new UFC_Dead());
         } else if ($this->val == 2) {
             return new UFC_Dead();
         }

@@ -34,7 +34,7 @@ $resRobot = XDB::iterator("SELECT  uid, alias, expire
 while ($old = $resRobot->next()) {
     $res = XDB::query('SELECT  a.hruid
                          FROM  homonyms AS h
-                   INNER JOIN  accounts AS a (h.uid = a.uid)
+                   INNER JOIN  accounts AS a ON (h.uid = a.uid)
                         WHERE  homonyme_id = {?}',
                       $old['id']);
     $hruids = $res->fetchColumn();
