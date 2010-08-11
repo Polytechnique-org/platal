@@ -529,9 +529,9 @@ abstract class ProfileValidate extends Validate
         $mailer = new PlMailer();
         $mailer->setSubject($this->_mail_subj());
         $mailer->setFrom("validation+{$this->type}@{$globals->mail->domain}");
-        $mailer->addTo("\"{$this->profile->fullName()}\" <{$this->profileOwner->forlifeEmail()}>");
+        $mailer->addTo("\"{$this->profile->fullName()}\" <{$this->profileOwner->bestEmail()}>");
         if (!$this->userIsProfileOwner) {
-            $mailer->addCc("\"{$this->user->fullName()}\" <{$this->user->forlifeEmail()}>");
+            $mailer->addCc("\"{$this->user->fullName()}\" <{$this->user->bestEmail()}>");
         }
         $mailer->addCc("validation+{$this->type}@{$globals->mail->domain}");
 
