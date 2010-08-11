@@ -735,7 +735,7 @@ class XnetGrpModule extends PLModule
             return true;
         }
 
-        $mmlist = new MMList($user, $domain);
+        $mmlist = new MMList(S::user(), $domain);
         $listes = $mmlist->get_lists($user->forlifeEmail());
 
         $may_update = may_update();
@@ -849,7 +849,7 @@ class XnetGrpModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $mmlist = new MMList($user, $globals->asso('mail_domain'));
+        $mmlist = new MMList(S::user(), $globals->asso('mail_domain'));
 
         if (Post::has('change')) {
             S::assert_xsrf_token();
