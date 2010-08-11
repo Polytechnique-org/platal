@@ -51,7 +51,7 @@ class SearchSet extends ProfileSet
     private $score    = null;
     private $quick    = false;
 
-    public function __construct($quick = false, $no_search = false, PlFilterCondition $cond = null)
+    public function __construct($quick = false, PlFilterCondition $cond = null)
     {
         if ($no_search) {
             return;
@@ -60,21 +60,24 @@ class SearchSet extends ProfileSet
         $this->quick = $quick;
 
         if (is_null($cond)) {
-            $this->conds = new PFC_And();
+            $conds = new PFC_And();
         } else if ($cond instanceof PFC_And) {
-            $this->conds = $cond;
+            $conds = $cond;
         } else {
-            $this->conds = new PFC_And($cond);
+            $conds = new PFC_And($cond);
         }
 
         if ($quick) {
-            $this->getQuick();
+            $this->getQuick($conds);
         } else {
-            $this->getAdvanced();
+            $this->getAdvanced($conds);
         }
     }
 
-    private function getQuick()
+    /** Sets up the conditions for a Quick Search
+     * @param $conds Additional conds (as a PFC_And)
+     */
+    private function getQuick($conds)
     {
         if (!S::logged()) {
             Env::kill('with_soundex');
@@ -88,21 +91,24 @@ class SearchSet extends ProfileSet
         }
 
         $ufc = $ufb->getUFC();
-        $this->conds->addChild($ufc);
+        $conds->addChild($ufc);
 
         $orders = $ufb->getOrders();
 
         if (S::logged() && Env::has('nonins')) {
-            $this->conds = new PFC_And($this->conds,
+            $conds = new PFC_And($conds,
                 new PFC_Not(new UFC_Dead()),
                 new PFC_Not(new UFC_Registered())
             );
         }
 
-        parent::__construct($this->conds, $orders);
+        parent::__construct($conds, $orders);
     }
 
-    private function getAdvanced()
+    /** Sets up the conditions for an Advanced Search
+     * @param $conds Additional conds (as a PFC_And)
+     */
+    private function getAdvanced($conds)
     {
         $this->advanced = true;
         require_once 'ufbuilder.inc.php';
@@ -112,7 +118,12 @@ class SearchSet extends ProfileSet
             return;
         }
 
-        $this->conds->addChild($ufb->getUFC());
+        $ufc = $ufb->getUFC();
+        $conds->addChild($ufc);
+
+        $orders = $ufb->getOrders();
+
+        parent::__construct($conds, $orders);
     }
 
     protected function &getFilterResults(PlFilter &$pf, PlLimit $limit)
@@ -122,6 +133,8 @@ class SearchSet extends ProfileSet
     }
 }
 
+/** Simple set based on an array of User objects
+ */
 class ArraySet extends ProfileSet
 {
     public function __construct(array $users)
@@ -136,6 +149,9 @@ class ArraySet extends ProfileSet
     }
 }
 
+/** A multipage view for profiles
+ * Allows the display of bounds when sorting by name or promo.
+ */
 abstract class ProfileView extends MultipageView
 {
     protected function getBoundValue($obj)
@@ -172,11 +188,21 @@ abstract class ProfileView extends MultipageView
     }
 }
 
+/** An extended multipage view for profiles, as minifiches.
+ * Allows to sort by:
+ * - score (for a search query)
+ * - name
+ * - promo
+ * - latest modification
+ *
+ * Paramaters for this view are:
+ * - with_score: whether to allow ordering by score (set only for a quick search)
+ * - starts_with: show only names beginning with the given letter
+ */
 class MinificheView extends ProfileView
 {
-    public function __construct(PlSet &$set, $data, array $params)
+    public function __construct(PlSet &$set, array $params)
     {
-        require_once 'education.func.inc.php';
         global $globals;
         $this->entriesPerPage = $globals->search->per_page;
         if (@$params['with_score']) {
@@ -200,7 +226,21 @@ class MinificheView extends ProfileView
                     new UFO_Promo(UserFilter::DISPLAY, true),
                     new UFO_Name(Profile::DN_SORT),
                 ), 'dernière modification'));
-        parent::__construct($set, $data, $params);
+        parent::__construct($set, $params);
+    }
+
+    public function apply(PlPage &$page)
+    {
+        if (array_key_exists('starts_with', $this->params)
+            && $this->params['starts_with'] != ""
+            && $this->params['starts_with'] != null) {
+
+            $this->set->addCond(
+                new UFC_Name(Profile::LASTNAME,
+                    $this->params['starts_with'], UFC_Name::PREFIX)
+            );
+        }
+        return parent::apply($page);
     }
 
     public function templateName()
@@ -211,7 +251,7 @@ class MinificheView extends ProfileView
 
 class MentorView extends ProfileView
 {
-    public function __construct(PlSet &$set, $data, array $params)
+    public function __construct(PlSet &$set, array $params)
     {
         $this->entriesPerPage = 10;
         $this->addSort(new PlViewOrder('rand', array(new PFO_Random(S::i('uid'))), 'aléatoirement'));
@@ -225,7 +265,7 @@ class MentorView extends ProfileView
                     new UFO_Promo(UserFilter::DISPLAY, true),
                     new UFO_Name(Profile::DN_SORT),
                 ), 'dernière modification'));
-        parent::__construct($set, $data, $params);
+        parent::__construct($set, $params);
     }
 
     public function templateName()
@@ -236,7 +276,7 @@ class MentorView extends ProfileView
 
 class TrombiView extends ProfileView
 {
-    public function __construct(PlSet &$set, $data, array $params)
+    public function __construct(PlSet &$set, array $params)
     {
         $this->entriesPerPage = 24;
         $this->defaultkey = 'name';
@@ -254,7 +294,7 @@ class TrombiView extends ProfileView
                         new UFO_Promo(UserFilter::DISPLAY, true),
                         new UFO_Name(Profile::DN_SORT),
                     ), 'promotion'));
-        parent::__construct($set, $data, $params);
+        parent::__construct($set, $params);
     }
 
     public function templateName()
@@ -274,7 +314,7 @@ class TrombiView extends ProfileView
 
 class GadgetView implements PlView
 {
-    public function __construct(PlSet &$set, $data, array $params)
+    public function __construct(PlSet &$set, array $params)
     {
         $this->set =& $set;
     }

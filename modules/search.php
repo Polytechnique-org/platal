@@ -43,11 +43,15 @@ class SearchModule extends PLModule
         Platal::page()->assign('formulaire',1);
     }
 
-    function handler_quick(&$page, $action = null, $subaction = null)
+    /** 
+     * $model: The way of presenting the results: minifiche, trombi, geoloc.
+     * $byletter: Show only names beginning with this letter
+     */
+    function handler_quick(&$page, $model = null, $byletter = null)
     {
         global $globals;
 
-        if (Env::has('quick') || $action == 'geoloc') {
+        if (Env::has('quick') || $model == 'geoloc') {
             $quick = Env::t('quick');
             if (S::logged() && !Env::has('page')) {
                 S::logger()->log('search', 'quick=' . $quick);
@@ -110,20 +114,17 @@ class SearchModule extends PLModule
             $page->assign('formulaire', 0);
 
             require_once 'userset.inc.php';
-            $view = new SearchSet(true, $action == 'geoloc' && substr($subaction, -3) == 'swf');
-            $view->addMod('minifiche', 'Mini-fiches', true, array('with_score' => true));
+            $view = new SearchSet(true);
+            $view->addMod('minifiche', 'Mini-fiches', true, array('with_score' => true, 'starts_with' => $byletter));
             if (S::logged() && !Env::i('nonins')) {
                 $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true, 'with_score' => true));
                 // TODO: Reactivate when the new map is completed.
                 // $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
             }
-            $view->apply('search', $page, $action, $subaction);
+            $view->apply('search', $page, $model);
 
             $nb_tot = $view->count();
             $page->assign('search_results_nb', $nb_tot);
-            if ($subaction) {
-                return;
-            }
             if (!S::logged() && $nb_tot > $globals->search->public_max) {
                 $page->trigError('Votre recherche a généré trop de résultats pour un affichage public.');
             } elseif ($nb_tot > $globals->search->private_max) {
@@ -140,14 +141,16 @@ class SearchModule extends PLModule
         $page->setTitle('Annuaire');
     }
 
-    function handler_advanced(&$page, $action = null, $subaction = null)
+    /** $model is the way of presenting the results: minifiche, trombi, geoloc.
+     */
+    function handler_advanced(&$page, $model = null, $byletter = null)
     {
         global $globals;
         require_once 'geocoding.inc.php';
         $page->assign('advanced',1);
         $page->addJsLink('jquery.autocomplete.js');
 
-        if (!Env::has('rechercher') && $action != 'geoloc') {
+        if (!Env::has('rechercher') && $model != 'geoloc') {
             $this->form_prepare();
         } else {
             if (!Env::has('page')) {
@@ -155,16 +158,13 @@ class SearchModule extends PLModule
             }
 
             require_once 'userset.inc.php';
-            $view = new SearchSet(false, $action == 'geoloc' && substr($subaction, -3) == 'swf');
-            $view->addMod('minifiche', 'Mini-fiches', true);
+            $view = new SearchSet(false);
+            $view->addMod('minifiche', 'Mini-fiches', true, array('starts_with' => $byletter));
             $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true));
             // TODO: Reactivate when the new map is completed.
             // $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
-            $view->apply('search/adv', $page, $action, $subaction);
+            $view->apply('search/adv', $page, $model);
 
-            if ($subaction) {
-                return;
-            }
             $nb_tot = $view->count();
             if ($nb_tot > $globals->search->private_max) {
                 $this->form_prepare();
@@ -175,7 +175,7 @@ class SearchModule extends PLModule
             }
         }
 
-        $page->changeTpl('search/index.tpl', $action == 'mini' ? SIMPLE : SKINNED);
+        $page->changeTpl('search/index.tpl', $model == 'mini' ? SIMPLE : SKINNED);
         $page->addJsLink('ajax.js');
         $page->assign('public_directory',0);
     }
