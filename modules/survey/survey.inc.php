@@ -200,10 +200,9 @@ class Survey
         }
         $sql = 'SELECT v.id AS vid, a.question_id AS qid, a.answer AS answer
                   FROM survey_votes AS v
-             LEFT JOIN survey_answers AS a
-                    ON a.vote_id=v.id
+            INNER JOIN survey_answers AS a ON a.vote_id=v.id
                  WHERE v.survey_id={?}
-              ORDER BY vid ASC, qid ASC, answer ASC;';
+              ORDER BY vid ASC, qid ASC, answer ASC';
         $res = XDB::iterator($sql, $this->id); // retrieves all answers from database
         $vid = -1;
         $vid_ = 0;
