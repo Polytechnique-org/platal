@@ -90,7 +90,7 @@ class PaymentModule extends PLModule
     function handlers()
     {
         return array(
-            'payment'                    => $this->make_hook('payment',       AUTH_MDP),
+            'payment'                    => $this->make_hook('payment',       AUTH_MDP,    'payment'),
             'payment/cyber_return'       => $this->make_hook('cyber_return',  AUTH_PUBLIC, 'user', NO_HTTPS),
             'payment/cyber2_return'      => $this->make_hook('cyber2_return', AUTH_PUBLIC, 'user', NO_HTTPS),
             'payment/paypal_return'      => $this->make_hook('paypal_return', AUTH_PUBLIC, 'user', NO_HTTPS),

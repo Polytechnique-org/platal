@@ -45,13 +45,13 @@ class PlatalModule extends PLModule
             // Preferences thingies
             'prefs'             => $this->make_hook('prefs',     AUTH_COOKIE),
             'prefs/rss'         => $this->make_hook('prefs_rss', AUTH_COOKIE),
-            'prefs/webredirect' => $this->make_hook('webredir',  AUTH_MDP),
+            'prefs/webredirect' => $this->make_hook('webredir',  AUTH_MDP, 'mail'),
             'prefs/skin'        => $this->make_hook('skin',      AUTH_COOKIE),
 
             // password related thingies
             'password'          => $this->make_hook('password',  AUTH_MDP),
             'tmpPWD'            => $this->make_hook('tmpPWD',    AUTH_PUBLIC),
-            'password/smtp'     => $this->make_hook('smtppass',  AUTH_MDP),
+            'password/smtp'     => $this->make_hook('smtppass',  AUTH_MDP, 'mail'),
             'recovery'          => $this->make_hook('recovery',  AUTH_PUBLIC),
             'exit'              => $this->make_hook('exit',      AUTH_PUBLIC),
             'review'            => $this->make_hook('review',    AUTH_PUBLIC),
