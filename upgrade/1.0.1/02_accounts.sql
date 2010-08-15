@@ -1,4 +1,9 @@
-ALTER TABLE accounts ADD COLUMN directory_name VARCHAR(255) DEFAULT NULL AFTER full_name;
+ALTER TABLE accounts ADD COLUMN directory_name VARCHAR(255) DEFAULT NULL AFTER full_name,
+                     ADD COLUMN user_perms SET('groups', 'mail', 'directory_ax', 'directory_private',
+                                               'edit_directory', 'forums', 'lists', 'payment')
+                                           DEFAULT NULL
+                                           COMMENT "Extra permissions for the account in addition to those specified by the account type"
+                                           AFTER type;
 UPDATE  accounts AS a
    SET  a.directory_name = (SELECT  pd.directory_name
                               FROM  profile_display  AS pd

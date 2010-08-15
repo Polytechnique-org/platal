@@ -184,7 +184,7 @@ class User extends PlUser
                                       IF (ab.alias IS NULL, NULL, CONCAT(ab.alias, \'@' . $globals->mail->domain . '\')) AS bestalias,
                                       IF (ab.alias IS NULL, NULL, CONCAT(ab.alias, \'@' . $globals->mail->domain2 . '\')) AS bestalias_alternate,
                                       a.email, a.full_name, a.directory_name, a.display_name, a.sex = \'female\' AS gender,
-                                      IF(a.state = \'active\', at.perms, \'\') AS perms,
+                                      IF(a.state = \'active\', CONCAT(at.perms, \',\', IF(a.user_perms IS NULL, \'\', a.user_perms)), \'\') AS perms,
                                       a.email_format, a.is_admin, a.state, a.type, a.skin,
                                       FIND_IN_SET(\'watch\', a.flags) AS watch, a.comment,
                                       a.weak_password IS NOT NULL AS weak_access, g.g_account_name IS NOT NULL AS googleapps,
@@ -779,6 +779,11 @@ class User extends PlUser
         $flags->addFlag(PERMS_USER);
         if ($is_admin) {
             $flags->addFlag(PERMS_ADMIN);
+        }
+
+        // Access to private directory implies access to 'less'-private version.
+        if ($flags->hasFlag('directory_private')) {
+            $flags->addFlag('directory_ax');
         }
         return $flags;
     }
