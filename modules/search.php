@@ -25,10 +25,10 @@ class SearchModule extends PLModule
     {
         return array(
             'search'              => $this->make_hook('quick',          AUTH_PUBLIC),
-            'search/adv'          => $this->make_hook('advanced',       AUTH_COOKIE),
+            'search/adv'          => $this->make_hook('advanced',       AUTH_COOKIE, 'directory_ax'),
             'advanced_search.php' => $this->make_hook('redir_advanced', AUTH_PUBLIC),
-            'search/autocomplete' => $this->make_hook('autocomplete',   AUTH_COOKIE, 'user', NO_AUTH),
-            'search/list'         => $this->make_hook('list',           AUTH_COOKIE, 'user', NO_AUTH),
+            'search/autocomplete' => $this->make_hook('autocomplete',   AUTH_COOKIE, 'directory_ax', NO_AUTH),
+            'search/list'         => $this->make_hook('list',           AUTH_COOKIE, 'directory_ax', NO_AUTH),
         );
     }
 

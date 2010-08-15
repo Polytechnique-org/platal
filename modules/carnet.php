@@ -24,18 +24,18 @@ class CarnetModule extends PLModule
     function handlers()
     {
         return array(
-            'carnet'                => $this->make_hook('index',    AUTH_COOKIE),
-            'carnet/panel'          => $this->make_hook('panel',    AUTH_COOKIE),
-            'carnet/notifs'         => $this->make_hook('notifs',   AUTH_COOKIE),
+            'carnet'                => $this->make_hook('index',    AUTH_COOKIE, 'directory_private'),
+            'carnet/panel'          => $this->make_hook('panel',    AUTH_COOKIE, 'directory_private'),
+            'carnet/notifs'         => $this->make_hook('notifs',   AUTH_COOKIE, 'directory_private'),
 
-            'carnet/contacts'       => $this->make_hook('contacts', AUTH_COOKIE),
-            'carnet/contacts/pdf'   => $this->make_hook('pdf',      AUTH_COOKIE),
-            'carnet/contacts/vcard' => $this->make_hook('vcard',    AUTH_COOKIE),
-            'carnet/contacts/ical'  => $this->make_hook('ical',     AUTH_PUBLIC, 'user', NO_HTTPS),
-            'carnet/contacts/csv'   => $this->make_hook('csv',     AUTH_PUBLIC, 'user', NO_HTTPS),
-            'carnet/contacts/csv/birthday'  => $this->make_hook('csv_birthday',     AUTH_PUBLIC, 'user', NO_HTTPS),
+            'carnet/contacts'       => $this->make_hook('contacts', AUTH_COOKIE, 'directory_private'),
+            'carnet/contacts/pdf'   => $this->make_hook('pdf',      AUTH_COOKIE, 'directory_private'),
+            'carnet/contacts/vcard' => $this->make_hook('vcard',    AUTH_COOKIE, 'directory_private'),
+            'carnet/contacts/ical'  => $this->make_hook('ical',     AUTH_PUBLIC, 'directory_private', NO_HTTPS),
+            'carnet/contacts/csv'   => $this->make_hook('csv',     AUTH_PUBLIC,  'directory_private', NO_HTTPS),
+            'carnet/contacts/csv/birthday'  => $this->make_hook('csv_birthday',     AUTH_PUBLIC, 'directory_private', NO_HTTPS),
 
-            'carnet/rss'            => $this->make_hook('rss',      AUTH_PUBLIC, 'user', NO_HTTPS),
+            'carnet/rss'            => $this->make_hook('rss',      AUTH_PUBLIC, 'directory_private', NO_HTTPS),
         );
     }
 
