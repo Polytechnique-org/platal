@@ -137,7 +137,9 @@ abstract class PlSet
         return $it;
     }
 
-    /** XXX ??
+    /** Return an array containing all pertinent parameters for this page
+     * Generated from $_GET, after some cleanup (remove 'n' (plat/al field
+     * for the handler path)
      */
     public function args()
     {
@@ -146,7 +148,9 @@ abstract class PlSet
         return $get;
     }
 
-    /** XXX?
+    /** Convert an array into an URL query (?foo=bar)
+     * @param $args An associative array to convert to a query string
+     * @param $encode Whether to url-encode the string
      */
     protected function encodeArgs(array $args, $encode = false)
     {
@@ -204,15 +208,12 @@ abstract class PlSet
             return false;
         }
         $args = $view->args();
-        if (!isset($args['rechercher'])) {
-            $args['rechercher'] = 'Chercher';
-        }
         $page->coreTpl('plset.tpl');
         $page->assign('plset_base', $baseurl);
         $page->assign('plset_mods', $this->mods);
         $page->assign('plset_mod', $this->mod);
-        $page->assign('plset_search', $this->encodeArgs($args));
-        $page->assign('plset_search_enc', $this->encodeArgs($args, true));
+        $page->assign('plset_args', $this->encodeArgs($args));
+        $page->assign('plset_args_enc', $this->encodeArgs($args, true));
         foreach ($this->modParams[$this->mod] as $param=>$value) {
             $page->assign($this->mod . '_' . $param, $value);
         }
@@ -238,7 +239,8 @@ interface PlView
      */
     public function apply(PlPage &$page);
 
-    /** XXX?
+    /** As PlSet->args(), returns the ?foo=bar part of the URL for generating
+     * this PlSet, after adding the necessary components and removing useless ones.
      */
     public function args();
 }
@@ -393,6 +395,9 @@ abstract class MultipageView implements PlView
         return PlPage::getCoreTpl('plview.multipage.tpl');
     }
 
+    /** Arguments are those needed by the set, minus 'page' and 'order' which
+     * will be set to new values in the html links.
+     */
     public function args()
     {
         $list = $this->set->args();
