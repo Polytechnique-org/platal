@@ -32,9 +32,13 @@ abstract class PlSet
 
     protected $count   = null;
 
+    // A list of available views
     private $mods      = array();
+    // An array of $view_name => array($parameters)
     private $modParams = array();
+    // The current view name
     private $mod       = null;
+    // The default view name
     private $default   = null;
 
     public function __construct(PlFilterCondition &$cond, $orders = null)
@@ -54,6 +58,13 @@ abstract class PlSet
         }
     }
 
+    /** Adds a new view (minifiche, trombi, map)
+     * @param $name The name of the view (cf buildView)
+     * @param $description A user-friendly name for the view
+     * @param $default Whether this is the default view
+     * @param $params Parameters used to tune the view (display promo, order by
+     *                  score...)
+     */
     public function addMod($name, $description, $default = false, array $params = array())
     {
         $name = strtolower($name);
@@ -70,11 +81,15 @@ abstract class PlSet
         unset($this->mods[$name]);
     }
 
+    /** Adds a new sort (on the PlFilter)
+     */
     public function addSort(PlFilterOrder &$order)
     {
         $this->orders[] = $order;
     }
 
+    /** Adds a new condition to the PlFilter
+     */
     public function addCond(PlFilterCondition &$cond)
     {
         $this->conds->addChild($cond);
@@ -87,7 +102,7 @@ abstract class PlSet
     abstract protected function buildFilter(PlFilterCondition &$cond, $orders);
 
     /** This function returns the results of the given filter
-     * wihtin $limit ; available when the PlFilter getter isn't the usual get
+     * wihtin $limit; can be use to replace the default $pf->get call.
      * @param &$pf The filter
      * @param $limit The PlLimit
      * @return The results of the filter
@@ -98,7 +113,8 @@ abstract class PlSet
         return $res;
     }
 
-    /** This function returns the values of the set
+    /** This function returns the values of the set, and sets $count with the
+     * total number of results.
      * @param $limit A PlLimit for selecting users
      * @param $orders An optional array of PFO to use before the "default" ones
      * @return The result of $pf->get();
@@ -121,6 +137,8 @@ abstract class PlSet
         return $it;
     }
 
+    /** XXX ??
+     */
     public function args()
     {
         $get = $_GET;
@@ -128,6 +146,8 @@ abstract class PlSet
         return $get;
     }
 
+    /** XXX?
+     */
     protected function encodeArgs(array $args, $encode = false)
     {
         $qs = '?';
@@ -147,7 +167,12 @@ abstract class PlSet
         return $this->count;
     }
 
-    private function &buildView($view, $data)
+    /** Builds the view class from the given parameters
+     * @param $view A string ('profile' for 'ProfileView'); if null,
+     *          the default view is used.
+     * @return A new PlView instance.
+     */
+    private function &buildView($view)
     {
         $view = strtolower($view);
         if (!$view || !class_exists($view . 'View') || !isset($this->mods[$view])) {
@@ -159,7 +184,7 @@ abstract class PlSet
         if (!class_exists($class)) {
             $view = null;
         } else {
-            $view = new $class($this, $data, $this->modParams[$this->mod]);
+            $view = new $class($this, $this->modParams[$this->mod]);
             if (!$view instanceof PlView) {
                 $view = null;
             }
@@ -167,9 +192,14 @@ abstract class PlSet
         return $view;
     }
 
-    public function apply($baseurl, PlPage &$page, $view = null, $data = null)
+    /** Creates the view: sets the page template, assigns Smarty vars.
+     * @param $baseurl The base URL for this (for instance, "search/")
+     * @param $page The page in which the view should be loaded
+     * @param $view The name of the view; if null, the default one will be used.
+     */
+    public function apply($baseurl, PlPage &$page, $view = null)
     {
-        $view =& $this->buildView($view, $data);
+        $view =& $this->buildView($view);
         if (is_null($view)) {
             return false;
         }
@@ -194,8 +224,22 @@ abstract class PlSet
 
 interface PlView
 {
-    public function __construct(PlSet &$set, $data, array $params);
+    /** Constructs a new PlView
+     * @param $set The set
+     * @param $params Parameters to tune the view (sort by score, include promo...)
+     */
+    public function __construct(PlSet &$set, array $params);
+
+    /** Applies the view to a page
+     * The content of the set is fetched here.
+     * @param $page Page to which the view will be applied
+     * @return The name of the global view template (for displaying the view,
+     *              not the items of the set)
+     */
     public function apply(PlPage &$page);
+
+    /** XXX?
+     */
     public function args();
 }
 
@@ -245,10 +289,9 @@ abstract class MultipageView implements PlView
 
     /** Builds a MultipageView
      * @param $set The associated PlSet
-     * @param $data Data for the PlSet
      * @param $params Parameters of the view
      */
-    public function __construct(PlSet &$set, $data, array $params)
+    public function __construct(PlSet &$set, array $params)
     {
         $this->set   =& $set;
         $this->page   = Env::i('page', 1);
@@ -301,19 +344,18 @@ abstract class MultipageView implements PlView
     }
 
     /** Name of the template to use for displaying items of the view
+     * e.g plview.minifiche.tpl, plview.trombi.pl, ...
      */
     abstract public function templateName();
 
     /** Returns the value of a boundary of the current view (in order
      * to show "from C to F")
      * @param $obj The boundary result whose value must be shown to the user
+     *              (e.g a Profile, ...)
      * @return The bound
      */
     abstract protected function getBoundValue($obj);
 
-    /** Applies the view to a page
-     * @param $page Page to which the view will be applied
-     */
     public function apply(PlPage &$page)
     {
         foreach ($this->order() as $order) {
