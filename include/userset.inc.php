@@ -126,6 +126,18 @@ class SearchSet extends ProfileSet
         parent::__construct($conds, $orders);
     }
 
+    /** Add a "rechercher=Chercher" field to the query to simulate the POST
+     * behaviour.
+     */
+    public function args()
+    {
+        $args = parent::args();
+        if (!isset($args['rechercher'])) {
+            $args['rechercher'] = 'Chercher';
+        }
+        return $args;
+    }
+
     protected function &getFilterResults(PlFilter &$pf, PlLimit $limit)
     {
         $profiles = $pf->getProfiles($limit, Profile::FETCH_MINIFICHES);
