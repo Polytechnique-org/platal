@@ -1378,15 +1378,15 @@ class AdminModule extends PLModule
             XDB::execute("DELETE FROM  profile_addresses
                                 WHERE  jobid = {?} AND type = 'hq'",
                          $id);
-            XDB::execute('DELETE FROM  profile_job_enum
-                                WHERE  id = {?}',
-                         $id);
 
             if (Env::has('change')) {
                 XDB::execute('UPDATE  profile_job
                                  SET  jobid = {?}
                                WHERE  jobid = {?}',
                              Env::i('newJobId'), $id);
+                XDB::execute('DELETE FROM  profile_job_enum
+                                    WHERE  id = {?}',
+                             $id);
 
                 $page->trigSuccess("L'entreprise a bien été remplacée.");
             } else {
