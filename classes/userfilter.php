@@ -1080,7 +1080,7 @@ class UFC_Phone implements UserFilterCondition
 
     public function __construct($number, $num_type = self::NUM_ANY, $phone_type = self::PHONE_ANY)
     {
-        $phone = new Phone('display' => $number);
+        $phone = new Phone(array('display' => $number));
         $phone->format();
         $this->number = $phone->search();
         $this->num_type = $num_type;
