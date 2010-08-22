@@ -30,13 +30,14 @@ function checkId(&$subState)
 
     $uf = new UserFilter(new PFC_And(
             new UFC_SchoolId('xorg', $subState->i('xorgid')),
-            new PFC_Not(new UFC_Dead())
+            new PFC_Not(new UFC_Dead()),
+            new PFC_Not(new UFC_Registered(true))
     ));
     $profile = $uf->getProfile();
-
-    if ($profile->__get('state') == 'active') {
+    if (is_null($profile)) {
         return "Tu es déjà inscrit ou ton matricule est incorrect !";
     }
+
     if ($profile->promo() != $subState->s('promo')) {
         return 'Le matricule est incorrect.';
     }
