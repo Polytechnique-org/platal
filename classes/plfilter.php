@@ -152,12 +152,18 @@ class PlSqlJoin
 // }}}
 
 // {{{ class PlFilterOrder
+/** Base class for ordering results of a query.
+ * Parameters for the ordering must be given to the constructor ($desc for a
+ *     descending order).
+ * The getSortTokens function is used to get actual ordering part of the query.
+ */
 abstract class PlFilterOrder
 {
     protected $desc = false;
     public function __construct($desc = false)
     {
         $this->desc = $desc;
+        $this->_tokens = null;
     }
 
     public function toggleDesc()
@@ -173,6 +179,7 @@ abstract class PlFilterOrder
     public function buildSort(PlFilter &$pf)
     {
         $sel = $this->getSortTokens($pf);
+        $this->_tokens = $sel;
         if (!is_array($sel)) {
             $sel = array($sel);
         }
@@ -184,7 +191,28 @@ abstract class PlFilterOrder
         return $sel;
     }
 
+    /** This function must return the tokens to use for ordering
+     * @param &$pf The PlFilter whose results must be ordered
+     * @return The name of the field to use for ordering results
+     */
     abstract protected function getSortTokens(PlFilter &$pf);
+}
+// }}}
+
+// {{{ class PlFilterGroupableOrder
+/** Extension of a PlFilterOrder, for orders where the value on which ordering
+ * is done could be used for grouping results (promo, country, ...)
+ */
+class PlFilterGroupableOrder extends PlFilterOrder
+{
+    /** This function will be called when trying to retrieve groups;
+     * the returned token will be used to group the values.
+     * It will always be called AFTER getSortTokens().
+     */
+    public function getGroupToken(PlFilter &$pf)
+    {
+        return $this->_tokens;
+    }
 }
 // }}}
 
@@ -379,6 +407,16 @@ abstract class PlFilter
     public abstract function addSort(PlFilterOrder &$sort);
 
     public abstract function getTotalCount();
+
+    /** Whether this PlFilter can return grouped results through
+     * $this->getGroups();
+     */
+    public abstract function hasGroups();
+
+    /** Used to retrieve value/amount resulting from grouping by the first
+     * given order.
+     */
+    public abstract function getGroups();
 
     /** Get objects, selecting only those within a limit
      * @param $limit The portion of the matching objects to select
