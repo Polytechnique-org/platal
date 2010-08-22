@@ -1333,28 +1333,12 @@ class UFC_MarketingHash implements UserFilterCondition
  * ORDERS
  ******************/
 
-// {{{ class UserFilterOrder
-/** Base class for ordering results of a query.
- * Parameters for the ordering must be given to the constructor ($desc for a
- *     descending order).
- * The getSortTokens function is used to get actual ordering part of the query.
- */
-abstract class UserFilterOrder extends PlFilterOrder
-{
-    /** This function must return the tokens to use for ordering
-     * @param &$uf The UserFilter whose results must be ordered
-     * @return The name of the field to use for ordering results
-     */
-//    abstract protected function getSortTokens(UserFilter &$uf);
-}
-// }}}
-
 // {{{ class UFO_Promo
 /** Orders users by promotion
  * @param $grade Formation whose promotion users should be sorted by (restricts results to users of that formation)
  * @param $desc Whether sort is descending
  */
-class UFO_Promo extends UserFilterOrder
+class UFO_Promo extends PlFilterGroupableOrder
 {
     private $grade;
 
@@ -1384,7 +1368,7 @@ class UFO_Promo extends UserFilterOrder
  * @param $particle Set to true if particles should be included in the sorting order
  * @param $desc If sort order should be descending
  */
-class UFO_Name extends UserFilterOrder
+class UFO_Name extends PlFilterOrder
 {
     private $type;
     private $variant;
@@ -1422,7 +1406,7 @@ class UFO_Name extends UserFilterOrder
 // }}}
 
 // {{{ class UFO_Score
-class UFO_Score extends UserFilterOrder
+class UFO_Score extends PlFilterOrder
 {
     protected function getSortTokens(PlFilter &$uf)
     {
@@ -1445,7 +1429,7 @@ class UFO_Score extends UserFilterOrder
 // {{{ class UFO_Registration
 /** Sorts users based on registration date
  */
-class UFO_Registration extends UserFilterOrder
+class UFO_Registration extends PlFilterOrder
 {
     protected function getSortTokens(PlFilter &$uf)
     {
@@ -1458,7 +1442,7 @@ class UFO_Registration extends UserFilterOrder
 // {{{ class UFO_Birthday
 /** Sorts users based on next birthday date
  */
-class UFO_Birthday extends UserFilterOrder
+class UFO_Birthday extends PlFilterOrder
 {
     protected function getSortTokens(PlFilter &$uf)
     {
@@ -1471,7 +1455,7 @@ class UFO_Birthday extends UserFilterOrder
 // {{{ class UFO_ProfileUpdate
 /** Sorts users based on last profile update
  */
-class UFO_ProfileUpdate extends UserFilterOrder
+class UFO_ProfileUpdate extends PlFilterOrder
 {
     protected function getSortTokens(PlFilter &$uf)
     {
@@ -1484,7 +1468,7 @@ class UFO_ProfileUpdate extends UserFilterOrder
 // {{{ class UFO_Death
 /** Sorts users based on death date
  */
-class UFO_Death extends UserFilterOrder
+class UFO_Death extends PlFilterOrder
 {
     protected function getSortTokens(PlFilter &$uf)
     {
@@ -1497,7 +1481,7 @@ class UFO_Death extends UserFilterOrder
 // {{{ class UFO_Uid
 /** Sorts users based on their uid
  */
-class UFO_Uid extends UserFilterOrder
+class UFO_Uid extends PlFilterOrder
 {
     protected function getSortTokens(PlFilter &$uf)
     {
@@ -1510,7 +1494,7 @@ class UFO_Uid extends UserFilterOrder
 // {{{ class UFO_Hruid
 /** Sorts users based on their hruid
  */
-class UFO_Hruid extends UserFilterOrder
+class UFO_Hruid extends PlFilterOrder
 {
     protected function getSortTokens(PlFilter &$uf)
     {
@@ -1523,7 +1507,7 @@ class UFO_Hruid extends UserFilterOrder
 // {{{ class UFO_Pid
 /** Sorts users based on their pid
  */
-class UFO_Pid extends UserFilterOrder
+class UFO_Pid extends PlFilterOrder
 {
     protected function getSortTokens(PlFilter &$uf)
     {
@@ -1536,7 +1520,7 @@ class UFO_Pid extends UserFilterOrder
 // {{{ class UFO_Hrpid
 /** Sorts users based on their hrpid
  */
-class UFO_Hrpid extends UserFilterOrder
+class UFO_Hrpid extends PlFilterOrder
 {
     protected function getSortTokens(PlFilter &$uf)
     {
@@ -1605,6 +1589,7 @@ class UserFilter extends PlFilter
 
     private $root;
     private $sort = array();
+    private $grouper = null;
     private $query = null;
     private $orderby = null;
 
@@ -1628,7 +1613,7 @@ class UserFilter extends PlFilter
             }
         }
         if (!is_null($sort)) {
-            if ($sort instanceof UserFilterOrder) {
+            if ($sort instanceof PlFilterOrder) {
                 $this->addSort($sort);
             } else if (is_array($sort)) {
                 foreach ($sort as $s) {
@@ -1674,6 +1659,42 @@ class UserFilter extends PlFilter
                                ' . $joins . '
                            WHERE  (' . $where . ')';
         }
+    }
+
+    public function hasGroups()
+    {
+        return $this->grouper != null;
+    }
+
+    public function getGroups()
+    {
+        return $this->getUIDGroups();
+    }
+
+    public function getUIDGroups()
+    {
+        $this->requireAccounts();
+        $this->buildQuery();
+        $token = $this->grouper->getGroupToken($this);
+
+        $groups = XDB::fetchAllRow('SELECT ' . $token . ', COUNT(a.uid)
+                                   ' . $this->query . '
+                                   GROUP BY  ' . $token,
+                                   0);
+        return $groups;
+    }
+
+    public function getPIDGroups()
+    {
+        $this->requireProfiles();
+        $this->buildQuery();
+        $token = $this->grouper->getGroupToken($this);
+
+        $groups = XDB::fetchAllRow('SELECT ' . $token . ', COUNT(p.pid)
+                                   ' . $this->query . '
+                                   GROUP BY  ' . $token,
+                                   0);
+        return $groups;
     }
 
     private function getUIDList($uids = null, PlLimit &$limit)
@@ -1916,6 +1937,10 @@ class UserFilter extends PlFilter
 
     public function addSort(PlFilterOrder &$sort)
     {
+        if (count($this->sort) == 0 && $sort instanceof PlFilterGroupableOrder)
+        {
+            $this->grouper = $sort;
+        }
         $this->sort[] = $sort;
         $this->orderby = null;
     }
@@ -2744,6 +2769,11 @@ class ProfileFilter extends UserFilter
     public function getTotalCount()
     {
         return $this->getTotalProfileCount();
+    }
+
+    public function getGroups()
+    {
+        return $this->getPIDGroups();
     }
 }
 // }}}
