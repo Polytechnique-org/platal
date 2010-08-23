@@ -203,7 +203,7 @@ abstract class PlFilterOrder
 /** Extension of a PlFilterOrder, for orders where the value on which ordering
  * is done could be used for grouping results (promo, country, ...)
  */
-class PlFilterGroupableOrder extends PlFilterOrder
+abstract class PlFilterGroupableOrder extends PlFilterOrder
 {
     /** This function will be called when trying to retrieve groups;
      * the returned token will be used to group the values.
