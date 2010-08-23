@@ -531,26 +531,26 @@ class DE_EducationFields extends DirEnumeration
 // {{{ class DE_Corps
 class DE_Corps extends DirEnumeration
 {
-    protected $idfield   = 'corps_enum.id';
-    protected $valfield  = 'corps_enum.name';
-    protected $valfield2 = 'corps_enum.abbrev';
-    protected $from      = 'corps_enum';
+    protected $idfield   = 'profile_corps_enum.id';
+    protected $valfield  = 'profile_corps_enum.name';
+    protected $valfield2 = 'profile_corps_enum.abbrev';
+    protected $from      = 'profile_corps_enum';
 
-    protected $ac_unique = 'corps.pid';
-    protected $ac_join   = 'INNER JOIN corps ON (corps.current_corpsid = corps_enum.id)';
+    protected $ac_unique = 'profile_corps.pid';
+    protected $ac_join   = 'INNER JOIN profile_corps ON (profile_corps.current_corpsid = profile_corps_enum.id)';
 }
 // }}}
 
 // {{{ class DE_CorpsRanks
 class DE_CorpsRanks extends DirEnumeration
 {
-    protected $idfield   = 'corps_rank_enum.id';
-    protected $valfield  = 'corps_rank_enum.name';
-    protected $valfield2 = 'corps_rank_enum.abbrev';
-    protected $from      = 'corps_rank_enum';
+    protected $idfield   = 'profile_corps_rank_enum.id';
+    protected $valfield  = 'profile_corps_rank_enum.name';
+    protected $valfield2 = 'profile_corps_rank_enum.abbrev';
+    protected $from      = 'profile_corps_rank_enum';
 
-    protected $ac_unique = 'corps.pid';
-    protected $ac_join   = 'INNER JOIN corps ON (corps.rankid = corps_rank_enum.id)';
+    protected $ac_unique = 'profile_corps.pid';
+    protected $ac_join   = 'INNER JOIN profile_corps ON (profile_corps.rankid = profile_corps_rank_enum.id)';
 }
 // }}}
 
