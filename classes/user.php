@@ -37,7 +37,7 @@ class User extends PlUser
         }
 
         if ($login instanceof User) {
-            $machin->id();
+            return $login->id();
         }
 
         if ($login instanceof Profile) {
