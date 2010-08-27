@@ -29,6 +29,9 @@ class SearchModule extends PLModule
             'advanced_search.php' => $this->make_hook('redir_advanced', AUTH_PUBLIC),
             'search/autocomplete' => $this->make_hook('autocomplete',   AUTH_COOKIE, 'directory_ax', NO_AUTH),
             'search/list'         => $this->make_hook('list',           AUTH_COOKIE, 'directory_ax', NO_AUTH),
+            'jobs'                => $this->make_hook('referent',     AUTH_COOKIE),
+            'emploi'              => $this->make_hook('referent',     AUTH_COOKIE),
+            'referent/search'     => $this->make_hook('referent',     AUTH_COOKIE),
         );
     }
 
@@ -331,6 +334,37 @@ class SearchModule extends PLModule
         $page->changeTpl('include/field.select.tpl', NO_SKIN);
         $page->assign('list', $ids);
     }
+
+    function handler_referent(&$page, $action = null, $subaction = null)
+    {
+        $wp = new PlWikiPage('Docs.Emploi');
+        $wp->buildCache();
+
+        $page->setTitle('Emploi et Carrières');
+
+        // nb de mentors
+        $res = XDB::query("SELECT count(distinct pid) FROM profile_mentor_term");
+        $page->assign('mentors_number', $res->fetchOneCell());
+
+        $page->addJsLink('jquery.autocomplete.js');
+
+        // On vient d'un formulaire
+        require_once 'ufbuilder.inc.php';
+        $ufb = new UFB_MentorSearch();
+        if (!$ufb->isEmpty()) {
+            require_once 'userset.inc.php';
+            $ufc = $ufb->getUFC();
+            $set = new ProfileSet($ufc);
+            $set->addMod('mentor', 'Référents');
+            $set->apply('referent/search', $page, $action, $subaction);
+            if ($set->count() > 100) {
+                $page->assign('recherche_trop_large', true);
+            }
+        }
+
+        $page->changeTpl('search/referent.tpl');
+    }
+
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

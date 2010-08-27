@@ -52,9 +52,6 @@ class ProfileModule extends PLModule
             'profile/name_info'          => $this->make_hook('name_info',                  AUTH_PUBLIC),
 
             'referent'                   => $this->make_hook('referent',                   AUTH_COOKIE),
-            'emploi'                     => $this->make_hook('ref_search',                 AUTH_COOKIE),
-            'jobs'                       => $this->make_hook('ref_search',                 AUTH_COOKIE),
-            'referent/search'            => $this->make_hook('ref_search',                 AUTH_COOKIE),
             'referent/ssect'             => $this->make_hook('ref_sect',                   AUTH_COOKIE, 'user', NO_AUTH),
             'referent/country'           => $this->make_hook('ref_country',                AUTH_COOKIE, 'user', NO_AUTH),
             'referent/autocomplete'      => $this->make_hook('ref_autocomplete',           AUTH_COOKIE, 'user', NO_AUTH),
@@ -576,36 +573,6 @@ class ProfileModule extends PLModule
         $page->assign('pays', $res->fetchColumn());
 
         $page->addJsLink('close_on_esc.js');
-    }
-
-    function handler_ref_search(&$page, $action = null, $subaction = null)
-    {
-        $wp = new PlWikiPage('Docs.Emploi');
-        $wp->buildCache();
-
-        $page->setTitle('Emploi et Carrières');
-
-        // nb de mentors
-        $res = XDB::query("SELECT count(distinct pid) FROM profile_mentor_term");
-        $page->assign('mentors_number', $res->fetchOneCell());
-
-        $page->addJsLink('jquery.autocomplete.js');
-
-        // On vient d'un formulaire
-        require_once 'ufbuilder.inc.php';
-        $ufb = new UFB_MentorSearch();
-        if (!$ufb->isEmpty()) {
-            require_once 'userset.inc.php';
-            $ufc = $ufb->getUFC();
-            $set = new ProfileSet($ufc);
-            $set->addMod('mentor', 'Référents');
-            $set->apply('referent/search', $page, $action, $subaction);
-            if ($set->count() > 100) {
-                $page->assign('recherche_trop_large', true);
-            }
-        }
-
-        $page->changeTpl('profile/referent.tpl');
     }
 
     function handler_ref_sect(&$page, $sect)
