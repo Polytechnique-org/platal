@@ -137,7 +137,7 @@ class NamesReq extends ProfileValidate
                             $this->profileOwner->id(), true, $this->new_alias);
 
             // Update the local User object, to pick up the new bestalias.
-            $this->profileOwner = User::getSilent($this->profileOwner->id());
+            $this->profileOwner = User::getSilentWithUID($this->profileOwner->id());
         }
 
         return true;

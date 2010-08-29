@@ -73,7 +73,7 @@ class PayPal
                                    IF(pp1.display_tel != '', pp1.display_tel, pp2.display_tel) AS night_phone_b
                              FROM  profile_addresses AS pa
                         LEFT JOIN  profile_phones    AS pp1 ON (pp1.pid = pa.pid AND pp1.link_type = 'address'
-                                                                AND pp1.link_id = pa.adrid)
+                                                                AND pp1.link_id = pa.id)
                         LEFT JOIN  profile_phones    AS pp2 ON (pp2.pid = pa.pid AND pp2.link_type = 'user'
                                                                 AND pp2.link_id = 0)
                         LEFT JOIN  geoloc_localities AS gl  ON (gl.id = pa.localityId)
