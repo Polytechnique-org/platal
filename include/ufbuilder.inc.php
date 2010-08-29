@@ -207,9 +207,8 @@ class UFB_MentorSearch extends UserFilterBuilder
     public function __construct($envprefix = '')
     {
         $fields = array(
-            new UFBF_MentorCountry('pays_sel'),
-            new UFBF_MentorSectorization('sector', '', UFC_Mentor_Sectorization::SECTOR),
-            new UFBF_MentorSectorization('subSector', '', UFC_Mentor_Sectorization::SUBSECTOR),
+            new UFBF_MentorCountry('country'),
+            new UFBF_MentorTerm('jobterm', 'jobtermText'),
             new UFBF_MentorExpertise('expertise'),
         );
         parent::__construct($fields, $envprefix);
@@ -1039,11 +1038,21 @@ class UFBF_Networking extends UFBF_Text
 // }}}
 
 // {{{ class UFBF_MentorCountry
-class UFBF_MentorCountry extends UFBF_Index
+class UFBF_MentorCountry extends UFBF_Text
 {
     protected function buildUFC(UserFilterBuilder &$ufb)
     {
         return new UFC_Mentor_Country($this->val);
+    }
+}
+// }}}
+
+// {{{ class UFBF_Mentorterm
+class UFBF_MentorTerm extends UFBF_Index
+{
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_Mentor_Terms($this->val);
     }
 }
 // }}}

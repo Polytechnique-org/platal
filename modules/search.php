@@ -32,6 +32,7 @@ class SearchModule extends PLModule
             'jobs'                => $this->make_hook('referent',     AUTH_COOKIE),
             'emploi'              => $this->make_hook('referent',     AUTH_COOKIE),
             'referent/search'     => $this->make_hook('referent',     AUTH_COOKIE),
+            'search/referent/countries' => $this->make_hook('referent_countries',     AUTH_COOKIE),
         );
     }
 
@@ -337,6 +338,8 @@ class SearchModule extends PLModule
 
     function handler_referent(&$page, $action = null, $subaction = null)
     {
+        global $globals;
+
         $wp = new PlWikiPage('Docs.Emploi');
         $wp->buildCache();
 
@@ -357,14 +360,40 @@ class SearchModule extends PLModule
             $set = new ProfileSet($ufc);
             $set->addMod('mentor', 'Référents');
             $set->apply('referent/search', $page, $action, $subaction);
-            if ($set->count() > 100) {
-                $page->assign('recherche_trop_large', true);
+            $nb_tot = $set->count();
+            if ($nb_tot > $globals->search->private_max) {
+                $this->form_prepare();
+                $page->trigError('Recherche trop générale.');
+                $page->assign('plset_count', 0);
+            } else if ($nb_tot == 0) {
+                $this->form_prepare();
+                $page->trigError('Il n\'existe personne correspondant à ces critères dans la base.');
             }
         }
 
         $page->changeTpl('search/referent.tpl');
     }
 
+    /**
+     * Builds a select field to choose among countries that referents
+     * know about. Only referents linked to term (jtid) are displayed.
+     * @param $jtid id of job term to restrict referents
+     */
+    function handler_referent_countries(&$page, $jtid = null)
+    {
+        pl_content_headers("text/xml");
+        $page->changeTpl('include/field.select.tpl', NO_SKIN);
+        $page->assign('name', 'country');
+        $it = XDB::iterator("SELECT  gc.iso_3166_1_a2 AS id, gc.countryFR AS field
+                               FROM  geoloc_countries       AS gc
+                         INNER JOIN  profile_mentor_country AS mp ON (mp.country = gc.iso_3166_1_a2)
+                         INNER JOIN  profile_mentor_term    AS mt ON (mt.pid = mp.pid)
+                         INNER JOIN  profile_job_term_relation AS jtr ON (jtr.jtid_2 = mt.jtid)
+                              WHERE  jtr.jtid_1 = {?}
+                           GROUP BY  iso_3166_1_a2
+                           ORDER BY  countryFR", $jtid);
+        $page->assign('list', $it);
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

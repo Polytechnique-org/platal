@@ -654,7 +654,7 @@ class ProfileModule extends PLModule
         $joins = JobTerms::token_join_query($tokens, 'e');
         if ($type == 'mentor') {
             $count = ', COUNT(DISTINCT pid) AS nb';
-            $countjoin = ' LEFT JOIN  profile_job_term_relation AS r ON(r.jtid_1 = e.jtid) LEFT JOIN  profile_mentor_term AS m ON(r.jtid_2 = m.jtid)';
+            $countjoin = ' INNER JOIN  profile_job_term_relation AS r ON(r.jtid_1 = e.jtid) INNER JOIN  profile_mentor_term AS m ON(r.jtid_2 = m.jtid)';
             $countorder = 'nb DESC, ';
         } else {
             $count = $countjoin = $countorder = '';

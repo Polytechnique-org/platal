@@ -1216,6 +1216,27 @@ class UFC_Mentor_Country implements UserFilterCondition
 }
 // }}}
 
+// {{{ class UFC_Mentor_Terms
+/** Filters users based on the job terms they used in mentoring.
+ * @param $val The ID of the job term, or an array of such IDs
+ */
+class UFC_Mentor_Terms implements UserFilterCondition
+{
+    private $val;
+
+    public function __construct($val)
+    {
+        $this->val = $val;
+    }
+
+    public function buildCondition(PlFilter &$uf)
+    {
+        $sub = $uf->addMentorFilter(UserFilter::MENTOR_TERM);
+        return $sub . '.jtid_1 = ' . XDB::escape($this->val);
+    }
+}
+// }}}
+
 // {{{ class UFC_Mentor_Sectorization
 /** Filters users based on mentoring (sub|)sector
  * @param $sector ID of (sub)sector
@@ -2655,9 +2676,11 @@ class UserFilter extends PlFilter
      */
 
     private $pms = array();
+    private $mjtr = false;
     const MENTOR_EXPERTISE  = 1;
     const MENTOR_COUNTRY    = 2;
     const MENTOR_SECTOR     = 3;
+    const MENTOR_TERM       = 4;
 
     public function addMentorFilter($type)
     {
@@ -2672,6 +2695,10 @@ class UserFilter extends PlFilter
         case self::MENTOR_SECTOR:
             $this->pms['pms'] =  'profile_mentor_sector';
             return 'pms';
+        case self::MENTOR_TERM:
+            $this->pms['pmt'] = 'profile_mentor_term';
+            $this->mjtr = true;
+            return 'mjtr';
         default:
             Platal::page()->killError("Undefined mentor filter.");
         }
@@ -2682,6 +2709,9 @@ class UserFilter extends PlFilter
         $joins = array();
         foreach ($this->pms as $sub => $tab) {
             $joins[$sub] = PlSqlJoin::left($tab, '$ME.pid = $PID');
+        }
+        if ($this->mjtr) {
+            $joins['mjtr'] = PlSqlJoin::left('profile_job_term_relation', '$ME.jtid_2 = pmt.jtid');
         }
         return $joins;
     }
