@@ -1028,7 +1028,7 @@ class UFBF_Networking extends UFBF_Text
 // }}}
 
 // {{{ class UFBF_MentorCountry
-class UFBF_MentorCountry extends UFBF_Index
+class UFBF_MentorCountry extends UFBF_Text
 {
     protected function buildUFC(UserFilterBuilder &$ufb)
     {
