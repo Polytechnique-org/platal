@@ -1,6 +1,10 @@
 ================================================================================
 VERSION 1.0.1                                                         XX XX XXXX
 
+New:
+    * Profile:
+        - Sectors replaced by job terms (thesaurus)                        -Car
+
 From 1.0.0 branch:
     * AXLetter:
         - Fix unsubscription                                               -XEL
