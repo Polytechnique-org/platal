@@ -20,6 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{javascript name=jquery.jstree}
 {javascript name=jobtermstree}
 {foreach from=$jobs item=job key=i}
 {include file="profile/jobs.job.tpl" i=$i job=$job new=false}
