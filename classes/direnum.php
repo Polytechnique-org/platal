@@ -61,13 +61,14 @@ class DirEnum
 
     static private function init($type)
     {
-        if (S::has('__DE_' . $type)) {
+        if (Platal::globals()->cacheEnabled() && S::has('__DE_' . $type)) {
             self::$enumerations[$type] = S::v('__DE_' . $type);
         } else {
             $cls = "DE_" . ucfirst($type);
             $obj = new $cls();
             self::$enumerations[$type] = $obj;
-            if ($obj->capabilities & DirEnumeration::SAVE_IN_SESSION) {
+            if (Platal::globals()->cacheEnabled()
+                 && $obj->capabilities & DirEnumeration::SAVE_IN_SESSION) {
                 S::set('__DE_' . $type, $obj);
             }
         }

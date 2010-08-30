@@ -21,6 +21,8 @@
 
 class PlatalGlobals extends PlGlobals
 {
+    const DEBUG_NOCACHE = DEBUG_USERBASE;
+
     /** The x.org version */
     public $version = '@VERSION@';
 
@@ -88,8 +90,12 @@ class PlatalGlobals extends PlGlobals
                              FROM  requests");
         $this->changeDynamicConfig(array('NbValid' => $res->fetchOneCell()));
     }
-}
 
+    public function cacheEnabled()
+    {
+        return ($this->debug & self::DEBUG_NOCACHE) == 0;
+    }
+}
 
 /******************************************************************************
  * Dynamic configuration update/edition stuff
