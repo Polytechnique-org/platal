@@ -27,6 +27,11 @@ define('DEBUG_BT', 1);
 define('DEBUG_VALID', 2);
 define('DEBUG_SMARTY', 4);
 
+/* First allowed value for user-defined DEBUG_* flags.
+ * Set to 256 to keep rooms for future core flags (5 flags available).
+ */
+define('DEBUG_USERBASE', 256);
+
 /** PlGlobals provides functions to read a set of configuration files and gives
  * access to this configurations.
  *
