@@ -33,7 +33,7 @@
                 {if t($smarty.request.quick)}
                   {assign var=requestQuick value=$smarty.request.quick}
                 {else}
-                  {assign var=requestQuick value="Recherche dans l\'annuaire"}
+                  {assign var=requestQuick value="Recherche dans l'annuaire"}
                 {/if}
                 <form action="search" method="get">
                     <div>
