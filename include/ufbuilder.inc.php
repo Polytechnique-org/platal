@@ -140,6 +140,18 @@ class UserFilterBuilder
         return Env::blank($key, $strict);
     }
 
+    public function hasAlnum($key)
+    {
+        $str = $this->s($key);
+        return preg_match('/[a-z0-9]/i', $str);
+    }
+
+    public function hasAlpha($key)
+    {
+        $str = $this->s($key);
+        return preg_match('/[a-z]/i', $str);
+    }
+
     public function isOn($key)
     {
         return $this->has($key) && $this->t($key) == 'on';
@@ -436,7 +448,7 @@ abstract class UFBF_Mixed extends UFB_Field
 
     protected function check(UserFilterBuilder &$ufb)
     {
-        if ($ufb->blank($this->envfieldindex) && $ufb->blank($this->envfield)) {
+        if ($ufb->blank($this->envfieldindex) && !$ufb->hasAlnum($this->envfield)) {
             $this->empty = true;
             return true;
         }
