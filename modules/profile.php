@@ -253,9 +253,9 @@ class ProfileModule extends PLModule
         $page->changeTpl('profile/profile.tpl', SIMPLE);
 
         // Determines the access level at which the profile will be displayed.
-        if (!S::logged() || Env::v('view') == 'public') {
+        if (!S::logged() || !S::user()->checkPerms('directory_ax') || Env::v('view') == 'public') {
             $view = 'public';
-        } else if (S::logged() && Env::v('view') == 'ax') {
+        } else if (!S::user()->checkPerms('directory_private') || Env::v('view') == 'ax') {
             $view = 'ax';
         } else {
             $view = 'private';
