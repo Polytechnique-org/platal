@@ -129,7 +129,7 @@ class UFC_Comment implements UserFilterCondition
     public function buildCondition(PlFilter &$uf)
     {
         $uf->requireProfiles();
-        return 'p.freetext ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->text);
+        return $uf->getVisibilityCondition('p.freetext_pub') . ' AND p.freetext ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->text);
     }
 }
 // }}}
@@ -557,6 +557,10 @@ class UFC_Group implements UserFilterCondition
 
     public function buildCondition(PlFilter &$uf)
     {
+        // Groups have AX visibility.
+        if ($uf->getVisibilityLevel() == ProfileVisibility::VIS_PUBLIC) {
+            return '';
+        }
         $sub = $uf->addGroupFilter($this->group);
         $where = 'gpm' . $sub . '.perms IS NOT NULL';
         if ($this->anim) {
@@ -582,6 +586,10 @@ class UFC_Binet implements UserFilterCondition
 
     public function buildCondition(PlFilter &$uf)
     {
+        // Binets are private.
+        if ($uf->getVisibilityLevel() != ProfileVisibility::VIS_PRIVATE) {
+            return '';
+        }
         $sub = $uf->addBinetsFilter();
         return XDB::format($sub . '.binet_id IN {?}', $this->val);
     }
@@ -603,6 +611,10 @@ class UFC_Section implements UserFilterCondition
 
     public function buildCondition(PlFilter &$uf)
     {
+        // Sections are private.
+        if ($uf->getVisibilityLevel() != ProfileVisibility::VIS_PRIVATE) {
+            return '';
+        }
         $uf->requireProfiles();
         return XDB::format('p.section IN {?}', $this->section);
     }
@@ -707,9 +719,10 @@ abstract class UFC_Address implements UserFilterCondition
         $this->flags = $flags;
     }
 
-    protected function initConds($sub)
+    protected function initConds($sub, $vis_cond)
     {
-        $conds = array();
+        $conds = array($vis_cond);
+
         $types = array();
         foreach (self::$typetexts as $flag => $type) {
             if ($flag & $this->type) {
@@ -766,7 +779,7 @@ class UFC_AddressText extends UFC_Address
     public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addAddressFilter();
-        $conds = $this->initConds($sub);
+        $conds = $this->initConds($sub, $uf->getVisibilityCondition($sub . '.pub'));
         if ($this->text != null) {
             $conds[] = $sub . '.text' . $this->mkMatch($this->text);
         }
@@ -823,7 +836,7 @@ class UFC_AddressField extends UFC_Address
     public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addAddressFilter();
-        $conds = $this->initConds($sub);
+        $conds = $this->initConds($sub, $uf->getVisibilityCondition($sub . '.pub'));
 
         switch ($this->fieldtype) {
         case self::FIELD_COUNTRY:
@@ -879,6 +892,7 @@ class UFC_Corps implements UserFilterCondition
          */
         $sub = $uf->addCorpsFilter($this->type);
         $cond = $sub . '.abbreviation = ' . $corps;
+        $cond .= ' AND ' . $uf->getVisibilityCondition($sub . '.corps_pub');
         return $cond;
     }
 }
@@ -899,10 +913,14 @@ class UFC_Corps_Rank implements UserFilterCondition
     public function buildCondition(PlFilter &$uf)
     {
         /** Tables shortcuts:
+         * pc for profile_corps
          * pcr for profile_corps_rank
          */
         $sub = $uf->addCorpsRankFilter();
         $cond = $sub . '.abbreviation = ' . $rank;
+        // XXX(x2006barrois): find a way to get rid of that hardcoded
+        // reference to 'pc'.
+        $cond .= ' AND ' . $uf->getVisibilityCondition('pc.corps_pub');
         return $cond;
     }
 }
@@ -940,6 +958,8 @@ class UFC_Job_Company implements UserFilterCondition
     {
         $sub = $uf->addJobCompanyFilter();
         $cond  = $sub . '.' . $this->type . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->value);
+        $jsub = $uf->addJobFilter();
+        $cond .= ' AND ' . $uf->getVisibilityCondition($jsub . '.pub');
         return $cond;
     }
 }
@@ -975,7 +995,10 @@ class UFC_Job_Sectorization implements UserFilterCondition
     public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addJobSectorizationFilter($this->type);
-        return $sub . '.id = ' . XDB::format('{?}', $this->val);
+        $cond = $sub . '.id = ' . XDB::format('{?}', $this->val);
+        $jsub = $uf->addJobFilter();
+        $cond .= ' AND ' . $uf->getVisibilityCondition($jsub . '.pub');
+        return $cond;
     }
 }
 // }}}
@@ -1004,6 +1027,8 @@ class UFC_Job_Terms implements UserFilterCondition
         foreach ($this->val as $i => $jtid) {
             $conditions[] = $sub[$i] . ' = ' . XDB::escape($jtid);
         }
+        $jsub = $uf->addJobFilter();
+        $conditions[] = $uf->getVisibilityCondition($jsub . '.pub');
         return implode(' AND ', $conditions);
     }
 }
@@ -1029,11 +1054,18 @@ class UFC_Job_Description implements UserFilterCondition
     public function buildCondition(PlFilter &$uf)
     {
         $conds = array();
-        if ($this->fields & UserFilter::JOB_USERDEFINED) {
-            $sub = $uf->addJobFilter();
-            $conds[] = $sub . '.description ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description);
+
+        $jsub = $uf->addJobFilter();
+        // CV is private => if only CV requested, and not private,
+        // don't do anything. Otherwise restrict to standard job visibility.
+        if ($this->fields != UserFilter::JOB_CV || $uf->getVisibilityLevel() == ProfileVisibility::VIS_PRIVATE) {
+            $conds[] = $uf->getVisibilityCondition($jsub . '.pub');
         }
-        if ($this->fields & UserFilter::JOB_CV) {
+
+        if ($this->fields & UserFilter::JOB_USERDEFINED) {
+            $conds[] = $jsub . '.description ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description);
+        }
+        if ($this->fields & UserFilter::JOB_CV && $uf->getVisibilityLevel == ProfileVisibility::VIS_PRIVATE) {
             $uf->requireProfiles();
             $conds[] = 'p.cv ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description);
         }
@@ -1076,6 +1108,7 @@ class UFC_Networking implements UserFilterCondition
     {
         $sub = $uf->addNetworkingFilter();
         $conds = array();
+        $conds[] = $uf->getVisibilityCondition($sub . '.pub');
         $conds[] = $sub . '.address ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->value);
         if ($this->type != -1) {
             $conds[] = $sub . '.nwid = ' . XDB::format('{?}', $this->type);
@@ -1120,6 +1153,9 @@ class UFC_Phone implements UserFilterCondition
     {
         $sub = $uf->addPhoneFilter();
         $conds = array();
+
+        $conds[] = $uf->getVisibilityCondition($sub . '.pub');
+
         $conds[] = $sub . '.search_tel = ' . XDB::format('{?}', $this->number);
         if ($this->num_type != self::NUM_ANY) {
             $conds[] = $sub . '.link_type = ' . XDB::format('{?}', $this->num_type);
@@ -1151,7 +1187,12 @@ class UFC_Medal implements UserFilterCondition
     public function buildCondition(PlFilter &$uf)
     {
         $conds = array();
+
+        // This will require profiles => table 'p' will be available.
         $sub = $uf->addMedalFilter();
+
+        $conds[] = $uf->getVisibilityCondition('p.medals_pub');
+
         $conds[] = $sub . '.mid = ' . XDB::format('{?}', $this->medal);
         if ($this->grade != null) {
             $conds[] = $sub . '.gid = ' . XDB::format('{?}', $this->grade);
@@ -1168,8 +1209,8 @@ class UFC_Photo implements UserFilterCondition
 {
     public function buildCondition(PlFilter &$uf)
     {
-        $uf->addPhotoFilter();
-        return 'photo.attach IS NOT NULL';
+        $sub = $uf->addPhotoFilter();
+        return $sub . '.attach IS NOT NULL AND ' . $uf->getVisibilityCondition($sub . '.pub');
     }
 }
 // }}}
@@ -1643,6 +1684,9 @@ class UserFilter extends PlFilter
     private $query = null;
     private $orderby = null;
 
+    // Store the current 'search' visibility.
+    private $profile_visibility = null;
+
     private $lastusercount = null;
     private $lastprofilecount = null;
 
@@ -1671,6 +1715,29 @@ class UserFilter extends PlFilter
                 }
             }
         }
+
+        // This will set the visibility to the default correct level.
+        $this->profile_visibility = new ProfileVisibility();
+    }
+
+    public function getVisibilityLevels()
+    {
+        return $this->profile_visibility->levels();
+    }
+
+    public function getVisibilityLevel()
+    {
+        return $this->profile_visibility->level();
+    }
+
+    public function restrictVisibilityTo($level)
+    {
+        $this->profile_visibility->setLevel($level);
+    }
+
+    public function getVisibilityCondition($field)
+    {
+        return $field . ' IN ' . XDB::formatArray($this->getVisibilityLevels());
     }
 
     private function buildQuery()
@@ -2804,6 +2871,7 @@ class UserFilter extends PlFilter
     {
         $this->requireProfiles();
         $this->with_photo = true;
+        return 'photo';
     }
 
     protected function photoJoins()
