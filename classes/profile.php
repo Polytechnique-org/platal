@@ -42,9 +42,14 @@ class ProfileVisibility
             Platal::page()->kill("Invalid visibility: " . $level);
         }
 
-        if (!S::logged()) {
+        // Unlogged or not allowed to view directory_ax or requesting public
+        // => public view
+        if (!S::logged() || !S::user()->checkPerms('directory_ax') || $level == self::VIS_PUBLIC) {
             $level = self::VIS_PUBLIC;
-        } else if ($level == null) {
+        // Not allowed to view directory_private or requesting ax
+        } else if (!S::user()->checkPerms('directory_private') || $level == self::VIS_AX) {
+            $level = self::VIS_AX;
+        } else {
             $level = self::VIS_PRIVATE;
         }
 
