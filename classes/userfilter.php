@@ -559,7 +559,7 @@ class UFC_Group implements UserFilterCondition
     {
         // Groups have AX visibility.
         if ($uf->getVisibilityLevel() == ProfileVisibility::VIS_PUBLIC) {
-            return '';
+            return PlFilter::COND_TRUE;
         }
         $sub = $uf->addGroupFilter($this->group);
         $where = 'gpm' . $sub . '.perms IS NOT NULL';
@@ -588,7 +588,7 @@ class UFC_Binet implements UserFilterCondition
     {
         // Binets are private.
         if ($uf->getVisibilityLevel() != ProfileVisibility::VIS_PRIVATE) {
-            return '';
+            return PlFilter::COND_TRUE;
         }
         $sub = $uf->addBinetsFilter();
         return XDB::format($sub . '.binet_id IN {?}', $this->val);
@@ -613,7 +613,7 @@ class UFC_Section implements UserFilterCondition
     {
         // Sections are private.
         if ($uf->getVisibilityLevel() != ProfileVisibility::VIS_PRIVATE) {
-            return '';
+            return PlFilter::COND_TRUE;
         }
         $uf->requireProfiles();
         return XDB::format('p.section IN {?}', $this->section);
@@ -1058,7 +1058,11 @@ class UFC_Job_Description implements UserFilterCondition
         $jsub = $uf->addJobFilter();
         // CV is private => if only CV requested, and not private,
         // don't do anything. Otherwise restrict to standard job visibility.
-        if ($this->fields != UserFilter::JOB_CV || $uf->getVisibilityLevel() == ProfileVisibility::VIS_PRIVATE) {
+        if ($this->fields == UserFilter::JOB_CV) {
+           if ($uf->getVisibilityLevel() != ProfileVisibility::VIS_PRIVATE) {
+               return PlFilter::COND_TRUE;
+           }
+        } else {
             $conds[] = $uf->getVisibilityCondition($jsub . '.pub');
         }
 
