@@ -394,12 +394,12 @@ class XnetEventsModule extends PLModule
             );
 
             $trivial = array('intitule', 'descriptif', 'noinvite',
-                             'show_participants', 'accept_nonmembre', 'organisateur_uid');
+                             'show_participants', 'accept_nonmembre', 'uid');
             foreach ($trivial as $k) {
                 $evt[$k] = Post::v($k);
             }
             if (!$eid) {
-                $evt['organisateur_uid'] = S::v('uid');
+                $evt['uid'] = S::v('uid');
             }
 
             if (Post::v('deadline')) {
@@ -411,17 +411,17 @@ class XnetEventsModule extends PLModule
             }
 
             // Store the modifications in the database
-            XDB::execute('REPLACE INTO group_events
-                SET eid={?}, asso_id={?}, organisateur_uid={?}, intitule={?},
-                    paiement_id = {?}, descriptif = {?}, debut = {?},
-                    fin = {?}, show_participants = {?}, short_name = {?},
-                    deadline_inscription = {?}, noinvite = {?},
-                    accept_nonmembre = {?}',
-                    $evt['eid'], $evt['asso_id'], $evt['organisateur_uid'],
-                    $evt['intitule'], $evt['paiement_id'], $evt['descriptif'],
-                    $evt['debut'], $evt['fin'], $evt['show_participants'],
-                    $evt['short_name'], $evt['deadline_inscription'],
-                    $evt['noinvite'], $evt['accept_nonmembre']);
+            XDB::execute('REPLACE INTO  group_events
+                                   SET  eid = {?}, asso_id = {?}, uid = {?}, intitule = {?},
+                                        paiement_id = {?}, descriptif = {?}, debut = {?},
+                                        fin = {?}, show_participants = {?}, short_name = {?},
+                                        deadline_inscription = {?}, noinvite = {?},
+                                        accept_nonmembre = {?}',
+                         $evt['eid'], $evt['asso_id'], $evt['uid'],
+                         $evt['intitule'], $evt['paiement_id'], $evt['descriptif'],
+                         $evt['debut'], $evt['fin'], $evt['show_participants'],
+                         $evt['short_name'], $evt['deadline_inscription'],
+                         $evt['noinvite'], $evt['accept_nonmembre']);
 
             // if new event, get its id
             if (!$eid) {
@@ -487,7 +487,7 @@ class XnetEventsModule extends PLModule
         // when modifying an old event retreive the old datas
         if ($eid) {
             $res = XDB::query(
-                    "SELECT  eid, intitule, descriptif, debut, fin, organisateur_uid,
+                    "SELECT  eid, intitule, descriptif, debut, fin, uid,
                              show_participants, paiement_id, short_name,
                              deadline_inscription, noinvite, accept_nonmembre
                        FROM  group_events

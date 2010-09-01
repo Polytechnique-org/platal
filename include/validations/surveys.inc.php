@@ -91,14 +91,9 @@ class SurveyReq extends Validate
 
     public function commit()
     {
-        $sql = 'INSERT INTO surveys
-                        SET questions={?},
-                            title={?},
-                            description={?},
-                            author_id={?},
-                            end={?},
-                            mode={?},
-                            promos={?}';
+        $sql = 'INSERT INTO  surveys
+                        SET  questions = {?}, title = {?}, description = {?},
+                             uid = {?}, end = {?},mode = {?}, promos = {?}';
         return XDB::execute($sql, serialize($this->questions), $this->title, $this->description, $this->user->id(), $this->end, $this->mode, $this->promos);
     }
 

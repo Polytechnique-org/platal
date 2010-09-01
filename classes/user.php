@@ -732,16 +732,12 @@ class User extends PlUser
         }
 
         // Updates user in following tables.
-        foreach (array('group_announces', 'payment_transactions', 'log_sessions') as $table) {
+        foreach (array('group_announces', 'payment_transactions', 'log_sessions', 'group_events') as $table) {
             XDB::execute('UPDATE  ' . $table . '
                              SET  uid = {?}
                            WHERE  uid = {?}',
                          $newuser->id(), $this->id());
         }
-        XDB::execute('UPDATE  group_events
-                         SET  organisateur_uid = {?}
-                       WHERE  organisateur_uid = {?}',
-                     $newuser->id(), $this->id());
 
         // Merges user in following tables, ie updates when possible, then deletes remaining occurences of the old user.
         foreach (array('group_announces_read', 'group_event_participants', 'group_member_sub_requests', 'group_members') as $table) {

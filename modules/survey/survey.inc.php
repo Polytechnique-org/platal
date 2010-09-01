@@ -192,7 +192,7 @@ class Survey
         $nbf = count($line);
         $users = array();
         if ($this->isMode(self::MODE_XIDENT)) { // if the mode is non anonymous
-            $users = User::getBulkUsersWithUIDs(XDB::fetchAllAssoc('vid', 'SELECT  v.id AS vid, v.user_id
+            $users = User::getBulkUsersWithUIDs(XDB::fetchAllAssoc('vid', 'SELECT  v.id AS vid, v.uid
                                                                              FROM  survey_votes AS v
                                                                             WHERE  v.survey_id = {?}
                                                                          ORDER BY  vid ASC',
@@ -435,7 +435,7 @@ class Survey
     public function vote($uid, $args)
     {
         XDB::execute('INSERT INTO  survey_votes
-                              SET  survey_id = {?}, user_id = {?};', $this->id, $uid); // notes the user as having voted
+                              SET  survey_id = {?}, uid = {?};', $this->id, $uid); // notes the user as having voted
         $vid = XDB::insertId();
         for ($i = 0; $i < count($this->questions); $i++) {
             $ans = $this->questions[$i]->checkAnswer($args[$i]);
@@ -454,7 +454,7 @@ class Survey
     {
         $res = XDB::query('SELECT  id
                              FROM  survey_votes
-                            WHERE  survey_id = {?} AND user_id = {?};', $this->id, $uid); // checks whether the user has already voted
+                            WHERE  survey_id = {?} AND uid = {?};', $this->id, $uid); // checks whether the user has already voted
         return ($res->numRows() != 0);
     }
     // }}}

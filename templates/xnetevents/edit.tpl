@@ -251,7 +251,7 @@ Ton inscription à [METS LE NOM DE L'ÉVÉNEMENT ICI] a bien été enregistrée 
   </table>
 
   <div class="center">
-    {if $evt.eid}<input type="hidden" name="organisateur_uid" value="{$evt.organisateur_uid}" />{/if}
+    {if $evt.eid}<input type="hidden" name="uid" value="{$evt.uid}" />{/if}
     <input type="submit" name="valid" value="Valider" />
     &nbsp;
     <input type="reset" value="Annuler" />

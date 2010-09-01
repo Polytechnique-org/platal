@@ -97,7 +97,7 @@
 
   <tr>
     <td class="titre">Annonceur&nbsp;:</td>
-    <td>{profile user=$e.organisateur_uid promo=true groupperms=false}</td>
+    <td>{profile user=$e.uid promo=true groupperms=false}</td>
   </tr>
 
   {if $is_admin || $e.show_participants || ($e.deadline_inscription && $e.inscr_open)}
