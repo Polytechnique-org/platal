@@ -170,7 +170,7 @@ $(MEDAL_THUMBNAILS): $(subst /medals/thumb/,/medals/,$(@F))
 ## jquery
 ##
 JQUERY_VERSION=1.4.2
-JQUERY_PLUGINS=color
+JQUERY_PLUGINS=color form
 JQUERY_PLUGINS_PATHES=$(addprefix htdocs/javascript/jquery.,$(addsuffix .js,$(JQUERY_PLUGINS)))
 
 JQUERY_UI_VERSION=1.6
@@ -190,7 +190,7 @@ htdocs/javascript/jquery-$(JQUERY_VERSION).min.js:
 htdocs/javascript/jquery.js: htdocs/javascript/jquery-$(JQUERY_VERSION).min.js
 	ln -snf $(<F) $@
 
-$(JQUERY_PLUGINS_PATHES): DOWNLOAD_SRC = http://plugins.jquery.com/files/$(@F).txt
+$(JQUERY_PLUGINS_PATHES): DOWNLOAD_SRC = http://plugins.jquery.com/files/$(@F)_0.txt
 $(JQUERY_PLUGINS_PATHES):
 	@-rm htdocs/javascript/jquery.ui*.$*.js
 	@$(download)

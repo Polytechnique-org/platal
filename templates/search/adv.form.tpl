@@ -22,6 +22,8 @@
 
 <h1>Recherche dans l'annuaire</h1>
 
+{javascript name=jquery.form}
+
 <script type="text/javascript">// <!--
   var baseurl = platal_baseurl + "search/";
   {literal}
@@ -174,10 +176,30 @@
           $(this).parent().find('.autocompleteTarget').val('');
         });
     });
+/** Regexps to wipe out from search queries */
+var default_form_values = [ /&woman=0(&|$)/, /&subscriber=0(&|$)/, /&alive=0(&|$)/, /&egal[12]=[^&]*&promo[12]=(&|$)/g, /&[^&=]+=(&|$)/g ];
+/** Uses javascript to clean form from all empty fields */
+function cleanForm(f) {
+  var query = $(f).formSerialize();
+  var old_query;
+  for each (var reg in default_form_values) if (typeof(reg) != "undefined") {
+    do {
+      old_query = query;
+      query = query.replace(reg, '$1');
+    } while (old_query != query);
+  }
+  query = query.replace(/^&*(.*)&*$/, '$1');
+  if (query == "") {
+    alert("Aucun critère n'a été spécifié");
+    return false;
+  }
+  document.location = f.action + '?' + query;
+  return false;
+}
 -->
 {/literal}</script>
 <p class="center">[<a href="search">Revenir à la recherche simple</a>]</p>
-<form id="recherche" action="search/adv" method="get">
+<form id="recherche" action="search/adv" method="get" onsubmit="return cleanForm(this)">
   <table class="bicol" cellpadding="3" summary="Recherche">
     <tr>
       <th colspan="2">

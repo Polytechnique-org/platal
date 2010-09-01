@@ -5,6 +5,10 @@ New:
     * Profile:
         - Sectors replaced by job terms (thesaurus)                        -Car
 
+Bug/Wish:
+    * Search:
+        - #1177: clean url in advanced search                              -Car
+
 From 1.0.0 branch:
     * AXLetter:
         - Fix unsubscription                                               -XEL
