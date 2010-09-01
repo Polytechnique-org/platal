@@ -61,9 +61,11 @@ abstract class PlUser
     protected $hruid = null;
 
     // User main email aliases (forlife is the for-life email address, bestalias
-    // is user-chosen preferred email address).
+    // is user-chosen preferred email address, email might be any email available
+    // for the user).
     protected $forlife = null;
     protected $bestalias = null;
+    protected $email = null;
 
     // Display name is user-chosen name to display (eg. in "Welcome
     // <display name> !"), while full name is the official full name.
