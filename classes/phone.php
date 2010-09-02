@@ -220,7 +220,7 @@ class Phone
         if ($format['format'] == '') {
             // If the country does not have a phone number format, the number will be displayed
             // as "+prefix ## ## ## ##...".
-            $format['format'] = '+p';
+            $format['format'] = '(+p)';
         }
 
         /* Formats the phone number according t the template with these rules:
