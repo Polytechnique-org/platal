@@ -251,6 +251,9 @@ class SearchModule extends PLModule
                 $res .= "\n";
             }
         }
+        if ($nbResults == 0) {
+            $res = $q."|-2\n";
+        }
         XDB::query('REPLACE INTO  search_autocomplete
                           VALUES  ({?}, {?}, {?}, NOW())',
                     $type, $q, $res);

@@ -27,20 +27,27 @@
 <script type="text/javascript">// <!--
   var baseurl = platal_baseurl + "search/";
   {literal}
+  String.prototype.htmlEntities = function () {
+    return this.replace(/&/g,'&amp;').replace(new RegExp('<','g'),'&lt;').replace(/>/g,'&gt;');
+  };
   // display an autocomplete row : blabla (nb of found matches)
   function make_format_autocomplete(block) {
     return function(row) {
         regexp = new RegExp('(' + RegExp.escape(block.value) + ')', 'i');
 
-        name = row[0].replace(regexp, '<strong>$1<\/strong>');
+        name = row[0].htmlEntities().replace(regexp, '<strong>$1<\/strong>');
 
         if (row[1] === "-1") {
           return '&hellip;';
         }
 
+        if (row[1] === "-2") {
+          return '<em>aucun camarade trouvé pour '+row[0].htmlEntities()+'<\/em>';
+        }
+
         camarades = (row[1] > 1) ? "camarades" : "camarade";
 
-        return name + '<em>&nbsp;&nbsp;-&nbsp;&nbsp;' + row[1] + '&nbsp;' + camarades + '<\/em>';
+        return name + '<em>&nbsp;&nbsp;-&nbsp;&nbsp;' + row[1].htmlEntities() + '&nbsp;' + camarades + '<\/em>';
       };
   }
 
@@ -93,6 +100,14 @@
     $("input[name='jobterm']").val(jtid);
   }
 
+  function cancel_autocomplete(field, realfield) {
+    $(".autocomplete[name='"+field+"']").removeClass('hidden_valid').val('').focus();
+    if (typeof(realfield) != "undefined") {
+      $(".autocompleteTarget[name='"+realfield+"']").val('');
+    }
+    return;
+  }
+
   // when choosing autocomplete from list, must validate
   function select_autocomplete(name) {
       nameRealField = name.replace(/Txt$/, '');
@@ -104,17 +119,30 @@
       // if changing country, might want to open region choice
       if (nameRealField == 'country')
         return function(i) {
+            if (i.extra[0] < 0) {
+              cancel_autocomplete('countryTxt', 'country');
+              i.extra[1] = '';
+            }
             changeCountry(i.extra[1]);
           }
 
       if (nameRealField == 'school')
         return function(i) {
+            if (i.extra[0] < 0) {
+              cancel_autocomplete('schoolTxt', 'school');
+              i.extra[1] = '';
+            }
             changeSchool(i.extra[1]);
           }
 
       // change field in list and display text field as valid
       return function(i) {
         nameRealField = this.field.replace(/Txt$/, '');
+
+        if (i.extra[0] < 0) {
+          cancel_autocomplete(this.field, nameRealField);
+          return;
+        }
 
         $(".autocompleteTarget[name='"+nameRealField+"']").attr('value',i.extra[1]);
 
@@ -189,7 +217,7 @@ function cleanForm(f) {
     } while (old_query != query);
   }
   query = query.replace(/^&*(.*)&*$/, '$1');
-  if (query == "") {
+  if (query == "rechercher=Chercher") {
     alert("Aucun critère n'a été spécifié");
     return false;
   }
