@@ -42,6 +42,8 @@ class PayPal
         // the user must come back on the site.
         global $globals, $platal;
 
+        require_once 'geocoding.inc.php';
+
         $this->urlform = 'https://' . $globals->money->paypal_site . '/cgi-bin/webscr';
         $user = S::user();
         $name = $user->lastName();
