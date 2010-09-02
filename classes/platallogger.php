@@ -55,7 +55,7 @@ class PlatalLogger extends PlLogger
      * @param $suid the id of the administrator who has just su'd to the user
      * @return session the session id
      */
-    private function writeSession($uid, $suid = 0)
+    private function writeSession($uid, $suid = null)
     {
         $ip      = $_SERVER['REMOTE_ADDR'];
         $host    = strtolower(gethostbyaddr($_SERVER['REMOTE_ADDR']));
@@ -71,6 +71,8 @@ class PlatalLogger extends PlLogger
             $proxy = 'proxy';
         }
 
+        $uid = ($uid == 0) ? null : $uid;
+        $suid = ($suid == 0) ? null : $suid;
         XDB::execute("INSERT INTO  log_sessions
                               SET  uid={?}, host={?}, ip={?}, forward_ip={?}, forward_host={?}, browser={?}, suid={?}, flags={?}",
                      $uid, $host, ip_to_uint($ip), ip_to_uint($forward_ip), $forward_host, $browser, $suid, $proxy);
