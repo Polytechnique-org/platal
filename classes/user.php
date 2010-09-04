@@ -618,13 +618,15 @@ class User extends PlUser
         }
 
         if ($clearAll) {
+            global $globals;
+
             $groupIds = XDB::iterator('SELECT  asso_id
                                          FROM  group_members
                                         WHERE  uid = {?}',
                                       $this->id());
             while ($groupId = $groupIds->next()) {
                 $group = Group::get($groupId);
-                if ($group->notif_unsub) {
+                if (!empty($group) && $group->notif_unsub) {
                     $mailer = new PlMailer('xnetgrp/unsubscription-notif.mail.tpl');
                     $admins = $group->iterAdmins();
                     while ($admin = $admins->next()) {
@@ -637,17 +639,22 @@ class User extends PlUser
                 }
             }
 
-            $tables = array('account_auth_openid', 'gannounce_read', 'contacts',
-                            'email_options', 'gemail_send_save', 'emails',
-                            'forum_innd', 'gforum_profiles', 'forum_subs',
-                            'gapps_accounts', 'ggapps_nicknames', 'group_announces_read',
-                            'group_members', 'ggroup_member_sub_requests', 'reminder', 'requests',
+            $tables = array('account_auth_openid', 'announce_read', 'contacts',
+                            'email_options', 'email_send_save', 'emails',
+                            'forum_innd', 'forum_profiles', 'forum_subs',
+                            'group_announces_read', 'group_members',
+                            'group_member_sub_requests', 'reminder', 'requests',
                             'requests_hidden');
-
             foreach ($tables as $t) {
                 XDB::execute('DELETE FROM  ' . $t . '
                                     WHERE  uid = {?}',
-                    $this->id());
+                             $this->id());
+            }
+
+            foreach (array('gapps_accounts', 'gapps_nicknames') as $t) {
+                XDB::execute('DELETE FROM  ' . $t . '
+                                    WHERE  l_userid = {?}',
+                             $this->id());
             }
 
             XDB::execute("UPDATE  accounts
@@ -668,8 +675,8 @@ class User extends PlUser
             if ($globals->mailstorage->googleapps_domain) {
                 require_once 'googleapps.inc.php';
 
-                if (GoogleAppsAccount::account_status($uid)) {
-                    $account = new GoogleAppsAccount($user);
+                if (GoogleAppsAccount::account_status($this->id())) {
+                    $account = new GoogleAppsAccount($this);
                     $account->suspend();
                 }
             }
