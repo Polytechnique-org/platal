@@ -54,7 +54,7 @@ function discardExpiredSessions($userPerms, $retentionPeriod, $minimalBacklog) {
            JOIN  (SELECT  a.uid,
                           (SELECT  us.start
                              FROM  log_sessions AS us
-                            WHERE  us.uid = a.uid
+                            WHERE  us.uid = a.uid AND (us.suid IS NULL OR us.suid = 0)
                          ORDER BY  us.start DESC
                             LIMIT  {?}, 1) AS no_discard_limit
                     FROM  #x5dat#.accounts AS a
