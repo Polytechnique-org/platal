@@ -370,6 +370,10 @@ abstract class PlPage extends Smarty
     protected function jsonDisplay()
     {
         pl_content_headers("text/javascript");
+        if (!empty($GLOBALS['pl_errors'])) {
+            $this->jsonAssign('pl_errors', join("\n", $GLOBALS['pl_errors']));
+            $GLOBALS['pl_errors'] = array();
+        }
         array_walk_recursive($this->_jsonVars, "escape_xorgDB");
         $jsonbegin = Env::v('jsonBegin');
         $jsonend = Env::v('jsonEnd');
