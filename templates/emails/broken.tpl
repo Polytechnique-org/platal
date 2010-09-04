@@ -20,8 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Indiquer</h1>
-
 {if $neuneu}
 <h2 class='erreur'>Erreur&nbsp;!</h2>
 
@@ -65,7 +63,18 @@ correspondant si tu veux que nous puissions te répondre.
   Nous ne pouvons donc malheureusement te fournir aucune information&hellip;
 </p>
 {/if}
-<br />
+<h2>Signaler une redirection en panne</h2>
+<p>
+  Lors de l'envoi d'un email à l'un de nos camarades, il se peut que tu reçoives
+  en retour un message d'erreur t'informant que l'email n'avait pas pu être livré
+  à une de ses redirections. Or un camarade peut avoir plusieurs redirections, et
+  le destinataire de ton email peut donc l'avoir reçu sur une autre de ses redirections.
+</p>
+<p>
+  Pour signaler que l'adresse pour laquelle tu as reçu une erreur est en panne, et
+  pour savoir si ton correspondant a reçu l'email sur une autre redirection, il te
+  suffit d'indiquer l'addresse email incriminée ci-dessous et que cliquer sur «&nbsp;Ok&nbsp;».
+</p>
 <div class="center">
   <form action="emails/broken" method="post">
   {xsrf_token_field}
