@@ -100,6 +100,7 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
         $evt['paid'] += trim($p);
         $evt['telepaid'] += trim($p);
     }
+    $evt['organizer'] = User::getSilent($evt['uid']);
 
     make_event_date($evt);
 
