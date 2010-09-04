@@ -64,7 +64,7 @@
       <img src='images/flags/{$code}.gif' alt='{$code}' height='11' title='{$country}' />&nbsp;
       {/foreach}
       {$profile->promo()}{*
-      *}{foreach from=$profile->getExtraEducations(4) item=edu}, {display_education edu=$edu profile=$profile}{/foreach}{*
+      *}{foreach from=$profile->getExtraEducations(4) item=edu}, {display_education edu=$edu profile=$profile full=false}{/foreach}{*
       *}{if $dead}, {"décédé"|sex:"décédée":$profile} le {$profile->deathdate|date_format}{/if}
     </div>
   </div>

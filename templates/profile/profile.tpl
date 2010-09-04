@@ -172,7 +172,7 @@ function chgMainWinLoc(strPage)
         &nbsp;-&nbsp;Formation&nbsp;:
         <ul>
         {foreach from=$educations item=edu}
-          <li>{display_education edu=$edu profile=$profile}</li>
+          <li>{display_education edu=$edu profile=$profile full=true}</li>
         {/foreach}
         </ul>
       {/if}

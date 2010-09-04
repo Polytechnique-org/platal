@@ -20,50 +20,46 @@
  ***************************************************************************/
 
 
-function display_education($name, $url, $degree, $grad_year, $field, $program, $sexe, $long)
+function display_education($name, $url, $degree, $gradYear, $field, $program, $full)
 {
     $field = strtolower($field);
-    $txt = "";
+    $txt = '';
 
-    if ($grad_year || $field || $program) {
-        $txt .= "<span title=\"(";
-        if ($program) {
-            $txt .= $program;
-            if ($grad_year || $field) {
-                $txt .= ", ";
-            }
-        }
-        if ($grad_year) {
-            if ($sexe) {
-                $txt .= "diplômée en $grad_year";
-            } else {
-                $txt .= "diplômé en $grad_year";
-            }
-            if ($field) {
-                $txt .= ", ";
-            }
-        }
-        if ($field) {
-            $txt .= "domaine : $field";
-        }
-        $txt .= ")\">";
-    }
-
-    if (($degree != "Lic.") || ($long)) {
-        if (($degree != "Ing.") && ($degree != "Dipl.")) {
-            $txt .= $degree;
-        }
+    if (($degree != 'Ing.') && ($degree != 'Dipl.')) {
+        $txt .= $degree;
         if ($name) {
             $txt .= ' ';
         }
-        if ($url != '') {
-            $txt .= "<a href=\"$url\" onclick=\"return popup(this)\">$name</a>";
-        } else {
-            $txt .= $name;
-        }
     }
-    if ($grad_year || $field || $program) {
-        $txt .= "</span>";
+    if ($url != '') {
+        $txt .= '<a href="' . $url . '" onclick="return popup(this)">' . $name . '</a>';
+    } else {
+        $txt .= $name;
+    }
+
+    if ($gradYear || $field || $program) {
+        $details = '';
+        if ($program) {
+            $details .= $program;
+            if ($gradYear || $field) {
+                $details .= ', ';
+            }
+        }
+        if ($gradYear) {
+            $details .= $gradYear;
+            if ($field) {
+                $details .= ', ';
+            }
+        }
+        if ($field) {
+            $details .= $field;
+        }
+
+        if ($full) {
+            $txt .= ' <small>(' . $details . ')</small>';
+        } else {
+            $txt = '<span title="' . $details . '">' . $txt . '</span>';
+        }
     }
 
     return $txt;
@@ -71,17 +67,11 @@ function display_education($name, $url, $degree, $grad_year, $field, $program, $
 
 function smarty_function_display_education($params, &$smarty)
 {
-    $params  = new PlDict($params);
-    $edu     = $params->v('edu');
-    if (!$params->has('sex')) {
-        $profile = $params->v('profile');
-        $sex = $profile->isFemale();
-    } else {
-        $sex = $params->b('sex');
-    }
+    $params = new PlDict($params);
+    $edu = $params->v('edu');
     return display_education(($edu->school_short == '') ?  $edu->school : $edu->school_short,
                              $edu->school_url, $edu->degree_short, $edu->grad_year,
-                             $edu->field, $edu->program, $sex, $params->b('long'));
+                             $edu->field, $edu->program, $params->b('full'));
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
