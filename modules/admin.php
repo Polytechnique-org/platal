@@ -381,6 +381,7 @@ class AdminModule extends PLModule
             $user = User::get($login);
         }
         if (empty($user)) {
+            $page->assign('user', false);
             return;
         }
 
@@ -406,6 +407,15 @@ class AdminModule extends PLModule
             } else {
                 pl_redirect("");
             }
+        }
+
+        // Handles account deletion.
+        if (Post::has('account_deletion_confirmation')) {
+            $uid = $user->id();
+            $name = $user->fullName();
+            $user->profile()->clear();
+            $user->clear(true);
+            $page->trigSuccess("L'utilisateur $name ($uid) a bien été supprimé.");
         }
 
         // Account Form {{{

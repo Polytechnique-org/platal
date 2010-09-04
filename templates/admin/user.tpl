@@ -21,13 +21,13 @@
 {**************************************************************************}
 
 
-{if $smarty.post.u_kill_conf}
-<form method="post" action="admin/user">
+{if t($smarty.post.delete_account)}
+<form method="post" action="admin/user/{$user->login()}">
   {xsrf_token_field}
   <div class="center">
     <input type="hidden" name="uid" value="{$smarty.request.uid}" />
-    Confirmer la suppression de l'utilisateur {$smarty.request.uid} ({$user->fullName()})&nbsp;&nbsp;
-    <input type="submit" name="u_kill" value="continuer" />
+    Confirmer la suppression de l'utilisateur {$user->fullName()} (uid&nbsp;: {$smarty.request.uid}).<br />
+    <input type="submit" name="account_deletion_confirmation" value="Confirmer" />
   </div>
 </form>
 {elseif $user}
@@ -230,6 +230,7 @@ $(document).ready(function() {
         <input type="submit" name="update_account" value="Mettre à jour" onclick="return hashResponse('new_plain_password', false, false);" />
         <input type="submit" name="su_account" value="Prendre l'identité" />
         <input type="submit" name="log_account" value="Consulter les logs" />
+        <input type="submit" name="delete_account" value="Supprimer le compte" />
       </td>
     </tr>
   </table>
@@ -525,7 +526,8 @@ $(document).ready(function() {
     </tr>
     <tr>
       <td class="center">
-        <input type="text" name="login" size="40" maxlength="255" value="{$smarty.request.login|default:$user->hruid}" />
+        <input type="text" name="login" size="40" maxlength="255"
+               value="{if t($smarty.request.login)}{$smarty.request.login}{/if}" />
       </td>
     </tr>
     <tr>
