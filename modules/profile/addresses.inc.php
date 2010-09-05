@@ -94,6 +94,15 @@ class ProfileSettingAddress extends ProfileSettingGeocoding
         Geocoder::getAreaId($address, "administrativeArea");
         Geocoder::getAreaId($address, "subAdministrativeArea");
         Geocoder::getAreaId($address, "locality");
+
+        // Cleanup foreign keys
+        $foreign_keys = array('localityId', 'subAdministrativeAreaId', 'administrativeAreaId', 'countryId');
+        foreach ($foreign_keys as $key) {
+            if ($address[$key] == '') {
+                $address[$key] = null;
+            }
+        }
+
         XDB::execute("INSERT INTO  profile_addresses (pid, type, id, flags, accuracy,
                                                       text, postalText, postalCode, localityId,
                                                       subAdministrativeAreaId, administrativeAreaId,
