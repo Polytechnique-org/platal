@@ -207,6 +207,8 @@ class UFB_AdvancedSearch extends UserFilterBuilder
             new UFBF_Comment('free', 'Commentaire'),
             new UFBF_Phone('phone_number', 'Téléphone'),
             new UFBF_Networking('networking_address', 'networking_type', 'Networking et sites webs'),
+
+            new UFBF_Mentor('only_referent', 'Référent'),
         );
         parent::__construct($fields, $envprefix);
     }
@@ -1045,6 +1047,16 @@ class UFBF_Networking extends UFBF_Text
     public function buildUFC(UserFilterBuilder &$ufb)
     {
         return new UFC_Networking($this->nwtype, $this->val);
+    }
+}
+// }}}
+
+// {{{ class UFBF_Mentor
+class UFBF_Mentor extends UFBF_Bool
+{
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_Mentor();
     }
 }
 // }}}

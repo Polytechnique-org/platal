@@ -1219,6 +1219,18 @@ class UFC_Photo implements UserFilterCondition
 }
 // }}}
 
+// {{{ class UFC_Mentor
+class UFC_Mentor implements UserFilterCondition
+{
+    public function buildCondition(PlFilter &$uf)
+    {
+        $sub = $uf->addMentorFilter(UserFilter::MENTOR);
+        return $sub . '.expertise IS NOT NULL';
+    }
+}
+// }}}
+
+
 // {{{ class UFC_Mentor_Expertise
 /** Filters users by mentoring expertise
  * @param $expertise Domain of expertise
@@ -2748,15 +2760,19 @@ class UserFilter extends PlFilter
 
     private $pms = array();
     private $mjtr = false;
-    const MENTOR_EXPERTISE  = 1;
-    const MENTOR_COUNTRY    = 2;
-    const MENTOR_SECTOR     = 3;
-    const MENTOR_TERM       = 4;
+    const MENTOR = 1;
+    const MENTOR_EXPERTISE = 2;
+    const MENTOR_COUNTRY = 3;
+    const MENTOR_SECTOR = 4;
+    const MENTOR_TERM = 5;
 
     public function addMentorFilter($type)
     {
         $this->requireAccounts();
         switch($type) {
+        case self::MENTOR:
+            $this->pms['pm'] = 'profile_mentor';
+            return 'pm';
         case self::MENTOR_EXPERTISE:
             $this->pms['pme'] = 'profile_mentor';
             return 'pme';
