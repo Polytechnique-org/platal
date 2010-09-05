@@ -308,7 +308,7 @@ abstract class UFBF_Text extends UFB_Field
             return $this->raise("Le champ %s est trop court (minimum {$this->minlength}).");
         } else if (strlen($this->val) > $this->maxlength) {
             return $this->raise("Le champ %s est trop long (maximum {$this->maxlength}).");
-        } else if (preg_match(":[\]\[<>{}~/§_`|%$^=+]|\*\*:u", $this->val)) {
+        } else if (preg_match(":[\]\[<>{}~§_`|%$^=]|\*\*:u", $this->val)) {
             return $this->raise('Le champ %s contient un caractère interdit rendant la recherche impossible.');
         }
 
