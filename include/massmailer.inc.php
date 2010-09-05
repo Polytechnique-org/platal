@@ -195,6 +195,8 @@ abstract class MassMailer
              INNER JOIN  accounts AS a ON (ni.uid = a.uid)
               LEFT JOIN  email_options AS eo ON (eo.uid = a.uid)
               LEFT JOIN  emails   AS e ON (e.uid = a.uid AND e.flags='active')
+              LEFT JOIN  account_profiles AS ap ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
+              LEFT JOIN  profile_display AS pd ON (ap.pid = pd.pid)
                   WHERE  ni.last < {?} AND ({$this->subscriptionWhere()}) AND
                          (e.email IS NOT NULL OR FIND_IN_SET('googleapps', eo.storage))
                GROUP BY  a.uid";

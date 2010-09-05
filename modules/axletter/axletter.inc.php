@@ -177,10 +177,10 @@ class AXLetter extends MassMailer
         }
         $where = array();
         if ($this->_promo_min) {
-            $where[] = "((ni.uid = 0 AND ni.promo >= {$this->_promo_min}) OR (ni.uid != 0 AND u.promo >= {$this->_promo_min}))";
+            $where[] = "((ni.uid = 0 AND ni.promo >= {$this->_promo_min}) OR (ni.uid != 0 AND pd.promo >= 'X{$this->_promo_min}'))";
         }
         if ($this->_promo_max) {
-            $where[] = "((ni.uid = 0 AND ni.promo <= {$this->_promo_max}) OR (ni.uid != 0 AND u.promo <= {$this->_promo_max}))";
+            $where[] = "((ni.uid = 0 AND ni.promo <= {$this->_promo_max}) OR (ni.uid != 0 AND pd.promo <= 'X{$this->_promo_max}'))";
         }
         if ($this->_subset) {
             require_once("emails.inc.php");
