@@ -20,12 +20,12 @@
  ***************************************************************************/
 
 class PlImage {
-    private $mime = null;
-    private $x = null;
-    private $y = null;
+    protected $mime = null;
+    protected $x = null;
+    protected $y = null;
 
-    private $data = null;
-    private $file = null;
+    protected $data = null;
+    protected $file = null;
 
     private function __construct()
     {
