@@ -30,9 +30,9 @@ class EntrReq extends ProfileValidate
     public $acronym;
     public $url;
     public $email;
-    public $holdingid;
-    public $NAF_code;
-    public $AX_code;
+    public $holdingid = null;
+    public $NAF_code = null;;
+    public $AX_code = null;
 
     public $tel;
     public $fax;

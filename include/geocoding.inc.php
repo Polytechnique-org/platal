@@ -41,7 +41,7 @@ abstract class Geocoder {
             'locality'              => 'geoloc_localities',
             );
 
-        if (isset($address[$area . 'Name']) && isset($databases[$area])) {
+        if (isset($address[$area . 'Name']) && isset($databases[$area]) && !empty($address[$area . 'Name'])) {
             $res = XDB::query("SELECT  id
                                  FROM  " . $databases[$area] . "
                                 WHERE  name = {?}",
@@ -54,6 +54,8 @@ abstract class Geocoder {
             } else {
                 $address[$area . 'Id'] = $res->fetchOneCell();
             }
+        } else {
+            $address[$area . 'Id'] = null;
         }
     }
 

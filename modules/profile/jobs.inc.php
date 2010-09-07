@@ -230,6 +230,10 @@ class ProfileSettingJob extends ProfileSettingGeocoding
                 }
                 array_splice($value, $key, 1);
             }
+            foreach (array('sectorid', 'subsectorid', 'subsubsectorid') as $key) {
+                if ($job[$key] == 0) {
+                    $job[$key] = null;
+                }
         }
         foreach ($value as $key => &$job) {
             $ls = true;

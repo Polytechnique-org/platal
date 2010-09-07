@@ -302,11 +302,12 @@ class ProfileSettingEdu implements ProfileSetting
                      $page->pid());
         foreach ($value as $eduid=>&$edu) {
             if ($edu['eduid'] != '') {
+                $fieldId = ($edu['fieldid'] == 0) ? null : $edu['fieldid'];
                 XDB::execute("INSERT INTO  profile_education
                                       SET  id = {?}, pid = {?}, eduid = {?}, degreeid = {?},
                                            fieldid = {?}, grad_year = {?}, program = {?}",
                              $eduid, $page->pid(), $edu['eduid'], $edu['degreeid'],
-                             $edu['fieldid'], $edu['grad_year'], $edu['program']);
+                             $fieldId, $edu['grad_year'], $edu['program']);
             }
         }
     }
