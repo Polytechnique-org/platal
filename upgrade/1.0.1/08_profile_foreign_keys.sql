@@ -60,7 +60,6 @@ ALTER TABLE profile_corps ADD FOREIGN KEY (original_corpsid) REFERENCES profile_
 ALTER TABLE profile_corps ADD FOREIGN KEY (current_corpsid) REFERENCES profile_corps_enum (id) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE profile_corps ADD FOREIGN KEY (rankid) REFERENCES profile_corps_rank_enum (id) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE profile_education ADD FOREIGN KEY (eduid) REFERENCES profile_education_enum (id) ON DELETE CASCADE ON UPDATE CASCADE;
--- 
 ALTER TABLE profile_education ADD FOREIGN KEY (degreeid) REFERENCES profile_education_degree_enum (id) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE profile_education ADD FOREIGN KEY (fieldid) REFERENCES profile_education_field_enum (id) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE profile_education_enum ADD FOREIGN KEY (country) REFERENCES geoloc_countries (iso_3166_1_a2) ON DELETE CASCADE ON UPDATE CASCADE;

@@ -14,6 +14,8 @@ DELETE FROM watch_nonins WHERE NOT EXISTS (SELECT * FROM accounts WHERE accounts
 DELETE FROM log_last_sessions WHERE NOT EXISTS (SELECT * FROM accounts WHERE accounts.uid = log_last_sessions.uid);
 DELETE FROM forum_profiles WHERE NOT EXISTS (SELECT * FROM accounts WHERE accounts.uid = forum_profiles.uid);
 DELETE FROM watch WHERE NOT EXISTS (SELECT * FROM accounts WHERE accounts.uid = watch.uid);
+DELETE FROM group_event_participants WHERE NOT EXISTS (SELECT * FROM accounts WHERE accounts.uid = group_event_participants.uid);
+DELETE FROM group_members WHERE NOT EXISTS (SELECT * FROM accounts WHERE accounts.uid = group_members.uid);
 
 -- Following tables all refer to accounts.uid.
 ALTER TABLE account_auth_openid ADD FOREIGN KEY (uid) REFERENCES accounts (uid) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -36,7 +38,9 @@ ALTER TABLE forum_subs ADD FOREIGN KEY (uid) REFERENCES accounts (uid) ON DELETE
 ALTER TABLE group_announces ADD FOREIGN KEY (uid) REFERENCES accounts (uid) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE group_announces_read ADD FOREIGN KEY (uid) REFERENCES accounts (uid) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE group_events ADD FOREIGN KEY (uid) REFERENCES accounts (uid) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE group_event_participants ADD FOREIGN KEY (uid) REFERENCES accounts (uid) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE group_member_sub_requests ADD FOREIGN KEY (uid) REFERENCES accounts (uid) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE group_members ADD FOREIGN KEY (uid) REFERENCES accounts (uid) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE homonyms ADD FOREIGN KEY (uid) REFERENCES accounts (uid) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE ip_watch ADD FOREIGN KEY (uid) REFERENCES accounts (uid) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE log_last_sessions ADD FOREIGN KEY (uid) REFERENCES accounts (uid) ON DELETE CASCADE ON UPDATE CASCADE;
