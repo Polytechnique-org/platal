@@ -31,7 +31,7 @@ class ValidateIterator extends XOrgDBIterator
 {
     // {{{ constuctor
 
-    public function __construct ()
+    public function __construct()
     {
         parent::__construct('SELECT  data, DATE_FORMAT(stamp, "%Y%m%d%H%i%s")
                                FROM  requests

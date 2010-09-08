@@ -31,7 +31,7 @@ class EntrReq extends ProfileValidate
     public $url;
     public $email;
     public $holdingid = null;
-    public $NAF_code = null;;
+    public $NAF_code = null;
     public $AX_code = null;
 
     public $tel;
