@@ -20,9 +20,6 @@ ALTER TABLE profile_job MODIFY COLUMN sectorid TINYINT(2) UNSIGNED DEFAULT NULL;
 ALTER TABLE profile_job MODIFY COLUMN subsectorid SMALLINT(3) UNSIGNED DEFAULT NULL;
 ALTER TABLE profile_job MODIFY COLUMN subsubsectorid SMALLINT(3) UNSIGNED DEFAULT NULL;
 
--- Rename columns that should be called uid.
--- ALTER TABLE group_events CHANGE COLUMN organisateur_uid uid INT(11) UNSIGNED DEFAULT NULL;
-
 -- Prepares table having ids set to 0.
 DELETE FROM profile_mentor_country WHERE country = 'YU' OR country = '00';
 UPDATE profile_addresses SET localityId = NULL WHERE localityId = 0;
