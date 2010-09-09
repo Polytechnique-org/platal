@@ -47,7 +47,7 @@ INSERT INTO  geoloc_countries (iso_3166_1_a2, iso_3166_1_a3, iso_3166_1_num, wor
              ('PR', 'PRI', 630, 'NA', 'Puerto Rico', 'Porto Rico', 'San Juan', NULL, 'USA', 'US', 1787),
              ('MP', 'MNP', 580, 'NA', 'Northern Mariana Islands', 'Îles Mariannes du Nord', ' Saipan', NULL, 'USA', 'US', 1670);
 
--- Following tables all refer to profiles.pid.
+-- Finaly we add the foreign keys.
 ALTER TABLE profile_addresses ADD FOREIGN KEY (localityId) REFERENCES geoloc_localities (id) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE profile_addresses ADD FOREIGN KEY (subAdministrativeAreaId) REFERENCES geoloc_subadministrativeareas (id) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE profile_addresses ADD FOREIGN KEY (administrativeAreaId) REFERENCES geoloc_administrativeareas (id) ON DELETE CASCADE ON UPDATE CASCADE;
