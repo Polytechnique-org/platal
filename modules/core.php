@@ -43,13 +43,13 @@ class CoreModule extends PLModule
         );
     }
 
-    function handler_valid(&$page)
+    function handler_valid($page)
     {
         readfile($page->compile_dir.'/valid.html');
         exit;
     }
 
-    function handler_403(&$page)
+    function handler_403($page)
     {
         global $globals;
         header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
@@ -57,7 +57,7 @@ class CoreModule extends PLModule
         $page->coreTpl('403.tpl');
     }
 
-    function handler_404(&$page)
+    function handler_404($page)
     {
         global $globals, $platal;
         header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
@@ -66,7 +66,7 @@ class CoreModule extends PLModule
         $page->trigError('Cette page n\'existe pas !!!');
     }
 
-    function handler_login(&$page)
+    function handler_login($page)
     {
         $allkeys = func_get_args();
         unset($allkeys[0]);
@@ -74,7 +74,7 @@ class CoreModule extends PLModule
         pl_redirect($url);
     }
 
-    function handler_favicon(&$page)
+    function handler_favicon($page)
     {
         global $globals;
         pl_cached_content_headers("image/x-icon");
@@ -82,7 +82,7 @@ class CoreModule extends PLModule
         exit;
     }
 
-    function handler_robotstxt(&$page)
+    function handler_robotstxt($page)
     {
         global $globals;
 
@@ -106,7 +106,7 @@ class CoreModule extends PLModule
         return PL_NOT_FOUND;
     }
 
-    function handler_purge_cache(&$page)
+    function handler_purge_cache($page)
     {
         S::assert_xsrf_token();
 
@@ -116,12 +116,12 @@ class CoreModule extends PLModule
         http_redirect(empty($_SERVER['HTTP_REFERER']) ? './' : $_SERVER['HTTP_REFERER']);
     }
 
-    function handler_kill_sessions(&$page)
+    function handler_kill_sessions($page)
     {
         kill_sessions();
     }
 
-    function handler_bug(&$page)
+    function handler_bug($page)
     {
         global $globals;
 
@@ -163,14 +163,14 @@ class CoreModule extends PLModule
         }
     }
 
-    function handler_wiki_help(&$page, $action = 'title')
+    function handler_wiki_help($page, $action = 'title')
     {
         $page->coreTpl('wiki.help.tpl', SIMPLE);
         $page->assign('wiki_help', MiniWiki::help($action == 'title'));
     }
 
     /// Shared handler for wiki syntax result preview
-    function handler_wiki_preview(&$page, $action = 'title')
+    function handler_wiki_preview($page, $action = 'title')
     {
         pl_content_headers("text/html");
         $text = Env::v('text');
@@ -178,7 +178,7 @@ class CoreModule extends PLModule
         exit;
     }
 
-    function handler_siteerror(&$page) {
+    function handler_siteerror($page) {
         global $globals;
         $page->coreTpl('site_errors.tpl');
         $file = @file_get_contents($globals->spoolroot . '/spool/tmp/site_errors');

@@ -19,37 +19,40 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function quoted_printable_encode($input, $line_max = 76)
-{
-    $lines = preg_split("/(?:\r\n|\r|\n)/", $input);
-    $eol = "\n";
-    $linebreak = "=0D=0A=\n    ";
-    $escape = "=";
-    $output = "";
+// Use native function if it's available (>= PHP5.3)
+if (!function_exists('quoted_printable_encode')) {
+    function quoted_printable_encode($input, $line_max = 76)
+    {
+        $lines = preg_split("/(?:\r\n|\r|\n)/", $input);
+        $eol = "\n";
+        $linebreak = "=0D=0A=\n    ";
+        $escape = "=";
+        $output = "";
 
-    foreach ($lines as $j => $line) {
-        $linlen = strlen($line);
-        $newline = "";
-        for($i = 0; $i < $linlen; $i++) {
-            $c = $line{$i};
-            $dec = ord($c);
-            if ( ($dec == 32) && ($i == ($linlen - 1)) ) {
-                // convert space at eol only
-                $c = "=20";
-            } elseif ( ($dec == 61) || ($dec < 32 ) || ($dec > 126) ) {
-                // always encode "\t", which is *not* required
-                $c = $escape.strtoupper(sprintf("%02x",$dec));
-            }
-            if ( (strlen($newline) + strlen($c)) >= $line_max ) { // CRLF is not counted
-                $output .= $newline.$escape.$eol;
-                $newline = "    ";
-            }
-            $newline .= $c;
-        } // end of for
-        $output .= $newline;
-        if ($j<count($lines)-1) $output .= $linebreak;
+        foreach ($lines as $j => $line) {
+            $linlen = strlen($line);
+            $newline = "";
+            for($i = 0; $i < $linlen; $i++) {
+                $c = $line{$i};
+                $dec = ord($c);
+                if ( ($dec == 32) && ($i == ($linlen - 1)) ) {
+                    // convert space at eol only
+                    $c = "=20";
+                } elseif ( ($dec == 61) || ($dec < 32 ) || ($dec > 126) ) {
+                    // always encode "\t", which is *not* required
+                    $c = $escape.strtoupper(sprintf("%02x",$dec));
+                }
+                if ( (strlen($newline) + strlen($c)) >= $line_max ) { // CRLF is not counted
+                    $output .= $newline.$escape.$eol;
+                    $newline = "    ";
+                }
+                $newline .= $c;
+            } // end of for
+            $output .= $newline;
+            if ($j<count($lines)-1) $output .= $linebreak;
+        }
+        return trim($output);
     }
-    return trim($output);
 }
 
 /** genere une chaine aleatoire de 22 caracteres ou moins

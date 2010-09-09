@@ -127,7 +127,7 @@ class EngineTest extends PlTestCase
         $tree->addChild(array('test', 'hook'), new PlStdHook(array('EngineTest', 'barCallback')));
 
         $page = new TestPage();
-        $p = split('/', $path);
+        $p = explode('/', $path);
         list($hook, $matched, $remain, $aliased) = $tree->findChild($p);
         $matched = join('/', $matched);
         $this->assertEquals($expmatched, $matched);

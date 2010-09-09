@@ -32,6 +32,17 @@ class UserNotFoundException extends Exception
     }
 }
 
+interface PlUserInterface
+{
+    public static function _default_user_callback($login, $results);
+
+    /**
+     * Determines if the @p login is an email address, and an email address not
+     * served locally by plat/al.
+     */
+    public static function isForeignEmailAddress($email);
+}
+
 /**
  * Represents an user of plat/al (without any further assumption), with a
  * special focus on always-used properties (identification fields, display name,
@@ -39,7 +50,7 @@ class UserNotFoundException extends Exception
  * NOTE: each implementation of plat/al-code MUST subclass PlUser, and name it
  * 'User'.
  */
-abstract class PlUser
+abstract class PlUser implements PlUserInterface
 {
     /**
      * User data enumerations.
@@ -328,7 +339,7 @@ abstract class PlUser
             if (strlen(trim($logins)) == 0) {
                 return null;
             }
-            $logins = split("[; ,\r\n\|]+", $logins);
+            $logins = preg_split("/[; ,\r\n\|]+/", $logins);
         }
 
         if ($logins) {
@@ -378,14 +389,6 @@ abstract class PlUser
     {
         return;
     }
-
-    abstract public static function _default_user_callback($login, $results);
-
-    /**
-     * Determines if the @p login is an email address, and an email address not
-     * served locally by plat/al.
-     */
-    abstract public static function isForeignEmailAddress($email);
 
     private static function stripBadChars($text)
     {

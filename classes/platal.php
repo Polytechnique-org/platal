@@ -267,7 +267,7 @@ abstract class Platal
             $this->mods[$module] = $m = PLModule::factory($module);
             $hooks = $m->handlers();
             foreach ($hooks as $path=>$hook) {
-                $this->hooks->addChild(split('/', $path), $hook);
+                $this->hooks->addChild(explode('/', $path), $hook);
             }
         }
 
@@ -302,7 +302,7 @@ abstract class Platal
 
     protected function find_hook()
     {
-        $p = split('/', $this->path);
+        $p = explode('/', $this->path);
         list($hook, $matched, $remain, $aliased) = $this->hooks->findChild($p);
         if (empty($hook)) {
             return null;
@@ -318,7 +318,7 @@ abstract class Platal
 
     public function near_hook()
     {
-        $p = split('/', $this->path);
+        $p = explode('/', $this->path);
         list($hook, $matched, $remain, $aliased) = $this->hooks->findNearestChild($p);
         if (empty($hook)) {
             return null;
