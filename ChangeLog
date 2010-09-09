@@ -1,6 +1,11 @@
 ================================================================================
 VERSION 1.1.1                                                         XX XX XXXX
 
+New:
+
+    * Compliant with PHP 5.3                                                -RIT
+    * Improves and unify error handling                                     -FRU
+
 ================================================================================
 VERSION 1.1.0                                                         30 06 2010
 
@@ -58,6 +63,7 @@ ACRONYMS:
     * mYk: Aymeric Augustin     (mYk)       <aymeric.augustin@m4x.org>
     * OG : Olivier Guillaumin               <olivier.guillaumin@m4x.org>
     * PIK: Fabien Laborde       (pika)      <fabien.laborde@m4x.org>
+    * RIT: Henri Jouhaud        (Riton)     <henri.jouhaud@m4x.org>
     * SHK: Jeremy Lainé         (Sharky)    <jeremy.laine@m4x.org>
     * THD: Thomas Deniau        (Totom)     <thomas.deniau@m4x.org>
     * VP : Vincent Palatin                  <vincent.palatin@m4x.org>
