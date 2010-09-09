@@ -234,6 +234,7 @@ class ProfileSettingJob extends ProfileSettingGeocoding
                 if ($job[$key] == 0) {
                     $job[$key] = null;
                 }
+            }
         }
         foreach ($value as $key => &$job) {
             $ls = true;
