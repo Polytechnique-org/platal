@@ -401,13 +401,13 @@ class XnetGrpModule extends PLModule
             $mailer->setSubject('[' . $globals->asso('nom') . '] Demande d\'inscription');
             $message = ($user->isFemale() ? 'Chère' : 'Cher') . " Camarade,\n"
                      . "\n"
-                     . "  Suite à ta demande d'adhésion à " . $globals->asso('nom') . ",\n"
-                     . "j'ai le plaisir de t'annoncer que ton inscription a été validée !\n"
+                     . "  Suite à ta demande d'adhésion à " . $globals->asso('nom')
+                     . ", j'ai le plaisir de t'annoncer que ton inscription a été validée !\n"
                      . "\n"
                      . "Bien cordialement,\n"
                      . "-- \n"
                      . S::user()->fullName() . '.';
-            $mailer->setTxtBody($message);
+            $mailer->setTxtBody(wordwrap($message, 72));
             $mailer->send();
         }
     }
