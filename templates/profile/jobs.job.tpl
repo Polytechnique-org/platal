@@ -50,7 +50,7 @@
         </div>
         Entreprise n°{$i+1}&nbsp;:
         {if $job.tmp_name}{$job.tmp_name} <small>(en cours de validation)</small>{else}
-        <input type="text" class="enterpriseName {if $job.name_error}error{/if}" size="35" maxlength="100"
+        <input type="text" class="enterpriseName{if $job.name_error} error{/if}" size="35" maxlength="100"
                name="{$jobpref}[name]" value="{$job.name}" />
         {/if}
         <a href="javascript:removeJob('{$jobid}','{$jobpref}')">

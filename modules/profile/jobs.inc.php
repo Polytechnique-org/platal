@@ -220,8 +220,10 @@ class ProfileSettingJob extends ProfileSettingGeocoding
                     continue;
                 }
 
-                $job['name_error'] = true;
-                $success = false;
+                if (!$init) {
+                    $job['name_error'] = true;
+                    $success = false;
+                }
             }
 
             if (isset($job['removed']) && $job['removed']) {
