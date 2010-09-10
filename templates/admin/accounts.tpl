@@ -36,7 +36,7 @@
       <input type="checkbox" disabled="disabled" {if $user.watch}checked="checked"{/if} />
     </td>
     <td>
-      {$user.comment|default='(none)'}
+      {$user.comment}
     </td>
   </tr>
   {/iterate}
