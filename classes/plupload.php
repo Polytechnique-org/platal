@@ -113,7 +113,11 @@ class PlUpload
             trigger_error('malformed URL given', E_USER_NOTICE);
             return false;
         }
-        $data = file_get_contents($url);
+        if (file_exists($url)) {
+            $data = file_get_contents($url);
+        } else {
+            return false;
+        }
         if (!$data) {
             return false;
         }
