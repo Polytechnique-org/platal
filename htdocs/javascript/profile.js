@@ -50,6 +50,9 @@ function wizPage_onLoad(id)
             updateJobSubSector(i, $('#job_' + i).find("[name='jobs[" + i + "][subSubSector]']").val());
             updateJobAlternates(i);
         }
+        if ($('#job_0').find("[name='jobs[0][name]']").val() == '') {
+            $.get(platal_baseurl + 'profile/ajax/job/0', makeAddJob(0));
+        }
         break;
     }
 }
