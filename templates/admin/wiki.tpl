@@ -76,18 +76,10 @@
 {xsrf_token_field}
 <table class="bicol">
   <tr>
-    <th>
-      page
-    </th>
-    <th>
-      lecture
-    </th>
-    <th>
-      écriture
-    </th>
-    <th class="action">
-      action
-    </th>
+    <th>page</th>
+    <th>lecture</th>
+    <th>écriture</th>
+    <th class="action">action</th>
   </tr>
 {foreach from=$wiki_pages key=cat item=pages}
   <tr class="pair">
@@ -107,10 +99,12 @@
       <a href="{$cat}/{$page}">{$page}</a>{if $perm.cached}*{/if} <a href="{$cat}/{$page}?action=edit" class="indice">{icon name=page_edit title='éditer'}</a>
     </td>
     <td class="center" style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
-      {$perm.read}
+      {assign var=read value=$perm.read}
+      {$perms_opts.$read}
     </td>
     <td class="center" style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
-      {$perm.edit}
+      {assign var=edit value=$perm.edit}
+      {$perms_opts.$edit}
     </td>
     <td class="action" style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
       <a href="admin/wiki/rename/{$cat}.{$page}" onclick="var newname=prompt('Déplacer la page {$cat}.{$page} vers&nbsp;:', '{$cat}.{$page}'); if (!newname) return false; this.href += '/' + newname + '?token={xsrf_token}';">{icon name=book_next title='déplacer'}</a>
@@ -121,7 +115,8 @@
 {/foreach}
 {/foreach}
   <tr class="pair">
-    <td class="action" colspan="4">
+    <td colspan="3"></td>
+    <td class="action">
       <span onclick="check_all_boxes('update_pages', true)">{icon name=tick title='tout cocher'}</span>
       <span onclick="check_all_boxes('update_pages', false)">{icon name=cross title='tout décocher'}</span>
       <span onclick="check_all_boxes('update_pages', 'toggle')">{icon name=arrow_refresh title='toggle'}</span>
@@ -131,26 +126,32 @@
     <td>
       Attribue les permissions aux pages cochées&nbsp;:
     </td>
-    <td>
+    <td class="center">
       <select name="read">
         <option value=""> - </option>
         {html_options options=$perms_opts}
       </select>
     </td>
-    <td>
+    <td class="center">
       <select name="edit">
         <option value=""> - </option>
         {html_options options=$perms_opts}
       </select>
     </td>
-    <td class="option">
+    <td class="option center">
       <input type="submit" value="ok"/>
     </td>
+  </tr>
+  <tr>
+    <th>page</th>
+    <th>lecture</th>
+    <th>écriture</th>
+    <th class="action">action</th>
   </tr>
 </table>
 </form>
 
 <p class="smaller">
-  *&nbsp;: les pages marquées d'une astérisque sont actuellement disponibles en cache (accès plus rapide)
+  *&nbsp;: les pages marquées d'une astérisque sont actuellement disponibles en cache (accès plus rapide).
 </p>
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
