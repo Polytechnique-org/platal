@@ -157,6 +157,10 @@
       $('#to_contacts option[value=""]').remove();
       $('#cc_contacts option[value=""]').remove();
     });
+
+    $(document).ready(function() {
+      $("[name='to']").focus();
+    });
   {/literal}
 //]]>
 </script>
