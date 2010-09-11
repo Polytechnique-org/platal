@@ -136,9 +136,6 @@
   </a>
   </td></tr>
   {/if}
-
-  </tr>
-
   {assign var=lostUsers value=false}
   {foreach from=$members item=users key=promo}
   {foreach from=$users item=user name=all}

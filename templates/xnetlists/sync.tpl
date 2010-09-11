@@ -36,7 +36,7 @@
     <tr>
       <td class='checkboxToggle'>{profile user=$u promo=false}</td>
       <td class='checkboxToggle'>{$u->promo()}</td>
-      <td class='checkboxToggle'><input type="checkbox" class="moderate_email" name="add[{$u->forlifeEmail()}]" id="add{$u->forlifeEmail()}"/></td>
+      <td class='checkboxToggle'><input type="checkbox" class="moderate_email" name="add[{$u->hruid}]" id="add{$u->hruid}"/></td>
     </tr>
     {/foreach}
     <tr>
