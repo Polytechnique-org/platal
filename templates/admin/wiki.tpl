@@ -25,44 +25,36 @@
 {literal}
 <script type="text/javascript">
 // <!--
-  function check_all_boxes(form,action) {
+  function checkAllBoxes(form, action)
+  {
     var boxes = document.getElementById(form).getElementsByTagName('input');
-    for (var i=0; i<boxes.length; i++) if (boxes[i].type == 'checkbox') {
-      if (action == 'toggle')
-        boxes[i].checked = !boxes[i].checked;
-      else
-        boxes[i].checked = action;
+    for (var i = 0; i < boxes.length; ++i) {
+      if (boxes[i].type == 'checkbox') {
+        if (action == 'toggle') {
+          boxes[i].checked = !boxes[i].checked;
+        } else {
+          boxes[i].checked = action;
+        }
+      }
     }
     return false;
   }
-  var toggle = 0;
-  function replie(me, cat) {
-    if (toggle == 1) return;
-    toggle = 2;
-    $("tr[@id^=row_"+cat+"_]").hide();
-    $(me).attr('src', 'images/k1.gif');
-  }
-  function deplie(me, cat) {
-    if (toggle == 2) return;
-    toggle = 1;
-    $("tr[@id^=row_"+cat+"_]").show();
-    $(me).attr('src', 'images/k2.gif');
-  }
-  function toggle_folder() {
-    me = this;
-    if ($(this).attr("class") == "wiki_category")
-        me = $("../img.wiki_root", me)[0];
-    var cat=$.trim($(me).parent().text().replace(/(.*)\([0-9]+\)/, "$1"));
-    if ($(me).attr('src') == "images/k1.gif") {
-      deplie(me, cat);
+
+  function toggleCategory(cat)
+  {
+    if ($('#category_' + cat).find('.wiki_root').attr('src') == 'images/k1.gif') {
+      $('#category_' + cat).find('.wiki_root').attr('src', 'images/k2.gif');
+    } else {
+      $('#category_' + cat).find('.wiki_root').attr('src', 'images/k1.gif');
     }
-    replie(me, cat);
-    setTimeout("toggle = 0;", 10);
+
+    var i = 0;
+    while ($('#row_' + cat + '_' + i).length != 0) {
+      $('#row_' + cat + '_' + i).toggle();
+      ++i;
+    }
+    return false;
   }
-  $(document).ready(function() {
-    $("tr.pair img[@alt=-]").css("cursor","pointer").click(toggle_folder).each(toggle_folder);
-    $(".wiki_category").css("cursor","pointer").click(toggle_folder);
-  });
 // -->
 </script>
 {/literal}
@@ -83,13 +75,15 @@
   </tr>
 {foreach from=$wiki_pages key=cat item=pages}
   <tr class="pair">
-    <td colspan="4" style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
-      <img class="wiki_root" src="images/k2.gif" alt="-" width="9" height="21" />
+    <td colspan="4" style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px"
+        id="category_{$cat}" onclick="toggleCategory('{$cat}');">
+      <img class="wiki_root" src="images/k1.gif" alt="-" width="9" height="21" />
       <span class="wiki_category">{$cat}</span> ({$pages|@count}) <a href="{$cat}/RecentChanges">{icon name=magnifier title="Changements récents"}</a>
     </td>
   </tr>
 {foreach from=$pages item=perm key=page name=pages}
-  <tr id="row_{$cat}_{$page}" class="impair" onmouseover="this.className='pair';" onmouseout="this.className='impair';">
+  <tr id="row_{$cat}_{$smarty.foreach.pages.index}" class="impair" style="display: none"
+      onmouseover="this.className='pair';" onmouseout="this.className='impair';">
     <td style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
       {if $smarty.foreach.pages.last}
       <img src="images/L.gif" alt="L" width="12" height="21" />
@@ -117,9 +111,9 @@
   <tr class="pair">
     <td colspan="3"></td>
     <td class="action">
-      <span onclick="check_all_boxes('update_pages', true)">{icon name=tick title='tout cocher'}</span>
-      <span onclick="check_all_boxes('update_pages', false)">{icon name=cross title='tout décocher'}</span>
-      <span onclick="check_all_boxes('update_pages', 'toggle')">{icon name=arrow_refresh title='toggle'}</span>
+      <span onclick="checkAllBoxes('update_pages', true)">{icon name=tick title='tout cocher'}</span>
+      <span onclick="checkAllBoxes('update_pages', false)">{icon name=cross title='tout décocher'}</span>
+      <span onclick="checkAllBoxes('update_pages', 'toggle')">{icon name=arrow_refresh title='toggle'}</span>
     </td>
   </tr>
   <tr class="pair">
