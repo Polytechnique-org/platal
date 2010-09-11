@@ -218,9 +218,6 @@ class XnetListsModule extends ListsModule
         $mails = array_map(create_function('$arr', 'return $arr[1];'), $members);
         $subscribers = array_unique($mails);
 
-        $not_in_group_x = array();
-        $not_in_group_ext = array();
-
         $ann = XDB::fetchColumn('SELECT  uid
                                    FROM  group_members
                                   WHERE  asso_id = {?}', $globals->asso('id'));
