@@ -412,7 +412,7 @@ class Profile
         return $this->visibility->isVisible($visibility);
     }
 
-    /** Stores the list of fields which have already been fetched for this Profile
+    /** Stores the list of fields which have already fetched for this Profile
      */
     public function setFetchedFields($fields)
     {
@@ -423,10 +423,12 @@ class Profile
         $this->fetched_fields = $fields;
     }
 
+    /** Have we already fetched this field ?
+     */
     private function fetched($field)
     {
-        if (($fields | self::FETCH_ALL) != self::FETCH_ALL) {
-            Platal::page()->kill("Invalid fetched fields: $fields");
+        if (!array_key_exists($field, ProfileField::$fields)) {
+            Platal::page()->kill("Invalid field: $field");
         }
 
         return ($this->fetched_fields & $field);
@@ -456,6 +458,7 @@ class Profile
      */
     private function consolidateFields()
     {
+        // Link phones to addresses
         if ($this->phones != null) {
             if ($this->addresses != null) {
                 $this->addresses->addPhones($this->phones);
@@ -466,9 +469,12 @@ class Profile
             }
         }
 
+        // Link addresses to jobs
         if ($this->addresses != null && $this->jobs != null) {
             $this->jobs->addAddresses($this->addresses);
         }
+
+        // Link jobterms to jobs
         if ($this->jobs != null && $this->jobterms != null) {
             $this->jobs->addJobTerms($this->jobterms);
         }

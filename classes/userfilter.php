@@ -1025,7 +1025,7 @@ class UFC_Job_Terms implements UserFilterCondition
         $sub = $uf->addJobTermsFilter(count($this->val));
         $conditions = array();
         foreach ($this->val as $i => $jtid) {
-            $conditions[] = $sub[$i] . ' = ' . XDB::escape($jtid);
+            $conditions[] = $sub[$i] . '.jtid_1 = ' . XDB::escape($jtid);
         }
         $jsub = $uf->addJobFilter();
         $conditions[] = $uf->getVisibilityCondition($jsub . '.pub');
@@ -2652,14 +2652,13 @@ class UserFilter extends PlFilter
      * Adds a filter on job terms of profile.
      * @param $nb the number of job terms to use
      * @return an array of the fields to filter (one for each term).
-     * Code using this function should used returned field as is (contains table and field name).
      */
     public function addJobTermsFilter($nb = 1)
     {
         $this->with_pjt = $nb;
         $jobtermstable = array();
         for ($i = 1; $i <= $nb; ++$i) {
-            $jobtermstable[] = 'pjtr_'.$i.'.jtid_1';
+            $jobtermstable[] = 'pjtr_'.$i;
         }
         return $jobtermstable;
     }

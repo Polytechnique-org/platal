@@ -29,9 +29,9 @@ class SearchModule extends PLModule
             'advanced_search.php' => $this->make_hook('redir_advanced', AUTH_PUBLIC),
             'search/autocomplete' => $this->make_hook('autocomplete',   AUTH_COOKIE, 'directory_ax', NO_AUTH),
             'search/list'         => $this->make_hook('list',           AUTH_COOKIE, 'directory_ax', NO_AUTH),
-            'jobs'                => $this->make_hook('referent',     AUTH_COOKIE),
-            'emploi'              => $this->make_hook('referent',     AUTH_COOKIE),
-            'referent/search'     => $this->make_hook('referent',     AUTH_COOKIE),
+            'jobs'                => $this->make_hook('referent',       AUTH_COOKIE),
+            'emploi'              => $this->make_hook('referent',       AUTH_COOKIE),
+            'referent/search'     => $this->make_hook('referent',       AUTH_COOKIE),
             'search/referent/countries' => $this->make_hook('referent_countries',     AUTH_COOKIE),
         );
     }
@@ -348,13 +348,13 @@ class SearchModule extends PLModule
 
         $page->setTitle('Emploi et Carrières');
 
-        // nb de mentors
+        // Count mentors
         $res = XDB::query("SELECT count(distinct pid) FROM profile_mentor_term");
         $page->assign('mentors_number', $res->fetchOneCell());
 
         $page->addJsLink('jquery.autocomplete.js');
 
-        // On vient d'un formulaire
+        // Search for mentors matching filters
         require_once 'ufbuilder.inc.php';
         $ufb = new UFB_MentorSearch();
         if (!$ufb->isEmpty()) {
