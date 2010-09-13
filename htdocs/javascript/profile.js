@@ -323,14 +323,15 @@ function addressChanged(prefid)
 function validGeoloc(prefid, id, geoloc)
 {
     if (geoloc == 1) {
-        $('#' + prefid + '_cont').find('[name*=text]').val($('#' + prefid + '_cont').find('[name*=geoloc]').val());
+        $('#' + prefid + '_cont').find('[name*=text]').val($('#' + prefid + '_cont').find('[name*=geocodedText]').val());
         $('#' + prefid + '_cont').find('[name*=postalText]').val($('#' + prefid + '_cont').find('[name*=geocodedPostalText]').val());
     }
     if (geoloc > 0) {
-        $('#' + prefid + '_cont').find("[name*='[geoloc]']").remove();
+        $('#' + prefid + '_cont').find("[name*='[geocodedText]']").remove();
+        $('#' + prefid + '_cont').find("[name*='[geocodedPostalText]']").remove();
     }
     $('#' + prefid + '_cont').find('[name*=text]').removeClass('error');
-    $('#' + prefid + '_cont').find('[name*=geoloc_choice]').val(geoloc);
+    $('#' + prefid + '_cont').find('[name*=geocodeChosen]').val(geoloc);
     $('.' + prefid + '_geoloc').remove();
 }
 

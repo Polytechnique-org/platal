@@ -102,19 +102,19 @@
   </tr>
   <tr class="pair">
     <td>
-      {foreach from=$address.tel key=t item=tel}
+      {foreach from=$address.phones key=t item=tel}
         <div id="{"`$prefid`_tel_`$t`"}" style="clear: both">
-          {include file="profile/phone.tpl" prefname="`$prefname`[tel]"
+          {include file="profile/phone.tpl" prefname="`$prefname`[phones]"
                    prefid="`$prefid`_tel" telid=$t tel=$tel}
         </div>
       {/foreach}
-      {if $address.tel|@count eq 0}
+      {if $address.phones|@count eq 0}
         <div id="{"`$prefid`_tel_0"}" style="clear: both">
-          {include file="profile/phone.tpl" prefname="`$prefname`[tel]" prefid="`$prefid`_tel" telid=0 tel=0}
+          {include file="profile/phone.tpl" prefname="`$prefname`[phones]" prefid="`$prefid`_tel" telid=0 tel=0}
         </div>
       {/if}
       <div id="{$prefid}_tel_add" class="center" style="clear: both; padding-top: 4px">
-        <a href="javascript:addTel('{$prefid}_tel','{$prefname}[tel]')">
+        <a href="javascript:addTel('{$prefid}_tel','{$prefname}[phones]')">
           {icon name=add title="Ajouter un numéro de téléphone"} Ajouter un numéro de téléphone
         </a>
       </div>

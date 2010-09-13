@@ -192,38 +192,6 @@ class ProfileSettingDate extends ProfileNoSave
     }
 }
 
-abstract class ProfileSettingGeocoding implements ProfileSetting
-{
-    protected function geocodeAddress(array &$address, &$success)
-    {
-        require_once 'geocoding.inc.php';
-        $success = true;
-        if (isset($address['changed']) && $address['changed'] == 1) {
-            $gmapsGeocoder = new GMapsGeocoder();
-            $address = $gmapsGeocoder->getGeocodedAddress($address);
-            if (isset($address['geoloc'])) {
-                $success = false;
-            }
-        } elseif (@$address['changed'] && !@$address['text']) {
-            $address = empty_address();
-            $address['pub'] = 'private';
-        }
-        if (isset($address['geoloc_choice']) && ($address['geoloc_choice'] == 0)) {
-            $mailer = new PlMailer('geoloc/geoloc.mail.tpl');
-            $mailer->assign('text', $address['text']);
-            $mailer->assign('geoloc', $address['geoloc']);
-            $mailer->send();
-            $gmapsGeocoder = new GMapsGeocoder();
-            $address = $gmapsGeocoder->stripGeocodingFromAddress($address);
-        }
-    }
-
-    public function getText($value) {
-        return $value;
-    }
-}
-
-
 abstract class ProfilePage implements PlWizardPage
 {
     protected $wizard;

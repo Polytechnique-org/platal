@@ -158,7 +158,7 @@ class Company
 
     public function setAddress(Address &$address)
     {
-        if ($address->link_type == Address::LINK_COMPANY && $address->link_id == $this->id) {
+        if ($address->type == Address::LINK_COMPANY && $address->jobid == $this->id) {
             $this->address = $address;
         }
     }
@@ -166,6 +166,17 @@ class Company
 }
 // }}}
 // {{{ class Job
+/** profile_job describes a Job, links to:
+ * - a Profile, through `pid`
+ * - a Company, through `jobid`
+ * The `id` field is the id of this job in the list of the jobs of its profile
+ *
+ * For the documentation of the phone table, please see classes/phone.php.
+ * For the documentation of the address table, please see classes/address.php.
+ *
+ * The possible relations are as follow:
+ * A Job is linked to a Company and a Profile
+ */
 class Job
 {
     public $pid;
@@ -221,7 +232,7 @@ class Job
 
     public function setAddress(Address $address)
     {
-        if ($address->link_type == Address::LINK_JOB && $address->link_id == $this->id && $address->pid == $this->pid) {
+        if ($address->type == Address::LINK_JOB && $address->jobid == $this->id && $address->pid == $this->pid) {
             $this->address = $address;
         }
     }
@@ -248,74 +259,6 @@ class JobTerm
         foreach ($data as $key => $val) {
             $this->$key = $val;
         }
-    }
-}
-// }}}
-// {{{ class Address
-class Address
-{
-    const LINK_JOB     = 'job';
-    const LINK_COMPANY = 'hq';
-    const LINK_PROFILE = 'home';
-
-    public $flags;
-    public $id; // The ID of the address among those associated with its link
-    public $link_id; // The ID of the object to which the address is linked (profile, job, company)
-    public $link_type;
-
-    public $text;
-    public $postalCode;
-    public $latitude;
-    public $longitude;
-
-    public $locality;
-    public $subAdministrativeArea;
-    public $administrativeArea;
-    public $country;
-
-    public $comment;
-
-    private $phones = array();
-
-    /** Fields are:
-     * pîd, id, link_id, link_type, flags, text, postcode, country
-     */
-    public function __construct($data)
-    {
-        foreach ($data as $key => $val) {
-            $this->$key = $val;
-        }
-        $this->flags = new PlFlagSet($this->flags);
-    }
-
-    public function uid() {
-        $uid = $this->link_type . '_';
-        if ($this->link_type != self::LINK_COMPANY) {
-            $uid .= $this->pid . '_';
-        }
-        $uid .= $this->link_id . '_' . $this->id;
-    }
-
-    public function addPhone(Phone &$phone)
-    {
-        if (
-            $phone->linkType() == Phone::LINK_ADDRESS && $phone->linkId() == $this->id &&
-            ($this->link_type == self::LINK_COMPANY || $phone->pid() == $this->pid) ) {
-            $this->phones[$phone->uniqueId()] = $phone;
-        }
-    }
-
-    public function phones()
-    {
-        return $this->phones;
-    }
-
-    public function hasFlag($flag)
-    {
-        if (!$this->flags instanceof PlFlagSet) {
-            $this->flags = new PlFlagSet($this->flags);
-        }
-        return $this->flags->hasFlag($flag);
     }
 }
 // }}}
@@ -586,106 +529,43 @@ class ProfileMentoringCountries extends ProfileField
     }
 }
 // }}}
-
-/** Loading of data for a Profile :
- * 1) load jobs, addresses, phones
- * 2) attach phones to addresses, jobs and profiles
- * 3) attach addresses to jobs and profiles
- */
-
-// {{{ Database schema (profile_address, profile_jobs)
-/** The database for this is very unclear, so here is a little schema :
- * profile_job describes a Job, links to:
- * - a Profile, through `pid`
- * - a Company, through `jobid`
- * The `id` field is the id of this job in the list of the jobs of its profile
- *
- * profile_addresses describes an Address, which
- * related to either a Profile, a Job or a Company:
- * - for a Profile:
- *   - `type` is set to 'home'
- *   - `pid` is set to the related profile pid
- *   - `id` is the id of the address in the list of those related to that profile
- *   - `jobid` is empty
- *
- * - for a Company:
- *   - `type` is set to 'hq'
- *   - `pid` is set to 0
- *   - `jobid` is set to the id of the company
- *   - `id` is set to 0 (only one address per Company)
- *
- * - for a Job:
- *   - `type` is set to 'job'
- *   - `pid` is set to the pid of the Profile of the related Job
- *   - `jobid` is set to the Company of the job (this information is redundant
- *              with that of the row of profile_job for the related job)
- *   - `id` is the id of the job to which we refer (i.e `profile_job.id`)
- *
- * For the documentation of the phone table, please see classes/phone.php.
- *
- * The possible relations are as follow:
- * An Address can be linked to a Company, a Profile, a Job
- * A Job is linked to a Company and a Profile
- */
-// }}}
-
 // {{{ class ProfileAddresses                         [ Field ]
 class ProfileAddresses extends ProfileField
 {
     private $addresses = array();
 
-    public function __construct(PlIterator $it)
+    public function __construct(PlInnerSubIterator $it)
     {
-        if ($it instanceof PlInnerSubIterator) {
-            $this->pid = $it->value();
-        }
-
-        while ($addr = $it->next()) {
-            $this->addresses[] = new Address($addr);
+        $this->pid = $it->value();
+        while ($address = $it->next()) {
+            $this->addresses[] = new Address($address);
         }
     }
 
     public function get($flags, $limit = null)
     {
-        $res = array();
+        $addresses = array();
         $nb = 0;
-        foreach ($this->addresses as $addr) {
-            if (
-                (($flags & Profile::ADDRESS_MAIN) && $addr->hasFlag('current'))
-                ||
-                (($flags & Profile::ADDRESS_POSTAL) && $addr->hasFlag('mail'))
-                ||
-                (($flags & Profile::ADDRESS_PERSO) && $addr->link_type == Address::LINK_PROFILE)
-                ||
-                (($flags & Profile::ADDRESS_PRO) && $addr->link_type == Address::LINK_JOB)
+        foreach ($this->addresses as $address) {
+            if ((($flags & Profile::ADDRESS_MAIN) && $address->hasFlag('current'))
+                || (($flags & Profile::ADDRESS_POSTAL) && $address->hasFlag('mail'))
+                || (($flags & Profile::ADDRESS_PERSO) && $address->type == Address::LINK_PROFILE)
+                || (($flags & Profile::ADDRESS_PRO) && $address->type == Address::LINK_JOB)
             ) {
-                $res[] = $addr;
-                $nb++;
+                $addresses[] = $address;
+                ++$nb;
             }
             if ($limit != null && $nb == $limit) {
                 break;
             }
         }
-        return $res;
+        return $addresses;
     }
 
     public static function fetchData(array $pids, ProfileVisibility $visibility)
     {
-        $data = XDB::iterator('SELECT  pa.id, pa.pid, pa.flags, pa.type AS link_type,
-                                       IF(pa.type = \'home\', pid, IF(pa.type = \'job\', pa.id, jobid)) AS link_id,
-                                       pa.text, pa.postalCode, pa.latitude, pa.longitude, pa.comment,
-                                       gl.name AS locality, gas.name AS subAdministrativeArea,
-                                       ga.name AS administrativeArea, gc.countryFR AS country
-                                 FROM  profile_addresses AS pa
-                            LEFT JOIN  geoloc_localities AS gl ON (gl.id = pa.localityId)
-                            LEFT JOIN  geoloc_administrativeareas AS ga ON (ga.id = pa.administrativeAreaId)
-                            LEFT JOIN  geoloc_administrativeareas AS gas ON (gas.id = pa.subAdministrativeAreaId)
-                            LEFT JOIN  geoloc_countries AS gc ON (gc.iso_3166_1_a2 = pa.countryId)
-                                WHERE  pa.pid in {?} AND pa.pub IN {?}
-                             ORDER BY  ' . XDB::formatCustomOrder('pid', $pids),
-                               $pids, $visibility->levels());
-
-        return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
+        $it = Address::iterate($pids, array(), array(), $visibility->levels());
+        return PlIteratorUtils::subIterator($it->value(), PlIteratorUtils::arrayValueCallback('pid'));
     }
 
     public function addPhones(ProfilePhones $phones)
@@ -794,8 +674,8 @@ class ProfileJobs extends ProfileField
     {
         $a = $addresses->get(Profile::ADDRESS_PRO);
         foreach ($a as $address) {
-            if ($address->link_type == Address::LINK_JOB && array_key_exists($address->link_id, $this->jobs)) {
-                $this->jobs[$address->link_id]->setAddress($address);
+            if ($address->type == Address::LINK_JOB && array_key_exists($address->jobid, $this->jobs)) {
+                $this->jobs[$address->jobid]->setAddress($address);
             }
         }
     }

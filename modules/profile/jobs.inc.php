@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class ProfileSettingJob extends ProfileSettingGeocoding
+class ProfileSettingJob implements ProfileSetting
 {
     private $pub;
     private $email_new;
@@ -44,6 +44,7 @@ class ProfileSettingJob extends ProfileSettingGeocoding
 
     public function emptyJob()
     {
+        $address = new Address();
         return array(
             'id'               => '0',
             'jobid'            => '',
@@ -52,26 +53,7 @@ class ProfileSettingJob extends ProfileSettingGeocoding
             'hq_acronym'       => '',
             'hq_url'           => '',
             'hq_email'         => '',
-            'hq_address'       => array(
-                'text'                    => '',
-                'accuracy'                => '',
-                'postalText'              => '',
-                'postalCode'              => '',
-                'administrativeAreaId'    => '',
-                'subAdministrativeAreaId' => '',
-                'localityId'              => '',
-                'countryId'               => '',
-                'latitude'                => '',
-                'longitude'               => '',
-                'north'                   => '',
-                'south'                   => '',
-                'east'                    => '',
-                'west'                    => '',
-                'cedex'                   => '',
-                'updateTime'              => '',
-                'changed'                 => '0',
-                'removed'                 => '0',
-            ),
+            'hq_address'       => $address->toFormArray(),
             'hq_fixed'         => '',
             'hq_fax'           => '',
             'subSubSectorName' => null,
@@ -80,27 +62,7 @@ class ProfileSettingJob extends ProfileSettingGeocoding
             'subSubSector'     => '0',
             'description'      => '',
             'w_url'            => '',
-            'w_address'        => array(
-                'pub'                     => 'private',
-                'text'                    => '',
-                'accuracy'                => '',
-                'postalText'              => '',
-                'postalCode'              => '',
-                'administrativeAreaId'    => '',
-                'subAdministrativeAreaId' => '',
-                'localityId'              => '',
-                'countryId'               => '',
-                'latitude'                => '',
-                'longitude'               => '',
-                'north'                   => '',
-                'south'                   => '',
-                'east'                    => '',
-                'west'                    => '',
-                'cedex'                   => '',
-                'updateTime'              => '',
-                'changed'                 => '0',
-                'removed'                 => '0',
-            ),
+            'w_address'        => $address->toFormArray(),
             'w_email'          => '',
             'w_email_pub'      => 'private',
             'w_email_new'      => '',
@@ -116,7 +78,6 @@ class ProfileSettingJob extends ProfileSettingGeocoding
 
     private function cleanJob(ProfilePage &$page, $jobid, array &$job, &$success)
     {
-        $success = true;
         if ($job['w_email'] == "new@example.org") {
             $job['w_email'] = $job['w_email_new'];
         }
@@ -174,11 +135,6 @@ class ProfileSettingJob extends ProfileSettingGeocoding
                                 WHERE  name = {?}",
                               $job['name']);
             if ($res->numRows() != 1) {
-                $this->geocodeAddress($job['hq_address'], $s);
-                if (!$s) {
-                    $gmapsGeocoder = new GMapsGeocoder();
-                    $job['hq_address'] = $gmapsGeocoder->stripGeocodingFromAddress($job['hq_address']);
-                }
                 $req = new EntrReq(S::user(), $page->profile, $jobid, $job['name'], $job['hq_acronym'], $job['hq_url'],
                                    $job['hq_email'], $job['hq_fixed'], $job['hq_fax'], $job['hq_address']);
                 $req->submit();
@@ -188,7 +144,6 @@ class ProfileSettingJob extends ProfileSettingGeocoding
                 $job['jobid'] = $res->fetchOneCell();
             }
         }
-        $job['w_address']['pub'] = $this->pub->value($page, 'address_pub', $job['w_address']['pub'], $s);
         $job['w_phone'] = Phone::formatFormArray($job['w_phone'], $s);
 
         unset($job['removed']);
@@ -239,13 +194,12 @@ class ProfileSettingJob extends ProfileSettingGeocoding
             }
         }
         foreach ($value as $key => &$job) {
-            $ls = true;
-            $this->geocodeAddress($job['w_address'], $s);
-            $ls = ($ls && $s);
+            $address = new Address($job['w_address']);
+            $s = $address->format();
+            $job['w_address'] = $address->toFormArray();
             $this->cleanJob($page, $key, $job, $s);
-            $ls = ($ls && $s);
             if (!$init) {
-                $success = ($success && $ls);
+                $success = ($success && $s);
             }
         }
         return $value;
@@ -253,13 +207,10 @@ class ProfileSettingJob extends ProfileSettingGeocoding
 
     public function save(ProfilePage &$page, $field, $value)
     {
-        // TODO: use address class to update profile_job_enum once it is done.
         XDB::execute("DELETE FROM  profile_job
                             WHERE  pid = {?}",
                      $page->pid());
-        XDB::execute("DELETE FROM  profile_addresses
-                            WHERE  pid = {?} AND type = 'job'",
-                     $page->pid());
+        Address::delete($page->pid(), Address::LINK_JOB);
         Phone::deletePhones($page->pid(), Phone::LINK_JOB);
         $terms_values = array();
         foreach ($value as $id => &$job) {
@@ -277,8 +228,8 @@ class ProfileSettingJob extends ProfileSettingGeocoding
                                  $page->pid(), $id, $job['description'], $job['sector'], $job['subSector'],
                                  $job['subSubSector'], $job['w_email'], $job['w_url'], $job['pub'], $job['w_email_pub']);
                 }
-                $address = new ProfileSettingAddress();
-                $address->saveAddress($page->pid(), $id, $job['w_address'], 'job');
+                $address = new Address(array_merge($job['w_address'], array('pid' => $page->pid(), 'id' => $id, 'type' => Address::LINK_JOB)));
+                $address->save();
                 Phone::savePhones($job['w_phone'], $page->pid(), Phone::LINK_JOB, $id);
                 if (isset($job['terms'])) {
                     foreach ($job['terms'] as $term) {
@@ -296,12 +247,12 @@ class ProfileSettingJob extends ProfileSettingGeocoding
     public function getText($value) {
         $jobs = array();
         foreach ($value as $id => $job) {
-            $address = new ProfileSettingAddress();
+            $address = Address::formArrayToString($job['w_address']);
             $phones = Phone::formArrayToString($job['w_phone']);
             $jobs[] = 'Entreprise : ' . $job['name'] . ', secteur : ' . $job['subSubSectorName']
                     . ', description : ' . $job['description'] . ', web : ' . $job['w_url']
                     . ', email : ' . $job['w_email']
-                    . ($phones ? ', ' . $phones : '') . ', ' .  $address->getText($job['w_address']);
+                    . ($phones ? ', ' . $phones : '') . ($address ? ', ' . $address : '');
         }
         return implode(' ; ' , $jobs);
     }
@@ -368,39 +319,23 @@ class ProfileSettingJobs extends ProfilePage
         // Build the jobs tree
         $res = XDB::iterRow("SELECT  j.id, j.jobid, je.name, j.sectorid, j.subsectorid, j.subsubsectorid,
                                      s.name, j.description, j.email, j.email_pub, j.url, j.pub,
-                                     je.acronym, je.url, je.email,
-                                     aw.accuracy, aw.text, aw.postalText, aw.postalCode, aw.localityId,
-                                     aw.subAdministrativeAreaId, aw.administrativeAreaId, aw.countryId,
-                                     aw.latitude, aw.longitude, aw.pub, aw.updateTime,
-                                     aw.north, aw.south, aw.east, aw.west,
-                                     ah.accuracy, ah.text, ah.postalText, ah.postalCode, ah.localityId,
-                                     ah.subAdministrativeAreaId, ah.administrativeAreaId, ah.countryId,
-                                     ah.latitude, ah.longitude, ah.pub, ah.updateTime,
-                                     ah.north, ah.south, ah.east, ah.west
+                                     je.acronym, je.url, je.email
                                FROM  profile_job                   AS j
                           LEFT JOIN  profile_job_enum              AS je ON (j.jobid = je.id)
                           LEFT JOIN  profile_job_subsubsector_enum AS s  ON (s.id = j.subsubsectorid)
-                          LEFT JOIN  profile_addresses             AS aw ON (aw.pid = j.pid AND aw.type = 'job'
-                                                                             AND aw.id = j.id)
-                          LEFT JOIN  profile_addresses             AS ah ON (ah.jobid = j.jobid AND ah.type = 'hq')
                               WHERE  j.pid = {?}
                            ORDER BY  j.id",
                             $this->pid());
         $this->values['jobs'] = array();
 
+        $compagnies = array();
         if ($res->numRows() > 0) {
             while (list($id, $jobid, $name, $sector, $subSector, $subSubSector,
                         $subSubSectorName, $description, $w_email, $w_emailPub, $w_url, $pub,
                         $hq_acronym, $hq_url, $hq_email,
-                        $w_accuracy, $w_text, $w_postalText, $w_postalCode, $w_localityId,
                         $w_subAdministrativeAreaId, $w_administrativeAreaId, $w_countryId,
-                        $w_latitude, $w_longitude, $w_pub, $w_updateTime,
-                        $w_north, $w_south, $w_east, $w_west,
-                        $hq_accuracy, $hq_text, $hq_postalText, $hq_postalCode, $hq_localityId,
-                        $hq_subAdministrativeAreaId, $hq_administrativeAreaId, $hq_countryId,
-                        $hq_latitude, $hq_longitude, $hq_pub, $hq_updateTime,
-                        $hq_north, $hq_south, $hq_east, $hq_west,
                        ) = $res->next()) {
+                $compagnies[] = $jobid;
                 $this->values['jobs'][] = array(
                     'id'               => $id,
                     'jobid'            => $jobid,
@@ -417,45 +352,17 @@ class ProfileSettingJobs extends ProfilePage
                     'hq_acronym'       => $hq_acronym,
                     'hq_url'           => $hq_url,
                     'hq_email'         => $hq_email,
-                    'w_address'        => array(
-                        'accuracy'                => $w_accuracy,
-                        'text'                    => $w_text,
-                        'postalText'              => $w_postalText,
-                        'postalCode'              => $w_postalCode,
-                        'localityId'              => $w_localityId,
-                        'subAdministrativeAreaId' => $w_subAdministrativeAreaId,
-                        'administrativeAreaId'    => $w_administrativeAreaId,
-                        'countryId'               => $w_countryId,
-                        'latitude'                => $w_latitude,
-                        'longitude'               => $w_longitude,
-                        'pub'                     => $w_pub,
-                        'updateTime'              => $w_updateTime,
-                        'north'                   => $w_north,
-                        'south'                   => $w_south,
-                        'east'                    => $w_east,
-                        'west'                    => $w_west,
-                    ),
-                    'hq_address'       => array(
-                        'accuracy'                => $hq_accuracy,
-                        'text'                    => $hq_text,
-                        'postalText'              => $hq_postalText,
-                        'postalCode'              => $hq_postalCode,
-                        'localityId'              => $hq_localityId,
-                        'subAdministrativeAreaId' => $hq_subAdministrativeAreaId,
-                        'administrativeAreaId'    => $hq_administrativeAreaId,
-                        'countryId'               => $hq_countryId,
-                        'latitude'                => $hq_latitude,
-                        'longitude'               => $hq_longitude,
-                        'pub'                     => $hq_pub,
-                        'updateTime'              => $hq_updateTime,
-                        'north'                   => $hq_north,
-                        'south'                   => $hq_south,
-                        'east'                    => $hq_east,
-                        'west'                    => $hq_west,
-                    ),
                 );
             }
 
+            $it = Address::iterate(array($this->pid()), array(Address::LINK_JOB));
+            while ($address = $it->next()) {
+                $this->values['jobs'][$address->jobid]['w_address'] = $address->toFormArray();
+            }
+            $it = Address::iterate(array(), array(Address::LINK_COMPANY), $companies);
+            while ($address = $it->next()) {
+                $this->values['jobs'][$address->jobId()]['h_address'] = $address->toFormArray();
+            }
             $it = Phone::iterate(array($this->pid()), array(Phone::LINK_JOB));
             while ($phone = $it->next()) {
                 $this->values['jobs'][$phone->linkId()]['w_phone'][$phone->id()] = $phone->toFormArray();
@@ -488,8 +395,15 @@ class ProfileSettingJobs extends ProfilePage
 
             foreach ($this->values['jobs'] as $id => &$job) {
                 $phone = new Phone();
+                $address = new Address();
                 if (!isset($job['w_phone'])) {
                     $job['w_phone'] = array(0 => $phone->toFormArray());
+                }
+                if (!isset($job['w_address'])) {
+                    $job['w_address'] = $address->toFormArray();
+                }
+                if (!isset($job['h_address'])) {
+                    $job['h_address'] = $address->toFormArray();
                 }
             }
 
@@ -503,31 +417,6 @@ class ProfileSettingJobs extends ProfilePage
             if (!isset($job['w_email_pub'])) {
                 $job['w_email_pub'] = 'private';
             }
-            if (!$job['hq_address']['text']) {
-                $job['hq_address'] = array(
-                    'text'                    => '',
-                    'accuracy'                => '',
-                    'postalText'              => '',
-                    'postalCode'              => '',
-                    'administrativeAreaId'    => '',
-                    'subAdministrativeAreaId' => '',
-                    'localityId'              => '',
-                    'countryId'               => '',
-                    'latitude'                => '',
-                    'longitude'               => '',
-                    'north'                   => '',
-                    'south'                   => '',
-                    'east'                    => '',
-                    'west'                    => '',
-                    'cedex'                   => '',
-                    'updateTime'              => '',
-                    'changed'                 => '0',
-                    'removed'                 => '0',
-                );
-            }
-            $job['w_address']['cedex'] = '';
-            $job['w_address']['changed'] = '0';
-            $job['w_address']['removed'] = '0';
         } else {
             $this->values['jobs'][] = $this->settings['jobs']->emptyJob();
         }

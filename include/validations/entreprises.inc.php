@@ -160,15 +160,11 @@ class EntrReq extends ProfileValidate
 
     public function commit()
     {
-        // TODO: use address update profile_job_enum once it is done.
-
         $res = XDB::query('SELECT  id
                              FROM  profile_job_enum
                             WHERE  name = {?}',
                           $this->name);
         if ($res->numRows() != 1) {
-            require_once 'geocoding.inc.php';
-
             XDB::execute('INSERT INTO  profile_job_enum (name, acronym, url, email, holdingid, NAF_code, AX_code)
                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
                          $this->name, $this->acronym, $this->url, $this->email,
@@ -179,30 +175,14 @@ class EntrReq extends ProfileValidate
                                      'type' => 'fixed', 'display' => $this->tel, 'pub' => 'public'));
             $fax   = new Phone(array('link_type' => 'hq', 'link_id' => $jobid, 'id' => 1,
                                      'type' => 'fax', 'display' => $this->fax, 'pub' => 'public'));
+            $address = new Address(array('jobid' => $jobid, 'type' => Address::LINK_COMPANY, 'text' => $this->address));
             $phone->save();
             $fax->save();
-
-            $gmapsGeocoder = new GMapsGeocoder();
-            $address = $gmapsGeocoder->getGeocodedAddress($this->address);
-            Geocoder::getAreaId($address, 'administrativeArea');
-            Geocoder::getAreaId($address, 'subAdministrativeArea');
-            Geocoder::getAreaId($address, 'locality');
-            XDB::execute("INSERT INTO  profile_addresses (jobid, type, id, accuracy,
-                                                          text, postalText, postalCode, localityId,
-                                                          subAdministrativeAreaId, administrativeAreaId,
-                                                          countryId, latitude, longitude, updateTime,
-                                                          north, south, east, west)
-                               VALUES  ({?}, 'hq', 0, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
-                                        {?}, {?}, FROM_UNIXTIME({?}), {?}, {?}, {?}, {?})",
-                         $jobid, $this->address['accuracy'], $this->address['text'], $this->address['postalText'],
-                         $this->address['postalCode'], $this->address['localityId'],
-                         $this->address['subAdministrativeAreaId'], $this->address['administrativeAreaId'],
-                         $this->address['countryId'], $this->address['latitude'], $this->address['longitude'],
-                         $this->address['updateTime'], $this->address['north'], $this->address['south'],
-                         $this->address['east'], $this->address['west']);
+            $address->save();
         } else {
             $jobid = $res->fetchOneCell();
         }
+
         XDB::execute('UPDATE  profile_job
                          SET  jobid = {?}
                        WHERE  pid = {?} AND id = {?}',
