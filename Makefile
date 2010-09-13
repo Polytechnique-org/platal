@@ -213,6 +213,9 @@ $(JSTREE_PATH):
 	mv -f spool/tmp/jstree/themes/default/style.css htdocs/css/jstree.css
 	mv -f spool/tmp/jstree/themes/default/d.png htdocs/images/jstree.png
 	mv -f spool/tmp/jstree/jquery.jstree.js htdocs/javascript/jquery.jstree-$(JSTREE_VERSION).js
+	sed -i -e 's/"d\.png"/"..\/images\/jstree.png"/' htdocs/css/jstree.css
+	sed -i -e 's/"throbber\.gif"/"..\/images\/wait.gif"/' htdocs/css/jstree.css
+	sed -i -e 's/#ffffee/inherit/' htdocs/css/jstree.css
 	ln -snf jquery.jstree-$(JSTREE_VERSION).js htdocs/javascript/jquery.jstree.js
 	rm -Rf spool/tmp/jstree
 
