@@ -139,7 +139,7 @@ class EntrReq extends ProfileValidate
 
     protected function _mail_subj()
     {
-        return "[Polytechnique.org/Entreprises] Demande d'ajout d'une entreprise : " . $this->name;
+        return '[Polytechnique.org/Entreprises] Demande d\'ajout d\'une entreprise';
     }
 
     // }}}
