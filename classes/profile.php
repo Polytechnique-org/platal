@@ -412,7 +412,7 @@ class Profile
         return $this->visibility->isVisible($visibility);
     }
 
-    /** Stores the list of fields which have already fetched for this Profile
+    /** Stores the list of fields which have already been fetched for this Profile
      */
     public function setFetchedFields($fields)
     {
