@@ -177,10 +177,13 @@ JQUERY_UI_VERSION=1.6
 JQUERY_UI=core tabs
 JQUERY_UI_PATHES=$(addprefix htdocs/javascript/jquery.ui.,$(addsuffix .js,$(JQUERY_UI)))
 
+JSTREE_VERSION=1.0rc2
+JSTREE_PATH=htdocs/javascript/jquery.jstree.js
+
 # TODO: jquery.autocomplete.js should rather be downloaded from an official source. The issue
 # is that the version we use is not available anymore on the Internet, and the latest version
 # we could use is not backward compatible with our current code.
-jquery: htdocs/javascript/jquery.js $(JQUERY_PLUGINS_PATHES) $(JQUERY_UI_PATHES)
+jquery: htdocs/javascript/jquery.js $(JQUERY_PLUGINS_PATHES) $(JQUERY_UI_PATHES) $(JSTREE_PATH)
 
 htdocs/javascript/jquery-$(JQUERY_VERSION).min.js: DOWNLOAD_SRC = http://jquery.com/src/$(@F)
 htdocs/javascript/jquery-$(JQUERY_VERSION).min.js:
@@ -201,6 +204,18 @@ htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js:
 
 $(JQUERY_UI_PATHES): htdocs/javascript/jquery.ui.%.js: htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js
 	ln -snf $(<F) $@
+
+$(JSTREE_PATH):
+	rm -f htdocs/javascript/jquery.jstree-*.js
+	mkdir spool/tmp/jstree
+	wget http://jstree.googlecode.com/files/jsTree.v.$(JSTREE_VERSION).zip -O spool/tmp/jstree/jquery.jstree-$(JSTREE_VERSION).zip
+	unzip spool/tmp/jstree/jquery.jstree-$(JSTREE_VERSION).zip -d spool/tmp/jstree/
+	mv -f spool/tmp/jstree/themes/default/style.css htdocs/css/jstree.css
+	mv -f spool/tmp/jstree/themes/default/d.png htdocs/images/jstree.png
+	mv -f spool/tmp/jstree/jquery.jstree.js htdocs/javascript/jquery.jstree-$(JSTREE_VERSION).js
+	ln -snf jquery.jstree-$(JSTREE_VERSION).js htdocs/javascript/jquery.jstree.js
+	rm -Rf spool/tmp/jstree
+
 
 ##
 ## lists rpc
