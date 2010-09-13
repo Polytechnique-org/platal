@@ -20,6 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 [
+{assign var=started value=0}
 {iterate from=$subTerms item=term}
   {if $started},{/if}
   {assign var=started value=1}
