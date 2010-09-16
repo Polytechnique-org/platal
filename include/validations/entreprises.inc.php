@@ -34,9 +34,9 @@ class EntrReq extends ProfileValidate
     public $NAF_code = null;
     public $AX_code = null;
 
-    public $tel;
-    public $fax;
-    public $address;
+    public $tel = null;
+    public $fax = null;
+    public $address = null;
 
     public $suggestions;
     public $rules = 'Si l\'entreprise est déjà présente sous un autre nom dans la liste des suggestions, remplacer son nom par celui-ci avant de valider. Laisser les autres champs tels quels.';
@@ -101,16 +101,12 @@ class EntrReq extends ProfileValidate
 
     protected function handle_editor()
     {
-        foreach (array('acronym', 'url', 'email', 'NAF_code') as $field) {
+        foreach (array('name', 'acronym', 'url', 'email', 'NAF_code', 'tel', 'fax', 'address') as $field) {
             $this->$field = (Env::t($field) == '' ? null : Env::t($field));
         }
         foreach (array('AX_code', 'holdingid') as $field) {
             $this->$field = (Env::i($field) == 0 ? null : Env::i($field));
         }
-        $this->name = Env::t('name');
-        $this->address['text'] = Env::t('address');
-        $this->tel = Env::t('tel');
-        $this->fax = Env::t('fax');
 
         return true;
     }
@@ -156,7 +152,7 @@ class EntrReq extends ProfileValidate
                                      'type' => 'fixed', 'display' => $this->tel, 'pub' => 'public'));
             $fax   = new Phone(array('link_type' => 'hq', 'link_id' => $jobid, 'id' => 1,
                                      'type' => 'fax', 'display' => $this->fax, 'pub' => 'public'));
-            $address = new Address(array('jobid' => $jobid, 'type' => Address::LINK_COMPANY, 'text' => $this->address['text']));
+            $address = new Address(array('jobid' => $jobid, 'type' => Address::LINK_COMPANY, 'text' => $this->address));
             $phone->save();
             $fax->save();
             $address->format();

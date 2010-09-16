@@ -50,16 +50,6 @@ class ProfileSettingJob implements ProfileSetting
             'jobid'            => '',
             'pub'              => 'private',
             'name'             => '',
-            'hq_acronym'       => '',
-            'hq_url'           => '',
-            'hq_email'         => '',
-            'hq_address'       => $address->toFormArray(),
-            'hq_fixed'         => '',
-            'hq_fax'           => '',
-            'subSubSectorName' => null,
-            'sector'           => '0',
-            'subSector'        => '0',
-            'subSubSector'     => '0',
             'description'      => '',
             'w_url'            => '',
             'w_address'        => $address->toFormArray(),
@@ -89,24 +79,6 @@ class ProfileSettingJob implements ProfileSetting
                     $success = false;
                     $job[$field . '_error'] = true;
                 }
-            }
-        }
-        if (!$job['subSubSectorName']) {
-            $res = XDB::query("SELECT  name
-                                 FROM  profile_job_subsubsector_enum
-                                WHERE  id = {?}",
-                              $job['subSubSector']);
-            $job['subSubSectorName'] = $res->fetchOneCell();
-        } else {
-            $res = XDB::query("SELECT  sectorid, subsectorid, id
-                                 FROM  profile_job_subsubsector_enum
-                                WHERE  name = {?}",
-                              $job['subSubSectorName']);
-            if ($res->numRows() != 1) {
-                $success = false;
-                $job['sector_error'] = true;
-            } else {
-                list($job['sector'], $job['subSector'], $job['subSubSector']) = $res->fetchOneRow();
             }
         }
         if (count($job['terms'])) {
@@ -168,7 +140,7 @@ class ProfileSettingJob implements ProfileSetting
                 $job['tmp_name'] = $entreprise[$entr_val]->name;
                 ++$entr_val;
             } else if ($job['name'] == '') {
-                if ($job['subSubSectorName'] == '' && $job['description'] == '' && $job['w_url'] == ''
+                if ($job['description'] == '' && $job['w_url'] == ''
                     && $job['w_address']['text'] == '' && $job['w_email'] == ''
                     && count($job['w_phone']) == 1 && $job['w_phone']['tel'] == '') {
                     array_splice($value, $key, 1);
@@ -186,11 +158,6 @@ class ProfileSettingJob implements ProfileSetting
                     $entreprise[$entr_val - 1]->clean();
                 }
                 array_splice($value, $key, 1);
-            }
-            foreach (array('sectorid', 'subsectorid', 'subsubsectorid') as $key) {
-                if ($job[$key] == 0) {
-                    $job[$key] = null;
-                }
             }
         }
         foreach ($value as $key => &$job) {
@@ -216,17 +183,13 @@ class ProfileSettingJob implements ProfileSetting
         foreach ($value as $id => &$job) {
             if (isset($job['name']) && $job['name']) {
                 if (isset($job['jobid']) && $job['jobid']) {
-                    XDB::execute("INSERT INTO  profile_job (pid, id, description, sectorid, subsectorid,
-                                                            subsubsectorid, email, url, pub, email_pub, jobid)
-                                       VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
-                                 $page->pid(), $id, $job['description'], $job['sector'], $job['subSector'],
-                                 $job['subSubSector'], $job['w_email'], $job['w_url'], $job['pub'], $job['w_email_pub'], $job['jobid']);
+                    XDB::execute('INSERT INTO  profile_job (pid, id, description, email, url, pub, email_pub, jobid)
+                                       VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                                 $page->pid(), $id, $job['description'], $job['w_email'], $job['w_url'], $job['pub'], $job['w_email_pub'], $job['jobid']);
                 } else {
-                    XDB::execute("INSERT INTO  profile_job (pid, id, description, sectorid, subsectorid,
-                                                            subsubsectorid, email, url, pub, email_pub)
-                                       VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
-                                 $page->pid(), $id, $job['description'], $job['sector'], $job['subSector'],
-                                 $job['subSubSector'], $job['w_email'], $job['w_url'], $job['pub'], $job['w_email_pub']);
+                    XDB::execute('INSERT INTO  profile_job (pid, id, description, email, url, pub, email_pub)
+                                       VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                                 $page->pid(), $id, $job['description'], $job['w_email'], $job['w_url'], $job['pub'], $job['w_email_pub']);
                 }
                 $address = new Address(array_merge($job['w_address'], array('pid' => $page->pid(), 'id' => $id, 'type' => Address::LINK_JOB)));
                 $address->save();
@@ -249,7 +212,8 @@ class ProfileSettingJob implements ProfileSetting
         foreach ($value as $id => $job) {
             $address = Address::formArrayToString($job['w_address']);
             $phones = Phone::formArrayToString($job['w_phone']);
-            $jobs[] = 'Entreprise : ' . $job['name'] . ', secteur : ' . $job['subSubSectorName']
+            // TODO: add jobterms here.
+            $jobs[] = 'Entreprise : ' . $job['name']
                     . ', description : ' . $job['description'] . ', web : ' . $job['w_url']
                     . ', email : ' . $job['w_email']
                     . ($phones ? ', ' . $phones : '') . ($address ? ', ' . $address : '');
@@ -317,51 +281,34 @@ class ProfileSettingJobs extends ProfilePage
         }
 
         // Build the jobs tree
-        $res = XDB::iterRow("SELECT  j.id, j.jobid, je.name, j.sectorid, j.subsectorid, j.subsubsectorid,
-                                     s.name, j.description, j.email, j.email_pub, j.url, j.pub,
-                                     je.acronym, je.url, je.email
-                               FROM  profile_job                   AS j
-                          LEFT JOIN  profile_job_enum              AS je ON (j.jobid = je.id)
-                          LEFT JOIN  profile_job_subsubsector_enum AS s  ON (s.id = j.subsubsectorid)
+        $res = XDB::iterRow('SELECT  j.id, j.jobid, je.name, j.description, j.email, j.email_pub,
+                                     j.url, j.pub
+                               FROM  profile_job      AS j
+                          LEFT JOIN  profile_job_enum AS je ON (j.jobid = je.id)
                               WHERE  j.pid = {?}
-                           ORDER BY  j.id",
+                           ORDER BY  j.id',
                             $this->pid());
         $this->values['jobs'] = array();
 
         $compagnies = array();
         if ($res->numRows() > 0) {
-            while (list($id, $jobid, $name, $sector, $subSector, $subSubSector,
-                        $subSubSectorName, $description, $w_email, $w_emailPub, $w_url, $pub,
-                        $hq_acronym, $hq_url, $hq_email,
-                        $w_subAdministrativeAreaId, $w_administrativeAreaId, $w_countryId,
-                       ) = $res->next()) {
+            while (list($id, $jobid, $name, $description, $w_email, $w_emailPub, $w_url, $pub) = $res->next()) {
                 $compagnies[] = $jobid;
                 $this->values['jobs'][] = array(
                     'id'               => $id,
                     'jobid'            => $jobid,
                     'name'             => $name,
-                    'sector'           => $sector,
-                    'subSector'        => $subSector,
-                    'subSubSector'     => $subSubSector,
-                    'subSubSectorName' => $subSubSectorName,
                     'description'      => $description,
                     'pub'              => $pub,
                     'w_email'          => $w_email,
                     'w_email_pub'      => $w_emailPub,
                     'w_url'            => $w_url,
-                    'hq_acronym'       => $hq_acronym,
-                    'hq_url'           => $hq_url,
-                    'hq_email'         => $hq_email,
                 );
             }
 
             $it = Address::iterate(array($this->pid()), array(Address::LINK_JOB));
             while ($address = $it->next()) {
                 $this->values['jobs'][$address->jobid]['w_address'] = $address->toFormArray();
-            }
-            $it = Address::iterate(array(), array(Address::LINK_COMPANY), $companies);
-            while ($address = $it->next()) {
-                $this->values['jobs'][$address->jobId()]['h_address'] = $address->toFormArray();
             }
             $it = Phone::iterate(array($this->pid()), array(Phone::LINK_JOB));
             while ($phone = $it->next()) {
@@ -393,27 +340,18 @@ class ProfileSettingJobs extends ProfilePage
                 $job['terms'][] = $term;
             }
 
+            $phone = new Phone();
+            $address = new Address();
             foreach ($this->values['jobs'] as $id => &$job) {
-                $phone = new Phone();
-                $address = new Address();
                 if (!isset($job['w_phone'])) {
                     $job['w_phone'] = array(0 => $phone->toFormArray());
                 }
                 if (!isset($job['w_address'])) {
                     $job['w_address'] = $address->toFormArray();
                 }
-                if (!isset($job['h_address'])) {
-                    $job['h_address'] = $address->toFormArray();
-                }
             }
 
             $job['w_email_new'] = '';
-            if (!isset($job['hq_fixed'])) {
-                $job['hq_fixed'] = '';
-            }
-            if (!isset($job['hq_fax'])) {
-                $job['hq_fax'] = '';
-            }
             if (!isset($job['w_email_pub'])) {
                 $job['w_email_pub'] = 'private';
             }
@@ -438,10 +376,6 @@ class ProfileSettingJobs extends ProfilePage
     {
         require_once 'emails.combobox.inc.php';
         fill_email_combobox($page, $this->owner);
-
-        $res = XDB::query("SELECT  id, name AS label
-                             FROM  profile_job_sector_enum");
-        $page->assign('sectors', $res->fetchAllAssoc());
 
         $res = XDB::iterator("SELECT  id, name
                                 FROM  profile_corps_enum

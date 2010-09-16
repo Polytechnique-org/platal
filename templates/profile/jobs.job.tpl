@@ -65,53 +65,43 @@
         <a href="javascript:addEntreprise({$i})">clique ici</a> et complète les informations la concernant.</small>
       </td>
     </tr>
-    {/if}
     <tr class="{$entreprise}" style="display: none">
       <td class="titre">Acronyme</td>
       <td>
-        <input type="text" size="35" maxlength="255" {if $job.acronym_error}class="error"{/if}
-               name="{$jobpref}[hq_acronym]" value="{$job.hq_acronym}" />
+        <input type="text" size="35" maxlength="255" name="{$jobpref}[hq_acronym]" />
       </td>
     </tr>
     <tr class="{$entreprise}" style="display: none">
       <td class="titre">Page web</td>
       <td>
-        <input type="text" size="35" maxlength="255" {if $job.hq_url}class="error"{/if}
-               name="{$jobpref}[hq_url]" value="{$job.hq_url}" />
+        <input type="text" size="35" maxlength="255" name="{$jobpref}[hq_url]" />
       </td>
     </tr>
     <tr class="{$entreprise}" style="display: none">
       <td class="titre">Email de contact</td>
       <td>
-        <input type="text" maxlength="60" {if $job.hq_email_error}class="error"{/if}
-               name="{$jobpref}[hq_email]" value="{$job.hq_email}" />
+        <input type="text" maxlength="60" name="{$jobpref}[hq_email]" />
       </td>
     </tr>
     <tr class="{$entreprise}" style="display: none">
-      <td colspan="2">
-        <div style="float: left">
-          <div class="titre">Adresse du siège</div>
-          <div style="margin-top: 20px; clear: both">
-            {include file="geoloc/form.address.tpl" prefname="`$jobpref`[hq_address]"
-                     prefid="`$jobid`_address" address=$job.hq_address}
-          </div>
-        </div>
+      <td class="titre">Adresse du siège</td>
+      <td>
+        <textarea name="{$jobpref}[hq_address]" cols="30" rows="4"></textarea>
       </td>
     </tr>
     <tr class="{$entreprise}" style="display: none">
       <td class="titre">Téléphone</td>
       <td>
-        <input type="text" maxlength="28" {if $job.hq_tel_error}class="error"{/if}
-               name="{$jobpref}[hq_fixed]" value="{$job.hq_fixed}" />
+        <input type="text" maxlength="28" name="{$jobpref}[hq_fixed]" />
       </td>
     </tr>
     <tr class="{$entreprise}" style="display: none">
       <td class="titre">Fax</td>
       <td>
-        <input type="text" maxlength="28" {if $job.hq_fax_error}class="error"{/if}
-               name="{$jobpref}[hq_fax]" value="{$job.hq_fax}" />
+        <input type="text" maxlength="28" name="{$jobpref}[hq_fax]" />
       </td>
     </tr>
+    {/if}
 
     <tr class="pair">
       <td colspan="2" class="center" style="font-style: italic">Ta place dans l'entreprise</td>
@@ -142,33 +132,6 @@
     </tr>
     <tr class="pair">
       <td colspan="2" class="term_tree">
-      </td>
-    </tr>
-    <tr class="pair {$sector}" style="display: none">
-      <td class="titre" rowspan="4">Secteur&nbsp;d'activité</td>
-      <td>
-        <select name="{$jobpref}[sector]" onchange="updateJobSector({$i}, ''); emptyJobSubSector({$i}); emptyJobAlternates({$i});">
-          <option value="0">&nbsp;</option>
-          {foreach from=$sectors item=item}
-          <option value="{$item.id}" {if $item.id eq $job.sector}selected="selected"{/if}>
-            {$item.label}
-          </option>
-          {/foreach}
-        </select>
-      </td>
-    </tr>
-    <tr class="pair {$sector}" style="display: none">
-      <td id="{$jobid}_subSector">
-        <input type="hidden" name="{$jobpref}[subSector]" value="{$job.subSector|default:0}" />
-      </td>
-    </tr>
-    <tr class="pair {$sector}" style="display: none">
-      <td id="{$jobid}_subSubSector">
-        <input type="hidden" name="{$jobpref}[subSubSector]" value="{$job.subSubSector|default:0}" />
-      </td>
-    </tr>
-    <tr class="pair {$sector}" style="display: none">
-      <td id="{$jobid}_alternates">
       </td>
     </tr>
     <tr class="pair">
