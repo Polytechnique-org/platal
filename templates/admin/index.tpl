@@ -96,21 +96,19 @@
     <td>
       <a href="admin/account/types">Types de comptes</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/add_accounts">Ajout de comptes</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/user">Édition</a>
+      <a href="admin/accounts">Gestion des comptes</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/homonyms">Homonymes</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/deaths">Décès</a>
     </td>
   </tr>
-  <tr class="impair">
+  <tr class="pair">
     <td class="titre">Administration</td>
     <td>
       <a href="admin/dead-but-active">Décédés actifs</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/accounts">Administrateurs/Désactivations</a>
+      <a href="admin/account/watch">Administrateurs/Désactivations</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/googleapps">Google Apps</a>
     </td>
@@ -129,7 +127,7 @@
       <a href="admin/education_degree_set">Niveau par formation</a>
     </td>
   </tr>
-  <tr class="impair">
+  <tr class="pair">
     <td class="titre">Emploi</td>
     <td>
       <a href="admin/sectors">Secteurs</a>
@@ -141,7 +139,7 @@
       <a href="admin/corps_rank">Grade</a>
     </td>
   </tr>
-  <tr class="pair">
+  <tr class="impair">
     <td class="titre">Profil</td>
     <td>
       <a href="admin/binets">Binets</a>
@@ -155,7 +153,7 @@
       <a href="admin/networking">Networking</a>
     </td>
   </tr>
-  <tr class="impair">
+  <tr class="pair">
     <td class="titre">Compte</td>
     <td>
       <a href="admin/skins">Skins</a>

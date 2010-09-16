@@ -47,6 +47,7 @@ class AdminModule extends PLModule
             'admin/ipwatch'                => $this->make_hook('ipwatch',                AUTH_MDP, 'admin'),
             'admin/icons'                  => $this->make_hook('icons',                  AUTH_MDP, 'admin'),
             'admin/accounts'               => $this->make_hook('accounts',               AUTH_MDP, 'admin'),
+            'admin/account/watch'          => $this->make_hook('account_watch',          AUTH_MDP, 'admin'),
             'admin/account/types'          => $this->make_hook('account_types',          AUTH_MDP, 'admin'),
             'admin/jobs'                   => $this->make_hook('jobs',                   AUTH_MDP, 'admin'),
         );
@@ -381,8 +382,7 @@ class AdminModule extends PLModule
             $user = User::get($login);
         }
         if (empty($user)) {
-            $page->assign('user', false);
-            return;
+            pl_redirect('admin/accounts');
         }
 
         $login = $user->login();
@@ -1141,6 +1141,40 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
 
+    function handler_accounts(PlPage $page)
+    {
+        $page->changeTpl('admin/accounts.tpl');
+        $page->setTitle('Administration - Comptes');
+        $page->addJsLink('password.js');
+
+        if (Post::has('create_account')) {
+            S::assert_xsrf_token();
+            $firstname = Post::t('firstname');
+            $lastname = strtoupper(Post::t('lastname'));
+            $sex = Post::b('sex') ? User::GENDER_FEMALE : User::GENDER_FEMALE;
+            $email = Post::t('email');
+            $login = PlUser::makeHrid($firstname, $lastname, 'ax');
+            if (!isvalid_email($email)) {
+                $page->trigError("Invalid email address: $email");
+            } else if (strlen(Post::s('pwhash')) != 40) {
+                $page->trigError("Invalid password hash");
+            } else {
+                $full_name = $firstname . ' ' . $lastname;
+                $directory_name = $lastname . ' ' . $firstname;
+                XDB::execute("INSERT INTO  accounts (hruid, type, state, password,
+                                                     registration_date, email, full_name,
+                                                     display_name, sex, directory_name)
+                                   VALUES  ({?}, 'ax', 'active', {?}, NOW(), {?}, {?}, {?}, {?}, {?})",
+                             $login, Post::s('pwhash'), $email, $full_name, $full_name, $sex,
+                             $directory_name);
+            }
+        }
+
+        $uf = new UserFilter(new UFC_AccountType('ax'));
+        $page->assign('users', $uf->iterUsers(new PlLimit(10)));
+
+    }
+
     function handler_account_types(&$page, $action = 'list', $id = null)
     {
         $page->setTitle('Administration - Types de comptes');
@@ -1344,7 +1378,7 @@ class AdminModule extends PLModule
         $page->assign('icons', $icons);
     }
 
-    function handler_accounts(&$page)
+    function handler_account_watch(&$page)
     {
         $page->changeTpl('admin/accounts.tpl');
         $page->assign('disabled', XDB::iterator('SELECT  a.hruid, FIND_IN_SET(\'watch\', a.flags) AS watch,
