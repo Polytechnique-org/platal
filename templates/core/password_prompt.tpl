@@ -47,13 +47,17 @@
     </tr>
     <tr style="white-space: nowrap">
       <td class="titre">
-        Adresse email&nbsp;:
+        Identifiant&nbsp;:
       </td>
       <td>
-        <input type="text" name="username" size="20" maxlength="50" value="{insert name="getUserName"}" />&nbsp;@&nbsp;<select name="domain">
-          <option value="login">{#globals.mail.domain#} / {#globals.mail.domain2#}</option>
+        <input type="text" name="username" size="20" maxlength="50" value="{insert name="getUserName"}" />
+        <select name="domain">
+          <option value="login">@ {#globals.mail.domain#} / {#globals.mail.domain2#}</option>
           <option value="alias" {if t($smarty.cookies.ORGdomain) eq "alias"}selected="selected"{/if}>
-            {#globals.mail.alias_dom#} / {#globals.mail.alias_dom2#}
+            @ {#globals.mail.alias_dom#} / {#globals.mail.alias_dom2#}
+          </option>
+          <option value="ax" {if t($smarty.cookies.ORGdomain) eq "ax"}selected="selected"{/if}>
+            Identifiant
           </option>
         </select>
       </td>

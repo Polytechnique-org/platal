@@ -79,11 +79,18 @@ class XorgSession extends PlSession
 
     private function checkPassword($uname, $login, $response, $login_type)
     {
-        $res = XDB::query('SELECT  a.uid, a.password
-                             FROM  accounts AS a
-                       INNER JOIN  aliases  AS l ON (l.uid = a.uid AND l.type != \'homonyme\')
-                            WHERE  l.' . $login_type . ' = {?} AND a.state = \'active\'',
-                          $login);
+        if ($login_type == 'alias') {
+            $res = XDB::query('SELECT  a.uid, a.password
+                                 FROM  accounts AS a
+                           INNER JOIN  aliases  AS l ON (l.uid = a.uid AND l.type != \'homonyme\')
+                                WHERE  l.alias = {?} AND a.state = \'active\'',
+                              $login);
+        } else {
+            $res = XDB::query('SELECT  uid, password
+                                 FROM  accounts
+                                WHERE  ' . $login_type . ' = {?}',
+                              $login);
+        }
         if (list($uid, $password) = $res->fetchOneRow()) {
             $expected_response = sha1("$uname:$password:" . S::v('challenge'));
             /* Deprecates len(password) > 10 conversion. */
@@ -132,10 +139,11 @@ class XorgSession extends PlSession
          */
         if (S::suid()) {
             $login = $uname = S::suid('uid');
+            $loginType = 'uid';
             $redirect = false;
         } else {
-            $uname = Env::v('username');
-            if (Env::v('domain') == "alias") {
+            $uname = Post::v('username');
+            if (Post::s('domain') == "alias") {
                 $res = XDB::query('SELECT  redirect
                                      FROM  virtual
                                INNER JOIN  virtual_redirect USING(vid)
@@ -147,13 +155,19 @@ class XorgSession extends PlSession
                 } else {
                     $login = '';
                 }
+                $loginType = 'alias';
+            } else if (Post::s('domain') == "ax") {
+                $login = $uname;
+                $redirect = false;
+                $loginType = 'hruid';
             } else {
                 $login = $uname;
                 $redirect = false;
+                $loginType = 'alias';
             }
         }
 
-        $uid = $this->checkPassword($uname, $login, Post::v('response'), (!$redirect && is_numeric($uname)) ? 'uid' : 'alias');
+        $uid = $this->checkPassword($uname, $login, Post::v('response'), $loginType);
         if (!is_null($uid) && S::suid()) {
             if (S::suid('uid') == $uid) {
                 $uid = S::i('uid');
@@ -165,8 +179,11 @@ class XorgSession extends PlSession
             S::set('auth', AUTH_MDP);
             if (!S::suid()) {
                 if (Post::has('domain')) {
-                    if (($domain = Post::v('domain', 'login')) == 'alias') {
+                    $domain = Post::v('domain', 'login');
+                    if ($domain == 'alias') {
                         Cookie::set('domain', 'alias', 300);
+                    } else if ($domain == 'ax') {
+                        Cookie::set('domain', 'ax', 300);
                     } else {
                         Cookie::kill('domain');
                     }

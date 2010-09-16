@@ -120,11 +120,15 @@ $(document).ready(function() {
       </th>
     </tr>
     <tr>
-      <td class="titre">Nom complet</td>
+      <td class="titre">Nom complet<br />
+        <span class="smaller">Prénom NOM</span>
+      </br></td>
       <td>{if $hasProfile}{$user->fullName()}{else}<input type="text" name="full_name" maxlength="255" value="{$user->fullName()}" />{/if}</td>
     </tr>
     <tr>
-      <td class="titre">Nom annuaire</td>
+      <td class="titre">Nom annuaire<br />
+        <span class="smaller">NOM Prénom</span>
+      </td>
       <td>{if $hasProfile}{$user->directoryName()}{else}<input type="text" name="directory_name" maxlength="255" value="{$user->directoryName()}" />{/if}</td>
     </tr>
     <tr>
