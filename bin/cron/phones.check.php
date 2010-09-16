@@ -75,7 +75,7 @@ foreach ($prefixes as $i => $prefix) {
             $values = '';
             $i = 0;
             while ($phone = $res->next()) {
-                $phone = new Phone('display' => $phone['display_tel']);
+                $phone = new Phone(array('display' => $phone['display_tel']));
                 $phone->format(array('format' => $format, 'phoneprf' => $prefix));
                 if ($values != '') {
                     $values .= ",\n";
