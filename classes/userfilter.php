@@ -52,6 +52,25 @@ class UFC_HasProfile implements UserFilterCondition
 }
 // }}}
 
+// {{{ class UFC_AccountType
+/** Filters users who have the given account types
+ */
+class UFC_AccountType implements UserFilterCondition
+{
+    private $types;
+
+    public function __construct()
+    {
+        $this->types = pl_flatten(func_get_args());
+    }
+
+    public function buildCondition(PlFilter &$uf)
+    {
+        $uf->requireAccounts();
+        return XDB::format('a.type IN {?}', $this->types);
+    }
+}
+
 // {{{ class UFC_Hruid
 /** Filters users based on their hruid
  * @param $val Either an hruid, or a list of those
