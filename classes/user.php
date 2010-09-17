@@ -21,6 +21,15 @@
 
 class User extends PlUser
 {
+    const PERM_GROUPS            = 'groups';
+    const PERM_MAIL              = 'mail';
+    const PERM_DIRECTORY_AX      = 'directory_ax';
+    const PERM_DIRECTORY_PRIVATE = 'directory_private';
+    const PERM_EDIT_DIRECTORY    = 'edit_directory';
+    const PERM_FORUMS            = 'forums';
+    const PERM_LISTS             = 'lists';
+    const PERM_PAYMENT           = 'payment';
+
     private $_profile_fetched = false;
     private $_profile = null;
 
