@@ -72,7 +72,7 @@ abstract class PlHook
             }
         }
         if (!$this->checkPerms()) {
-            if (!Platal::notAllowed()) {
+            if (Platal::notAllowed()) {
                 return PL_FORBIDDEN;
             }
         }

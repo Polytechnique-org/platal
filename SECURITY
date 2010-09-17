@@ -12,4 +12,4 @@
 # The commit id should refer to the id in the "core" branch, if the initial
 # commit in a version branch had another name.
 
-# Hurray! No security holes have been found yet :)
+2010-09-17 00000000 Fix an error in permission handling: all pages where accessible without admin permission.
