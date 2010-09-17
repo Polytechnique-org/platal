@@ -585,7 +585,6 @@ class XnetEventsModule extends PLModule
                     $u = 0;
                     subscribe_lists_event($member->uid, $evt, -1, $paid);
                 } else {
-                    var_dump($u);
                     $u = $u['cnt'] ? $u['nb'] : null;
                     subscribe_lists_event($member->uid, $evt, ($u > 0 ? 1 : 0), $paid);
                 }
