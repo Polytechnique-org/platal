@@ -71,7 +71,7 @@
     class="names_advanced" style="display: none" error_name=$errors.search_names}
   {/foreach}
   <tr class="names_advanced" id="searchname" {if !$errors.search_names}style="display: none"{/if}>
-    <td colspan="2">
+    <td colspan="3">
       <div id="sn_add" class="center">
         <a href="javascript:addSearchName({$isFemale});">
           {icon name=add title="Ajouter un nom"} Ajouter un nom

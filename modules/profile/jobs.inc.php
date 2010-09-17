@@ -346,7 +346,9 @@ class ProfileSettingJobs extends ProfilePage
     public function __construct(PlWizard &$wiz)
     {
         parent::__construct($wiz);
-        $this->settings['cv'] = null;
+        if (S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE)) {
+            $this->settings['cv'] = null;
+        }
         $this->settings['corps'] = new ProfileSettingCorps();
         $this->settings['jobs'] = new ProfileSettingJob();
         $this->watched = array('cv' => true, 'jobs' => true, 'corps' => true);
@@ -354,12 +356,14 @@ class ProfileSettingJobs extends ProfilePage
 
     protected function _fetchData()
     {
-        // Checkout the CV
-        $res = XDB::query("SELECT  cv
-                             FROM  profiles
-                            WHERE  pid = {?}",
-                          $this->pid());
-        $this->values['cv'] = $res->fetchOneCell();
+        if (S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE)) {
+            // Checkout the CV
+            $res = XDB::query("SELECT  cv
+                                 FROM  profiles
+                                WHERE  pid = {?}",
+                              $this->pid());
+            $this->values['cv'] = $res->fetchOneCell();
+        }
 
         // Build the jobs tree
         $res = XDB::iterRow("SELECT  j.id, j.jobid, je.name, j.sectorid, j.subsectorid, j.subsubsectorid,
@@ -531,11 +535,13 @@ class ProfileSettingJobs extends ProfilePage
 
     protected function _saveData()
     {
-        if ($this->changed['cv']) {
-            XDB::execute("UPDATE  profiles
-                             SET  cv = {?}
-                           WHERE  pid = {?}",
-                         $this->values['cv'], $this->pid());
+        if (S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE)) {
+            if ($this->changed['cv']) {
+                XDB::execute("UPDATE  profiles
+                                 SET  cv = {?}
+                               WHERE  pid = {?}",
+                             $this->values['cv'], $this->pid());
+            }
         }
     }
 

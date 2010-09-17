@@ -329,11 +329,15 @@ class ProfileModule extends PLModule
         $this->load('page.inc.php');
         $wiz->addPage('ProfileSettingGeneral', 'Général', 'general');
         $wiz->addPage('ProfileSettingAddresses', 'Adresses personnelles', 'adresses');
-        $wiz->addPage('ProfileSettingGroups', 'Groupes X - Binets', 'poly');
-        $wiz->addPage('ProfileSettingDecos', 'Décorations - Medailles', 'deco');
         $wiz->addPage('ProfileSettingJobs', 'Informations professionnelles', 'emploi');
-        $wiz->addPage('ProfileSettingSkills', 'Compétences diverses', 'skill');
-        $wiz->addPage('ProfileSettingMentor', 'Mentoring', 'mentor');
+        if (S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE)) {
+            $wiz->addPage('ProfileSettingGroups', 'Groupes X - Binets', 'poly');
+        }
+        $wiz->addPage('ProfileSettingDecos', 'Décorations - Medailles', 'deco');
+        if (S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE)) {
+            $wiz->addPage('ProfileSettingSkills', 'Compétences diverses', 'skill');
+            $wiz->addPage('ProfileSettingMentor', 'Mentoring', 'mentor');
+        }
         $wiz->apply($page, 'profile/edit/' . $profile->hrid(), $opened_tab, $mode);
 
         if (!$profile->birthdate) {

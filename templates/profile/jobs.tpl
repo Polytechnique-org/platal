@@ -77,6 +77,7 @@
   </tr>
 </table>
 
+{if $smarty.session.user->checkPerms('directory_private')}
 <table class="bicol" summary="CV" style="margin-top: 1.5em">
   <tr>
     <th>
@@ -110,5 +111,6 @@
     </td>
   </tr>
 </table>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
