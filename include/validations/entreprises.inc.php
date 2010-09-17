@@ -27,9 +27,9 @@ class EntrReq extends ProfileValidate
 
     public $id;
     public $name;
-    public $acronym;
-    public $url;
-    public $email;
+    public $acronym = null;
+    public $url = null;
+    public $email = null;
     public $holdingid = null;
     public $NAF_code = null;
     public $AX_code = null;
@@ -101,36 +101,17 @@ class EntrReq extends ProfileValidate
 
     protected function handle_editor()
     {
-        if (Env::has('name')) {
-            $this->name = Env::t('name');
+        foreach (array('acronym', 'url', 'email', 'NAF_code') as $field) {
+            $this->$field = (Env::t($field) == '' ? null : Env::t($field));
         }
-        if (Env::has('acronym')) {
-            $this->acronym = Env::t('acronym');
+        foreach (array('AX_code', 'holdingid') as $field) {
+            $this->$field = (Env::i($field) == 0 ? null : Env::i($field));
         }
-        if (Env::has('url')) {
-            $this->url = Env::t('url');
-        }
-        if (Env::has('email')) {
-            $this->email = Env::t('email');
-        }
-        if (Env::has('holdingid')) {
-            $this->holdingid = Env::i('holdingid');
-        }
-        if (Env::has('NAF_code')) {
-            $this->NAF_code = Env::t('NAF_code');
-        }
-        if (Env::has('AX_code')) {
-            $this->AX_code = Env::i('AX_code');
-        }
-        if (Env::has('address')) {
-            $this->address['text'] = Env::t('address');
-        }
-        if (Env::has('tel')) {
-            $this->tel = Env::t('tel');
-        }
-        if (Env::has('fax')) {
-            $this->fax = Env::t('fax');
-        }
+        $this->name = Env::t('name');
+        $this->address['text'] = Env::t('address');
+        $this->tel = Env::t('tel');
+        $this->fax = Env::t('fax');
+
         return true;
     }
 
@@ -175,9 +156,10 @@ class EntrReq extends ProfileValidate
                                      'type' => 'fixed', 'display' => $this->tel, 'pub' => 'public'));
             $fax   = new Phone(array('link_type' => 'hq', 'link_id' => $jobid, 'id' => 1,
                                      'type' => 'fax', 'display' => $this->fax, 'pub' => 'public'));
-            $address = new Address(array('jobid' => $jobid, 'type' => Address::LINK_COMPANY, 'text' => $this->address));
+            $address = new Address(array('jobid' => $jobid, 'type' => Address::LINK_COMPANY, 'text' => $this->address['text']));
             $phone->save();
             $fax->save();
+            $address->format();
             $address->save();
         } else {
             $jobid = $res->fetchOneCell();
