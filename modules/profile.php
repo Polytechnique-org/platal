@@ -396,7 +396,8 @@ class ProfileModule extends PLModule
         $page->assign('prefid', $prefid);
         $page->assign('prefname', $prefname);
         $page->assign('telid', $telid);
-        $page->assign('tel', array());
+        $phone = new Phone();
+        $page->assign('tel', $phone->toFormArray());
     }
 
     function handler_ajax_edu(&$page, $eduid, $class)

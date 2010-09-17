@@ -45,6 +45,7 @@ class ProfileSettingJob implements ProfileSetting
     public function emptyJob()
     {
         $address = new Address();
+        $phone = new Phone();
         return array(
             'id'               => '0',
             'jobid'            => '',
@@ -56,13 +57,8 @@ class ProfileSettingJob implements ProfileSetting
             'w_email'          => '',
             'w_email_pub'      => 'private',
             'w_email_new'      => '',
-            'w_phone'          => array(0 => array(
-                'type'    => 'fixed',
-                'tel'     => '',
-                'pub'     => 'private',
-                'comment' => '',
-            ),
-            'terms'            => array()),
+            'w_phone'          => array(0 => $phone->toFormArray()),
+            'terms'            => array()
         );
     }
 
