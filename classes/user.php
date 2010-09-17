@@ -331,8 +331,9 @@ class User extends PlUser
      */
     public function canEdit(Profile $profile)
     {
-        // XXX: Check permissions (e.g. secretary permission)
-        //      and flags from the profile
+        if ($this->checkPerms(User::PERM_EDIT_DIRECTORY)) {
+            return true;
+        }
         return XDB::fetchOneCell('SELECT  pid
                                     FROM  account_profiles
                                    WHERE  uid = {?} AND pid = {?}',
