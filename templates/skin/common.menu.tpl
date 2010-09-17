@@ -45,28 +45,46 @@
 {/if}
 
 <div class="menu_title">Personnaliser</div>
+{if $smarty.session.user->checkPerms('mail')}
 <div class="menu_item"><a href="emails">Mes emails</a></div>
+{/if}
+{if $smarty.session.user->hasProfile()}
 <div class="menu_item"><a href="profile/edit">Mon profil</a></div>
+{/if}
+{if $smarty.session.user->checkPerms('directory_private')}
 <div class="menu_item"><a href="carnet/contacts">Mes contacts</a></div>
 <div class="menu_item"><a href="carnet">Mon carnet</a></div>
+{/if}
 <div class="menu_item"><a href="password">Mon mot de passe</a></div>
 <div class="menu_item"><a href="prefs">Mes préférences</a></div>
 
 <div class="menu_title">Services</div>
+{if $smarty.session.user->checkPerms('mail')}
 <div class="menu_item"><a href="emails/send">Envoyer un email</a></div>
+{/if}
+{if $smarty.session.user->checkPerms('forums')}
 <div class="menu_item"><a href="banana/">Forums &amp; PA</a></div>
+{/if}
 {if $smarty.session.user->googleapps}
 <div class="menu_item"><a href="http://gmail.polytechnique.org/">Emails Google Apps</a></div>
 {/if}
+{if $smarty.session.user->checkPerms('lists')}
 <div class="menu_item"><a href="lists">Listes de diffusion</a></div>
+{/if}
+{if $smarty.session.user->checkPerms('payment')}
 <div class="menu_item"><a href="payment">Télépaiements</a></div>
+{/if}
 <div class="menu_item"><a href="emails/antispam/submit">Soumettre un spam</a></div>
 <div class="menu_item"><a href="emails/broken">Patte cassée</a></div>
 
 <div class="menu_title">Communauté X</div>
 <div class="menu_item"><a href="search">Annuaire</a></div>
+{if $smarty.session.user->checkPerms('directory_private')}
 <div class="menu_item"><a href="jobs">Emploi &amp; Carrières</a></div>
+{/if}
+{if $smarty.session.user->checkPerms('groups')}
 <div class="menu_item"><a href="groupes-x">Mes groupes X</a></div>
+{/if}
 <div class="menu_item"><a href="survey">Sondages</a></div>
 
 <div class="menu_title">Informations</div>
