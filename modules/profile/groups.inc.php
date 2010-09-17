@@ -96,7 +96,7 @@ class ProfileSettingBinets implements ProfileSetting
     }
 }
 
-class ProfileSettingGroups extends ProfilePage
+class ProfilePageGroups extends ProfilePage
 {
     protected $pg_template = 'profile/groups.tpl';
 

@@ -86,7 +86,7 @@ class ProfileSettingSkill implements ProfileSetting
     }
 }
 
-class ProfileSettingSkills extends ProfilePage
+class ProfilePageSkills extends ProfilePage
 {
     protected $pg_template = 'profile/skill.tpl';
 

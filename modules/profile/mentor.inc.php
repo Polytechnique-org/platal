@@ -133,7 +133,7 @@ class ProfileSettingCountry implements ProfileSetting
 }
 
 
-class ProfileSettingMentor extends ProfilePage
+class ProfilePageMentor extends ProfilePage
 {
     protected $pg_template = 'profile/mentor.tpl';
 

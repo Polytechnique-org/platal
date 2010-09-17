@@ -327,16 +327,16 @@ class ProfileModule extends PLModule
         $wiz->addUserData('profile', $profile);
         $wiz->addUserData('owner', $profile->owner());
         $this->load('page.inc.php');
-        $wiz->addPage('ProfileSettingGeneral', 'Général', 'general');
-        $wiz->addPage('ProfileSettingAddresses', 'Adresses personnelles', 'adresses');
-        $wiz->addPage('ProfileSettingJobs', 'Informations professionnelles', 'emploi');
+        $wiz->addPage('ProfilePageGeneral', 'Général', 'general');
+        $wiz->addPage('ProfilePageAddresses', 'Adresses personnelles', 'adresses');
+        $wiz->addPage('ProfilePageJobs', 'Informations professionnelles', 'emploi');
         if (S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE)) {
-            $wiz->addPage('ProfileSettingGroups', 'Groupes X - Binets', 'poly');
+            $wiz->addPage('ProfilePageGroups', 'Groupes X - Binets', 'poly');
         }
-        $wiz->addPage('ProfileSettingDecos', 'Décorations - Medailles', 'deco');
+        $wiz->addPage('ProfilePageDecos', 'Décorations - Medailles', 'deco');
         if (S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE)) {
-            $wiz->addPage('ProfileSettingSkills', 'Compétences diverses', 'skill');
-            $wiz->addPage('ProfileSettingMentor', 'Mentoring', 'mentor');
+            $wiz->addPage('ProfilePageSkills', 'Compétences diverses', 'skill');
+            $wiz->addPage('ProfilePageMentor', 'Mentoring', 'mentor');
         }
         $wiz->apply($page, 'profile/edit/' . $profile->hrid(), $opened_tab, $mode);
 

@@ -250,7 +250,7 @@ class ProfileSettingCorps implements ProfileSetting
     }
 }
 
-class ProfileSettingJobs extends ProfilePage
+class ProfilePageJobs extends ProfilePage
 {
     protected $pg_template = 'profile/jobs.tpl';
 

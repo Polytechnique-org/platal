@@ -93,7 +93,7 @@ class ProfileSettingDeco implements ProfileSetting
     }
 }
 
-class ProfileSettingDecos extends ProfilePage
+class ProfilePageDecos extends ProfilePage
 {
     protected $pg_template = 'profile/deco.tpl';
 

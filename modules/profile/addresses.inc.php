@@ -54,7 +54,7 @@ class ProfileSettingAddresses implements ProfileSetting
     }
 }
 
-class ProfileSettingAddresses extends ProfilePage
+class ProfilePageAddresses extends ProfilePage
 {
     protected $pg_template = 'profile/adresses.tpl';
 

@@ -517,7 +517,7 @@ class ProfileSettingPromo implements ProfileSetting
 }
 
 
-class ProfileSettingGeneral extends ProfilePage
+class ProfilePageGeneral extends ProfilePage
 {
     protected $pg_template = 'profile/general.tpl';
 
