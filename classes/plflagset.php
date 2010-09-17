@@ -39,7 +39,9 @@ class PlFlagSet
         $this->sep = $sep;
         $splitted = explode($sep, $flags);
         foreach ($splitted as $part) {
-            $this->values[$part] = true;
+            if (!empty($part)) {
+                $this->values[$part] = true;
+            }
         }
     }
 
