@@ -265,15 +265,15 @@ class Address
             XDB::execute('INSERT INTO  profile_addresses (pid, jobid, type, id, flags, accuracy,
                                                           text, postalText, postalCode, localityId,
                                                           subAdministrativeAreaId, administrativeAreaId,
-                                                          countryId, latitude, longitude, updateTime, pub, comment,
+                                                          countryId, latitude, longitude, pub, comment,
                                                           north, south, east, west)
-                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
-                                        {?}, {?}, {?}, FROM_UNIXTIME({?}), {?}, {?}, {?}, {?}, {?}, {?})',
+                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
+                                        {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
                          $this->pid, $this->jobid, $this->type, $this->id, $this->flags, $this->accuracy,
                          $this->text, $this->postalText, $this->postalCode, $this->localityId,
                          $this->subAdministrativeAreaId, $this->administrativeAreaId,
                          $this->countryId, $this->latitude, $this->longitude,
-                         time(), $this->pub, $this->comment,
+                         $this->pub, $this->comment,
                          $this->north, $this->south, $this->east, $this->west);
 
             if ($this->type == self::LINK_PROFILE) {

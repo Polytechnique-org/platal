@@ -1460,15 +1460,15 @@ class AdminModule extends PLModule
                 XDB::execute("INSERT INTO  profile_addresses (jobid, type, id, accuracy,
                                                               text, postalText, postalCode, localityId,
                                                               subAdministrativeAreaId, administrativeAreaId,
-                                                              countryId, latitude, longitude, updateTime,
+                                                              countryId, latitude, longitude,
                                                               north, south, east, west)
                                    VALUES  ({?}, 'hq', 0, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
-                                            {?}, {?}, FROM_UNIXTIME({?}), {?}, {?}, {?}, {?})",
+                                            {?}, {?}, {?}, {?}, {?}, {?})",
                              $id, $address['accuracy'], $address['text'], $address['postalText'],
                              $address['postalCode'], $address['localityId'],
                              $address['subAdministrativeAreaId'], $address['administrativeAreaId'],
                              $address['countryId'], $address['latitude'], $address['longitude'],
-                             $address['updateTime'], $address['north'], $address['south'],
+                             $address['north'], $address['south'],
                              $address['east'], $address['west']);
 
                 $page->trigSuccess("L'entreprise a bien été mise à jour.");
