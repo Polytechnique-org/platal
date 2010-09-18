@@ -138,7 +138,7 @@ class ProfileSettingJob implements ProfileSetting
             } else if ($job['name'] == '') {
                 if ($job['description'] == '' && $job['w_url'] == ''
                     && $job['w_address']['text'] == '' && $job['w_email'] == ''
-                    && count($job['w_phone']) == 1 && $job['w_phone']['tel'] == '') {
+                    && count($job['w_phone']) >= 1 && $job['w_phone'][0]['display'] == '') {
                     array_splice($value, $key, 1);
                     continue;
                 }

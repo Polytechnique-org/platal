@@ -22,7 +22,7 @@
 
 <table class="bicol" style="margin-bottom: 1em" summary="Profil : Noms">
   <tr>
-    <th colspan="3">Noms{if $validation} <small>(validations en attente de modération)</small>{/if}</th>
+    <th colspan="3">Noms{if t($validation)} <small>(validations en attente de modération)</small>{/if}</th>
   </tr>
   <tr>
     <td class="titre">
@@ -97,7 +97,7 @@
       <span class="titre">Promotion</span>
     </td>
     <td>
-      {if !$promo_choice}
+      {if !t($promo_choice)}
         <span class="nom">{$profile->promo()}</span>
         <input type="hidden" name="promo_display" value="{$profile->promo()}"/>
       {else}
@@ -266,9 +266,9 @@
       </div>
     </td>
   </tr>
-  {if $email_error}
+  {if t($email_error)}
     {include file="include/emails.combobox.tpl" name="email_directory" val=$email_directory_error error=$email_error i="0"}
-  {else}{include file="include/emails.combobox.tpl" name="email_directory" val=$email_directory error=$email_error i="0"}{/if}
+  {else}{include file="include/emails.combobox.tpl" name="email_directory" val=$email_directory error=false i="0"}{/if}
   <tr>
     <td colspan="2">
       <span class="titre">Messageries, networking et sites web</span>

@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<tr id="search_name_{$i}"{if $class} class="{$class}" {if !$error_name}style="{$style}"{/if}{/if}>
+<tr id="search_name_{$i}"{if t($class)} class="{$class}" {if !t($error_name)}style="{$style}"{/if}{/if}>
   <td>
     <input type="hidden" name="search_names[{$i}][always_displayed]" value="{$sn.always_displayed}"/>
     <input type="hidden" name="search_names[{$i}][has_particle]" value="{$sn.has_particle}"/>
@@ -28,7 +28,7 @@
       <span id="flag_{$i}">{if $sn.pub}{icon name="flag_green" title="site public"}
       {else}{icon name="flag_red" title="site privé"}{/if}</span>
     </span>&nbsp;
-    {if $sn_type_list}
+    {if t($sn_type_list)}
     <select id="search_name_select_{$i}" name="search_names[{$i}][typeid]"
       onchange="changeNameFlag({$i});updateNameDisplay({$isFemale});">
         {foreach from=$sn_type_list item=sn_type}
@@ -49,7 +49,7 @@
   <td>
     <input type="text" name="search_names[{$i}][name]" value="{$sn.name}"
       {if $sn.has_particle}title="Coche la case en bout de ligne si ton nom commence par une particle."{/if}
-      {if $sn.error} class="error"{/if} size="25" onkeyup="updateNameDisplay({$isFemale});"/>
+      {if t($sn.error)} class="error"{/if} size="25" onkeyup="updateNameDisplay({$isFemale});"/>
   </td>
   <td>
     {if $sn.has_particle}<input type="checkbox"{if $sn.particle neq ''} checked="checked"{/if}

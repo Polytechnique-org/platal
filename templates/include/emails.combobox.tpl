@@ -78,8 +78,8 @@
       </optgroup>
       {/if}
       <optgroup label="Autres choix">
-        <option value="new@example.org" {if ((($val eq '') && (!$error) && ($name eq "email")) || $error)}selected="selected"{/if}>Nouvelle adresse email</option>
-        <option value="" {if (($val eq '') && (!$error) && ($name neq "email"))}selected="selected"{/if}>{if $name neq "email"}Ne pas mettre d'adresse email{else}&nbsp;{/if}</option>
+        <option value="new@example.org" {if ($val eq '' && !$error && $name eq 'email') || $error}selected="selected"{/if}>Nouvelle adresse email</option>
+        <option value="" {if $val eq '' && !$error && $name neq 'email'}selected="selected"{/if}>{if $name neq "email"}Ne pas mettre d'adresse email{else}&nbsp;{/if}</option>
       </optgroup>
     </select>
     {if $name neq "email"}
