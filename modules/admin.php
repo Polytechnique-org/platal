@@ -1010,13 +1010,14 @@ class AdminModule extends PLModule
     {
         $page->changeTpl('admin/validation.tpl');
         $page->setTitle('Administration - Valider une demande');
-                $page->addCssLink('nl.css');
+        $page->addCssLink('nl.css');
         $page->addJsLink('ajax.js');
-        require_once("validations.inc.php");
+        require_once 'validations.inc.php';
 
-
-        if ($action == 'edit' and !is_null($id)) {
+        if ($action == 'edit' && !is_null($id)) {
             $page->assign('preview_id', $id);
+        } else {
+            $page->assign('preview_id', null);
         }
 
         if(Env::has('uid') && Env::has('type') && Env::has('stamp')) {
