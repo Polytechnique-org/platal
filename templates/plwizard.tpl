@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if !$wiz_run_ajax}
+{if !t($wiz_run_ajax)}
 <script type="text/javascript">//<![CDATA[
   {if ($stateless || $id gt $current) && $wiz_ajax}
   {literal}
@@ -96,7 +96,7 @@
     {include core=triggers.tpl}
     {include file=$wiz_page}
     </div>
-  {if !$wiz_run_ajax}
+  {if !t($wiz_run_ajax)}
   </div>
 </div>
 
