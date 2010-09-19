@@ -163,7 +163,7 @@ class XorgSession extends PlSession
             } else {
                 $login = $uname;
                 $redirect = false;
-                $loginType = 'alias';
+                $loginType = is_numeric($uname) ? 'uid' : 'alias';
             }
         }
 
