@@ -674,18 +674,27 @@ class XnetGrpModule extends PLModule
             }
         } else {
             // User is of type xnet.
-            list($firstname, $lastname) = explode('@', $email);
-            $hruid = User::makeHrid($firstname, $lastname, 'ext');
+            list($mbox, $domain) = explode('@', strtolower($email));
+            $hruid = User::makeHrid($mbox, $domain, 'ext');
             // User might already have an account (in another group for example).
             $user = User::get($hruid);
 
             // If the user has no account yet, creates new account: build names from email address.
             if (empty($user)) {
-                $display_name = ucwords(strtolower(substr($hruid, strpos('.', $hruid))));
-                $full_name = ucwords(strtolower(str_replace('.', ' ', substr($email, strpos('@', $email)))));
-                XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, email, type)
-                                   VALUES  ({?}, {?}, {?}, {?}, \'xnet\')',
-                             $hruid, $display_name, $full_name, $email);
+                $parts = explode('.', $mbox);
+                if (count($parts) == 1) {
+                    $display_name = $full_name = $directory_name = ucfirst($mbox);
+                } else {
+                    $firstname = ucfirst($parts[0]);
+                    $lastname = ucwords(implode(' ', array_slice($parts, 1)));
+                    $display_name = $firstname;
+                    $full_name = "$firstname $lastname";
+                    $directory_name = strtoupper($lastname) . " " . $firstname;
+                }
+                XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, directory_name,
+                                           email, type)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, \'xnet\')',
+                             $hruid, $display_name, $full_name, $directory_name, $email);
                 $user = User::get($hruid);
             }
         }

@@ -84,7 +84,7 @@ Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
       {elseif $order eq '-directory_name'}
         <img src="{$platal->baseurl}images/up.png" alt="" title="Tri décroissant" />
       {/if}
-      Prénom NOM
+      NOM Prénom
       </a>
     </th>
     <th>
