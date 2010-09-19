@@ -1435,8 +1435,6 @@ class AdminModule extends PLModule
 
                 $page->trigSuccess("L'entreprise a bien été remplacée.");
             } else {
-                require_once 'geocoding.inc.php';
-
                 $gmapsGeocoder = new GMapsGeocoder();
                 $address = array('text' => Env::t('address'));
                 $address = $gmapsGeocoder->getGeocodedAddress($address);

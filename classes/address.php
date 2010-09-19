@@ -150,7 +150,6 @@ class Address
             return true;
         }
 
-        require_once 'geocoding.inc.php';
         if ($format['requireGeocoding'] || $this->changed == 1) {
             $gmapsGeocoder = new GMapsGeocoder();
             $gmapsGeocoder->getGeocodedAddress($this);
@@ -257,7 +256,6 @@ class Address
 
         $this->format();
         if (!$this->isEmpty()) {
-            require_once 'geocoding.inc.php';
             foreach ($areas as $area) {
                 Geocoder::getAreaId($this, $area);
             }

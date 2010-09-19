@@ -15,7 +15,6 @@ $error_key = "You didn't provide me with a valid cipher key...";
 // IF YOU HAVE TO MAKE SOME MODIFICATION, FIRST CONTACT:
 // admin@manageurs.com
 function get_annuaire_infos($method, $params) {
-    require 'geocoding.inc.php';
     global $error_mat, $error_key, $globals;
 
     // Password verification.
