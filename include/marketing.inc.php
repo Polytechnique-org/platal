@@ -135,7 +135,6 @@ class Marketing
                     $this->type, $this->data, $this->personal_notes);
         $this->engine->process($this->user);
         if ($valid) {
-            require_once 'validations.inc.php';
             $sender = User::getSilent($this->sender);
             $valid = new MarkReq($sender, $this->user['user'], $this->user['mail'],
                                  $this->from == 'user', $this->type, $this->data, $this->personal_notes);

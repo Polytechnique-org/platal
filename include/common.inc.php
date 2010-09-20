@@ -34,8 +34,9 @@ function __autoload($cls)
         } else if (substr($cls, 0, 3) == 'de_') {
             __autoload('direnum');
             return;
-        } else if (substr($cls, -3, 3) == 'req') {
-            include 'validations.inc.php';
+        } else if ($cls == 'validate' || substr($cls, -3, 3) == 'req'
+                   || substr($cls, -8, 8) == 'validate' || substr($cls, 0, 8) == 'validate') {
+            require_once 'validations.inc.php';
             return;
         } else if (substr($cls, 0, 6) == 'banana') {
             require_once 'banana/hooks.inc.php';

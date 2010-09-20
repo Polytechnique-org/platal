@@ -106,8 +106,6 @@ class EmailModule extends PLModule
 
     function handler_alias(&$page, $action = null, $value = null)
     {
-        require_once 'validations.inc.php';
-
         global $globals;
 
         $page->changeTpl('emails/alias.tpl');

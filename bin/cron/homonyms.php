@@ -25,7 +25,6 @@
  * destruction, a second on the date.
  */
 require 'connect.db.inc.php';
-require_once 'validations/homonymes.inc.php';
 
 $resRobot = XDB::iterator("SELECT  uid, alias, expire
                              FROM  aliases

@@ -383,7 +383,6 @@ class Survey
     // {{{ static function retrieveSurveyReq() : gets a survey request to validate
     public static function retrieveSurveyReq($id)
     {
-        require_once 'validations.inc.php';
         $surveyreq = Validate::get_request_by_id($id);
         if ($surveyreq == null) {
             return null;
@@ -401,7 +400,6 @@ class Survey
     // {{{ function proposeSurvey() : stores a proposition of survey in database (before validation)
     public function proposeSurvey()
     {
-        require_once 'validations.inc.php';
         $surveyreq = new SurveyReq($this->title, $this->description, $this->end, $this->mode, $this->promos, $this->questions, S::user());
         return $surveyreq->submit();
     }
@@ -421,7 +419,6 @@ class Survey
                      WHERE id={?};';
             return XDB::execute($sql, serialize($this->questions), $this->title, $this->description, $this->end, $this->mode, $this->promos, $this->id);
         } else {
-            require_once 'validations.inc.php';
             $surveyreq = Validate::get_request_by_id($this->id);
             if ($surveyreq == null) {
                 return false;

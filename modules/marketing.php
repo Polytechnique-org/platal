@@ -243,7 +243,6 @@ class MarketingModule extends PLModule
                 $page->trigError("Il faut que tu ajoutes un commentaire à ta proposition pour justifier le "
                                . "besoin de changer la redirection de {$user->fullName()}.");
             } else {
-                require_once 'validations.inc.php';
                 $valid = new BrokenReq(S::user(), $user, $email, trim(Post::v('comment')));
                 $valid->submit();
                 $page->assign('sent', true);

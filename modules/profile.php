@@ -92,7 +92,6 @@ class ProfileModule extends PLModule
 
         // Retrieve the photo and its mime type.
         if ($req && S::logged()) {
-            include 'validations.inc.php';
             $myphoto = PhotoReq::get_request($profile->id());
             $photo = PlImage::fromData($myphoto->data, $myphoto->mimetype);
         } else {
@@ -178,8 +177,6 @@ class ProfileModule extends PLModule
 
         $page->changeTpl('profile/trombino.tpl');
         $page->assign('hrpid', $profile->hrid());
-
-        require_once('validations.inc.php');
 
         $trombi_x = '/home/web/trombino/photos' . $profile->promo() . '/' . $profile->hrid() . '.jpg';
         if (Env::has('upload')) {

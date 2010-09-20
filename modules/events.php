@@ -207,7 +207,6 @@ class EventsModule extends PLModule
                 exit;
             }
         } elseif ($eid == 'valid') {
-            require_once 'validations.inc.php';
             $valid = Validate::get_request_by_id($valid);
             if ($valid && $valid->img) {
                 pl_cached_dynamic_content_headers("image/" . $valid->imgtype);
@@ -294,7 +293,6 @@ class EventsModule extends PLModule
         } elseif ($action) {
             S::assert_xsrf_token();
 
-            require_once 'validations.inc.php';
             $evtreq = new EvtReq($titre, $texte, $promo_min, $promo_max,
                                  $expiration, $valid_mesg, S::user(), $upload);
             $evtreq->submit();

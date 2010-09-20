@@ -120,7 +120,6 @@ class ProfileSettingJob implements ProfileSetting
 
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
-        require_once 'validations.inc.php';
         $entreprise = ProfileValidate::get_typed_requests($page->pid(), 'entreprise');
         $entr_val = 0;
 

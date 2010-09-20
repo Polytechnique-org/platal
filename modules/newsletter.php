@@ -87,7 +87,6 @@ class NewsletterModule extends PLModule
             $art = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'));
             $page->assign('art', $art);
         } elseif (Post::has('valid')) {
-            require_once('validations.inc.php');
             $art = new NLReq(S::user(), Post::v('title'),
                              Post::v('body'), Post::v('append'));
             $art->submit();

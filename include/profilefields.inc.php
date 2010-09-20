@@ -207,7 +207,6 @@ class Job
         }
         $this->company = CompanyList::get($this->jobid);
         if (is_null($this->company)) {
-            require_once 'validations.inc.php';
             $entreprise = ProfileValidate::get_typed_requests($this->pid, 'entreprise');
             $this->company = new Company(array('name' =>  $entreprise[$this->id]->name));
         }

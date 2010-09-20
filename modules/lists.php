@@ -301,7 +301,6 @@ class ListsModule extends PLModule
         if (!$page->nb_errs()) {
             $page->trigSuccess('Demande de création envoyée&nbsp;!');
             $page->assign('created', true);
-            require_once 'validations.inc.php';
             $req = new ListeReq(S::user(), $asso, $liste, $domain,
                                 Post::v('desc'), Post::i('advertise'),
                                 Post::i('modlevel'), Post::i('inslevel'),

@@ -1148,7 +1148,6 @@ class XnetGrpModule extends PLModule
                                  $aid, $imgtype, $imgx, $imgy, $upload->getContents());
                 }
                 if ($art['xorg']) {
-                    require_once('validations.inc.php');
                     $article = new EvtReq("[{$globals->asso('nom')}] " . $art['titre'], $fulltext,
                                     $art['promo_min'], $art['promo_max'], $art['expiration'], "", S::user(),
                                     $upload);
@@ -1158,7 +1157,6 @@ class XnetGrpModule extends PLModule
                     $upload->rm();
                 }
                 if ($art['nl']) {
-                    require_once('validations.inc.php');
                     $article = new NLReq(S::user(), $globals->asso('nom') . " : " .$art['titre'],
                                          $art['texte'], $art['contact_html']);
                     $article->submit();

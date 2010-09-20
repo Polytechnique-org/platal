@@ -126,7 +126,6 @@ class ProfileSettingSearchNames implements ProfileSetting
                     $value[] = $sn;
                 } while ($sn = $sn_all->next());
             }
-            require_once 'validations.inc.php';
             $namesRequest = ProfileValidate::get_typed_requests($page->pid(), 'usage');
             if (count($namesRequest) > 0) {
                 Platal::page()->assign('validation', true);
@@ -211,7 +210,6 @@ class ProfileSettingSearchNames implements ProfileSetting
     public function save(ProfilePage &$page, $field, $value)
     {
         require_once 'name.func.inc.php';
-        require_once 'validations.inc.php';
 
         $sn_old = build_sn_pub($page->pid());
         XDB::execute("DELETE FROM  s
@@ -462,8 +460,6 @@ class ProfileSettingPromo implements ProfileSetting
                          $gradYearNew, $page->profile->id());
             Platal::page()->trigSuccess('Ton statut « orange » a été supprimé.');
         } else {
-            require_once 'validations.inc.php';
-
             $myorange = new OrangeReq(S::user(), $page->profile, $gradYearNew);
             $myorange->submit();
             Platal::page()->trigSuccess('Tu pourras changer l\'affichage de ta promotion dès que ta nouvelle promotion aura été validée.');

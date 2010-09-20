@@ -94,7 +94,6 @@ class XnetEventsModule extends PLModule
                          $eid, $globals->asso('id'));
 
             // delete the requests for payments
-            require_once 'validations.inc.php';
             XDB::execute("DELETE FROM  requests
                                 WHERE  type = 'paiements' AND data LIKE {?}",
                          PayReq::same_event($eid, $globals->asso('id')));
@@ -449,7 +448,6 @@ class XnetEventsModule extends PLModule
             }
             // request for a new payment
             if (Post::v('paiement_id') == -1 && $money_defaut >= 0) {
-                require_once 'validations.inc.php';
                 $p = new PayReq(S::user(),
                                 Post::v('intitule')." - ".$globals->asso('nom'),
                                 Post::v('site'), $money_defaut,
@@ -494,7 +492,6 @@ class XnetEventsModule extends PLModule
                       WHERE eid = {?}", $eid);
             $evt = $res->fetchOneAssoc();
             // find out if there is already a request for a payment for this event
-            require_once 'validations.inc.php';
             $res = XDB::query("SELECT  stamp
                                  FROM  requests
                                 WHERE  type = 'paiements' AND data LIKE {?}",
