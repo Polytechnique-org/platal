@@ -5,7 +5,7 @@ require 'connect.db.inc.php';
 
 $message = '';
 
-$res = XDB::iterRow("SELECT  a.hruid, pd.promo, e.email
+$res = XDB::iterRow("SELECT  a.registration_date, a.hruid, e.email
                        FROM  accounts AS a
                  INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
                  INNER JOIN  profile_display  AS pd ON (ap.pid = pd.pid)
@@ -15,28 +15,31 @@ $res = XDB::iterRow("SELECT  a.hruid, pd.promo, e.email
                    ORDER BY  pd.promo",
        date("Ymd000000", strtotime('last Monday')));
 if ($count = $res->total()) {
-    $message .= "$count INSCRIPTIONS CONFIRMÉES :\n";
-    while (list($forlife, $promo, $email) = $res->next()) {
-	      $message .= "$promo, $forlife, $email\n";
+    $message .= "$count INSCRIPTIONS CONFIRMÉES CETTE SEMAINE :\n";
+    while (list($date, $hruid, $email) = $res->next()) {
+	      $message .= "$date, $hruid, $email\n";
     }
 }
 
-$res = XDB::iterRow("SELECT  a.hruid, r.email, r.date
+$res = XDB::iterRow("SELECT  r.date, a.hruid, r.email
                        FROM  register_pending AS r
                  INNER JOIN  accounts         AS a ON (a.uid = r.uid)
+                 INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
+                 INNER JOIN  profile_display  AS pd ON (ap.pid = pd.pid)
                       WHERE  r.hash != 'INSCRIT'
-                   ORDER BY  r.date");
+                   GROUP BY  a.hruid
+                   ORDER BY  pd.promo");
 if ($count = $res->total()) {
     $message .= "\n$count INSCRIPTIONS NON CONFIRMÉES :\n";
-    while (list($forlife, $email, $date) = $res->next()) {	
-	      $message .= "$date, $forlife,\n            $email\n";
+    while (list($date, $hruid, $email) = $res->next()) {	
+	      $message .= "$date, $hruid, $email\n";
     }
 }
 
 $res = XDB::query('SELECT  COUNT(DISTINCT uid), COUNT(*)
                      FROM  register_marketing');
 list($a, $b) = $res->fetchOneRow();
-$message .= "\nINSCRIPTIONS SOLICITÉES :\n";
+$message .= "\nINSCRIPTIONS SOLLICITÉES :\n";
 $message .= "    $a utilisateurs\n    $b adresses email\n";
 
 $message .= "\n\n";
