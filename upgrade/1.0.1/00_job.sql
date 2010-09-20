@@ -37,7 +37,6 @@ CREATE TABLE `profile_job_term` (
   `computed` enum('original','computed') NOT NULL DEFAULT 'original' COMMENT 'terms can be added by user or computed from entreprise',
   PRIMARY KEY (`pid`, `jid`, `jtid`),
   INDEX `jtid` (`jtid`),
-  FOREIGN KEY (`jid`) REFERENCES `profile_job` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`jtid`) REFERENCES `profile_job_term_enum` (`jtid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB, CHARSET=utf8, COMMENT='job terms for jobs in profiles';
 
