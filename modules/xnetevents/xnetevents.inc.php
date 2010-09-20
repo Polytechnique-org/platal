@@ -110,7 +110,7 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
 // }}}
 
 // {{{ function get_event_participants()
-function get_event_participants(&$evt, $item_id, array $tri = array(), $count = null, $offset = null)
+function get_event_participants(&$evt, $item_id, array $tri = array(), $limit = null)
 {
     global $globals;
 
