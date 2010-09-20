@@ -155,7 +155,6 @@ class EntrReq extends ProfileValidate
             $address = new Address(array('jobid' => $jobid, 'type' => Address::LINK_COMPANY, 'text' => $this->address));
             $phone->save();
             $fax->save();
-            $address->format();
             $address->save();
         } else {
             $jobid = $res->fetchOneCell();

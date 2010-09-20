@@ -53,12 +53,7 @@ class ReminderProfileUpdate extends Reminder
         $page->assign('profile_incitation', $profile->is_old);
         $page->assign('profile_last_update', $profile->last_change);
         $page->assign('photo_incitation', !$profile->has_photo);
-
-        $res = XDB::query('SELECT  COUNT(*)
-                             FROM  profile_addresses
-                            WHERE  pid = {?} AND accuracy = 0',
-                          $profile->id());
-        $page->assign('geocoding_incitation', $res->fetchOneCell());
+        $page->assign('geocoding_incitation', Geocoder::countNonGeocoded($profile->id()));
     }
 
     public function template()

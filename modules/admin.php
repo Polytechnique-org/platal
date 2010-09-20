@@ -1414,16 +1414,11 @@ class AdminModule extends PLModule
         }
 
         if (Env::has('edit')) {
-            // TODO: use address class to update profile_job_enum once it is done.
-
             S::assert_xsrf_token();
             $selectedJob = Env::has('selectedJob');
 
             Phone::deletePhones(0, Phone::LINK_COMPANY, $id);
-            XDB::execute("DELETE FROM  profile_addresses
-                                WHERE  jobid = {?} AND type = 'hq'",
-                         $id);
-
+            Address::delete(null, Address::lLINK_COMPANY, $id);
             if (Env::has('change')) {
                 XDB::execute('UPDATE  profile_job
                                  SET  jobid = {?}
@@ -1435,13 +1430,6 @@ class AdminModule extends PLModule
 
                 $page->trigSuccess("L'entreprise a bien été remplacée.");
             } else {
-                $gmapsGeocoder = new GMapsGeocoder();
-                $address = array('text' => Env::t('address'));
-                $address = $gmapsGeocoder->getGeocodedAddress($address);
-                Geocoder::getAreaId($address, 'administrativeArea');
-                Geocoder::getAreaId($address, 'subAdministrativeArea');
-                Geocoder::getAreaId($address, 'locality');
-
                 XDB::execute('UPDATE  profile_job_enum
                                  SET  name = {?}, acronym = {?}, url = {?}, email = {?},
                                       NAF_code = {?}, AX_code = {?}, holdingid = {?}
@@ -1453,22 +1441,10 @@ class AdminModule extends PLModule
                                          'link_type' => Phone::LINK_COMPANY, 'pub' => 'public'));
                 $fax = new Phone(array('display' => Env::v('fax'), 'link_id' => $id, 'id' => 1, 'type' => 'fax',
                                          'link_type' => Phone::LINK_COMPANY, 'pub' => 'public'));
+                $address = new Address(array('jobid' => $jobid, 'type' => Address::LINK_COMPANY, 'text' => Env::t('address')));
                 $phone->save();
                 $fax->save();
-
-                XDB::execute("INSERT INTO  profile_addresses (jobid, type, id, accuracy,
-                                                              text, postalText, postalCode, localityId,
-                                                              subAdministrativeAreaId, administrativeAreaId,
-                                                              countryId, latitude, longitude,
-                                                              north, south, east, west)
-                                   VALUES  ({?}, 'hq', 0, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
-                                            {?}, {?}, {?}, {?}, {?}, {?})",
-                             $id, $address['accuracy'], $address['text'], $address['postalText'],
-                             $address['postalCode'], $address['localityId'],
-                             $address['subAdministrativeAreaId'], $address['administrativeAreaId'],
-                             $address['countryId'], $address['latitude'], $address['longitude'],
-                             $address['north'], $address['south'],
-                             $address['east'], $address['west']);
+                $address->save();
 
                 $page->trigSuccess("L'entreprise a bien été mise à jour.");
             }
