@@ -1418,7 +1418,7 @@ class AdminModule extends PLModule
             $selectedJob = Env::has('selectedJob');
 
             Phone::deletePhones(0, Phone::LINK_COMPANY, $id);
-            Address::delete(null, Address::lLINK_COMPANY, $id);
+            Address::delete(null, Address::LINK_COMPANY, $id);
             if (Env::has('change')) {
                 XDB::execute('UPDATE  profile_job
                                  SET  jobid = {?}
