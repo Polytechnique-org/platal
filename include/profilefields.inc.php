@@ -630,17 +630,11 @@ class ProfileJobs extends ProfileField
     public static function fetchData(array $pids, ProfileVisibility $visibility)
     {
         CompanyList::preload($pids);
-        $data = XDB::iterator('SELECT  pj.id, pj.pid, pj.description, pj.url as user_site,
-                                       IF(pj.email_pub IN {?}, pj.email, NULL) AS user_email,
-                                       pj.jobid, pjse.name AS sector, pjsse.name AS subsector,
-                                       pjssse.name AS subsubsector
-                                 FROM  profile_job AS pj
-                            LEFT JOIN  profile_job_sector_enum AS pjse ON (pjse.id = pj.sectorid)
-                            LEFT JOIN  profile_job_subsector_enum AS pjsse ON (pjsse.id = pj.subsectorid)
-                            LEFT JOIN  profile_job_subsubsector_enum AS pjssse ON (pjssse.id = pj.subsubsectorid)
-                                WHERE  pj.pid IN {?} AND pj.pub IN {?}
-                             ORDER BY  ' . XDB::formatCustomOrder('pid', $pids) . ',
-                                       pj.id',
+        $data = XDB::iterator('SELECT  id, pid, description, url as user_site, jobid,
+                                       IF(email_pub IN {?}, email, NULL) AS user_email
+                                 FROM  profile_job
+                                WHERE  pid IN {?} AND pub IN {?}
+                             ORDER BY  ' . XDB::formatCustomOrder('pid', $pids) . ', id',
                                  $visibility->levels(), $pids, $visibility->levels());
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
