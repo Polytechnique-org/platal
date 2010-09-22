@@ -75,7 +75,7 @@ function add_user_to_url(f) {
           <td>
             <select name="type">
               <option value="ax">Personnel de l'AX</option>
-              <option value="fx">Personnel de la FS</option>
+              <option value="fx">Personnel de la FX</option>
               <option value="school">Personnel de l'Ecole</option>
             </select>
           </td>
