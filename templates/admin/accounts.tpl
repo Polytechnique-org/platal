@@ -71,6 +71,16 @@ function add_user_to_url(f) {
       {xsrf_token_field}
       <table style="width: 75%; margin-left: auto; margin-right: auto">
         <tr>
+          <td class="titre">Type de compte</td>
+          <td>
+            <select name="type">
+              <option value="ax">Personnel de l'AX</option>
+              <option value="fx">Personnel de la FS</option>
+              <option value="school">Personnel de l'Ecole</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
           <td class="titre">Nom</td>
           <td><input type="text" name="firstname" size=60 maxlength="255" value="" /></td>
         </tr>

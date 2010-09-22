@@ -1151,9 +1151,10 @@ class AdminModule extends PLModule
             S::assert_xsrf_token();
             $firstname = Post::t('firstname');
             $lastname = strtoupper(Post::t('lastname'));
-            $sex = Post::b('sex') ? User::GENDER_FEMALE : User::GENDER_FEMALE;
+            $sex = Post::b('sex') ? User::GENDER_FEMALE : User::GENDER_MALE;
             $email = Post::t('email');
-            $login = PlUser::makeHrid($firstname, $lastname, 'ax');
+            $type = Post::s('type');
+            $login = PlUser::makeHrid($firstname, $lastname, $type);
             if (!isvalid_email($email)) {
                 $page->trigError("Invalid email address: $email");
             } else if (strlen(Post::s('pwhash')) != 40) {
@@ -1164,14 +1165,14 @@ class AdminModule extends PLModule
                 XDB::execute("INSERT INTO  accounts (hruid, type, state, password,
                                                      registration_date, email, full_name,
                                                      display_name, sex, directory_name)
-                                   VALUES  ({?}, 'ax', 'active', {?}, NOW(), {?}, {?}, {?}, {?}, {?})",
-                             $login, Post::s('pwhash'), $email, $full_name, $full_name, $sex,
+                                   VALUES  ({?}, {?}, 'active', {?}, NOW(), {?}, {?}, {?}, {?}, {?})",
+                             $login, $type, Post::s('pwhash'), $email, $full_name, $full_name, $sex,
                              $directory_name);
             }
         }
 
-        $uf = new UserFilter(new UFC_AccountType('ax'));
-        $page->assign('users', $uf->iterUsers(new PlLimit(10)));
+        $uf = new UserFilter(new UFC_AccountType('ax', 'school', 'fx'));
+        $page->assign('users', $uf->iterUsers());
 
     }
 
