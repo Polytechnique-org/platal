@@ -20,6 +20,8 @@ REPLACE INTO account_types VALUES ('x', 'groups,mail,directory_private,forums,li
                                   ('pi', 'groups,forums,lists'),
                                   ('ax', 'groups,directory_ax,edit_directory'),
                                   ('xnet', 'groups'),
+                                  ('school', 'groups,directory_ax'),
+                                  ('fx', 'groups,directory_ax'),
                                   ('virtual', '');
 
 
