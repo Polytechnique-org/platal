@@ -1398,9 +1398,9 @@ class AdminModule extends PLModule
         $page->changeTpl('admin/jobs.tpl');
 
         if (Env::has('search')) {
-            $res = XDB::query("SELECT  e.id, e.name, e.acronym
-                                 FROM  profile_job_enum AS e
-                                WHERE  e.name LIKE CONCAT('% ', {?}, '%') OR e.acronym LIKE CONCAT('% ', {?}, '%')",
+            $res = XDB::query("SELECT  id, name, acronym
+                                 FROM  profile_job_enum
+                                WHERE  name LIKE CONCAT('%', {?}, '%') OR acronym LIKE CONCAT('%', {?}, '%')",
                               Env::t('job'), Env::t('job'));
 
             if ($res->numRows() <= 20) {
