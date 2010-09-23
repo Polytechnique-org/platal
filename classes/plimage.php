@@ -27,7 +27,7 @@ class PlImage {
     protected $data = null;
     protected $file = null;
 
-    private function __construct()
+    protected function __construct()
     {
     }
 
