@@ -135,7 +135,7 @@ class Address
 
     public function hasFlag($flag)
     {
-        return $this->flags->hasFlag($flag);
+        return ($this->flags != null && $this->flags->hasFlag($flag));
     }
 
     public function format(array $format = array())
