@@ -50,6 +50,7 @@ class SearchSet extends ProfileSet
     public  $advanced = false;
     private $score    = null;
     private $quick    = false;
+    private $valid    = true;
 
     public function __construct($quick = false, PlFilterCondition $cond = null)
     {
@@ -74,6 +75,11 @@ class SearchSet extends ProfileSet
         }
     }
 
+    public function isValid()
+    {
+        return $this->valid;
+    }
+
     /** Sets up the conditions for a Quick Search
      * @param $conds Additional conds (as a PFC_And)
      */
@@ -87,6 +93,7 @@ class SearchSet extends ProfileSet
         $ufb = new UFB_QuickSearch();
 
         if (!$ufb->isValid()) {
+            $this->valid = false;
             return;
         }
 
@@ -115,6 +122,7 @@ class SearchSet extends ProfileSet
         $ufb = new UFB_AdvancedSearch();
 
         if (!$ufb->isValid()) {
+            $this->valid = false;
             return;
         }
 

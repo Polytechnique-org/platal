@@ -162,19 +162,24 @@ class SearchModule extends PLModule
 
             require_once 'userset.inc.php';
             $view = new SearchSet(false);
-            $view->addMod('minifiche', 'Mini-fiches', true, array('starts_with' => $byletter));
-            $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true));
-            // TODO: Reactivate when the new map is completed.
-            // $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
-            $view->apply('search/adv', $page, $model);
+            if (!$view->isValid()) {
+                $this->form_prepare();
+                $page->trigError('Recherche invalide.');
+            } else {
+                $view->addMod('minifiche', 'Mini-fiches', true, array('starts_with' => $byletter));
+                $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true));
+                // TODO: Reactivate when the new map is completed.
+                // $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
+                $view->apply('search/adv', $page, $model);
 
-            $nb_tot = $view->count();
-            if ($nb_tot > $globals->search->private_max) {
-                $this->form_prepare();
-                $page->trigError('Recherche trop générale.');
-            } else if ($nb_tot == 0) {
-                $this->form_prepare();
-                $page->trigError('Il n\'existe personne correspondant à ces critères dans la base !');
+                $nb_tot = $view->count();
+                if ($nb_tot > $globals->search->private_max) {
+                    $this->form_prepare();
+                    $page->trigError('Recherche trop générale.');
+                } else if ($nb_tot == 0) {
+                    $this->form_prepare();
+                    $page->trigError('Il n\'existe personne correspondant à ces critères dans la base !');
+                }
             }
         }
 
