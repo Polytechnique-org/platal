@@ -210,11 +210,14 @@ var default_form_values = [ /&woman=0(&|$)/, /&subscriber=0(&|$)/, /&alive=0(&|$
 function cleanForm(f) {
   var query = $(f).formSerialize();
   var old_query;
-  for each (var reg in default_form_values) if (typeof(reg) != "undefined") {
-    do {
-      old_query = query;
-      query = query.replace(reg, '$1');
-    } while (old_query != query);
+  for (var i in default_form_values) {
+    var reg = default_form_values[i];
+    if (typeof(reg) != "undefined") {
+      do {
+        old_query = query;
+        query = query.replace(reg, '$1');
+      } while (old_query != query);
+    }
   }
   query = query.replace(/^&*(.*)&*$/, '$1');
   if (query == "rechercher=Chercher") {
