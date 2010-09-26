@@ -14,7 +14,7 @@ From 1.0.0 branch:
         - Fix unsubscription                                               -XEL
 
     * Auth:
-        - Fix GroupeX auth (using french fields)                           -Car
+        - #1246: Fix GroupeX auth                                          -Car
 
     * Carnet:
         - Fix inaccessible carnet/panel in case of profile update          -FRU
