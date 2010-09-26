@@ -42,6 +42,8 @@ function gpex_make($chlg, $privkey, $datafields, $charset)
         $personnal_data['nationalite'] = $personnal_data['nationality1'];
         $personnal_data['naissance'] = $personnal_data['birthdate'];
         $personnal_data['deces'] = $personnal_data['deathdate'];
+        $personnal_data['nom'] = $personnal_data['lastname'];
+        $personnal_data['prenom'] = $personnal_data['firstname'];
         $personnal_data['flags'] = $user->profile()->isFemale() ? 'femme' : '';
     } else {
         $personnal_data = array();
