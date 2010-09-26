@@ -13,6 +13,9 @@ From 1.0.0 branch:
     * AXLetter:
         - Fix unsubscription                                               -XEL
 
+    * Auth:
+        - Fix GroupeX auth (using french fields)                           -Car
+
     * Carnet:
         - Fix inaccessible carnet/panel in case of profile update          -FRU
         - Fix notification email                                           -JAC
