@@ -777,14 +777,14 @@ class UFBF_Country extends UFBF_Mixed
 // }}}
 
 // {{{ class UFBF_AdminArea
-class UFBF_AdminArea extends UFBF_Mixed
+class UFBF_AdminArea extends UFBF_Index
 {
     protected $direnum = DirEnum::ADMINAREAS;
     protected $onlycurrentfield;
 
-    public function __construct($envfieldtext, $envfieldindex, $formtext = '', $onlycurrentfield = 'only_current')
+    public function __construct($envfield, $formtext = '', $onlycurrentfield = 'only_current')
     {
-        parent::__construct($envfieldtext, $envfieldindex, $formtext);
+        parent::__construct($envfield, $formtext);
         $this->onlycurrentfield = $onlycurrentfield;
     }
 
