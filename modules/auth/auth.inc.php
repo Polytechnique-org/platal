@@ -36,9 +36,11 @@ function gpex_make($chlg, $privkey, $datafields, $charset)
     if ($user->hasProfile()) {
         // XXX: Transition table for auth.
         $personnal_data = $user->profile()->data();
+        $personnal_data['full_promo'] = $personnal_data['promo'];
+        $personnal_data['promo'] = $personnal_data['entry_year'];
         $personnal_data['matricule'] = $personnal_data['xorg_id'];
         $personnal_data['matricule_ax'] = $personnal_data['ax_id'];
-        $personnal_data['promo_sortie'] = $personnal_data['promo'] + 3; // FIXME: Hum, not that good
+        $personnal_data['promo_sortie'] = $personnal_data['grad_year'];
         $personnal_data['nationalite'] = $personnal_data['nationality1'];
         $personnal_data['naissance'] = $personnal_data['birthdate'];
         $personnal_data['deces'] = $personnal_data['deathdate'];
