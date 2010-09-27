@@ -19,18 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  **************************************************************************/
 
-class XDBException extends PlException {
-    public function __construct($query, $error) {
-        if (strpos($query, 'INSERT') === false && strpos($query, 'UPDATE') === false
-            && strpos($query, 'REPLACE') === false && strpos($query, 'DELETE') === false) {
-            $text = 'Erreur lors de l\'interrogation de la base de données';
-        } else {
-            $text = 'Erreur lors de l\'écriture dans la base de données';
-        }
-        parent::__construct($text, $query . "\n" . $error);
-    }
-}
-
 class XDB
 {
     private static $mysqli = null;
@@ -51,7 +39,7 @@ class XDB
         return true;
     }
 
-    public static function _prepare($args)
+    public static function prepare($args)
     {
         global $globals;
         $query    = array_map(Array('XDB', 'escape'), $args);
@@ -61,7 +49,7 @@ class XDB
         return call_user_func_array('sprintf', $query);
     }
 
-    public static function _reformatQuery($query)
+    public static function reformatQuery($query)
     {
         $query  = preg_split("/\n\\s*/", trim($query));
         $length = 0;
@@ -86,7 +74,7 @@ class XDB
         return $res;
     }
 
-    public static function _query($query)
+    public static function run($query)
     {
         global $globals;
 
@@ -107,7 +95,7 @@ class XDB
                     $res->free();
                 }
             }
-            PlBacktrace::$bt['MySQL']->start(XDB::_reformatQuery($query));
+            PlBacktrace::$bt['MySQL']->start(XDB::reformatQuery($query));
         }
 
         $res = XDB::$mysqli->query($query);
@@ -119,14 +107,14 @@ class XDB
         }
 
         if ($res === false) {
-            throw new XDBException(XDB::_reformatQuery($query), XDB::$mysqli->error);
+            throw new XDBException(XDB::reformatQuery($query), XDB::$mysqli->error);
         }
         return $res;
     }
 
     private static function queryv($query)
     {
-        return new XOrgDBResult(self::_prepare($query));
+        return new XDBResult(self::prepare($query));
     }
 
     public static function query()
@@ -136,7 +124,7 @@ class XDB
 
     public static function format()
     {
-        return self::_prepare(func_get_args());
+        return self::prepare(func_get_args());
     }
 
     // Produce the SQL statement for setting/unsetting a flag
@@ -160,21 +148,20 @@ class XDB
     const WILDCARD_SUFFIX   = 0x02;
     const WILDCARD_CONTAINS = 0x03; // WILDCARD_PREFIX | WILDCARD_SUFFIX
 
+    // Produce a valid XDB argument that get formatted as a wildcard
+    // according to the given mode.
+    //
+    // Example:
+    // XDB::query("SELECT * FROM table WHERE field {?}", XDB::wildcard($text, WILDCARD_EXACT));
+    public static function wildcard($mode, $value)
+    {
+      return new XDBWildcard($value, $mode);
+    }
+
     // Returns the SQL statement for a wildcard search.
     public static function formatWildcards($mode, $text)
     {
-        if ($mode == self::WILDCARD_EXACT) {
-            return XDB::format(' = {?}', $text);
-        } else {
-            $text = str_replace(array('%', '_'), array('\%', '\_'), $text);
-            if ($mode & self::WILDCARD_PREFIX) {
-                $text = $text . '%';
-            }
-            if ($mode & self::WILDCARD_SUFFIX) {
-                $text = '%' . $text;
-            }
-            return XDB::format(" LIKE {?}", $text);
-        }
+        return XDB::wildcard($mode, $text)->format();
     }
 
     // Returns a FIELD(blah, 3, 1, 2) for use in an order with custom orders
@@ -190,17 +177,17 @@ class XDB
         if ($globals->mode != 'rw' && !strpos($args[0], 'logger')) {
             return;
         }
-        return self::_query(XDB::_prepare($args));
+        return self::run(XDB::prepare($args));
     }
 
     public static function iterator()
     {
-        return new XOrgDBIterator(self::_prepare(func_get_args()));
+        return new XDBIterator(self::prepare(func_get_args()));
     }
 
     public static function iterRow()
     {
-        return new XOrgDBIterator(self::_prepare(func_get_args()), MYSQL_NUM);
+        return new XDBIterator(self::prepare(func_get_args()), MYSQL_NUM);
     }
 
     private static function findQuery($params, $default = array())
@@ -223,7 +210,7 @@ class XDB
     }
 
     /** Fetch all rows returned by the given query.
-     * This functions can take 2 optional arguments (cf XOrgDBResult::fetchAllRow()).
+     * This functions can take 2 optional arguments (cf XDBResult::fetchAllRow()).
      * Optional arguments are given *before* the query.
      */
     public static function fetchAllRow()
@@ -233,7 +220,7 @@ class XDB
     }
 
     /** Fetch all rows returned by the given query.
-     * This functions can take 2 optional arguments (cf XOrgDBResult::fetchAllAssoc()).
+     * This functions can take 2 optional arguments (cf XDBResult::fetchAllAssoc()).
      * Optional arguments are given *before* the query.
      */
     public static function fetchAllAssoc()
@@ -261,7 +248,7 @@ class XDB
     }
 
     /** Fetch a column from the result of the given query.
-     * This functions can take 1 optional arguments (cf XOrgDBResult::fetchColumn()).
+     * This functions can take 1 optional arguments (cf XDBResult::fetchColumn()).
      * Optional arguments are given *before* the query.
      */
     public static function fetchColumn()
@@ -308,8 +295,8 @@ class XDB
             return 'NULL';
 
           case 'object':
-            if ($var instanceof PlFlagSet) {
-                return "'" . addslashes($var->flags()) . "'";
+            if ($var instanceof XDBFormat) {
+                return $var->format();
             } else {
                 return "'".addslashes(serialize($var))."'";
             }
@@ -323,41 +310,88 @@ class XDB
     }
 }
 
-class XOrgDBResult
+class XDBException extends PlException
 {
+    public function __construct($query, $error)
+    {
+        if (strpos($query, 'INSERT') === false && strpos($query, 'UPDATE') === false
+            && strpos($query, 'REPLACE') === false && strpos($query, 'DELETE') === false) {
+            $text = 'Erreur lors de l\'interrogation de la base de données';
+        } else {
+            $text = 'Erreur lors de l\'écriture dans la base de données';
+        }
+        parent::__construct($text, $query . "\n" . $error);
+    }
+}
 
-    private $_res;
+interface XDBFormat
+{
+    public function format();
+}
+
+class XDBWildcard implements XDBFormat
+{
+    private $value;
+    private $mode;
+
+    public function __construct($value, $mode)
+    {
+        $this->value = $value;
+        $this->mode  = $mode;
+    }
+
+    public function format()
+    {
+        if ($this->mode == XDB::WILDCARD_EXACT) {
+            return XDB::format(' = {?}', $this->value);
+        } else {
+            $text = str_replace(array('%', '_'), array('\%', '\_'), $this->value);
+            if ($this->mode & XDB::WILDCARD_PREFIX) {
+                $text = $text . '%';
+            }
+            if ($this->mode & XDB::WILDCARD_SUFFIX) {
+                $text = '%' . $text;
+            }
+            return XDB::format(" LIKE {?}", $text);
+        }
+    }
+}
+
+
+class XDBResult
+{
+    private $res;
 
     public function __construct($query)
     {
-        $this->_res = XDB::_query($query);
+        $this->res = XDB::run($query);
     }
 
     public function free()
     {
-        if ($this->_res) {
-            $this->_res->free();
+        if ($this->res) {
+            $this->res->free();
         }
         unset($this);
     }
 
-    protected function _fetchRow()
+    protected function fetchRow()
     {
-        return $this->_res ? $this->_res->fetch_row() : null;
+        return $this->res ? $this->res->fetch_row() : null;
     }
 
-    protected function _fetchAssoc()
+    protected function fetchAssoc()
     {
-        return $this->_res ? $this->_res->fetch_assoc() : null;
+        return $this->res ? $this->res->fetch_assoc() : null;
     }
 
     public function fetchAllRow($id = false, $keep_array = false)
     {
         $result = Array();
-        if (!$this->_res) {
+        if (!$this->res) {
             return $result;
         }
-        while (($data = $this->_res->fetch_row())) {
+        while (($data = $this->res->fetch_row())) {
             if ($id !== false) {
                 $key = $data[$id];
                 unset($data[$id]);
@@ -378,10 +412,10 @@ class XOrgDBResult
     public function fetchAllAssoc($id = false, $keep_array = false)
     {
         $result = Array();
-        if (!$this->_res) {
+        if (!$this->res) {
             return $result;
         }
-        while (($data = $this->_res->fetch_assoc())) {
+        while (($data = $this->res->fetch_assoc())) {
             if ($id !== false) {
                 $key = $data[$id];
                 unset($data[$id]);
@@ -401,21 +435,21 @@ class XOrgDBResult
 
     public function fetchOneAssoc()
     {
-        $tmp = $this->_fetchAssoc();
+        $tmp = $this->fetchAssoc();
         $this->free();
         return $tmp;
     }
 
     public function fetchOneRow()
     {
-        $tmp = $this->_fetchRow();
+        $tmp = $this->fetchRow();
         $this->free();
         return $tmp;
     }
 
     public function fetchOneCell()
     {
-        $tmp = $this->_fetchRow();
+        $tmp = $this->fetchRow();
         $this->free();
         return $tmp[0];
     }
@@ -424,11 +458,11 @@ class XOrgDBResult
     {
         $res = Array();
         if (is_numeric($key)) {
-            while($tmp = $this->_fetchRow()) {
+            while($tmp = $this->fetchRow()) {
                 $res[] = $tmp[$key];
             }
         } else {
-            while($tmp = $this->_fetchAssoc()) {
+            while($tmp = $this->fetchAssoc()) {
                 $res[] = $tmp[$key];
             }
         }
@@ -438,7 +472,7 @@ class XOrgDBResult
 
     public function fetchOneField()
     {
-        return $this->_res ? $this->_res->fetch_field() : null;
+        return $this->res ? $this->res->fetch_field() : null;
     }
 
     public function fetchFields()
@@ -450,66 +484,65 @@ class XOrgDBResult
 
     public function numRows()
     {
-        return $this->_res ? $this->_res->num_rows : 0;
+        return $this->res ? $this->res->num_rows : 0;
     }
 
     public function fieldCount()
     {
-        return $this->_res ? $this->_res->field_count : 0;
+        return $this->res ? $this->res->field_count : 0;
     }
 }
 
-require_once dirname(__FILE__) . '/pliterator.php';
 
-class XOrgDBIterator extends XOrgDBResult implements PlIterator
+class XDBIterator extends XDBResult implements PlIterator
 {
-    private $_result;
-    private $_pos;
-    private $_total;
-    private $_fpos;
-    private $_fields;
-    private $_mode = MYSQL_ASSOC;
+    private $result;
+    private $pos;
+    private $total;
+    private $fpos;
+    private $fields;
+    private $mode = MYSQL_ASSOC;
 
     public function __construct($query, $mode = MYSQL_ASSOC)
     {
         parent::__construct($query);
-        $this->_pos    = 0;
-        $this->_total  = $this->numRows();
-        $this->_fpost  = 0;
-        $this->_fields = $this->fieldCount();
-        $this->_mode   = $mode;
+        $this->pos    = 0;
+        $this->total  = $this->numRows();
+        $this->fpost  = 0;
+        $this->fields = $this->fieldCount();
+        $this->mode   = $mode;
     }
 
     public function next()
     {
-        $this->_pos ++;
-        if ($this->_pos > $this->_total) {
+        $this->pos ++;
+        if ($this->pos > $this->total) {
             $this->free();
             unset($this);
             return null;
         }
-        return $this->_mode != MYSQL_ASSOC ? $this->_fetchRow() : $this->_fetchAssoc();
+        return $this->mode != MYSQL_ASSOC ? $this->fetchRow() : $this->fetchAssoc();
     }
 
     public function first()
     {
-        return $this->_pos == 1;
+        return $this->pos == 1;
     }
 
     public function last()
     {
-        return $this->_pos == $this->_total;
+        return $this->pos == $this->total;
     }
 
     public function total()
     {
-        return $this->_total;
+        return $this->total;
     }
 
     public function nextField()
     {
-        $this->_fpos++;
-        if ($this->_fpos > $this->_fields) {
+        $this->fpos++;
+        if ($this->fpos > $this->fields) {
             return null;
         }
         return $this->fetchOneField();
@@ -517,17 +550,17 @@ class XOrgDBIterator extends XOrgDBResult implements PlIterator
 
     public function firstField()
     {
-        return $this->_fpos == 1;
+        return $this->fpos == 1;
     }
 
     public function lastField()
     {
-        return $this->_fpos == $this->_fields;
+        return $this->fpos == $this->fields;
     }
 
     public function totalFields()
     {
-        return $this->_fields;
+        return $this->fields;
     }
 }
 

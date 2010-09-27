@@ -39,6 +39,9 @@ define('NO_HTTPS', 2);
 function pl_autoload($cls, array $pathes = array())
 {
     $cls  = strtolower($cls);
+    if (substr($cls, 0, 3) == 'xdb') {
+        $cls = 'xdb';
+    }
     $basepath = dirname(dirname(dirname(__FILE__)));
 
     array_unshift($pathes, 'core/classes', 'classes');

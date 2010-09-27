@@ -21,7 +21,7 @@
 
 /** class for describing flags
  */
-class PlFlagSet
+class PlFlagSet implements XDBFormat
 {
     /** string that holds the PlFlagSet */
     private $values = array();
@@ -119,6 +119,14 @@ class PlFlagSet
             }
         }
         return $flags;
+    }
+
+
+    /** format for XDB
+     */
+    public function format()
+    {
+        return XDB::escape($this->flags());
     }
 }
 
