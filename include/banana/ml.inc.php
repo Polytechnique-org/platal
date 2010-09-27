@@ -51,12 +51,12 @@ class MLBanana extends Banana
         global $globals;
         $this->user = &$user;
 
-        Banana::$spool_root = $globals->banana->spool_root;
+        Banana::$spool_root = $globals->spoolroot . '/spool/banana/';
         Banana::$spool_boxlist = false;
         Banana::$msgedit_canattach = true;
         Banana::$debug_mbox = ($globals->debug & DEBUG_BT);
         Banana::$debug_smarty = ($globals->debug & DEBUG_SMARTY);
-        Banana::$mbox_helper = $globals->banana->mbox_helper;
+        Banana::$mbox_helper = $globals->spoolroot . '/banana/mbox-helper/mbox-helper';
         Banana::$feed_updateOnDemand = true;
         if (S::admin()) {
             Banana::$msgshow_mimeparts[] = 'source';

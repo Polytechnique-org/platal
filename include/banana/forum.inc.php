@@ -36,7 +36,7 @@ class ForumsBanana extends Banana
 
         global $globals;
         Banana::$msgedit_canattach = false;
-        Banana::$spool_root = $globals->banana->spool_root;
+        Banana::$spool_root = $globals->spoolroot . '/spool/banana/';
         array_push(Banana::$msgparse_headers, 'x-org-id', 'x-org-mail');
         Banana::$nntp_host = self::buildURL($user->login());
         if (S::admin()) {
@@ -101,7 +101,7 @@ class ForumsBanana extends Banana
         $time = null;
         if (!is_null($this->params) && isset($this->params['updateall'])) {
             $time = intval($this->params['updateall']);
-            S::user()->banana_last = $time;
+            $this->user->banana_last = $time;
         }
 
         $infos = $this->fetchProfile();
@@ -119,7 +119,7 @@ class ForumsBanana extends Banana
         Banana::$profile['signature']               = $infos['sig'];
         Banana::$profile['display']                 = $infos['threads'];
         Banana::$profile['autoup']                  = $infos['maj'];
-        Banana::$profile['lastnews']                = S::user()->banana_last;
+        Banana::$profile['lastnews']                = $this->user->banana_last;
         Banana::$profile['subscribe']               = $req->fetchColumn();
         Banana::$tree_unread = $infos['tree_unread'];
         Banana::$tree_read = $infos['tree_read'];
