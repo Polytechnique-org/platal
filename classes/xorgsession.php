@@ -261,10 +261,9 @@ class XorgSession extends PlSession
     public function tokenAuth($login, $token)
     {
         $res = XDB::query('SELECT  a.uid, a.hruid
-                             FROM  aliases  AS l
-                       INNER JOIN  accounts AS a ON (l.uid = a.uid AND a.state = \'active\')
-                            WHERE  a.token = {?} AND l.alias = {?} AND l.type != \'homonyme\'',
-                           $token, $login);
+                             FROM  accounts AS a
+                            WHERE  a.token = {?} AND a.hruid = {?} AND a.state = \'active\'',
+                          $token, $login);
         if ($res->numRows() == 1) {
             return new User(null, $res->fetchOneAssoc());
         }
