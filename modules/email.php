@@ -169,9 +169,9 @@ class EmailModule extends PLModule
                 }
 
                 //vérifier que l'alias n'est pas déja en demande
-                $it = new ValidateIterator();
+                $it = Validate::iterate('alias');
                 while($req = $it->next()) {
-                    if ($req->type == 'alias' and $req->alias == $alias_mail) {
+                    if ($req->alias == $alias_mail) {
                         $page->trigError("L'alias $alias_mail a déja été demandé.
                                     Tu ne peux donc pas l'obtenir pour l'instant.");
                         return ;

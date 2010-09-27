@@ -22,38 +22,7 @@
 define('SIZE_MAX', 32768);
 
 global $globals;
-require_once $globals->spoolroot . '/core/classes/xdb.php';
 
-/**
- * Iterator class, that lists objects through the database
- */
-class ValidateIterator extends XOrgDBIterator
-{
-    // {{{ constuctor
-
-    public function __construct()
-    {
-        parent::__construct('SELECT  data, DATE_FORMAT(stamp, "%Y%m%d%H%i%s")
-                               FROM  requests
-                           ORDER BY  stamp', MYSQL_NUM);
-    }
-
-    // }}}
-    // {{{ function next()
-
-    public function next()
-    {
-        if (list($result, $stamp) = parent::next()) {
-            $result = Validate::unserialize($result);
-            $result->stamp = $stamp;
-            return $result;
-        }
-
-        return null;
-    }
-
-    // }}}
-}
 
 /** Virtual class to adapt for every possible implementation.
  */
@@ -426,6 +395,43 @@ abstract class Validate
     }
 
     // }}}
+
+    /** Return an iterator over the validation concerning the given type
+     * and the given user.
+     *
+     * @param type The type of the validations to fetch, null mean "any type"
+     * @param applyTo A User or a Profile object the validation applies to.
+     */
+    public static function iterate($type = null, $applyTo = null)
+    {
+        function toValidation($elt)
+        {
+            list($result, $stamp) = $elt;
+            $result = Validate::unserialize($result);
+            $result->stamp = $stamp;
+            return $result;
+        }
+
+        $where = array();
+        if ($type) {
+            $where[] = XDB::format('type = {?}', $type);
+        }
+        if ($applyTo) {
+            if ($applyTo instanceof User) {
+                $where[] = XDB::format('uid = {?}', $applyTo->id());
+            } else if ($applyTo instanceof Profile) {
+                $where[] = XDB::format('pid = {?}', $applyTo->id());
+            }
+        }
+        if (!empty($where)) {
+            $where = 'WHERE ' . implode('AND', $where);
+        }
+        $it = XDB::iterRow('SELECT  data, DATE_FORMAT(stamp, "%Y%m%d%H%i%s")
+                              FROM  requests
+                                 ' . $where . '
+                          ORDER BY  stamp');
+        return PlIteratorUtils::map($it, 'toValidation');
+    }
 }
 
 /** Virtual class for profile related validation.

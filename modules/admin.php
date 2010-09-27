@@ -1060,7 +1060,7 @@ class AdminModule extends PLModule
         // where several copies of the site use the same DB, but not the same "dynamic configuration"
         global $globals;
         $globals->updateNbValid();
-        $page->assign('vit', new ValidateIterator());
+        $page->assign('vit', Validate::iterate());
     }
 
     function handler_validate_answers(&$page, $action = 'list', $id = null)
