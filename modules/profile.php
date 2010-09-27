@@ -607,7 +607,7 @@ class ProfileModule extends PLModule
               FROM group_members AS m
         INNER JOIN groups AS a ON(m.asso_id = a.id)
          LEFT JOIN group_events AS e ON(e.asso_id = m.asso_id AND e.archive = 0)
-             WHERE uid = {?} GROUP BY m.asso_id ORDER BY a.nom', S::i('uid'));
+             WHERE m.uid = {?} GROUP BY m.asso_id ORDER BY a.nom', S::i('uid'));
         $page->assign('assos', $req->fetchAllAssoc());
     }
 
