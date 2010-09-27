@@ -19,8 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-__autoload('xdb');
-
 // {{{ class PlSqlJoin
 class PlSqlJoin
 {
@@ -35,7 +33,7 @@ class PlSqlJoin
     private function __construct($mode, $params)
     {
         $table = array_shift($params);
-        $condition = call_user_func_array(array('XDB', 'format'), $params);
+        $condition = XDB::prepare($params);
         if ($mode != self::MODE_LEFT && $mode != self::MODE_RIGHT && $mode != self::MODE_INNER) {
             Platal::page()->kill("Join mode error: unknown mode $mode");
             return;
