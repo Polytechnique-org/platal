@@ -113,12 +113,16 @@ class PlatalModule extends PLModule
     function __set_rss_state($state)
     {
         if ($state) {
-            S::user()->token = rand_url_id(16);
-            XDB::execute('UPDATE  accounts
-                             SET  token = {?}
-                           WHERE  uid = {?}', S::user()->token, S::i('uid'));
+            if (!S::user()->token) {
+                S::user()->token = rand_url_id(16);
+                S::set('token', S::user()->token);
+                XDB::execute('UPDATE  accounts
+                                 SET  token = {?}
+                               WHERE  uid = {?}', S::user()->token, S::i('uid'));
+            }
         } else {
             S::kill('token');
+            S::user()->token = null;
             XDB::execute('UPDATE  accounts
                              SET  token = NULL
                            WHERE  uid = {?}', S::i('uid'));
@@ -131,21 +135,15 @@ class PlatalModule extends PLModule
         $page->setTitle('Mes préférences');
 
         if (Post::has('email_format')) {
+            S::assert_xsrf_token();
             $fmt = Post::s('email_format');
             S::user()->setEmailFormat($fmt);
         }
 
         if (Post::has('rss')) {
-            $this->__set_rss_state(Post::b('rss'));
+            S::assert_xsrf_token();
+            $this->__set_rss_state(Post::s('rss') == 'on');
         }
-
-        # FIXME: this code is not multi-domain compatible. We should decide how
-        # carva will extend to users not in the main domain.
-        $res = XDB::query("SELECT  alias
-                             FROM  aliases
-                            WHERE  uid = {?} AND FIND_IN_SET('bestalias', flags)",
-                          S::user()->id());
-        $page->assign('bestalias', $res->fetchOneCell());
     }
 
     function handler_webredir(&$page)
