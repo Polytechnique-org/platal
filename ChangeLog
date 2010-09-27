@@ -10,11 +10,11 @@ Bug/Wish:
         - #1177: clean url in advanced search                              -Car
 
 From 1.0.0 branch:
-    * AXLetter:
-        - Fix unsubscription                                               -XEL
-
     * Auth:
         - #1246: Fix GroupeX auth                                          -Car
+
+    * AXLetter:
+        - Fix unsubscription                                               -XEL
 
     * Carnet:
         - Fix inaccessible carnet/panel in case of profile update          -FRU
