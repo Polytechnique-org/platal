@@ -59,9 +59,12 @@ class ForumsBanana extends Banana
         $user = $globals->banana->web_user;
         if ($login != null) {
             $user .= '_' . $login;
+            $pass = $globals->banana->password;
+        } else {
+            $pass = $globals->banana->web_pass;
         }
         return $scheme . '://' . $user
-                       . ":{$globals->banana->password}@{$globals->banana->server}:{$globals->banana->port}/";
+                       . ":{$pass}@{$globals->banana->server}:{$globals->banana->port}/";
 
     }
 
