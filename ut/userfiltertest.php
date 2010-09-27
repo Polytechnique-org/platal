@@ -35,7 +35,7 @@ class UserFilterTest extends PlTestCase
     private static function buildAccountQuery()
     {
         $args = func_get_args();
-        $joinsAndWhere = XDB::_prepare($args);
+        $joinsAndWhere = XDB::prepare($args);
         return array('SELECT  DISTINCT a.uid
                         FROM  accounts AS a
                           ' . $joinsAndWhere,
@@ -49,7 +49,7 @@ class UserFilterTest extends PlTestCase
     private static function buildProfileQuery()
     {
         $args = func_get_args();
-        $joinsAndWhere = XDB::_prepare($args);
+        $joinsAndWhere = XDB::prepare($args);
         return array('SELECT  DISTINCT a.uid
                         FROM  accounts AS a
                   INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET(\'owner\', perms))
