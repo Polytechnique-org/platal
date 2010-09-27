@@ -45,11 +45,6 @@ function wizPage_onLoad(id)
         }
         break;
       case 'emploi':
-        for (var i = 0 ; $('#job_' + i).length != 0; ++i) {
-            updateJobSector(i, $('#job_' + i).find("[name='jobs[" + i + "][subSector]']").val());
-            updateJobSubSector(i, $('#job_' + i).find("[name='jobs[" + i + "][subSubSector]']").val());
-            updateJobAlternates(i);
-        }
         if ($('#job_0').find("[name='jobs[0][name]']").val() == '') {
             registerEnterpriseAutocomplete(0);
         }
@@ -505,48 +500,6 @@ function restoreJob(id, pref)
     $('#' + id).find("[name='" + pref + "[removed]']").val('0');
 }
 
-function updateJobSector(id, sel)
-{
-    var sector = $('#job_' + id).find("[name='jobs[" + id + "][sector]']").val();
-    if (sector == '') {
-        sector = '-1';
-    }
-    Ajax.update_html('job_' + id + '_subSector', 'profile/ajax/sector/' + id + '/job_' + id + '/jobs[' + id + ']/' + sector + '/' + sel);
-}
-
-function updateJobSubSector(id, sel)
-{
-    var subSector = $('#job_' + id).find("[name='jobs[" + id + "][subSector]']").val();
-    if (subSector == '') {
-        subSector = '-1';
-    }
-    Ajax.update_html('job_' + id + '_subSubSector', 'profile/ajax/sub_sector/' + id + '/' + subSector + '/' + sel);
-}
-
-function updateJobAlternates(id)
-{
-    var subSubSector = $('#job_' + id).find("[name='jobs[" + id + "][subSubSector]']").val();
-    if (subSubSector != '') {
-        Ajax.update_html('job_' + id + '_alternates', 'profile/ajax/alternates/' + id + '/' + subSubSector);
-    }
-}
-
-function emptyJobSubSector(id)
-{
-    Ajax.update_html('job_' + id + '_subSubSector', 'profile/ajax/sub_sector/' + id + '/-1/-1');
-}
-
-function emptyJobAlternates(id)
-{
-    Ajax.update_html('job_' + id + '_alternates', 'profile/ajax/alternates/' + id + '/-1');
-}
-
-function displayAllSector(id)
-{
-    $('.sector_text_' + id).remove();
-    $('.sector_' + id).show();
-}
-
 function makeAddJob(id)
 {
     return function(data)
@@ -718,58 +671,6 @@ function addCountry()
         + '</div>';
     $('#countries').append(html);
     updateElement('countries');
-}
-
-function updateSubSector()
-{
-    var s  = $('#sectorSelection').find('[name=sectorSelection]').val();
-    var ss = $('#subSectorSelection').find("[name='jobs[-1][subSector]']").val();
-    if ((s == '' || ss == '') || $('#sectors_' + s + '_' + ss).length != 0) {
-        $('#addSector').hide();
-    } else {
-        $('#addSector').show();
-    }
-}
-
-function removeSector(s, ss)
-{
-    $('#sectors_' + s + '_' + ss).remove();
-    updateSubSector();
-}
-
-function updateSector()
-{
-    var sector = $('#sectorSelection').find('[name=sectorSelection]').val();
-    if (sector == '') {
-        sector = '-1';
-        $('#subSectorSelection').html('');
-        return;
-    }
-    $.get(platal_baseurl + 'profile/ajax/sector/-1/0/0/' + sector,
-          function(data) {
-              data = '<a href="javascript:addSector()" style="display: none; float: right" id="addSector">'
-                   + '  <img src="images/icons/add.gif" alt="Ajouter ce secteur" title="Ajouter ce secteur" />'
-                   + '</a>' + data;
-              $('#subSectorSelection').html(data);
-              $('#subSectorSelection').find("[name='jobs[-1][subSector]']").change(updateSubSector);
-          });
-}
-
-function addSector()
-{
-    var s   = $('#sectorSelection').find('[name=sectorSelection]').val();
-    var ss  = $('#subSectorSelection').find("[name='jobs[-1][subSector]']").val();
-    var sst = $('#subSectorSelection').find("[name='jobs[-1][subSector]'] :selected").text();
-
-    var html = '<div id="sectors_' + s + '_' + ss + '" style="clear: both; margin-top: 0.5em" class="titre">'
-             + '  <a href="javascript:removeSector(\'' + s + '\',\'' + ss + '\')" style="display: block; float: right">'
-             + '    <img src="images/icons/cross.gif" alt="" title="Supprimer ce secteur" />'
-             + '  </a>'
-             + '  <input type="hidden" name="sectors[' + s + '][' + ss + ']" value="' + sst + '" />'
-             + '  ' + sst
-             + '</div>';
-    $('#sectors').append(html);
-    updateSubSector();
 }
 
 function registerEnterpriseAutocomplete(id)

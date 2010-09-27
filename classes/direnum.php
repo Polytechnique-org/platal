@@ -49,7 +49,6 @@ class DirEnum
     const LOCALITIES     = 'localities';
 
     const COMPANIES      = 'companies';
-    const SECTORS        = 'sectors';
     const JOBDESCRIPTION = 'jobdescription';
     const JOBTERMS       = 'jobterms';
 
@@ -621,18 +620,6 @@ class DE_Companies extends DirEnumeration
     protected $from      = 'profile_job_enum';
 
     protected $ac_join   = 'INNER JOIN profile_job ON (profile_job.jobid = profile_job_enum.id)';
-    protected $ac_unique = 'profile_job.pid';
-}
-// }}}
-
-// {{{ class DE_Sectors
-class DE_Sectors extends DirEnumeration
-{
-    protected $idfield   = 'profile_job_sector_enum.id';
-    protected $valfield  = 'profile_job_sector_enum.name';
-    protected $from      = 'profile_job_sector_enum';
-
-    protected $ac_join   = 'INNER JOIN profile_job ON (profile_job_sector_enum.id = profile_job.sectorid)';
     protected $ac_unique = 'profile_job.pid';
 }
 // }}}

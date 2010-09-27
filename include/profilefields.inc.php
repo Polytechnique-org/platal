@@ -33,7 +33,6 @@ abstract class ProfileField
         Profile::FETCH_MEDALS         => 'ProfileMedals',
         Profile::FETCH_NETWORKING     => 'ProfileNetworking',
         Profile::FETCH_PHONES         => 'ProfilePhones',
-        Profile::FETCH_MENTOR_SECTOR  => 'ProfileMentoringSectors',
         Profile::FETCH_MENTOR_COUNTRY => 'ProfileMentoringCountries',
         Profile::FETCH_JOB_TERMS      => 'ProfileJobTerms',
         Profile::FETCH_MENTOR_TERMS   => 'ProfileMentoringTerms',
@@ -192,10 +191,6 @@ class Job
     public $description;
     public $user_site;
     public $user_email;
-
-    public $sector;
-    public $subsector;
-    public $subsubsector;
 
     /** Fields are:
      * pid, id, company_id, description, url, email
@@ -472,33 +467,6 @@ class ProfileCorps extends ProfileField
                                 $pids, $visibility->levels());
 
         return $data;
-    }
-}
-// }}}
-// {{{ class ProfileMentoringSectors                  [ Field ]
-class ProfileMentoringSectors extends ProfileField
-{
-    public $sectors = array();
-
-    public function __construct(PlInnerSubIterator $it)
-    {
-        $this->pid = $it->value();
-        while ($sector = $it->next()) {
-            $this->sectors[] = $sector;
-        }
-    }
-
-    public static function fetchData(array $pids, ProfileVisibility $visibility)
-    {
-        $data = XDB::iterator('SELECT  pms.pid, pjse.name AS sector, pjsse.name AS subsector
-                                 FROM  profile_mentor_sector AS pms
-                            LEFT JOIN  profile_job_sector_enum AS pjse ON (pjse.id = pms.sectorid)
-                            LEFT JOIN  profile_job_subsector_enum AS pjsse ON (pjsse.id = pms.subsectorid)
-                                WHERE  pms.pid IN {?}
-                             ORDER BY  ' . XDB::formatCustomOrder('pms.pid', $pids),
-                                $pids);
-
-        return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
 }
 // }}}

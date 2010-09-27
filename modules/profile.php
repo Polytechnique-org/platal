@@ -38,9 +38,6 @@ class ProfileModule extends PLModule
             'profile/ajax/medal'         => $this->make_hook('ajax_medal',                 AUTH_COOKIE, 'user', NO_AUTH),
             'profile/networking'         => $this->make_hook('networking',                 AUTH_PUBLIC),
             'profile/ajax/job'           => $this->make_hook('ajax_job',                   AUTH_COOKIE, 'user', NO_AUTH),
-            'profile/ajax/sector'        => $this->make_hook('ajax_sector',                AUTH_COOKIE, 'user', NO_AUTH),
-            'profile/ajax/sub_sector'    => $this->make_hook('ajax_sub_sector',            AUTH_COOKIE, 'user', NO_AUTH),
-            'profile/ajax/alternates'    => $this->make_hook('ajax_alternates',            AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/skill'         => $this->make_hook('ajax_skill',                 AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/searchname'    => $this->make_hook('ajax_searchname',            AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/buildnames'    => $this->make_hook('ajax_buildnames',            AUTH_COOKIE, 'user', NO_AUTH),
@@ -52,7 +49,6 @@ class ProfileModule extends PLModule
             'profile/name_info'          => $this->make_hook('name_info',                  AUTH_PUBLIC),
 
             'referent'                   => $this->make_hook('referent',                   AUTH_COOKIE),
-            'referent/ssect'             => $this->make_hook('ref_sect',                   AUTH_COOKIE, 'user', NO_AUTH),
             'referent/country'           => $this->make_hook('ref_country',                AUTH_COOKIE, 'user', NO_AUTH),
             'referent/autocomplete'      => $this->make_hook('ref_autocomplete',           AUTH_COOKIE, 'user', NO_AUTH),
 
@@ -69,7 +65,6 @@ class ProfileModule extends PLModule
             'admin/sections'             => $this->make_hook('admin_sections',             AUTH_MDP, 'admin'),
             'admin/networking'           => $this->make_hook('admin_networking',           AUTH_MDP, 'admin'),
             'admin/trombino'             => $this->make_hook('admin_trombino',             AUTH_MDP, 'admin'),
-            'admin/sectors'              => $this->make_hook('admin_sectors',              AUTH_MDP, 'admin'),
             'admin/corps_enum'           => $this->make_hook('admin_corps_enum',           AUTH_MDP, 'admin'),
             'admin/corps_rank'           => $this->make_hook('admin_corps_rank',           AUTH_MDP, 'admin'),
             'admin/names'                => $this->make_hook('admin_names',                AUTH_MDP, 'admin'),
@@ -425,39 +420,8 @@ class ProfileModule extends PLModule
         $page->assign('i', $id);
         $page->assign('job', array());
         $page->assign('new', true);
-        $res = XDB::query("SELECT  id, name AS label
-                             FROM  profile_job_sector_enum");
-        $page->assign('sectors', $res->fetchAllAssoc());
         require_once "emails.combobox.inc.php";
         fill_email_combobox($page);
-    }
-
-    function handler_ajax_sector(&$page, $id, $jobid, $jobpref, $sect, $ssect = -1)
-    {
-        pl_content_headers("text/html");
-        $res = XDB::iterator("SELECT  id, name, FIND_IN_SET('optgroup', flags) AS optgroup
-                                FROM  profile_job_subsector_enum
-                               WHERE  sectorid = {?}", $sect);
-        $page->changeTpl('profile/jobs.sector.tpl', NO_SKIN);
-        $page->assign('id', $id);
-        $page->assign('subSectors', $res);
-        $page->assign('sel', $ssect);
-        if ($id != -1) {
-            $page->assign('change', 1);
-            $page->assign('jobid', $jobid);
-            $page->assign('jobpref', $jobpref);
-        }
-    }
-    function handler_ajax_sub_sector(&$page, $id, $ssect, $sssect = -1)
-    {
-        pl_content_headers("text/html");
-        $res = XDB::iterator("SELECT  id, name
-                                FROM  profile_job_subsubsector_enum
-                               WHERE  subsectorid = {?}", $ssect);
-        $page->changeTpl('profile/jobs.sub_sector.tpl', NO_SKIN);
-        $page->assign('id', $id);
-        $page->assign('subSubSectors', $res);
-        $page->assign('sel', $sssect);
     }
 
     /**
@@ -475,26 +439,6 @@ class ProfileModule extends PLModule
     function handler_ajax_tree_job_terms(&$page, $filter = JobTerms::ALL)
     {
         JobTerms::ajaxGetBranch(&$page, $filter);
-    }
-
-    function handler_ajax_alternates(&$page, $id, $sssect)
-    {
-        pl_content_headers("text/html");
-        $res = XDB::iterator('SELECT  name
-                                FROM  profile_job_alternates
-                               WHERE  subsubsectorid = {?}
-                            ORDER BY  id',
-                             $sssect);
-        $page->changeTpl('profile/jobs.alternates.tpl', NO_SKIN);
-        $alternates = '';
-        if ($res->total() > 0) {
-            $alternate  = $res->next();
-            $alternates = $alternate['name'];
-            while ($alternate  = $res->next()) {
-                $alternates .= ', ' . $alternate['name'];
-            }
-        }
-        $page->assign('alternates', $alternates);
     }
 
     function handler_ajax_skill(&$page, $cat, $id)
@@ -549,24 +493,7 @@ class ProfileModule extends PLModule
 
         $page->assign_by_ref('profile', $pf);
 
-        /////  recuperations infos referent
-
-        // Sectors
-        $sectors = $subSectors = Array();
-        $res = XDB::iterRow(
-                "SELECT  s.name AS label, ss.name AS label
-                   FROM  profile_mentor_sector      AS m
-              LEFT JOIN  profile_job_sector_enum    AS s  ON(m.sectorid = s.id)
-              LEFT JOIN  profile_job_subsector_enum AS ss ON(m.sectorid = ss.sectorid AND m.subsectorid = ss.id)
-                  WHERE  pid = {?}", $pf->id());
-        while (list($sector, $subSector) = $res->next()) {
-            $sectors[]    = $sector;
-            $subSectors[] = $subSector;
-        }
-        $page->assign_by_ref('sectors', $sectors);
-        $page->assign_by_ref('subSectors', $subSectors);
-
-        // Countries.
+        // Retrieves referents' countries.
         $res = XDB::query(
                 "SELECT  gc.countryFR
                    FROM  profile_mentor_country AS m
@@ -577,35 +504,16 @@ class ProfileModule extends PLModule
         $page->addJsLink('close_on_esc.js');
     }
 
-    function handler_ref_sect(&$page, $sect)
-    {
-        pl_content_headers("text/html");
-        $page->changeTpl('include/field.select.tpl', NO_SKIN);
-        $page->assign('onchange', 'setSSectors()');
-        $page->assign('id', 'ssect_field');
-        $page->assign('name', 'subSector');
-        $it = XDB::iterator("SELECT  pjsse.id, pjsse.name AS field
-                               FROM  profile_job_subsector_enum AS pjsse
-                         INNER JOIN  profile_mentor_sector AS pms ON (pms.sectorid = pjsse.sectorid AND pms.subsectorid = pjsse.id)
-                              WHERE  pjsse.sectorid = {?}
-                           GROUP BY  pjsse.id
-                           ORDER BY  pjsse.name", $sect);
-        $page->assign('list', $it);
-    }
-
-    function handler_ref_country(&$page, $sect, $ssect = '')
+    function handler_ref_country(&$page)
     {
         pl_content_headers("text/html");
         $page->changeTpl('include/field.select.tpl', NO_SKIN);
         $page->assign('name', 'pays_sel');
-        $where = ($ssect ? ' AND ms.subsectorid = {?}' : '');
         $it = XDB::iterator("SELECT  gc.iso_3166_1_a2 AS id, gc.countryFR AS field
                                FROM  geoloc_countries       AS gc
                          INNER JOIN  profile_mentor_country AS mp ON (mp.country = gc.iso_3166_1_a2)
-                         INNER JOIN  profile_mentor_sector  AS ms ON (ms.pid = mp.pid)
-                              WHERE  ms.sectorid = {?} " . $where . "
                            GROUP BY  iso_3166_1_a2
-                           ORDER BY  countryFR", $sect, $ssect);
+                           ORDER BY  countryFR");
         $page->assign('list', $it);
     }
 
@@ -843,16 +751,6 @@ class ProfileModule extends PLModule
         $page->assign('title', 'Gestion des sections');
         $table_editor = new PLTableEditor('admin/sections','profile_section_enum','id');
         $table_editor->describe('text','intitulé',true);
-        $table_editor->apply($page, $action, $id);
-    }
-    function handler_admin_sectors(&$page, $action = 'list', $id = null) {
-        $page->setTitle('Administration - Secteurs');
-        $page->assign('title', 'Gestion des secteurs');
-        $table_editor = new PLTableEditor('admin/sectors', 'profile_job_subsubsector_enum', 'id', true);
-        $table_editor->describe('sectorid', 'id du secteur', false);
-        $table_editor->describe('subsectorid', 'id du sous-secteur', false);
-        $table_editor->describe('name', 'nom', true);
-        $table_editor->describe('flags', 'affichage', true);
         $table_editor->apply($page, $action, $id);
     }
     function handler_admin_networking(&$page, $action = 'list', $id = null) {

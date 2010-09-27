@@ -130,8 +130,6 @@
   <tr class="pair">
     <td class="titre">Emploi</td>
     <td>
-      <a href="admin/sectors">Secteurs</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/jobs">Entreprises</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/corps_enum">Corps</a>

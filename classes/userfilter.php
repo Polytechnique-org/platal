@@ -984,44 +984,6 @@ class UFC_Job_Company implements UserFilterCondition
 }
 // }}}
 
-// {{{ class UFC_Job_Sectorization
-/** Filters users based on the ((sub)sub)sector they work in
- * @param $val The ID of the sector, or an array of such IDs
- * @param $type The kind of search (subsubsector/subsector/sector)
- */
-class UFC_Job_Sectorization implements UserFilterCondition
-{
-    private $val;
-    private $type;
-
-    public function __construct($val, $type = UserFilter::JOB_SECTOR)
-    {
-        self::assertType($type);
-        if (!is_array($val)) {
-            $val = array($val);
-        }
-        $this->val = $val;
-        $this->type = $type;
-    }
-
-    private static function assertType($type)
-    {
-        if ($type != UserFilter::JOB_SECTOR && $type != UserFilter::JOB_SUBSECTOR && $type != UserFilter::JOB_SUBSUBSECTOR) {
-            Platal::page()->killError("Type de secteur non valide.");
-        }
-    }
-
-    public function buildCondition(PlFilter &$uf)
-    {
-        $sub = $uf->addJobSectorizationFilter($this->type);
-        $cond = $sub . '.id = ' . XDB::format('{?}', $this->val);
-        $jsub = $uf->addJobFilter();
-        $cond .= ' AND ' . $uf->getVisibilityCondition($jsub . '.pub');
-        return $cond;
-    }
-}
-// }}}
-
 // {{{ class UFC_Job_Terms
 /** Filters users based on the job terms they assigned to one of their
  * jobs.
@@ -1056,7 +1018,7 @@ class UFC_Job_Terms implements UserFilterCondition
 // {{{ class UFC_Job_Description
 /** Filters users based on their job description
  * @param $description The text being searched for
- * @param $fields The fields to search for (user-defined, ((sub|)sub|)sector)
+ * @param $fields The fields to search for (CV, user-defined)
  */
 class UFC_Job_Description implements UserFilterCondition
 {
@@ -1091,20 +1053,6 @@ class UFC_Job_Description implements UserFilterCondition
         if ($this->fields & UserFilter::JOB_CV && $uf->getVisibilityLevel == ProfileVisibility::VIS_PRIVATE) {
             $uf->requireProfiles();
             $conds[] = 'p.cv ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description);
-        }
-        if ($this->fields & UserFilter::JOB_SECTOR) {
-            $sub = $uf->addJobSectorizationFilter(UserFilter::JOB_SECTOR);
-            $conds[] = $sub . '.name ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description);
-        }
-        if ($this->fields & UserFilter::JOB_SUBSECTOR) {
-            $sub = $uf->addJobSectorizationFilter(UserFilter::JOB_SUBSECTOR);
-            $conds[] = $sub . '.name ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description);
-        }
-        if ($this->fields & UserFilter::JOB_SUBSUBSECTOR) {
-            $sub = $uf->addJobSectorizationFilter(UserFilter::JOB_SUBSUBSECTOR);
-            $conds[] = $sub . '.name ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description);
-            $sub = $uf->addJobSectorizationFilter(UserFilter::JOB_ALTERNATES);
-            $conds[] = $sub . '.name ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description);
         }
         return implode(' OR ', $conds);
     }
@@ -1309,37 +1257,6 @@ class UFC_Mentor_Terms implements UserFilterCondition
     {
         $sub = $uf->addMentorFilter(UserFilter::MENTOR_TERM);
         return $sub . '.jtid_1 = ' . XDB::escape($this->val);
-    }
-}
-// }}}
-
-// {{{ class UFC_Mentor_Sectorization
-/** Filters users based on mentoring (sub|)sector
- * @param $sector ID of (sub)sector
- * @param $type Whether we are looking for a sector or a subsector
- */
-class UFC_Mentor_Sectorization implements UserFilterCondition
-{
-    const SECTOR    = 1;
-    const SUBSECTOR = 2;
-    private $sector;
-    private $type;
-
-    public function __construct($sector, $type = self::SECTOR)
-    {
-        $this->sector = $sector;
-        $this->type = $type;
-    }
-
-    public function buildCondition(PlFilter &$uf)
-    {
-        $sub = $uf->addMentorFilter(UserFilter::MENTOR_SECTOR);
-        if ($this->type == self::SECTOR) {
-            $field = 'sectorid';
-        } else {
-            $field = 'subsectorid';
-        }
-        return $sub . '.' . $field . ' = ' . XDB::format('{?}', $this->sector);
     }
 }
 // }}}
@@ -2608,31 +2525,17 @@ class UserFilter extends PlFilter
     /** JOBS
      */
 
-    const JOB_SECTOR        = 0x0001;
-    const JOB_SUBSECTOR     = 0x0002;
-    const JOB_SUBSUBSECTOR  = 0x0004;
-    const JOB_ALTERNATES    = 0x0008;
-    const JOB_USERDEFINED   = 0x0010;
-    const JOB_CV            = 0x0020;
-
-    const JOB_SECTORIZATION = 0x000F;
-    const JOB_ANY           = 0x003F;
+    const JOB_USERDEFINED = 0x0001;
+    const JOB_CV          = 0x0002;
+    const JOB_ANY         = 0x0003;
 
     /** Joins :
      * pj => profile_job
      * pje => profile_job_enum
-     * pjse => profile_job_sector_enum
-     * pjsse => profile_job_subsector_enum
-     * pjssse => profile_job_subsubsector_enum
-     * pja => profile_job_alternates
      * pjt => profile_job_terms
      */
-    private $with_pj = false;
+    private $with_pj  = false;
     private $with_pje = false;
-    private $with_pjse = false;
-    private $with_pjsse = false;
-    private $with_pjssse = false;
-    private $with_pja = false;
     private $with_pjt = 0;
 
     public function addJobFilter()
@@ -2647,24 +2550,6 @@ class UserFilter extends PlFilter
         $this->addJobFilter();
         $this->with_pje = true;
         return 'pje';
-    }
-
-    public function addJobSectorizationFilter($type)
-    {
-        $this->addJobFilter();
-        if ($type == self::JOB_SECTOR) {
-            $this->with_pjse = true;
-            return 'pjse';
-        } else if ($type == self::JOB_SUBSECTOR) {
-            $this->with_pjsse = true;
-            return 'pjsse';
-        } else if ($type == self::JOB_SUBSUBSECTOR) {
-            $this->with_pjssse = true;
-            return 'pjssse';
-        } else if ($type == self::JOB_ALTERNATES) {
-            $this->with_pja = true;
-            return 'pja';
-        }
     }
 
     /**
@@ -2690,18 +2575,6 @@ class UserFilter extends PlFilter
         }
         if ($this->with_pje) {
             $joins['pje'] = PlSqlJoin::left('profile_job_enum', '$ME.id = pj.jobid');
-        }
-        if ($this->with_pjse) {
-            $joins['pjse'] = PlSqlJoin::left('profile_job_sector_enum', '$ME.id = pj.sectorid');
-        }
-        if ($this->with_pjsse) {
-            $joins['pjsse'] = PlSqlJoin::left('profile_job_subsector_enum', '$ME.id = pj.subsectorid');
-        }
-        if ($this->with_pjssse) {
-            $joins['pjssse'] = PlSqlJoin::left('profile_job_subsubsector_enum', '$ME.id = pj.subsubsectorid');
-        }
-        if ($this->with_pja) {
-            $joins['pja'] = PlSqlJoin::left('profile_job_alternates', '$ME.subsubsectorid = pj.subsubsectorid');
         }
         if ($this->with_pjt > 0) {
             for ($i = 1; $i <= $this->with_pjt; ++$i) {
@@ -2781,8 +2654,7 @@ class UserFilter extends PlFilter
     const MENTOR = 1;
     const MENTOR_EXPERTISE = 2;
     const MENTOR_COUNTRY = 3;
-    const MENTOR_SECTOR = 4;
-    const MENTOR_TERM = 5;
+    const MENTOR_TERM = 4;
 
     public function addMentorFilter($type)
     {
@@ -2797,9 +2669,6 @@ class UserFilter extends PlFilter
         case self::MENTOR_COUNTRY:
             $this->pms['pmc'] = 'profile_mentor_country';
             return 'pmc';
-        case self::MENTOR_SECTOR:
-            $this->pms['pms'] =  'profile_mentor_sector';
-            return 'pms';
         case self::MENTOR_TERM:
             $this->pms['pmt'] = 'profile_mentor_term';
             $this->mjtr = true;

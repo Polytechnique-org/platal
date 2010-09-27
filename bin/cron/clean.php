@@ -47,12 +47,6 @@ query('ALTER TABLE  profile_education_field_enum
           ORDER BY  field');
 query('ALTER TABLE  profile_job_enum
           ORDER BY  name');
-query('ALTER TABLE  profile_job_sector_enum
-          ORDER BY  name');
-query('ALTER TABLE  profile_job_subsector_enum
-          ORDER BY  name');
-query('ALTER TABLE  profile_job_subsubsector_enum
-          ORDER BY  name');
 query('ALTER TABLE  profile_langskill_enum
           ORDER BY  langue_fr');
 query('ALTER TABLE  profile_medal_enum

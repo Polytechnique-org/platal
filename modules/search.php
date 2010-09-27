@@ -307,9 +307,6 @@ class SearchModule extends PLModule
           case 'section':
             $ids = DirEnum::getOptionsIter(DirEnum::SECTIONS);
             break;
-          case 'secteur':
-            $ids = DirEnum::getOptionsIter(DirEnum::SECTORS);
-            break;
           case 'jobterm':
             if (Env::has('jtid')) {
                 JobTerms::ajaxGetBranch(&$page, JobTerms::ONLY_JOBS);

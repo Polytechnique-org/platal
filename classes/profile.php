@@ -94,7 +94,6 @@ class Profile
     const FETCH_JOBS           = 0x000008;
     const FETCH_MEDALS         = 0x000010;
     const FETCH_NETWORKING     = 0x000020;
-    const FETCH_MENTOR_SECTOR  = 0x000040;
     const FETCH_MENTOR_COUNTRY = 0x000080;
     const FETCH_PHONES         = 0x000100;
     const FETCH_JOB_TERMS      = 0x000200;
@@ -695,27 +694,6 @@ class Profile
     {
         $this->jobterms = $jobterms;
         $this->consolidateFields();
-    }
-
-    /* Mentoring
-     */
-    private $mentor_sectors = null;
-    public function setMentoringSectors(ProfileMentoringSectors $sectors)
-    {
-        $this->mentor_sectors = $sectors;
-    }
-
-    public function getMentoringSectors()
-    {
-        if ($this->mentor_sectors == null && !$this->fetched(self::FETCH_MENTOR_SECTOR)) {
-            $this->setMentoringSectors($this->getProfileField(self::FETCH_MENTOR_SECTOR));
-        }
-
-        if ($this->mentor_sectors == null) {
-            return array();
-        } else {
-            return $this->mentor_sectors->sectors;
-        }
     }
 
     private $mentor_countries = null;

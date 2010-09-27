@@ -190,7 +190,6 @@ class UFB_AdvancedSearch extends UserFilterBuilder
             new UFBF_AdminArea('region', 'Région'),
 
             new UFBF_JobCompany('entreprise', 'Entreprise'),
-            new UFBF_JobSector('sector', 'Poste'),
             new UFBF_JobDescription('jobdescription', 'Fonction'),
             new UFBF_JobCv('cv', 'CV'),
             new UFBF_JobTerms('jobterm', 'Mots-clefs'),
@@ -833,29 +832,6 @@ class UFBF_JobCompany extends UFBF_Text
 }
 // }}}
 
-// {{{ class UFBF_JobSector
-class UFBF_JobSector extends UFBF_Mixed
-{
-    protected $direnum = DirEnum::SECTORS;
-    private $onlymentorfield;
-
-    public function __construct($envfieldtext, $envfieldindex, $formtext = '', $onlymentorfield = 'only_referent')
-    {
-        parent::__construct($envfieldtext, $envfieldindex, $formtext);
-        $this->onlymentorfield = $onlymentorfield;
-    }
-
-    protected function buildUFC(UserFilterBuilder &$ufb)
-    {
-        if ($ufb->isOn($this->onlymentorfield)) {
-            return new UFC_Mentor_Sectorization($this->val, UserFilter::JOB_SUBSECTOR);
-        } else {
-            return new UFC_Job_Sectorization($this->val, UserFilter::JOB_SUBSUBSECTOR);
-        }
-    }
-}
-// }}}
-
 // {{{ class UFBF_JobTerms
 class UFBF_JobTerms extends UFBF_Index
 {
@@ -1077,24 +1053,6 @@ class UFBF_MentorTerm extends UFBF_Index
     protected function buildUFC(UserFilterBuilder &$ufb)
     {
         return new UFC_Mentor_Terms($this->val);
-    }
-}
-// }}}
-
-// {{{ class UFBF_MentorSectorization
-class UFBF_MentorSectorization extends UFBF_Index
-{
-    protected $type;
-
-    public function __construct($envfield, $formtext = '', $type = UFC_Mentor_Sectorization::SECTOR)
-    {
-        parent::__construct($envfield, $formtext);
-        $this->type = $type;
-    }
-
-    protected function buildUFC(UserFilterBuilder &$ufb)
-    {
-        return new UFC_Mentor_Sectorization($this->val, $this->type);
     }
 }
 // }}}
