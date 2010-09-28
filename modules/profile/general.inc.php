@@ -523,6 +523,9 @@ class ProfilePageGeneral extends ProfilePage
         $this->settings['search_names']
                                   = new ProfileSettingSearchNames();
         $this->settings['birthdate'] = new ProfileSettingDate();
+        if (!S::user()->isMe($this->owner)) {
+            $this->settings['deathdate'] = new ProfileSettingDate();
+        }
         $this->settings['freetext_pub']
                                   = $this->settings['photo_pub']
                                   = new ProfileSettingPub();
@@ -552,7 +555,8 @@ class ProfilePageGeneral extends ProfilePage
         // Checkout all data...
         $res = XDB::query("SELECT  p.nationality1, p.nationality2, p.nationality3, p.birthdate,
                                    p.email_directory as email_directory, pd.promo AS promo_display,
-                                   p.freetext, p.freetext_pub, p.ax_id AS matricule_ax, pd.yourself
+                                   p.freetext, p.freetext_pub, p.ax_id AS matricule_ax, pd.yourself,
+                                   p.deathdate
                              FROM  profiles              AS p
                        INNER JOIN  profile_display       AS pd ON (pd.pid = p.pid)
                             WHERE  p.pid = {?}", $this->pid());
@@ -615,7 +619,7 @@ class ProfilePageGeneral extends ProfilePage
                                   freetext = {?}, freetext_pub = {?}, email_directory = {?}
                            WHERE  pid = {?}",
                           $this->values['nationality1'], $this->values['nationality2'], $this->values['nationality3'],
-                          preg_replace('@(\d{2})/(\d{2})/(\d{4})@', '\3-\2-\1', $this->values['birthdate']),
+                          ProfileSettingDate::toSQLDate($this->values['birthdate']),
                           $this->values['freetext'], $this->values['freetext_pub'], $new_email, $this->pid());
         }
         if ($this->changed['photo_pub']) {
@@ -647,6 +651,25 @@ class ProfilePageGeneral extends ProfilePage
                                    WHERE  pid = {?}',
                                  $this->values['promo_display'], $this->pid());
                 }
+            }
+        }
+        if ($this->changed['deathdate']) {
+            XDB::execute('UPDATE  profiles
+                             SET  deathdate = {?}, deathdate_rec = NOW()
+                           WHERE  pid = {?} AND deathdate_rec IS NULL',
+                         ProfileSettingDate::toSQLDate($this->values['deathdate']), $this->pid());
+            if (XDB::affectedRows() > 0) {
+                $this->profile->clear();
+                if ($this->owner) {
+                    $this->owner->clear(true);
+                }
+            } else {
+                /* deathdate_rec was not NULL, this is just an update of the death date
+                 */
+                XDB::execute('UPDATE  profiles
+                                 SET  deathdate = {?}
+                               WHERE  pid = {?}',
+                             ProfileSettingDate::toSQLDate($this->values['deathdate']), $this->pid());
             }
         }
     }

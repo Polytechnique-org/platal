@@ -190,6 +190,11 @@ class ProfileSettingDate extends ProfileNoSave
         }
         return $value;
     }
+
+    public static function toSQLDate($value)
+    {
+        return preg_replace('@(\d{2})/(\d{2})/(\d{4})@', '\3-\2-\1', $value);
+    }
 }
 
 abstract class ProfilePage implements PlWizardPage

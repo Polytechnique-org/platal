@@ -131,6 +131,14 @@
     </td>
     <td><input type="text" {if $errors.birthdate}class="error"{/if} name="birthdate" value="{$birthdate}" /></td>
   </tr>
+  {if !$smarty.session.user->isMe($owner)}
+  <tr>
+    <td>
+      <span class="titre">Date de décès</span>
+    </td>
+    <td><input type="text" {if $errors.deathdate}class="error"{/if} name="deathdate" value="{$deathdate}" /></td>
+  </tr>
+  {/if}
   <tr>
     <td>
       <span class="titre">Nationalité</span>
