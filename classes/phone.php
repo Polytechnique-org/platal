@@ -340,7 +340,7 @@ class Phone
         $phones = array();
         foreach ($data as $item) {
             $phone = new Phone($item);
-            $success = ($phone->format() && $success);
+            $success = (($phone->isEmpty() || $phone->format()) && $success);
             if (!$phone->isEmpty()) {
                 $phones[] = call_user_func(array($phone, $function));
             }

@@ -129,7 +129,8 @@ class ProfileSettingPhones implements ProfileSetting
         Phone::savePhones($value, $page->pid(), Phone::LINK_PROFILE);
     }
 
-    public function getText($value) {
+    public function getText($value)
+    {
         return Phone::formArrayToString($value);
     }
 }
