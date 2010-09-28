@@ -146,6 +146,17 @@ abstract class PlUser implements PlUserInterface
         return $this->hruid;
     }
 
+    public function isMe($other)
+    {
+        if (!$other) {
+            return false;
+        } else if ($other instanceof PlUser) {
+            return $other->id() == $this->id();
+        } else {
+            return false;
+        }
+    }
+
     public function bestEmail()
     {
         if (!empty($this->bestalias)) {
