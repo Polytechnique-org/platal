@@ -108,8 +108,9 @@ function chgMainWinLoc(strPage)
 
         {if $owner->login() eq $smarty.session.hruid}
         <a href="javascript:chgMainWinLoc('profile/edit')">{icon name="user_edit" title="Modifier ma fiche"}</a>
+        {elseif hasPerm('edit_directory')}
+        <a href="javascript:chgMainWinLoc('profile/edit/{$profile->hrpid}')">{icon name="user_edit" title="Modifier cette fiche"}</a>
         {/if}
-
       {/if}
     </div>
 

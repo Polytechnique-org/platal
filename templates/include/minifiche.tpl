@@ -74,12 +74,14 @@
     {if $registered || (!$dead && $hasowner)}
     <div>
       {if !$registered && !$dead && $hasowner}
+        {if hasPerm('directory_private')}
         {if !$smarty.session.user->isWatchedUser($profile)}
     <a href="carnet/notifs/add_nonins/{$user->login()}?token={xsrf_token}">{*
     *}{icon name=add title="Ajouter à la liste de mes surveillances"}</a>
         {else}
     <a href="carnet/notifs/del_nonins/{$user->login()}?token={xsrf_token}">{*
     *}{icon name=cross title="Retirer de la liste de mes surveillances"}</a>
+        {/if}
         {/if}
       {elseif $registered}
     <a href="profile/{$profile->hrid()}" class="popup2">{*
@@ -89,6 +91,7 @@
     *}{icon name=vcard title="Afficher la carte de visite"}</a>
     <a href="mailto:{$user->bestEmail()}">{*
     *}{icon name=email title="Envoyer un email"}</a>
+          {if hasPerm('directory_private')}
           {if !$smarty.session.user->isContact($profile)}
     <a href="carnet/contacts?action=ajouter&amp;user={$profile->hrid()}&amp;token={xsrf_token}">{*
     *}{icon name=add title="Ajouter à mes contacts"}</a>
@@ -96,12 +99,18 @@
     <a href="carnet/contacts?action=retirer&amp;user={$profile->hrid()}&amp;token={xsrf_token}">{*
     *}{icon name=cross title="Retirer de mes contacts"}</a>
           {/if}
+          {/if}
         {/if}
       {/if}
     </div>
     {/if}
 
-    {if hasPerm('admin') && $hasowner}
+    {if hasPerm('edit_directory')}
+    <div>
+      [<a href="profile/edit/{$user->login()}">{*
+         *}{icon name=user_edit title="modifier la fiche"}</a>]
+    </div>
+    {elseif hasPerm('admin') && $hasowner}
     <div>
       [{if $registered && !$dead}
       <a href="marketing/private/{$user->login()}">{*
