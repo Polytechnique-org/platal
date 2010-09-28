@@ -135,6 +135,13 @@ class PlIteratorUtils
         $callback = new _GetObjectPropertyCallback($property);
         return array($callback, 'get');
     }
+
+    /** Returns a wrapper around the PlIterator suitable for foreach() iterations
+     */
+    public static function foreachIterator(PlIterator $iterator)
+    {
+        return new SPLIterator($iterator);
+    }
 }
 
 /** Empty iterator
@@ -800,6 +807,49 @@ class _GetObjectPropertyCallback
     {
         $p = $this->property;
         return @$obj->$p;
+    }
+}
+
+// Wrapper class to build a SPL iterator from a PlIterator
+class SPLIterator implements Iterator
+{
+    private $it;
+    private $pos;
+    private $value;
+
+    public function __construct(PlIterator $it)
+    {
+        $this->it = $it;
+        $this->pos = 0;
+        $this->value = $this->it->next();
+    }
+
+    public function rewind()
+    {
+        if ($this->pos != 0) {
+            throw new Exception("Rewind not supported on this iterator");
+        }
+    }
+
+    public function current()
+    {
+        return $this->value;
+    }
+
+    public function key()
+    {
+        return $this->pos;
+    }
+
+    public function next()
+    {
+        ++$this->pos;
+        $this->value = $this->it->next();
+    }
+
+    public function valid()
+    {
+        return !!$this->value;
     }
 }
 
