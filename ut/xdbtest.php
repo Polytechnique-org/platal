@@ -21,6 +21,21 @@
 
 require_once dirname(__FILE__) . '/../include/test.inc.php';
 
+class FormatBlah implements XDBFormat
+{
+    private $text;
+
+    public function __construct($text)
+    {
+        $this->text = $text;
+    }
+
+    public function format()
+    {
+        return 'blah' . $this->text . 'blah';
+    }
+}
+
 class XDBTest extends PlTestCase
 {
     public function testEscapeString()
@@ -50,6 +65,13 @@ class XDBTest extends PlTestCase
     public function testEscapeArray()
     {
         $this->assertSame("(1, 'toto')", XDB::format('{?}', array(1, 'toto')));
+    }
+
+    public function testEscapeFormat()
+    {
+        $this->assertSame('blahblah', XDB::format('{?}', new FormatBlah('')));
+        $this->assertSame('blahblahblah', XDB::format('{?}', new FormatBlah('blah')));
+        $this->assertSame('blahBloumblah', XDB::format('{?}', new FormatBlah('Bloum')));
     }
 }
 
