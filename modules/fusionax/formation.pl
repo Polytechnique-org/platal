@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use utf8;
-open(FILE, "<:encoding(UTF-8)", "Formations.txt") || die ("Erreur d'ouverture");
-open(OUT, ">:encoding(UTF-8)", "Formations_out.txt") || die ("Erreur d'ouverture");
+open(FILE, "<:encoding(UTF-8)", "../../spool/fusionax/Formations.txt") || die ("Erreur d'ouverture");
+open(OUT, ">:encoding(UTF-8)", "../../spool/fusionax/Formations_out.txt") || die ("Erreur d'ouverture");
 
 while (<FILE>)
 {

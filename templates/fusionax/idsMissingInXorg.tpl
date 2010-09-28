@@ -20,10 +20,10 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h2><a href="fusionax">Fusion des annuaires X.org - AX<a> / <a href="fusionax/ids">Identifiants<a> /  Manquants dans l'annuaire d'X.org</h2>
+<h2><a href="fusionax">Fusion des annuaires X.org - AX</a> / <a href="fusionax/ids">Identifiants</a> /  Manquants dans l'annuaire d'X.org</h2>
 
 <p></p>
 
-{if $missingInXorg}
-{include file='fusionax/listFusion.tpl' fusionList=$missingInXorg field1='id_ancien' namefield1='matricule AX'}
+{if t($missingInXorg)}
+{include file='fusionax/listFusion.tpl' fusionList=$missingInXorg field1='ax_id' namefield1='matricule AX'}
 {/if}
