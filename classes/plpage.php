@@ -494,13 +494,11 @@ function core_include($source, &$smarty)
 
 function if_rewrites($source, &$smarty)
 {
-    $perms = 'isset($smarty.session.perms|smarty:nodefaults) && $smarty.session.perms|smarty:nodefaults && $smarty.session.perms';
-    return preg_replace(array('/\{if([^}]*) (\!?)hasPerms\(([^)]+)\)([^}]*)\}/',
-                              '/\{if([^}]*) (\!?)hasPerm\(([^)]+)\)([^}]*)\}/',
-                              '/\{if([^}]*) (\!?)t\(([^)]+)\)([^}]*)\}/'),
-                        array('{if\1 \2(' . $perms . '->hasFlagCombination(\3))\4}',
-                              '{if\1 \2(' . $perms . '->hasFlag(\3))\4}',
-                              '{if\1 \2(isset(\3|smarty:nodefaults) && (\3|smarty:nodefaults))\4}'),
+    $perms = 'isset($smarty.session.user|smarty:nodefaults) && $smarty.session.user';
+    return preg_replace(array('/\{(else)?if([^}]*) (\!?)hasPerms?\(([^)]+)\)([^}]*)\}/',
+                              '/\{(else)?if([^}]*) (\!?)t\(([^)]+)\)([^}]*)\}/'),
+                        array('{\1if\2 \3(' . $perms . '->checkPerms(\4))\5}',
+                              '{\1if\2 \3(isset(\4|smarty:nodefaults) && (\4|smarty:nodefaults))\5}'),
                         $source);
 }
 
