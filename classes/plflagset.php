@@ -21,7 +21,7 @@
 
 /** class for describing flags
  */
-class PlFlagSet implements XDBFormat
+class PlFlagSet extends PlAbstractIterable implements XDBFormat
 {
     /** string that holds the PlFlagSet */
     private $values = array();
@@ -127,6 +127,20 @@ class PlFlagSet implements XDBFormat
     public function format()
     {
         return XDB::escape($this->flags());
+    }
+
+
+    /** Build an iterator for this PlFlagSet.
+     */
+    public function iterate()
+    {
+        $array = array();
+        foreach ($this->values as $key=>$value) {
+            if ($value) {
+                $array[] = $key;
+            }
+        }
+        return PlIteratorUtils::fromArray($array, 1, true);
     }
 }
 
