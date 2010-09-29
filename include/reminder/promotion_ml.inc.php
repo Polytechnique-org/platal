@@ -65,6 +65,11 @@ class ReminderPromotionMl extends Reminder
 
     public static function IsCandidate(User &$user, $candidate)
     {
+        $profile = $user->profile();
+        if (!$profile) {
+            return false;
+        }
+
         // We only test if the user is in her promotion group for it is too
         // expensive to check if she is in the corresponding ML as well.
         $res = XDB::query('SELECT  COUNT(*)

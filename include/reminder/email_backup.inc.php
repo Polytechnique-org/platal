@@ -57,6 +57,10 @@ class ReminderEmailBackup extends Reminder
 
     public static function IsCandidate(User &$user, $candidate)
     {
+        if (!$user->checkPerms(User::PERM_MAIL)) {
+            return false;
+        }
+
         require_once 'emails.inc.php';
         $storage  = new EmailStorage($user, 'imap');
         if ($storage->active) {

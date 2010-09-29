@@ -108,26 +108,27 @@ class EventsModule extends PLModule
         $user = S::user();
 
         /** XXX: Tips and reminder only for user with 'email' permission.
-         * We can do better in the future by storing the required permission(s)
-         * with teh tip/reminder.
+         * We can do better in the future by storing a userfilter
+         * with the tip/reminder.
          */
         if ($user->checkPerms(User::PERM_MAIL)) {
             $page->assign('tips', $this->get_tips());
 
-            // Adds a reminder onebox to the page.
-            require_once 'reminder.inc.php';
-            if (($reminder = Reminder::GetCandidateReminder($user))) {
-                $reminder->Prepare($page);
-            }
+        }
 
-            // Wishes "Happy birthday" when required
-            $profile = $user->profile();
-            if (!is_null($profile)) {
-                if ($profile->next_birthday == date('Y-m-d')) {
-                    $birthyear = (int)date('Y', strtotime($profile->birthdate));
-                    $curyear   = (int)date('Y');
-                    $page->assign('birthday', $curyear - $birthyear);
-                }
+        // Adds a reminder onebox to the page.
+        require_once 'reminder.inc.php';
+        if (($reminder = Reminder::GetCandidateReminder($user))) {
+            $reminder->Prepare($page);
+        }
+
+        // Wishes "Happy birthday" when required
+        $profile = $user->profile();
+        if (!is_null($profile)) {
+            if ($profile->next_birthday == date('Y-m-d')) {
+                $birthyear = (int)date('Y', strtotime($profile->birthdate));
+                $curyear   = (int)date('Y');
+                $page->assign('birthday', $curyear - $birthyear);
             }
         }
 

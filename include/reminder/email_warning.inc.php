@@ -43,6 +43,10 @@ class ReminderEmailWarning extends Reminder
 
     public static function IsCandidate(User &$user, $candidate)
     {
+        if (!$user->checkPerms(User::PERM_MAIL)) {
+            return false;
+        }
+
         return count(S::v('mx_failures', array())) > 0;
     }
 }

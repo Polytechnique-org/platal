@@ -54,6 +54,10 @@ class ReminderGapps extends Reminder
 
     public static function IsCandidate(User &$user, $candidate)
     {
+        if (!$user->checkPerms(User::PERM_MAIL)) {
+            return false;
+        }
+
         require_once 'googleapps.inc.php';
         $isSubscribed = GoogleAppsAccount::account_status($user->id());
         if ($isSubscribed == 'disabled') {
