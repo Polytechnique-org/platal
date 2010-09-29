@@ -118,9 +118,13 @@ class ProfileSettingPhones implements ProfileSetting
                 $phones[] = $phone->toFormArray();
             }
             return $phones;
+        } else {
+            $phones = Phone::formatFormArray($value, $success);
+            if (!$success) {
+                Platal::page()->trigError('Numéro de téléphone invalide');
+            }
+            return $phone;
         }
-
-        return Phone::formatFormArray($value, $success);
     }
 
     public function save(ProfilePage &$page, $field, $value)
