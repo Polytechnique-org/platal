@@ -70,6 +70,36 @@ class UFC_AccountType implements UserFilterCondition
         return XDB::format('a.type IN {?}', $this->types);
     }
 }
+// }}}
+
+// {{{ class UFC_AccountPerm
+/** Filters users who have the given permissions
+ */
+class UFC_AccountPerm implements UserFilterCondition
+{
+    private $perms;
+
+    public function __construct()
+    {
+        $this->perms = pl_flatten(func_get_args());
+    }
+
+    public function buildCondition(PlFilter &$uf)
+    {
+        $uf->requirePerms();
+        $conds = array();
+        foreach ($this->perms as $perm) {
+            $conds[] = XDB::format('FIND_IN_SET({?}, IF(a.user_perms IS NULL, at.perms,
+                                                        CONCAT(at.perms, \',\', a.user_perms)))',
+                                   $perm);
+        }
+        if (empty($conds)) {
+            return self::COND_TRUE;
+        } else {
+            return implode(' OR ', $conds);
+        }
+    }
+}
 
 // {{{ class UFC_Hruid
 /** Filters users based on their hruid
@@ -2104,6 +2134,25 @@ class UserFilter extends PlFilter
             $joins['p'] = PlSqlJoin::left('profiles', '$PID = ap.pid');
         }
         return $joins;
+    }
+
+    /** PERMISSIONS
+     */
+    private $at = false;
+    public function requirePerms()
+    {
+        $this->requireAccounts();
+        $this->at = true;
+        return 'at';
+    }
+
+    protected function permJoins()
+    {
+        if ($this->at) {
+            return array('at' => PlSqlJoin::left('account_types', '$ME.type = a.type'));
+        } else {
+            return array();
+        }
     }
 
     /** DISPLAY
