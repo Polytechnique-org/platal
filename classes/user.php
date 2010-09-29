@@ -327,6 +327,19 @@ class User extends PlUser
         return !is_null($this->profile());
     }
 
+    /** Return true if given a reference to the profile of this user.
+     */
+    public function isMyProfile($other)
+    {
+        if (!$other) {
+            return false;
+        } else if ($other instanceof Profile) {
+            $profile = $this->profile();
+            return $profile && $profile->id() == $other->id();
+        }
+        return false;
+    }
+
     /** Check if the user can edit to given profile.
      */
     public function canEdit(Profile $profile)
