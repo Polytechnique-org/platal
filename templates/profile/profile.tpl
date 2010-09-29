@@ -44,7 +44,7 @@ function chgMainWinLoc(strPage)
     {assign var=photo value=$profile->getPhoto(false)}
     {if $photo}<img alt="Photo de {$profile->fullName()}" src="photo/{$profile->hrid()}{if $with_pending_pic}/req{/if}" width="{$photo->width()}"/>{/if}
 
-    {if $logged && $view eq 'private' && ( $profile->section|smarty:nodefaults || $profile->getBinets()|smarty:nodefaults || ($owner && $owner->groups()|smarty:nodefaults))}
+    {if $logged && $view eq 'private' && ( $profile->section|smarty:nodefaults || $profile->getBinets()|smarty:nodefaults || ($owner && $owner->groups(true,true)|smarty:nodefaults))}
       <h2>À l'X&hellip;</h2>
       {if $profile->section}<div><em class="intitule">Section&nbsp;: </em><span>{$profile->section}</span></div>{/if}
 
@@ -53,10 +53,10 @@ function chgMainWinLoc(strPage)
       <span>{', '|implode:$profile->getBinetsNames()}</span></div>{/if}
 
       {if $owner && $view eq 'private'}
-        {assign var=groups value=$owner->groupNames(true)}
+        {assign var=groups value=$owner->groups(true,true)}
         {if $groups|@count}<div><em class="intitule">Groupe{if count($groups) > 1}s{/if} et institution{if count($groups) > 1}s{/if} X&nbsp;: </em>
         <span><br/>
-        {foreach from=$groups item=group key=gk}{if $gk != 0}, {/if}<span title="{$group.nom}"><a href="{$group.site}">{$group.nom}</a></span>{/foreach}
+        {foreach from=$groups item=group name=groups}{if !$smarty.foreach.groups.first}, {/if}<span title="{$group.nom}"><a href="{$group.site}">{$group.nom}</a></span>{/foreach}
         </span></div>{/if}
       {/if}
 

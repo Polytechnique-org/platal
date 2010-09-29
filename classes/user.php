@@ -584,29 +584,36 @@ class User extends PlUser
 
     // Groupes X
     private $groups = null;
-    public function groups()
+    public function groups($institutions = false, $onlyPublic = false)
     {
         if (is_null($this->groups)) {
-            $this->groups = XDB::fetchAllAssoc('asso_id', 'SELECT  asso_id, perms, comm
-                                                             FROM  group_members
+            $this->groups = XDB::fetchAllAssoc('asso_id', 'SELECT  gm.asso_id, gm.perms, gm.comm,
+                                                                   g.diminutif, g.nom, g.site, g.cat,
+                                                                   g.pub
+                                                             FROM  group_members AS gm
+                                                       INNER JOIN  groups AS g ON (g.id = gm.asso_id)
                                                             WHERE  uid = {?}',
                                                 $this->id());
         }
-        return $this->groups;
-    }
-
-    public function groupNames($institutions = false)
-    {
-        if ($institutions) {
-            $where = ' AND (g.cat = \'GroupesX\' OR g.cat = \'Institutions\')';
+        if (!$institutions && !$onlyPublic) {
+            return $this->groups;
         } else {
-            $where = '';
+            $result = array();
+            foreach ($this->groups as $id=>$data) {
+                if ($institutions) {
+                    if ($data['cat'] != 'GroupesX' && $data['cat'] != 'Institutions') {
+                        continue;
+                    }
+                }
+                if ($onlyPublic) {
+                    if ($data['pub'] != 'public') {
+                        continue;
+                    }
+                }
+                $result[$id] = $data;
+            }
+            return $result;
         }
-        return XDB::fetchAllAssoc('SELECT  g.diminutif, g.nom, g.site
-                                     FROM  group_members AS gm
-                                LEFT JOIN  groups AS g ON (g.id = gm.asso_id)
-                                    WHERE  gm.uid = {?}' . $where,
-                                  $this->id());
     }
 
     /**
