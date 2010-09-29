@@ -53,7 +53,7 @@ class UFC_HasProfile implements UserFilterCondition
 // }}}
 
 // {{{ class UFC_AccountType
-/** Filters users who have the given account types
+/** Filters users who have one of the given account types
  */
 class UFC_AccountType implements UserFilterCondition
 {
@@ -73,7 +73,7 @@ class UFC_AccountType implements UserFilterCondition
 // }}}
 
 // {{{ class UFC_AccountPerm
-/** Filters users who have the given permissions
+/** Filters users who have one of the given permissions
  */
 class UFC_AccountPerm implements UserFilterCondition
 {
@@ -100,6 +100,7 @@ class UFC_AccountPerm implements UserFilterCondition
         }
     }
 }
+// }}}
 
 // {{{ class UFC_Hruid
 /** Filters users based on their hruid
