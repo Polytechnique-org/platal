@@ -931,7 +931,7 @@ class UFBF_Group extends UFBF_Mixed
 // }}}
 
 // {{{ class UFBF_Section
-class UFBF_Section extends UFBF_Index
+class UFBF_Section extends UFBF_Mixed
 {
     protected $direnum = DirEnum::SECTIONS;
 
