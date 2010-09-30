@@ -166,6 +166,9 @@ class Address
                 $mailer->send();
             }
         }
+        if ($this->countryId == '') {
+            $this->countryId = null;
+        }
         $this->geocodeChosen = null;
         $this->phones = Phone::formatFormArray($this->phones, $this->error);
         return !$this->error;
