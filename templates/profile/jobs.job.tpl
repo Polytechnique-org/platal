@@ -20,12 +20,18 @@
 {*                                                                        *}
 {**************************************************************************}
 
+
 <script type="text/javascript" src="javascript/jquery.jstree.js"></script>
 {assign var=jobid value="job_"|cat:$i}
 {assign var=jobpref value="jobs[`$i`]"}
 {assign var=sector_text value="sector_text_"|cat:$i}
 {assign var=sector value="sector_"|cat:$i}
 {assign var=entreprise value="entreprise_"|cat:$i}
+{if !hasPerm('directory_private') && ($job.pub eq 'private') && !$new}
+{assign var=hiddenjob value=true}
+{else}
+{assign var=hiddenjob value=false}
+{/if}
 <div id="{$jobid}">
   <input type="hidden" name="{$jobpref}[removed]" value="0" />
   <input type="hidden" name="{$jobpref}[new]" value="{if $new}1{else}0{/if}" />
@@ -37,7 +43,7 @@
         <div style="float: right">
           <a href="javascript:restoreJob('{$jobid}','{$jobpref}')">{icon name=arrow_refresh title="Restaure l'emploi"}</a>
         </div>
-        Restaurer l'entreprise n°{$i+1}&nbsp;:&nbsp;<span id="{$jobid}_grayed_name"></span>
+        Restaurer l'entreprise n°{$i+1}&nbsp;:&nbsp;{if $hiddenjob}(masquée){else}<span id="{$jobid}_grayed_name"></span>{/if}
       </th>
     </tr>
   </table>
@@ -46,12 +52,19 @@
     <tr>
       <th colspan="2" style="text-align: right">
         <div class="flags" style="float: left; text-align: left">
-          {include file="include/flags.radio.tpl" name="`$jobpref`[pub]" val=$job.pub}
+          {include file="include/flags.radio.tpl" name="`$jobpref`[pub]" val=$job.pub disabled=$hiddenjob}
         </div>
         Entreprise n°{$i+1}&nbsp;:
+        {if $hiddenjob}
+        (masquée)
+        {if !$job.tmp_name}
+        <input type="hidden" name="{$jobpref}[name]" value="{$job.name}" />
+        {/if}
+        {else}
         {if $job.tmp_name}{$job.tmp_name} <small>(en cours de validation)</small>{else}
         <input type="text" class="enterpriseName{if $job.name_error} error{/if}" size="35" maxlength="100"
                name="{$jobpref}[name]" value="{$job.name}" />
+        {/if}
         {/if}
         <a href="javascript:removeJob('{$jobid}','{$jobpref}')">
           {icon name=cross title="Supprimer cet emploi"}
@@ -59,9 +72,9 @@
       </th>
     </tr>
     {if !$job.tmp_name && !$job.name}
-    <tr class="{$entreprise}">
+    <tr class="{$entreprise}" {if $hiddenjob}style="display: none"{/if}>
       <td class="center" colspan="2">
-        <small>Si ton entreprise ne figure pas dans la liste,
+        <small>Si l'entreprise ne figure pas dans la liste,
         <a href="javascript:addEntreprise({$i})">clique ici</a> et complète les informations la concernant.</small>
       </td>
     </tr>
@@ -103,10 +116,10 @@
     </tr>
     {/if}
 
-    <tr class="pair">
-      <td colspan="2" class="center" style="font-style: italic">Ta place dans l'entreprise</td>
+    <tr class="pair" {if $hiddenjob}style="display: none"{/if}>
+      <td colspan="2" class="center" style="font-style: italic">Place dans l'entreprise</td>
     </tr>
-    <tr class="pair {$sector_text}">
+    <tr class="pair" ${sector_text} {if $hiddenjob}style="display: none"{/if}>
       <td class="titre">Mots-clefs</td>
       <td class="job_terms">
         <input type="text" class="term_search" size="35"/>
@@ -130,25 +143,25 @@
         </script>
       </td>
     </tr>
-    <tr class="pair">
+    <tr class="pair" {if $hiddenjob}style="display: none"{/if}>
       <td colspan="2" class="term_tree">
       </td>
     </tr>
-    <tr class="pair">
+    <tr class="pair" {if $hiddenjob}style="display: none"{/if}>
       <td class="titre">Description</td>
       <td>
         <input type="text" size="35" maxlength="120" {if $job.description_error}class="error"{/if}
            name="{$jobpref}[description]" value="{$job.description}" />
       </td>
     </tr>
-    <tr class="pair">
+    <tr class="pair" {if $hiddenjob}style="display: none"{/if}>
       <td class="titre">Page&nbsp;perso</td>
       <td>
           <input type="text" size="35" maxlength="255" {if $job.w_rul}class="error"{/if}
                  name="{$jobpref}[w_url]" value="{$job.w_url}" />
       </td>
     </tr>
-    <tr class="pair">
+    <tr class="pair" {if $hiddenjob}style="display: none"{/if}>
       <td colspan="2">
         <div style="float: left">
           <div class="titre">Adresse</div>
@@ -162,9 +175,18 @@
         </div>
       </td>
     </tr>
+    {if $hiddenjob}
+    <tr class="pair" {if $hiddenjob}style="display: none"{/if}>
+      <td colspan="2">
+        <input type="hidden" name="{$jobpref}[w_email]" value="{$job.w_email}" />
+        <input type="hidden" name="{$jobpref}[w_email_pub]" value="{$job.w_email_pub}" />
+      </td>
+    </tr>
+    {else}
     {include file="include/emails.combobox.tpl" name=$jobpref|cat:'[w_email]' val=$job.w_email
              class="pair" i=$i error=$job.w_email_error prefix="w_" pub=$job.w_email_pub id=$i}
-    <tr class="pair">
+    {/if}
+    <tr class="pair" {if $hiddenjob}style="display: none"{/if}>
       <td colspan="2">
         {foreach from=$job.w_phone key=t item=phone}
           <div id="{"`$jobid`_w_phone_`$t`"}" style="clear: both">

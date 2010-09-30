@@ -42,7 +42,7 @@ class ProfileSettingJob implements ProfileSetting
                              );
     }
 
-    public function emptyJob()
+    private function emptyJob()
     {
         $address = new Address();
         $phone = new Phone();
@@ -60,6 +60,74 @@ class ProfileSettingJob implements ProfileSetting
             'w_phone'          => array(0 => $phone->toFormArray()),
             'terms'            => array()
         );
+    }
+
+    private function fetchJobs(ProfilePage $page)
+    {
+        // Build the jobs tree
+        $jobs  = XDB::fetchAllAssoc('SELECT  j.id, j.jobid, je.name,
+                                             j.description, j.email AS w_email,
+                                             j.email_pub AS w_email_pub,
+                                             j.url AS w_url, j.pub
+                                       FROM  profile_job      AS j
+                                  LEFT JOIN  profile_job_enum AS je ON (j.jobid = je.id)
+                                      WHERE  j.pid = {?}
+                                   ORDER BY  j.id',
+                                    $page->pid());
+
+        if (empty($jobs)) {
+            return array($this->emptyJob());
+        }
+
+        $compagnies = array();
+        $backtrack = array();
+        foreach ($jobs as $key=>$job) {
+            $compagnies[] = $job['jobid'];
+            $backtrack[$job['jobid']] = $key;
+        }
+
+        $it = Address::iterate(array($page->pid()), array(Address::LINK_JOB));
+        while ($address = $it->next()) {
+            $jobs[$address->jobid]['w_address'] = $address->toFormArray();
+        }
+        $it = Phone::iterate(array($page->pid()), array(Phone::LINK_JOB));
+        while ($phone = $it->next()) {
+            $jobs[$phone->linkId()]['w_phone'][$phone->id()] = $phone->toFormArray();
+        }
+        $res = XDB::iterator("SELECT  e.jtid, e.full_name, j.jid AS jobid
+                                FROM  profile_job_term_enum AS e
+                          INNER JOIN  profile_job_term AS j USING(jtid)
+                               WHERE  pid = {?}
+                            ORDER BY  j.jid",
+                             $page->pid());
+        while ($term = $res->next()) {
+            $jobid = $term['jobid'];
+            if (!isset($backtrack[$jobid])) {
+                continue;
+            }
+            $job =& $jobs[$backtrack[$jobid]];
+            if (!isset($job['terms'])) {
+                $job['terms'] = array();
+            }
+            $job['terms'][] = $term;
+        }
+
+        $phone = new Phone();
+        $address = new Address();
+        foreach ($jobs as $id => &$job) {
+            if (!isset($job['w_phone'])) {
+                $job['w_phone'] = array(0 => $phone->toFormArray());
+            }
+            if (!isset($job['w_address'])) {
+                $job['w_address'] = $address->toFormArray();
+            }
+
+            $job['w_email_new'] = '';
+            if (!isset($job['w_email_pub'])) {
+                $job['w_email_pub'] = 'private';
+            }
+        }
+        return $jobs;
     }
 
     private function cleanJob(ProfilePage &$page, $jobid, array &$job, &$success)
@@ -118,6 +186,8 @@ class ProfileSettingJob implements ProfileSetting
         unset($job['new']);
     }
 
+
+
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
         $entreprise = ProfileValidate::get_typed_requests($page->pid(), 'entreprise');
@@ -125,11 +195,11 @@ class ProfileSettingJob implements ProfileSetting
 
         $init = false;
         if (is_null($value)) {
-            $value = $page->values['jobs'];
+            $value = $this->fetchJobs($page);
             $init = true;
         }
         $success = true;
-        foreach ($value as $key => &$job) {
+        foreach ($value as $key => $job) {
             $job['name'] = trim($job['name']);
             if ($job['name'] == '' && $entreprise) {
                 $job['tmp_name'] = $entreprise[$entr_val]->name;
@@ -138,7 +208,7 @@ class ProfileSettingJob implements ProfileSetting
                 if ($job['description'] == '' && $job['w_url'] == ''
                     && $job['w_address']['text'] == '' && $job['w_email'] == ''
                     && count($job['w_phone']) >= 1 && $job['w_phone'][0]['display'] == '') {
-                    array_splice($value, $key, 1);
+                    unset($value[$key]);
                     continue;
                 }
 
@@ -152,8 +222,10 @@ class ProfileSettingJob implements ProfileSetting
                 if ($job['name'] == '' && $entreprise) {
                     $entreprise[$entr_val - 1]->clean();
                 }
-                array_splice($value, $key, 1);
+                unset($value[$key]);
+                continue;
             }
+            $value[$key] = $job;
         }
         foreach ($value as $key => &$job) {
             $address = new Address($job['w_address']);
@@ -172,33 +244,44 @@ class ProfileSettingJob implements ProfileSetting
         XDB::execute("DELETE FROM  profile_job
                             WHERE  pid = {?}",
                      $page->pid());
+        XDB::execute("DELETE FROM  profile_job_term
+                            WHERE  pid = {?}",
+                     $page->pid());
         Address::delete($page->pid(), Address::LINK_JOB);
         Phone::deletePhones($page->pid(), Phone::LINK_JOB);
         $terms_values = array();
         foreach ($value as $id => &$job) {
             if (isset($job['name']) && $job['name']) {
                 if (isset($job['jobid']) && $job['jobid']) {
-                    XDB::execute('INSERT INTO  profile_job (pid, id, description, email, url, pub, email_pub, jobid)
+                    XDB::execute('INSERT INTO  profile_job (pid, id, description, email,
+                                                            url, pub, email_pub, jobid)
                                        VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                                 $page->pid(), $id, $job['description'], $job['w_email'], $job['w_url'], $job['pub'], $job['w_email_pub'], $job['jobid']);
+                                 $page->pid(), $id, $job['description'], $job['w_email'],
+                                 $job['w_url'], $job['pub'], $job['w_email_pub'], $job['jobid']);
                 } else {
-                    XDB::execute('INSERT INTO  profile_job (pid, id, description, email, url, pub, email_pub)
+                    XDB::execute('INSERT INTO  profile_job (pid, id, description, email,
+                                                            url, pub, email_pub)
                                        VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                                 $page->pid(), $id, $job['description'], $job['w_email'], $job['w_url'], $job['pub'], $job['w_email_pub']);
+                                 $page->pid(), $id, $job['description'], $job['w_email'],
+                                 $job['w_url'], $job['pub'], $job['w_email_pub']);
                 }
-                $address = new Address(array_merge($job['w_address'], array('pid' => $page->pid(), 'id' => $id, 'type' => Address::LINK_JOB)));
+                $address = new Address(array_merge($job['w_address'],
+                                                   array('pid' => $page->pid(),
+                                                         'id' => $id,
+                                                         'type' => Address::LINK_JOB)));
                 $address->save();
                 Phone::savePhones($job['w_phone'], $page->pid(), Phone::LINK_JOB, $id);
                 if (isset($job['terms'])) {
                     foreach ($job['terms'] as $term) {
-                        $terms_values[] = '('.XDB::escape($page->pid()).', '. XDB::escape($id).', '.XDB::escape($term['jtid']).', "original")';
+                        $terms_values[] = XDB::format('({?}, {?}, {?}, {?})',
+                                                      $page->pid(), $id, $term['jtid'], "original");
                     }
                 }
             }
         }
         if (count($terms_values) > 0) {
-            XDB::execute('INSERT INTO  profile_job_term (pid, jid, jtid, computed)
-                               VALUES  '.implode(', ', $terms_values));
+            XDB::execute('REPLACE INTO  profile_job_term (pid, jid, jtid, computed)
+                                VALUES  '.implode(', ', $terms_values));
         }
     }
 
@@ -273,85 +356,6 @@ class ProfilePageJobs extends ProfilePage
                                 WHERE  pid = {?}",
                               $this->pid());
             $this->values['cv'] = $res->fetchOneCell();
-        }
-
-        // Build the jobs tree
-        $res = XDB::iterRow('SELECT  j.id, j.jobid, je.name, j.description, j.email, j.email_pub,
-                                     j.url, j.pub
-                               FROM  profile_job      AS j
-                          LEFT JOIN  profile_job_enum AS je ON (j.jobid = je.id)
-                              WHERE  j.pid = {?}
-                           ORDER BY  j.id',
-                            $this->pid());
-        $this->values['jobs'] = array();
-
-        $compagnies = array();
-        if ($res->numRows() > 0) {
-            while (list($id, $jobid, $name, $description, $w_email, $w_emailPub, $w_url, $pub) = $res->next()) {
-                $compagnies[] = $jobid;
-                $this->values['jobs'][] = array(
-                    'id'               => $id,
-                    'jobid'            => $jobid,
-                    'name'             => $name,
-                    'description'      => $description,
-                    'pub'              => $pub,
-                    'w_email'          => $w_email,
-                    'w_email_pub'      => $w_emailPub,
-                    'w_url'            => $w_url,
-                );
-            }
-
-            $it = Address::iterate(array($this->pid()), array(Address::LINK_JOB));
-            while ($address = $it->next()) {
-                $this->values['jobs'][$address->jobid]['w_address'] = $address->toFormArray();
-            }
-            $it = Phone::iterate(array($this->pid()), array(Phone::LINK_JOB));
-            while ($phone = $it->next()) {
-                $this->values['jobs'][$phone->linkId()]['w_phone'][$phone->id()] = $phone->toFormArray();
-            }
-            $res = XDB::iterator("SELECT  e.jtid, e.full_name, j.jid AS jobid
-                                    FROM  profile_job_term_enum AS e
-                              INNER JOIN  profile_job_term AS j USING(jtid)
-                                   WHERE  pid = {?}
-                                ORDER BY  j.jid",
-                                 $this->pid());
-            $i = 0;
-            $jobNb = count($this->values['jobs']);
-            while ($term = $res->next()) {
-                $jobid = $term['jobid'];
-                while ($i < $jobNb && $this->values['jobs'][$i]['id'] < $jobid) {
-                    $i++;
-                }
-                if ($i >= $jobNb) {
-                    break;
-                }
-                $job =& $this->values['jobs'][$i];
-                if ($job['id'] != $jobid) {
-                    continue;
-                }
-                if (!isset($job['terms'])) {
-                    $job['terms'] = array();
-                }
-                $job['terms'][] = $term;
-            }
-
-            $phone = new Phone();
-            $address = new Address();
-            foreach ($this->values['jobs'] as $id => &$job) {
-                if (!isset($job['w_phone'])) {
-                    $job['w_phone'] = array(0 => $phone->toFormArray());
-                }
-                if (!isset($job['w_address'])) {
-                    $job['w_address'] = $address->toFormArray();
-                }
-            }
-
-            $job['w_email_new'] = '';
-            if (!isset($job['w_email_pub'])) {
-                $job['w_email_pub'] = 'private';
-            }
-        } else {
-            $this->values['jobs'][] = $this->settings['jobs']->emptyJob();
         }
     }
 
