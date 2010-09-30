@@ -31,12 +31,13 @@
     <td id="public_name">
       {$public_name}
     </td>
-    <td rowspan="2">
+    <td>
       <a href="javascript:toggleNamesAdvanced();">
         {icon name="page_edit" title="Plus de détail"}
       </a>
     </td>
   </tr>
+  {if $viewPrivate}
   <tr>
     <td class="titre">
       {icon name="flag_red" title="site privé"}&nbsp;Affichage privé
@@ -44,7 +45,10 @@
     <td id="private_name">
       {$private_name}
     </td>
+    <td></td>
   </tr>
+  {/if}
+  {if $isMe}
   <tr>
     <td>
       <span class="titre">Comment t'appeller</span><br />
@@ -55,10 +59,12 @@
     </td>
     <td></td>
   </tr>
+  {/if}
   <tr class="names_advanced" {if !$errors.search_names}style="display: none"{/if}>
     <td colspan="3">
-      <span class="titre">Gestion de tes noms, prénoms, surnoms...</span>
-      <span class="smaller">Ils déterminent la façon dont ton nom apparaît sur les annuaires
+      <span class="titre">Gestion des noms, prénoms, surnoms...</span>
+      <span class="smaller">Ils déterminent la façon dont
+      {if $isMe}ton{else}son{/if} nom apparaît sur les annuaires
       en ligne et papier et ta fiche apparaitra quand on cherche un de ces noms. Pour plus
       d'explications sur l'icône suivante
       <a href="profile/name_info" class="popup3">{icon name="information" title="Plus d'infos"}</a>.</span><br/>
@@ -112,8 +118,13 @@
   </tr>
   <tr class="promotion_edition" style="display: none">
     <td colspan="2">
-      Afin de pouvoir être considéré{if $profile->isFemale()}e{/if} à la fois dans ta promotion d'origine et ta
+      {if $isMe}
+      Afin de pouvoir être considéré{""|sex:"e":$profile} à la fois dans ta promotion d'origine et ta
       ou tes promotions d'adoption tu peux entrer ici ta promotion d'adoption.
+      {else}
+      Afin que ce{""|sex:"tte":$profile} camarade soit considé{""|sex:"e":$profile} à la fois dans sa 
+      promotion d'origine et sa promotion d'adoption, tu peux enterr ici sa promotion d'adoption.
+      {/if}
       <br /><span class="smaller"><span class="titre">Attention&nbsp;:</span>
       cette modification ne sera prise en compte qu'après validation par les administrateurs du site.</span>
     </td>
@@ -131,7 +142,7 @@
     </td>
     <td><input type="text" {if $errors.birthdate}class="error"{/if} name="birthdate" value="{$birthdate}" /></td>
   </tr>
-  {if !$smarty.session.user->isMe($owner)}
+  {if !$isMe}
   <tr>
     <td>
       <span class="titre">Date de décès</span>
@@ -197,12 +208,13 @@
   </tr>
   <tr class="{$class}">
     <td class="center" colspan="2">
-      <small>Si ta formation ne figure pas dans la liste,
+      <small>Si la formation que tu cherches ne figure pas dans la liste,
       <a href="mailto:support@{#globals.mail.domain#}">contacte-nous</a>.</small>
     </td>
   </tr>
  </table>
 
+{if $viewPrivate || $isMe}
 <table class="bicol"  style="margin-bottom: 1em"
   summary="Profil&nbsp;: Trombinoscope">
   <tr>
@@ -216,7 +228,7 @@
   </tr>
   <tr>
     <td {if !$nouvellephoto}colspan="2"{/if} class="center" style="width: 49%">
-      <div class="titre">Ta photo actuelle</div>
+      <div class="titre">Photo actuelle</div>
       <img src="photo/{$profile->hrid()}" alt=" [ PHOTO ] " style="max-height: 250px; margin-top: 1em" />
     </td>
     {if $nouvellephoto}
@@ -242,6 +254,7 @@
     </td>
   </tr>
 </table>
+{/if}
 
 <table class="bicol" style="margin-bottom: 1em"
   summary="Profil&nbsp;: Divers">
@@ -300,6 +313,7 @@
       </div>
     </td>
   </tr>
+  {if $viewPrivate || $isMe}
   <tr class="pair">
     <td>
       <div>
@@ -325,6 +339,7 @@
                 id="freetext" rows="8" cols="50" >{$freetext}</textarea>
     </td>
   </tr>
+  {/if}
 </table>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

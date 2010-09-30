@@ -31,7 +31,7 @@
        {if t($disabled)}disabled="disabled"{/if} />
 {icon name="flag_orange" title="transmis à l'AX"}
 {if t($withtext)}<span class="texte">transmis à l'AX</span>{/if}</label>
-<label><input type="radio" name="{$name}" value="private"{if $val eq 'private' && !t($disabled)} checked="checked"{/if}
+<label><input type="radio" name="{$name}" value="private"{if $val eq 'private'} checked="checked"{/if}
        {if t($disabled)}disabled="disabled"{/if} />
 {icon name="flag_red" title="privé"}
 {if t($withtext)}<span class="texte">privé</span>{/if}</label>

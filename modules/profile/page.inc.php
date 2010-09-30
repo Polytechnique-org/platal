@@ -123,7 +123,7 @@ class ProfileSettingPhones implements ProfileSetting
             if (!$success) {
                 Platal::page()->trigError('Numéro de téléphone invalide');
             }
-            return $phone;
+            return $phones;
         }
     }
 
@@ -174,12 +174,23 @@ class ProfileSettingBool extends ProfileNoSave
 
 class ProfileSettingDate extends ProfileNoSave
 {
+    private $allowEmpty;
+
+    public function __construct($allowEmpty = false)
+    {
+        $this->allowEmpty = $allowEmpty;
+    }
+
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
         $success = true;
         if (is_null($value)) {
             $value = preg_replace('/(\d{4})-(\d{2})-(\d{2})/', '\3/\2/\1', @$page->values[$field]);
         } else {
+            $value = trim($value);
+            if (empty($value) && $this->allowEmpty) {
+                return null;
+            }
             $success = preg_match('@(\d{2})/(\d{2})/(\d{4})@', $value, $matches);
             if (!$success) {
                 Platal::page()->trigError("Les dates doivent être au format jj/mm/aaaa");
@@ -378,14 +389,20 @@ abstract class ProfilePage implements PlWizardPage
             }
             return Post::has('next_page') ? PlWizard::NEXT_PAGE : PlWizard::CURRENT_PAGE;
         }
-        Platal::page()->trigError("Certains champs n'ont pas pu être validés, merci de corriger les informations "
-                                . "de ton profil et de revalider ta demande.");
+        $text = "Certains champs n'ont pas pu être validés, merci de corriger les informations "
+              . (S::user()->isMe($this->owner) ? "de ton profil et de revalider ta demande."
+                                               : "du profil et de revalider ta demande.");
+        Platal::page()->trigError($text);
         return PlWizard::CURRENT_PAGE;
     }
 
     public function success()
     {
-        return 'Ton profil a bien été mis à jour.';
+        if (S::user()->isMe($this->owner)) {
+            return 'Ton profil a bien été mis à jour.';
+        } else {
+            return 'Le profil a bien été mis à jour.';
+        }
     }
 }
 

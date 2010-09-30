@@ -523,17 +523,9 @@ class ProfilePageGeneral extends ProfilePage
         $this->settings['search_names']
                                   = new ProfileSettingSearchNames();
         $this->settings['birthdate'] = new ProfileSettingDate();
-        if (!S::user()->isMe($this->owner)) {
-            $this->settings['deathdate'] = new ProfileSettingDate();
-        }
-        $this->settings['freetext_pub']
-                                  = $this->settings['photo_pub']
-                                  = new ProfileSettingPub();
-        $this->settings['freetext']
-                                  = $this->settings['nationality1']
+        $this->settings['nationality1']
                                   = $this->settings['nationality2']
                                   = $this->settings['nationality3']
-                                  = $this->settings['yourself']
                                   = $this->settings['promo_display']
                                   = null;
         $this->settings['email_directory']
@@ -544,10 +536,26 @@ class ProfilePageGeneral extends ProfilePage
         $this->settings['tels']   = new ProfileSettingPhones();
         $this->settings['edus']   = new ProfileSettingEdu();
         $this->settings['promo']  = new ProfileSettingPromo();
-        $this->watched= array('freetext' => true, 'tels' => true,
+        $this->watched= array('tels' => true,
                               'networking' => true, 'edus' => true,
                               'nationality1' => true, 'nationality2' => true,
                               'nationality3' => true, 'search_names' => true);
+
+        /* Some fields editable under condition */
+        if (!S::user()->isMe($this->owner)) {
+            $this->settings['deathdate'] = new ProfileSettingDate(true);
+        }
+        if (S::user()->checkPerms('directory_private')
+            || S::user()->isMyProfile($this->owner)) {
+            $this->settings['yourself']
+                                      = $this->settings['freetext']
+                                      = null;
+            $this->settings['freetext_pub']
+                                      = $this->settings['photo_pub']
+                                      = new ProfileSettingPub();
+            $this->watched['freetext'] = true;
+        }
+
     }
 
     protected function _fetchData()
