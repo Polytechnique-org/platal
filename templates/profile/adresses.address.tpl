@@ -22,6 +22,12 @@
 
 {assign var=prefname value="addresses[$i]"}
 {assign var=prefid value="addresses_$i"}
+{if !hasPerm('directory_private') && ($address.pub eq 'private') && !$new}
+{assign var=hiddenaddr value=true}
+{else}
+{assign var=hiddenaddr value=false}
+{/if}
+
 <table class="bicol" style="display: none; margin-bottom: 1em" id="{$prefid}_grayed">
   <tr>
     <th class="grayed">
@@ -47,10 +53,10 @@
           {icon name=cross title="Supprimer l'adresse"}
         </a>
       </div>
-      Adresse n°{$i+1}
+      Adresse n°{$i+1}{if $hiddenaddr} (masquée){/if}
     </th>
   </tr>
-  <tr>
+  <tr {if $hiddenaddr}style="display: none"{/if}>
     <td>
       <div style="margin-bottom: 0.2em" class="flags">
         {include file="include/flags.radio.tpl" name="`$prefname`[pub]" val=$address.pub}
@@ -100,7 +106,7 @@
       </div>
     </td>
   </tr>
-  <tr class="pair">
+  <tr class="pair" {if $hiddenaddr}style="display: none"{/if}>
     <td>
       {foreach from=$address.phones key=t item=tel}
         <div id="{"`$prefid`_tel_`$t`"}" style="clear: both">
