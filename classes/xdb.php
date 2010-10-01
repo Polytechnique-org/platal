@@ -243,6 +243,11 @@ class XDB
         return self::queryv($query)->fetchAllRow($args[0], $args[1]);
     }
 
+    public static function rawFetchAllRow($query, $id = false, $keep_array = false)
+    {
+        return self::rawQuery($query)->fetchAllRow($id, $keep_array);
+    }
+
     /** Fetch all rows returned by the given query.
      * This functions can take 2 optional arguments (cf XDBResult::fetchAllAssoc()).
      * Optional arguments are given *before* the query.
@@ -253,10 +258,20 @@ class XDB
         return self::queryv($query)->fetchAllAssoc($args[0], $args[1]);
     }
 
+    public static function rawFetchAllAssoc($query, $id = false, $keep_array = false)
+    {
+        return self::rawQuery($query)->fetchAllAssoc($id, $keep_array);
+    }
+
     public static function fetchOneCell()
     {
         list($args, $query) = self::findQuery(func_get_args());
         return self::queryv($query)->fetchOneCell();
+    }
+
+    public static function rawFetchOneCell($query)
+    {
+        return self::rawQuery($query)->fetchOneCell();
     }
 
     public static function fetchOneRow()
@@ -265,10 +280,20 @@ class XDB
         return self::queryv($query)->fetchOneRow();
     }
 
+    public static function rawFetchOneRow($query)
+    {
+        return self::rawQuery($query)->fetchOneRow();
+    }
+
     public static function fetchOneAssoc()
     {
         list($args, $query) = self::findQuery(func_get_args());
         return self::queryv($query)->fetchOneAssoc();
+    }
+
+    public static function rawFetchOneAssoc($query)
+    {
+        return self::rawQuery($query)->fetchOneAssoc();
     }
 
     /** Fetch a column from the result of the given query.
@@ -278,7 +303,12 @@ class XDB
     public static function fetchColumn()
     {
         list($args, $query) = self::findQuery(func_get_args(), array(0));
-        return self::queryv($query)->fetchColumn();
+        return self::queryv($query)->fetchColumn($args[0]);
+    }
+
+    public static function rawFetchColumn($query, $key = 0)
+    {
+        return self::rawQuery($query)->fetchColumn($key);
     }
 
     public static function insertId()
