@@ -1777,10 +1777,10 @@ class UserFilter extends PlFilter
         $this->buildQuery();
         $token = $this->grouper->getGroupToken($this);
 
-        $groups = XDB::fetchAllRow('SELECT ' . $token . ', COUNT(a.uid)
-                                   ' . $this->query . '
-                                   GROUP BY  ' . $token,
-                                   0);
+        $groups = XDB::rawFetchAllRow('SELECT ' . $token . ', COUNT(a.uid)
+                                      ' . $this->query . '
+                                      GROUP BY  ' . $token,
+                                      0);
         return $groups;
     }
 
@@ -1790,10 +1790,10 @@ class UserFilter extends PlFilter
         $this->buildQuery();
         $token = $this->grouper->getGroupToken($this);
 
-        $groups = XDB::fetchAllRow('SELECT ' . $token . ', COUNT(p.pid)
-                                   ' . $this->query . '
-                                   GROUP BY  ' . $token,
-                                   0);
+        $groups = XDB::rawFetchAllRow('SELECT ' . $token . ', COUNT(p.pid)
+                                      ' . $this->query . '
+                                      GROUP BY  ' . $token,
+                                      0);
         return $groups;
     }
 
@@ -1806,11 +1806,11 @@ class UserFilter extends PlFilter
         if (!empty($uids)) {
             $cond = XDB::format(' AND a.uid IN {?}', $uids);
         }
-        $fetched = XDB::fetchColumn('SELECT SQL_CALC_FOUND_ROWS  a.uid
-                                    ' . $this->query . $cond . '
-                                   GROUP BY  a.uid
-                                    ' . $this->orderby . '
-                                    ' . $lim);
+        $fetched = XDB::rawFetchColumn('SELECT SQL_CALC_FOUND_ROWS  a.uid
+                                       ' . $this->query . $cond . '
+                                       GROUP BY  a.uid
+                                       ' . $this->orderby . '
+                                       ' . $lim);
         $this->lastusercount = (int)XDB::fetchOneCell('SELECT FOUND_ROWS()');
         return $fetched;
     }
@@ -1824,11 +1824,11 @@ class UserFilter extends PlFilter
         if (!is_null($pids)) {
             $cond = XDB::format(' AND p.pid IN {?}', $pids);
         }
-        $fetched = XDB::fetchColumn('SELECT  SQL_CALC_FOUND_ROWS  p.pid
-                                    ' . $this->query . $cond . '
-                                   GROUP BY  p.pid
-                                    ' . $this->orderby . '
-                                    ' . $lim);
+        $fetched = XDB::rawFetchColumn('SELECT  SQL_CALC_FOUND_ROWS  p.pid
+                                       ' . $this->query . $cond . '
+                                       GROUP BY  p.pid
+                                       ' . $this->orderby . '
+                                       ' . $lim);
         $this->lastprofilecount = (int)XDB::fetchOneCell('SELECT FOUND_ROWS()');
         return $fetched;
     }
@@ -1847,8 +1847,9 @@ class UserFilter extends PlFilter
     {
         $this->requireAccounts();
         $this->buildQuery();
-        $count = (int)XDB::fetchOneCell('SELECT  COUNT(*)
-                                        ' . $this->query . XDB::format(' AND a.uid = {?}', $user->id()));
+        $count = (int)XDB::rawFetchOneCell('SELECT  COUNT(*)
+                                           ' . $this->query
+                                             . XDB::format(' AND a.uid = {?}', $user->id()));
         return $count == 1;
     }
 
@@ -1858,8 +1859,9 @@ class UserFilter extends PlFilter
     {
         $this->requireProfiles();
         $this->buildQuery();
-        $count = (int)XDB::fetchOneCell('SELECT  COUNT(*)
-                                        ' . $this->query . XDB::format(' AND p.pid = {?}', $profile->id()));
+        $count = (int)XDB::rawFetchOneCell('SELECT  COUNT(*)
+                                           ' . $this->query
+                                             . XDB::format(' AND p.pid = {?}', $profile->id()));
         return $count == 1;
     }
 
@@ -2010,7 +2012,7 @@ class UserFilter extends PlFilter
         if (is_null($this->lastusercount)) {
             $this->requireAccounts();
             $this->buildQuery();
-            return (int)XDB::fetchOneCell('SELECT  COUNT(DISTINCT a.uid)
+            return (int)XDB::rawFetchOneCell('SELECT  COUNT(DISTINCT a.uid)
                                           ' . $this->query);
         } else {
             return $this->lastusercount;
@@ -2022,7 +2024,7 @@ class UserFilter extends PlFilter
         if (is_null($this->lastprofilecount)) {
             $this->requireProfiles();
             $this->buildQuery();
-            return (int)XDB::fetchOneCell('SELECT  COUNT(DISTINCT p.pid)
+            return (int)XDB::rawFetchOneCell('SELECT  COUNT(DISTINCT p.pid)
                                           ' . $this->query);
         } else {
             return $this->lastprofilecount;
