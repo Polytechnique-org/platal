@@ -10,19 +10,20 @@ UPDATE  accounts AS a
                         INNER JOIN  account_profiles AS ap ON (ap.uid = pd.pid AND FIND_IN_SET('owner', perms))
                              WHERE  a.uid = ap.uid);
 
-ALTER TABLE account_types
+  ALTER TABLE account_types
 CHANGE COLUMN perms perms SET('groups', 'mail', 'directory_ax', 'directory_private',
-                              'edit_directory', 'forums', 'lists', 'payment') NOT NULL;
+                              'edit_directory', 'forums', 'lists', 'payment') NOT NULL,
+   ADD COLUMN description TEXT DEFAULT NULL;
 
-REPLACE INTO account_types VALUES ('x', 'groups,mail,directory_private,forums,lists,payment'),
-                                  ('master', 'groups,directory_private,forums,lists,payment'),
-                                  ('phd', 'groups,directory_private,forums,lists,payment'),
-                                  ('pi', 'groups,forums,lists'),
-                                  ('ax', 'groups,directory_ax,edit_directory'),
-                                  ('xnet', 'groups'),
-                                  ('school', 'groups,directory_ax'),
-                                  ('fx', 'groups,directory_ax'),
-                                  ('virtual', '');
+REPLACE INTO account_types VALUES ('x', 'groups,mail,directory_private,forums,lists,payment', 'Polytechnicien'),
+                                  ('master', 'groups,directory_private,forums,lists,payment', 'Master de l\'X'),
+                                  ('phd', 'groups,directory_private,forums,lists,payment',    'Docteur de l\'X'),
+                                  ('pi', 'groups,forums,lists', 'Elève du programme international'),
+                                  ('ax', 'groups,directory_ax,edit_directory', 'Secrétariat de l\'AX'),
+                                  ('xnet', 'groups', NULL),
+                                  ('school', 'groups,directory_ax', 'Personnel de l\'X'),
+                                  ('fx', 'groups,directory_ax', 'Personnel de la FX'),
+                                  ('virtual', '', NULL);
 
 
 -- vim:set syntax=mysql:
