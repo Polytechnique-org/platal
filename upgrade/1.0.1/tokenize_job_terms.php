@@ -1,7 +1,6 @@
 #!/usr/bin/php5
 <?php
 require_once 'connect.db.inc.php';
-require_once 'class/jobterms.php';
 
 $globals->debug = 0; //do not store backtraces
 
