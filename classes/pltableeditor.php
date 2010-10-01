@@ -325,15 +325,15 @@ class PLTableEditor
                         $update[] = $field . ' = ' . $value;
                     }
                     $update = implode(', ', $update);
-                    XDB::execute("UPDATE {$this->table}
-                                     SET {$update}
-                                   WHERE {$this->idfield} = " . XDB::escape($id) . "
-                                         AND {$this->whereclause}");
+                    XDB::rawExecute("UPDATE {$this->table}
+                                        SET {$update}
+                                      WHERE {$this->idfield} = " . XDB::escape($id) . "
+                                            AND {$this->whereclause}");
                 } else {
                     $fields = implode(', ', array_keys($values));
                     $values = implode(', ', $values);
-                    XDB::execute("INSERT INTO  {$this->table} ({$fields})
-                                       VALUES  ({$values})");
+                    XDB::rawExecute("INSERT INTO  {$this->table} ({$fields})
+                                          VALUES  ({$values})");
                 }
                 if ($id !== false && $id !== null) {
                     $page->trigSuccess("L'entrée ".$id." a été mise à jour.");
