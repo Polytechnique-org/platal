@@ -122,6 +122,11 @@ class XDB
         return self::queryv(func_get_args());
     }
 
+    public static function rawQuery($query)
+    {
+        return new XDBResult($query);
+    }
+
     public static function format()
     {
         return self::prepare(func_get_args());
@@ -180,14 +185,33 @@ class XDB
         return self::run(XDB::prepare($args));
     }
 
+    public static function rawExecute($query)
+    {
+        global $globals;
+        if ($globals->mode != 'rw') {
+            return;
+        }
+        return self::run($query);
+    }
+
     public static function iterator()
     {
         return new XDBIterator(self::prepare(func_get_args()));
     }
 
+    public static function rawIterator($query)
+    {
+        return new XDBIterator($query);
+    }
+
     public static function iterRow()
     {
         return new XDBIterator(self::prepare(func_get_args()), MYSQL_NUM);
+    }
+
+    public static function rawIterRow($query)
+    {
+        return new XDBIterator($query, MYSQL_NUM);
     }
 
     private static function findQuery($params, $default = array())
