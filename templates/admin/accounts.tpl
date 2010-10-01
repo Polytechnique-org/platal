@@ -47,6 +47,7 @@ function add_user_to_url(f) {
   </form>
 </fieldset>
 
+{if $users->total() > 0}
 <fieldset>
   <legend>Liste des comptes manuels</legend>
 
@@ -58,6 +59,7 @@ function add_user_to_url(f) {
     {/iterate}
   </ul>
 </fieldset>
+{/if}
 
 <fieldset>
   <legend>Nouveau compte</legend>
@@ -82,11 +84,11 @@ function add_user_to_url(f) {
         </tr>
         <tr>
           <td class="titre">Nom</td>
-          <td><input type="text" name="firstname" size=60 maxlength="255" value="" /></td>
+          <td><input type="text" name="lastname" size=60 maxlength="255" value="" /></td>
         </tr>
         <tr>
           <td class="titre">Prénom</td>
-          <td><input type="text" name="lastname" size=60" maxlength="255" value="" /></td>
+          <td><input type="text" name="firstname" size=60" maxlength="255" value="" /></td>
         </tr>
         <tr>
           <td class="titre">Sexe</td>

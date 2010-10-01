@@ -413,7 +413,10 @@ class AdminModule extends PLModule
         if (Post::has('account_deletion_confirmation')) {
             $uid = $user->id();
             $name = $user->fullName();
-            $user->profile()->clear();
+            $profile = $user->profile();
+            if ($profile) {
+                $user->profile()->clear();
+            }
             $user->clear(true);
             $page->trigSuccess("L'utilisateur $name ($uid) a bien été supprimé.");
         }
