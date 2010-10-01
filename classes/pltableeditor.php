@@ -281,55 +281,69 @@ class PLTableEditor
         if ($action == 'update') {
             S::assert_xsrf_token();
 
-            $values = "";
             $cancel = false;
+            $values = array();
+            $new = false;
             foreach ($this->vars as $field => $descr) {
-                if ($values) $values .= ',';
-                if (($field == $this->idfield) && !$this->idfield_editable) {
-                    if ($id === false || $id === null) {
-                        $val = "'".addslashes(XDB::fetchOneCell("SELECT MAX( {$field} ) + 1 FROM {$this->table}"))."'";
+                $val = null;
+                $new = ($id === false || $id === null);
+                if ($field == $this->idfield && !$this->idfield_editable) {
+                    if ($new) {
+                        $val = XDB::fetchOneCell("SELECT MAX({$field}) + 1
+                                                    FROM {$this->table}");
                     } else {
-                        $val = "'".addslashes($id)."'";
+                        continue;
                     }
                 } elseif ($descr['Type'] == 'set') {
-                    $val = "";
-                    if (Post::has($field)) foreach (Post::v($field) as $option) {
-                        if ($val) $val .= ',';
-                        $val .= $option;
+                    $val = new PlFlagset();
+                    if (Post::has($field)) {
+                        foreach (Post::v($field) as $option) {
+                            $val->addFlag($option);
+                        }
                     }
-                    $val = "'".addslashes($val)."'";
                 } elseif ($descr['Type'] == 'checkbox') {
-                    $val = Post::has($field)?"'".addslashes($descr['Value'])."'":"''";
+                    $val = Post::has($field)? $descr['Value'] : "";
                 } elseif (Post::has($field)) {
                     $val = Post::v($field);
                     if ($descr['Type'] == 'timestamp') {
                         $val = preg_replace('/([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})/', '\3\2\1\4\5\6', $val);
-                    }
-                    elseif ($descr['Type'] == 'date') {
+                    } else if ($descr['Type'] == 'date') {
                         $val = preg_replace('/([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})/', '\3-\2-\1', $val);
-                    }
-                    elseif ($descr['Type'] == 'ip_address') {
+                    } elseif ($descr['Type'] == 'ip_address') {
                         $val = ip2long($val);
                     }
-                    $val = "'".addslashes($val)."'";
                 } else {
                     $cancel = true;
                     $page->trigError("Il manque le champ ".$field);
                 }
-                $values .= $val;
+                $values[$field] = XDB::escape($val);
             }
             if (!$cancel) {
-                if ($this->idfield_editable && $id != Post::v($this->idfield))
-                    XDB::execute("UPDATE {$this->table} SET {$this->idfield} = {?} WHERE {$this->idfield} = {?} AND {$this->whereclause}", Post::v($this->idfield), $id);
-                XDB::execute("REPLACE INTO {$this->table} VALUES ($values)");
+                if (!$new) {
+                    $update = array();
+                    foreach ($values as $field => $value) {
+                        $update[] = $field . ' = ' . $value;
+                    }
+                    $update = implode(', ', $update);
+                    XDB::execute("UPDATE {$this->table}
+                                     SET {$update}
+                                   WHERE {$this->idfield} = " . XDB::escape($id) . "
+                                         AND {$this->whereclause}");
+                } else {
+                    $fields = implode(', ', array_keys($values));
+                    $values = implode(', ', $values);
+                    XDB::execute("INSERT INTO  {$this->table} ({$fields})
+                                       VALUES  ({$values})");
+                }
                 if ($id !== false && $id !== null) {
                     $page->trigSuccess("L'entrée ".$id." a été mise à jour.");
                 } else {
                     $page->trigSuccess("Une nouvelle entrée a été créée.");
                     $id = XDB::insertId();
                 }
-            } else
+            } else {
                 $page->trigError("Impossible de mettre à jour.");
+            }
             if (!$this->auto_return) {
                 return $this->apply($page, 'edit', $id);
             }
