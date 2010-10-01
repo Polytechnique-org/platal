@@ -22,7 +22,7 @@
 function smarty_function_profile($params, &$smarty)
 {
     $params = new PlDict($params);
-    $with_promo = $params->b('promo', false);
+    $with_promo = $params->b('promo', false) || $params->b('cat', false);
     $with_sex   = $params->b('sex', true);
     $with_link  = $params->b('link', true);
     $with_groupperms = $params->b('groupperms', true);
@@ -36,7 +36,7 @@ function smarty_function_profile($params, &$smarty)
         $name = '&bull;' . $name;
     }
     if ($with_promo) {
-        $promo = $user->promo();
+        $promo = $user->category();
         if ($promo) {
             $name .= ' (' . pl_entities($promo) . ')';
         }
