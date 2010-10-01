@@ -93,7 +93,7 @@
         <div>
           <label>
             <input type="checkbox" name="{$prefname}[mail]" {if $address.mail}checked="checked"{/if} />
-            on peut m'y envoyer du courrier par la poste
+            on peut {if $isMe}m'{/if}y envoyer du courrier par la poste
           </label>
         </div>
         <div>

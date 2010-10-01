@@ -123,7 +123,7 @@
       ou tes promotions d'adoption tu peux entrer ici ta promotion d'adoption.
       {else}
       Afin que ce{""|sex:"tte":$profile} camarade soit considé{""|sex:"e":$profile} à la fois dans sa 
-      promotion d'origine et sa promotion d'adoption, tu peux enterr ici sa promotion d'adoption.
+      promotion d'origine et sa promotion d'adoption, tu peux entrer ici sa promotion d'adoption.
       {/if}
       <br /><span class="smaller"><span class="titre">Attention&nbsp;:</span>
       cette modification ne sera prise en compte qu'après validation par les administrateurs du site.</span>
