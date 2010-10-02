@@ -25,13 +25,18 @@ function smarty_function_profile($params, &$smarty)
     $with_promo = $params->b('promo', false) || $params->b('cat', false);
     $with_sex   = $params->b('sex', true);
     $with_link  = $params->b('link', true);
+    $with_dir   = $params->b('directory', true);
     $with_groupperms = $params->b('groupperms', true);
     $user = $params->v('user');
     if (is_int($user) || ctype_digit($user)) {
         $user = User::getWithUID($user);
     }
 
-    $name = pl_entities($user->directoryName());
+    if ($with_dir) {
+        $name = pl_entities($user->directoryName());
+    } else {
+        $name = pl_entities($user->fullName());
+    }
     if ($with_sex && $user->isFemale()) {
         $name = '&bull;' . $name;
     }

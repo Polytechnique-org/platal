@@ -35,8 +35,7 @@
       <td>raison (pour les refus)&nbsp;:
         <textarea cols='50' rows='10' name='reason' id='raison'>
 -- 
-{assign var="profile" value=$smarty.session.user->profile()}
-{$smarty.session.prenom} {$smarty.session.nom} ({$profile->promo()})
+{profile user=$smarty.session.user promo=true directory=false link=false sex=false}
 </textarea>
       </td>
     </tr>
