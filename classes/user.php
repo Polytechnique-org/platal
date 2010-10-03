@@ -611,7 +611,7 @@ class User extends PlUser
             $result = array();
             foreach ($this->groups as $id=>$data) {
                 if ($institutions) {
-                    if ($data['cat'] != 'GroupesX' && $data['cat'] != 'Institutions') {
+                    if ($data['cat'] != Goup::CAT_GROUPESX && $data['cat'] != Group::CAT_INSTITUTIONS) {
                         continue;
                     }
                 }

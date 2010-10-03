@@ -21,6 +21,11 @@
 
 class Group
 {
+    const CAT_GROUPESX     = "GroupesX";
+    const CAT_BINETS       = "Binets";
+    const CAT_PROMOTIONS   = "Promotions";
+    const CAT_INSTITUTIONS = "Institutions";
+
     public $id;
     public $shortname;
     private $data = array();
@@ -54,9 +59,12 @@ class Group
 
     private function getUF($admin = false, $extra_cond = null, $sort = null)
     {
-        $cond = new UFC_Group($this->id, $admin);
+        $cond = new PFC_And(new UFC_Group($this->id, $admin), new PFC_Not(new UFC_Dead()));
         if (!is_null($extra_cond)) {
-            $cond = new PFC_And($cond, $extra_cond);
+            $cond->addChild($extra_cond);
+        }
+        if ($this->cat == self::CAT_PROMOTIONS) {
+            $cond->addChild(new UFC_Registered());
         }
         return new UserFilter($cond, $sort);
     }
