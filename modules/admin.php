@@ -671,6 +671,10 @@ class AdminModule extends PLModule
         $page->assign('lastlogin', $lastlogin);
         $page->assign('host', $host);
 
+        // Display mailing lists
+        $list = new MMList(S::user());
+        $page->assign('mlists', $list->get_all_user_lists($user->forlifeEmail()));
+
         // Display active aliases.
         $page->assign('virtuals', $user->emailAliases());
         $page->assign('aliases', XDB::iterator("SELECT  alias, type='a_vie' AS for_life,

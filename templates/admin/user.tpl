@@ -303,6 +303,26 @@ $(document).ready(function() {
   </table>
 </form>
 
+<h1>Groupes dont l'utilisateur est membre</h1>
+
+<table class="bicol">
+  <tr>
+    <th>Nom du groupe</th>
+    <th>Permissions</th>
+  </tr>
+  {foreach from=$user->groups() item=group}
+  <tr class="impair">
+    <td>{$group.nom}</td>
+    <td style="text-align: right">
+      {$group.perms}
+      <a href="http://www.polytechnique.net/{$group.diminutif}/member/{$user->hruid}">
+      {icon name="user_edit" title="Modifier l'inscription"}
+      </a>
+    </td>
+  </tr>
+  {/foreach}
+</table>
+
 </div>
 
 <div id="emails">
@@ -445,6 +465,28 @@ $(document).ready(function() {
 
 <h1>Autres adresses de l'utilisateur</h1>
 
+<table class="bicol">
+  <tr>
+    <th colspan="3">Mailing lists auquelles l'utilisateur appartient</th>
+  </tr>
+  {foreach from=$mlists item=mlist}
+  <tr>
+    <td>
+      <a href="http://listes.polytechnique.org/members/{$mlist.addr|replace:"@":"_"}">
+      {$mlist.addr}
+      </a>
+    </td>
+    <td>
+      <input type="checkbox" disabled="disabled" {if $mlist.sub}checked="checked"{/if} /> Membre
+    </td>
+    <td>
+      <input type="checkbox" disabled="disabled" {if $mlist.own}checked="checked"{/if} /> Modérateur
+    </td>
+  </tr>
+  {/foreach}
+</table>
+
+<br />
 <table class="bicol">
   <tr>
     <th>Virtual aliases auquel l'utilisateur appartient</th>
