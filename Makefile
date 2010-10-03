@@ -40,6 +40,10 @@ q:
 %: %.in Makefile ChangeLog
 	sed -e 's,@VERSION@,$(VERSION),g' $< > $@
 
+up: update
+update:
+	@git fetch && git rebase `git symbolic-ref HEAD | sed -e 's~refs/heads/~origin/~'` && git submodule update
+
 ################################################################################
 # targets
 
@@ -243,3 +247,4 @@ restart-listrpc: stop-listrpc start-listrpc
 .PHONY: wiki build-wiki
 .PHONY: banana banana-sub htdocs/images/banana htdocs/css/banana.css
 .PHONY: start-listrpc start-listrpc-fg stop-listrpc restart-listrpc
+.PHONY: up update
