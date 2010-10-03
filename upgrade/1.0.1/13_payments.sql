@@ -4,7 +4,7 @@ CREATE TABLE payment_bankaccounts (
   account varchar(23) NOT NULL,
   owner varchar(100) NOT NULL,
   status set('new','used','old') NOT NULL default 'new'
-);
+) ENGINE=InnoDB, CHARSET=utf8;
 
 #INSERT INTO payment_bankaccounts VALUES (NULL,,"30002004690000008524R29","Amis de l'Espace Dirigea","used");
 INSERT INTO payment_bankaccounts VALUES (NULL,239,"10207001172019602580784","ASCCX","used");
@@ -14,8 +14,8 @@ INSERT INTO payment_bankaccounts VALUES (NULL,42,"30002004200000009372U74","AX (
 INSERT INTO payment_bankaccounts VALUES (NULL,31,"10107001820002105034095","Binet Point Gamma","used");
 INSERT INTO payment_bankaccounts VALUES (NULL,73,"30003020600003729601589","GTX","used");
 INSERT INTO payment_bankaccounts VALUES (NULL,246,"20041000012241609M02035","Humanix - Jacques Bellev","used");
-#INSERT INTO payment_bankaccounts VALUES (NULL,,"10107001820092105033751","Kes des élèves","used");
-INSERT INTO payment_bankaccounts VALUES (NULL,214,"30003022160005198020072","Khomiss (Aurélien Lajoie","used");
+#INSERT INTO payment_bankaccounts VALUES (NULL,,"10107001820092105033751","Kes des Ã©lÃ¨ves","used");
+INSERT INTO payment_bankaccounts VALUES (NULL,214,"30003022160005198020072","Khomiss (AurÃ©lien Lajoie","used");
 #INSERT INTO payment_bankaccounts VALUES (NULL,,"30003021900002011521283","Maison des X","used");
 INSERT INTO payment_bankaccounts VALUES (NULL,181,"10107001820012105055968","Raid Polytechnique 2004","used");
 INSERT INTO payment_bankaccounts VALUES (NULL,165,"20041010123576371A03369","Sabix","used");
@@ -50,7 +50,7 @@ CREATE TABLE payment_reconcilations (
   sum_amounts DECIMAL(9,2) NOT NULL, # transaction amount, before taking the commission
   sum_commissions DECIMAL(9,2) NOT NULL,
   comments text NOT NULL
-);
+) ENGINE=InnoDB, CHARSET=utf8;
 
 ALTER TABLE payment_transactions ADD method_id INTEGER DEFAULT NULL AFTER id; # NULL if not initiated from the site
 ALTER TABLE payment_transactions CHANGE timestamp ts_confirmed DATETIME DEFAULT NULL; # NULL = not confirmed
@@ -68,7 +68,7 @@ UPDATE payment_transactions SET amount=CONVERT(REPLACE(REPLACE(amount_tmp," EUR"
 ALTER TABLE payment_transactions ADD KEY method_id (method_id);
 ALTER TABLE payment_transactions ADD KEY ref (ref);
 ALTER TABLE payment_transactions ADD UNIQUE KEY fullref (fullref);
-#fullref dupliqués :
+#fullref dupliquÃ©s :
 #select t1.* from payment_transactions as t1 join payment_transactions as t2 using(fullref) group by(t1.id) having count(*)!=1 order by fullref;
 ALTER TABLE payment_transactions DROP amount_tmp;
 
@@ -78,12 +78,12 @@ CREATE TABLE payment_transfers (
   amount DECIMAL(9,2) NOT NULL,
   message VARCHAR(255) NOT NULL,
   date DATE # NULL = not done
-);
+) ENGINE=InnoDB, CHARSET=utf8;
 
 CREATE TABLE payment_recon_transfer (
   recon_id INTEGER NOT NULL,
   transfer_id INTEGER NOT NULL,
   PRIMARY KEY (recon_id,transfer_id)
-);
+) ENGINE=InnoDB, CHARSET=utf8;
 
 -- vim:set syntax=mysql:
