@@ -22,7 +22,7 @@
 
 {assign var=telpref value="`$prefname`[`$telid`]"}
 {assign var=id value="`$prefid`_`$telid`"}
-{if !hasPerm('directory_private') && ($tel.pub eq 'private') && !empty($tel.display)}
+{if !hasPerm('directory_private') && ($tel.pub eq 'private') && !empty($tel.display|smarty:nodefaults)}
 {assign var=hiddentel value=true}
 {else}
 {assign var=hiddentel value=false}

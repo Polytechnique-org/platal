@@ -373,10 +373,12 @@ function cleanForm(f) {
         <a href="jobterm" class="autocompleteToSelect">{icon name="table" title="Tous les mots-clefs"}</a>
       </td>
     </tr>
+    {if hasPerm('directory_private')}
     <tr>
       <td>CV contient</td>
       <td><input type="text" name="cv" size="32" value="{$smarty.request.cv}" /></td>
     </tr>
+    {/if}
     <tr>
       <td colspan="2">
         <input type='checkbox' name='only_referent' {if $smarty.request.only_referent}checked='checked'{/if} id="only_referent"/>
@@ -395,6 +397,7 @@ function cleanForm(f) {
         <a href="nationalite" class="autocompleteToSelect">{icon name="table" title="Toutes les nationalités"}</a>
       </td>
     </tr>
+    {if hasPerm('directory_private')}
     <tr>
       <td>Binet</td>
       <td>
@@ -404,6 +407,7 @@ function cleanForm(f) {
         <a href="binet" class="autocompleteToSelect">{icon name="table" title="Tous les binets"}</a>
       </td>
     </tr>
+    {/if}
     <tr>
       <td>Groupe X</td>
       <td>
@@ -413,6 +417,7 @@ function cleanForm(f) {
         <a href="groupex" class="autocompleteToSelect">{icon name="table" title="Tous les groupes X"}</a>
       </td>
     </tr>
+    {if hasPerm('directory_private')}
     <tr>
       <td>Section</td>
       <td>
@@ -422,6 +427,7 @@ function cleanForm(f) {
         <a href="section" class="autocompleteToSelect">{icon name="table" title="Toutes les sections"}</a>
       </td>
     </tr>
+    {/if}
     <tr>
       <td>Formation</td>
       <td>
