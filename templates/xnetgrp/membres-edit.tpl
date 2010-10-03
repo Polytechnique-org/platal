@@ -54,6 +54,17 @@
 <form method="post" action="{$platal->ns}member/{$platal->argv[1]}">
   {xsrf_token_field}
   <table cellpadding="0" cellspacing="0" class='tinybicol'>
+    {if hasPerm('admin')}
+    <tr class="pair">
+      <td class="titre">
+        Identifiant unique&nbsp;:
+      </td>
+      <td>
+        {$user->hruid}
+        <a href="https://www.polytechnique.org/admin/user/{$user->hruid}">{icon name="user_edit" title="Administer"}</a>
+      </td>
+    </tr>
+    {/if}
     <tr class="pair">
       <td class="titre">
         Permissions&nbsp;:
