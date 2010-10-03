@@ -812,6 +812,7 @@ def check_options(userdesc, perms, vhost, listname, correct=False):
 
 def get_all_lists(userdesc, perms, vhost):
     """ Get all the list for the given vhost
+            @root
     """
     prefix = vhost.lower()+VHOST_SEP
     names = Utils.list_names()
@@ -821,6 +822,31 @@ def get_all_lists(userdesc, perms, vhost):
         if not name.startswith(prefix):
             continue
         result.append(name.replace(prefix, ''))
+    return result
+
+def get_all_user_lists(userdesc, perms, vhost, email):
+    """ Get all the lists for the given user
+            @root
+    """
+    names = Utils.list_names()
+    names.sort()
+    result = []
+    for name in names:
+        try:
+            mlist = MailList.MailList(name, lock=0)
+            ismember = email in mlist.getRegularMemberKeys()
+            isowner  = email in mlist.owner
+            if not ismember and not isowner:
+                continue
+            host = mlist.internal_name().split(VHOST_SEP)[0].lower()
+            result.append({ 'list': mlist.real_name,
+                            'addr': mlist.real_name.lower() + '@' + host,
+                            'host': host,
+                            'own' : isowner,
+                            'sub' : ismember
+                          })
+        except Exception, e:
+            continue
     return result
 
 def create_list(userdesc, perms, vhost, listname, desc, advertise, modlevel, inslevel, owners, members):
@@ -1014,6 +1040,7 @@ server.register_function(set_admin_options)
 server.register_function(check_options)
 # create + del
 server.register_function(get_all_lists)
+server.register_function(get_all_user_lists)
 server.register_function(create_list)
 server.register_function(delete_list)
 # utilisateurs.php
