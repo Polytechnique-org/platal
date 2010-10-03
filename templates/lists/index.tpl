@@ -24,13 +24,17 @@
   Listes de diffusion de Polytechnique.org
 </h1>
 
+{if $owner|@count > 0 || $member|@count > 0 || ( hasPerm('lists') && $public|@count
+> 0)}
 <h2>L'inscription à une liste de diffusion</h2>
 
 <ul>
+  {if hasPerm('lists')}
   <li>Pour demander ton inscription à une liste de diffusion, il suffit
     de cliquer sur l'icône {icon name=add} située en fin de ligne.</li>
   <li>Si la liste est à inscription modérée, l'icône {icon name=flag_orange title="en cours"}
     apparaîtra tant que ton inscription n'aura pas été validée par un modérateur.</li>
+  {/if}
   <li>Pour te désinscrire d'une liste dont tu es membre, il suffit de cliquer sur la croix
     {icon name=cross title="désinscription"} située en fin de ligne.</li>
 </ul>
@@ -47,7 +51,13 @@ La diffusion a trois niveaux de modération.  La diffusion peut être&nbsp;:
   <li><strong>modérée&nbsp;:</strong> l'envoi d'un email à la liste est alors filtré par des
   modérateurs, eux seuls peuvent accepter un message envoyé à la liste.</li>
 </ul>
+{else}
+<p>
+  Tu n'as actuellement accès à aucune liste de diffusion.
+</p>
+{/if}
 
+{if hasPerm('lists')}
 <h1>Demander la création d'une liste de diffusion</h1>
 
 <p>
@@ -61,6 +71,7 @@ thématique particulière.
   Tu peux demander la création d'une liste de diffusion sur le thème de ton choix.
 </a>
 </p>
+{/if}
 
 {if $owner|@count}
 <h1>Listes dont tu es modérateur</h1>
@@ -80,6 +91,8 @@ thématique particulière.
 
 <p class="smaller">Attention&nbsp;: lorsqu'une liste à laquelle tu es abonné est privée, l'icône {icon name=weather_cloudy} est affichée en début de ligne. Si tu t'en désinscris, il ne te sera pas possible de t'y abonner de nouveau sans l'action d'un modérateur.</p>
 {/if}
+
+{if hasPerm('lists')}
 <h1>Listes de diffusion publiques auxquelles tu peux t'inscrire</h1>
 
 <p>
@@ -108,5 +121,6 @@ Les listes de diffusion publiques sont visibles par tous les X inscrits à Polyt
     </tr>
   </table>
 </form>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

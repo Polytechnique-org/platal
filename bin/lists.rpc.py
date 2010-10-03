@@ -126,23 +126,26 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
             self.end_headers()
 
     def getUser(self, uid, md5, vhost):
-        res = mysql_fetchone ("""SELECT  a.full_name, aa.alias, IF (a.is_admin, 'admin', NULL)
+        res = mysql_fetchone ("""SELECT  a.full_name, IF(aa.alias IS NULL, a.email, CONCAT(aa.alias, '@%s')),
+                                         IF (a.is_admin, 'admin',
+                                                         IF(FIND_IN_SET('lists', at.perms) OR FIND_IN_SET('lists', a.user_perms), 'lists', NULL))
                                    FROM  accounts AS a
-                             INNER JOIN  aliases  AS aa ON (a.uid = aa.uid AND aa.type = 'a_vie')
+                             INNER JOIN  account_types AS at ON (at.type = a.type)
+                              LEFT JOIN  aliases  AS aa ON (a.uid = aa.uid AND aa.type = 'a_vie')
                                   WHERE  a.uid = '%s' AND a.password = '%s' AND a.state = 'active'
                                   LIMIT  1""" \
-                              % (uid, md5))
+                              % (PLATAL_DOMAIN, uid, md5))
         if res:
             name, forlife, perms = res
             if vhost != PLATAL_DOMAIN:
-                res = mysql_fetchone ("""SELECT  m.uid
+                res = mysql_fetchone ("""SELECT  m.uid, IF(m.perms = 'admin', 'admin', 'lists')
                                            FROM  group_members AS m
                                      INNER JOIN  groups        AS g ON (m.asso_id = g.id)
-                                          WHERE  perms = 'admin' AND uid = '%s' AND mail_domain = '%s'""" \
+                                          WHERE  uid = '%s' AND mail_domain = '%s'""" \
                                       % (uid, vhost))
                 if res:
-                    perms= 'admin'
-            userdesc = UserDesc(forlife+'@'+PLATAL_DOMAIN, name, None, 0)
+                    _, perms = res
+            userdesc = UserDesc(forlife, name, None, 0)
             return (userdesc, perms, vhost)
         else:
             return None
@@ -287,7 +290,7 @@ def get_list_info(userdesc, perms, mlist, front_page=0):
     members    = mlist.getRegularMemberKeys()
     is_member  = userdesc.address in members
     is_owner   = userdesc.address in mlist.owner
-    if mlist.advertised or is_member or is_owner or (not front_page and perms == 'admin'):
+    if (mlist.advertised and perms in ('lists', 'admin')) or is_member or is_owner or (not front_page and perms == 'admin'):
         is_pending = False
         if not is_member and (mlist.subscribe_policy > 1):
             is_pending = list_call_locked(is_subscription_pending, userdesc, perms, mlist, False)

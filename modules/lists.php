@@ -26,23 +26,23 @@ class ListsModule extends PLModule
     function handlers()
     {
         return array(
-            'lists'           => $this->make_hook('lists',     AUTH_MDP, 'lists'),
-            'lists/ajax'      => $this->make_hook('ajax',      AUTH_MDP, 'lists', NO_AUTH),
+            'lists'           => $this->make_hook('lists',     AUTH_MDP),
+            'lists/ajax'      => $this->make_hook('ajax',      AUTH_MDP, 'user', NO_AUTH),
             'lists/create'    => $this->make_hook('create',    AUTH_MDP, 'lists'),
 
-            'lists/members'   => $this->make_hook('members',   AUTH_COOKIE, 'lists'),
-            'lists/csv'       => $this->make_hook('csv',       AUTH_COOKIE, 'lists'),
-            'lists/annu'      => $this->make_hook('annu',      AUTH_COOKIE, 'lists'),
-            'lists/archives'  => $this->make_hook('archives',  AUTH_COOKIE, 'lists'),
-            'lists/archives/rss' => $this->make_hook('rss',    AUTH_PUBLIC, 'lists', NO_HTTPS),
+            'lists/members'   => $this->make_hook('members',   AUTH_COOKIE),
+            'lists/csv'       => $this->make_hook('csv',       AUTH_COOKIE),
+            'lists/annu'      => $this->make_hook('annu',      AUTH_COOKIE),
+            'lists/archives'  => $this->make_hook('archives',  AUTH_COOKIE),
+            'lists/archives/rss' => $this->make_hook('rss',    AUTH_PUBLIC, 'user', NO_HTTPS),
 
-            'lists/moderate'  => $this->make_hook('moderate',  AUTH_MDP, 'lists'),
-            'lists/admin'     => $this->make_hook('admin',     AUTH_MDP, 'lists'),
-            'lists/options'   => $this->make_hook('options',   AUTH_MDP, 'lists'),
-            'lists/delete'    => $this->make_hook('delete',    AUTH_MDP, 'lists'),
+            'lists/moderate'  => $this->make_hook('moderate',  AUTH_MDP),
+            'lists/admin'     => $this->make_hook('admin',     AUTH_MDP),
+            'lists/options'   => $this->make_hook('options',   AUTH_MDP),
+            'lists/delete'    => $this->make_hook('delete',    AUTH_MDP),
 
-            'lists/soptions'  => $this->make_hook('soptions',  AUTH_MDP, 'lists'),
-            'lists/check'     => $this->make_hook('check',     AUTH_MDP, 'lists'),
+            'lists/soptions'  => $this->make_hook('soptions',  AUTH_MDP),
+            'lists/check'     => $this->make_hook('check',     AUTH_MDP),
             'admin/lists'     => $this->make_hook('admin_all', AUTH_MDP, 'admin'),
         );
     }
