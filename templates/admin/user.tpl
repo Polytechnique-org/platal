@@ -24,12 +24,30 @@
 {if t($smarty.post.delete_account)}
 <form method="post" action="admin/user/{$user->login()}">
   {xsrf_token_field}
-  <div class="center">
-    <input type="hidden" name="uid" value="{$smarty.request.uid}" />
-    Confirmer la suppression de l'utilisateur {$user->fullName()} (uid&nbsp;: {$smarty.request.uid}).<br />
-    <input type="submit" name="account_deletion_confirmation" value="Confirmer" />
-  </div>
+  <fieldset>
+    <legend>Confirmer la suppression de l'utilisateur {$user->hruid}</legend>
+
+    {if $user->hasProfile()}
+    <p>
+      <input type="checkbox" name="clear_profile" /> Vider la fiche de
+      l'utilisateur.
+    </p>
+    {else}
+    <p>
+      <input type="checkbox" name="erase_account" {if $user->state eq 'pending'}checked="checked"{/if} /> Supprimer le compte définitivement.
+    </p>
+    {/if}
+    <p>
+      <input type="hidden" name="uid" value="{$user->uid}" />
+      <input type="submit" name="account_deletion_cancel" value="Annuler" />
+      <input type="submit" name="account_deletion_confirmation" value="Confirmer" />
+    </p>
+  </fieldset>
 </form>
+{elseif t($smarty.post.erase_account)}
+<p>
+  <a href="admin/accounts">Retourner à la gestion des comptes</a>
+</p>
 {else}
 {literal}
 
@@ -234,7 +252,11 @@ $(document).ready(function() {
         <input type="submit" name="update_account" value="Mettre à jour" onclick="return hashResponse('new_plain_password', false, false);" />
         <input type="submit" name="su_account" value="Prendre l'identité" />
         <input type="submit" name="log_account" value="Consulter les logs" />
+        {if $user->state neq 'pending'}
+        <input type="submit" name="delete_account" value="Désinscrire" />
+        {elseif !$user->hasProfile()}
         <input type="submit" name="delete_account" value="Supprimer le compte" />
+        {/if}
       </td>
     </tr>
   </table>
@@ -262,6 +284,7 @@ $(document).ready(function() {
       </td>
     </tr>
     {/iterate}
+    {if $profiles->total() > 0}
     <tr>
       <td>
         <input type="radio" name="owner" value="0" onclick="this.form.submit()" />
@@ -269,6 +292,7 @@ $(document).ready(function() {
       <td>None</td>
       <td></td>
     </tr>
+    {/if}
     <tr class="pair">
       <td colspan="3">
         <input type="hidden" name="del_profile" value="" />

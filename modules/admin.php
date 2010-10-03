@@ -414,11 +414,17 @@ class AdminModule extends PLModule
             $uid = $user->id();
             $name = $user->fullName();
             $profile = $user->profile();
-            if ($profile) {
+            if ($profile && Post::b('clear_profile')) {
                 $user->profile()->clear();
             }
             $user->clear(true);
-            $page->trigSuccess("L'utilisateur $name ($uid) a bien été supprimé.");
+            $page->trigSuccess("L'utilisateur $name ($uid) a bien été désinscrit.");
+            if (Post::b('erase_account')) {
+                XDB::execute('DELETE FROM  accounts
+                                    WHERE  uid = {?}',
+                             $uid);
+                $page->trigSuccess("L'utilisateur $name ($uid) a été supprimé de la base de données");
+            }
         }
 
         // Account Form {{{
