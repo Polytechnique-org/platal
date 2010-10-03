@@ -87,15 +87,15 @@ function comment_decode($comment) {
 /* check if a RIB account number is valid */
 function check_rib($rib)
 {
-	if(strlen($rib) != 23) return false;
-	
+    if(strlen($rib) != 23) return false;
+    
     // extract fields
     $rib = strtr(strtoupper($rib),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','12345678912345678923456789');
-	$bank    = substr($rib,0,5);
-	$counter = substr($rib,5,5);
-	$account = substr($rib,10,11);
-	$key     = substr($rib,21,2);
-	
+    $bank    = substr($rib,0,5);
+    $counter = substr($rib,5,5);
+    $account = substr($rib,10,11);
+    $key     = substr($rib,21,2);
+    
     // check
     return 0 == fmod(89 * $bank + 15 * $counter + 3 * $account + $key, 97);
 }
@@ -605,7 +605,7 @@ class PaymentModule extends PLModule
         // check RIB key
         if ($action == "update" && Post::has("account") && !check_rib(Post::v("account"))) {
             $page->trigError("Le RIB n'est pas valide");
-        	$table_editor->apply($page, "edit", $id);
+            $table_editor->apply($page, "edit", $id);
             return;
         }
         
@@ -626,68 +626,68 @@ class PaymentModule extends PLModule
         $page->setTitle('Administration - Paiements - Réconciliations');
         $page->changeTpl('payment/reconcile.tpl');
         $page->assign('step', $step);
-		$list = true;
+        $list = true;
         
-		// actions
-		if ($step == 'delete' && $param != null) {
-			S::assert_xsrf_token();
-			XDB::execute("DELETE FROM payment_reconcilations WHERE id={?}", $param);
-			// FIXME: hardcoding !!!
-			XDB::execute("UPDATE payment_transactions SET recon_id=NULL,commission=NULL WHERE recon_id={?} AND method_id=2", $param);
-			XDB::execute("UPDATE payment_transactions SET recon_id=NULL WHERE recon_id={?} AND method_id=1", $param);
-			$page->trigSuccess("L'entrée ".$param." a été supprimée.");
-		
-		} elseif ($step == 'edit') {
-			$page->trigError("L'édition n'est pas implémentée.");
-			
-		} elseif ($step == 'step5') {
-			$page->trigSuccess("La réconciliation est terminée. Il est maintenant nécessaire de générer les virements.");
+        // actions
+        if ($step == 'delete' && $param != null) {
+            S::assert_xsrf_token();
+            XDB::execute("DELETE FROM payment_reconcilations WHERE id={?}", $param);
+            // FIXME: hardcoding !!!
+            XDB::execute("UPDATE payment_transactions SET recon_id=NULL,commission=NULL WHERE recon_id={?} AND method_id=2", $param);
+            XDB::execute("UPDATE payment_transactions SET recon_id=NULL WHERE recon_id={?} AND method_id=1", $param);
+            $page->trigSuccess("L'entrée ".$param." a été supprimée.");
         
-		}
-		
-		if($list) {
-			// show list of reconciliations, with a "add" button
-			$page->assign('title', "Réconciliation - Liste");
+        } elseif ($step == 'edit') {
+            $page->trigError("L'édition n'est pas implémentée.");
+            
+        } elseif ($step == 'step5') {
+            $page->trigSuccess("La réconciliation est terminée. Il est maintenant nécessaire de générer les virements.");
+        
+        }
+        
+        if($list) {
+            // show list of reconciliations, with a "add" button
+            $page->assign('title', "Réconciliation - Liste");
             $page->assign('step', 'list');
-			
-			$recongps = array();
-	
-			$res = XDB::query("SELECT  r.id, short_name AS method, period_start, period_end, status,
-									   payment_count, sum_amounts, sum_commissions
-								 FROM  payment_reconcilations AS r
-							LEFT JOIN  payment_methods AS m ON r.method_id=m.id
-								WHERE  recongroup_id IS NULL
-							 ORDER BY  period_end DESC, period_start DESC");
-			foreach ($res->fetchAllAssoc() as $recon)
-				$recongps[] = array('recons' => array($recon), 'transfers' => array());
-			
-			$res = XDB::query("SELECT  recongroup_id AS id
-								 FROM  payment_reconcilations
-							 GROUP BY  recongroup_id
-							 ORDER BY  MAX(period_end) DESC, MIN(period_start) DESC");
-			foreach ($res->fetchAllAssoc() as $recongp) {
-				$res = XDB::query("SELECT  r.id, short_name AS method, period_start, period_end, status,
-										   payment_count, sum_amounts, sum_commissions
-									 FROM  payment_reconcilations AS r
-								LEFT JOIN  payment_methods AS m ON r.method_id=m.id
-									WHERE  recongroup_id={?}
-								 ORDER BY  period_end DESC, period_start DESC",
-								  $recongp['id']);
-				$recongp['recons'] = $res->fetchAllAssoc();
+            
+            $recongps = array();
+    
+            $res = XDB::query("SELECT  r.id, short_name AS method, period_start, period_end, status,
+                                       payment_count, sum_amounts, sum_commissions
+                                 FROM  payment_reconcilations AS r
+                            LEFT JOIN  payment_methods AS m ON r.method_id=m.id
+                                WHERE  recongroup_id IS NULL
+                             ORDER BY  period_end DESC, period_start DESC");
+            foreach ($res->fetchAllAssoc() as $recon)
+                $recongps[] = array('recons' => array($recon), 'transfers' => array());
+            
+            $res = XDB::query("SELECT  recongroup_id AS id
+                                 FROM  payment_reconcilations
+                             GROUP BY  recongroup_id
+                             ORDER BY  MAX(period_end) DESC, MIN(period_start) DESC");
+            foreach ($res->fetchAllAssoc() as $recongp) {
+                $res = XDB::query("SELECT  r.id, short_name AS method, period_start, period_end, status,
+                                           payment_count, sum_amounts, sum_commissions
+                                     FROM  payment_reconcilations AS r
+                                LEFT JOIN  payment_methods AS m ON r.method_id=m.id
+                                    WHERE  recongroup_id={?}
+                                 ORDER BY  period_end DESC, period_start DESC",
+                                  $recongp['id']);
+                $recongp['recons'] = $res->fetchAllAssoc();
 
-				$res = XDB::query("SELECT  id, payment_id, amount, account_id, message, date
-									 FROM  payment_transfers
-									WHERE  recongroup_id={?}",
-								  $recongp['id']);
-				$recongp['transfers'] = $res->fetchAllAssoc();
-						
-				$recongps[] = $recongp;
-			}
-			$page->assign_by_ref('recongps', $recongps);
-		}
+                $res = XDB::query("SELECT  id, payment_id, amount, account_id, message, date
+                                     FROM  payment_transfers
+                                    WHERE  recongroup_id={?}",
+                                  $recongp['id']);
+                $recongp['transfers'] = $res->fetchAllAssoc();
+                        
+                $recongps[] = $recongp;
+            }
+            $page->assign_by_ref('recongps', $recongps);
+        }
     }
     
-	function handler_adm_importlogs(&$page, $step, $param = null) {
+    function handler_adm_importlogs(&$page, $step, $param = null) {
         $page->setTitle('Administration - Paiements - Réconciliations');
         $page->changeTpl('payment/reconcile.tpl');
         $page->assign('step', $step);
@@ -813,7 +813,7 @@ class PaymentModule extends PLModule
             } elseif (Post::has('savecomments')) {
                 S::assert_xsrf_token();
                 $recon['comments'] = Post::v('comments');
-	            $page->assign('recon', $recon);
+                $page->assign('recon', $recon);
                 XDB::execute("UPDATE payment_reconcilations SET comments={?} WHERE id={?}", $recon['comments'], $_SESSION['paymentrecon_id']);
                 $page->trigSuccess('Les commentaires ont été enregistrés.');
             }
@@ -856,102 +856,109 @@ class PaymentModule extends PLModule
             $page->assign_by_ref('only_database', $only_database);
             $page->assign('onlydb_count', count($only_database));
         }
-	}
-	
+    }
+    
     function handler_adm_transfers(&$page, $action = null, $id = null) {
         // list/log all bank transfers and link them to individual transactions
         
-		if (Post::has('generate')) {
-			$recon_ids = array_keys(Post::v('recon_id'));
-			
-			// generate a new reconcilation group ID
-			$res = XDB::query("SELECT MAX(recongroup_id)+1 FROM payment_reconcilations");
-			$recongp_id = $res->fetchOneCell();
-			if ($recongp_id == null) $recongp_id = 1;
-			
-			// add reconcilations to group
-				// FIXME: should check if reconcilations are in good status
-			XDB::execute("UPDATE payment_reconcilations SET recongroup_id={?}, status='closed'
-			              WHERE id IN {?}",
-			              $recongp_id, $recon_ids);
-			
-			// create transfers
-			XDB::execute("INSERT INTO  payment_transfers
-							   SELECT  NULL, {?}, t.ref, SUM(t.amount+t.commission), NULL, p.text, NULL
-								 FROM  payment_transactions AS t
-							LEFT JOIN  payments AS p ON t.ref = p.id
-							LEFT JOIN  groups AS g ON p.asso_id = g.id
-								WHERE  t.recon_id IN {?}
-							 GROUP BY  t.ref",
-							  $recongp_id, $recon_ids);
-			
-			//$res = XDB::query("SELECT * FROM  payment_reconcilations WHERE id IN {?}", $recon_ids);
-			//$recons = $res->fetchAllAssoc();
-			
-			$page->trigSuccess("Les virements ont été générés pour ".count($recon_ids)." réconciliations.");
-			$this->handler_adm_reconcile($page);
-			
-		} elseif ($action == "delgroup") {
-			S::assert_xsrf_token();
-			XDB::execute("UPDATE payment_reconcilations SET status='transfering', recongroup_id=NULL WHERE recongroup_id={?}", $id);
-			XDB::execute("DELETE FROM payment_transfers WHERE recongroup_id={?} AND date IS NULL", $id);
-			
-			$page->trigSuccess("Les virements non réalisés ont été supprimé du groupe ".$id.".");
-			$this->handler_adm_reconcile($page);
-		    
-		} else {
-			pl_redirect("admin/reconcile");
-		}
+        if (Post::has('generate')) {
+            $recon_ids = array_keys(Post::v('recon_id'));
+            
+            // generate a new reconcilation group ID
+            $res = XDB::query("SELECT MAX(recongroup_id)+1 FROM payment_reconcilations");
+            $recongp_id = $res->fetchOneCell();
+            if ($recongp_id == null) $recongp_id = 1;
+            
+            // add reconcilations to group
+                // FIXME: should check if reconcilations are in good status
+            XDB::execute("UPDATE payment_reconcilations SET recongroup_id={?}, status='closed'
+                          WHERE id IN {?}",
+                          $recongp_id, $recon_ids);
+            
+            // create transfers
+            XDB::execute("INSERT INTO  payment_transfers
+                               SELECT  NULL, {?}, t.ref, SUM(t.amount+t.commission), NULL, p.text, NULL
+                                 FROM  payment_transactions AS t
+                            LEFT JOIN  payments AS p ON t.ref = p.id
+                            LEFT JOIN  groups AS g ON p.asso_id = g.id
+                                WHERE  t.recon_id IN {?}
+                             GROUP BY  t.ref",
+                              $recongp_id, $recon_ids);
+            
+            //$res = XDB::query("SELECT * FROM  payment_reconcilations WHERE id IN {?}", $recon_ids);
+            //$recons = $res->fetchAllAssoc();
+            
+            $page->trigSuccess("Les virements ont été générés pour ".count($recon_ids)." réconciliations.");
+            $this->handler_adm_reconcile($page);
+            
+        } elseif ($action == "delgroup") {
+            S::assert_xsrf_token();
+            XDB::execute("UPDATE payment_reconcilations SET status='transfering', recongroup_id=NULL WHERE recongroup_id={?}", $id);
+            XDB::execute("DELETE FROM payment_transfers WHERE recongroup_id={?} AND date IS NULL", $id);
+            
+            $page->trigSuccess("Les virements non réalisés ont été supprimé du groupe ".$id.".");
+            $this->handler_adm_reconcile($page);
+            
+        } elseif ($action == "confirm") {
+            S::assert_xsrf_token();
+            XDB::execute("UPDATE payment_transfers SET date=NOW() WHERE id={?}", $id);
+            
+            $page->trigSuccess("Virement ".$id." confirmé.");
+            $this->handler_adm_reconcile($page);
+            
+        } else {
+            pl_redirect("admin/reconcile");
+        }
     }
 }
 
 class PaymentLogsImporter extends CSVImporter {
-	protected $result;
-	
-	public function __construct() {
-	    parent::__construct('');
-	    $this->registerFunction('systempay_commission', 'Compute BPLC commission', array($this,"compute_systempay_commission"));
-	    $this->registerFunction('payment_id', 'Autocompute payment ID', array($this,"compute_payment_id"));
+    protected $result;
+    
+    public function __construct() {
+        parent::__construct('');
+        $this->registerFunction('systempay_commission', 'Compute BPLC commission', array($this,"compute_systempay_commission"));
+        $this->registerFunction('payment_id', 'Autocompute payment ID', array($this,"compute_payment_id"));
         //$this->forceValue('payment_id','func_payment_id');
-	}
-	
-	public function run($action = null, $insert_relation = null, $update_relation = null) {
-		$this->result = array();
-		foreach ($this->data as $line) {
+    }
+    
+    public function run($action = null, $insert_relation = null, $update_relation = null) {
+        $this->result = array();
+        foreach ($this->data as $line) {
             $a = $this->makeAssoc($line, $insert_relation);
             $a['date'] = preg_replace('/([0-9]{2})\/([0-9]{2})\/([0-9]{4}).*/','\3-\2-\1', $a['date']);
             $a['amount'] = str_replace(',','.',$a['amount']);
             $a['commission'] = str_replace(',','.',$a['commission']);
-			$this->result[] = $a;
+            $this->result[] = $a;
         }
-	}
-	
-	public function get_result() {
-		return $this->result;
-	}
-	
-	static public function compute_systempay_commission($line, $key, $relation) {
-		static $EEE_countries = array('France','Allemagne','Autriche','Belgique','Bulgarie','Chypre',
-			'Danemark','Espagne','Estonie','Finlande','Grèce','Hongrie','Irlande','Islande','Italie',
-			'Lettonie','Liechtenstein','Lituanie','Luxembourg','Malte','Norvège','Pays-Bas','Pologne',
-			'Portugal','Roumanie','Royaume-Uni','Slovaquie','Slovénie','Suède','République Tchèque');
-		
-		if($key!='commission' || !array_key_exists('carte',$line)) return null;
-		$amount = self::getValue($line, 'amount', $relation['amount']);
-		if (in_array($line['pays carte'],$EEE_countries))
-		    return -0.20 - round($amount*0.005, 2);
-		else
-		    return -0.20 - round($amount*0.005, 2) - 0.76;
-	}
+    }
+    
+    public function get_result() {
+        return $this->result;
+    }
+    
+    static public function compute_systempay_commission($line, $key, $relation) {
+        static $EEE_countries = array('France','Allemagne','Autriche','Belgique','Bulgarie','Chypre',
+            'Danemark','Espagne','Estonie','Finlande','Grèce','Hongrie','Irlande','Islande','Italie',
+            'Lettonie','Liechtenstein','Lituanie','Luxembourg','Malte','Norvège','Pays-Bas','Pologne',
+            'Portugal','Roumanie','Royaume-Uni','Slovaquie','Slovénie','Suède','République Tchèque');
+        
+        if($key!='commission' || !array_key_exists('carte',$line)) return null;
+        $amount = self::getValue($line, 'amount', $relation['amount']);
+        if (in_array($line['pays carte'],$EEE_countries))
+            return -0.20 - round($amount*0.005, 2);
+        else
+            return -0.20 - round($amount*0.005, 2) - 0.76;
+    }
 
-	static public function compute_payment_id($line, $key, $relation) {
-		if ($key != 'payment_id') return null;
-	    $reference = self::getValue($line, 'reference', $relation['reference']);
+    static public function compute_payment_id($line, $key, $relation) {
+        if ($key != 'payment_id') return null;
+        $reference = self::getValue($line, 'reference', $relation['reference']);
         if (ereg('-([0-9]+)$', $reference, $matches))
-		    return $matches[1];
+            return $matches[1];
         else
             return null;
-	}
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

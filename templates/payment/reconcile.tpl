@@ -96,9 +96,9 @@
 						<td><small>{$transfer.message}</small></td>
 						<td>{$transfer.account}</td>
 						<td class="right">{$transfer.amount}</td>
-						<td>
+						<td class="right">
+						  {if !$transfer.date}<a href="admin/reconcile/transfers/confirm/{$transfer.id}?token={xsrf_token}">{icon name=tick title='Confirmer la réalisation'}</a>{/if}
 						  <a href="admin/reconcile/transfers/edit/{$transfer.id}?token={xsrf_token}">{icon name=page_edit title='Éditer'}</a>
-						  <a href="admin/reconcile/transfers/confirm/{$transfer.id}?token={xsrf_token}">{icon name=tick title='Confirmer la réalisation'}</a>
 						</td>
 					</tr>
 				{/foreach}
