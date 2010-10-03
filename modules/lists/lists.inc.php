@@ -30,15 +30,15 @@ function list_sort_owners(&$members, $tri_promo = true)
     foreach($members as $mem) {
         $user = User::getSilent($mem);
         if (!$user) {
-            $membres[0][] = array('l' => $mem, 'p' => (!$tri_promo ? 'inconnue' : null), 'n' => null, 'x' => null, 'b' => null);
+            $membres[0][] = array('l' => $mem, 'p' => (!$tri_promo ? 'inconnus' : null), 'n' => null, 'x' => null, 'b' => null);
         } else {
             $uid = $user->id();
             $nom = $user->directoryName();
-            $promo = $user->promo();
+            $promo = $user->category();
             if (!$promo) {
-                $promo = 'non-X';
+                $promo = 'extérieurs';
             }
-            $key = $tri_promo ? ($promo != 'non-X' ? $promo : 0) : strtoupper(@$nom{0});
+            $key = $tri_promo ? ($promo != 'extérieurs' ? $promo : 0) : strtoupper(@$nom{0});
             if ($tri_promo) {
                 $promo = null;
             }
