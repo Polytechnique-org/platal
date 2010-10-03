@@ -424,16 +424,13 @@ class UserFilterTest extends PlTestCase
             // soundex, !exact
             array(self::buildProfileQuery('LEFT JOIN  search_name AS sn ON (p.pid = sn.pid)
                                                WHERE  sn.soundex = \'XLNO\''),
-                new UFC_NameTokens('XLNO', array(), true), -1),
+                new UFC_NameTokens('xelnor', array(), true), -1),
             array(self::buildProfileQuery('LEFT JOIN  search_name AS sn ON (p.pid = sn.pid)
                                                WHERE  sn.soundex IN (\'XLNO\', \'BROS\')'),
-                new UFC_NameTokens(array('XLNO', 'BROS'), array(), true), -1),
-            array(self::buildProfileQuery('LEFT JOIN  search_name AS sn ON (p.pid = sn.pid)
-                                               WHERE  sn.soundex = \'ZZZZZZ\''),
-                new UFC_NameTokens('ZZZZZZ', array(), true), 0),
+                new UFC_NameTokens(array('xelnor', 'barrois'), array(), true), -1),
             array(self::buildProfileQuery('LEFT JOIN  search_name AS sn ON (p.pid = sn.pid)
                                                WHERE  sn.soundex = \'BROS\' AND FIND_IN_SET(\'public\', sn.flags)'),
-                new UFC_NameTokens('BROS', UFC_NameTokens::FLAG_PUBLIC, true), -1),
+                new UFC_NameTokens('barrois', UFC_NameTokens::FLAG_PUBLIC, true), -1),
         );
 
         /* UFC_Nationality

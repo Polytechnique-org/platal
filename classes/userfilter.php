@@ -414,7 +414,7 @@ class UFC_NameTokens implements UserFilterCondition
         foreach ($this->tokens as $i => $token) {
             $sub = $uf->addNameTokensFilter($token);
             if ($this->soundex) {
-                $c = XDB::format($sub . '.soundex = {?}', $token);
+                $c = XDB::format($sub . '.soundex = {?}', soundex_fr($token));
             } else if ($this->exact) {
                 $c = XDB::format($sub . '.token = {?}', $token);
             } else {

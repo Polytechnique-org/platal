@@ -520,18 +520,8 @@ class UFBF_Quick extends UFB_Field
             } else {
                 $flags = array('public');
             }
-            if ($ufb->b('with_soundex')) {
-                $soundex = true;
-                $st = array();
-                foreach ($strings as $string) {
-                    $st[] = soundex_fr($string);
-                }
-            } else {
-                $soundex = false;
-                $st = $strings;
-            }
             $exact =$ufb->b('exact');
-            $conds->addChild(new UFC_NameTokens($st, $flags, $soundex, $exact));
+            $conds->addChild(new UFC_NameTokens($st, $flags, $ufb->b('with_soundex'), $exact));
 
             $ufb->addOrder(new UFO_Score());
         }
