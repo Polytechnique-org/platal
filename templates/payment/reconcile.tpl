@@ -22,7 +22,101 @@
 
 <h1>Réconciliation - {$title}</h1>
 
-{if $step eq 'step1'}
+{if $step eq 'list'}
+
+<form method="POST" action="admin/reconcile/transfers">
+<table class="bicol">
+  <tr class="impair">
+    <th>&nbsp;</th><th>id</th><th>method</th><th>du</th><th>au</th><th>statut</th><th>transactions</th><th>total (€)</th><th>coms (€)</th><th>actions</th>
+  </tr>
+	<tr class="impair" style="border-top: 1px solid #A2C2E1">
+		<th>&nbsp;</th>
+		<th style="text-align: left" colspan="9">non régroupées</th>
+	</tr>
+  <tr class="pair">
+    <td>&nbsp;</td>
+    <td colspan="8"><strong><a href="admin/reconcile/importlogs/step1">Créer une nouvelle réconciliation</a></strong></td>
+    <td class="right"><a href="admin/reconcile/importlogs/step1">{icon name=add title='nouvelle réconciliation'}</a></td>
+  </tr>
+  {foreach from=$recongps item=recongp}
+	  {assign var='sum1' value='0'}
+	  {assign var='sum2' value='0'}
+	  {assign var='sum3' value='0'}
+	  {if $recongp.id}
+		<tr class="impair"><td colspan="10">&nbsp;</td></tr>
+		<tr class="impair" style="border-top: 1px solid #A2C2E1">
+		  <th>&nbsp;</th>
+		  <th style="text-align: left" colspan="8">groupe ID {$recongp.id}</th>
+		  <th style="text-align: right"><a href="admin/reconcile/transfers/delgroup/{$recongp.id}?token={xsrf_token}">{icon name=delete title='supprimer'}</a></th>
+		</tr>
+		{/if}
+	  {foreach from=$recongp.recons item=recon}
+	    {assign var='sum1' value=`$sum1+$recon.payment_count`}
+	    {assign var='sum2' value=`$sum2+$recon.sum_amounts`}
+	    {assign var='sum3' value=`$sum3+$recon.sum_commissions`}
+		  <tr class="pair">
+			<td>
+			  {if $recon.status eq 'transfering'}
+			    <input type="checkbox" name="recon_id[{$recon.id}]" />
+			  {else}
+			    &nbsp;
+			  {/if}
+			</td>
+			<td>{$recon.id}</td>
+			<td>{$recon.method}</td>
+			<td>{$recon.period_start}</td>
+			<td>{$recon.period_end}</td>
+			<td>{$recon.status}</td>
+			<td class="right">{$recon.payment_count}</td>
+			<td class="right">{$recon.sum_amounts}</td>
+			<td class="right">{$recon.sum_commissions}</td>
+			<td class="right">{if $recongp.id}&nbsp;{else}<a href="admin/reconcile/delete/{$recon.id}?token={xsrf_token}">{icon name=delete title='supprimer'}</a>{/if}</td>
+		  </tr>
+	  {/foreach}
+	  {if $recongp.id}
+			<tr class="impair">
+				<td colspan="5">&nbsp;</td>
+				<td class="right">total :</td>
+				<td class="right">{$sum1}</td>
+				<td class="right">{$sum2|string_format:"%.2f"}</td>
+				<td class="right">{$sum3|string_format:"%.2f"}</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr><td colspan="10">
+				<table class="bicol">
+				<tr>
+					<th>id</th><th>date</th><th>message</th><th>RIB</th><th>€</th><th>action</th>
+				</tr>
+				{assign var='sum' value='0'}
+				{foreach from=$recongp.transfers item=transfer}
+					{assign var='sum' value=`$sum+$transfer.amount`}
+					<tr class="{cycle values="pair,impair"}">
+						<td>{$transfer.id}</td>
+						<td>{if $transfer.date}{$transfer.date}{else}à virer{/if}</td>
+						<td><small>{$transfer.message}</small></td>
+						<td>{$transfer.account}</td>
+						<td class="right">{$transfer.amount}</td>
+						<td>
+						  <a href="admin/reconcile/transfers/edit/{$transfer.id}?token={xsrf_token}">{icon name=page_edit title='Éditer'}</a>
+						  <a href="admin/reconcile/transfers/confirm/{$transfer.id}?token={xsrf_token}">{icon name=tick title='Confirmer la réalisation'}</a>
+						</td>
+					</tr>
+				{/foreach}
+				</table>
+			</td></tr>
+			<tr class="impair">
+				<td colspan="6">&nbsp;</td>
+				<td class="right">total :</td>
+				<td colspan="2">{$sum|string_format:"%.2f"} - coms = {$sum-$sum3|string_format:"%.2f"}</td>
+				<td>&nbsp;</td>
+			</tr>
+	  {/if}
+  {/foreach}
+</table>
+<p><input type="submit" name="generate" value="Grouper et créer les virements" /></p>
+</form>
+
+{elseif $step eq 'step1'}
 
 <table class="bicol">
   <tr class="impair">
@@ -31,7 +125,7 @@
   {foreach from=$methods item=method}
   <tr class="{cycle values="pair,impair"}">
     <td>
-      <a href="admin/payments/reconcile/step1/{$method.id}">{$method.text}</a>
+      <a href="admin/reconcile/importlogs/step1/{$method.id}">{$method.text}</a>
     </td>
   </tr>
   {/foreach}
@@ -122,15 +216,15 @@ total (excepted onlydb) : {$ok_count+$differ_count+$onlyim_count} (doit être é
 	</tr>
 {foreach from=$differs item=i}
   <tr class="{cycle values="pair,impair"}">
-		<td>{$i.fullref}<br />{$i.reference}</td>
-		<td>{$i.method_id}<br />&nbsp;</td>
-		<td>{$i.ts_confirmed}<br />{$i.date}</td>
-		<td>{$i.amount}<br />{$i.amount2}</td>
-		<td>{$i.commission}<br />{$i.commission2}</td>
-		<td>{$i.status}<br />&nbsp;</td>
-		<td>{$i.recon_id}<br />&nbsp;</td>
-		<td><form method="POST">{xsrf_token_field}<input type="submit" name="force[{$i.id}]" value="Forcer" /></form></td>
-	</tr>
+	<td>{$i.fullref}<br />{$i.reference}</td>
+	<td>{$i.method_id}<br />&nbsp;</td>
+	<td>{$i.ts_confirmed}<br />{$i.date}</td>
+	<td>{$i.amount}<br />{$i.amount2}</td>
+	<td>{$i.commission}<br />{$i.commission2}</td>
+	<td>{$i.status}<br />&nbsp;</td>
+	<td>{$i.recon_id}<br />&nbsp;</td>
+	<td><form method="POST">{xsrf_token_field}<input type="submit" name="force[{$i.id}]" value="Forcer" /></form></td>
+  </tr>
 {/foreach}
 </table>
 {else}
@@ -213,6 +307,6 @@ TODO: listing
 
 {if $dontshowback}
 <p>
-<a href="admin/payments/reconcile">back</a>
+<a href="admin/reconcile">back</a>
 </p>
 {/if}

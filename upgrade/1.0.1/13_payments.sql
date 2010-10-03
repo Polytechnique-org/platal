@@ -45,6 +45,7 @@ CREATE TABLE payment_reconcilations (
   method_id INTEGER NOT NULL,
   period_start DATE NOT NULL,
   period_end DATE NOT NULL,
+  recongroup_id INTEGER DEFAULT NULL,
   status ENUM('pending','transfering','closed') NOT NULL DEFAULT 'pending',
   payment_count INTEGER NOT NULL,
   sum_amounts DECIMAL(9,2) NOT NULL, # transaction amount, before taking the commission
@@ -73,17 +74,19 @@ ALTER TABLE payment_transactions ADD UNIQUE KEY fullref (fullref);
 ALTER TABLE payment_transactions DROP amount_tmp;
 
 CREATE TABLE payment_transfers (
-  id integer PRIMARY KEY auto_increment,
-  payment_id integer NOT NULL,
+  id INTEGER PRIMARY KEY auto_increment,
+  recongroup_id INTEGER NOT NULL,
+  payment_id INTEGER NOT NULL,
   amount DECIMAL(9,2) NOT NULL,
+  account_id INTEGER DEFAULT NULL,
   message VARCHAR(255) NOT NULL,
-  date DATE # NULL = not done
+  date DATE DEFAULT NULL # NULL = not done
 ) ENGINE=InnoDB, CHARSET=utf8;
 
-CREATE TABLE payment_recon_transfer (
-  recon_id INTEGER NOT NULL,
-  transfer_id INTEGER NOT NULL,
-  PRIMARY KEY (recon_id,transfer_id)
-) ENGINE=InnoDB, CHARSET=utf8;
+ALTER TABLE payment_methods ADD short_name VARCHAR(10) NOT NULL;
+ALTER TABLE payment_methods ADD flags SET('deferred_com') DEFAULT '';
+UPDATE payment_methods SET short_name='paypal', flags='' WHERE id=1;
+UPDATE payment_methods SET short_name='bplc2', flags='deferred_com' WHERE id=2;
 
 -- vim:set syntax=mysql:
+
