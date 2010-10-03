@@ -85,3 +85,5 @@ CREATE TABLE payment_recon_transfer (
   transfer_id INTEGER NOT NULL,
   PRIMARY KEY (recon_id,transfer_id)
 );
+
+-- vim:set syntax=mysql:
