@@ -84,6 +84,21 @@ function comment_decode($comment) {
     }
 }
 
+/* check if a RIB account number is valid */
+function check_rib($rib)
+{
+	if(strlen($rib) != 23) return false;
+	
+    // extract fields
+    $rib = strtr(strtoupper($rib),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','12345678912345678923456789');
+	$bank    = substr($rib,0,5);
+	$counter = substr($rib,5,5);
+	$account = substr($rib,10,11);
+	$key     = substr($rib,21,2);
+	
+    // check
+    return 0 == fmod(89 * $bank + 15 * $counter + 3 * $account + $key, 97);
+}
 
 class PaymentModule extends PLModule
 {
@@ -100,7 +115,10 @@ class PaymentModule extends PLModule
             '%grp/payment/cyber2_return' => $this->make_hook('cyber2_return', AUTH_PUBLIC, 'user', NO_HTTPS),
             '%grp/payment/paypal_return' => $this->make_hook('paypal_return', AUTH_PUBLIC, 'user', NO_HTTPS),
             'admin/payments'             => $this->make_hook('admin',         AUTH_MDP,    'admin'),
-
+            'admin/payments/methods'     => $this->make_hook('adm_methods',   AUTH_MDP,    'admin'),
+            'admin/payments/transactions'=> $this->make_hook('adm_transactions', AUTH_MDP, 'admin'),
+            'admin/payments/reconcile'   => $this->make_hook('adm_reconcile', AUTH_MDP,    'admin'),
+            'admin/payments/bankaccounts'=> $this->make_hook('adm_bankaccounts', AUTH_MDP, 'admin'),
         );
     }
 
@@ -538,7 +556,7 @@ class PaymentModule extends PLModule
         $page->setTitle('Administration - Paiements');
         $page->assign('title', 'Gestion des télépaiements');
         $table_editor = new PLTableEditor('admin/payments','payments','id');
-        $table_editor->add_join_table('payment_transactions','ref',true);
+        //$table_editor->add_join_table('payment_transactions','ref',true); => on ne supprime jamais une transaction
         $table_editor->add_sort_field('flags');
         $table_editor->add_sort_field('id', true, true);
         $table_editor->on_delete("UPDATE payments SET flags = 'old' WHERE id = {?}", "Le paiement a été archivé");
@@ -556,6 +574,305 @@ class PaymentModule extends PLModule
 
         $table_editor->apply($page, $action, $id);
     }
+    
+    function handler_adm_transactions(&$page, $payment_id = null, $action = "list", $id = null) {
+        // show transactions. FIXME: should not be modifiable
+        $page->setTitle('Administration - Paiements - Transactions');
+        $page->assign('title', "Liste des transactions pour le paiement {$payment_id}");
+        
+        if ($payment_id == null)
+            $page->trigError("Aucun ID de paiement fourni.");
+        
+        $table_editor = new PLTableEditor("admin/transactions/{$payment_id}",'payment_transactions','id');
+        $table_editor->set_where_clause(XDB::format('ref = {?}', $payment_id));
+        $table_editor->apply($page, 'list', $id); // only the 'list' action is allowed
+        $page->assign("readonly","readonly");     // don't show modification features
+    }
+    
+    function handler_adm_bankaccounts(&$page, $action = "list", $id = null) {
+        // managment of bank account used for money transfert
+        $page->setTitle('Administration - Paiements - RIBs');
+        $page->assign('title', "Liste des RIBs");
+        
+        $table_editor = new PLTableEditor("admin/payments/bankaccounts",'payment_bankaccounts','id');
+        $table_editor->describe('asso_id','ID du groupe',false);
+        $table_editor->describe('owner','titulaire',true);
+        $table_editor->add_option_table('groups','groups.id = t.asso_id');
+        $table_editor->add_option_field('groups.diminutif', 'group_name', 'groupe', 'varchar','account');
+        
+        // check RIB key
+        if ($action == "update" && Post::has("account") && !check_rib(Post::v("account"))) {
+            $page->trigError("Le RIB n'est pas valide");
+        	$table_editor->apply($page, "edit", $id);
+            return;
+        }
+        
+        $table_editor->apply($page, $action, $id);
+    }
+    
+    function handler_adm_methods(&$page, $action = "list", $id = null) {
+        // show and edit payment methods
+        $page->setTitle('Administration - Paiements - Méthodes');
+        $page->assign('title', "Méthodes de paiement");
+        $table_editor = new PLTableEditor("admin/payments/methods",'payment_methods','id');
+        $table_editor->apply($page, $action, $id);
+    }
+
+    function handler_adm_reconcile(&$page, $step = 'list', $param = null) {
+        // reconciles logs with transactions
+        // FIXME: the admin is considered to be fair => he doesn't hack the $step value, nor other params
+        $page->setTitle('Administration - Paiements - Réconciliations');
+        $page->changeTpl('payment/reconcile.tpl');
+        $page->assign('step', $step);
+        
+        if (substr($step,0,4) != 'step') {
+            // clean up
+            unset($_SESSION['paymentrecon_method']);
+            unset($_SESSION['paymentrecon_data']);
+            unset($_SESSION['paymentrecon_id']);
+            
+        } elseif (isset($_SESSION['paymentrecon_data'])) {
+            // create temporary table with imported data
+            XDB::execute("CREATE TEMPORARY TABLE payment_tmp (
+                            reference VARCHAR(255) PRIMARY KEY,
+                            date DATE,
+                            amount DECIMAL(9,2),
+                            commission DECIMAL(9,2)
+                          )");
+            foreach ($_SESSION['paymentrecon_data'] as $i)
+                XDB::execute("INSERT INTO payment_tmp VALUES ({?},{?},{?},{?})",
+                              $i['reference'], $i['date'], $i['amount'], $i['commission']);
+        }
+        
+        if ($step == 'list' || $step == 'delete' || $step == 'edit' || $step == 'step5') {
+            // actions
+            if ($step == 'delete' && $param != null) {
+                S::assert_xsrf_token();
+                XDB::execute("DELETE FROM payment_reconcilations WHERE id={?}", $param);
+                // FIXME: hardcoding !!!
+                XDB::execute("UPDATE payment_transactions SET recon_id=NULL,commission=NULL WHERE recon_id={?} AND method_id=2", $param);
+                XDB::execute("UPDATE payment_transactions SET recon_id=NULL WHERE recon_id={?} AND method_id=1", $param);
+                $page->trigSuccess("L'entrée ".$param." a été supprimée.");
+            
+            } elseif ($step == 'edit') {
+                $page->trigError("L'édition n'est pas implémentée.");
+                
+            } elseif ($step == 'step5') {
+                $page->trigSuccess("La réconciliation est terminée. Il est maintenant nécessaire de générer les virements.");
+            }
+            
+            // show list of reconciliations, with a "add" button
+            $page->assign('title', "Réconciliation - Liste");
+            $table_editor = new PLTableEditor("admin/payments/reconcile",'payment_reconcilations','id');
+            $table_editor->describe('payment_count','transactions',true);
+            $table_editor->describe('period_start','from',true);
+            $table_editor->describe('period_end','to',true);
+            $table_editor->describe('sum_amounts','total (€)',true);
+            $table_editor->describe('sum_commissions','coms (€)',true);
+            $table_editor->describe('comments','comments',false);
+            $table_editor->apply($page, 'list');
+
+        } elseif ($step == 'new' || $step == 'massadd') {
+            pl_redirect("admin/payments/reconcile/step1");
+                      
+        } elseif ($step == 'step1') {
+            $page->assign('title', "Étape 1");
+                
+            // was a payment method choosen ?
+            if ($param != null) {
+                $_SESSION['paymentrecon_method'] = (int)$param;
+                pl_redirect("admin/payments/reconcile/step2");
+
+            } else {
+            // ask to choose a payment method
+                $res = XDB::query("SELECT id, text FROM payment_methods");
+                $page->assign('methods', $res->fetchAllAssoc());
+            }
+
+        } elseif ( $step == 'step2' ) {
+            $page->assign('title', "Étape 2");
+            
+            // import logs formated in CVS
+            $fields = array('date','reference','amount','commission');
+            $importer = new PaymentLogsImporter();
+            $importer->apply($page, 'admin/payments/reconcile/step2', $fields);
+            
+            // if import is finished
+            $result = $importer->get_result();
+            if($result != null) {
+                $_SESSION['paymentrecon_data'] = $result;
+                pl_redirect("admin/payments/reconcile/step3");
+            }
+            
+        } elseif ($step == 'step3' ) {
+            $page->assign('title', "Étape 3");
+            
+            // compute reconcilation summary data
+            $res = XDB::query("SELECT  MIN(date) AS period_start, MAX(date) AS period_end,
+                                       count(*) AS payment_count, SUM(amount) AS sum_amounts,
+                                       SUM(commission) AS sum_commissions
+                                 FROM  payment_tmp");
+            $recon = $res->fetchOneAssoc();
+            $recon['method_id'] = $_SESSION['paymentrecon_method'];
+            
+            // create reconciliation item in database
+            if(Post::has('next')) {
+                S::assert_xsrf_token();
+                
+                // get parameters
+                $recon['period_start'] = preg_replace('/([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})/','\3-\2-\1',Post::v('period_start'));
+                $recon['period_end']   = preg_replace('/([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})/','\3-\2-\1',Post::v('period_end'));
+                    // FIXME: save checks to be done at next step
+                
+                // Create reconcilation item in database
+                    // FIXME: check if period doesn't overlap with others for the same method_id
+                XDB::execute("INSERT INTO  payment_reconcilations (method_id, period_start, period_end,
+                                                                   payment_count, sum_amounts, sum_commissions)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?})",
+                             $recon['method_id'], $recon['period_start'], $recon['period_end'],
+                             $recon['payment_count'], $recon['sum_amounts'], $recon['sum_commissions']);
+                $_SESSION['paymentrecon_id'] = XDB::insertId();
+                
+                // reconcile simple cases (trans.commission n'est modifié que s'il vaut NULL)
+                XDB::execute("UPDATE  payment_transactions AS trans, payment_tmp AS tmp
+                                 SET  trans.recon_id={?}, trans.commission=tmp.commission
+                               WHERE  trans.fullref=tmp.reference
+                                      AND trans.amount=tmp.amount AND DATE(trans.ts_confirmed)=tmp.date
+                                      AND (trans.commission IS NULL OR trans.commission=tmp.commission)
+                                      AND method_id={?} AND recon_id IS NULL AND status='confirmed'",
+                             $_SESSION['paymentrecon_id'], $recon['method_id']);
+                
+                pl_redirect("admin/payments/reconcile/step4");                
+                
+            // show summary of the imported data + ask form start/end of reconcilation period
+            } else {
+                $recon['period_start'] = preg_replace('/([0-9]{4})-([0-9]{2})-([0-9]{2})/', '\3/\2/\1', $recon['period_start']);
+                $recon['period_end']   = preg_replace('/([0-9]{4})-([0-9]{2})-([0-9]{2})/', '\3/\2/\1', $recon['period_end']);
+                $page->assign('recon', $recon);
+            }
+
+        } elseif ($step == 'step4' ) {
+            $page->assign('title', "Étape 4");
+            
+            // get reconcilation summary informations
+            $res = XDB::query("SELECT * FROM payment_reconcilations WHERE id={?}", $_SESSION['paymentrecon_id']);
+            $recon = $res->fetchOneAssoc();
+            $page->assign('recon', $recon);
+
+            if (Post::has('force')) {
+                S::assert_xsrf_token();
+                foreach (Post::v('force') as $id => $value) {
+                    XDB::execute("UPDATE  payment_transactions AS trans, payment_tmp AS tmp
+                                     SET  trans.recon_id={?}, trans.commission=tmp.commission
+                                   WHERE  trans.id={?} AND trans.fullref=tmp.reference",
+                                 $_SESSION['paymentrecon_id'], $id);
+                }
+                $page->trigSuccess('La réconciliation a été forcée pour '.count(Post::v('force')).' transaction(s).');
+                
+            } elseif (Post::has('next')) {
+                if (strlen($recon['comments'])<3) {
+                    $page->trigError("Le commentaire doit contenir au moins 3 caractères.");
+                } else {
+                    XDB::execute("UPDATE payment_reconcilations SET status='transfering' WHERE id={?}", $_SESSION['paymentrecon_id']);
+                    pl_redirect('admin/payments/reconcile/step5');
+                }
+                
+            } elseif (Post::has('savecomments')) {
+                S::assert_xsrf_token();
+                $recon['comments'] = Post::v('comments');
+	            $page->assign('recon', $recon);
+                XDB::execute("UPDATE payment_reconcilations SET comments={?} WHERE id={?}", $recon['comments'], $_SESSION['paymentrecon_id']);
+                $page->trigSuccess('Les commentaires ont été enregistrés.');
+            }
+            
+            // reconcilation results - ok
+            $res = XDB::query("SELECT  count(*),SUM(amount),SUM(commission)
+                                 FROM  payment_transactions WHERE recon_id={?}",
+                              $recon['id']);
+            list($ok_count,$ok_sum_amounts,$ok_sum_coms) = $res->fetchOneRow();
+            $page->assign('ok_count', $ok_count);
+            
+            // reconcilation results - ref exists, but some data differs
+            $res = XDB::query("SELECT  id, fullref, method_id, ts_confirmed, trans.amount, trans.commission, status, recon_id,
+                                       reference, date, tmp.amount as amount2, tmp.commission as commission2
+                                 FROM  payment_transactions AS trans
+                           INNER JOIN  payment_tmp AS tmp ON trans.fullref=tmp.reference
+                                WHERE  trans.recon_id IS NULL OR trans.recon_id != {?}",
+                              $recon['id']);
+            $differs = $res->fetchAllAssoc();
+            $page->assign_by_ref('differs', $differs);
+            $page->assign('differ_count', count($differs));
+            
+            // reconcilation results - ref doesn't exists in database
+            $res = XDB::query("SELECT  tmp.*
+                                 FROM  payment_tmp AS tmp
+                            LEFT JOIN  payment_transactions AS trans ON trans.fullref=tmp.reference
+                                WHERE  trans.fullref IS NULL");
+            $only_import = $res->fetchAllAssoc();
+            $page->assign_by_ref('only_import', $only_import);
+            $page->assign('onlyim_count', count($only_import));
+            
+            // reconcilation results - exists in database but not in import
+            $res = XDB::query("SELECT  trans.*
+                                 FROM  payment_transactions AS trans
+                            LEFT JOIN  payment_tmp AS tmp ON trans.fullref=tmp.reference
+                                WHERE  {?}<=DATE(trans.ts_confirmed) AND DATE(trans.ts_confirmed)<={?}
+                                       AND tmp.reference IS NULL AND method_id={?}",
+                              $recon['period_start'], $recon['period_end'], $recon['method_id']);
+            $only_database = $res->fetchAllAssoc();
+            $page->assign_by_ref('only_database', $only_database);
+            $page->assign('onlydb_count', count($only_database));
+                        
+        } else {
+            $page->trigError('Bad parameters.');
+        }
+    }
+    
+    function handler_adm_transferts(&$page) {
+        // list/log all bank transferts and link them to individual transactions
+    }
+}
+
+class PaymentLogsImporter extends CSVImporter {
+	protected $result;
+	
+	public function __construct() {
+	    parent::__construct('');
+	    $this->registerFunction('systempay_commission', 'Compute BPLC commission', array($this,"compute_systempay_commission"));
+	    $this->registerFunction('payment_id', 'Autocompute payment ID', array($this,"compute_payment_id"));
+        //$this->forceValue('payment_id','func_payment_id');
+	}
+	
+	public function run($action = null, $insert_relation = null, $update_relation = null) {
+		$this->result = array();
+		foreach ($this->data as $line) {
+            $a = $this->makeAssoc($line, $insert_relation);
+            $a['date'] = preg_replace('/([0-9]{2})\/([0-9]{2})\/([0-9]{4}) .*/','\3-\2-\1', $a['date']);
+			$this->result[] = $a;
+        }
+	}
+	
+	public function get_result() {
+		return $this->result;
+	}
+	
+	static public function compute_systempay_commission($line, $key, $relation) {
+		if($key!='commission' || !array_key_exists('carte',$line)) return null;
+		$amount = self::getValue($line, 'amount', $relation['amount']);
+		if ($line['carte'] == 'CB')
+		    return 0.20 + round($amount*0.005, 2);
+		else
+		    return 0.20 + round($amount*0.005, 2) + 0.76;
+	}
+
+	static public function compute_payment_id($line, $key, $relation) {
+		if ($key != 'payment_id') return null;
+	    $reference = self::getValue($line, 'reference', $relation['reference']);
+        if (ereg('-([0-9]+)$', $reference, $matches))
+		    return $matches[1];
+        else
+            return null;
+	}
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
