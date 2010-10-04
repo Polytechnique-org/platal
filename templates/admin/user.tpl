@@ -160,6 +160,10 @@ $(document).ready(function() {
         <label><input type="radio" name="sex" value="male" {if !$user->isFemale()}checked="checked"{/if} /> homme</label>
       </td>
     </tr>
+    <tr>
+      <td class="titre">Email</td>
+      <td>{if $user->checkPerms('mail')}{$user->forlifeEmail()}{else}<input type="text" name="email" size="40" maxlength="255" value="{$user->forlifeEmail()}" />{/if}</td>
+    </tr>
     <tr class="impair">
       <td class="titre">Mot de passe</td>
       <td>

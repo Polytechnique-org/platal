@@ -385,6 +385,7 @@ class AdminModule extends PLModule
             pl_redirect('admin/accounts');
         }
 
+        $listClient = new MMList(S::user());
         $login = $user->login();
         $registered = ($user->state != 'pending');
 
@@ -488,6 +489,10 @@ class AdminModule extends PLModule
             if (Post::t('comment') != $user->comment) {
                 $to_update['comment'] = Post::blank('comment') ? null : Post::t('comment');
             }
+            if (!$user->checkPerms(User::PERM_MAIL) && Post::t('email') != $user->forlifeEmail()) {
+                $to_update['email'] = Post::t('email');
+                $listClient->change_user_email($user->forlifeEmail(), Post::t('email'));
+            }
         }
         if (!empty($to_update)) {
             $res = XDB::query('SELECT  *
@@ -504,9 +509,9 @@ class AdminModule extends PLModule
                 $diff[$k] = array($oldValues[$k], trim($value, "'"));
                 unset($oldValues[$k]);
             }
-            XDB::execute('UPDATE  accounts
-                             SET  ' . implode(', ', $set) . '
-                           WHERE  uid = ' . XDB::format('{?}', $user->id()));
+            XDB::rawExecute('UPDATE  accounts
+                                SET  ' . implode(', ', $set) . '
+                              WHERE  uid = ' . XDB::format('{?}', $user->id()));
             $page->trigSuccess('Données du compte mise à jour avec succès');
             $user = User::getWithUID($user->id());
 
@@ -672,8 +677,7 @@ class AdminModule extends PLModule
         $page->assign('host', $host);
 
         // Display mailing lists
-        $list = new MMList(S::user());
-        $page->assign('mlists', $list->get_all_user_lists($user->forlifeEmail()));
+        $page->assign('mlists', $listClient->get_all_user_lists($user->forlifeEmail()));
 
         // Display active aliases.
         $page->assign('virtuals', $user->emailAliases());

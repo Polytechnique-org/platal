@@ -849,6 +849,27 @@ def get_all_user_lists(userdesc, perms, vhost, email):
             continue
     return result
 
+def change_user_email(userdesc, perms, vhost, from_email, to_email):
+    """ Change the email of a user
+            @root
+    """
+    from_email = from_email.lower()
+    to_email = to_email.lower()
+    for list in Utils.list_names():
+        try:
+            mlist = MailList.MailList(list, lock=0)
+        except:
+            continue
+        try:
+            mlist.Lock()
+            mlist.ApprovedChangeMemberAddress(from_email, to_email, 0)
+            mlist.Save()
+            mlist.Unlock()
+        except:
+            mlist.Unlock()
+    return 1
+
+
 def create_list(userdesc, perms, vhost, listname, desc, advertise, modlevel, inslevel, owners, members):
     """ Create a new list.
             @root
@@ -1041,6 +1062,7 @@ server.register_function(check_options)
 # create + del
 server.register_function(get_all_lists)
 server.register_function(get_all_user_lists)
+server.register_function(change_user_email)
 server.register_function(create_list)
 server.register_function(delete_list)
 # utilisateurs.php
