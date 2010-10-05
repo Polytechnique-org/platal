@@ -7,7 +7,7 @@
 # Developers: list 'public' tables here.
 SHARED_TABLES="account_types
 forums
-geoloc_administrative_areas
+geoloc_administrativeareas
 geoloc_countries
 geoloc_localities
 geoloc_subadministrativeareas
@@ -19,15 +19,11 @@ profile_corps_rank_enum
 profile_education_degree_enum
 profile_education_enum
 profile_education_field_enum
-profile_job_alternate
 profile_job_entreprise_term
 profile_job_enum
-profile_job_sector_enum
-profile_job_subsector_enum
-profile_job_subsubsector_enum
 profile_job_term_enum
 profile_job_term_relation
-profile_langskills_enum
+profile_langskill_enum
 profile_medal_enum
 profile_medal_grade_enum
 profile_name_enum
@@ -35,7 +31,7 @@ profile_networking_enum
 profile_section_enum
 profile_skill_enum
 reminder_type
-skin"
+skins"
 
 usage()
 {
