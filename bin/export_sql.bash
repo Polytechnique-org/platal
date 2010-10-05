@@ -5,32 +5,33 @@
 
 
 # Developers: list 'public' tables here.
-SHARED_TABLES="account_types
-forums
-geoloc_administrativeareas
-geoloc_countries
-geoloc_localities
-geoloc_subadministrativeareas
-log_actions
-newsletter_cat
-profile_binet_enum
-profile_corps_enum
-profile_corps_rank_enum
-profile_education_degree_enum
-profile_education_enum
-profile_education_field_enum
-profile_job_entreprise_term
-profile_job_enum
-profile_job_term_enum
-profile_job_term_relation
-profile_langskill_enum
-profile_medal_enum
-profile_medal_grade_enum
-profile_name_enum
-profile_networking_enum
-profile_section_enum
-profile_skill_enum
-reminder_type
+SHARED_TABLES="account_types \
+forums \
+geoloc_administrativeareas \
+geoloc_countries \
+geoloc_localities \
+geoloc_subadministrativeareas \
+log_actions \
+newsletter_cat \
+profile_binet_enum \
+profile_corps_enum \
+profile_corps_rank_enum \
+profile_education_degree \
+profile_education_degree_enum \
+profile_education_enum \
+profile_education_field_enum \
+profile_job_entreprise_term \
+profile_job_enum \
+profile_job_term_enum \
+profile_job_term_relation \
+profile_langskill_enum \
+profile_medal_enum \
+profile_medal_grade_enum \
+profile_name_enum \
+profile_networking_enum \
+profile_section_enum \
+profile_skill_enum \
+reminder_type \
 skins"
 
 usage()
@@ -98,7 +99,7 @@ do
     esac
 done
 
-
+FILTER="sed -r s/AUTO_INCREMENT=[1-9]+/AUTO_INCREMENT=1/"
 DUMPER="mysqldump --add-drop-table --default-character-set=utf8 --force"
 
 if [ -n "$USER" ]; then
@@ -131,15 +132,15 @@ dump () {
 
     if [ $DRY_RUN -eq 1 ]; then
         if [ -n "$FILE" ]; then
-            echo "$command >> $FILE"
+            echo "$command | $FILTER >> $FILE"
         else
-            echo $command
+            echo "$command | $FILTER"
         fi
     else
         if [ -n "$FILE" ]; then
-            $command >> $FILE
+            $command | $FILTER >> $FILE
         else
-            $command
+            $command | $FILTER
         fi
     fi
 }
