@@ -1,0 +1,5 @@
+This folder includes basic instructions for getting a working version of plat/al.
+
+Once the code has been installed, "make" run and a database export gathered, run the .sql files in this folder.
+
+The scripts in this folder are meant to be used with the latest version of plat/al (the same than the one you got an export of)
