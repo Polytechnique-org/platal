@@ -117,9 +117,9 @@ class S
      * move into the php session (and data it helds should be removed from
      * the php session). */
     private static $user = null;
-    public static function &user()
+    public static function &user($forceFetch = false)
     {
-        if (self::$user == null && class_exists('User')) {
+        if (($forceFetch || self::$user == null) && class_exists('User')) {
             if (S::has('user') && S::v('user') instanceof User) {
                 self::$user = S::v('user');
             } else {
@@ -127,6 +127,14 @@ class S
             }
         }
         return self::$user;
+    }
+
+    public static function changeSession(array $newSession)
+    {
+        $oldSession = $_SESSION;
+        $_SESSION = $newSession;
+        self::$user = null;
+        return $oldSession;
     }
 
     public static function logged()

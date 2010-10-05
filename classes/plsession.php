@@ -189,8 +189,7 @@ abstract class PlSession
         if (S::suid()) {
             return false;
         }
-        $backup   = $_SESSION;
-        $_SESSION = array();
+        $backup = S::changeSession(array());
         $this->fillSession();
         S::set('suid', $backup);
         if (!$this->startSessionAs($user, AUTH_SUID)) {
@@ -211,7 +210,7 @@ abstract class PlSession
         if (!S::suid()) {
             return false;
         }
-        $_SESSION = $_SESSION['suid'];
+        S::changeSession(S::v('suid'));
         return true;
     }
 
