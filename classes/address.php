@@ -102,21 +102,19 @@ class Address
             }
         }
 
-        if ($this->type == self::LINK_PROFILE) {
-            if (!is_null($this->flags)) {
-                $this->flags = new PlFlagSet($this->flags);
-            } else {
-                static $flags = array('current', 'temporary', 'secondary', 'mail');
+        if (!is_null($this->flags)) {
+            $this->flags = new PlFlagSet($this->flags);
+        } else {
+            static $flags = array('current', 'temporary', 'secondary', 'mail');
 
-                $this->flags = new PlFlagSet();
-                foreach ($flags as $flag) {
-                    if (!is_null($this->$flag) && ($this->$flag == 1 || $this->$flag == 'on')) {
-                        $this->flags->addFlag($flag, 1);
-                        $this->$flag = null;
-                    }
-                    $this->flags->addFlag('cedex', (strpos(strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"),
-                                                                                   array('', "\n"), $this->text)), 'CEDEX')) !== false);
+            $this->flags = new PlFlagSet();
+            foreach ($flags as $flag) {
+                if (!is_null($this->$flag) && ($this->$flag == 1 || $this->$flag == 'on')) {
+                    $this->flags->addFlag($flag, 1);
+                    $this->$flag = null;
                 }
+                $this->flags->addFlag('cedex', (strpos(strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"),
+                                                                               array('', "\n"), $this->text)), 'CEDEX')) !== false);
             }
         }
     }
