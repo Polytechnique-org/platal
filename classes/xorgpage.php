@@ -34,6 +34,17 @@ class XorgPage extends PlPage
         $this->addJsLink('wiki.js');
         $this->addJsLink('xorg.js');
         $this->setTitle('le site des élèves et anciens élèves de l\'École polytechnique');
+        if (S::user()->checkPerms('admin')) {
+            $types = array(S::user()->type);
+            $perms = DirEnum::getOptions(DirEnum::ACCOUNTTYPES);
+            ksort($perms);
+            foreach ($perms as $type => $perm) {
+                if (!empty($perm) && $type != $types[0]) {
+                    $types[] = $type;
+                }
+            }
+            $this->assign('account_types_list', $types);
+        }
     }
 
     public function run()

@@ -56,6 +56,8 @@ class DirEnum
 
     const MEDALS         = 'medals';
 
+    const ACCOUNTTYPES   = 'accounttypes';
+
     static private $enumerations = array();
 
     static private function init($type)
@@ -683,6 +685,19 @@ class DE_Medals extends DirEnumeration
 
     protected $ac_join = 'INNER JOIN profile_medals ON (profile_medals.mid = profile_medal_enum.id)';
     protected $ac_unique = 'profile_medals.pid';
+}
+// }}}
+
+/** ACCOUNTS
+ */
+// {{{ class DE_AccountTypes
+class DE_AccountTypes extends DirEnumeration
+{
+    public $capabilities = 0x005; // self::HAS_OPTIONS | self::SAVE_IN_SESSION;
+
+    protected $from     = 'account_types';
+    protected $valfield = 'perms';
+    protected $idfield  = 'type';
 }
 // }}}
 

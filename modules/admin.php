@@ -59,15 +59,28 @@ class AdminModule extends PLModule
         exit;
     }
 
-    function handler_get_rights(&$page, $level)
+    function handler_get_rights(&$page)
     {
         if (S::suid()) {
             $page->kill('Déjà en SUID');
         }
-        $user =& S::user();
-        Platal::session()->startSUID($user, $level);
-
-        pl_redirect('/');
+        S::assert_xsrf_token();
+        $level = Post::s('account_type');
+        if ($level != 'admin') {
+            $user = User::getSilentWithUID(S::user()->id());
+            $user->is_admin = false;
+            $types = DirEnum::getOptions(DirEnum::ACCOUNTTYPES);
+            if (!empty($types[$level])) {
+                $user->setPerms($types[$level]);
+            }
+            S::set('suid_startpage', $_SERVER['HTTP_REFERER']);
+            Platal::session()->startSUID($user);
+        }
+        if (!empty($_SERVER['HTTP_REFERER'])) {
+            http_redirect($_SERVER['HTTP_REFERER']);
+        } else {
+            pl_redirect('/');
+        }
     }
 
     function handler_default(&$page)

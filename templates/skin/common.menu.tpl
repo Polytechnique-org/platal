@@ -97,9 +97,19 @@
 <div class="menu_item"><a href="marketing">Marketing</a></div>
 <div class="menu_item"><a href="admin/">Administration</a></div>
 <div class="menu_item"><a href="purge_cache?token={xsrf_token}">Clear cache</a></div>
-<div class="menu_item"><a href="get_rights/user">Devenir utilisateur</a></div>
 <div class="menu_item"><a href="http://trackers.polytechnique.org">Trackers</a></div>
 <div class="menu_item"><a href="http://support.polytechnique.org">Support</a></div>
+<form method="post" action="get_rights">
+  {xsrf_token_field}
+  <div>
+    <select name="account_type" onChange="this.form.submit()" style="margin: 0; padding: 0">
+      <option value="admin">Administrateur</option>
+      {foreach from=$account_types_list item=type}
+      <option value="{$type}">{$type}</option>
+      {/foreach}
+    </select>
+  </div>
+</form>
 
 <table class="bicol" style="font-weight:normal;text-align:center; border-left:0px; border-right:0px; margin-top:0.5em; width:100%; margin-left: 0; font-size: smaller;">
   <tr><th>Validations</th></tr>

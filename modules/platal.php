@@ -422,9 +422,15 @@ Adresse de secours : " . Post::v('email') : ""));
     function handler_exit(&$page, $level = null)
     {
         if (S::suid()) {
-            S::logger()->log('suid_stop', S::user()->login() . " by " . S::suid('hruid'));
+            $old = S::user()->login();
+            S::logger()->log('suid_stop', $old . " by " . S::suid('hruid'));
             Platal::session()->stopSUID();
-            pl_redirect('admin/user/' . S::user()->login());
+            $target = S::s('suid_startpage');
+            S::kill('suid_startpage');
+            if (!empty($target)) {
+                http_redirect($target);
+            }
+            pl_redirect('admin/user/' . $old);
         }
 
         if ($level == 'forget' || $level == 'forgetall') {

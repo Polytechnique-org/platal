@@ -244,6 +244,12 @@ class User extends PlUser
         $this->perm_flags = self::makePerms($this->perms, $this->is_admin);
     }
 
+    public function setPerms($perms)
+    {
+        $this->perms = $perms;
+        $this->perm_flags = null;
+    }
+
     // We do not want to store the password in the object.
     // So, fetch it 'on demand'
     public function password()
