@@ -798,25 +798,32 @@ class AdminModule extends PLModule
                     $entry_year = $promotion;
                     $grad_year = $promotion + 3;
                     $promo = 'X' . $promotion;
+                    $hrpromo = $promotion;
                     break;
                   case 'M':
                     $degreeid = $eduDegrees[Profile::DEGREE_M];
                     $grad_year = $promotion;
                     $entry_year = $promotion - 2;
                     $promo = 'M' . $promotion;
+                    $hrpromo = $promo;
+                    $type = 'master';
                     break;
                   case 'D':
                     $degreeid = $eduDegrees[Profile::DEGREE_D];
                     $grad_year = $promotion;
                     $entry_year = $promotion - 3;
                     $promo = 'D' . $promotion;
+                    $hrpromo = $promo;
+                    $type = 'phd';
                     break;
                   default:
                     $page->killError("La formation n'est pas reconnue:" . Env::t('edu_type') . '.');
                 }
 
+                XDB::execute("SET AUTOCOMMIT = 0");
+                XDB::execute("START TRANSACTION");
                 foreach ($lines as $line) {
-                    if ($infos = self::formatNewUser($page, $line, $separator, $promotion, 6)) {
+                    if ($infos = self::formatNewUser($page, $line, $separator, $hrpromo, 6)) {
                         $sex = self::formatSex($page, $infos[3], $line);
                         if (!is_null($sex)) {
                             $fullName = $infos[1] . ' ' . $infos[0];
@@ -833,11 +840,14 @@ class AdminModule extends PLModule
                                          $infos['hrid'], $xorgId, $infos[5], $birthDate, $sex);
                             $pid = XDB::insertId();
                             XDB::execute('INSERT INTO  profile_name (pid, name, typeid)
-                                               VALUES  ({?}, {?}, {?})',
-                                         $pid, $infos[0], $nameTypes['name_ini']);
-                            XDB::execute('INSERT INTO  profile_name (pid, name, typeid)
-                                               VALUES  ({?}, {?}, {?})',
-                                         $pid, $infos[1], $nameTypes['firstname_ini']);
+                                               VALUES  ({?}, {?}, {?}),
+                                                       ({?}, {?}, {?}),
+                                                       ({?}, {?}, {?}),
+                                                       ({?}, {?}, {?})',
+                                         $pid, $infos[0], $nameTypes['name_ini'],
+                                         $pid, $infos[0], $nameTypes['lastname'],
+                                         $pid, $infos[1], $nameTypes['firstname_ini'],
+                                         $pid, $infos[1], $nameTypes['firstname']);
                             XDB::execute('INSERT INTO  profile_display (pid, yourself, public_name, private_name,
                                                                         directory_name, short_name, sort_name, promo)
                                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
@@ -846,8 +856,8 @@ class AdminModule extends PLModule
                                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?})',
                                          $pid, $eduSchools[Profile::EDU_X], $degreeid, $entry_year, $grad_year, 'primary');
                             XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, full_name, directory_name, display_name, sex)
-                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                                         $infos['hrid'], $type, 0, 'active', $fullName, $directoryName, $infos[1], $sex);
+                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                                         $infos['hrid'], $type, 0, 'pending', $fullName, $directoryName, $infos[1], $sex);
                             $uid = XDB::insertId();
                             XDB::execute('INSERT INTO  account_profiles (uid, pid, perms)
                                                VALUES  ({?}, {?}, {?})',
@@ -855,6 +865,7 @@ class AdminModule extends PLModule
                         }
                     }
                 }
+                XDB::execute("COMMIT");
             } else if (Env::t('add_type') == 'account') {
                 $type = Env::t('type');
                 $newAccounts = array();
@@ -864,9 +875,14 @@ class AdminModule extends PLModule
                         if (!is_null($sex)) {
                             $fullName = $infos[1] . ' ' . $infos[0];
                             $directoryName = $infos[0] . ' ' . $infos[1];
-                            XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, email, full_name, directory_name, display_name, sex)
-                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                                         $infos['hrid'], $type, 0, 'active', $infos[2], $fullName, $directoryName, $infos[1], $sex);
+                            XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state,
+                                                                 email, full_name, directory_name,
+                                                                 display_name, sex)
+                                               VALUES  ({?}, {?}, {?}, {?},
+                                                        {?}, {?}, {?}, {?}, {?})',
+                                         $infos['hrid'], $type, 0, 'pending',
+                                         $infos[2], $fullName, $directoryName, 
+                                         $infos[1], $sex);
                             $newAccounts[$infos['hrid']] = $infos[1] . ' ' . $infos[0];
                         }
                     }
