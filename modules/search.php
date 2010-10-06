@@ -74,7 +74,9 @@ class SearchModule extends PLModule
             if (S::admin()) {
                 $list .= '|admin|adm|ax';
             }
-            if (preg_match('/^(' . $list . '):([-a-z]+(\.[-a-z]+(\.\d{2,4})?)?)$/', replace_accent($quick), $matches)) {
+            $suffixes = array_keys(DirEnum::getOptions(DirEnum::ACCOUNTTYPES));
+            $suffixes = implode('|', $suffixes);
+            if (preg_match('/^(' . $list . '):([-a-z]+(\.[-a-z]+(\.(?:[md]?\d{2,4}|' . $suffixes . '))?)?)$/', replace_accent($quick), $matches)) {
                 $login = $matches[2];
                 switch($matches[1]) {
                   case 'admin': case 'adm':
