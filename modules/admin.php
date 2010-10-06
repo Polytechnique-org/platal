@@ -285,10 +285,10 @@ class AdminModule extends PLModule
         if ($action == 'session') {
 
             // we are viewing a session
-            $res = XDB::query("SELECT  ls.*, a.alias AS username, sa.alias AS suer
+            $res = XDB::query("SELECT  ls.*, a.hruid AS username, sa.hruid AS suer
                                  FROM  log_sessions AS ls
-                            LEFT JOIN  aliases   AS a  ON (a.uid = ls.uid AND a.type='a_vie')
-                            LEFT JOIN  aliases   AS sa ON (sa.uid = ls.suid AND sa.type='a_vie')
+                           INNER JOIN  accounts   AS a  ON (a.uid = ls.uid)
+                            LEFT JOIN  accounts   AS sa ON (sa.uid = ls.suid)
                                 WHERE  ls.id = {?}", $arg);
 
             $page->assign('session', $a = $res->fetchOneAssoc());
@@ -303,10 +303,8 @@ class AdminModule extends PLModule
 
         } else {
             $loguser = $action == 'user' ? $arg : Env::v('loguser');
-
-            $res = XDB::query('SELECT uid FROM aliases WHERE alias={?}',
-                              $loguser);
-            $loguid  = $res->fetchOneCell();
+            $user = User::get($loguser);
+            $loguid  = $user->id();
 
             if ($loguid) {
                 $year  = Env::i('year');
@@ -344,9 +342,9 @@ class AdminModule extends PLModule
                 // get the requested sessions
                 $where  = $this->_makeWhere($year, $month, $day, $loguid);
                 $select = "SELECT  s.id, s.start, s.uid,
-                                   a.alias as username
+                                   a.hruid as username
                              FROM  log_sessions AS s
-                        LEFT JOIN  aliases   AS a  ON (a.uid = s.uid AND a.type='a_vie')
+                       INNER JOIN  accounts   AS a  ON (a.uid = s.uid)
                     $where
                     ORDER BY start DESC";
                 $res = XDB::iterator($select);
