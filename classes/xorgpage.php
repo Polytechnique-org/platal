@@ -34,7 +34,7 @@ class XorgPage extends PlPage
         $this->addJsLink('wiki.js');
         $this->addJsLink('xorg.js');
         $this->setTitle('le site des élèves et anciens élèves de l\'École polytechnique');
-        if (S::user()->checkPerms('admin')) {
+        if (S::logged() && S::user()->checkPerms('admin')) {
             $types = array(S::user()->type);
             $perms = DirEnum::getOptions(DirEnum::ACCOUNTTYPES);
             ksort($perms);
