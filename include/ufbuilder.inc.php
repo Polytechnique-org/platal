@@ -521,7 +521,7 @@ class UFBF_Quick extends UFB_Field
                 $flags = array('public');
             }
             $exact =$ufb->b('exact');
-            $conds->addChild(new UFC_NameTokens($st, $flags, $ufb->b('with_soundex'), $exact));
+            $conds->addChild(new UFC_NameTokens($strings, $flags, $ufb->b('with_soundex'), $exact));
 
             $ufb->addOrder(new UFO_Score());
         }
