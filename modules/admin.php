@@ -862,6 +862,7 @@ class AdminModule extends PLModule
                             XDB::execute('INSERT INTO  account_profiles (uid, pid, perms)
                                                VALUES  ({?}, {?}, {?})',
                                          $uid, $pid, 'owner');
+                            Profile::rebuildSearchTokens($pid);
                         }
                     }
                 }
