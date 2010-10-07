@@ -748,7 +748,7 @@ class AdminModule extends PLModule
                               FROM  profiles
                              WHERE  hrpid = {?}', $hrid);
         if (is_null($hrid) || $res1->fetchOneCell() > 0 || $res2->fetchOneCell() > 0) {
-            $page->trigError("La ligne $infosLine n'a pas été ajoutée.");
+            $page->trigError("La ligne $infosLine n'a pas été ajoutée: une entrée similaire existe déjà");
             return false;
         }
         $infos['hrid'] = $hrid;
