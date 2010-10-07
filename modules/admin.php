@@ -818,8 +818,7 @@ class AdminModule extends PLModule
                     $page->killError("La formation n'est pas reconnue:" . Env::t('edu_type') . '.');
                 }
 
-                XDB::execute("SET AUTOCOMMIT = 0");
-                XDB::execute("START TRANSACTION");
+                XDB::startTransaction();
                 foreach ($lines as $line) {
                     if ($infos = self::formatNewUser($page, $line, $separator, $hrpromo, 6)) {
                         $sex = self::formatSex($page, $infos[3], $line);
@@ -864,7 +863,7 @@ class AdminModule extends PLModule
                         }
                     }
                 }
-                XDB::execute("COMMIT");
+                XDB::commit();
             } else if (Env::t('add_type') == 'account') {
                 $type = Env::t('type');
                 $newAccounts = array();
