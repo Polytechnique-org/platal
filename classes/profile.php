@@ -1013,7 +1013,7 @@ class Profile
                             WHERE  pid = {?}',
                      $pid);
         $keys = XDB::iterator("SELECT  CONCAT(n.particle, n.name) AS name, e.score,
-                                       FIND_IN_SET('public', e.flags) AS public
+                                       IF(FIND_IN_SET('public', e.flags), 'public', '') AS public
                                  FROM  profile_name      AS n
                            INNER JOIN  profile_name_enum AS e ON (n.typeid = e.id)
                                 WHERE  n.pid = {?}",
