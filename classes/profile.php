@@ -1007,34 +1007,45 @@ class Profile
         }
     }
 
-    public static function rebuildSearchTokens($pid)
+    public static function rebuildSearchTokens($pids)
     {
-        XDB::execute('DELETE FROM  search_name
-                            WHERE  pid = {?}',
-                     $pid);
-        $keys = XDB::iterator("SELECT  CONCAT(n.particle, n.name) AS name, e.score,
+        if (!is_array($pids)) {
+            $pids = array($pids);
+        }
+        $keys = XDB::iterator("SELECT  n.pid, CONCAT(n.particle, n.name) AS name, e.score,
                                        IF(FIND_IN_SET('public', e.flags), 'public', '') AS public
                                  FROM  profile_name      AS n
                            INNER JOIN  profile_name_enum AS e ON (n.typeid = e.id)
-                                WHERE  n.pid = {?}",
-                              $pid);
+                                WHERE  n.pid IN {?}",
+                              $pids);
 
+        $names = array();
         while ($key = $keys->next()) {
             if ($key['name'] == '') {
                 continue;
             }
+            $pid   = $key['pid'];
             $toks  = preg_split('/[ \'\-]+/', $key['name']);
             $token = '';
             $first = 5;
             while ($toks) {
                 $token = strtolower(replace_accent(array_pop($toks) . $token));
                 $score = ($toks ? 0 : 10 + $first) * ($key['score'] / 10);
-                XDB::execute('REPLACE INTO  search_name (token, pid, soundex, score, flags)
-                                    VALUES  ({?}, {?}, {?}, {?}, {?})',
-                             $token, $pid, soundex_fr($token), $score, $key['public']);
+                $names["$pid-$token"] = XDB::format('({?}, {?}, {?}, {?}, {?})',
+                                                    $token, $pid, soundex_fr($token),
+                                                    $score, $key['public']);
                 $first = 0;
             }
         }
+        XDB::startTransaction();
+        XDB::execute('DELETE FROM  search_name
+                            WHERE  pid IN {?}',
+                     $pids);
+        if (count($names) > 0) {
+            XDB::execute('INSERT INTO  search_name (token, pid, soundex, score, flags)
+                               VALUES  ' . implode(', ', $names));
+        }
+        XDB::commit();
     }
 
     /** The school identifier consists of 6 digits. The first 3 represent the

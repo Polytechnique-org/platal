@@ -29,9 +29,19 @@ $res = XDB::iterRow('SELECT  pid
                        FROM  profiles');
 $i = 0;
 $n = $res->total();
+$pids = array();
 while ($pid = $res->next()) {
-    Profile::rebuildSearchTokens(intval($pid[0]));
-    printf("\r%u / %u",  ++$i, $n);
+    $pids[] = intval($pid[0]);
+    ++$i;
+    if (count($pids) == 100) {
+        Profile::rebuildSearchTokens($pids);
+        printf("\r%u / %u",  $i, $n);
+        $pids = array();
+    }
+}
+if (count($pids) > 0) {
+    Profile::rebuildSearchTokens($pids);
+    printf("\r%u / %u",  $i, $n);
 }
 
 print "done\n";
