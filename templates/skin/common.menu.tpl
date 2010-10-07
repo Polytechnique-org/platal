@@ -102,7 +102,7 @@
 <form method="post" action="get_rights">
   {xsrf_token_field}
   <div>
-    <select name="account_type" onChange="this.form.submit()" style="margin: 0; padding: 0">
+    <select name="account_type" onchange="this.form.submit()" style="margin: 0; padding: 0">
       <option value="admin">Administrateur</option>
       {foreach from=$account_types_list item=type}
       <option value="{$type}">{$type}</option>
