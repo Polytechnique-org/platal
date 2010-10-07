@@ -17,3 +17,8 @@ script_run ./tokenize_job_terms.php
 
 confirm "* Running post-PHP database upgrade script"
 mysql_run ./99_jobs.sql.postphp
+
+confirm "* Upgrading search table (reindex user names for quick search)"
+pushd ../../bin
+./search.rebuild_db.php
+popd
