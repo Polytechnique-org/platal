@@ -56,7 +56,7 @@ class RegisterModule extends PLModule
                                  FROM  register_marketing AS m
                            INNER JOIN  accounts           AS a   ON (m.uid = a.uid)
                            INNER JOIN  account_profiles   AS ap  ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
-                           INNER JOIN  profiles           AS p   ON (p.pid = ap.uid)
+                           INNER JOIN  profiles           AS p   ON (p.pid = ap.pid)
                            INNER JOIN  profile_display    AS pd  ON (p.pid = pd.pid)
                            INNER JOIN  profile_name       AS pnl ON (p.pid = pnl.pid AND pnl.typeid = {?})
                            INNER JOIN  profile_name       AS pnf ON (p.pid = pnf.pid AND pnf.typeid = {?})
@@ -280,7 +280,7 @@ class RegisterModule extends PLModule
                              FROM  register_pending AS r
                        INNER JOIN  accounts         AS a   ON (r.uid = a.uid)
                        INNER JOIN  account_profiles AS ap  ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
-                       INNER JOIN  profiles         AS p   ON (p.pid = ap.uid)
+                       INNER JOIN  profiles         AS p   ON (p.pid = ap.pid)
                        INNER JOIN  profile_name     AS pnl ON (p.pid = pnl.pid AND pnl.typeid = {?})
                        INNER JOIN  profile_name     AS pnf ON (p.pid = pnf.pid AND pnf.typeid = {?})
                        INNER JOIN  profile_display  AS pd  ON (p.pid = pd.pid)
