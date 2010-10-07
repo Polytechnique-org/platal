@@ -212,6 +212,35 @@ class XDB
         self::rawExecute('SET AUTOCOMMIT = 1');
     }
 
+    public static function runTransactionV($callback, array $args)
+    {
+        self::startTransaction();
+        try {
+            if (call_user_func_array($callback, $args)) {
+                self::commit();
+                return true;
+            } else {
+                self::rollback();
+                return false;
+            }
+        } catch (Exception $e) {
+            self::rollback();
+            throw $e;
+        }
+    }
+
+    /** This function takes a callback followed by the arguments to be passed to the callback
+     * as arguments. It starts a transaction and execute the callback. If the callback fails
+     * (return false or raise an exception), the transaction is rollbacked, if the callback
+     * succeeds (return true), the transaction is committed.
+     */
+    public static function runTransaction()
+    {
+        $args = func_get_args();
+        $cb = array_shift($args);
+        self::runTransactionV($cb, $args);
+    }
+
     public static function iterator()
     {
         return new XDBIterator(self::prepare(func_get_args()));
