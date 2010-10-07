@@ -86,7 +86,7 @@ class XDB
 
         if ($globals->debug & DEBUG_BT) {
             $explain = array();
-            if (strpos($query, 'FOUND_ROWS()') === false) {
+            if (strpos($query, 'FOUND_ROWS()') === false && strpos($query, 'AUTOCOMMIT') === false) {
                 $res = self::$mysqli->query("EXPLAIN $query");
                 if ($res) {
                     while ($row = $res->fetch_assoc()) {
@@ -192,6 +192,24 @@ class XDB
             return;
         }
         return self::run($query);
+    }
+
+    public static function startTransaction()
+    {
+        self::rawExecute('SET AUTOCOMMIT = 0');
+        self::rawExecute('START TRANSACTION');
+    }
+
+    public static function commit()
+    {
+        self::rawExecute('COMMIT');
+        self::rawExecute('SET AUTOCOMMIT = 1');
+    }
+
+    public static function rollback()
+    {
+        self::rawExecute('ROLLBACK');
+        self::rawExecute('SET AUTOCOMMIT = 1');
     }
 
     public static function iterator()
