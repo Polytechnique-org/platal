@@ -57,6 +57,7 @@ class DirEnum
     const MEDALS         = 'medals';
 
     const ACCOUNTTYPES   = 'accounttypes';
+    const SKINS          = 'skins';
 
     static private $enumerations = array();
 
@@ -698,6 +699,17 @@ class DE_AccountTypes extends DirEnumeration
     protected $from     = 'account_types';
     protected $valfield = 'perms';
     protected $idfield  = 'type';
+}
+// }}}
+
+// {{{ class DE_Skins
+class DE_Skins extends DirEnumeration
+{
+    public $capabilities = 0x005; // self::HAS_OPTIONS | self::SAVE_IN_SESSION;
+
+    protected $from      = 'skins';
+    protected $valfield  = 'name';
+    protected $idfield   = 'skin_tpl';
 }
 // }}}
 

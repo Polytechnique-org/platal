@@ -44,6 +44,10 @@ class XorgPage extends PlPage
                 }
             }
             $this->assign('account_types_list', $types);
+
+            $skins = DirEnum::getOptions(DirEnum::SKINS);
+            asort($skins);
+            $this->assign('skin_list', $skins);
         }
     }
 

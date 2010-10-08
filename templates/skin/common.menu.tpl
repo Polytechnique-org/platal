@@ -99,10 +99,24 @@
 <div class="menu_item"><a href="purge_cache?token={xsrf_token}">Clear cache</a></div>
 <div class="menu_item"><a href="http://trackers.polytechnique.org">Trackers</a></div>
 <div class="menu_item"><a href="http://support.polytechnique.org">Support</a></div>
+<form method="post" action="set_skin">
+  {xsrf_token_field}
+  <div class="menu_item" style="clear: both">
+    Skin
+    <select name="change_skin" onchange="this.form.submit()" style="margin: 0; padding: 0; float:
+    right">
+      {foreach from=$skin_list item=name key=tpl}
+      <option value="{$tpl}" {if $smarty.session.skin eq $tpl}selected="selected"{/if}>{$name}</option>
+      {/foreach}
+    </select>
+  </div>
+</form>
 <form method="post" action="get_rights">
   {xsrf_token_field}
-  <div>
-    <select name="account_type" onchange="this.form.submit()" style="margin: 0; padding: 0">
+  <div class="menu_item" style="clear: both">
+    Droits
+    <select name="account_type" onchange="this.form.submit()" style="margin: 0; padding: 0; float:
+    right">
       <option value="admin">Administrateur</option>
       {foreach from=$account_types_list item=type}
       <option value="{$type}">{$type}</option>

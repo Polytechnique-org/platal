@@ -26,6 +26,7 @@ class AdminModule extends PLModule
         return array(
             'phpinfo'                      => $this->make_hook('phpinfo',                AUTH_MDP, 'admin'),
             'get_rights'                   => $this->make_hook('get_rights',             AUTH_COOKIE, 'admin'),
+            'set_skin'                     => $this->make_hook('set_skin',               AUTH_COOKIE, 'admin'),
             'admin'                        => $this->make_hook('default',                AUTH_MDP, 'admin'),
             'admin/dead-but-active'        => $this->make_hook('dead_but_active',        AUTH_MDP, 'admin'),
             'admin/deaths'                 => $this->make_hook('deaths',                 AUTH_MDP, 'admin'),
@@ -76,6 +77,17 @@ class AdminModule extends PLModule
             S::set('suid_startpage', $_SERVER['HTTP_REFERER']);
             Platal::session()->startSUID($user);
         }
+        if (!empty($_SERVER['HTTP_REFERER'])) {
+            http_redirect($_SERVER['HTTP_REFERER']);
+        } else {
+            pl_redirect('/');
+        }
+    }
+
+    function handler_set_skin(&$page)
+    {
+        S::assert_xsrf_token();
+        S::set('skin', Post::s('change_skin'));
         if (!empty($_SERVER['HTTP_REFERER'])) {
             http_redirect($_SERVER['HTTP_REFERER']);
         } else {
