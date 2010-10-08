@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS payment_bankaccounts;
 CREATE TABLE payment_bankaccounts (
   id integer PRIMARY KEY auto_increment,
   asso_id integer NOT NULL,
@@ -40,6 +41,7 @@ INSERT INTO payment_bankaccounts VALUES (NULL,248,"12548029983443030151039","X-R
 INSERT INTO payment_bankaccounts VALUES (NULL,179,"30066106410001050600128","X-Sursaut H Levy-Lambert","used");
 INSERT INTO payment_bankaccounts VALUES (NULL,223,"30066100410001126780124","X-Theatre","used");
 
+DROP TABLE IF EXISTS payment_reconcilations;
 CREATE TABLE payment_reconcilations (
   id INTEGER PRIMARY KEY auto_increment,
   method_id INTEGER NOT NULL,
@@ -68,11 +70,12 @@ UPDATE payment_transactions SET status = 'confirmed';
 UPDATE payment_transactions SET amount=CONVERT(REPLACE(REPLACE(amount_tmp," EUR",""),",","."),DECIMAL(9,2));
 ALTER TABLE payment_transactions ADD KEY method_id (method_id);
 ALTER TABLE payment_transactions ADD KEY ref (ref);
-ALTER TABLE payment_transactions ADD UNIQUE KEY fullref (fullref);
+# ALTER TABLE payment_transactions ADD UNIQUE KEY fullref (fullref);
 #fullref dupliqués :
 #select t1.* from payment_transactions as t1 join payment_transactions as t2 using(fullref) group by(t1.id) having count(*)!=1 order by fullref;
 ALTER TABLE payment_transactions DROP amount_tmp;
 
+DROP TABLE IF EXISTS payment_transfers;
 CREATE TABLE payment_transfers (
   id INTEGER PRIMARY KEY auto_increment,
   recongroup_id INTEGER NOT NULL,

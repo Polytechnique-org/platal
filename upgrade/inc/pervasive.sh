@@ -66,6 +66,25 @@ function mysql_run() {
     echo "OK"
 }
 
+function create_db() {
+    echo "* create database "
+    mysql_exec_nodb "CREATE DATABASE IF NOT EXISTS $DATABASE;"
+    mysql_exec_nodb "GRANT ALTER, CREATE, CREATE TEMPORARY TABLES, DELETE, DROP, EXECUTE, INDEX, INSERT, LOCK TABLES, SELECT, UPDATE ON $DATABASE.* TO 'web'@'localhost';"
+    mysql_exec_nodb "FLUSH PRIVILEGES;"
+    echo "OK"
+}
+
+function copy_db() {
+    if [[ -n "$SOURCE_DATABASE" ]]; then
+        confirm "* copying database from $SOURCE_DATABASE to $DATABASE"
+        create_db
+        echo -n "* build database from dump "
+        ( mysqldump --add-drop-table -Q $SOURCE_DATABASE | $MYSQL $DATABASE ) \
+            || die "ERROR"
+        echo "OK"
+    fi
+}
+
 function mysql_run_directory() {
     for sql in $1/*.sql ; do
         mysql_run $sql
