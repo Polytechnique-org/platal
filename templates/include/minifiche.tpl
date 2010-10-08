@@ -105,21 +105,19 @@
     </div>
     {/if}
 
-    {if hasPerm('edit_directory')}
+    {if hasPerm('admin') || $smarty.session.user->canEdit($profile)}
     <div>
-      [<a href="profile/edit/{$user->login()}">{*
-         *}{icon name=user_edit title="modifier la fiche"}</a>]
-    </div>
-    {elseif hasPerm('admin') && $hasowner}
-    <div>
-      [{if $registered && !$dead}
+      [{if hasPerm('admin') && $hasowner}{if !$registered && !$dead}
       <a href="marketing/private/{$user->login()}">{*
         *}{icon name=email title="marketter user"}</a>
       {/if}
       <a href="admin/user/{$user->login()}">{*
-      *}{icon name=wrench title="administrer user"}</a>
-      <a href="profile/ax/{$user->login()}">{*
-      *}{icon name=user_gray title="fiche AX"}</a>]
+      *}{icon name=wrench title="administrer user"}</a>{/if}{*
+      *}{if hasPerm('admin') || $smarty.session.user->canEdit($profile)}{*
+      *}<a href="profile/edit/{$user->login()}">{*
+      *}{icon name=user_edit title="modifier la fiche"}</a>{*
+      *}<a href="profile/ax/{$user->login()}">{*
+      *}{icon name=user_gray title="fiche AX"}</a>{/if}]
     </div>
     {/if}
   </div>
