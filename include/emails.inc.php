@@ -123,7 +123,10 @@ function ids_from_mails(array $emails)
     }
     // Connect emails with uids
     foreach ($domain_mails as $email => $user) {
-        $uids[$email] = $domain_uids[$user];
+        // Some 'domain' emails might be invalid.
+        if (array_key_exists($user, $domain_uids)) {
+            $uids[$email] = $domain_uids[$user];
+        }
     }
 
     // Look up user ids for addresses in our alias domain
@@ -142,7 +145,9 @@ function ids_from_mails(array $emails)
     }
     // Connect emails with uids
     foreach ($alias_mails as $email => $user) {
-        $uids[$email] = $alias_uids[$user];
+        if (array_key_exists($user, $alias_uids)) {
+            $uids[$email] = $alias_uids[$user];
+        }
     }
 
     // Look up user ids for other addresses in the email redirection list
