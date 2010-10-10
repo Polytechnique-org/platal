@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MYSQL='mysql -u admin '
+MYSQL='mysql -u admin --default-character-set=utf8 '
 
 
 set -e
