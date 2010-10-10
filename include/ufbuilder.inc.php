@@ -268,7 +268,7 @@ abstract class UFB_Field
             return false;
         }
 
-        if (!$this->empty) {
+        if (!$this->isEmpty()) {
             $ufc = $this->buildUFC($ufb);
             if ($ufc != null) {
                 $ufb->addCond($ufc);
@@ -1008,6 +1008,11 @@ class UFBF_Networking extends UFBF_Text
         } else {
             return false;
         }
+    }
+
+    public function isEmpty()
+    {
+        return parent::isEmpty() || $this->nwtype == 0;
     }
 
     public function buildUFC(UserFilterBuilder &$ufb)

@@ -155,6 +155,12 @@ class SearchModule extends PLModule
         $page->assign('advanced',1);
         $page->addJsLink('jquery.autocomplete.js');
 
+        $networks = DirEnum::getOptions(DirEnum::NETWORKS);
+        $networks[-1] = 'Tous types';
+        $networks[0] = '-';
+        ksort($networks);
+        $page->assign('networking_types', $networks);
+
         if (!Env::has('rechercher') && $model != 'geoloc') {
             $this->form_prepare();
         } else {

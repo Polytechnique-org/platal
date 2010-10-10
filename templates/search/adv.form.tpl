@@ -205,7 +205,7 @@
         });
     });
 /** Regexps to wipe out from search queries */
-var default_form_values = [ /&woman=0(&|$)/, /&subscriber=0(&|$)/, /&alive=0(&|$)/, /&egal[12]=[^&]*&promo[12]=(&|$)/g, /&[^&=]+=(&|$)/g ];
+var default_form_values = [ /&woman=0(&|$)/, /&subscriber=0(&|$)/, /&alive=0(&|$)/, /&egal[12]=[^&]*&promo[12]=(&|$)/g, /&networking_type=0(&|$)/, /&[^&=]+=(&|$)/g ];
 /** Uses javascript to clean form from all empty fields */
 function cleanForm(f) {
   var query = $(f).formSerialize();
@@ -462,9 +462,11 @@ function cleanForm(f) {
               <input type="text" name="networking_address" size="32" value="{$smarty.request.networking_address}" />
             </td>
             <td>
-              <input type="text" name="networking_typeTxt" class="autocomplete" size="10" value="{$smarty.request.networking_typeTxt}" />
-              <input name="networking_type" class="autocompleteTarget" type="hidden" value="{$smarty.request.networking_type}"/>
-              <a href="networking_type" class="autocompleteToSelect">{icon name="table" title="Tous les types d'adresse"}</a>
+              <select name="networking_type">
+              {foreach from=$networking_types key=id item=network}
+                <option value="{$id}" {if $smarty.request.networking_type eq $id}selected="selected"{/if}>{$network}</option>
+              {/foreach}
+              </select>
             </td>
           </tr>
         </table>
