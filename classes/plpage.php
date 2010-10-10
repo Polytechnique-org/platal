@@ -374,7 +374,7 @@ abstract class PlPage extends Smarty
             $this->jsonAssign('pl_errors', join("\n", $GLOBALS['pl_errors']));
             $GLOBALS['pl_errors'] = array();
         }
-        array_walk_recursive($this->_jsonVars, "escape_xorgDB");
+        array_walk_recursive($this->_jsonVars, "escape_XDB");
         $jsonbegin = Env::v('jsonBegin');
         $jsonend = Env::v('jsonEnd');
         if (Env::has('jsonVar')) {
@@ -397,9 +397,9 @@ abstract class PlPage extends Smarty
     // }}}
 }
 
-function escape_xorgDB(&$item, $key)
+function escape_XDB(&$item, $key)
 {
-    if ($item instanceof XOrgDBIterator) {
+    if ($item instanceof XDBIterator) {
         $expanded = array();
         while ($a = $item->next()) {
             $expanded[] = $a;
