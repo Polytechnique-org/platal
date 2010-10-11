@@ -5,6 +5,19 @@ New:
 
     * Compliant with PHP 5.3                                                -RIT
     * Improves and unify error handling                                     -FRU
+    * Add support for SQL transaction in XDB                                -FRU
+    * Add Iterable interface compatible with PHP's native iterators         -FRU
+    * Add XDBFormat interface for object with a specific db serialization   -FRU
+    * Add grouping feature to PlFilter                                      -Xel
+
+Bug:
+
+    * Fix SUID feature                                                      -FRU
+    * Table editor uses UPDATE instead of REPLACE to update entries         -FRU
+
+From branch 1.1.0:
+
+    * Permission were not check properly when accessing restricted hooks    -FRU
 
 ================================================================================
 VERSION 1.1.0                                                         30 06 2010
