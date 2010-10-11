@@ -1207,7 +1207,7 @@ class AdminModule extends PLModule
             S::assert_xsrf_token();
             $firstname = Post::t('firstname');
             $lastname = strtoupper(Post::t('lastname'));
-            $sex = Post::b('sex') ? User::GENDER_FEMALE : User::GENDER_MALE;
+            $sex = Post::s('sex');
             $email = Post::t('email');
             $type = Post::s('type');
             $login = PlUser::makeHrid($firstname, $lastname, $type);

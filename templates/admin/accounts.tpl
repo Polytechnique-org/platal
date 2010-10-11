@@ -92,7 +92,12 @@ function add_user_to_url(f) {
         </tr>
         <tr>
           <td class="titre">Sexe</td>
-          <td><input type="checkbox" name="sex" checked="checked" /></td>
+          <td>
+            <select name="sex">
+              <option value="female">Femme</option>
+              <option value="male">Homme</option>
+            </select>
+          </td>
         </tr>
         <tr>
           <td class="titre">Email</td>
