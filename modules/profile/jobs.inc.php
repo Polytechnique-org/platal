@@ -288,10 +288,11 @@ class ProfileSettingJob implements ProfileSetting
         }
     }
 
-    public function getText($value) {
+    public function getText($value)
+    {
         $jobs = array();
         foreach ($value as $id => $job) {
-            $address = Address::formArrayToString($job['w_address']);
+            $address = Address::formArrayToString(array($job['w_address']));
             $phones = Phone::formArrayToString($job['w_phone']);
             // TODO: add jobterms here.
             $jobs[] = 'Entreprise : ' . $job['name']
