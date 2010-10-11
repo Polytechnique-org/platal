@@ -91,7 +91,7 @@
   {/if}
 </table>
 <p class="center">
-  {if $survey_editmode && !$survey_updatemode}
+  {if $smarty.session.survey_validate || ($survey_editmode && !$survey_updatemode)}
   <a href='survey/edit/valid'>
     {icon name=tick}
     Proposer ce sondage
