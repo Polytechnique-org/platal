@@ -194,8 +194,13 @@ class XDB
         return self::run($query);
     }
 
+    private static $inTransaction = false;
     public static function startTransaction()
     {
+        if (self::$inTransaction) {
+            throw new XDBException('START TRANSACTION', 'Already in a transaction');
+        }
+        self::$inTransaction = true;
         self::rawExecute('SET AUTOCOMMIT = 0');
         self::rawExecute('START TRANSACTION');
     }
@@ -204,12 +209,14 @@ class XDB
     {
         self::rawExecute('COMMIT');
         self::rawExecute('SET AUTOCOMMIT = 1');
+        self::$inTransaction = false;
     }
 
     public static function rollback()
     {
         self::rawExecute('ROLLBACK');
         self::rawExecute('SET AUTOCOMMIT = 1');
+        self::$inTransaction = false;
     }
 
     public static function runTransactionV($callback, array $args)
