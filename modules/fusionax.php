@@ -40,6 +40,7 @@ class FusionAxModule extends PLModule
             'fusionax/ids'      => $this->make_hook('ids',      AUTH_MDP, 'admin'),
             'fusionax/deceased' => $this->make_hook('deceased', AUTH_MDP, 'admin'),
             'fusionax/promo'    => $this->make_hook('promo',    AUTH_MDP, 'admin'),
+            'fusionax/names'    => $this->make_hook('names',    AUTH_MDP, 'admin'),
         );
     }
 
@@ -462,18 +463,85 @@ class FusionAxModule extends PLModule
         $page->changeTpl('fusionax/promo.tpl');
         $res = XDB::iterator('SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
                                 FROM  fusionax_promo
-                               WHERE  !(promo_etude_ax + 1 = promo_etude_xorg AND promo_etude_xorg + 3 = promo_sortie_xorg)');
+                               WHERE  !(promo_etude_ax + 1 = promo_etude_xorg AND promo_etude_xorg + 3 = promo_sortie_xorg)
+                                      AND !(promo_etude_ax + 1 = promo_etude_xorg AND promo_etude_xorg + 4 = promo_sortie_xorg)
+                                      AND !(promo_etude_ax = promo_etude_xorg + 1)
+                            ORDER BY  promo_etude_xorg');
         $nbMissmatchingPromos = $res->total();
-        $page->assign('nbMissmatchingPromos1', $res->total());
-        $page->assign('missmatchingPromos1', $res);
+        $page->assign('nbMissmatchingPromos', $res->total());
+        $page->assign('missmatchingPromos', $res);
+
         $res = XDB::iterator('SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
                                 FROM  fusionax_promo
-                               WHERE  promo_etude_ax + 1 = promo_etude_xorg AND promo_etude_xorg + 3 = promo_sortie_xorg');
+                               WHERE  promo_etude_ax = promo_etude_xorg + 1
+                            ORDER BY  promo_etude_xorg');
+        $nbMissmatchingPromos += $res->total();
+        $page->assign('nbMissmatchingPromos1', $res->total());
+        $page->assign('missmatchingPromos1', $res);
+
+        $res = XDB::iterator('SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
+                                FROM  fusionax_promo
+                               WHERE  promo_etude_ax + 1 = promo_etude_xorg AND promo_etude_xorg + 3 = promo_sortie_xorg
+                            ORDER BY  promo_etude_xorg');
         $nbMissmatchingPromos += $res->total();
         $page->assign('nbMissmatchingPromos2', $res->total());
         $page->assign('missmatchingPromos2', $res);
-        $page->assign('nbMissmatchingPromos', $nbMissmatchingPromos);
+
+        $res = XDB::iterator('SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
+                                FROM  fusionax_promo
+                               WHERE  promo_etude_ax + 1 = promo_etude_xorg AND promo_etude_xorg + 4 = promo_sortie_xorg
+                            ORDER BY  promo_etude_xorg');
+        $nbMissmatchingPromos += $res->total();
+        $page->assign('nbMissmatchingPromos3', $res->total());
+        $page->assign('missmatchingPromos3', $res);
+
+        $page->assign('nbMissmatchingPromosTotal', $nbMissmatchingPromos);
+    }
+
+    function handler_names(&$page, $action = '')
+    {
+        $page->changeTpl('fusionax/names.tpl');
+
+        $res = XDB::query('SELECT  COUNT(*)
+                             FROM  fusionax_anciens AS f
+                       INNER JOIN  profiles         AS p    ON (f.ax_id = p.ax_id)');
+        $page->assign('total', $res->fetchOneCell());
+
+        // To be checked:
+        // | lastname           |  1 |
+        // | lastname_marital   |  2 |
+        // | lastname_ordinary  |  3 |
+        // | firstname          |  4 |
+        // | firstname_ordinary |  7 |
+        // | firstname_other    |  8 |
+        // | name_other         |  9 |
+        // | name_ini           | 10 |
+        // | firstname_ini      | 11 |
+        $res = XDB::query("SELECT  COUNT(*)
+                             FROM  fusionax_anciens AS f
+                       INNER JOIN  profiles         AS p   ON (f.ax_id = p.ax_id)
+                        LEFT JOIN  profile_name     AS pnp ON (p.pid = pnp.pid AND pnp.typeid = 1)
+                        LEFT JOIN  profile_name     AS pnm ON (p.pid = pnm.pid AND pnm.typeid = 2)
+                        LEFT JOIN  profile_name     AS pno ON (p.pid = pno.pid AND pno.typeid = 3)
+                        LEFT JOIN  profile_name     AS pne ON (p.pid = pne.pid AND pne.typeid = 9)
+                        LEFT JOIN  profile_name     AS pni ON (p.pid = pni.pid AND pni.typeid = 10)
+                            WHERE  IF(f.partic_patro, CONCAT(f.partic_patro, CONCAT(' ', f.Nom_patronymique)), f.Nom_patronymique) NOT IN (pnp.name, pno.name, pnm.name, pne.name, pni.name)
+                                   OR IF(f.partic_nom, CONCAT(f.partic_nom, CONCAT(' ', f.Nom_usuel)), f.Nom_usuel) NOT IN (pnp.name, pno.name, pnm.name, pne.name, pni.name)
+                                   OR f.Nom_complet NOT IN (pnp.name, pno.name, pnm.name, pne.name, pni.name)");
+        $page->assign('lastnameIssues', $res->fetchOneCell());
+
+        $res = XDB::query('SELECT  COUNT(*)
+                             FROM  fusionax_anciens AS f
+                       INNER JOIN  profiles         AS p   ON (f.ax_id = p.ax_id)
+                        LEFT JOIN  profile_name     AS pnf ON (p.pid = pnf.pid AND pnf.typeid = 4)
+                        LEFT JOIN  profile_name     AS pno ON (p.pid = pno.pid AND pno.typeid = 7)
+                        LEFT JOIN  profile_name     AS pne ON (p.pid = pne.pid AND pne.typeid = 8)
+                        LEFT JOIN  profile_name     AS pni ON (p.pid = pni.pid AND pni.typeid = 11)
+                            WHERE  f.prenom NOT IN (pnf.name, pno.name, pne.name, pni.name)');
+        $page->assign('firstnameIssues', $res->fetchOneCell());
+
     }
 }
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:?>
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+?>

@@ -20,26 +20,16 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h2>Fusion des annuaires X.org - AX</h2>
+<h2><a href="fusionax">Fusion des annuaires X.org - AX</a> / noms</h2>
+
+<p></p>
 
 <p>
-  Aucune action n'est lancée depuis cette page. Il faut préalablement aller sur
-  les liens suivants pour effectuer les différentes taches.
-</p>
-
-<ul>
-  <li>Voir la <a href="Fusion">documentation</a></li>
-  <li><a href="fusionax/import">Import de la base AX</a></li>
-  <li>Préparations des <a href="fusionax/prepare">tables</a></li>
-  <li>Mise en <a href="fusionax/ids">correspondance simple</a></li>
-  <li>Création des <a href="fusionax/view">VIEW annexes nécessaires aux corrélations</a></li>
-  <li>Corrélation des <a href="fusionax/deceased">dates de décès</a></li>
-  <li>Corrélation des <a href="fusionax/promo">promotions</a></li>
-  <li>Corrélation des <a href="fusionax/names">noms</a></li>
-</ul>
-
-<p>
-  Une fois ces vérifications faites, un root peut lancer le script merge.php dans le répertoire upgrade/1.0.1/merge/
+  Il y a {$total} camarades dans l'intersection de nos bases.
+  <ul>
+    <li>{$lastnameIssues} des noms de l'AX ne sont pas dans les notres.</li>
+    <li>{$firstnameIssues} des prénoms de l'AX ne sont pas dans les notres.</li>
+  </ul>
 </p>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

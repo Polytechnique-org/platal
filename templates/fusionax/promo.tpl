@@ -24,14 +24,22 @@
 
 <p></p>
 
-{if $nbMissmatchingPromos > 0}
-<p>Il y a {$nbMissmatchingPromos} différences entre les deux bases dans pour les promotions.</p>
-<p>Grosses différences (oranjisation ?) :</p>
+{if $nbMissmatchingPromosTotal > 0}
+<p>Il y a {$nbMissmatchingPromosTotal} différences entre les deux bases dans pour les promotions.</p>
+
+<p>Grosses différences ({$nbMissmatchingPromos} camarades) :</p>
+{include file='fusionax/listFusion.tpl' fusionList=$missmatchingPromos field1='pid' namefield1='ID X.org' field3='promo_etude_xorg'
+namefield3='etude_xorg' field4='promo_sortie_xorg' namefield4='sortie_xorg' field2='promo_etude_ax' namefield2='etude_ax'}
+
+<p>Petites différences (oranjisation) ({$nbMissmatchingPromos1} camarades) :</p>
 {include file='fusionax/listFusion.tpl' fusionList=$missmatchingPromos1 field1='pid' namefield1='ID X.org' field3='promo_etude_xorg'
 namefield3='etude_xorg' field4='promo_sortie_xorg' namefield4='sortie_xorg' field2='promo_etude_ax' namefield2='etude_ax'}
 
-<p>Petites différences : promo_etude_xorg == promo_etude_ax + 1 et promo_etude_xorg + 3 == promo_sortie_xorg, a priori ce sont les étrangers que nous avons mal
-inclus</p>
+<p>Petites différences (oranjisation + étrangers) ({$nbMissmatchingPromos3} camarades) :</p>
+{include file='fusionax/listFusion.tpl' fusionList=$missmatchingPromos3 field1='pid' namefield1='ID X.org' field3='promo_etude_xorg'
+namefield3='etude_xorg' field4='promo_sortie_xorg' namefield4='sortie_xorg' field2='promo_etude_ax' namefield2='etude_ax'}
+
+<p>Petites différences : (étrangers mal inclus) ({$nbMissmatchingPromos2} camarades)</p>
 {include file='fusionax/listFusion.tpl' fusionList=$missmatchingPromos2 field1='pid' namefield1='ID X.org' field3='promo_etude_xorg'
 namefield3='etude_xorg' field4='promo_sortie_xorg' namefield4='sortie_xorg' field2='promo_etude_ax' namefield2='etude_ax'}
 {/if}
