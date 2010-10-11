@@ -262,7 +262,7 @@ abstract class ProfilePage implements PlWizardPage
     {
     }
 
-    protected function saveData()
+    public function saveData()
     {
         require_once 'notifs.inc.php';
         $changedFields = array();
@@ -309,6 +309,7 @@ abstract class ProfilePage implements PlWizardPage
                              $this->pid(), $user->id(), $field, $values[0], $values[1]);
             }
         }
+        return true;
     }
 
     protected function checkChanges()
@@ -384,7 +385,13 @@ abstract class ProfilePage implements PlWizardPage
         }
         if ($global_success) {
             if ($this->checkChanges()) {
-                $this->saveData();
+                /* Save changes atomically to avoid inconsistent state
+                 * in case of error.
+                 */
+                if (!XDB::runTransaction(array($this, 'saveData'))) {
+                    $global_success = false;
+                    return PlWizard::CURRENT_PAGE;
+                }
                 $this->markChange();
             }
             return Post::has('next_page') ? PlWizard::NEXT_PAGE : PlWizard::CURRENT_PAGE;
