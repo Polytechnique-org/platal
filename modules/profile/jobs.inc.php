@@ -225,6 +225,9 @@ class ProfileSettingJob implements ProfileSetting
                 unset($value[$key]);
                 continue;
             }
+            if (!isset($job['pub']) || !$job['pub']) {
+                $job['pub'] = 'private';
+            }
             $value[$key] = $job;
         }
         foreach ($value as $key => &$job) {
