@@ -106,7 +106,7 @@ class SurveyModule extends PLModule
         $survey = Survey::retrieveSurvey($id); // retrieves the survey object structure
         if ($survey == null || !$survey->isValid()) {
             return $this->show_error($page, "Sondage ".$id." introuvable.", 'survey');
-        } elseif (!$survey->isEnded()) {
+        } elseif (!$survey->isEnded() && !$survey->canSeeEarlyResults(S::user())) {
             return $this->show_error($page, "Le sondage ".$survey->getTitle()." n'est pas encore terminé.", 'survey');
         }
         if (!$this->check_surveyPerms($page, $survey)) {

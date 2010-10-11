@@ -65,6 +65,7 @@ class Survey
     private $promos;
     private $valid;
     private $questions;
+    private $creator;
 
     public function __construct($args, $id = -1, $valid = false, $questions = null)
     {
@@ -79,12 +80,18 @@ class Survey
         $this->title       = $args['title'];
         $this->description = $args['description'];
         $this->end         = $args['end'];
-        $this->mode    = (isset($args['mode']))? $args['mode'] : self::MODE_ALL;
+        $this->mode        = (isset($args['mode']))? $args['mode'] : self::MODE_ALL;
+        $this->creator     = $args['uid'];
         if ($this->mode == self::MODE_ALL) {
             $args['promos'] = '';
         }
         $args['promos'] = str_replace(' ', '', $args['promos']);
         $this->promos  = ($args['promos'] == '' || preg_match('#^(\d{4}-?|(\d{4})?-\d{4})(,(\d{4}-?|(\d{4})?-\d{4}))*$#', $args['promos']))? $args['promos'] : '#';
+    }
+
+    public function canSeeEarlyResults(User $user)
+    {
+        return $user->id() == $this->creator || $user->checkPerms('admin');
     }
     // }}}
 
@@ -356,7 +363,7 @@ class Survey
     // {{{ static function retrieveSurvey() : gets a survey in database (and unserialize the survey object structure)
     public static function retrieveSurvey($sid)
     {
-        $sql = 'SELECT questions, title, description, end, mode, promos
+        $sql = 'SELECT questions, title, description, end, mode, promos, uid
                   FROM surveys
                  WHERE id={?}';
         $res = XDB::query($sql, $sid);
