@@ -232,17 +232,6 @@ class ProfileModule extends PLModule
         if (is_null($id)) {
             return PL_NOT_FOUND;
         }
-        $pid = (!is_numeric($id) || S::admin()) ? Profile::getPID($id) : null;
-        if (is_null($pid)) {
-            if (S::logged()) {
-                $page->trigError($id . " inconnu dans l'annuaire.");
-            }
-            return PL_NOT_FOUND;
-        }
-
-        // Now that we know this is an existing profile, we can switch to the
-        // appropriate template.
-        $page->changeTpl('profile/profile.tpl', SIMPLE);
 
         // Determines the access level at which the profile will be displayed.
         if (!S::logged() || !S::user()->checkPerms('directory_ax') || Env::v('view') == 'public') {
@@ -258,10 +247,30 @@ class ProfileModule extends PLModule
             $page->assign('with_pending_pic', true);
         }
 
-        // Fetches profile's and profile's owner information and redirects to
-        // marketing if the owner has not subscribed and the requirer has logged in.
-        $profile = Profile::get($pid, Profile::FETCH_ALL, $view);
-        $owner = $profile->owner();
+        $pid = (!is_numeric($id) || S::admin()) ? Profile::getPID($id) : null;
+        if (is_null($pid)) {
+            $owner = User::getSilent($id);
+            if ($owner) {
+                $profile = $owner->profile(true, Profile::FETCH_ALL, $view);
+                if ($profile) {
+                    $pid = $profile->id();
+                }
+            }
+        } else {
+            // Fetches profile's and profile's owner information and redirects to
+            // marketing if the owner has not subscribed and the requirer has logged in.
+            $profile = Profile::get($pid, Profile::FETCH_ALL, $view);
+            $owner = $profile->owner();
+        }
+        if (is_null($pid)) {
+            if (S::logged()) {
+                $page->kill($id . " inconnu dans l'annuaire.");
+            }
+            return PL_NOT_FOUND;
+        }
+        // Now that we know this is an existing profile, we can switch to the
+        // appropriate template.
+        $page->changeTpl('profile/profile.tpl', SIMPLE);
 
         // Profile view are logged.
         if (S::logged()) {
