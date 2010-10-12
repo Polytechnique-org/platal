@@ -2,26 +2,54 @@
 VERSION 1.0.1                                                         XX XX XXXX
 
 New:
+
+    * Admin:
+        - Accounts not attached to a profile can be deleted                -FRU
+
     * Core:
         - Access to the website by non-X                                   -FRU
+        - Add foreign key constraints for uid and pids                     -JAC
 
     * Profile:
         - Sectors replaced by job terms (thesaurus)                        -Car
         - Profile edition interface for secretaries of the AX              -FRU
-        - Notify user when his profile has been edited                     -JAC
+        - #1256: Notify user when his profile has been edited              -JAC
 
     * Search:
         - Search results depend on user's permissions                      -XEL
 
 Bug/Wish:
+
+    * Admin:
+        - #1182: Notify admins when a account is edited                    -JAC
+        - #1258: Fix promotion insertion                                   -FRU
+
+    * Lists:
+        - #1208,1250: Fix export of a mailing list as a CSV file           -JAC
+
+    * Profile:
+        - #1265: Fix access to profile using a user identifier             -FRU
+
+    * Register:
+        - #1261: Fix wrong join between user and profile                   -JAC
+
     * Search:
         - #1177: clean url in advanced search                              -Car
+        - #1251: More intuitive networking search                          -Xel
 
     * Survey:
         - #964: The creator of a survey can get early results              -FRU
-        - #1263: Fix edition of pending surveys                            -FRU
+
+    * XnetGrp:
+        - #1252: Don't include dead user in directory listing              -FRU
+        - #1253: Don't include not-registered users in promo listing       -FRU
 
 From 1.0.0 branch:
+
+    * Admin:
+        - #1196: Fix password edition on admin page                        -JAC
+        - #1197: Allow user unsubscription                                 -JAC
+
     * Auth:
         - #1246: Fix GroupeX auth                                          -Car
 
@@ -30,30 +58,43 @@ From 1.0.0 branch:
 
     * Carnet:
         - Fix inaccessible carnet/panel in case of profile update          -FRU
-        - Fix notification email                                           -JAC
+        - #1176: Fix notification email                                    -JAC
 
     * Events:
         - Fix promotion_ml reminder                                        -FRU
 
+    * Forums:
+        - #1247: Fix RSS feed                                              -Xel
+
     * Lists:
         - Fix inclusion of banana for achives and moderation preview       -FRU
+        - #1218,1222: Fix link to profiles                                 -JAC
 
     * Profile:
         - Fix entreprise validation                                        -JAC
         - Fix name validation                                              -XEL
         - Fix orange validation                                            -XEL
         - Fix vcards                                                       -FRU
-        - Fix geocoding                                                    -JAC
+        - #1173,1174,1205,1219: Fix geocoding                              -JAC
+        - #1232: Fix autocompletion for the first enterprise               -JAC
 
     * Newsletter:
         - Fix user selection                                               -FRU
 
     * Register:
         - Fix calls to missing functions                                   -JAC
+        - #1216: Fix missing check that the user was not registered        -FRU
 
     * Search:
         - Fix filtering by promotion                                       -XEL
         - Fix search by address                                            -XEL
+
+    * Survey:
+        - #1214: Fix result of a survey                                    -FRU
+        - #1263: Fix edition of pending surveys                            -FRU
+
+    * XnetEvent:
+        - #1187: Fix listing of the participant                            -JAC
 
     * XnetGrp:
         - Fix name in unsubscription notification                          -JAC
