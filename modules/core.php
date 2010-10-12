@@ -181,12 +181,9 @@ class CoreModule extends PLModule
     function handler_siteerror($page) {
         global $globals;
         $page->coreTpl('site_errors.tpl');
-        $file = @file_get_contents($globals->spoolroot . '/spool/tmp/site_errors');
-        if ($file !== false) {
-            $page->assign('errors', utf8_encode($file));
-        }
+        $page->assign('errors', PlErrorReport::iterate());
         if (Post::has('clear')) {
-            @unlink($globals->spoolroot . '/spool/tmp/site_errors');
+            PlErrorReport::clear();
             $page->trigSuccess("Erreurs effacées.");
         }
     }

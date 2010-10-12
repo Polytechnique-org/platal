@@ -219,7 +219,6 @@ class PlHookTree
     }
 }
 
-
 abstract class Platal
 {
     private $mods;
@@ -376,13 +375,7 @@ abstract class Platal
             }
         } catch (Exception $e) {
             header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
-
-            $file = fopen(self::globals()->spoolroot . '/spool/tmp/site_errors', 'a');
-            fwrite($file, '<pre>' . date('Y-m-d G:i:s') . '</pre>'
-                        . '<pre>' . pl_entities("" . $e) . '</pre>'
-                        . '------------------------------------------------------------------' . "\n");
-            fclose($file);
-
+            PlErrorReport::report($e);
             if (self::globals()->debug) {
                 $page->kill(pl_entities($e->getMessage())
                             . '<pre>' . pl_entities("" . $e) . '</pre>');

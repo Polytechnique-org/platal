@@ -20,14 +20,36 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<script type="text/javascript">
+{literal}
+// <![CDATA[
+$(document).ready(function() {
+  $(".error_state").click(function() {
+    $(this).children(".error_state_content").toggle();
+  });
+});
+// ]]>
+{/literal}
+</script>
+
 <h1>Erreurs d'exécution</h1>
-  {if $errors}
-    {$errors|smarty:nodefaults}
-  {else}
-<p>
-    Il n'y a pas d'erreurs actuellement recensées.
-</p>
-  {/if}
+  {iterate from=$errors item=error}
+  <fieldset>
+    <legend>{$error->date}</legend>
+    <pre>{$error->error}</pre>
+    {foreach from=$error->state item=table key=name}
+    <div class="error_state">
+      <div><strong>{$name} (click to show/hide content)</strong></div>
+      <div class="error_state_content" style="display: none">
+        {php}
+        $var = $this->get_template_vars('table');
+        var_dump($var);
+        {/php}
+      </div>
+    </div>
+    {/foreach}
+  </fieldset>
+  {/iterate}
 <form action="site_errors" method="post">
   <div>
     <input type="submit" name="clear" value="Effacer les erreurs" />
