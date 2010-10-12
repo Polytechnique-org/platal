@@ -20,39 +20,58 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<script type="text/javascript">
+{literal}
+// <![CDATA[
+$(document).ready(function() {
+  $(".backtrace").click(function() {
+    $(this).children(".bt_details").toggle();
+  });
+});
+// ]]>
+{/literal}
+</script>
+
 {foreach from=$backtraces key=bt_name item=trace}
 <div class="backtrace">
   <h1>
     {if $trace->error}<span style="color: #f00">{/if}
-    Exécution de {$bt_name}&nbsp;: {$trace->traces|@count} actions en {$trace->totaltime|string_format:"%.3f"}s (hover-me pour la trace)
+    Exécution de {$bt_name}&nbsp;:
+    {$trace->traces|@count} actions en {$trace->totaltime|string_format:"%.3f"}s
+    (click to show/hide the trace)
     {if $trace->error}</span>{/if}
   </h1>
-  <div class="hide">
+  <div class="bt_details" style="display: none">
 {foreach item=query from=$trace->traces}
-{if $query.data}
+{if $query.data && $query.data[0]|@count > 1}
 {assign var=cols value=$query.data[0]|@count}
 {else}
-{assign var=cols value=1}
+{assign var=cols value=2}
 {/if}
 <table class="bicol" style="width: 75%; font-size: smaller; margin-left:2px; margin-top: 3px;">
   <tr class="impair">
-    <td colspan="{$cols}">
+    <td style="width: 5em">
       <strong>ACTION:</strong>
+    </td>
+    <td colspan="{$cols-1}" style="align: left">
       <pre style="padding: 0; margin: 0;">{$query.action}</pre>
-      <br/>
     </td>
   </tr>
   {if $query.error}
   <tr>
-    <td colspan="{$cols}">
-      <strong style="color: #f00">ERROR:</strong><br />
+    <td style="width: 5em">
+      <strong style="color: #f00">ERROR:</strong>
+    </td>
+    <td colspan="{$cols-1}">
       {$query.error|nl2br}
     </td>
   </tr>
   {else}
   <tr>
-    <td colspan="{$cols}">
-      <strong>INFO:</strong><br />
+    <td style="width: 5em">
+      <strong>INFO:</strong>
+    </td>
+    <td colspan="{$cols-1}">
       {$query.rows} ligne{if $query.rows > 1}s{/if} en {$query.exectime|string_format:"%.3f"}s
     </td>
   </tr>
