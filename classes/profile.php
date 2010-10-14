@@ -1012,29 +1012,41 @@ class Profile
         if (!is_array($pids)) {
             $pids = array($pids);
         }
-        $keys = XDB::iterator("SELECT  n.pid, CONCAT(n.particle, n.name) AS name, e.score,
-                                       IF(FIND_IN_SET('public', e.flags), 'public', '') AS public
-                                 FROM  profile_name      AS n
-                           INNER JOIN  profile_name_enum AS e ON (n.typeid = e.id)
-                                WHERE  n.pid IN {?}",
-                              $pids);
-
+        $keys = XDB::iterator("(SELECT  n.pid AS pid, n.name AS name, e.score AS score,
+                                        IF(FIND_IN_SET('public', e.flags), 'public', '') AS public
+                                  FROM  profile_name      AS n
+                            INNER JOIN  profile_name_enum AS e ON (n.typeid = e.id)
+                                 WHERE  n.pid IN {?} AND NOT FIND_IN_SET('not_displayed', e.flags))
+                                 UNION
+                                (SELECT  n.pid AS pid, n.particle AS name, 0 AS score,
+                                         IF(FIND_IN_SET('public', e.flags), 'public', '') AS public
+                                   FROM  profile_name      AS n
+                             INNER JOIN  profile_name_enum AS e ON (n.typeid = e.id)
+                                  WHERE  n.pid IN {?} AND NOT FIND_IN_SET('not_displayed', e.flags))
+                               ",
+                              $pids, $pids);
         $names = array();
         while ($key = $keys->next()) {
             if ($key['name'] == '') {
                 continue;
             }
             $pid   = $key['pid'];
-            $toks  = preg_split('/[ \'\-]+/', $key['name']);
+            $toks  = preg_split('/[ \'\-]+/', strtolower(replace_accent($key['name'])),
+                                -1, PREG_SPLIT_NO_EMPTY);
+            $toks = array_reverse($toks);
+
+            /* Split the score between the tokens to avoid the user to be over-rated.
+             * Let says my user name is "Machin-Truc Bidule" and I also have a user named
+             * 'Machin Truc'. Distributing the score force "Machin Truc" to be displayed
+             * before "Machin-Truc" for both "Machin Truc" and "Machin" searches.
+             */
+            $eltScore = ceil(((float)$key['score'])/((float)count($toks)));
             $token = '';
-            $first = 5;
-            while ($toks) {
-                $token = strtolower(replace_accent(array_pop($toks) . $token));
-                $score = ($toks ? 0 : 10 + $first) * ($key['score'] / 10);
+            foreach ($toks as $tok) {
+                $token = $tok . $token;
                 $names["$pid-$token"] = XDB::format('({?}, {?}, {?}, {?}, {?})',
                                                     $token, $pid, soundex_fr($token),
-                                                    $score, $key['public']);
-                $first = 0;
+                                                    $eltScore, $key['public']);
             }
         }
         XDB::startTransaction();
@@ -1042,8 +1054,8 @@ class Profile
                             WHERE  pid IN {?}',
                      $pids);
         if (count($names) > 0) {
-            XDB::execute('INSERT INTO  search_name (token, pid, soundex, score, flags)
-                               VALUES  ' . implode(', ', $names));
+            XDB::rawExecute('INSERT INTO  search_name (token, pid, soundex, score, flags)
+                                  VALUES  ' . implode(', ', $names));
         }
         XDB::commit();
     }
