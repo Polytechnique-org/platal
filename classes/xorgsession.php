@@ -209,6 +209,7 @@ class XorgSession extends PlSession
 
         // Loads uid and hruid into the session for developement conveniance.
         $_SESSION = array_merge($_SESSION, array('uid' => $user->id(), 'hruid' => $user->hruid, 'token' => $user->token));
+        unset($_SESSION['perms']);
 
         // Starts the session's logger, and sets up the permanent cookie.
         if (S::suid()) {
