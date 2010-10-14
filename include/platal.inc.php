@@ -39,8 +39,10 @@ define('NO_HTTPS', 2);
 function pl_autoload($cls, array $pathes = array())
 {
     $cls  = strtolower($cls);
-    if (substr($cls, 0, 3) == 'xdb') {
+    if (starts_with($cls, 'xdb')) {
         $cls = 'xdb';
+    } else if (starts_with($cls, 'pldbtable')) {
+        $cls = 'pldbtableentry';
     }
     $basepath = dirname(dirname(dirname(__FILE__)));
 

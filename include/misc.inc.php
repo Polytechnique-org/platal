@@ -323,5 +323,52 @@ function format_datetime($date, $format)
 //    }
 }
 
+/** Get the first n characters of the string
+ */
+function left($string, $count)
+{
+    return substr($string, 0, $count);
+}
+
+/** Get the last n characters of the string
+ */
+function right($string, $count)
+{
+    return substr($string, -$count);
+}
+
+/** Check if a string is a prefix for another one.
+ */
+function starts_with($string, $prefix, $caseSensitive = true)
+{
+    $prefixLen = strlen($prefix);
+    if (strlen($string) < $prefixLen) {
+        return false;
+    }
+    $part = left($string, $prefixLen);
+    if ($caseSensitive) {
+        return strcmp($prefix, $part) === 0;
+    } else {
+        return strcasecmp($prefix, $part) === 0;
+    }
+}
+
+/** Check if a string is a suffix for another one.
+ */
+function ends_with($string, $suffix, $caseSensitive = true)
+{
+    $suffixLen = strlen($suffix);
+    if (strlen($string) < $suffixLen) {
+        return false;
+    }
+    $part = right($string, $suffixLen);
+    if ($caseSensitive) {
+        return strcmp($suffix, $part) === 0;
+    } else {
+        return strcasecmp($suffix, $part) === 0;
+    }
+}
+
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

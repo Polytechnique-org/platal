@@ -104,6 +104,13 @@ class PlFlagSet extends PlAbstractIterable implements XDBFormat
         }
     }
 
+    /** Remove all the flags.
+     */
+    public function clear()
+    {
+        $this->values = array();
+    }
+
 
     /** return the PlFlagSet
      */
