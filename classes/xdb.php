@@ -245,7 +245,7 @@ class XDB
     {
         $args = func_get_args();
         $cb = array_shift($args);
-        self::runTransactionV($cb, $args);
+        return self::runTransactionV($cb, $args);
     }
 
     public static function iterator()
