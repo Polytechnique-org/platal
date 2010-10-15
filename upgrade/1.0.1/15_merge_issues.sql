@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS profile_merge_issues (
   deathdate_ax DATE DEFAULT NULL,
   name VARCHAR(255) DEFAULT NULL,
   name_type TINYINT(2) UNSIGNED DEFAULT NULL,
-  PRIMARY KEY (pid)
+  PRIMARY KEY (pid),
+  FOREIGN KEY (pid) REFERENCES profiles (pid) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB, CHARSET=utf8;
 
 -- vim:set syntax=mysql:

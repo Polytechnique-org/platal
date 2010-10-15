@@ -39,7 +39,7 @@
 </ul>
 
 <p>
-  Une fois ces vérifications faites, un root peut lancer le script merge.php dans le répertoire upgrade/1.0.1/merge/
+  Une fois ces vérifications faites, un root peut lancer le script merge.php dans le répertoire upgrade/1.0.1/
 </p>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
