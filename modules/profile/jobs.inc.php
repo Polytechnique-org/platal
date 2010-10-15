@@ -88,7 +88,7 @@ class ProfileSettingJob implements ProfileSetting
 
         $it = Address::iterate(array($page->pid()), array(Address::LINK_JOB));
         while ($address = $it->next()) {
-            $jobs[$address->jobid]['w_address'] = $address->toFormArray();
+            $jobs[$address->id]['w_address'] = $address->toFormArray();
         }
         $it = Phone::iterate(array($page->pid()), array(Phone::LINK_JOB));
         while ($phone = $it->next()) {
