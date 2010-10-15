@@ -119,6 +119,11 @@ class Address
         }
     }
 
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
     public function phones()
     {
         return $this->phones;
@@ -413,7 +418,7 @@ class AddressIterator implements PlIterator
              LEFT JOIN  geoloc_administrativeareas    AS ga ON (ga.id = pa.administrativeAreaId)
              LEFT JOIN  geoloc_subadministrativeareas AS gs ON (gs.id = pa.subAdministrativeAreaId)
              LEFT JOIN  geoloc_countries              AS gc ON (gc.iso_3166_1_a2 = pa.countryId)
-                 WHERE  ' . implode(' AND ', $where) . '
+                 ' . ((count($where) > 0) ? 'WHERE  ' . implode(' AND ', $where) : '') . '
               ORDER BY  pa.pid, pa.jobid, pa.id';
         $this->dbiter = XDB::iterator($sql);
     }

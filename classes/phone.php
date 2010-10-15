@@ -105,6 +105,11 @@ class Phone
         return $this->search;
     }
 
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
     /** Returns the unique ID of a phone.
      * This ID will allow to link it to an address, a user or a job.
      * The format is address_addressId_phoneId (where phoneId is the id
@@ -399,8 +404,8 @@ class PhoneIterator implements PlIterator
         $sql = 'SELECT  search_tel AS search, display_tel AS display, comment, link_id,
                         tel_type AS type, link_type, tel_id AS id, pid, pub
                   FROM  profile_phones
-                 WHERE  ' . implode(' AND ', $where) . '
-              ORDER BY  link_id, tel_id';
+                 ' . ((count($where) > 0) ? 'WHERE  ' . implode(' AND ', $where) : '') . '
+              ORDER BY  pid, link_id, tel_id';
         $this->dbiter = XDB::iterator($sql);
     }
 
