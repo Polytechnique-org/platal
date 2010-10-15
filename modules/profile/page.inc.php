@@ -394,6 +394,16 @@ abstract class ProfilePage implements PlWizardPage
                 }
                 $this->markChange();
             }
+            // XXX: removes this code once all merge related issues have been fixed.
+            static $issues = array(0 => array('name', 'promo', 'phone', 'education'), 1 => array('address'), 2 => array('job'));
+            if (isset($issues[Post::i('valid_page')])) {
+                foreach ($issue as $issues[Post::i('valid_page')]) {
+                    XDB::execute("UPDATE  profile_merge_issues
+                                     SET  issues = REPLACE(issues, {?}, '')
+                                   WHERE  pid = {?}",
+                                 $issue, $this->pid());
+                }
+            }
             return Post::has('next_page') ? PlWizard::NEXT_PAGE : PlWizard::CURRENT_PAGE;
         }
         $text = "Certains champs n'ont pas pu être validés, merci de corriger les informations "
