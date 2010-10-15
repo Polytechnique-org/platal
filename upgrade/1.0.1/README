@@ -1,1 +1,2 @@
 99_jobs.sql must be run after php scripts.
+merge.php must not be run during the release. This script is only for merge purpose.

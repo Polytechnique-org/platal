@@ -1,1 +1,0 @@
-../../bin/connect.db.inc.php
