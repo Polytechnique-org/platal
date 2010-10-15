@@ -112,5 +112,11 @@ check("SELECT  a.alias AS username, b.alias AS loginbis, b.expire
         WHERE  a.type = 'a_vie'",
       "Donne la liste des homonymes qui ont un alias égal à leur loginbis depuis plus d'un mois, il est temps de supprimer leur alias.");
 
+// XXX: counts the number of remaining issues due to the merge (to be removed once all merge related issues have been fixed)
+check('SELECT  COUNT(*)
+         FROM  profile_merge_issues
+        WHERE  issues IS NULL OR issues = \'\'',
+      'Dénombre les erreurs dues à la fusion restantes.');
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

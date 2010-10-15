@@ -62,5 +62,9 @@ query('ALTER TABLE  profile_skill_enum
 query('DELETE FROM  search_autocomplete
              WHERE  generated < DATE_SUB(NOW(), INTERVAL 1 DAY)');
 
+// XXX: cleans profile_merge_issues (to be removed once all merge related issues have been fixed)
+query('DELETE FROM  profile_merge_issues
+             WHERE  issues IS NULL OR issues = \'\'');
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
