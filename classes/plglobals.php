@@ -19,13 +19,17 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 /** Debug levels:
- * DEBUG_BT     = show the backtraces (SQL/XMLRPC/...)
- * DEBUG_VALID  = run html validation
- * DEBUG_SMARTY = don't hide smarty errors/warnings/notices
+ * DEBUG_BT      = show the backtraces (SQL/XMLRPC/...)
+ * DEBUG_VALID   = run html validation
+ * DEBUG_SMARTY  = don't hide smarty errors/warnings/notices
+ * DEBUG_NOCACHE = disable cache
+ * DEBUG_SCRIPTCACHE = cache expires after the execution of the script
  */
-define('DEBUG_BT', 1);
-define('DEBUG_VALID', 2);
-define('DEBUG_SMARTY', 4);
+define('DEBUG_BT',          1);
+define('DEBUG_VALID',       2);
+define('DEBUG_SMARTY',      4);
+define('DEBUG_NOCACHE',     8);
+define('DEBUG_SCRIPTCACHE', 16);
 
 /* First allowed value for user-defined DEBUG_* flags.
  * Set to 256 to keep rooms for future core flags (5 flags available).
