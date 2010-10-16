@@ -33,22 +33,50 @@ class FusionAxModule extends PLModule
 {
     function handlers()
     {
+        if (Platal::globals()->merge->state == 'pending') {
+            $auth = 'admin';
+        } elseif (Platal::globals()->merge->state == 'done') {
+            $auth = 'admin,edit_directory';
+        }
+
         return array(
-            'fusionax'          => $this->make_hook('index',    AUTH_MDP, 'admin'),
-            'fusionax/import'   => $this->make_hook('import',   AUTH_MDP, 'admin'),
-            'fusionax/view'     => $this->make_hook('view',     AUTH_MDP, 'admin'),
-            'fusionax/ids'      => $this->make_hook('ids',      AUTH_MDP, 'admin'),
-            'fusionax/deceased' => $this->make_hook('deceased', AUTH_MDP, 'admin'),
-            'fusionax/promo'    => $this->make_hook('promo',    AUTH_MDP, 'admin'),
-            'fusionax/names'    => $this->make_hook('names',    AUTH_MDP, 'admin'),
+            'fusionax'                  => $this->make_hook('index',    AUTH_MDP, $auth),
+            'fusionax/import'           => $this->make_hook('import',   AUTH_MDP, 'admin'),
+            'fusionax/view'             => $this->make_hook('view',     AUTH_MDP, 'admin'),
+            'fusionax/ids'              => $this->make_hook('ids',      AUTH_MDP, 'admin'),
+            'fusionax/deceased'         => $this->make_hook('deceased', AUTH_MDP, 'admin'),
+            'fusionax/promo'            => $this->make_hook('promo',    AUTH_MDP, 'admin'),
+            'fusionax/names'            => $this->make_hook('names',    AUTH_MDP, 'admin'),
+
+            'fusionax/deathdate_issues' => $this->make_hook('deathdate_issue', AUTH_MDP, 'admin,edit_directory'),
+            'fusionax/promo_issues'     => $this->make_hook('promo_issue',     AUTH_MDP, 'admin,edit_directory'),
+            'fusionax/name_issues'      => $this->make_hook('name_issue',      AUTH_MDP, 'admin,edit_directory'),
+            'fusionax/phone_issues'     => $this->make_hook('phone_issue',     AUTH_MDP, 'admin,edit_directory'),
+            'fusionax/education_issues' => $this->make_hook('education_issue', AUTH_MDP, 'admin,edit_directory'),
+            'fusionax/address_issues'   => $this->make_hook('address_issue',   AUTH_MDP, 'admin,edit_directory'),
+            'fusionax/job_issues'       => $this->make_hook('job_issue',       AUTH_MDP, 'admin,edit_directory'),
         );
     }
 
 
     function handler_index(&$page)
     {
-        $page->changeTpl('fusionax/index.tpl');
-        $page->assign('xorg_title', 'Polytechnique.org - Fusion des annuaires');
+        if (Platal::globals()->merge->state == 'pending') {
+            $page->changeTpl('fusionax/index.tpl');
+        } elseif (Platal::globals()->merge->state == 'done') {
+            $issues = XDB::rawFetchOneAssoc("SELECT  COUNT(*) AS total,
+                                                     SUM(FIND_IN_SET('name', issues))      DIV 1 AS name,
+                                                     SUM(FIND_IN_SET('job', issues))       DIV 2 AS job,
+                                                     SUM(FIND_IN_SET('address', issues))   DIV 3 AS address,
+                                                     SUM(FIND_IN_SET('promo', issues))     DIV 4 AS promo,
+                                                     SUM(FIND_IN_SET('deathdate', issues)) DIV 5 AS deathdate,
+                                                     SUM(FIND_IN_SET('phone', issues))     DIV 6 AS phone,
+                                                     SUM(FIND_IN_SET('education', issues)) DIV 7 AS education
+                                               FROM  profile_merge_issues
+                                              WHERE  issues IS NOT NULL OR issues != ''");
+            $page->assign('issues', $issues);
+            $page->changeTpl('fusionax/issues.tpl');
+        }
     }
 
     /** Import de l'annuaire de l'AX depuis l'export situé dans le home de jacou */

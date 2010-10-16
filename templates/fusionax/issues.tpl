@@ -20,18 +20,23 @@
 {*                                                                        *}
 {**************************************************************************}
 
-subgrades = new Array();
-names     = new Array();
-{foreach from=$medal_list key=type item=list}
-  {foreach from=$list item=m}
-    names[{$m.id}] = "{$m.text|regex_replace:"/\r?\n/":"\\n"}";
-    {if t($grades[$m.id]) && $grades[$m.id]|@count}
-      subgrades[{$m.id}] = new Array({$grades[$m.id]|@count});
-      {foreach from=$grades[$m.id] item=g}
-        subgrades[{$m.id}][{$g.gid-1}] = [{$g.gid},"{$g.text|regex_replace:"/\r?\n/":"\\n"}"];
-      {/foreach}
-    {/if}
-  {/foreach}
-{/foreach}
+<h2>Fusion des annuaires X.org - AX</h2>
+
+{if $issues.total > 0}
+<p>
+  Il reste les problèmes suivants dus à la fusion des annuaires à corriger sur les profils&nbsp;:
+</p>
+<ul>
+  {if $issues.deathdate > 0}<li>{$issues.deathdate} erreur{if $issues.deathdate > 1}s{/if} sur les <a href="fusionax/deathdate_issues">dates de décès</a></li>{/if}
+  {if $issues.promo > 0}<li>{$issues.promo} erreur{if $issues.promo > 1}s{/if} sur les <a href="fusionax/promo_issues">promotions</a></li>{/if}
+  {if $issues.name > 0}<li>{$issues.name} erreur{if $issues.name > 1}s{/if} sur les <a href="fusionax/name_issues">noms</a></li>{/if}
+  {if $issues.phone > 0}<li>{$issues.phone} erreur{if $issues.phone > 1}s{/if} sur les <a href="fusionax/phone_issues">téléphones</a></li>{/if}
+  {if $issues.education > 0}<li>{$issues.education} erreur{if $issues.education > 1}s{/if} sur les <a href="fusionax/education_issues">formations</a></li>{/if}
+  {if $issues.address > 0}<li>{$issues.address} erreur{if $issues.address > 1}s{/if} sur les <a href="fusionax/address_issues">adresses</a></li>{/if}
+  {if $issues.job > 0}<li>{$issues.job} erreur{if $issues.job > 1}s{/if} sur les <a href="fusionax/job_issues">emplois</a></li>{/if}
+</ul>
+{else}
+<p>Il ne reste plus d'erreurs liées à la fusion des annuaires&nbsp;!</p>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

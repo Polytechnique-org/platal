@@ -539,8 +539,13 @@ class ProfileAddresses extends ProfileField
     {
         $p = $phones->get(Profile::PHONE_LINK_ADDRESS | Profile::PHONE_TYPE_ANY);
         foreach ($p as $phone) {
-            if ($phone->linkType() == Phone::LINK_ADDRESS && array_key_exists($phone->linkId(), $this->addresses)) {
-                $this->addresses[$phone->linkId()]->addPhone($phone);
+            /* We must iterate on the addresses because id is not uniq thus,
+             * $this->addresse[$phone->linkId()] is invalid.
+             */
+            foreach ($this->addresses as $address) {
+                if ($address->type == Address::LINK_PROFILE && $address->id == $phone->linkId()) {
+                    $address->addPhone($phone);
+                }
             }
         }
     }

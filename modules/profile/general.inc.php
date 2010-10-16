@@ -661,7 +661,7 @@ class ProfilePageGeneral extends ProfilePage
                 }
             }
         }
-        if ($this->changed['deathdate']) {
+        if (!S::user()->isMe($this->owner) && $this->changed['deathdate']) {
             XDB::execute('UPDATE  profiles
                              SET  deathdate = {?}, deathdate_rec = NOW()
                            WHERE  pid = {?} AND deathdate_rec IS NULL',

@@ -119,7 +119,7 @@
     <tr class="pair" {if $hiddenjob}style="display: none"{/if}>
       <td colspan="2" class="center" style="font-style: italic">Place dans l'entreprise</td>
     </tr>
-    <tr class="pair" ${sector_text} {if $hiddenjob}style="display: none"{/if}>
+    <tr class="pair" {$sector_text} {if $hiddenjob}style="display: none"{/if}>
       <td class="titre">Mots-clefs</td>
       <td class="job_terms">
         <input type="text" class="term_search" size="35"/>
