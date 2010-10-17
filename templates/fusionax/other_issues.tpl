@@ -20,20 +20,20 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h2>Fusion des annuaires X.org - AX</h2>
+<h2>Fusion des annuaires X.org - AX&nbsp;: {$issue}</h2>
 
-{if $issues.total > 0}
+{if $total > 0}
 <p>
-  Il reste {$issues.total} problème{if $issues.total > 1}s{/if} du{if $issues.total > 1}s{/if} à la fusion des annuaires à corriger sur les profils&nbsp;:
+  Il reste {$total} problème{if $total > 1}s{/if} du{if $total > 1}s{/if} à la
+  fusion des annuaires lié{if $total > 1}s{/if} aux {$issue} à corriger sur les profils&nbsp;:
 </p>
 <ul>
-  {foreach from=$issueList key=issue item=name}
-  {assign var=issueNb value=$issues.$issue}
-  {if $issueNb > 0}<li>{$issueNb} erreur{if $issueNb > 1}s{/if} sur les <a href="fusionax/issues/{$issue}">{$name}</a></li>{/if}
+  {foreach from=$issues item=profile}
+  <li><a href="profile/edit/{$profile.hrpid}">{$profile.directory_name} ({$profile.promo})</a></li>
   {/foreach}
 </ul>
 {else}
-<p>Il ne reste plus d'erreur liée à la fusion des annuaires&nbsp;!</p>
+<p>Il ne reste plus d'erreur liée à la fusion des annuaires concernant les {$issue}&nbsp;!</p>
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

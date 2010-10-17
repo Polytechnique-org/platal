@@ -34,28 +34,23 @@ class FusionAxModule extends PLModule
     function handlers()
     {
         if (Platal::globals()->merge->state == 'pending') {
-            $auth = 'admin';
+            return array(
+                'fusionax'                  => $this->make_hook('index',    AUTH_MDP, 'admin'),
+                'fusionax/import'           => $this->make_hook('import',   AUTH_MDP, 'admin'),
+                'fusionax/view'             => $this->make_hook('view',     AUTH_MDP, 'admin'),
+                'fusionax/ids'              => $this->make_hook('ids',      AUTH_MDP, 'admin'),
+                'fusionax/deceased'         => $this->make_hook('deceased', AUTH_MDP, 'admin'),
+                'fusionax/promo'            => $this->make_hook('promo',    AUTH_MDP, 'admin'),
+                'fusionax/names'            => $this->make_hook('names',    AUTH_MDP, 'admin')
+            );
         } elseif (Platal::globals()->merge->state == 'done') {
-            $auth = 'admin,edit_directory';
+            return array(
+                'fusionax'                  => $this->make_hook('index',            AUTH_MDP, 'admin,edit_directory'),
+                'fusionax/issues'           => $this->make_hook('issues',           AUTH_MDP, 'admin,edit_directory'),
+                'fusionax/issues/deathdate' => $this->make_hook('issues_deathdate', AUTH_MDP, 'admin,edit_directory'),
+                'fusionax/issues/promo'     => $this->make_hook('issues_promo',     AUTH_MDP, 'admin,edit_directory'),
+            );
         }
-
-        return array(
-            'fusionax'                  => $this->make_hook('index',    AUTH_MDP, $auth),
-            'fusionax/import'           => $this->make_hook('import',   AUTH_MDP, 'admin'),
-            'fusionax/view'             => $this->make_hook('view',     AUTH_MDP, 'admin'),
-            'fusionax/ids'              => $this->make_hook('ids',      AUTH_MDP, 'admin'),
-            'fusionax/deceased'         => $this->make_hook('deceased', AUTH_MDP, 'admin'),
-            'fusionax/promo'            => $this->make_hook('promo',    AUTH_MDP, 'admin'),
-            'fusionax/names'            => $this->make_hook('names',    AUTH_MDP, 'admin'),
-
-            'fusionax/deathdate_issues' => $this->make_hook('deathdate_issue', AUTH_MDP, 'admin,edit_directory'),
-            'fusionax/promo_issues'     => $this->make_hook('promo_issue',     AUTH_MDP, 'admin,edit_directory'),
-            'fusionax/name_issues'      => $this->make_hook('name_issue',      AUTH_MDP, 'admin,edit_directory'),
-            'fusionax/phone_issues'     => $this->make_hook('phone_issue',     AUTH_MDP, 'admin,edit_directory'),
-            'fusionax/education_issues' => $this->make_hook('education_issue', AUTH_MDP, 'admin,edit_directory'),
-            'fusionax/address_issues'   => $this->make_hook('address_issue',   AUTH_MDP, 'admin,edit_directory'),
-            'fusionax/job_issues'       => $this->make_hook('job_issue',       AUTH_MDP, 'admin,edit_directory'),
-        );
     }
 
 
@@ -64,6 +59,15 @@ class FusionAxModule extends PLModule
         if (Platal::globals()->merge->state == 'pending') {
             $page->changeTpl('fusionax/index.tpl');
         } elseif (Platal::globals()->merge->state == 'done') {
+            $issueList = array(
+                'name'      => 'noms',
+                'job'       => 'emplois',
+                'address'   => 'adresses',
+                'promo'     => 'promotions',
+                'deathdate' => 'dates de décès',
+                'phone'     => 'téléphones',
+                'education' => 'formations',
+            );
             $issues = XDB::rawFetchOneAssoc("SELECT  COUNT(*) AS total,
                                                      SUM(FIND_IN_SET('name', issues))      DIV 1 AS name,
                                                      SUM(FIND_IN_SET('job', issues))       DIV 2 AS job,
@@ -74,8 +78,9 @@ class FusionAxModule extends PLModule
                                                      SUM(FIND_IN_SET('education', issues)) DIV 7 AS education
                                                FROM  profile_merge_issues
                                               WHERE  issues IS NOT NULL OR issues != ''");
-            $page->assign('issues', $issues);
             $page->changeTpl('fusionax/issues.tpl');
+            $page->assign('issues', $issues);
+            $page->assign('issueList', $issueList);
         }
     }
 
@@ -568,6 +573,130 @@ class FusionAxModule extends PLModule
                             WHERE  f.prenom NOT IN (pnf.name, pno.name, pne.name, pni.name)');
         $page->assign('firstnameIssues', $res->fetchOneCell());
 
+    }
+
+    function handler_issues_deathdate(&$page, $action = '')
+    {
+        $page->changeTpl('fusionax/deathdate_issues.tpl');
+        if ($action == 'edit') {
+            S::assert_xsrf_token();
+
+            $issues = XDB::rawIterRow('SELECT  p.pid, pd.directory_name, pd.promo, pm.deathdate_ax, p.deathdate
+                                         FROM  profile_merge_issues AS pm
+                                   INNER JOIN  profiles             AS p  ON (pm.pid = p.pid)
+                                   INNER JOIN  profile_display      AS pd ON (pd.pid = p.pid)
+                                        WHERE  FIND_IN_SET(\'deathdate\', pm.issues)
+                                     ORDER BY  pd.directory_name');
+            while (list($pid, $name, $promo, $deathAX, $deathXorg) = $issues->next()) {
+                $choiceAX = Post::has('AX_' . $pid);
+                $choiceXorg = Post::has('XORG_' . $pid);
+                if (!($choiceAX || $choiceXorg)) {
+                    continue;
+                }
+
+                if ($choiceAX) {
+                    XDB::execute('UPDATE  profiles             AS p
+                              INNER JOIN  profile_merge_issues AS pm ON (pm.pid = p.pid)
+                                     SET  p.deathdate = pm.deathdate_ax, p.deathdate_rec = NOW()
+                                   WHERE  p.pid = {?}', $pid);
+                }
+                XDB::execute("UPDATE  profile_merge_issues
+                                 SET  issues = REPLACE(issues, 'deathdate', '')
+                               WHERE  pid = {?}", $pid());
+                $page->trigSuccess("La date de décès de $name ($promo) a bien été corrigée.");
+            }
+        }
+
+        $issues = XDB::rawFetchAllAssoc('SELECT  p.pid, p.hrpid, pd.directory_name, pd.promo, pm.deathdate_ax, p.deathdate
+                                           FROM  profile_merge_issues AS pm
+                                     INNER JOIN  profiles             AS p  ON (pm.pid = p.pid)
+                                     INNER JOIN  profile_display      AS pd ON (pd.pid = p.pid)
+                                          WHERE  FIND_IN_SET(\'deathdate\', pm.issues)
+                                       ORDER BY  pd.directory_name');
+        $page->assign('issues', $issues);
+        $page->assign('total', count($issues));
+    }
+
+    function handler_issues_promo(&$page, $action = '')
+    {
+        $page->changeTpl('fusionax/promo_issues.tpl');
+        if ($action == 'edit') {
+            S::assert_xsrf_token();
+
+            $issues = XDB::rawIterRow('SELECT  p.pid, pd.directory_name, pd.promo, pm.entry_year_ax, pe.entry_year, pe.grad_year
+                                         FROM  profile_merge_issues AS pm
+                                   INNER JOIN  profiles             AS p  ON (pm.pid = p.pid)
+                                   INNER JOIN  profile_display      AS pd ON (pd.pid = p.pid)
+                                   INNER JOIN  profile_education    AS pe ON (pe.pid = p.pid AND FIND_IN_SET(\'primary\', pe.flags))
+                                        WHERE  FIND_IN_SET(\'promo\', pm.issues)
+                                     ORDER BY  pd.directory_name');
+            while (list($pid, $name, $promo, $deathAX, $deathXorgEntry, $deathXorgGrad) = $issues->next()) {
+                $choiceXorg = Post::has('XORG_' . $pid);
+                if (!(Post::has('display_' . $pid) && Post::has('entry_' . $pid) && Post::has('grad_' . $pid))) {
+                    continue;
+                }
+
+                $display = Post::i('display_' . $pid);
+                $entry = Post::i('entry_' . $pid);
+                $grad = Post::i('grad_' . $pid);
+                if (!(($grad <= $entry + 5 && $grad >= $entry + 3) && ($display >= $entry && $display <= $grad - 3))) {
+                    $page->trigError("La promotion de $name n'a pas été corrigée.");
+                    continue;
+                }
+                XDB::execute('UPDATE  profile_display
+                                 SET  promo = {?}
+                               WHERE  pid = {?}', 'X' . $display, $pid);
+                XDB::execute('UPDATE  profile_education
+                                 SET  entry_year = {?}, grad_year = {?}
+                               WHERE  pid = {?} AND FIND_IN_SET(\'primary\', flags)', $entry, $grad, $pid);
+                $page->trigSuccess("La promotion de $name a bien été corrigée.");
+            }
+        }
+
+        $issues = XDB::rawFetchAllAssoc('SELECT  p.pid, p.hrpid, pd.directory_name, pd.promo, pm.entry_year_ax, pe.entry_year, pe.grad_year
+                                           FROM  profile_merge_issues AS pm
+                                     INNER JOIN  profiles             AS p  ON (pm.pid = p.pid)
+                                     INNER JOIN  profile_display      AS pd ON (pd.pid = p.pid)
+                                     INNER JOIN  profile_education    AS pe ON (pe.pid = p.pid AND FIND_IN_SET(\'primary\', pe.flags))
+                                          WHERE  FIND_IN_SET(\'promo\', pm.issues)
+                                       ORDER BY  pd.directory_name');
+        $page->assign('issues', $issues);
+        $page->assign('total', count($issues));
+    }
+
+    function handler_issues(&$page, $action = '')
+    {
+        static $issueList = array(
+            'name'      => 'noms',
+            'phone'     => 'téléphones',
+            'education' => 'formations',
+            'address'   => 'adresses',
+            'job'       => 'emplois'
+        );
+
+        if (!array_key_exists($action, $issueList)) {
+            pl_redirect('fusionax');
+        } else {
+            $total = XDB::fetchOneCell('SELECT  COUNT(*)
+                                          FROM  profile_merge_issues
+                                         WHERE  FIND_IN_SET({?}, issues)', $action);
+            if ($total == 0) {
+                pl_redirect('fusionax');
+            }
+
+            $issues = XDB::fetchAllAssoc('SELECT  p.hrpid, pd.directory_name, pd.promo
+                                            FROM  profile_merge_issues AS pm
+                                      INNER JOIN  profiles             AS p  ON (pm.pid = p.pid)
+                                      INNER JOIN  profile_display      AS pd ON (pd.pid = p.pid)
+                                           WHERE  FIND_IN_SET({?}, pm.issues)
+                                        ORDER BY  pd.directory_name
+                                           LIMIT  100', $action);
+
+            $page->changeTpl('fusionax/other_issues.tpl');
+            $page->assign('issues', $issues);
+            $page->assign('issue', $issueList[$action]);
+            $page->assign('total', $total);
+        }
     }
 }
 

@@ -20,20 +20,40 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h2>Fusion des annuaires X.org - AX</h2>
+<h2>Fusion des annuaires X.org - AX&nbsp;: dates de décès</h2>
 
-{if $issues.total > 0}
+{if $total > 0}
 <p>
-  Il reste {$issues.total} problème{if $issues.total > 1}s{/if} du{if $issues.total > 1}s{/if} à la fusion des annuaires à corriger sur les profils&nbsp;:
+  Il reste {$total} problème{if $total > 1}s{/if} du{if $issues.total > 1}s{/if} à la
+  fusion des annuaires lié{if $issues.total > 1}s{/if} aux dates de décès à corriger sur les profils&nbsp;:
 </p>
-<ul>
-  {foreach from=$issueList key=issue item=name}
-  {assign var=issueNb value=$issues.$issue}
-  {if $issueNb > 0}<li>{$issueNb} erreur{if $issueNb > 1}s{/if} sur les <a href="fusionax/issues/{$issue}">{$name}</a></li>{/if}
-  {/foreach}
-</ul>
+<form action="{$platal->ns}fusionax/issues/deathdate/edit" method="post"> 
+  {xsrf_token_field}
+  <table class="bicol">
+    <tr>
+      <th>Nom</th>
+      <th>Décès Xorg</th>
+      <th>Décès AX</th>
+      <th>Choix</th>
+    </tr>
+    {foreach from=$issues item=profile}
+    <tr>
+      <td>
+        <a href="profile/edit/{$profile.hrpid}">{$profile.directory_name} ({$profile.promo})</a>
+      </td>
+      <td>{$deathdate}</td>
+      <td>{$deathdate_ax}</td>
+      <td>
+        <label>AX <input type="checkbox" name="AX_{$profile.pid}" /></label>
+        - <label><input type="checkbox" name="XORG_{$profile.pid}" /> Xorg</label>
+      </td>
+    </tr>
+    {/foreach}
+    <tr colspan="4"><input type="submit" value="Valider les corrections" /></tr>
+  </table>
+</form>
 {else}
-<p>Il ne reste plus d'erreur liée à la fusion des annuaires&nbsp;!</p>
+<p>Il ne reste plus d'erreur liée à la fusion des annuaires concernant les dates de décès&nbsp;!</p>
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
