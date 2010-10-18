@@ -119,7 +119,7 @@
     Droits
     <select name="account_type" onchange="this.form.submit()" style="margin: 0; padding: 0; float:
     right">
-      <option value="admin">Administrateur</option>
+      <option value="admin">Admin</option>
       {foreach from=$account_types_list item=type}
       <option value="{$type}">{$type}</option>
       {/foreach}
