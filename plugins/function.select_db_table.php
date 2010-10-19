@@ -57,7 +57,7 @@ function select_options($table, $value, $field, $pad, $where, $join, $group)
 }
 
 function smarty_function_select_db_table($params, &$smarty) {
-    if (empty($params['table']) || empty($params['valeur'])) {
+    if (empty($params['table']) || !array_key_exists('valeur', $params)) {
         return;
     }
     if (empty($params['champ'])) {
