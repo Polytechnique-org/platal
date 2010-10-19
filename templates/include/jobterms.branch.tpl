@@ -27,7 +27,7 @@
   {ldelim}
     "data" :
     {ldelim}
-      "title" : "{$term.name|replace:'"':'\\"'}{if $filter} ({$term.nb} {$filter}{if $term.nb > 1}s{/if}){/if}",
+      "title" : "{$term.name|replace:'"':'\\"'}{if t($filter)} ({$term.nb} {$filter}{if $term.nb > 1}s{/if}){/if}",
       "attr" : {ldelim}
         {if $attrfunc}"href" : "javascript:{$attrfunc}('{$treeid}','{$term.jtid}',\"{$term.full_name|replace:'"':'\\\\\\"'}\")",{/if}
         "title" : "{$term.full_name|replace:'"':'\\"'}"
