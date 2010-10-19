@@ -494,8 +494,5 @@ function cleanForm(f) {
     </tr>
   </table>
 </form>
-<p>
-  <small><strong>N.B.&nbsp;:</strong> le caractère joker * peut remplacer une ou plusieurs lettres dans les recherches.</small>
-</p>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
