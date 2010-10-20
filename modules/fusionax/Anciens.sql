@@ -26,8 +26,6 @@ CREATE TABLE IF NOT EXISTS fusionax_anciens (
   tel_mobile VARCHAR(30) NOT NULL COMMENT 'Numéro de téléphone mobile',
   annee_dernCot INT(11) NOT NULL COMMENT 'Année de dernière cotisation AX',
   Representant ENUM('', 'K', 'DE') character set binary NOT NULL COMMENT 'Représentant de promotion',
-  hash_adr_defaut BINARY(5) NOT NULL COMMENT 'Hash de l''adresse par défaut',
-  Date_maj DATE NOT NULL,
   PRIMARY KEY  (ax_id)
 ) ENGINE=InnoDB, CHARSET=utf8;
 
@@ -37,8 +35,6 @@ LOAD DATA LOCAL INFILE '{?}Anciens.txt' INTO TABLE `fusionax_anciens` FIELDS TER
     tel_mobile, annee_dernCot, Representant, @Type_adr_defaut, @AdrC_Ligne1, @AdrC_Ligne2, @AdrC_Ligne3, @AdrC_code_postal, @AdrC_ville,
     @AdrC_zip_cedex, @AdrC_etat_distr, @AdrC_pays, @tel, @fax, @StringDate_maj)
 SET
-    `hash_adr_defaut` = SUBSTRING( MD5( @Type_adr_defaut ), 1, 5),
-    `Date_maj` = CONCAT(SUBSTRING(@StringDate_maj,7),'-',SUBSTRING(@StringDate_maj,4,2),'-',SUBSTRING(@StringDate_maj,1,2)),
     `Date_deces` = CONCAT(SUBSTRING(@StringDate_deces,7),'-',SUBSTRING(@StringDate_deces,4,2),'-',SUBSTRING(@StringDate_deces,1,2));
 
 ALTER TABLE fusionax_anciens ADD INDEX (ax_id);

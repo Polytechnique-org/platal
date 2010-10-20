@@ -234,7 +234,7 @@ class FusionAxModule extends PLModule
             $next = 'clean';
         } elseif ($action == 'clean') {
             // nettoyage du fichier temporaire
-            exec('rm -Rf ' . $spoolpath);
+            //exec('rm -Rf ' . $spoolpath);
             $report[] = 'Import finit.';
         }
         foreach($report as $t) {
