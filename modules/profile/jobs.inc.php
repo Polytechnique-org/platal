@@ -83,7 +83,7 @@ class ProfileSettingJob implements ProfileSetting
         $backtrack = array();
         foreach ($jobs as $key=>$job) {
             $compagnies[] = $job['jobid'];
-            $backtrack[$job['jobid']] = $key;
+            $backtrack[$job['id']] = $key;
         }
 
         $it = Address::iterate(array($page->pid()), array(Address::LINK_JOB));
@@ -94,18 +94,19 @@ class ProfileSettingJob implements ProfileSetting
         while ($phone = $it->next()) {
             $jobs[$phone->linkId()]['w_phone'][$phone->id()] = $phone->toFormArray();
         }
-        $res = XDB::iterator("SELECT  e.jtid, e.full_name, j.jid AS jobid
+        $res = XDB::iterator("SELECT  e.jtid, e.full_name, j.jid
                                 FROM  profile_job_term_enum AS e
                           INNER JOIN  profile_job_term AS j USING(jtid)
                                WHERE  pid = {?}
                             ORDER BY  j.jid",
                              $page->pid());
         while ($term = $res->next()) {
-            $jobid = $term['jobid'];
-            if (!isset($backtrack[$jobid])) {
+            // $jid is the ID of the job among this user's jobs
+            $jid = $term['jid'];
+            if (!isset($backtrack[$jid])) {
                 continue;
             }
-            $job =& $jobs[$backtrack[$jobid]];
+            $job =& $jobs[$backtrack[$jid]];
             if (!isset($job['terms'])) {
                 $job['terms'] = array();
             }
