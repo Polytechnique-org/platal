@@ -45,9 +45,10 @@ class JobTerms {
         } else {
             $count = $join = '';
         }
-        return XDB::iterator('SELECT  e.jtid, e.name, e.full_name'.$count.'
+        return XDB::iterator('SELECT  e.jtid, e.name, e.full_name'.$count.', IF(rf.jtid_1 IS NULL, 1, 0) AS leaf
                                 FROM  profile_job_term_enum AS e
                           INNER JOIN  profile_job_term_relation AS r ON (r.jtid_2 = e.jtid)'.$join.'
+                          LEFT JOIN   profile_job_term_relation AS rf ON (rf.jtid_1 = e.jtid AND rf.computed = "original")
                                WHERE  r.jtid_1 = {?} AND r.computed = "original"
                             GROUP BY  e.jtid
                             ORDER BY  e.name',
@@ -78,6 +79,7 @@ class JobTerms {
             $page->assign('filter', 'mentor');
             break;
         }
+        $page->assign('jtid', Env::v('jtid'));
         $page->assign('attrfunc', Env::v('attrfunc'));
         $page->assign('treeid', Env::v('treeid'));
     }
