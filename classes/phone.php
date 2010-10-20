@@ -307,6 +307,13 @@ class Phone
         }
     }
 
+    public function delete()
+    {
+        XDB::execute('DELETE FROM  profile_phones
+                            WHERE  pid = {?} AND link_type = {?} AND link_id = {?} AND tel_id = {?}',
+                     $this->pid, $this->link_type, $this->link_id, $this->id);
+    }
+
     static public function deletePhones($pid, $link_type, $link_id = null)
     {
         $where = '';

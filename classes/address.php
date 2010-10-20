@@ -286,7 +286,14 @@ class Address
         }
     }
 
-    static public function delete($pid, $type, $jobid = null)
+    public function delete()
+    {
+        XDB::execute('DELETE FROM  profile_addresses
+                            WHERE  pid = {?} AND jobid = {?} AND type = {?} AND id = {?}',
+                     $this->pid, $this->jobid, $this->type, $this->id);
+    }
+
+    static public function deleteAddresses($pid, $type, $jobid = null)
     {
         $where = '';
         if (!is_null($pid)) {

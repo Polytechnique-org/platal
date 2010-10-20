@@ -44,7 +44,7 @@ class ProfileSettingAddresses implements ProfileSetting
     public function save(ProfilePage &$page, $field, $value)
     {
         Phone::deletePhones($page->pid(), Phone::LINK_ADDRESS);
-        Address::delete($page->pid(), Address::LINK_PROFILE);
+        Address::deleteAddresses($page->pid(), Address::LINK_PROFILE);
         Address::saveFromArray($value, $page->pid(), Address::LINK_PROFILE);
     }
 

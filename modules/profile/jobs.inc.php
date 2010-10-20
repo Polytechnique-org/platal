@@ -251,7 +251,7 @@ class ProfileSettingJob implements ProfileSetting
         XDB::execute("DELETE FROM  profile_job_term
                             WHERE  pid = {?}",
                      $page->pid());
-        Address::delete($page->pid(), Address::LINK_JOB);
+        Address::deleteAddresses($page->pid(), Address::LINK_JOB);
         Phone::deletePhones($page->pid(), Phone::LINK_JOB);
         $terms_values = array();
         foreach ($value as $id => &$job) {
