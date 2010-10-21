@@ -6,6 +6,7 @@ UPDATE register_marketing SET sender = NULL WHERE sender = 0;
 UPDATE register_mstats SET sender = NULL WHERE sender = 0;
 UPDATE requests SET pid = NULL WHERE pid = 0;
 UPDATE profile_addresses SET pid = NULL WHERE pid = 0;
+UPDATE survey_votes SET uid = NULL WHERE uid = 0;
 
 -- Deltes erroneous data.
 DELETE FROM homonyms WHERE NOT EXISTS (SELECT * FROM accounts WHERE accounts.uid = homonyms.homonyme_id);
@@ -16,6 +17,7 @@ DELETE FROM forum_profiles WHERE NOT EXISTS (SELECT * FROM accounts WHERE accoun
 DELETE FROM watch WHERE NOT EXISTS (SELECT * FROM accounts WHERE accounts.uid = watch.uid);
 DELETE FROM group_event_participants WHERE NOT EXISTS (SELECT * FROM accounts WHERE accounts.uid = group_event_participants.uid);
 DELETE FROM group_members WHERE NOT EXISTS (SELECT * FROM accounts WHERE accounts.uid = group_members.uid);
+DELETE FROM axletter_ins WHERE NOT EXISTS (SELECT * FROM accounts WHERE accounts.uid = axletter_ins.uid);
 
 -- Following tables all refer to accounts.uid.
 ALTER TABLE account_auth_openid ADD FOREIGN KEY (uid) REFERENCES accounts (uid) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -62,7 +64,6 @@ ALTER TABLE watch_promo ADD FOREIGN KEY (uid) REFERENCES accounts (uid) ON DELET
 
 -- Following tables all refer to accounts.uid, but they use a different name.
 ALTER TABLE contacts ADD FOREIGN KEY (contact) REFERENCES accounts (uid) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE email_list_moderate ADD FOREIGN KEY (mid) REFERENCES accounts (uid) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE gapps_accounts ADD FOREIGN KEY (l_userid) REFERENCES accounts (uid) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE gapps_queue ADD FOREIGN KEY (q_owner_id) REFERENCES accounts (uid) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE gapps_queue ADD FOREIGN KEY (q_recipient_id) REFERENCES accounts (uid) ON DELETE CASCADE ON UPDATE CASCADE;

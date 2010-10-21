@@ -29,6 +29,7 @@ UPDATE profile_education SET fieldid = NULL WHERE fieldid = 0;
 UPDATE profile_education_enum SET country = NULL WHERE country = '';
 UPDATE profile_job SET jobid = NULL WHERE jobid = 0;
 UPDATE profile_job_enum SET holdingid = NULL WHERE holdingid = 0;
+UPDATE profiles SET section = NULL WHERE section = 0;
 
 -- Adds missing data in foreign tables.
 INSERT INTO  geoloc_countries (iso_3166_1_a2, iso_3166_1_a3, iso_3166_1_num, worldRegion, country,

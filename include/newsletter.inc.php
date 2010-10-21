@@ -148,7 +148,7 @@ class NewsLetter extends MassMailer
     {
         $user = is_null($uid) ? S::v('uid') : $uid;
         XDB::execute("REPLACE INTO  newsletter_ins (uid,last)
-                            VALUES  ({?}, 0)", $user);
+                            VALUES  ({?}, NULL)", $user);
     }
 
     protected function subscriptionWhere()

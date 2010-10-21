@@ -39,7 +39,7 @@ class ProfileSettingSection implements ProfileSetting
         XDB::execute("UPDATE  profiles
                          SET  section = {?}
                        WHERE  pid = {?}",
-                     $value, $page->pid());
+                     ($value == 0) ? null : $value, $page->pid());
     }
 
     public function getText($value) {

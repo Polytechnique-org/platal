@@ -15,6 +15,7 @@ ALTER TABLE group_event_participants MODIFY COLUMN item_id INT(11) UNSIGNED DEFA
 UPDATE groups SET dom = NULL WHERE dom = 0;
 UPDATE payments SET asso_id = NULL WHERE asso_id = 0;
 UPDATE newsletter_art SET cid = NULL WHERE cid = 0;
+UPDATE newsletter_ins SET last = NULL WHERE last = 0;
 
 -- Deletes things that should have been deleted ealier.
 DELETE FROM newsletter_art WHERE NOT EXISTS (SELECT * FROM newsletter WHERE newsletter.id = newsletter_art.id);

@@ -439,7 +439,8 @@ class Survey
     public function vote($uid, $args)
     {
         XDB::execute('INSERT INTO  survey_votes
-                              SET  survey_id = {?}, uid = {?};', $this->id, $uid); // notes the user as having voted
+                              SET  survey_id = {?}, uid = {?}',
+                     $this->id, ($uid == 0) ? null : $uid); // notes the user as having voted
         $vid = XDB::insertId();
         for ($i = 0; $i < count($this->questions); $i++) {
             $ans = $this->questions[$i]->checkAnswer($args[$i]);
