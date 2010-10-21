@@ -3,8 +3,12 @@
 . ../inc/pervasive.sh
 
 ###########################################################
-[ "$DATABASE" != "x4dat" ] || die "Cannot target x4dat"
+[ "$DATABASE" != "x5dat" ] || die "Cannot target x5dat"
 copy_db
+
+echo "* switching engines to InnoDB"
+(./innodb.sh | while read line; do mysql_exec "$line"; done) || die "ERROR"
+echo "OK"
 
 confirm "* Running database upgrade scripts"
 mysql_run_directory .
