@@ -25,7 +25,15 @@ class JobTerms {
     const ONLY_JOBS = 'jobs';
     const ONLY_MENTORS = 'mentors';
 
-    static public function getSubTerms($parent_jtid, $filter = self::ALL) {
+    /** Retreives subterms of a term to display in a tree
+     * @param $parent_jtid the id of the parent jobterm
+     * @param $filter enable filtering on jobterms that have been used in jobs or in mentors, in
+     *  that case, each row as an 'nb' field that counts all profiles that match
+     * @param $token_filter a text (usually ending by %) the retreived subterms to jobterms that
+     *  contains this tokens or that one of their children contains it.
+     * @return an iterator over jobterms with jtid, name, full_name and nb
+     */
+    static public function getSubTerms($parent_jtid, $filter = self::ALL, $token_filter = null) {
         switch ($filter) {
           case self::ALL:
           default:
@@ -44,6 +52,10 @@ class JobTerms {
                       INNER JOIN  '.$table.' AS j ON (j.jtid = r2.jtid_2)';
         } else {
             $count = $join = '';
+        }
+        if (!empty($token_filter)) {
+            $join .= ' INNER JOIN  profile_job_term_relation AS rtf ON (rtf.jtid_1 = e.jtid) '.
+                self::token_join_query(self::tokenize($token_filter), 'rtf', 'jtid_2');
         }
         return XDB::iterator('SELECT  e.jtid, e.name, e.full_name'.$count.', IF(rf.jtid_1 IS NULL, 1, 0) AS leaf
                                 FROM  profile_job_term_enum AS e
@@ -65,11 +77,14 @@ class JobTerms {
      * is chosen
      * @param Env::v('treeid') tree id that will be given as first argument of attrfunc function
      * the second argument will be the chosen job term id and the third one the chosen job's full name.
+     * @param Env::v('text_filter') a string (usually ending by %) that will be used to filter
+     * subbranches, keeping only the one containing this text in its title or in the title of one of
+     * its subbranches.
      */
     static public function ajaxGetBranch(&$page, $filter = self::ALL) {
         pl_content_headers('application/json');
         $page->changeTpl('include/jobterms.branch.tpl', NO_SKIN);
-        $subTerms = self::getSubTerms(Env::v('jtid'), $filter);
+        $subTerms = self::getSubTerms(Env::v('jtid'), $filter, Env::v('text_filter'));
         $page->assign('subTerms', $subTerms);
         switch ($filter) {
           case self::ONLY_JOBS:
@@ -80,6 +95,7 @@ class JobTerms {
             break;
         }
         $page->assign('jtid', Env::v('jtid'));
+        $page->assign('text_filter', Env::v('text_filter'));
         $page->assign('attrfunc', Env::v('attrfunc'));
         $page->assign('treeid', Env::v('treeid'));
     }
@@ -96,7 +112,11 @@ class JobTerms {
                     if (nod != -1) {
                         jtid = nod.attr("id").replace(/^.*_([0-9]+)$/, "$1");
                     }
-                    return { "jtid" : jtid, "treeid" : "'.addslashes($treeid).'", "attrfunc" : "'.addslashes($attrfunc).'" }
+                    return {
+                        "jtid" : jtid,
+                        "treeid" : "'.addslashes($treeid).'",
+                        "attrfunc" : "'.addslashes($attrfunc).'"
+                     }
                 }
             }} });';
     }
@@ -104,7 +124,7 @@ class JobTerms {
     /**
      * Extract search token from term
      * @param $term a utf-8 string that can contain any char
-     * @param an array of elementary tokens
+     * @return an array of elementary tokens
      */
     static public function tokenize($term)
     {
@@ -129,14 +149,15 @@ class JobTerms {
      * Create the INNER JOIN query to restrict search to some job terms
      * @param $tokens an array of the job terms to look for (LIKE comp)
      * @param $table_alias the alias or name of the table with a jtid field to restrict
+     * @param $table_field the name of the field to restrict in table_alias, usually jtid
      * @return a partial SQL query
      */
-    static public function token_join_query(array $tokens, $table_alias) {
+    static public function token_join_query(array $tokens, $table_alias, $table_field = 'jtid') {
         $joins = '';
         $i = 0;
         foreach ($tokens as $t) {
             ++$i;
-             $joins .= ' INNER JOIN  profile_job_term_search AS s'.$i.' ON(s'.$i.'.jtid = '.$table_alias.'.jtid AND s'.$i.'.search LIKE '.XDB::escape($t).')';
+             $joins .= ' INNER JOIN  profile_job_term_search AS s'.$i.' ON(s'.$i.'.jtid = '.$table_alias.'.'.$table_field.' AND s'.$i.'.search LIKE '.XDB::escape($t).')';
         }
         return $joins;
     }
