@@ -4,7 +4,7 @@ changeEngine() {
     echo "ALTER TABLE $1 ENGINE = InnoDB;"
 }
 
-# changeEngine 'account_auth_openid'
+changeEngine 'account_auth_openid'
 changeEngine 'account_lost_passwords'
 changeEngine 'account_profiles'
 changeEngine 'account_types'
@@ -28,8 +28,8 @@ changeEngine 'forum_innd'
 changeEngine 'forum_profiles'
 changeEngine 'forum_subs'
 changeEngine 'forums'
-# changeEngine 'gapps_accounts'
-# changeEngine 'gapps_nicknames'
+changeEngine 'gapps_accounts'
+changeEngine 'gapps_nicknames'
 changeEngine 'gapps_queue'
 changeEngine 'gapps_reporting'
 changeEngine 'geoloc_administrativeareas'

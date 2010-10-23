@@ -1,0 +1,44 @@
+ALTER TABLE account_auth_openid DROP KEY user_id_url_index;
+ALTER TABLE account_auth_openid ADD UNIQUE KEY user_id_url_index (uid, url(60));
+
+DROP TABLE IF EXISTS tmp_gapps_nicknames;
+CREATE TEMPORARY TABLE tmp_gapps_nicknames LIKE gapps_nicknames;
+INSERT INTO tmp_gapps_nicknames SELECT * FROM gapps_nicknames;
+DROP TABLE gapps_nicknames;
+CREATE TABLE gapps_nicknames (
+  l_userid INT(11) UNSIGNED DEFAULT NULL,
+  g_account_name VARCHAR(256) NOT NULL,
+  g_nickname VARCHAR(256) NOT NULL,
+  PRIMARY KEY (g_nickname(60)),
+  KEY g_account_name (g_account_name(60)),
+  KEY l_userid (l_userid)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+INSERT INTO gapps_nicknames SELECT * FROM tmp_gapps_nicknames;
+DROP TABLE IF EXISTS tmp_gapps_nicknames;
+
+DROP TABLE IF EXISTS tmp_gapps_accounts;
+CREATE TEMPORARY TABLE tmp_gapps_accounts LIKE gapps_accounts;
+INSERT INTO tmp_gapps_accounts SELECT * FROM gapps_accounts;
+DROP TABLE gapps_accounts;
+CREATE TABLE gapps_accounts (
+  l_userid INT(11) UNSIGNED DEFAULT NULL,
+  l_sync_password TINYINT(1) DEFAULT 1,
+  l_activate_mail_redirection TINYINT(1) DEFAULT 1,
+  g_account_id CHAR(16) DEFAULT NULL,
+  g_account_name VARCHAR(256) NOT NULL,
+  g_first_name VARCHAR(40) NOT NULL,
+  g_last_name VARCHAR(40) NOT NULL,
+  g_status ENUM('unprovisioned','disabled','active') DEFAULT 'unprovisioned',
+  g_admin TINYINT(1) DEFAULT NULL,
+  g_suspension VARCHAR(256) DEFAULT NULL,
+  r_disk_usage BIGINT(20) DEFAULT NULL,
+  r_creation DATE DEFAULT NULL,
+  r_last_login DATE DEFAULT NULL,
+  r_last_webmail DATE DEFAULT NULL,
+  PRIMARY KEY (g_account_name(60)),
+  KEY l_userid (l_userid)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+INSERT INTO gapps_accounts SELECT * FROM tmp_gapps_accounts;
+DROP TABLE IF EXISTS tmp_gapps_accounts;
+
+-- vim:set syntax=mysql:
