@@ -39,6 +39,7 @@ Bug/Wish:
 
     * Survey:
         - #964: The creator of a survey can get early results              -FRU
+        - #1282: The creator can always view the results                   -FRU
 
     * XnetGrp:
         - #1252: Don't include dead user in directory listing              -FRU
