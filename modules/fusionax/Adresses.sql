@@ -27,12 +27,12 @@ SET
 `Type_adr` = IF(@Type_adr = 'E', 'E', IF(@Type_adr = '', '', 'P'));
 
 LOAD DATA LOCAL INFILE '{?}Anciens.txt' INTO TABLE `fusionax_adresses` FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\r\n'
-(provenance, ax_id, @Login, @Password, @promotion_etude, @Groupe_promo, @Nom_patronymique, @partic_patro, @prenom, @Nom_usuel, @partic_nom,
-    @Nom_complet, @Civilite, @Code_nationalite, @Type_membre, @corps_sortie, @StringDate_deces, @grade, @Mel_usage, @Mel_publiable,
-    @tel_mobile, @annee_dernCot, @Representant, @Type_adr, Ligne1, Ligne2, Ligne3, code_postal, ville,
-    zip_cedex, etat_distr, pays, tel, fax, @StringDate_maj)
+(provenance, ax_id, @login, @password, @promotion_etude, @gpe_promo, @Nom_patronymique, @partic_patro, @prenom, @Nom_usuel, @partic_nom,
+  @Nom_complet, @civilite, @Code_nationalite, @type, @corps_sortie, @StringDate_deces, @grade, @Mel_usage, @Mel_publiable, @xxx, @xxx,
+  @tel_mobile, @xxx, @xxx, @xxx, @xxx, @xxx, @xxx, @xxx, @X_M_D, @xxx, @xxx, @xxx, @xxx, @xxx, @xxx, @Type_adr,
+  Ligne1, Ligne2, Ligne3, code_postal, ville, zip_cedex, etat_distr, pays, tel, fax, @date_MAJ)
 SET
-`Type_adr` = IF(@Type_adr = 'E', 'E', IF(@Type_adr = '', '', 'P'));
+Type_adr = IF(@Type_adr = 'E', 'E', IF(@Type_adr = '', '', 'P'));
 
 LOAD DATA LOCAL INFILE '{?}Activites.txt' INTO TABLE `fusionax_adresses` FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\r\n'
 (provenance, ax_id, Code_etab, @Raison_sociale, @Libelle_fonctio, @Annuaire,
