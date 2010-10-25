@@ -8,7 +8,7 @@ require_once '../../classes/address.php';
 
 $globals->debug = 0; // Do not store backtraces.
 
-echo "Formats non formated phones.\n";
+echo "Formats non formated phones. (1/4)\n";
 $it = XDB::rawIterator("SELECT  search_tel AS search, display_tel AS display, comment, link_id,
                                 tel_type AS type, link_type, tel_id AS id, pid, pub
                           FROM  profile_phones
@@ -19,7 +19,7 @@ while ($phone = new Phone($it->next())) {
   $phone->save();
 }
 
-echo "Deletes duplicated phones.\n";
+echo "Deletes duplicated phones. (2/4)\n";
 $it = XDB::rawIterator("SELECT  search_tel AS search, display_tel AS display, comment, link_id,
                                 tel_type AS type, link_type, tel_id AS id, pid, pub
                           FROM  profile_phones
@@ -68,13 +68,13 @@ while ($phone = new Phone($it->next())) {
   }
 }
 
-echo "Tries to geocode addresses (due a bug in the previous release, all addresses must run once again).\n";
+echo "Tries to geocode addresses (due a bug in the previous release, all addresses must run once again). (3/4)\n";
 $it = XDB::rawIterator('SELECT  *
                           FROM  profile_addresses
                       ORDER BY  pid, jobid, type, id');
 $pid = 0;
 $jobid = 0;
-while ($address = $it->next()) {
+while ($address = new Address($it->next())) {
   $address->format(array(true, true));
   $address->delete();
   $address->save();
@@ -85,7 +85,7 @@ while ($address = $it->next()) {
   }
 }
 
-echo "Deletes duplicated addresses.\n";
+echo "Deletes duplicated addresses. (4/4)\n";
 $it = XDB::rawIterator("SELECT  *
                           FROM  profile_addresses
                          WHERE  type = 'home'
@@ -132,6 +132,7 @@ while ($address = new Address($it->next())) {
     $count = 1;
   }
 }
+echo "That's all folks!\n";
 
 /* vim:set et sw=4 sts=4 ts=4: */
 ?>
