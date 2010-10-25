@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS fusionax_adresses (
   fax VARCHAR(30) NOT NULL,
   Code_etab BIGINT(10) DEFAULT NULL,
   text TEXT DEFAULT NULL,
-  PRIMARY KEY  (ax_id, Type_adr)
+  PRIMARY KEY (ax_id, Type_adr)
 ) ENGINE=InnoDB, CHARSET=utf8;
 
 LOAD DATA LOCAL INFILE '{?}Adresses.txt' INTO TABLE `fusionax_adresses` FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\r\n'

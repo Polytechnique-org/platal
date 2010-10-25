@@ -261,6 +261,10 @@ XDB::rawExecute("DELETE  f
              INNER JOIN  profiles          AS p  ON (f.ax_id = p.ax_id)
              INNER JOIN  profile_addresses AS pa ON (pa.pid = p.pid AND pa.type = 'home')
                   WHERE  pa.text = f.text");
+// Deletes addresses of unknown type.
+XDB::rawExecute("DELETE FROM  fusionax_adresses
+                       WHERE  Type_adr != 'E' AND Type_adr != 'P'");
+
 XDB::rawExecute("UPDATE  profile_merge_issues AS pm
              INNER JOIN  profiles             AS p  ON (pm.pid = p.pid)
              INNER JOIN  profile_addresses    AS pa ON (pa.pid = p.pid AND pa.type = 'home' AND pa.id = 0)
@@ -290,92 +294,89 @@ XDB::rawExecute("INSERT INTO  profile_addresses (pid, type, id, pub, text)
                        WHERE  f.text IS NOT NULL
                     GROUP BY  p.pid");
 XDB::rawExecute("INSERT INTO  profile_phones (pid, link_type, tel_id, tel_type, display_tel, pub, link_id)
-                      SELECT  p.pid, 'address', 0, 'fixed', f.tel, 'ax', pa.id
+                      SELECT  p.pid, 'address', IF(pp.tel_id IS NULL, 0, MAX(pp.tel_id) + 1), 'fixed', f.tel, 'ax', pa.id
                         FROM  fusionax_adresses AS f
                   INNER JOIN  profiles          AS p  ON (f.ax_id = p.ax_id)
                   INNER JOIN  profile_addresses AS pa ON (pa.pid = p.pid AND pa.type = 'home' AND f.text = pa.text)
-                       WHERE  f.tel != ''");
+                   LEFT JOIN  profile_phones    AS pp ON (pp.pid = p.pid AND pp.link_type = 'address' AND pp.link_id = pa.id)
+                       WHERE  f.tel != ''
+                    GROUP BY  p.pid");
 XDB::rawExecute("INSERT INTO  profile_phones (pid, link_type, tel_id, tel_type, display_tel, pub, link_id)
-                      SELECT  p.pid, 'address', IF(f.tel = '', 0, 1), 'fax', f.fax, 'ax', pa.id
+                      SELECT  p.pid, 'address', IF(pp.tel_id IS NULL, 0, MAX(pp.tel_id) + 1), 'fax', f.fax, 'ax', pa.id
                         FROM  fusionax_adresses AS f
                   INNER JOIN  profiles          AS p  ON (f.ax_id = p.ax_id)
                   INNER JOIN  profile_addresses AS pa ON (pa.pid = p.pid AND pa.type = 'home' AND f.text = pa.text)
-                       WHERE  f.fax != ''");
+                   LEFT JOIN  profile_phones    AS pp ON (pp.pid = p.pid AND pp.link_type = 'address' AND pp.link_id = pa.id)
+                       WHERE  f.fax != ''
+                    GROUP BY  p.pid");
 XDB::rawExecute('ALTER TABLE profile_addresses DROP INDEX text');
 XDB::rawExecute('DROP TABLE IF EXISTS fusionax_adresses');
 echo "Addresses inclusions finished.\n";
 
 // Retrieves education from AX database. This is the hardest part since AX only kept education as an unformated string.
 echo "Starts educations inclusions.\n";
-// {{{ First, we need to build a few lists.
-$degree_list = $level_list = $university_list = $field_list = array();
-$res = XDB::rawIterator('SELECT  id, abbreviation AS name
-                           FROM  profile_education_degree_enum
-                       ORDER BY  id');
-while ($res = $item->next()) {
-    $degree_list[$item[1]] = $item[0];
+// Insert ids into fusionax_formations to prevent many joins.
+XDB::rawExecute('UPDATE  fusionax_formations           AS f
+              LEFT JOIN  profile_education_enum        AS pe ON (pe.name = f.Intitule_formation)
+              LEFT JOIN  profile_education_degree_enum AS pd ON (pd.abbreviation = f.Intitule_diplome)
+              LEFT JOIN  profile_education_field_enum  AS pf ON (pf.field = f.Descr_formation)
+                    SET  f.eduid = pe.id, f.degreeid = pd.id, f.fieldid = pf.id');
+// Updates non complete educations.
+XDB::rawExecute("UPDATE  profile_education             AS e
+             INNER JOIN  profiles                      AS p  ON (e.pid = p.pid)
+             INNER JOIN  fusionax_formations           AS f  ON (f.ax_id = p.ax_id)
+             INNER JOIN  profile_education_degree_enum AS pd ON (e.degreeid = pd.id)
+             INNER JOIN  profile_education_degree_enum AS fd ON (f.degreeid = fd.id)
+                    SET  e.eduid = f.eduid
+                  WHERE  NOT FIND_IN_SET('primary', e.flags) AND e.eduid IS NULL AND pd.level = fd.level");
+XDB::rawExecute("UPDATE  profile_education   AS e
+             INNER JOIN  profiles            AS p ON (e.pid = p.pid)
+             INNER JOIN  fusionax_formations AS f ON (f.ax_id = p.ax_id)
+                    SET  e.degreeid = f.degreeid
+                  WHERE  NOT FIND_IN_SET('primary', e.flags) AND e.degreeid IS NULL AND e.eduid = f.eduid");
+// Deletes duplicates.
+XDB::rawExecute("DELETE  f
+                   FROM  fusionax_formations           AS f
+             INNER JOIN  profiles                      AS p  ON (f.ax_id = p.ax_id)
+             INNER JOIN  profile_education_degree_enum AS fd ON (fd.abbreviation = f.Intitule_diplome)
+             INNER JOIN  profile_education             AS e  ON (e.pid = p.pid AND NOT FIND_IN_SET('primary', e.flags))
+             INNER JOIN  profile_education_degree_enum AS pd ON (pd.id = e.degreeid)
+                  WHERE  f.eduid = e.eduid AND fd.level = pd.level");
+// Updates merge_issues table.
+XDB::rawExecute("UPDATE  profile_merge_issues AS pm
+             INNER JOIN  profiles             AS p ON (pm.pid = p.pid)
+             INNER JOIN  fusionax_formations  AS f ON (f.ax_id = p.ax_id)
+                    SET  pm.issues = IF(pm.issues, CONCAT(pm.issues, ',', 'education'), 'education')");
+XDB::rawExecute("INSERT IGNORE INTO  profile_merge_issues (pid, issues)
+                             SELECT  p.pid, 'education'
+                               FROM  fusionax_formations AS f
+                         INNER JOIN  profiles            AS p ON (f.ax_id = p.ax_id)");
+
+$id = 0;
+$continue = 1;
+while ($continue > 0) {
+    XDB::rawExecute("INSERT IGNORE INTO  profile_education (id, pid, eduid, degreeid, fieldid, program)
+                                 SELECT  $id, p.pid, f.eduid, f.degreeid, f.fieldid, f.Descr_formation
+                                   FROM  fusionax_formations AS f
+                             INNER JOIN  profiles            AS p  ON (f.ax_id = p.ax_id)");
+    XDB::rawExecute("DELETE  f
+                       FROM  fusionax_formations AS f
+                 INNER JOIN  profiles            AS p  ON (f.ax_id = p.ax_id)
+                 INNER JOIN  profile_education   AS pe ON (pe.pid = p.pid AND pe.id = $id AND pe.eduid = f.eduid AND pe.degreeid = f.degreeid
+                                                           AND pe.fieldid = f.fieldid AND pe.program = f.Descr_formation)");
+    $continue = XDB::affectedRows();
 }
-$res = XDB::rawIterator('SELECT  level, abbreviation AS name
-                           FROM  profile_education_degree_enum
-                       ORDER BY  id');
-while ($res = $item->next()) {
-    $level_list[$item[1]] = $item[0];
-}
-$res = XDB::rawIterator("SELECT  id, IF(abbreviation = '', name, abbreviation) AS name
-                           FROM  profile_education_enum
-                       ORDER BY  id");
-while ($res = $item->next()) {
-    $university_list[$item[1]] = $item[0];
-}
-$res = XDB::rawIterator('SELECT  id, field AS name
-                           FROM  profile_education_field_enum
-                       ORDER BY  id');
-while ($res = $item->next()) {
-    $field_list[$item[1]] = $item[0];
-}
-// }}}
-$edusXorg = XDB::rawIterator("SELECT  p.pid, d.abbreviation AS degree, IF(e.abbreviation = '', e.name, e.abbreviation) AS university,
-                                      pe.program, pe.id AS no
-                                FROM  profile_education             AS pe
-                          INNER JOIN  profiles                      AS p ON (pe.pid = p.pid)
-                          INNER JOIN  fusionax_formations           AS f ON (f.ax_id = p.ax_id)
-                          INNER JOIN  profile_education_enum        AS e ON (pe.eduid = e.id)
-                          INNER JOIN  profile_education_degree_enum AS d ON (pe.degreeid = d.id)
-                               WHERE  NOT FIND_IN_SET('primary', pe.flags)
-                            ORDER BY  p.pid, pe.id");
-$edusAX = XDB::rawIterator("SELECT  p.pid, f.Intitule_diplome AS degree, f.Intitule_formation AS university, f.Descr_formation AS program
-                              FROM  fusionax_formations AS f
-                        INNER JOIN  profiles            AS p ON (f.ax_id = p.ax_id)
-                          ORDER BY  p.pid");
-$eduXorg = $edusXorg->next();
-while ($eduAX = $edusAX->next()) {
-    $id = 0;
-    while ($eduXorg['pid'] == $eduAX['pid']) {
-        if ($eduXorg['university'] == $eduAX['university'] && $level_list[$eduXorg['degree']] == $level_list[$eduAX['degree']]) {
-            $already = true;
-        }
-        ++$id;
-        $eduXorg = $edusXorg->next();
-    }
-    if (isset($field_list[$eduAX['program']])) {
-        $fieldid = $field_list[$eduAX['program']];
-        $program = null;
-    } else {
-        $fieldid = null;
-        $program = $eduAX['program'];
-    }
-    if (!$already) {
-        XDB::execute('INSERT INTO  profile_education (pid, degreeid, eduid, program, fieldid, id)
-                           VALUES  {?}, {?}, {?}, {?}, {?}, {?}',
-                     $eduAX['pid'], $degree_list[$eduAX['degree']], $university_list[$eduAX['university']],
-                     $program, $fieldid, $id);
-        if ($id > 0) {
-            XDB::execute("UPDATE  profile_merge_issues
-                             SET  issues = IF(issues, CONCAT(issues, ',', 'education'), 'education')
-                           WHERE  pid = {?}", $addressAX->pid);
-        }
-    }
-}
+// Updates merge_issues table (eduid and degreeid should never be empty).
+XDB::rawExecute("UPDATE  profile_merge_issues AS pm
+             INNER JOIN  profile_education    AS pe ON (pe.pid = pm.pid)
+                    SET  pm.issues = CONCAT(pm.issues, ',', 'education')
+                  WHERE  NOT FIND_IN_SET('education', pm.issues) AND (pe.eduid = '' OR pe.eduid IS NULL OR pe.degreeid = '' OR pe.degreeid IS NULL)");
+XDB::rawExecute("INSERT IGNORE INTO  profile_merge_issues (pid, issues)
+                             SELECT  pid, 'education'
+                               FROM  profile_education
+                              WHERE  eduid = '' OR eduid IS NULL OR degreeid = '' OR degreeid IS NULL");
+
+
 XDB::rawExecute('DROP TABLE IF EXISTS fusionax_formations');
 echo "Educations inclusions finished.\n";
 
