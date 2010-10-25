@@ -7,7 +7,8 @@ CREATE TABLE IF NOT EXISTS `fusionax_entreprises` (
   `Code_etab` BIGINT(10) NOT NULL COMMENT 'Code de l''établissement',
   `Raison_sociale` VARCHAR(255) NOT NULL COMMENT 'Raison sociale de l''établissement',
   `Sigle` VARCHAR(50) NOT NULL COMMENT 'Sigle de l''établissement',
-  PRIMARY KEY(`Code_etab`)
+  PRIMARY KEY(`Code_etab`),
+  INDEX (Raison_sociale(20))
 ) ENGINE=InnoDB, CHARSET=utf8;
 
 LOAD DATA LOCAL INFILE '{?}Entreprises.txt' INTO TABLE `fusionax_entreprises` FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\r\n'

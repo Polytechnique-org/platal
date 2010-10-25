@@ -18,13 +18,16 @@ CREATE TABLE IF NOT EXISTS fusionax_anciens (
   grade VARCHAR(50) NOT NULL COMMENT 'Grade actuel dans son corps',
   Mel_usage VARCHAR(255) NOT NULL COMMENT 'Adresse e-mail d''usage',
   Mel_publiable TINYINT(4) NOT NULL COMMENT 'Autorisation d''utiliser le mail',
+  Mob_publiable TINYINT(4) NOT NULL COMMENT 'Autorisation d''utiliser le mobile',
   tel_mobile VARCHAR(30) NOT NULL COMMENT 'Numéro de téléphone mobile',
-  PRIMARY KEY  (ax_id)
+  pid INT(11) UNSIGNED DEFAULT NULL,
+  PRIMARY KEY  (ax_id),
+  INDEX (pid)
 ) ENGINE=InnoDB, CHARSET=utf8;
 
 LOAD DATA LOCAL INFILE '{?}Anciens.txt' INTO TABLE `fusionax_anciens` FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\r\n'
 (AN, ax_id, @login, @password, promotion_etude, @gpe_promo, Nom_patronymique, partic_patro, prenom, Nom_usuel, partic_nom,
-  Nom_complet, @civilite, Code_nationalite, @type, corps_sortie, @StringDate_deces, grade, Mel_usage, Mel_publiable, @xxx, @xxx,
+  Nom_complet, @civilite, Code_nationalite, @type, corps_sortie, @StringDate_deces, grade, Mel_usage, Mel_publiable, @xxx, Mob_publiable,
   tel_mobile, @xxx, @xxx, @xxx, @xxx, @xxx, @xxx, @xxx, @X_M_D, @xxx, @xxx, @xxx, @xxx, @xxx, @xxx, @Type_adr,
   @Ligne1, @Ligne2, @Ligne3, @code_postal, @ville, @zip_cedex, @etat_distr, @pays, @tel, @fax, @date_MAJ)
 SET

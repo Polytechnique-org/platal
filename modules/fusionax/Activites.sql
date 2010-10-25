@@ -9,7 +9,13 @@ CREATE TABLE IF NOT EXISTS `fusionax_activites` (
   `Raison_sociale` VARCHAR(255) NOT NULL COMMENT 'Raison sociale de l''établissement',
   `Libelle_fonctio` VARCHAR(255) NOT NULL COMMENT 'Libéllé de la fonction',
   `Annuaire` BOOLEAN NOT NULL COMMENT 'publiable dans l''annuaire papier',
-  PRIMARY KEY( `ax_id` , `Code_etab` )
+  pid INT(11) UNSIGNED DEFAULT NULL,
+  jobid INT(6) UNSIGNED DEFAULT NULL,
+  description VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (`ax_id`, `Code_etab`),
+  INDEX (Code_etab),
+  INDEX (pid),
+  INDEX (jobid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 LOAD DATA LOCAL INFILE '{?}Activites.txt' INTO TABLE `fusionax_activites` FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\r\n'
@@ -18,3 +24,7 @@ LOAD DATA LOCAL INFILE '{?}Activites.txt' INTO TABLE `fusionax_activites` FIELDS
 
 
 UPDATE fusionax_activites SET Raison_sociale = TRIM(Raison_sociale), Libelle_fonctio = TRIM(Libelle_fonctio);
+UPDATE  fusionax_activites
+   SET  description = IF(Raison_sociale,
+                         IF(Libelle_fonctio, CONCAT(Raison_sociale, ', ', Libelle_fonctio), Raison_sociale),
+                         Libelle_fonctio);
