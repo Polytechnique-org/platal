@@ -673,6 +673,13 @@ class FusionAxModule extends PLModule
             'address'   => 'adresses',
             'job'       => 'emplois'
         );
+        static $typeList = array(
+            'name'      => 'general',
+            'phone'     => 'general',
+            'education' => 'general',
+            'address'   => 'adresses',
+            'job'       => 'emploi'
+        );
 
         if (!array_key_exists($action, $issueList)) {
             pl_redirect('fusionax');
@@ -695,6 +702,7 @@ class FusionAxModule extends PLModule
             $page->changeTpl('fusionax/other_issues.tpl');
             $page->assign('issues', $issues);
             $page->assign('issue', $issueList[$action]);
+            $page->assign('type', $typeList[$action]);
             $page->assign('total', $total);
         }
     }

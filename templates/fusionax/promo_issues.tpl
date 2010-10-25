@@ -24,8 +24,8 @@
 
 {if $total > 0}
 <p>
-  Il reste {$total} problème{if $total > 1}s{/if} du{if $issues.total > 1}s{/if} à la
-  fusion des annuaires lié{if $issues.total > 1}s{/if} aux promotions à corriger sur les profils&nbsp;:
+  Il reste {$total} problème{if $total > 1}s{/if} du{if $total > 1}s{/if} à la
+  fusion des annuaires lié{if $total > 1}s{/if} aux promotions à corriger sur les profils&nbsp;:
 </p>
 <form action="{$platal->ns}fusionax/issues/promo/edit" method="post"> 
   {xsrf_token_field}
@@ -54,8 +54,8 @@
       <td><input type="text" name="grad_{$profile.pid}" size="4" maxlength="4" /></td>
     </tr>
     {/foreach}
-    <tr colspan="8"><input type="submit" value="Valider les corrections" /></tr>
   </table>
+  <div class="center"><input type="submit" value="Valider les corrections" /></div>
 </form>
 {else}
 <p>Il ne reste plus d'erreur liée à la fusion des annuaires concernant les promotions&nbsp;!</p>

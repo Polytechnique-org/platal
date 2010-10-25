@@ -24,8 +24,8 @@
 
 {if $total > 0}
 <p>
-  Il reste {$total} problème{if $total > 1}s{/if} du{if $issues.total > 1}s{/if} à la
-  fusion des annuaires lié{if $issues.total > 1}s{/if} aux dates de décès à corriger sur les profils&nbsp;:
+  Il reste {$total} problème{if $total > 1}s{/if} du{if $total > 1}s{/if} à la
+  fusion des annuaires lié{if $total > 1}s{/if} aux dates de décès à corriger sur les profils&nbsp;:
 </p>
 <form action="{$platal->ns}fusionax/issues/deathdate/edit" method="post"> 
   {xsrf_token_field}
@@ -41,16 +41,16 @@
       <td>
         <a href="profile/edit/{$profile.hrpid}">{$profile.directory_name} ({$profile.promo})</a>
       </td>
-      <td>{$deathdate}</td>
-      <td>{$deathdate_ax}</td>
+      <td>{$profile.deathdate}</td>
+      <td>{$profile.deathdate_ax}</td>
       <td>
         <label>AX <input type="checkbox" name="AX_{$profile.pid}" /></label>
         - <label><input type="checkbox" name="XORG_{$profile.pid}" /> Xorg</label>
       </td>
     </tr>
     {/foreach}
-    <tr colspan="4"><input type="submit" value="Valider les corrections" /></tr>
   </table>
+  <div class="center"><input type="submit" value="Valider les corrections" /></div>
 </form>
 {else}
 <p>Il ne reste plus d'erreur liée à la fusion des annuaires concernant les dates de décès&nbsp;!</p>
