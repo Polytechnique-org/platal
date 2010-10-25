@@ -57,12 +57,12 @@
         Entreprise n°{$i+1}&nbsp;:
         {if $hiddenjob}
         (masquée)
-        {if !$job.tmp_name}
+        {if !t($job.tmp_name)}
         <input type="hidden" name="{$jobpref}[name]" value="{$job.name}" />
         {/if}
         {else}
-        {if $job.tmp_name}{$job.tmp_name} <small>(en cours de validation)</small>{else}
-        <input type="text" class="enterpriseName{if $job.name_error} error{/if}" size="35" maxlength="100"
+        {if t($job.tmp_name)}{$job.tmp_name} <small>(en cours de validation)</small>{else}
+        <input type="text" class="enterpriseName{if t($job.name_error)} error{/if}" size="35" maxlength="100"
                name="{$jobpref}[name]" value="{$job.name}" />
         {/if}
         {/if}
@@ -71,7 +71,7 @@
         </a>
       </th>
     </tr>
-    {if !$job.tmp_name && !$job.name}
+    {if !t($job.tmp_name)}{if !t($job.name)}
     <tr class="{$entreprise}" {if $hiddenjob}style="display: none"{/if}>
       <td class="center" colspan="2">
         <small>Si l'entreprise ne figure pas dans la liste,
@@ -114,7 +114,7 @@
         <input type="text" maxlength="28" name="{$jobpref}[hq_fax]" />
       </td>
     </tr>
-    {/if}
+    {/if}{/if}
 
     <tr class="pair" {if $hiddenjob}style="display: none"{/if}>
       <td colspan="2" class="center" style="font-style: italic">Place dans l'entreprise</td>
@@ -150,14 +150,14 @@
     <tr class="pair" {if $hiddenjob}style="display: none"{/if}>
       <td class="titre">Description</td>
       <td>
-        <input type="text" size="35" maxlength="120" {if $job.description_error}class="error"{/if}
+        <input type="text" size="35" maxlength="120" {if t($job.description_error)}class="error"{/if}
            name="{$jobpref}[description]" value="{$job.description}" />
       </td>
     </tr>
     <tr class="pair" {if $hiddenjob}style="display: none"{/if}>
       <td class="titre">Page&nbsp;perso</td>
       <td>
-          <input type="text" size="35" maxlength="255" {if $job.w_rul}class="error"{/if}
+          <input type="text" size="35" maxlength="255" {if t($job.w_rul)}class="error"{/if}
                  name="{$jobpref}[w_url]" value="{$job.w_url}" />
       </td>
     </tr>
@@ -184,7 +184,7 @@
     </tr>
     {else}
     {include file="include/emails.combobox.tpl" name=$jobpref|cat:'[w_email]' val=$job.w_email
-             class="pair" i=$i error=$job.w_email_error prefix="w_" pub=$job.w_email_pub id=$i}
+             class="pair" i=$i error=t($job.w_email_error) prefix="w_" pub=$job.w_email_pub id=$i}
     {/if}
     <tr class="pair" {if $hiddenjob}style="display: none"{/if}>
       <td colspan="2">
