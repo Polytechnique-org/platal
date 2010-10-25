@@ -84,7 +84,7 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
     <th>Infos</th>
     <th>Montant</th>
   </tr>
-  {iterate from=$oubliinscription item=m}
+  {foreach from=$oubliinscription item=m}
   <tr class="pair">
     <td>
       {if $is_admin}<a href="javascript:remplitAuto('{$m.user->login()}')">{/if}
@@ -97,9 +97,9 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
       <a href="https://www.polytechnique.org/vcard/{$m.user->login()}.vcf">{icon name=vcard title="vcard"}</a>
       <a href="mailto:{$m.user->bestEmail()}">{icon name=email title="email"}</a>
     </td>
-    <td>{$m.montant}</td>
+    <td>{$m.amount}</td>
   </tr>
-  {/iterate}
+  {/foreach}
 </table>
 
 <hr />
