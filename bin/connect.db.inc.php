@@ -19,6 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+ini_set('memory_limit', '64M');
 ini_set('include_path', dirname(__FILE__) . '/../core/include:'
                       . dirname(__FILE__) . '/../include:'
                       . dirname(__FILE__) . '/../core/classes:'
@@ -27,6 +28,9 @@ ini_set('include_path', dirname(__FILE__) . '/../core/include:'
 require_once('xorg.inc.php');
 
 new Xorg('core');
+
+// Do not store backtraces
+Platal::globals()->debug = 0;
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

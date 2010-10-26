@@ -22,9 +22,6 @@
 
 require './connect.db.inc.php';
 
-ini_set('memory_limit', '16M');
-$globals->debug = 0; // Do not store backtraces
-
 $res = XDB::iterRow('SELECT  pid
                        FROM  profiles');
 $i = 0;
