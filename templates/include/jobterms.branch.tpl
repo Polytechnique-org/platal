@@ -27,14 +27,17 @@
   {ldelim}
     "data" :
     {ldelim}
-      "title" : "{$term.name|replace:'"':'\\"'}{if $filter} ({$term.nb} {$filter}{if $term.nb > 1}s{/if}){/if}",
+      "title" : "{$term.name|replace:'"':'\\"'}{if t($filter)} ({$term.nb} {$filter}{if $term.nb > 1}s{/if}){/if}",
       "attr" : {ldelim}
-        {if $attrfunc}"href" : "javascript:{$attrfunc}('{$treeid}','{$term.jtid}',\"{$term.full_name|replace:'"':'\\\\\\"'}\")",{/if}
+        {if !$jtid}"onclick" : "return false",
+        {elseif $attrfunc}"href" : "javascript:{$attrfunc}('{$treeid}','{$term.jtid}',\"{$term.full_name|replace:'"':'\\\\\\"'}\")",{/if}
         "title" : "{$term.full_name|replace:'"':'\\"'}"
       {rdelim}
     {rdelim},
-    "attr" : {ldelim} "id" : "job_terms_tree_{$treeid}_{$term.jtid}" {rdelim},
-    "state": "closed"
+    "attr" : {ldelim} "id" : "job_terms_tree_{$treeid}_{$term.jtid}" {rdelim}
+    {if !$term.leaf}
+      ,"state": "closed"
+    {/if}
   {rdelim}
 {/iterate}
 ]

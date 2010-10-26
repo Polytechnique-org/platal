@@ -109,7 +109,7 @@ class SurveyModule extends PLModule
         } elseif (!$survey->isEnded() && !$survey->canSeeEarlyResults(S::user())) {
             return $this->show_error($page, "Le sondage ".$survey->getTitle()." n'est pas encore terminé.", 'survey');
         }
-        if (!$this->check_surveyPerms($page, $survey)) {
+        if (!$survey->canSeeEarlyResults(S::user()) && !$this->check_surveyPerms($page, $survey)) {
             return PL_DO_AUTH;
         }
         if ($show == 'csv') {

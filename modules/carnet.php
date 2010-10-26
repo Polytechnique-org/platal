@@ -382,7 +382,7 @@ class CarnetModule extends PLModule
         $user = Platal::session()->tokenAuth($alias, $hash);
         if (is_null($user)) {
             if (S::logged()) {
-                $user == S::user();
+                $user = S::user();
             } else {
                 return PL_FORBIDDEN;
             }
@@ -415,7 +415,7 @@ class CarnetModule extends PLModule
         $user = Platal::session()->tokenAuth($alias, $hash);
         if (is_null($user)) {
             if (S::logged()) {
-                $user == S::user();
+                $user = S::user();
             } else {
                 return PL_FORBIDDEN;
             }
@@ -445,7 +445,7 @@ class CarnetModule extends PLModule
         $user = Platal::session()->tokenAuth($alias, $hash);
         if (is_null($user)) {
             if (S::logged()) {
-                $user == S::user();
+                $user = S::user();
             } else {
                 return PL_FORBIDDEN;
             }

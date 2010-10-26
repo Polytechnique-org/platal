@@ -538,11 +538,15 @@ class Profile
 
     public function getMainAddress()
     {
-        $addr = $this->getAddresses(self::ADDRESS_PERSO | self::ADDRESS_MAIN);
-        if (count($addr) == 0) {
-            return null;
+        $main = $this->getAddresses(self::ADDRESS_MAIN);
+        $perso = $this->getAddresses(self::ADDRESS_PERSO);
+
+        if (count($main)) {
+            return array_pop($main);
+        } else if (count($perso)) {
+            return array_pop($perso);
         } else {
-            return array_pop($addr);
+            return null;
         }
     }
 

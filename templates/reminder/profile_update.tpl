@@ -20,7 +20,21 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $profile_incitation}
+{if $profile_merge}
+  La récente fusion des annuaires de l'AX et de Polytechnique.org a mis à jour des incertitudes sur
+  ton profil. Afin de lever ces incertitudes, peux-tu vérifier et revalider les éléments suivants&nbsp;:
+  <a href="{$reminder->baseurl()}/merge" style="text-decoration: none">
+  {foreach from=$profile_merge item=field name=flags}
+    {if $field eq 'name'}ton nom{*
+    *}{elseif $field eq 'job'}tes activités professionnelles{*
+    *}{elseif $field eq 'address'}tes adresses{*
+    *}{elseif $field eq 'promo'}ta promotion d'étude{*
+    *}{elseif $field eq 'phone'}tes numéros de téléphone{*
+    *}{elseif $field eq 'education'}tes formations{*
+    *}{/if}{if !$smarty.flags.last}, {/if}
+  {/foreach}
+  </a>
+{elseif $profile_incitation}
   La dernière mise à jour de ta <a href="profile/{$smarty.session.hruid}" class="popup2">fiche</a>
   date du {$profile_last_update|date_format}. Il est possible qu'elle ne soit pas à jour.
   Si tu souhaites la modifier,

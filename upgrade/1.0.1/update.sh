@@ -6,6 +6,12 @@
 [ "$DATABASE" != "x4dat" ] || die "Cannot target x4dat"
 copy_db
 
+confirm "* Running pre-engine switch database upgrade script"
+mysql_run ./99_keys.sql.pre
+
+confirm "* switching engines to InnoDB"
+./innodb.sh | mysql_pipe
+
 confirm "* Running database upgrade scripts"
 mysql_run_directory .
 

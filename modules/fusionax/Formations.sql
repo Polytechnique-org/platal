@@ -4,17 +4,23 @@ DROP TABLE IF EXISTS `fusionax_formations`;
 
 CREATE TABLE IF NOT EXISTS `fusionax_formations` (
   FO CHAR(2) NOT NULL COMMENT 'Vaut toujours FO pour cette table',
-  id_ancien VARCHAR(8) NOT NULL COMMENT 'Id unique de l''ancien',
-  Intitule_diplome VARCHAR(60) NOT NULL COMMENT 'Intitulé du diplôme',
-  Intitule_formation VARCHAR(60) NOT NULL COMMENT 'Intitulé de la formation',
-  Descr_formation VARCHAR(60) NOT NULL COMMENT 'Description de la formation',
-  tmp_1 VARCHAR(60) NOT NULL,
-  tmp_2 VARCHAR(60) NOT NULL,
-  tmp_3 VARCHAR(60) NOT NULL,
-  tmp_4 VARCHAR(60) NOT NULL,
-  PRIMARY KEY (id_ancien, Intitule_diplome, Intitule_formation)
+  ax_id VARCHAR(8) NOT NULL COMMENT 'Id unique de l''ancien',
+  Intitule_diplome CHAR(60) NOT NULL DEFAULT 0 COMMENT 'Intitulé du diplôme',
+  Intitule_formation CHAR(60) NOT NULL DEFAULT 0 COMMENT 'Intitulé de la formation',
+  Descr_formation CHAR(60) NOT NULL COMMENT 'Description de la formation',
+  pid INT(11) UNSIGNED DEFAULT NULL,
+  eduid INT(4) DEFAULT NULL,
+  degreeid INT(4) DEFAULT NULL,
+  fieldid INT(2) DEFAULT NULL,
+  PRIMARY KEY (ax_id, Intitule_diplome, Intitule_formation, Descr_formation),
+  INDEX (Intitule_diplome),
+  INDEX (Intitule_formation),
+  INDEX (Descr_formation),
+  INDEX (pid),
+  INDEX (eduid),
+  INDEX (degreeid),
+  INDEX (fieldid)
 ) ENGINE=InnoDB, CHARSET=utf8;
 
-                              LOAD DATA LOCAL INFILE  '{?}Formations.txt'
-                                          INTO TABLE  fusionax_formations
-FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\r\n'  (FO, id_ancien, Intitule_diplome, Intitule_formation, Descr_formation, tmp_1, tmp_2, tmp_3, tmp_4);
+LOAD DATA LOCAL INFILE  '{?}Formations.txt' INTO TABLE  fusionax_formations FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n'
+(FO, ax_id, Intitule_diplome, Intitule_formation, Descr_formation);

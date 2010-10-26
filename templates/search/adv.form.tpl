@@ -248,18 +248,29 @@ function cleanForm(f) {
     <tr>
       <td>Promotion</td>
       <td>
-        <select name="egal1">
+        <script type="text/javascript">/*<![CDATA[*/
+          {literal}
+          function updatepromofields(egal1) {
+            var f = egal1.form;
+            f.egal2.disabled = f.promo2.disabled = egal1.value == '=';
+            f.egal2.readOnly = true;
+            if (f.egal1.value == '>=') {
+              f.egal2.value = '<=';
+            } else {
+              f.egal2.value = '>=';
+            }
+          }
+          $(document).ready(function() { updatepromofields($('select[name=egal1]')[0]); });
+          {/literal}
+        /*]]>*/</script>
+        <select name="egal1" onchange="updatepromofields(this)" style="text-align:center">
           <option value="=" {if $smarty.request.egal1 eq "="}selected="selected"{/if}>&nbsp;=&nbsp;</option>
           <option value="&gt;=" {if $smarty.request.egal1 eq "&gt;="}selected="selected"{/if}>&nbsp;&gt;=&nbsp;</option>
           <option value="&lt;=" {if $smarty.request.egal1 eq "&lt;="}selected="selected"{/if}>&nbsp;&lt;=&nbsp;</option>
         </select>
         <input type="text" name="promo1" size="4" maxlength="4" value="{$smarty.request.promo1}" />
         &nbsp;et&nbsp;
-        <select name="egal2">
-          <option value="=" {if $smarty.request.egal2 eq "="}selected="selected"{/if}>&nbsp;=&nbsp;</option>
-          <option value="&gt;=" {if $smarty.request.egal2 eq "&gt;="}selected="selected"{/if}>&nbsp;&gt;=&nbsp;</option>
-          <option value="&lt;=" {if $smarty.request.egal2 neq "&gt;=" && $smarty.request.egal2 neq "="}selected="selected"{/if}>&nbsp;&lt;=&nbsp;</option>
-        </select>
+        <input type="text" name="egal2" size="1" style="text-align:center" value="{if t($smarty.request.egal2) eq '&lt;'}&lt;{else}&gt;{/if}" readonly="readonly" />
         <input type="text" name="promo2" size="4" maxlength="4" value="{$smarty.request.promo2}" />
       </td>
     </tr>
@@ -494,8 +505,5 @@ function cleanForm(f) {
     </tr>
   </table>
 </form>
-<p>
-  <small><strong>N.B.&nbsp;:</strong> le caractère joker * peut remplacer une ou plusieurs lettres dans les recherches.</small>
-</p>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

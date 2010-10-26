@@ -33,12 +33,12 @@ CREATE TABLE `profile_job_term_search` (
 
 CREATE TABLE `profile_job_term` (
   `pid` INT(11) UNSIGNED DEFAULT NULL COMMENT 'profile id',
-  `jid` tinyint(1) unsigned NOT NULL COMMENT 'job id in profile',
-  `jtid` int unsigned NOT NULL COMMENT 'term id',
+  `jid` TINYINT(1) UNSIGNED DEFAULT NULL COMMENT 'job id in profile',
+  `jtid` INT UNSIGNED DEFAULT NULL COMMENT 'term id',
   `computed` enum('original','computed') NOT NULL DEFAULT 'original' COMMENT 'terms can be added by user or computed from entreprise',
   PRIMARY KEY (`pid`, `jid`, `jtid`),
   INDEX `jtid` (`jtid`),
-  #FOREIGN KEY (pid, jid) REFERENCES profile_job (pid, id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`pid`, `jid`) REFERENCES `profile_job` (`pid`, `id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`jtid`) REFERENCES `profile_job_term_enum` (`jtid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB, CHARSET=utf8, COMMENT='job terms for jobs in profiles';
 
@@ -47,7 +47,7 @@ CREATE TABLE `profile_mentor_term` (
   `jtid` int unsigned NOT NULL COMMENT 'term id',
   PRIMARY KEY (`pid`, `jtid`),
   INDEX `jtid` (`jtid`),
-  #FOREIGN KEY (pid) REFERENCES profiles (pid) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (pid) REFERENCES profiles (pid) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`jtid`) REFERENCES `profile_job_term_enum` (`jtid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB, CHARSET=utf8, COMMENT='job terms for mentorship in profiles';
 
@@ -56,7 +56,7 @@ CREATE TABLE `profile_job_entreprise_term` (
   `jtid` int unsigned NOT NULL COMMENT 'term id',
   PRIMARY KEY (`eid`, `jtid`),
   INDEX `jtid` (`jtid`),
-  #FOREIGN KEY (`eid`) REFERENCES `profile_job_enum` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`eid`) REFERENCES `profile_job_enum` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`jtid`) REFERENCES `profile_job_term_enum` (`jtid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB, CHARSET=utf8, COMMENT='job terms associated to entreprises';
 

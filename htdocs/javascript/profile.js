@@ -583,7 +583,7 @@ function removeJobTerm()
 function displayJobTerm(row)
 {
     if (row[1] < 0) {
-        return '... <em>précise ta recherche</em> ...';
+        return '... <em>parcourir les résultats dans un arbre</em> ...';
     }
     return row[0];
 }
@@ -596,26 +596,30 @@ function displayJobTerm(row)
  */
 function selectJobTerm(li)
 {
-    if (li.extra[0] < 0) {
-        return;
-    }
     var jobid = this.extraParams.jobid;
-    addJobTerm(jobid,li.extra[0],$(li).text());
+    if (li.extra[0] >= 0) {
+        addJobTerm(jobid,li.extra[0],$(li).text());
+    }
     var search_input;
     if (jobid < 0) {
         search_input = $('.term_search')[0];
     } else {
         search_input = $('#job_'+jobid+' .term_search')[0];
     }
-    search_input.value = '';
-    search_input.focus();
+    if (li.extra[0] >= 0) {
+        search_input.value = '';
+        search_input.focus();
+    } else {
+        search_input.value = li.selectValue.replace(/%$/,'');
+        toggleJobTermsTree(jobid, li.selectValue);
+    }
 }
 
 /**
  * Function to show or hide a terms tree in job edition
  * @param jobid is the id of the job currently edited
  */
-function toggleJobTermsTree(jobid)
+function toggleJobTermsTree(jobid, textfilter)
 {
     var treepath;
     if (jobid < 0) {
@@ -626,9 +630,11 @@ function toggleJobTermsTree(jobid)
     treepath += '.term_tree';
     if ($(treepath + ' ul').length > 0) {
         $(treepath).empty().removeClass().addClass('term_tree');
-        return;
+        if (!textfilter) {
+            return;
+        }
     }
-    createJobTermsTree(treepath, 'profile/ajax/tree/jobterms/all', 'job' + jobid, 'chooseJobTerm');
+    createJobTermsTree(treepath, 'profile/ajax/tree/jobterms/all', 'job' + jobid, 'chooseJobTerm', textfilter);
 }
 
 /**

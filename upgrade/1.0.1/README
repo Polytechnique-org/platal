@@ -1,2 +1,3 @@
 99_jobs.sql must be run after php scripts.
-merge.php must not be run during the release. This script is only for merge purpose.
+Both merge.php and merge_issues_*.php must not be run during the release. They are only for merge purpose.
+On top of that, merge_issues_*.php require to be run in a screen in parallel as they take a couple of days/weeks to complete.

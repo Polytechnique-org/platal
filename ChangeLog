@@ -3,7 +3,7 @@ VERSION 1.1.0                                                         XX XX XXXX
 
 
 ================================================================================
-VERSION 1.0.1                                                         XX XX XXXX
+VERSION 1.0.1                                                         26 10 2010
 
 New:
 
@@ -38,11 +38,13 @@ Bug/Wish:
         - #1261: Fix wrong join between user and profile                   -JAC
 
     * Search:
-        - #1177: clean url in advanced search                              -Car
+        - #1177: Clean url in advanced search                              -Car
         - #1251: More intuitive networking search                          -Xel
+        - #1283: Restrict second operation on promo search                 -Car
 
     * Survey:
         - #964: The creator of a survey can get early results              -FRU
+        - #1282: The creator can always view the results                   -FRU
 
     * XnetGrp:
         - #1252: Don't include dead user in directory listing              -FRU

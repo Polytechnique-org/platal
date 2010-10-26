@@ -30,7 +30,6 @@
 <ul>
   <li>Voir la <a href="Fusion">documentation</a></li>
   <li><a href="fusionax/import">Import de la base AX</a></li>
-  <li>Préparations des <a href="fusionax/prepare">tables</a></li>
   <li>Mise en <a href="fusionax/ids">correspondance simple</a></li>
   <li>Création des <a href="fusionax/view">VIEW annexes nécessaires aux corrélations</a></li>
   <li>Corrélation des <a href="fusionax/deceased">dates de décès</a></li>

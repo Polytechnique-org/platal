@@ -29,7 +29,7 @@
 </p>
 <ul>
   {foreach from=$issues item=profile}
-  <li><a href="profile/edit/{$profile.hrpid}">{$profile.directory_name} ({$profile.promo})</a></li>
+  <li><a href="profile/edit/{$profile.hrpid}/{$type}">{$profile.directory_name} ({$profile.promo})</a></li>
   {/foreach}
 </ul>
 {else}

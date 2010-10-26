@@ -28,8 +28,11 @@
  * @param clickFunc name of a javascript function that will be called when a
  * term is clicked. The three params of this function will be : treeid, the
  * id of the job term clicked, and the full name of the job term clicked.
+ * @param text_filter a string that is tokenized to filter jobtermss shown
+ * in the tree: only terms that contain all the tokens are shown with their
+ * parents.
  */
-function createJobTermsTree(domElement, platalpage, treeid, clickFunc)
+function createJobTermsTree(domElement, platalpage, treeid, clickFunc, text_filter)
 {
     $(domElement).jstree({
         "core" : {"strings":{"loading":"Chargement ..."}},
@@ -42,7 +45,7 @@ function createJobTermsTree(domElement, platalpage, treeid, clickFunc)
                 if (nod != -1) {
                     jtid = nod.attr("id").replace(/^.*_([0-9]+)$/, "$1");
                 }
-                return { "jtid" : jtid, "treeid" : treeid, "attrfunc" : clickFunc }
+                return { "jtid" : jtid, "treeid" : treeid, "attrfunc" : clickFunc, "text_filter": text_filter }
             }
         }} });
 }

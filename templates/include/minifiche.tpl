@@ -153,7 +153,7 @@
         <td class="lt">Profession&nbsp;:</td>
         <td class="rt">
           {if $job->company->url|default:$job->user_site}<a href="{$job->company->url|default:$job->user_site}">{$job->company->name}</a>{else}{$job->company->name}{/if}
-          {if $job->subsubsector}&nbsp;({$job->subsubsector}){/if}{if $job->description}<br />{$job->description}{/if}
+          {if $job->description}<br />{$job->description}{/if}
         </td>
       </tr>
       {/if}
