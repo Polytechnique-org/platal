@@ -124,17 +124,17 @@ XDB::rawExecute("INSERT IGNORE INTO  profile_merge_issues (pid, issues, entry_ye
 XDB::rawExecute('ALTER TABLE geoloc_countries ADD INDEX (licensePlate)');
 XDB::rawExecute('UPDATE  profiles         AS p
              INNER JOIN  fusionax_anciens AS f ON (p.pid = f.pid)
-             INNER JOIN  geoloc_countries AS g ON (g.licensePlate = f.Code_nationalite)
+             INNER JOIN  geoloc_countries AS g ON (g.licensePlate = f.Code_nationalite AND g.nationalityFR IS NOT NULL)
                     SET  p.nationality1 = g.iso_3166_1_a2
                   WHERE  p.nationality1 IS NULL');
 XDB::rawExecute('UPDATE  profiles         AS p
              INNER JOIN  fusionax_anciens AS f ON (p.pid = f.pid)
-             INNER JOIN  geoloc_countries AS g ON (g.licensePlate = f.Code_nationalite)
+             INNER JOIN  geoloc_countries AS g ON (g.licensePlate = f.Code_nationalite AND g.nationalityFR IS NOT NULL)
                     SET  p.nationality2 = g.iso_3166_1_a2
                   WHERE  p.nationality1 != g.iso_3166_1_a2 AND p.nationality2 IS NULL');
 XDB::rawExecute('UPDATE  profiles         AS p
              INNER JOIN  fusionax_anciens AS f ON (p.pid = f.pid)
-             INNER JOIN  geoloc_countries AS g ON (g.licensePlate = f.Code_nationalite)
+             INNER JOIN  geoloc_countries AS g ON (g.licensePlate = f.Code_nationalite AND g.nationalityFR IS NOT NULL)
                     SET  p.nationality3 = g.iso_3166_1_a2
                   WHERE  p.nationality1 != g.iso_3166_1_a2 AND p.nationality2 != g.iso_3166_1_a2 AND p.nationality3 IS NULL');
 XDB::rawExecute('ALTER TABLE geoloc_countries DROP INDEX licensePlate');
