@@ -22,7 +22,7 @@
 
 <h1>Parcours des logs du site</h1>
 
-{if $events}
+{if t($events)}
 
 <table class="bicol">
 <tr>
@@ -127,7 +127,7 @@
     </td>
   </tr>
   {/foreach}
-{if $msg_nofilters}
+{if t($msg_nofilters)}
 <tr>
   <td>{$msg_nofilters}</td>
 </tr>
