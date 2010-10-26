@@ -34,9 +34,9 @@
         "title" : "{$term.full_name|replace:'"':'\\"'}"
       {rdelim}
     {rdelim},
-    "attr" : {ldelim} "id" : "job_terms_tree_{$treeid}_{$term.jtid}" {rdelim},
+    "attr" : {ldelim} "id" : "job_terms_tree_{$treeid}_{$term.jtid}" {rdelim}
     {if !$term.leaf}
-      "state": "closed"
+      ,"state": "closed"
     {/if}
   {rdelim}
 {/iterate}
