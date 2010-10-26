@@ -313,7 +313,7 @@ class AdminModule extends PLModule
                $page->append('events', $myarr);
             }
 
-        } else {
+        } else if ($action != null || Env::has('logger')) {
             $loguser = $action == 'user' ? $arg : Env::v('loguser');
             $user = User::get($loguser);
             $loguid  = $user->id();
