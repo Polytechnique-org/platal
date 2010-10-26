@@ -512,8 +512,7 @@ class ListsModule extends PLModule
                 $mailer->addTo("$liste-owner@{$domain}");
                 $mailer->addHeader('Reply-To', "$liste-owner@{$domain}");
                 $mailer->setSubject("L'inscription de {$sub['name']} a été $info");
-                $text = "L'inscription de {$sub['name']} à la liste $liste@{$domain} a été $info par " . S::v('prenom')  . ' '
-                      . S::v('nom') . '(' . S::v('promo') . ")\n";
+                $text = "L'inscription de {$sub['name']} à la liste $liste@{$domain} a été $info par " . S::user()->fullName(true) . ".\n";
                 if (trim(Post::v('reason'))) {
                     $text .= "\nLa raison invoquée est :\n" . Post::v('reason');
                 }
