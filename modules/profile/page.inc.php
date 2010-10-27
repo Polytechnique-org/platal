@@ -397,7 +397,7 @@ abstract class ProfilePage implements PlWizardPage
             // XXX: removes this code once all merge related issues have been fixed.
             static $issues = array(0 => array('name', 'promo', 'phone', 'education'), 1 => array('address'), 2 => array('job'));
             if (isset($issues[Post::i('valid_page')])) {
-                foreach ($issue as $issues[Post::i('valid_page')]) {
+                foreach ($issues[Post::i('valid_page')] as $issue) {
                     XDB::execute("UPDATE  profile_merge_issues
                                      SET  issues = REPLACE(issues, {?}, '')
                                    WHERE  pid = {?}",
