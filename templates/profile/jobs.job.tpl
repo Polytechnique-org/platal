@@ -184,7 +184,7 @@
     </tr>
     {else}
     {include file="include/emails.combobox.tpl" name=$jobpref|cat:'[w_email]' val=$job.w_email
-             class="pair" i=$i error=t($job.w_email_error) prefix="w_" pub=$job.w_email_pub id=$i}
+             class="pair" i=$i error=$job.w_email_error prefix="w_" pub=$job.w_email_pub id=$i}
     {/if}
     <tr class="pair" {if $hiddenjob}style="display: none"{/if}>
       <td colspan="2">

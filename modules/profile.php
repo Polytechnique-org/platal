@@ -139,25 +139,25 @@ class ProfileModule extends PLModule
         exit;
     }
 
-    /** Tries to return the correct user from given hrpid
-     * Will redirect to $returnurl$hrpid if $hrpid was empty
+    /** Tries to return the correct profile from a given hrpid.
      */
-    private function findProfile($returnurl, $hrpid = null)
+    private function findProfile($hrpid = null)
     {
         if (is_null($hrpid)) {
             $user = S::user();
             if (!$user->hasProfile()) {
                 return PL_NOT_FOUND;
             } else {
-                pl_redirect($returnurl . $user->profile()->hrid());
+                $profile = $user->profile();
             }
         } else {
             $profile = Profile::get($hrpid);
-            if (!$profile) {
-                return PL_NOT_FOUND;
-            } else if (!S::user()->canEdit($profile) && Platal::notAllowed()) {
-                return PL_FORBIDDEN;
-            }
+        }
+
+        if (!$profile) {
+            return PL_NOT_FOUND;
+        } else if (!S::user()->canEdit($profile) && Platal::notAllowed()) {
+            return PL_FORBIDDEN;
         }
         return $profile;
     }
@@ -165,9 +165,12 @@ class ProfileModule extends PLModule
     function handler_photo_change(&$page, $hrpid = null)
     {
         global $globals;
-        $profile = $this->findProfile('photo/change/', $hrpid);
+        $profile = $this->findProfile($hrpid);
         if (! ($profile instanceof Profile) && ($profile == PL_NOT_FOUND || $profile == PL_FORBIDDEN)) {
             return $profile;
+        }
+        if (is_null($hrpid)) {
+            pl_redirect('photo/change/' . $profile->hrid());
         }
 
         $page->changeTpl('profile/trombino.tpl');
@@ -310,9 +313,18 @@ class ProfileModule extends PLModule
     {
         global $globals;
 
-        $profile = $this->findProfile('profile/edit/', $hrpid);
+        if (in_array($hrpid, array('general', 'adresses', 'emploi', 'poly', 'deco', 'skill', 'mentor'))) {
+            $aux = $opened_tab;
+            $opened_tab = $hrpid;
+            $hrpid = $aux;
+            $url_error = true;
+        }
+        $profile = $this->findProfile($hrpid);
         if (! ($profile instanceof Profile) && ($profile == PL_NOT_FOUND || $profile == PL_FORBIDDEN)) {
             return $profile;
+        }
+        if (is_null($hrpid) || $url_error) {
+            pl_redirect('profile/edit/' . $profile->hrid() . (is_null($opened_tab) ? '' : '/' . $opened_tab));
         }
 
         // Build the page

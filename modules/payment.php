@@ -522,7 +522,7 @@ class PaymentModule extends PLModule
             }
             $res = XDB::iterRow("SELECT e.eid, e.short_name, e.intitule, ep.nb, ei.montant, ep.paid
                                    FROM group_events AS e
-                              LEFT JOIN group_event_participants AS ep ON (ep.eid = e.eid AND uid = {?})
+                              LEFT JOIN group_event_participants AS ep ON (ep.eid = e.eid AND ep.uid = {?})
                              INNER JOIN group_event_items AS ei ON (ep.eid = ei.eid AND ep.item_id = ei.item_id)
                                   WHERE e.paiement_id = {?}",
                                  S::v('uid'), $pid);

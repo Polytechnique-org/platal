@@ -96,10 +96,10 @@ class VCard extends PlVCard
                                 $adr->hasFlag('current'), $adr->hasFlag('mail'), $adr->hasFlag('mail'));
             }
             foreach ($adr->phones() as $phone) {
-                if ($phone->type == Phone::TYPE_FIXED) {
+                if ($phone->linkType() == Phone::TYPE_FIXED) {
                     $entry->addTel($group, $phone->display, false, true, true, false, false,
                                    $adr->hasFlag('current') && empty($pf->mobile));
-                } else if ($phone->type == Phone::TYPE_FAX) {
+                } else if ($phone->linkType() == Phone::TYPE_FAX) {
                     $entry->addTel($group, $phone->display, true, false, false, false, false, false);
                 }
             }
@@ -119,9 +119,9 @@ class VCard extends PlVCard
                                          $adr->locality, $adr->administrativeArea, $adr->country);
             }
             foreach ($adr->phones() as $phone) {
-                if ($phone->type == Phone::TYPE_FIXED) {
+                if ($phone->linkType() == Phone::TYPE_FIXED) {
                     $entry->addTel($group, $phone->display);
-                } else if ($phone->type == Phone::TYPE_FAX) {
+                } else if ($phone->linkType() == Phone::TYPE_FAX) {
                     $entry->addTel($group, $phone->display, true);
                 }
             }

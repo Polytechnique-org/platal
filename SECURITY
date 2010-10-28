@@ -12,6 +12,7 @@
 # The commit id should refer to the id in the "master" branch, if the initial
 # commit in a version branch had another name.
 
+2010-10-28 4c5a5921 Registration allowed reactivation and resetting password of disabled accounts.
 2010-06-23 aa8a2914 Fix visibility of emails, groups, death info on profile.
 2010-04-02 3e2442cd Fix freetext visibility.
 2009-10-19 e10bc2ef Prevents auth-groupex from leaking data to third-party attackers.

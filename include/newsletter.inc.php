@@ -92,6 +92,7 @@ class NewsLetter extends MassMailer
 
     public function saveArticle(&$a)
     {
+        $a->_cid = ($a->_cid == 0) ? null : $a->_cid;
         if ($a->_aid >= 0) {
             XDB::execute('REPLACE INTO  newsletter_art (id, aid, cid, pos, title, body, append)
                                 VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',

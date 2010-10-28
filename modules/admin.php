@@ -315,8 +315,13 @@ class AdminModule extends PLModule
 
         } else {
             $loguser = $action == 'user' ? $arg : Env::v('loguser');
-            $user = User::get($loguser);
-            $loguid  = $user->id();
+
+            if ($loguser) {
+                $user = User::get($loguser);
+                $loguid = $user->id();
+            } else {
+                $loguid = null;
+            }
 
             if ($loguid) {
                 $year  = Env::i('year');
@@ -381,7 +386,7 @@ class AdminModule extends PLModule
                 }
                 $page->assign_by_ref('sessions', $sessions);
             } else {
-                $page->assign('msg_nofilters', "Sélectionner une annuée et/ou un utilisateur");
+                $page->assign('msg_nofilters', "Sélectionner une année et/ou un utilisateur");
             }
         }
 

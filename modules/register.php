@@ -60,7 +60,7 @@ class RegisterModule extends PLModule
                            INNER JOIN  profile_display    AS pd  ON (p.pid = pd.pid)
                            INNER JOIN  profile_name       AS pnl ON (p.pid = pnl.pid AND pnl.typeid = {?})
                            INNER JOIN  profile_name       AS pnf ON (p.pid = pnf.pid AND pnf.typeid = {?})
-                                WHERE  m.hash = {?}",
+                                WHERE  m.hash = {?} AND a.state = 'pending'",
                               $nameTypes['name_ini'], $nameTypes['firstname_ini'], $hash);
 
             if ($res->numRows() == 1) {
@@ -284,7 +284,7 @@ class RegisterModule extends PLModule
                        INNER JOIN  profile_name     AS pnl ON (p.pid = pnl.pid AND pnl.typeid = {?})
                        INNER JOIN  profile_name     AS pnf ON (p.pid = pnf.pid AND pnf.typeid = {?})
                        INNER JOIN  profile_display  AS pd  ON (p.pid = pd.pid)
-                            WHERE  hash = {?} AND hash != 'INSCRIT'",
+                            WHERE  hash = {?} AND hash != 'INSCRIT' AND a.state = 'pending'",
                           $nameTypes['name_ini'], $nameTypes['firstname_ini'], $hash);
         if (!$hash || $res->numRows() == 0) {
             $page->kill("<p>Cette adresse n'existe pas, ou plus, sur le serveur.</p>

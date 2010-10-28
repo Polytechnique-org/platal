@@ -226,7 +226,7 @@ class Job
 
     public function setAddress(Address $address)
     {
-        if ($address->type == Address::LINK_JOB && $address->jobid == $this->id && $address->pid == $this->pid) {
+        if ($address->type == Address::LINK_JOB && $address->id == $this->id && $address->pid == $this->pid) {
             $this->address = $address;
         }
     }
@@ -641,7 +641,7 @@ class ProfileJobs extends ProfileField
         $a = $addresses->get(Profile::ADDRESS_PRO);
         foreach ($a as $address) {
             if ($address->type == Address::LINK_JOB && array_key_exists($address->jobid, $this->jobs)) {
-                $this->jobs[$address->jobid]->setAddress($address);
+                $this->jobs[$address->id]->setAddress($address);
             }
         }
     }
