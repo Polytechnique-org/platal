@@ -176,7 +176,7 @@ class PlMailer extends Mail_Mime {
         if ($email instanceof PlUser) {
             $email = self::formatUser($email);
         }
-        $email = preg_replace('!(^|, *)([^<"]+?) *(<[^>]*>)!ue',
+        $email = preg_replace('!(^|, *)([^<"]+?) *(<[^>]*>)!u',
                               '\1 "\2" \3', $email);
         return preg_replace('/"([^<]+)"/e',
                             '"\\"" . PlMailer::encodeStringQP("\1") . "\\""',
