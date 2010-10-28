@@ -12,4 +12,5 @@
 # The commit id should refer to the id in the "core" branch, if the initial
 # commit in a version branch had another name.
 
+2010-10-28 a95d05a Code injection vulnerability in malformed email addresses.
 2010-09-17 a86feb8 Fix an error in permission handling: all pages where accessible without admin permission.
