@@ -132,15 +132,24 @@ function createAliases(&$subState)
     $emailXorg  = PlUser::makeUserName($subState->t('firstname'), $subState->t('lastname'));
     $emailXorg2 = $emailXorg . sprintf(".%02u", ($subState->i('yearpromo') % 100));
 
-    $res = XDB::query("SELECT  hruid
+    $res = XDB::query("SELECT  hruid, state
                          FROM  accounts
-                        WHERE  uid = {?} AND hruid != ''", $subState->i('uid'));
+                        WHERE  uid = {?} AND hruid != ''",
+                      $subState->i('uid'));
     if ($res->numRows() == 0) {
         return "Tu n'as pas d'adresse à vie pré-attribuée.<br />"
-            . "Envoie un mail à <a href=\"mailto:support@{$globals->mail->domain}</a>\">"
+            . "Envoie un mail à <a href=\"mailto:support@{$globals->mail->domain}\">"
             . "support@{$globals->mail->domain}</a> en expliquant ta situation.";
     } else {
-        $forlife = $res->fetchOneCell();
+        list($forlife, $state) = $res->fetchOneRow();
+    }
+    if ($state == 'active') {
+        return "Tu es déjà inscrit, si tu ne te souviens plus de ton mot de passe d'accès au site, "
+             . "tu peux suivre <a href=\"recovery\">la procédure de récupération de mot de passe</a>.";
+    } else if ($state == 'disabled') {
+        return "Ton compte a été désactivé par les administrateurs du site suite à des abus. "
+             . "Pour plus d'information ou pour demander la réactivation du compte, tu peux t'adresser à "
+             . "<a href=\"mailto:support@{$globals->mail->domain}\">support@{$globals->mail->domain}</a>.";
     }
 
     $res = XDB::query('SELECT  uid, type, expire
