@@ -19,7 +19,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
-/* Checks inconsistances in tables ans joins. */
+/* Checks inconsistances in tables and joins. */
 
 require './connect.db.inc.php';
 require 'Console/Getopt.php';
@@ -31,7 +31,7 @@ function check($sql, $comment = '')
         echo $err;
     }
     if ($it->total() > 0) {
-        echo "Erreur pour la verification : $comment\n$sql\n\n";
+        echo "Erreur pour la vérification : $comment\n$sql\n\n";
         echo "|";
         while($col = $it->nextField()) {
             echo "\t" . $col->name . "\t|";
@@ -49,10 +49,26 @@ function check($sql, $comment = '')
     }
 }
 
-function info($sql, $comment = '') {
+function checkCount($sql, $comment = '')
+{
+    $count = XDB::rawFetchOneCell($sql);
+    if ($err = XDB::error()) {
+        echo $err;
+    }
+    if ($count > 0) {
+        echo "Erreur pour la vérification : $comment\n$sql\n\n";
+        echo "|\tTotal\t|\n|\t$count\t|\n\n";
+    }
+}
+
+function info($sql, $comment = '', $onlyCounts = false) {
     global $opt_verbose;
     if ($opt_verbose) {
-        check($sql, $comment);
+        if ($onlyCounts) {
+            checkCount($sql, $comment);
+        } else {
+            check($sql, $comment);
+        }
     }
 }
 
@@ -113,10 +129,11 @@ check("SELECT  a.alias AS username, b.alias AS loginbis, b.expire
       "Donne la liste des homonymes qui ont un alias égal à leur loginbis depuis plus d'un mois, il est temps de supprimer leur alias.");
 
 // XXX: counts the number of remaining issues due to the merge (to be removed once all merge related issues have been fixed)
-check('SELECT  COUNT(*)
-         FROM  profile_merge_issues
-        WHERE  issues IS NULL OR issues = \'\'',
-      'Dénombre les erreurs dues à la fusion restantes.');
+info('SELECT  COUNT(*)
+        FROM  profile_merge_issues
+       WHERE  issues IS NULL OR issues = \'\'',
+     'Dénombre les erreurs dues à la fusion restantes.',
+     true);
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
