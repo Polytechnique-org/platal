@@ -33,7 +33,7 @@ $res = XDB::iterator('SELECT  p.hrpid, pm.pid, a.full_name, pm.field, pm.oldText
                   INNER JOIN  aliases               AS al ON (ap.uid = al.uid AND FIND_IN_SET(\'bestalias\', al.flags))
                     ORDER BY  pm.pid, pm.field');
 
-if ($res-total() > 0) {
+if ($res->total() > 0) {
     $date = time();
     $values = $res->next();
 
