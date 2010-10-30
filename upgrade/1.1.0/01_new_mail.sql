@@ -1,7 +1,8 @@
 DROP TABLE IF EXISTS email_source_account;
 DROP TABLE IF EXISTS email_source_other;
 DROP TABLE IF EXISTS homonyms_list;
-DROP TABLE IF EXISTS email_redirect;
+DROP TABLE IF EXISTS email_redirect_account;
+DROP TABLE IF EXISTS email_redirect_other;
 DROP TABLE IF EXISTS email_virtual;
 DROP TABLE IF EXISTS email_virtual_domains;
 
@@ -29,8 +30,8 @@ CREATE TABLE homonyms_list (
 	KEY(hrmid)
 ) ENGINE=InnoDB,  CHARSET=utf8 ;
 
-CREATE TABLE email_redirect (
-	hrmid    VARCHAR(255) NOT NULL DEFAULT '',
+CREATE TABLE email_redirect_account (
+	uid           INT(11) UNSIGNED NOT NULL PRIMARY KEY,
 	redirect      VARCHAR(255) NOT NULL DEFAULT '',
 	rewrite       VARCHAR(255) NOT NULL DEFAULT '',
 	type          ENUM('smtp','googleapps','imap','homonyms') NOT NULL DEFAULT 'smtp',
@@ -47,6 +48,20 @@ CREATE TABLE email_redirect (
 	flags         ENUM('active','broken','disabled') NOT NULL,
 	hash          VARCHAR(32) DEFAULT NULL,
 	allow_rewrite TINYINT(1) DEFAULT 0,
+	KEY (redirect)
+) ENGINE=InnoDB,  CHARSET=utf8 ;
+
+CREATE TABLE email_redirect_other (
+	hrmid         VARCHAR(255) NOT NULL DEFAULT '',
+	redirect      VARCHAR(255) NOT NULL DEFAULT '',
+	type          ENUM('smtp','googleapps','imap','homonyms') NOT NULL DEFAULT 'smtp',
+	action        ENUM('default',
+	                   'drop_spams',
+	                   'let_spams',
+	                   'tag_and_drop_spams',
+	                   'tag_spams',
+	                   'homonym')
+		NOT NULL DEFAULT 'default',
 	KEY (hrmid),
 	KEY (redirect)
 ) ENGINE=InnoDB,  CHARSET=utf8 ;
@@ -121,34 +136,34 @@ INSERT INTO homonyms_list (hrmid,uid)
 	INNER JOIN aliases AS a ON (a.uid=h.homonyme_id)
 	WHERE a.type = 'homonyme';
 
-INSERT INTO email_redirect (hrmid,redirect,rewrite,type,action,
+INSERT INTO email_redirect_account (uid,redirect,rewrite,type,action,
 	                    broken,broken_level,last,flags,hash,allow_rewrite)
-	SELECT a.hruid,e.email,e.rewrite,'smtp',ef.email,
+	SELECT a.uid,e.email,e.rewrite,'smtp',ef.email,
 	       e.panne,e.panne_level,e.last,IF(e.flags='disable','disabled',IF(e.flags='panne','broken',e.flags)),e.hash,e.allow_rewrite
 	FROM emails AS e
 	LEFT JOIN emails AS ef ON (e.uid=ef.uid)
 	LEFT JOIN accounts AS a ON (e.uid=a.uid)
 	WHERE e.flags != 'filter'
 	 AND  ef.flags = 'filter';
-INSERT INTO email_redirect (hrmid,type,action,flags)
+INSERT INTO email_redirect_other (hrmid,type,action,flags)
 	SELECT eso.hrmid,'homonym','homonym','active'
 	FROM email_source_other AS eso
 	WHERE eso.type = 'homonym'
 	GROUP BY (eso.hrmid);
-INSERT INTO email_redirect (hrmid,type,action,flags)
+INSERT INTO email_redirect_other (hrmid,type,action,flags)
 	SELECT eso.hrmid,'smtp','default','active'
 	FROM email_source_other AS eso
 	WHERE eso.type != 'homonym'
 	GROUP BY (eso.hrmid);
-INSERT INTO email_redirect (hrmid,redirect,type,action,flags)
-	SELECT a.hruid,CONCAT(a.hruid,"@g.polytechnique.org"),'googleapps',ef.email,'active'
+INSERT INTO email_redirect_account (uid,redirect,type,action,flags)
+	SELECT a.uid,CONCAT(a.hruid,"@g.polytechnique.org"),'googleapps',ef.email,'active'
 	FROM email_options AS eo
 	LEFT JOIN accounts AS a ON (a.uid=eo.uid)
 	LEFT JOIN emails AS ef ON (eo.uid=ef.uid)
 	WHERE FIND_IN_SET('googleapps',eo.storage)
 	 AND ef.flags="filter";
-INSERT INTO email_redirect (hrmid,redirect,type,action,flags)
-	SELECT a.hruid,CONCAT(a.hruid,"@imap.polytechnique.org"),'imap','let_spams','active'
+INSERT INTO email_redirect_account (uid,redirect,type,action,flags)
+	SELECT a.uid,CONCAT(a.hruid,"@imap.polytechnique.org"),'imap','let_spams','active'
 	FROM email_options AS eo
 	LEFT JOIN accounts AS a ON (a.uid=eo.uid)
 	WHERE FIND_IN_SET('imap',eo.storage);
@@ -433,17 +448,16 @@ INSERT INTO email_source_other (hrmid,email,type) VALUES
 	("honey.jean-pierre.bilah.1980.polytechnique.org","jean-pierre.blah.1980@m4x.org","honeypot"),
 	("honey.jean-pierre.bilah.1980.polytechnique.org","jean-pierre.blah.1980@m4x.net","honeypot");
 
-INSERT INTO email_redirect (hrmid,redirect,type,action,flags) VALUES
-	("ax.test.polytechnique.org","falco@[129.104.217.160]","smtp","tag_spams","active"),
-	("ax.nicolas.zarpas.polytechnique.org","nicolas.zarpas-ax@wanadoo.fr","smtp","tag_spams","active"),
-	("ax.carrieres.polytechnique.org","manuela.brasseur-bdc@wanadoo.fr","smtp","tag_spams","active"),
-	("ax.info1.polytechnique.org","sylvie.clairefond-ax@wanadoo.fr","smtp","tag_spams","active"),
-	("ax.info2.polytechnique.org","catherine.perot-ax@wanadoo.fr","smtp","tag_spams","active"),
-	("ax.bal.polytechnique.org","baldelx-ax@wanadoo.fr","smtp","tag_spams","active"),
-	("ax.annuaire.polytechnique.org","annuaire-ax@wanadoo.fr","smtp","tag_spams","active"),
-	("ax.jaune-rouge.polytechnique.org","jaune_rouge@wanadoo.fr","smtp","tag_spams","active"),
-	("honey.jean-pierre.bilah.1980.polytechnique.org","jean-pierre.bilah.1980.mbox@murphy.m4x.org","smtp","let_spams","active"),
-	("honey.jean-pierre.bilah.1980.polytechnique.org","raphael.barrois.2006@polytechnique.org","smtp","let_spams","active");
+INSERT INTO email_redirect_other (hrmid,redirect,type,action) VALUES
+	("ax.nicolas.zarpas.polytechnique.org","nicolas.zarpas-ax@wanadoo.fr","smtp","tag_spams"),
+	("ax.carrieres.polytechnique.org","manuela.brasseur-bdc@wanadoo.fr","smtp","tag_spams"),
+	("ax.info1.polytechnique.org","sylvie.clairefond-ax@wanadoo.fr","smtp","tag_spams"),
+	("ax.info2.polytechnique.org","catherine.perot-ax@wanadoo.fr","smtp","tag_spams"),
+	("ax.bal.polytechnique.org","baldelx-ax@wanadoo.fr","smtp","tag_spams"),
+	("ax.annuaire.polytechnique.org","annuaire-ax@wanadoo.fr","smtp","tag_spams"),
+	("ax.jaune-rouge.polytechnique.org","jaune_rouge@wanadoo.fr","smtp","tag_spams"),
+	("honey.jean-pierre.bilah.1980.polytechnique.org","jean-pierre.bilah.1980.mbox@murphy.m4x.org","smtp","let_spams"),
+	("honey.jean-pierre.bilah.1980.polytechnique.org","raphael.barrois.2006@polytechnique.org","smtp","let_spams");
 
 /* Drop renamed list */
 DELETE FROM email_virtual WHERE email LIKE "tech-email%@polytechnique.org";
