@@ -40,6 +40,7 @@ CREATE TABLE email_redirect_account (
 	                   'let_spams',
 	                   'tag_and_drop_spams',
 	                   'tag_spams',
+	                   'imap_and_bounce',
 	                   'homonym')
 		NOT NULL DEFAULT 'default',
 	broken        DATE NOT NULL DEFAULT '0000-00-00',
@@ -61,6 +62,7 @@ CREATE TABLE email_redirect_other (
 	                   'let_spams',
 	                   'tag_and_drop_spams',
 	                   'tag_spams',
+	                   'imap_and_bounce',
 	                   'homonym')
 		NOT NULL DEFAULT 'default',
 	KEY (hrmid),
