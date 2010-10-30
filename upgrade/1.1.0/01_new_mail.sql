@@ -18,19 +18,19 @@ CREATE TABLE email_account_emails (
 
 CREATE TABLE email_nonaccount_emails (
 	email VARCHAR(255) NOT NULL PRIMARY KEY,
-	pfix_hruid VARCHAR(255) NOT NULL,
+	hrmid VARCHAR(255) NOT NULL,
 	type  ENUM('homonym','ax','honeypot'),
 	expire DATE NOT NULL DEFAULT '0000-00-00'
 ) ENGINE=InnoDB,  CHARSET=utf8 ;
 
 CREATE TABLE homonyms_list (
-	pfix_hruid VARCHAR(255) NOT NULL,
+	hrmid VARCHAR(255) NOT NULL,
 	uid           INT(11) UNSIGNED NOT NULL,
-	KEY(pfix_hruid)
+	KEY(hrmid)
 ) ENGINE=InnoDB,  CHARSET=utf8 ;
 
 CREATE TABLE email_redirect (
-	pfix_hruid    VARCHAR(255) NOT NULL DEFAULT '',
+	hrmid    VARCHAR(255) NOT NULL DEFAULT '',
 	redirect      VARCHAR(255) NOT NULL DEFAULT '',
 	rewrite       VARCHAR(255) NOT NULL DEFAULT '',
 	type          ENUM('smtp','googleapps','imap','homonyms') NOT NULL DEFAULT 'smtp',
@@ -47,7 +47,7 @@ CREATE TABLE email_redirect (
 	flags         ENUM('active','broken','disabled') NOT NULL,
 	hash          VARCHAR(32) DEFAULT NULL,
 	allow_rewrite TINYINT(1) DEFAULT 0,
-	KEY (pfix_hruid),
+	KEY (hrmid),
 	KEY (redirect)
 ) ENGINE=InnoDB,  CHARSET=utf8 ;
 
@@ -96,32 +96,32 @@ INSERT INTO email_account_emails (uid,email,type)
 	 AND v.alias LIKE "%@melix.net"
 	 AND a.uid IS NOT NULL;
 
-INSERT INTO email_nonaccount_emails (pfix_hruid,email,type)
+INSERT INTO email_nonaccount_emails (hrmid,email,type)
 	SELECT CONCAT(CONCAT('h.',a.alias),'.polytechnique.org'),
 	       CONCAT(a.alias,'@polytechnique.org'),'homonym'
 	FROM aliases AS a
 	WHERE a.type = 'homonyme'
 	GROUP BY (a.alias);
-INSERT INTO email_nonaccount_emails (pfix_hruid,email,type)
+INSERT INTO email_nonaccount_emails (hrmid,email,type)
 	SELECT CONCAT(CONCAT('h.',a.alias),'.polytechnique.org'),
 	       CONCAT(a.alias,'@m4x.org'),'homonym'
 	FROM aliases AS a
 	WHERE a.type = 'homonyme'
 	GROUP BY (a.alias);
-INSERT INTO email_nonaccount_emails (pfix_hruid,email,type)
+INSERT INTO email_nonaccount_emails (hrmid,email,type)
 	SELECT CONCAT(CONCAT('h.',a.alias),'.polytechnique.org'),
 	       CONCAT(a.alias,'@m4x.net'),'homonym'
 	FROM aliases AS a
 	WHERE a.type = 'homonyme'
 	GROUP BY (a.alias);
 
-INSERT INTO homonyms_list (pfix_hruid,uid)
+INSERT INTO homonyms_list (hrmid,uid)
 	SELECT CONCAT(CONCAT('h.',a.alias),'.polytechnique.org'), h.uid
 	FROM homonyms AS h
 	INNER JOIN aliases AS a ON (a.uid=h.homonyme_id)
 	WHERE a.type = 'homonyme';
 
-INSERT INTO email_redirect (pfix_hruid,redirect,rewrite,type,action,
+INSERT INTO email_redirect (hrmid,redirect,rewrite,type,action,
 	                    broken,broken_level,last,flags,hash,allow_rewrite)
 	SELECT a.hruid,e.email,e.rewrite,'smtp',ef.email,
 	       e.panne,e.panne_level,e.last,IF(e.flags='disable','disabled',IF(e.flags='panne','broken',e.flags)),e.hash,e.allow_rewrite
@@ -130,24 +130,24 @@ INSERT INTO email_redirect (pfix_hruid,redirect,rewrite,type,action,
 	LEFT JOIN accounts AS a ON (e.uid=a.uid)
 	WHERE e.flags != 'filter'
 	 AND  ef.flags = 'filter';
-INSERT INTO email_redirect (pfix_hruid,type,action,flags)
-	SELECT ege.pfix_hruid,'homonym','homonym','active'
+INSERT INTO email_redirect (hrmid,type,action,flags)
+	SELECT ege.hrmid,'homonym','homonym','active'
 	FROM email_nonaccount_emails AS ege
 	WHERE ege.type = 'homonym'
-	GROUP BY (ege.pfix_hruid);
-INSERT INTO email_redirect (pfix_hruid,type,action,flags)
-	SELECT ege.pfix_hruid,'smtp','default','active'
+	GROUP BY (ege.hrmid);
+INSERT INTO email_redirect (hrmid,type,action,flags)
+	SELECT ege.hrmid,'smtp','default','active'
 	FROM email_nonaccount_emails AS ege
 	WHERE ege.type != 'homonym'
-	GROUP BY (ege.pfix_hruid);
-INSERT INTO email_redirect (pfix_hruid,redirect,type,action,flags)
+	GROUP BY (ege.hrmid);
+INSERT INTO email_redirect (hrmid,redirect,type,action,flags)
 	SELECT a.hruid,CONCAT(a.hruid,"@g.polytechnique.org"),'googleapps',ef.email,'active'
 	FROM email_options AS eo
 	LEFT JOIN accounts AS a ON (a.uid=eo.uid)
 	LEFT JOIN emails AS ef ON (eo.uid=ef.uid)
 	WHERE FIND_IN_SET('googleapps',eo.storage)
 	 AND ef.flags="filter";
-INSERT INTO email_redirect (pfix_hruid,redirect,type,action,flags)
+INSERT INTO email_redirect (hrmid,redirect,type,action,flags)
 	SELECT a.hruid,CONCAT(a.hruid,"@imap.polytechnique.org"),'imap','let_spams','active'
 	FROM email_options AS eo
 	LEFT JOIN accounts AS a ON (a.uid=eo.uid)
@@ -401,7 +401,7 @@ INSERT INTO email_virtual (email,redirect,type) VALUES
 	("kes2000@m4x.org","kes2000@polytechnique.org","partner"),
 	("kes2000@m4x.net","kes2000@polytechnique.org","partner");
 
-INSERT INTO email_nonaccount_emails (pfix_hruid,email,type) VALUES
+INSERT INTO email_nonaccount_emails (hrmid,email,type) VALUES
 	("ax.test.polytechnique.org","AX-test@polytechnique.org","ax"),
 	("ax.test.polytechnique.org","AX-test@m4x.org","ax"),
 	("ax.test.polytechnique.org","AX-test@m4x.net","ax"),
@@ -433,7 +433,7 @@ INSERT INTO email_nonaccount_emails (pfix_hruid,email,type) VALUES
 	("honey.jean-pierre.bilah.1980.polytechnique.org","jean-pierre.blah.1980@m4x.org","honeypot"),
 	("honey.jean-pierre.bilah.1980.polytechnique.org","jean-pierre.blah.1980@m4x.net","honeypot");
 
-INSERT INTO email_redirect (pfix_hruid,redirect,type,action,flags) VALUES
+INSERT INTO email_redirect (hrmid,redirect,type,action,flags) VALUES
 	("ax.test.polytechnique.org","falco@[129.104.217.160]","smtp","tag_spams","active"),
 	("ax.nicolas.zarpas.polytechnique.org","nicolas.zarpas-ax@wanadoo.fr","smtp","tag_spams","active"),
 	("ax.carrieres.polytechnique.org","manuela.brasseur-bdc@wanadoo.fr","smtp","tag_spams","active"),
