@@ -1011,7 +1011,7 @@ class Profile
         }
     }
 
-    public static function rebuildSearchTokens($pids)
+    public static function rebuildSearchTokens($pids, $transaction = true)
     {
         if (!is_array($pids)) {
             $pids = array($pids);
@@ -1053,7 +1053,9 @@ class Profile
                                                     $eltScore, $key['public']);
             }
         }
-        XDB::startTransaction();
+        if ($transaction) {
+            XDB::startTransaction();
+        }
         XDB::execute('DELETE FROM  search_name
                             WHERE  pid IN {?}',
                      $pids);
@@ -1061,7 +1063,9 @@ class Profile
             XDB::rawExecute('INSERT INTO  search_name (token, pid, soundex, score, flags)
                                   VALUES  ' . implode(', ', $names));
         }
-        XDB::commit();
+        if ($transaction) {
+            XDB::commit();
+        }
     }
 
     /** The school identifier consists of 6 digits. The first 3 represent the

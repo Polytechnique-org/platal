@@ -308,7 +308,7 @@ function set_alias_names(&$sn_new, $sn_old, $pid, $uid, $update_new = false, $ne
                            VALUES  ({?}, 'alias', 'usage', {?})",
                      $new_alias, $uid);
     }
-    Profile::rebuildSearchTokens($pid);
+    Profile::rebuildSearchTokens($pid, false);
     return $has_new;
 }
 
