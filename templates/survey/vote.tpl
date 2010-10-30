@@ -19,25 +19,9 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-<h1>Sondage&nbsp;:
-  {if $survey_type == 'newsurvey'} créer un nouveau sondage
-  {elseif $survey_type == 'new'} ajouter une question
-  {elseif $survey_type == 'root'} modifier la description
-  {else} modifier une question
-  {/if}
-</h1>
 
-<form action="{$survey_formaction}" method="post">
-  <input type="hidden" name="survey_action" value="{$survey_action}"/>
-  <input type="hidden" name="survey_qid" value="{$survey_qid}"/>
-  <table class="bicol" id="survey_form">
-    {include file="survey/edit_$survey_type.tpl"}
-  </table>
-  <div class="center">
-    <input type="submit" name="survey_submit" value="{if $survey_type == 'newsurvey'}Continuer{else}Valider{/if}"/>
-    <input type="reset" name="survey_reset" value="Réinitialiser"/>
-    <input type="submit" name="survey_cancel" value="Annuler"/>
-  </div>
-</form>
+<h1>{$survey->title}</h1>
+
+<p>{$survey->description|miniwiki}</p>
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}
