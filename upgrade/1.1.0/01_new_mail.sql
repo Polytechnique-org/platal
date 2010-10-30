@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS email_nonaccount_emails;
 DROP TABLE IF EXISTS homonyms_list;
 DROP TABLE IF EXISTS email_redirect;
 DROP TABLE IF EXISTS email_virtual;
+DROP TABLE IF EXISTS email_virtual_domains;
 
 CREATE TABLE email_account_emails (
 	email  VARCHAR(255) NOT NULL PRIMARY KEY,
@@ -56,6 +57,10 @@ CREATE TABLE email_virtual (
 	type     ENUM('user','list','dom','evt','admin','partner'),
 	expire   DATE NOT NULL DEFAULT '0000-00-00',
 	KEY (alias)
+) ENGINE=InnoDB,  CHARSET=utf8 ;
+
+CREATE TABLE email_virtual_domains (
+	domain VARCHAR(255) NOT NULL PRIMARY KEY
 ) ENGINE=InnoDB,  CHARSET=utf8 ;
 
 
@@ -231,10 +236,6 @@ INSERT INTO email_virtual (alias,redirect,type)
 Note: There are some adresses on virtual that have no match on the virtual_redirect. The adresses
       in this situation are dropped.
  */
-
-CREATE TABLE email_virtual_domains (
-	domain VARCHAR(255) NOT NULL PRIMARY KEY
-) ENGINE=InnoDB,  CHARSET=utf8 ;
 
 INSERT INTO email_virtual_domains (domain)
 	VALUES ("polytechnique.org"),
