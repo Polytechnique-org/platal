@@ -94,7 +94,7 @@ function ban_read()
 }
 
 $(document).ready(function() {
-  $('#tabs > ul').tabs();
+  $('#tabs').tabs();
   $('.ui-tabs-nav li').width('24%')
     .click(function() { $(this).children('a').click() });
 });
@@ -105,10 +105,10 @@ $(document).ready(function() {
 
 <div id="tabs">
   <ul style="margin-top: 0">
-    <li><a href="{$platal->pl_self()}#account"><span >Compte de {$user->login()}</span></a></li>
-    <li><a href="{$platal->pl_self()}#emails"><span>Emails</span></a></li>
-    <li><a href="{$platal->pl_self()}#authext"><span>OpenID</span></a></li>
-    <li><a href="{$platal->pl_self()}#forums"><span>Forums</span></a></li>
+    <li><a href="#account"><span>Compte de {$user->login()}</span></a></li>
+    <li><a href="#emails"><span>Emails</span></a></li>
+    <li><a href="#authext"><span>OpenID</span></a></li>
+    <li><a href="#forums"><span>Forums</span></a></li>
   </ul>
 </div>
 

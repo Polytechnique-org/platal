@@ -19,14 +19,18 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
+          <script type="text/javascript">
+            //<![CDATA[
+            {literal}
+            $(document).ready(function() {
+                $("#date-heure").html(getNow());
+            });
+            {/literal}
+            //]]>
+          </script>
           <table>
             <tr>
               <td class="date-heure">
-                <script type="text/javascript">
-                  <!--
-                  document.write(getNow());
-                  //-->
-                </script>
               </td>
               <td class="inscrits">
                 {$globals->core->NbIns|number_format} polytechniciens sur le web

@@ -692,6 +692,7 @@ class AdminModule extends PLModule
 
 
         $page->addJsLink('jquery.ui.core.js');
+        $page->addJsLink('jquery.ui.widget.js');
         $page->addJsLink('jquery.ui.tabs.js');
         $page->addJsLink('password.js');
 

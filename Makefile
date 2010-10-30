@@ -173,12 +173,12 @@ $(MEDAL_THUMBNAILS): $(subst /medals/thumb/,/medals/,$(@F))
 ##
 ## jquery
 ##
-JQUERY_VERSION=1.4.2
+JQUERY_VERSION=1.4.3
 JQUERY_PLUGINS=color form
 JQUERY_PLUGINS_PATHES=$(addprefix htdocs/javascript/jquery.,$(addsuffix .js,$(JQUERY_PLUGINS)))
 
-JQUERY_UI_VERSION=1.6
-JQUERY_UI=core tabs
+JQUERY_UI_VERSION=1.8.5
+JQUERY_UI=core tabs widget
 JQUERY_UI_PATHES=$(addprefix htdocs/javascript/jquery.ui.,$(addsuffix .js,$(JQUERY_UI)))
 
 JSTREE_VERSION=1.0rc2
@@ -202,7 +202,7 @@ $(JQUERY_PLUGINS_PATHES):
 	@-rm htdocs/javascript/jquery.ui*.$*.js
 	@$(download)
 
-htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js: DOWNLOAD_SRC = http://jquery-ui.googlecode.com/svn/tags/$(JQUERY_UI_VERSION)/ui/ui.$*.js
+htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js: DOWNLOAD_SRC = http://jquery-ui.googlecode.com/svn/tags/$(JQUERY_UI_VERSION)/ui/minified/jquery.ui.$*.min.js
 htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js:
 	@$(download)
 
