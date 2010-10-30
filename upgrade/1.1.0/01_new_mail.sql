@@ -8,8 +8,8 @@ DROP TABLE IF EXISTS email_virtual_domains;
 CREATE TABLE email_account_emails (
 	email  VARCHAR(255) NOT NULL PRIMARY KEY,
 	uid    INT(11) UNSIGNED NOT NULL,
-	type   ENUM('a_vie','alias') NOT NULL DEFAULT 'a_vie',
-	flags  SET('bestalias','usage','epouse') NOT NULL DEFAULT '',
+	type   ENUM('forlife','alias') NOT NULL DEFAULT 'forlife',
+	flags  SET('bestalias','usage','marital') NOT NULL DEFAULT '',
 	expire DATE DEFAULT NULL,
 	KEY (uid),
 	KEY (type),
@@ -41,10 +41,10 @@ CREATE TABLE email_redirect (
 	                   'tag_spams',
 	                   'homonym')
 		NOT NULL DEFAULT 'default',
-	panne         DATE NOT NULL DEFAULT '0000-00-00',
-	panne_level   TINYINT(1) NOT NULL DEFAULT 0,
+	broken        DATE NOT NULL DEFAULT '0000-00-00',
+	broken_level   TINYINT(1) NOT NULL DEFAULT 0,
 	last          DATE NOT NULL DEFAULT '0000-00-00',
-	flags         ENUM('active','panne','disable') NOT NULL,
+	flags         ENUM('active','broken','disabled') NOT NULL,
 	hash          VARCHAR(32) DEFAULT NULL,
 	allow_rewrite TINYINT(1) DEFAULT 0,
 	KEY (pfix_hruid),
@@ -54,7 +54,7 @@ CREATE TABLE email_redirect (
 CREATE TABLE email_virtual (
 	alias    VARCHAR(255) NOT NULL,
 	redirect VARCHAR(255) NOT NULL,
-	type     ENUM('user','list','dom','evt','admin','partner'),
+	type     ENUM('user','list','domain','event','admin','partner'),
 	expire   DATE NOT NULL DEFAULT '0000-00-00',
 	KEY (alias)
 ) ENGINE=InnoDB,  CHARSET=utf8 ;
@@ -65,17 +65,17 @@ CREATE TABLE email_virtual_domains (
 
 
 INSERT INTO email_account_emails (uid,email,type,flags,expire)
-	SELECT a.uid,CONCAT(a.alias,'@polytechnique.org'),a.type,a.flags,a.expire
+	SELECT a.uid,CONCAT(a.alias,'@polytechnique.org'),IF(a.type='a_vie','forlife','alias'),IF(a.flags='epouse','marital',a.flags),a.expire
 	FROM aliases AS a
 	WHERE a.type = 'a_vie'
 	 OR a.type = 'alias';
 INSERT INTO email_account_emails (uid,email,type,flags,expire)
-	SELECT a.uid,CONCAT(a.alias,'@m4x.org'),a.type,a.flags,a.expire
+	SELECT a.uid,CONCAT(a.alias,'@m4x.org'),IF(a.type='a_vie','forlife','alias'),IF(a.flags='epouse','marital',a.flags),a.expire
 	FROM aliases AS a
 	WHERE a.type = 'a_vie'
 	 OR a.type = 'alias';
 INSERT INTO email_account_emails (uid,email,type,flags,expire)
-	SELECT a.uid,CONCAT(a.alias,'@m4x.net'),a.type,a.flags,a.expire
+	SELECT a.uid,CONCAT(a.alias,'@m4x.net'),IF(a.type='a_vie','forlife','alias'),IF(a.flags='epouse','marital',a.flags),a.expire
 	FROM aliases AS a
 	WHERE a.type = 'a_vie'
 	 OR a.type = 'alias';
@@ -122,9 +122,9 @@ INSERT INTO homonyms_list (pfix_hruid,uid)
 	WHERE a.type = 'homonyme';
 
 INSERT INTO email_redirect (pfix_hruid,redirect,rewrite,type,action,
-	                    panne,panne_level,last,flags,hash,allow_rewrite)
+	                    broken,broken_level,last,flags,hash,allow_rewrite)
 	SELECT a.hruid,e.email,e.rewrite,'smtp',ef.email,
-	       e.panne,e.panne_level,e.last,e.flags,e.hash,e.allow_rewrite
+	       e.panne,e.panne_level,e.last,IF(e.flags='disable','disabled',IF(e.flags='panne','broken',e.flags)),e.hash,e.allow_rewrite
 	FROM emails AS e
 	LEFT JOIN emails AS ef ON (e.uid=ef.uid)
 	LEFT JOIN accounts AS a ON (e.uid=a.uid)
@@ -154,7 +154,7 @@ INSERT INTO email_redirect (pfix_hruid,redirect,type,action,flags)
 	WHERE FIND_IN_SET('imap',eo.storage);
 
 INSERT INTO email_virtual (alias,redirect,type)
-	SELECT v.alias,vr.redirect,v.type
+	SELECT v.alias,vr.redirect,IF(v.type='dom','domain',IF(v.type='evt','event',v.type))
 	FROM virtual AS v
 	LEFT JOIN virtual_redirect AS vr ON (vr.vid=v.vid)
 	WHERE v.alias NOT LIKE "%@melix.net"
