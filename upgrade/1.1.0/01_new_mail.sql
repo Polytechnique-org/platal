@@ -1,3 +1,9 @@
+DROP TABLE IF EXISTS email_account_emails;
+DROP TABLE IF EXISTS email_nonaccount_emails;
+DROP TABLE IF EXISTS homonyms_list;
+DROP TABLE IF EXISTS email_redirect;
+DROP TABLE IF EXISTS email_virtual;
+
 CREATE TABLE email_account_emails (
 	email  VARCHAR(255) NOT NULL PRIMARY KEY,
 	uid    INT(11) UNSIGNED NOT NULL,
@@ -5,8 +11,53 @@ CREATE TABLE email_account_emails (
 	flags  SET('bestalias','usage','epouse') NOT NULL DEFAULT '',
 	expire DATE DEFAULT NULL,
 	KEY (uid),
-	KEY (type)
+	KEY (type),
+    FOREIGN KEY uid REFERENCES accounts (uid) ON UPDATE CASCADE ON DELETE CASCADE;
 ) ENGINE=InnoDB,  CHARSET=utf8 ;
+
+CREATE TABLE email_nonaccount_emails (
+	email VARCHAR(255) NOT NULL PRIMARY KEY,
+	pfix_hruid VARCHAR(255) NOT NULL,
+	type  ENUM('homonym','ax','honeypot'),
+	expire DATE NOT NULL DEFAULT '0000-00-00'
+) ENGINE=InnoDB,  CHARSET=utf8 ;
+
+CREATE TABLE homonyms_list (
+	pfix_hruid VARCHAR(255) NOT NULL,
+	uid           INT(11) UNSIGNED NOT NULL,
+	KEY(pfix_hruid)
+) ENGINE=InnoDB,  CHARSET=utf8 ;
+
+CREATE TABLE email_redirect (
+	pfix_hruid    VARCHAR(255) NOT NULL DEFAULT '',
+	redirect      VARCHAR(255) NOT NULL DEFAULT '',
+	rewrite       VARCHAR(255) NOT NULL DEFAULT '',
+	type          ENUM('smtp','googleapps','imap','homonyms') NOT NULL DEFAULT 'smtp',
+	action        ENUM('default',
+	                   'drop_spams',
+	                   'let_spams',
+	                   'tag_and_drop_spams',
+	                   'tag_spams',
+	                   'homonym')
+		NOT NULL DEFAULT 'default',
+	panne         DATE NOT NULL DEFAULT '0000-00-00',
+	panne_level   TINYINT(1) NOT NULL DEFAULT 0,
+	last          DATE NOT NULL DEFAULT '0000-00-00',
+	flags         ENUM('active','panne','disable') NOT NULL,
+	hash          VARCHAR(32) DEFAULT NULL,
+	allow_rewrite TINYINT(1) DEFAULT 0,
+	KEY (pfix_hruid),
+	KEY (redirect)
+) ENGINE=InnoDB,  CHARSET=utf8 ;
+
+CREATE TABLE email_virtual (
+	alias    VARCHAR(255) NOT NULL,
+	redirect VARCHAR(255) NOT NULL,
+	type     ENUM('user','list','dom','evt','admin','partner'),
+	expire   DATE NOT NULL DEFAULT '0000-00-00',
+	KEY (alias)
+) ENGINE=InnoDB,  CHARSET=utf8 ;
+
 
 INSERT INTO email_account_emails (uid,email,type,flags,expire)
 	SELECT a.uid,CONCAT(a.alias,'@polytechnique.org'),a.type,a.flags,a.expire
@@ -40,13 +91,6 @@ INSERT INTO email_account_emails (uid,email,type)
 	 AND v.alias LIKE "%@melix.net"
 	 AND a.uid IS NOT NULL;
 
-CREATE TABLE email_nonaccount_emails (
-	email VARCHAR(255) NOT NULL PRIMARY KEY,
-	pfix_hruid VARCHAR(255) NOT NULL,
-	type  ENUM('homonym','ax','honeypot'),
-	expire DATE NOT NULL DEFAULT '0000-00-00'
-) ENGINE=InnoDB,  CHARSET=utf8 ;
-
 INSERT INTO email_nonaccount_emails (pfix_hruid,email,type)
 	SELECT CONCAT(CONCAT('h.',a.alias),'.polytechnique.org'),
 	       CONCAT(a.alias,'@polytechnique.org'),'homonym'
@@ -66,39 +110,11 @@ INSERT INTO email_nonaccount_emails (pfix_hruid,email,type)
 	WHERE a.type = 'homonyme'
 	GROUP BY (a.alias);
 
-CREATE TABLE homonyms_list (
-	pfix_hruid VARCHAR(255) NOT NULL,
-	uid           INT(11) UNSIGNED NOT NULL,
-	KEY(pfix_hruid)
-) ENGINE=InnoDB,  CHARSET=utf8 ;
-
 INSERT INTO homonyms_list (pfix_hruid,uid)
 	SELECT CONCAT(CONCAT('h.',a.alias),'.polytechnique.org'), h.uid
 	FROM homonyms AS h
 	INNER JOIN aliases AS a ON (a.uid=h.homonyme_id)
 	WHERE a.type = 'homonyme';
-
-CREATE TABLE email_redirect (
-	pfix_hruid    VARCHAR(255) NOT NULL DEFAULT '',
-	redirect      VARCHAR(255) NOT NULL DEFAULT '',
-	rewrite       VARCHAR(255) NOT NULL DEFAULT '',
-	type          ENUM('smtp','googleapps','imap','homonyms') NOT NULL DEFAULT 'smtp',
-	action        ENUM('default',
-	                   'drop_spams',
-	                   'let_spams',
-	                   'tag_and_drop_spams',
-	                   'tag_spams',
-	                   'homonym')
-		NOT NULL DEFAULT 'default',
-	panne         DATE NOT NULL DEFAULT '0000-00-00',
-	panne_level   TINYINT(1) NOT NULL DEFAULT 0,
-	last          DATE NOT NULL DEFAULT '0000-00-00',
-	flags         ENUM('active','panne','disable') NOT NULL,
-	hash          VARCHAR(32) DEFAULT NULL,
-	allow_rewrite TINYINT(1) DEFAULT 0,
-	KEY (pfix_hruid),
-	KEY (redirect)
-) ENGINE=InnoDB,  CHARSET=utf8 ;
 
 INSERT INTO email_redirect (pfix_hruid,redirect,rewrite,type,action,
 	                    panne,panne_level,last,flags,hash,allow_rewrite)
@@ -131,14 +147,6 @@ INSERT INTO email_redirect (pfix_hruid,redirect,type,action,flags)
 	FROM email_options AS eo
 	LEFT JOIN accounts AS a ON (a.uid=eo.uid)
 	WHERE FIND_IN_SET('imap',eo.storage);
-
-CREATE TABLE email_virtual (
-	alias    VARCHAR(255) NOT NULL,
-	redirect VARCHAR(255) NOT NULL,
-	type     ENUM('user','list','dom','evt','admin','partner'),
-	expire   DATE NOT NULL DEFAULT '0000-00-00',
-	KEY (alias)
-) ENGINE=InnoDB,  CHARSET=utf8 ;
 
 INSERT INTO email_virtual (alias,redirect,type)
 	SELECT v.alias,vr.redirect,v.type
@@ -440,3 +448,5 @@ INSERT INTO email_redirect (pfix_hruid,redirect,type,action,flags) VALUES
 DELETE FROM email_virtual WHERE alias LIKE "tech-email%@polytechnique.org";
 DELETE FROM email_virtual WHERE alias LIKE "tech-email%@m4x.org";
 DELETE FROM email_virtual WHERE alias LIKE "tech-email%@m4x.net";
+
+-- vim:set syntax=mysql:
