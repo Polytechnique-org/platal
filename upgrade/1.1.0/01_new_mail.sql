@@ -14,7 +14,7 @@ CREATE TABLE email_source_account (
 	expire DATE DEFAULT NULL,
 	KEY (uid),
 	KEY (type),
-    FOREIGN KEY uid REFERENCES accounts (uid) ON UPDATE CASCADE ON DELETE CASCADE;
+    FOREIGN KEY (uid) REFERENCES accounts (uid) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB,  CHARSET=utf8 ;
 
 CREATE TABLE email_source_other (
@@ -31,10 +31,10 @@ CREATE TABLE homonyms_list (
 ) ENGINE=InnoDB,  CHARSET=utf8 ;
 
 CREATE TABLE email_redirect_account (
-	uid           INT(11) UNSIGNED NOT NULL PRIMARY KEY,
+	uid           INT(11) UNSIGNED NOT NULL,
 	redirect      VARCHAR(255) NOT NULL DEFAULT '',
 	rewrite       VARCHAR(255) NOT NULL DEFAULT '',
-	type          ENUM('smtp','googleapps','imap','homonyms') NOT NULL DEFAULT 'smtp',
+	type          ENUM('smtp','googleapps','imap','homonym') NOT NULL DEFAULT 'smtp',
 	action        ENUM('default',
 	                   'drop_spams',
 	                   'let_spams',
@@ -43,18 +43,19 @@ CREATE TABLE email_redirect_account (
 	                   'homonym')
 		NOT NULL DEFAULT 'default',
 	broken        DATE NOT NULL DEFAULT '0000-00-00',
-	broken_level   TINYINT(1) NOT NULL DEFAULT 0,
+	broken_level  TINYINT(1) NOT NULL DEFAULT 0,
 	last          DATE NOT NULL DEFAULT '0000-00-00',
 	flags         ENUM('active','broken','disabled') NOT NULL,
 	hash          VARCHAR(32) DEFAULT NULL,
 	allow_rewrite TINYINT(1) DEFAULT 0,
+	KEY (uid),
 	KEY (redirect)
 ) ENGINE=InnoDB,  CHARSET=utf8 ;
 
 CREATE TABLE email_redirect_other (
 	hrmid         VARCHAR(255) NOT NULL DEFAULT '',
 	redirect      VARCHAR(255) NOT NULL DEFAULT '',
-	type          ENUM('smtp','googleapps','imap','homonyms') NOT NULL DEFAULT 'smtp',
+	type          ENUM('smtp','googleapps','imap','homonym') NOT NULL DEFAULT 'smtp',
 	action        ENUM('default',
 	                   'drop_spams',
 	                   'let_spams',
@@ -80,17 +81,17 @@ CREATE TABLE email_virtual_domains (
 
 
 INSERT INTO email_source_account (uid,email,type,flags,expire)
-	SELECT a.uid,CONCAT(a.alias,'@polytechnique.org'),IF(a.type='a_vie','forlife','alias'),IF(a.flags='epouse','marital',a.flags),a.expire
+	SELECT a.uid,CONCAT(a.alias,'@polytechnique.org'),IF(a.type='a_vie','forlife','alias'),REPLACE(a.flags,'epouse','marital'),a.expire
 	FROM aliases AS a
 	WHERE a.type = 'a_vie'
 	 OR a.type = 'alias';
 INSERT INTO email_source_account (uid,email,type,flags,expire)
-	SELECT a.uid,CONCAT(a.alias,'@m4x.org'),IF(a.type='a_vie','forlife','alias'),IF(a.flags='epouse','marital',a.flags),a.expire
+	SELECT a.uid,CONCAT(a.alias,'@m4x.org'),IF(a.type='a_vie','forlife','alias'),REPLACE(a.flags,'epouse','marital'),a.expire
 	FROM aliases AS a
 	WHERE a.type = 'a_vie'
 	 OR a.type = 'alias';
 INSERT INTO email_source_account (uid,email,type,flags,expire)
-	SELECT a.uid,CONCAT(a.alias,'@m4x.net'),IF(a.type='a_vie','forlife','alias'),IF(a.flags='epouse','marital',a.flags),a.expire
+	SELECT a.uid,CONCAT(a.alias,'@m4x.net'),IF(a.type='a_vie','forlife','alias'),REPLACE(a.flags,'epouse','marital'),a.expire
 	FROM aliases AS a
 	WHERE a.type = 'a_vie'
 	 OR a.type = 'alias';
@@ -139,22 +140,12 @@ INSERT INTO homonyms_list (hrmid,uid)
 INSERT INTO email_redirect_account (uid,redirect,rewrite,type,action,
 	                    broken,broken_level,last,flags,hash,allow_rewrite)
 	SELECT a.uid,e.email,e.rewrite,'smtp',ef.email,
-	       e.panne,e.panne_level,e.last,IF(e.flags='disable','disabled',IF(e.flags='panne','broken',e.flags)),e.hash,e.allow_rewrite
+	       e.panne,e.panne_level,e.last,IF(e.flags='','disabled',IF(e.flags='disable','disabled',IF(e.flags='panne','broken',e.flags))),e.hash,e.allow_rewrite
 	FROM emails AS e
 	LEFT JOIN emails AS ef ON (e.uid=ef.uid)
 	LEFT JOIN accounts AS a ON (e.uid=a.uid)
 	WHERE e.flags != 'filter'
 	 AND  ef.flags = 'filter';
-INSERT INTO email_redirect_other (hrmid,type,action,flags)
-	SELECT eso.hrmid,'homonym','homonym','active'
-	FROM email_source_other AS eso
-	WHERE eso.type = 'homonym'
-	GROUP BY (eso.hrmid);
-INSERT INTO email_redirect_other (hrmid,type,action,flags)
-	SELECT eso.hrmid,'smtp','default','active'
-	FROM email_source_other AS eso
-	WHERE eso.type != 'homonym'
-	GROUP BY (eso.hrmid);
 INSERT INTO email_redirect_account (uid,redirect,type,action,flags)
 	SELECT a.uid,CONCAT(a.hruid,"@g.polytechnique.org"),'googleapps',ef.email,'active'
 	FROM email_options AS eo
@@ -167,6 +158,12 @@ INSERT INTO email_redirect_account (uid,redirect,type,action,flags)
 	FROM email_options AS eo
 	LEFT JOIN accounts AS a ON (a.uid=eo.uid)
 	WHERE FIND_IN_SET('imap',eo.storage);
+
+INSERT INTO email_redirect_other (hrmid,type,action)
+	SELECT eso.hrmid,'homonym','homonym'
+	FROM email_source_other AS eso
+	WHERE eso.type = 'homonym'
+	GROUP BY (eso.hrmid);
 
 INSERT INTO email_virtual (email,redirect,type)
 	SELECT v.alias,vr.redirect,IF(v.type='dom','domain',IF(v.type='evt','event',v.type))
