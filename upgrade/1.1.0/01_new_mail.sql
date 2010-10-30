@@ -26,7 +26,7 @@ CREATE TABLE email_source_other (
 
 CREATE TABLE homonyms_list (
 	hrmid VARCHAR(255) NOT NULL,
-	uid           INT(11) UNSIGNED NOT NULL,
+	uid   INT(11) UNSIGNED NOT NULL,
 	KEY(hrmid)
 ) ENGINE=InnoDB,  CHARSET=utf8 ;
 
