@@ -52,11 +52,11 @@ CREATE TABLE email_redirect (
 ) ENGINE=InnoDB,  CHARSET=utf8 ;
 
 CREATE TABLE email_virtual (
-	alias    VARCHAR(255) NOT NULL,
+	email    VARCHAR(255) NOT NULL,
 	redirect VARCHAR(255) NOT NULL,
 	type     ENUM('user','list','domain','event','admin','partner'),
 	expire   DATE NOT NULL DEFAULT '0000-00-00',
-	KEY (alias)
+	KEY (email)
 ) ENGINE=InnoDB,  CHARSET=utf8 ;
 
 CREATE TABLE email_virtual_domains (
@@ -153,14 +153,14 @@ INSERT INTO email_redirect (pfix_hruid,redirect,type,action,flags)
 	LEFT JOIN accounts AS a ON (a.uid=eo.uid)
 	WHERE FIND_IN_SET('imap',eo.storage);
 
-INSERT INTO email_virtual (alias,redirect,type)
+INSERT INTO email_virtual (email,redirect,type)
 	SELECT v.alias,vr.redirect,IF(v.type='dom','domain',IF(v.type='evt','event',v.type))
 	FROM virtual AS v
 	LEFT JOIN virtual_redirect AS vr ON (vr.vid=v.vid)
 	WHERE v.alias NOT LIKE "%@melix.net"
 	 AND vr.vid IS NOT NULL
 	 AND v.alias != '@melix.org';
-INSERT INTO email_virtual (alias,redirect,type)
+INSERT INTO email_virtual (email,redirect,type)
 	SELECT CONCAT(a.alias,"@polytechnique.org"),
 	       CONCAT(
 	         'polytechnique.org_',
@@ -178,7 +178,7 @@ INSERT INTO email_virtual (alias,redirect,type)
 	       'list'
 	FROM aliases AS a
 	WHERE type='liste';
-INSERT INTO email_virtual (alias,redirect,type)
+INSERT INTO email_virtual (email,redirect,type)
 	SELECT CONCAT(a.alias,"@m4x.org"),
 	       CONCAT(
 	         'polytechnique.org_',
@@ -196,7 +196,7 @@ INSERT INTO email_virtual (alias,redirect,type)
 	       'list'
 	FROM aliases AS a
 	WHERE type='liste';
-INSERT INTO email_virtual (alias,redirect,type)
+INSERT INTO email_virtual (email,redirect,type)
 	SELECT CONCAT(a.alias,"@m4x.net"),
 	       CONCAT(
 	         'polytechnique.org_',
@@ -214,7 +214,7 @@ INSERT INTO email_virtual (alias,redirect,type)
 	       'list'
 	FROM aliases AS a
 	WHERE type='liste';
-INSERT INTO email_virtual (alias,redirect,type)
+INSERT INTO email_virtual (email,redirect,type)
 	SELECT vr.redirect,v.alias,'user'
 	FROM virtual AS v
 	LEFT JOIN virtual_redirect AS vr ON (v.vid=vr.vid)
@@ -223,7 +223,7 @@ INSERT INTO email_virtual (alias,redirect,type)
 	 AND v.alias LIKE "%@melix.net"
 	 AND vr.vid IS NOT NULL
 	 AND a.uid IS NULL;
-INSERT INTO email_virtual (alias,redirect,type)
+INSERT INTO email_virtual (email,redirect,type)
 	SELECT vr.redirect,REPLACE(v.alias,'@melix.net','@melix.org'),'user'
 	FROM virtual AS v
 	LEFT JOIN virtual_redirect AS vr ON (v.vid=vr.vid)
@@ -246,7 +246,7 @@ INSERT INTO email_virtual_domains (domain)
 	FROM virtual_domains;
 
 /* From aliases file */
-INSERT INTO email_virtual (alias,redirect,type) VALUES
+INSERT INTO email_virtual (email,redirect,type) VALUES
 	("otrs.platal@polytechnique.org","otrs@svoboda.polytechnique.org","admin"),
 	("otrs.platal@m4x.org","otrs.platal@polytechnique.org","admin"),
 	("otrs.platal@m4x.net","otrs.platal@polytechnique.org","admin"),
@@ -446,9 +446,9 @@ INSERT INTO email_redirect (pfix_hruid,redirect,type,action,flags) VALUES
 	("honey.jean-pierre.bilah.1980.polytechnique.org","raphael.barrois.2006@polytechnique.org","smtp","let_spams","active");
 
 /* Drop renamed list */
-DELETE FROM email_virtual WHERE alias LIKE "tech-email%@polytechnique.org";
-DELETE FROM email_virtual WHERE alias LIKE "tech-email%@m4x.org";
-DELETE FROM email_virtual WHERE alias LIKE "tech-email%@m4x.net";
+DELETE FROM email_virtual WHERE email LIKE "tech-email%@polytechnique.org";
+DELETE FROM email_virtual WHERE email LIKE "tech-email%@m4x.org";
+DELETE FROM email_virtual WHERE email LIKE "tech-email%@m4x.net";
 
 /*********************************************************************************************************************************/
 DROP TABLE aliases;
