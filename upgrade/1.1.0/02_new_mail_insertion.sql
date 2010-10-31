@@ -1,87 +1,3 @@
-DROP TABLE IF EXISTS email_source_account;
-DROP TABLE IF EXISTS email_source_other;
-DROP TABLE IF EXISTS homonyms_list;
-DROP TABLE IF EXISTS email_redirect_account;
-DROP TABLE IF EXISTS email_redirect_other;
-DROP TABLE IF EXISTS email_virtual;
-DROP TABLE IF EXISTS email_virtual_domains;
-
-CREATE TABLE email_source_account (
-	email  VARCHAR(255) NOT NULL PRIMARY KEY,
-	uid    INT(11) UNSIGNED NOT NULL,
-	type   ENUM('forlife','alias') NOT NULL DEFAULT 'forlife',
-	flags  SET('bestalias','usage','marital') NOT NULL DEFAULT '',
-	expire DATE DEFAULT NULL,
-	KEY (uid),
-	KEY (type),
-    FOREIGN KEY (uid) REFERENCES accounts (uid) ON UPDATE CASCADE ON DELETE CASCADE
-) ENGINE=InnoDB,  CHARSET=utf8 ;
-
-CREATE TABLE email_source_other (
-	email VARCHAR(255) NOT NULL PRIMARY KEY,
-	hrmid VARCHAR(255) NOT NULL,
-	type  ENUM('homonym','ax','honeypot'),
-	expire DATE NOT NULL DEFAULT '0000-00-00'
-) ENGINE=InnoDB,  CHARSET=utf8 ;
-
-CREATE TABLE homonyms_list (
-	hrmid VARCHAR(255) NOT NULL,
-	uid   INT(11) UNSIGNED NOT NULL,
-	KEY(hrmid)
-) ENGINE=InnoDB,  CHARSET=utf8 ;
-
-CREATE TABLE email_redirect_account (
-	uid           INT(11) UNSIGNED NOT NULL,
-	redirect      VARCHAR(255) NOT NULL DEFAULT '',
-	rewrite       VARCHAR(255) NOT NULL DEFAULT '',
-	type          ENUM('smtp','googleapps','imap','homonym') NOT NULL DEFAULT 'smtp',
-	action        ENUM('default',
-	                   'drop_spams',
-	                   'let_spams',
-	                   'tag_and_drop_spams',
-	                   'tag_spams',
-	                   'imap_and_bounce',
-	                   'homonym')
-		NOT NULL DEFAULT 'default',
-	broken        DATE NOT NULL DEFAULT '0000-00-00',
-	broken_level  TINYINT(1) NOT NULL DEFAULT 0,
-	last          DATE NOT NULL DEFAULT '0000-00-00',
-	flags         ENUM('active','broken','disabled') NOT NULL,
-	hash          VARCHAR(32) DEFAULT NULL,
-	allow_rewrite TINYINT(1) DEFAULT 0,
-	KEY (uid),
-	KEY (redirect)
-) ENGINE=InnoDB,  CHARSET=utf8 ;
-
-CREATE TABLE email_redirect_other (
-	hrmid         VARCHAR(255) NOT NULL DEFAULT '',
-	redirect      VARCHAR(255) NOT NULL DEFAULT '',
-	type          ENUM('smtp','googleapps','imap','homonym') NOT NULL DEFAULT 'smtp',
-	action        ENUM('default',
-	                   'drop_spams',
-	                   'let_spams',
-	                   'tag_and_drop_spams',
-	                   'tag_spams',
-	                   'imap_and_bounce',
-	                   'homonym')
-		NOT NULL DEFAULT 'default',
-	KEY (hrmid),
-	KEY (redirect)
-) ENGINE=InnoDB,  CHARSET=utf8 ;
-
-CREATE TABLE email_virtual (
-	email    VARCHAR(255) NOT NULL,
-	redirect VARCHAR(255) NOT NULL,
-	type     ENUM('user','list','domain','event','admin','partner'),
-	expire   DATE NOT NULL DEFAULT '0000-00-00',
-	KEY (email)
-) ENGINE=InnoDB,  CHARSET=utf8 ;
-
-CREATE TABLE email_virtual_domains (
-	domain VARCHAR(255) NOT NULL PRIMARY KEY
-) ENGINE=InnoDB,  CHARSET=utf8 ;
-
-
 INSERT INTO email_source_account (uid,email,type,flags,expire)
 	SELECT a.uid,CONCAT(a.alias,'@polytechnique.org'),IF(a.type='a_vie','forlife','alias'),REPLACE(a.flags,'epouse','marital'),a.expire
 	FROM aliases AS a
@@ -246,10 +162,9 @@ INSERT INTO email_virtual (email,redirect,type)
 	 AND v.alias LIKE "%@melix.net"
 	 AND vr.vid IS NOT NULL
 	 AND a.uid IS NULL;
-/*
-Note: There are some adresses on virtual that have no match on the virtual_redirect. The adresses
-      in this situation are dropped.
- */
+
+-- Note: There are some adresses on virtual that have no match on the virtual_redirect.
+--       The adresses in this situation are dropped.
 
 INSERT INTO email_virtual_domains (domain)
 	VALUES ("polytechnique.org"),
@@ -259,7 +174,7 @@ INSERT INTO email_virtual_domains (domain)
 	SELECT domain
 	FROM virtual_domains;
 
-/* From aliases file */
+-- From aliases file
 INSERT INTO email_virtual (email,redirect,type) VALUES
 	("otrs.platal@polytechnique.org","otrs@svoboda.polytechnique.org","admin"),
 	("otrs.platal@m4x.org","otrs.platal@polytechnique.org","admin"),
@@ -458,19 +373,20 @@ INSERT INTO email_redirect_other (hrmid,redirect,type,action) VALUES
 	("honey.jean-pierre.bilah.1980.polytechnique.org","jean-pierre.bilah.1980.mbox@murphy.m4x.org","smtp","let_spams"),
 	("honey.jean-pierre.bilah.1980.polytechnique.org","raphael.barrois.2006@polytechnique.org","smtp","let_spams");
 
-/* Drop renamed list */
+-- Drop renamed list
 DELETE FROM email_virtual WHERE email LIKE "tech-email%@polytechnique.org";
 DELETE FROM email_virtual WHERE email LIKE "tech-email%@m4x.org";
 DELETE FROM email_virtual WHERE email LIKE "tech-email%@m4x.net";
 
-/*********************************************************************************************************************************/
-DROP TABLE aliases;
-DROP TABLE virtual;
-DROP TABLE virtual_redirect;
-DROP TABLE homonyms;
-DROP TABLE emails;
-DROP TABLE email_options;
-DROP TABLE domain;
-
+-- Imap and bounce
+UPDATE email_redirect_account AS e,
+       (SELECT IF( SUM(IF(type!='imap',1,0))=0, 'imap_only', 'normal' ) AS status, uid
+            FROM email_redirect_account
+           WHERE flags = 'active'
+        GROUP BY uid) AS sub
+    SET e.action='imap_and_bounce'
+  WHERE sub.status='imap_only'
+    AND sub.uid = e.uid
+    AND type='imap';
 
 -- vim:set syntax=mysql:
