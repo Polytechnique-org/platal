@@ -39,6 +39,16 @@ class PlDBNoSuchFieldException extends PlException
     }
 }
 
+class PlDBNoSuchKeyException extends PlException
+{
+    public function __construct($key, PlDBTable $table)
+    {
+        parent::__construct('Erreur lors de l\'accès à la base de données',
+                            'No such key ' . $key . ' in table ' . $table->table);
+    }
+}
+
+
 class PlDBIncompleteEntryDescription extends PlException
 {
     public function __construct($field, PlDBTable $table)
@@ -55,8 +65,6 @@ class PlDBTableField
 
     public $name;
     public $inPrimaryKey;
-    public $inUniqueKey;
-    public $inKey;
 
     public $type;
     public $typeLength;
@@ -80,9 +88,7 @@ class PlDBTableField
         }
         $this->allowNull = ($column['Null'] === 'YES');
         $this->autoIncrement = (strpos($column['Extra'], 'auto_increment') !== false);
-        $this->inPrimaryKey = ($column['Key'] === 'PRI');
-        $this->inUniqueKey = $this->inPrimaryKey || ($column['Key'] === 'UNI');
-        $this->inKey = $this->inUniqueKey || ($column['Key'] === 'MUL');
+        $this->inPrimaryKey  = ($column['Key'] == 'PRI');
 
         try {
             $this->defaultValue = $this->format($column['Default']);
@@ -167,7 +173,7 @@ class DateFormatter implements XDBFormat
 
     public function format()
     {
-        return $this->datetime->format($this->storageFormat);
+        return XDB::escape($this->datetime->format($this->storageFormat));
     }
 
     public function date($format)
@@ -182,10 +188,14 @@ class DateFormatter implements XDBFormat
  */
 class PlDBTable
 {
+    const PRIMARY_KEY = 'PRIMARY';
+
     public $table;
 
     private $schema;
-    private $keyFields;
+    private $primaryKey;
+    private $uniqueKeys;
+    private $multipleKeys;
     private $mutableFields;
 
     public function __construct($table)
@@ -194,18 +204,36 @@ class PlDBTable
         $this->schema();
     }
 
-    private function parseSchema(PlIterator $schema)
+    private function parseSchema(PlIterator $schema, PlIterator $keys)
     {
         $this->schema = array();
-        $this->keyFields = array();
+        $this->primaryKey = array();
+        $this->uniqueKeys = array();
+        $this->multipleKeys = array();
         $this->mutableFields = array();
         while ($column = $schema->next()) {
             $field = new PlDBTableField($column);
             $this->schema[$field->name] = $field;
-            if ($field->inPrimaryKey) {
-                $this->keyFields[] = $field->name;
-            } else {
+            if (!$field->inPrimaryKey) {
                 $this->mutableFields[] = $field->name;
+            }
+        }
+        while ($column = $keys->next()) {
+            $name     = $column['Key_name'];
+            $multiple = intval($column['Non_unique']) != 0;
+            $field    = $column['Column_name'];
+            if ($multiple) {
+                if (!isset($this->multipleKeys[$name])) {
+                    $this->multipleKeys[$name] = array();
+                }
+                $this->multipleKeys[$name][] = $field;
+            } else if ($name == self::PRIMARY_KEY) {
+                $this->primaryKey[] = $field;
+            } else {
+                if (!isset($this->uniqueKeys[$name])) {
+                    $this->uniqueKeys[$name] = array();
+                }
+                $this->uniqueKeys[$name][] = $field;
             }
         }
     }
@@ -215,7 +243,8 @@ class PlDBTable
     {
         if (!$this->schema) {
             $schema = XDB::iterator('DESCRIBE ' . $this->table);
-            $this->parseSchema($schema);
+            $keys   = XDB::iterator('SHOW INDEX FROM ' . $this->table);
+            $this->parseSchema($schema, $keys);
         }
         return $this->schema;
     }
@@ -239,10 +268,52 @@ class PlDBTable
         return $this->field($field)->defaultValue;
     }
 
-    public function primaryKey(PlDBTableEntry $entry)
+    private function hasKeyField(PlDBTableEntry $entry, array $fields)
+    {
+        foreach ($fields as $field) {
+            if (isset($entry->$field)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function keyFields($keyName)
+    {
+        if ($keyName == self::PRIMARY_KEY) {
+            return $this->primaryKey;
+        } else if (isset($this->uniqueKeys[$keyName])) {
+            return $this->uniqueKeys[$keyName];
+        } else if (isset($this->multipleKeys[$keyName])) {
+            return $this->multipleKeys[$keyName];
+        }
+        throw new PlDBNoSuchKeyException($keyName, $this);
+    }
+
+    private function bestKeyFields(PlDBTableEntry $entry, $allowMultiple)
+    {
+        if ($this->hasKeyField($entry, $this->primaryKey)) {
+            return $this->primaryKey;
+        }
+        foreach ($this->uniqueKeys as $fields) {
+            if ($this->hasKeyField($entry, $fields)) {
+                return $fields;
+            }
+        }
+        if ($allowMultiple) {
+            foreach ($this->multipleKeys as $fields) {
+                if ($this->hasKeyField($entry, $fields)) {
+                    return $fields;
+                }
+            }
+        }
+        return $this->primaryKey;
+    }
+
+    public function key(PlDBTableEntry $entry, array $keyFields)
     {
         $key = array();
-        foreach ($this->keyFields as $field) {
+        foreach ($keyFields as $field) {
             if (!isset($entry->$field)) {
                 throw new PlDBIncompleteEntryDescription($field, $this);
             } else {
@@ -252,10 +323,15 @@ class PlDBTable
         return implode('-', $key);
     }
 
-    private function buildKeyCondition(PlDBTableEntry $entry, $allowIncomplete)
+    public function primaryKey(PlDBTableEntry $entry)
+    {
+        return $this->key($this->keyFields(self::PRIMARY_KEY));
+    }
+
+    private function buildKeyCondition(PlDBTableEntry $entry, array $keyFields, $allowIncomplete)
     {
         $condition = array();
-        foreach ($this->keyFields as $field) {
+        foreach ($keyFields as $field) {
             if (!isset($entry->$field)) {
                 if (!$allowIncomplete) {
                     throw new PlDBIncompleteEntryDescription($field, $this);
@@ -271,27 +347,38 @@ class PlDBTable
     {
         $result = XDB::rawFetchOneAssoc('SELECT  *
                                            FROM  ' . $this->table . '
-                                          WHERE  ' . $this->buildKeyCondition($entry, false));
+                                          WHERE  ' . $this->buildKeyCondition($entry,
+                                                                              $this->bestKeyFields($entry, false),
+                                                                              false));
         if (!$result) {
             return false;
         }
         return $entry->fillFromDBData($result);
     }
 
-    public function iterateOnEntry(PlDBTableEntry $entry, $sortField)
+    public function iterateOnCondition(PlDBTableEntry $entry, $condition, $sortField)
     {
-        $sort = '';
-        if (!empty($sortField)) {
-            if (!is_array($sortField)) {
-                $sortField = array($sortField);
-            }
-            $sort = ' ORDER BY ' . implode(', ', $sortField);
+        if (empty($sortField)) {
+            $sortField = $this->primaryKey;
         }
+        if (!is_array($sortField)) {
+            $sortField = array($sortField);
+        }
+        $sort = ' ORDER BY ' . implode(', ', $sortField);
         $it = XDB::rawIterator('SELECT  *
                                   FROM  ' . $this->table . '
-                                 WHERE  ' . $this->buildKeyCondition($entry, true)
-                                 . $sort);
+                                 WHERE  ' . $condition . '
+                                        ' . $sort);
         return PlIteratorUtils::map($it, array($entry, 'cloneAndFillFromDBData'));
+    }
+
+    public function iterateOnEntry(PlDBTableEntry $entry, $sortField)
+    {
+        return $this->iterateOnCondition($entry,
+                                         $this->buildKeyCondition($entry,
+                                                                  $this->bestKeyFields($entry, true),
+                                                                  true),
+                                         $sortField);
     }
 
     const SAVE_INSERT_MISSING   = 0x01;
@@ -311,7 +398,9 @@ class PlDBTable
             if (count($values) > 0) {
                 XDB::rawExecute('UPDATE ' . $this->table . '
                                     SET ' . implode(', ', $values) . '
-                                  WHERE ' . $this->buildKeyCondition($entry, false));
+                                  WHERE ' . $this->buildKeyCondition($entry,
+                                                                     $this->keyFields(self::PRIMARY_KEY),
+                                                                     false));
             }
         } else {
             $values = array();
@@ -344,7 +433,7 @@ class PlDBTable
                 XDB::rawExecute($query);
                 $id = XDB::insertId();
                 if ($id) {
-                    foreach ($this->keyFields as $field) {
+                    foreach ($this->primaryKey as $field) {
                         if ($this->schema[$field]->autoIncrement) {
                             $entry->$field = $id;
                             break;
@@ -358,7 +447,9 @@ class PlDBTable
     public function deleteEntry(PlDBTableEntry $entry, $allowIncomplete)
     {
         XDB::rawExecute('DELETE FROM ' . $this->table . '
-                               WHERE ' . $this->buildKeyCondition($entry, $allowIncomplete));
+                               WHERE ' . $this->buildKeyCondition($entry,
+                                                                  $this->bestKeyFields($entry, $allowIncomplete),
+                                                                  $allowIncomplete));
     }
 
     public static function get($name)
@@ -505,6 +596,11 @@ class PlDBTableEntry extends PlAbstractIterable
     public function iterate($sortField = null)
     {
         return $this->table->iterateOnEntry($this, $sortField);
+    }
+
+    public function iterateOnCondition($condition, $sortField = null)
+    {
+        return $this->table->iterateOnCondition($this, $condition, $sortField);
     }
 
     public function save($flags)
