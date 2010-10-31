@@ -204,7 +204,18 @@ function make_datetime($date)
         return new DateTime("@$date");
     } else {
         try {
+            $list = explode('/', $date);
+            if (count($list) == 3) {
+                $date = $list[1] . '/' . $list[0] . '/' . $list[2];
+            }
+            // FIXME: On PHP < 5.3, parsing error are reported using an error,
+            //        not an exception. Thus count the number of error to detect
+            //        errors.
+            $errors = @count($GLOBALS['pl_errors']);
             $d = new DateTime($date);
+            if (@count($GLOBALS['pl_errors']) > $errors) {
+                return null;
+            }
             return $d;
         } catch (Exception $e) {
             return null;

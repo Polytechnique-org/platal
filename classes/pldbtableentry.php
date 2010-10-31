@@ -136,9 +136,43 @@ class PlDBTableField
                 throw new PlDBBadValueException($value, $this, 'value is expected to be ' . $this->typeLength . ' characters long, ' . strlen($value) . ' given');
             }
             return $value;
+        } else if (starts_with($this->type, 'date') || $this->type == 'timestamp') {
+            $date = $value;
+            $value = make_datetime($value);
+            if (is_null($value)) {
+                throw new PlDBBadValueException($date, $this, 'value is expected to be a date/time, ' . $date . ' given');
+            }
+            if ($this->type == 'date') {
+                $value = new DateFormatter($value, 'Y-m-d');
+            } else if ($this->type == 'datetime') {
+                $value = new DateFormatter($value, 'Y-m-d H:i:s');
+            } else {
+                $value = new DateFormatter($value, 'U');
+            }
         }
-        /* TODO: Support data and times */
         return $value;
+    }
+}
+
+class DateFormatter implements XDBFormat
+{
+    private $datetime;
+    private $storageFormat;
+
+    public function __construct(DateTime $date, $storageFormat)
+    {
+        $this->datetime = $date;
+        $this->storageFormat = $storageFormat;
+    }
+
+    public function format()
+    {
+        return $this->datetime->format($this->storageFormat);
+    }
+
+    public function date($format)
+    {
+        return $this->datetime->format($format);
     }
 }
 
@@ -244,32 +278,91 @@ class PlDBTable
         return $entry->fillFromDBData($result);
     }
 
-    public function iterateOnEntry(PlDBTableEntry $entry)
+    public function iterateOnEntry(PlDBTableEntry $entry, $sortField)
     {
+        $sort = '';
+        if (!empty($sortField)) {
+            if (!is_array($sortField)) {
+                $sortField = array($sortField);
+            }
+            $sort = ' ORDER BY ' . implode(', ', $sortField);
+        }
         $it = XDB::rawIterator('SELECT  *
                                   FROM  ' . $this->table . '
-                                 WHERE  ' . $this->buildKeyCondition($entry, true));
+                                 WHERE  ' . $this->buildKeyCondition($entry, true)
+                                 . $sort);
         return PlIteratorUtils::map($it, array($entry, 'cloneAndFillFromDBData'));
     }
 
-    public function updateEntry(PlDBTableEntry $entry)
+    const SAVE_INSERT_MISSING   = 0x01;
+    const SAVE_UPDATE_EXISTING  = 0x02;
+    const SAVE_IGNORE_DUPLICATE = 0x04;
+    public function saveEntry(PlDBTableEntry $entry, $flags)
     {
-        $values = array();
-        foreach ($this->mutableFields as $field) {
-            if ($entry->hasChanged($field)) {
-                $values[] = XDB::format($field . ' = {?}', $entry->$field);
+        $flags &= (self::SAVE_INSERT_MISSING | self::SAVE_UPDATE_EXISTING | self::SAVE_IGNORE_DUPLICATE);
+        Platal::assert($flags != 0, "Hey, the flags ($flags) here are so stupid, don't know what to do");
+        if ($flags == self::SAVE_UPDATE_EXISTING) {
+            $values = array();
+            foreach ($this->mutableFields as $field) {
+                if ($entry->hasChanged($field)) {
+                    $values[] = XDB::format($field . ' = {?}', $entry->$field);
+                }
+            }
+            if (count($values) > 0) {
+                XDB::rawExecute('UPDATE ' . $this->table . '
+                                    SET ' . implode(', ', $values) . '
+                                  WHERE ' . $this->buildKeyCondition($entry, false));
+            }
+        } else {
+            $values = array();
+            foreach ($this->schema as $field=>$type) {
+                if ($entry->hasChanged($field)) {
+                    $values[$field] = XDB::escape($entry->$field);
+                }
+            }
+            if (count($values) > 0) {
+                $query = $this->table . ' (' . implode(', ', array_keys($values)) . ')
+                               VALUES  (' . implode(', ', $values) . ')';
+                if (($flags & self::SAVE_UPDATE_EXISTING)) {
+                    $update = array();
+                    foreach ($this->mutableFields as $field) {
+                        if (isset($values[$field])) {
+                            $update[] = "$field = VALUES($field)";
+                        }
+                    }
+                    if (count($update) > 0) {
+                        $query = 'INSERT ' . $query;
+                        $query .= "\n  ON DUPLICATE KEY UPDATE " . implode(', ', $update);
+                    } else {
+                        $query = 'INSERT IGNORE ' . $query;
+                    }
+                } else if (($flags & self::SAVE_IGNORE_DUPLICATE)) {
+                    $query = 'INSERT IGNORE ' . $query;
+                } else {
+                    $query = 'INSERT ' . $query;
+                }
+                XDB::rawExecute($query);
+                $id = XDB::insertId();
+                if ($id) {
+                    foreach ($this->keyFields as $field) {
+                        if ($this->schema[$field]->autoIncrement) {
+                            $entry->$field = $id;
+                            break;
+                        }
+                    }
+                }
             }
         }
-        if (count($values) > 0) {
-            XDB::rawExecute('UPDATE ' . $this->table . '
-                                SET ' . implode(', ', $values) . '
-                              WHERE ' . $this->buildKeyCondition($entry, false));
-        }
+    }
+
+    public function deleteEntry(PlDBTableEntry $entry, $allowIncomplete)
+    {
+        XDB::rawExecute('DELETE FROM ' . $this->table . '
+                               WHERE ' . $this->buildKeyCondition($entry, $allowIncomplete));
     }
 
     public static function get($name)
     {
-        var_dump('blah');
         return new PlDBTable($name);
     }
 }
@@ -305,6 +398,26 @@ class PlDBTableEntry extends PlAbstractIterable
     protected function preSave()
     {
         return true;
+    }
+
+    /** This hook is called when the entry has been save in the database.
+     *
+     * It can be used to perform post-actions on save like storing extra data
+     * in database or sending a notification.
+     */
+    protected function postSave()
+    {
+    }
+
+    /** This hook is called when the entry is going to be deleted from the db.
+     *
+     * Default behavior is to call preSave().
+     *
+     * @return true in case of success.
+     */
+    protected function preDelete()
+    {
+        return $this->preSave();
     }
 
     /** This hook is called when the entry has just been fetched from the db.
@@ -368,6 +481,15 @@ class PlDBTableEntry extends PlAbstractIterable
         return $this->postFetch();
     }
 
+    public function copy(PlDBTableEntry $other)
+    {
+        Platal::assert($this->table == $other->table,
+                       "Trying to fill an entry of table {$this->table} with content of {$other->table}.");
+        $this->changed = $other->changed;
+        $this->fetched = $other->fetched;
+        $this->data    = $other->data;
+    }
+
     public function cloneAndFillFromDBData(array $data)
     {
         $clone = clone $this;
@@ -380,19 +502,46 @@ class PlDBTableEntry extends PlAbstractIterable
         return $this->table->fetchEntry($this);
     }
 
-    public function iterate()
+    public function iterate($sortField = null)
     {
-        return $this->table->iterateOnEntry($this);
+        return $this->table->iterateOnEntry($this, $sortField);
     }
 
-    public function save()
+    public function save($flags)
     {
         if (!$this->preSave()) {
             return false;
         }
-        $this->table->updateEntry($this);
+        $this->table->saveEntry($this, $flags);
         $this->changed->clear();
+        $this->postSave();
         return true;
+    }
+
+    public function update($insertMissing = false)
+    {
+        $flags = PlDBTable::SAVE_UPDATE_EXISTING;
+        if ($insertMissing) {
+            $flags = PlDBTable::SAVE_INSERT_MISSING;
+        }
+        return $this->save($flags);
+    }
+
+    public function insert($allowUpdate = false)
+    {
+        $flags = PlDBTable::SAVE_INSERT_MISSING;
+        if ($allowUpdate) {
+            $flags |= PlDBTable::SAVE_UPDATE_EXISTING;
+        }
+        return $this->save($flags);
+    }
+
+    public function delete()
+    {
+        if (!$this->preDelete()) {
+            return 0;
+        }
+        return $this->table->deleteEntry($this, true);
     }
 }
 
