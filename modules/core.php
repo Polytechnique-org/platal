@@ -112,6 +112,7 @@ class CoreModule extends PLModule
 
         $page->clear_compiled_tpl();
         PlWikiPage::clearCache();
+        PlCache::clearAll();
 
         http_redirect(empty($_SERVER['HTTP_REFERER']) ? './' : $_SERVER['HTTP_REFERER']);
     }
