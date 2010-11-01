@@ -74,6 +74,8 @@ class PlDBTableField
     public $defaultValue;
     public $autoIncrement;
 
+    private $formatter;
+
     public function __construct(array $column)
     {
         $this->name = $column['Field'];
@@ -97,6 +99,11 @@ class PlDBTableField
         }
     }
 
+    public function registerFormatter($class)
+    {
+        $this->formatter = $class;
+    }
+
     public function format($value, $badNullFallbackToDefault = false)
     {
         if (is_null($value)) {
@@ -107,6 +114,9 @@ class PlDBTableField
                 return $this->defaultValue;
             }
             throw new PlDBBadValueException($value, $this, 'null not allowed');
+        } else if (!is_null($this->formatter)) {
+            $class = $this->formatter;
+            $value = new $class($this, $value);
         } else if ($this->type == 'enum') {
             if (!$this->typeParameters->hasFlag($value)) {
                 throw new PlDBBadValueException($value, $this, 'invalid value for enum ' . $this->typeParameters->flags());
@@ -132,43 +142,42 @@ class PlDBTableField
             }
             /* TODO: Check bounds */
             return $value;
-        } else if ($this->type == 'varchar') {
+        } else if (ends_with($this->type, 'char')) {
             if (strlen($value) > $this->typeLength) {
                 throw new PlDBBadValueException($value, $this, 'value is expected to be at most ' . $this->typeLength . ' characters long, ' . strlen($value) . ' given');
             }
             return $value;
-        } else if ($this->type == 'char') {
-            if (strlen($value) != $this->typeLength) {
-                throw new PlDBBadValueException($value, $this, 'value is expected to be ' . $this->typeLength . ' characters long, ' . strlen($value) . ' given');
-            }
-            return $value;
         } else if (starts_with($this->type, 'date') || $this->type == 'timestamp') {
-            $date = $value;
-            $value = make_datetime($value);
-            if (is_null($value)) {
-                throw new PlDBBadValueException($date, $this, 'value is expected to be a date/time, ' . $date . ' given');
-            }
-            if ($this->type == 'date') {
-                $value = new DateFormatter($value, 'Y-m-d');
-            } else if ($this->type == 'datetime') {
-                $value = new DateFormatter($value, 'Y-m-d H:i:s');
-            } else {
-                $value = new DateFormatter($value, 'U');
-            }
+            return new DateFieldFormatter($this, $value);
         }
         return $value;
     }
 }
 
-class DateFormatter implements XDBFormat
+interface PlDBTableFieldFormatter extends XDBFormat
+{
+    public function __construct(PlDBTableField $field, $value);
+}
+
+class DateFieldFormatter implements PlDBTableFieldFormatter
 {
     private $datetime;
     private $storageFormat;
 
-    public function __construct(DateTime $date, $storageFormat)
+    public function __construct(PlDBTableField $field, $date)
     {
-        $this->datetime = $date;
-        $this->storageFormat = $storageFormat;
+        $date = $value;
+        $this->datetime = make_datetime($value);
+        if (is_null($this->datetime)) {
+            throw new PlDBBadValueException($date, $field, 'value is expected to be a date/time, ' . $date . ' given');
+        }
+        if ($field->type == 'date') {
+            $this->storageFormat = 'Y-m-d';
+        } else if ($field->type == 'datetime') {
+            $this->storageFormat = 'Y-m-d H:i:s';
+        } else {
+            $this->storageFormat = 'U';
+        }
     }
 
     public function format()
@@ -179,6 +188,55 @@ class DateFormatter implements XDBFormat
     public function date($format)
     {
         return $this->datetime->format($format);
+    }
+}
+
+class JSonFieldFormatter implements PlDBTableFieldFormatter, ArrayAccess
+{
+    private $data;
+
+    public function __construct(PlDBTableField $field, $data)
+    {
+        if (strpos($field->type, 'text') === false) {
+            throw new PlDBBadValueException($data, $field, 'json formatting requires a text field');
+        }
+
+        if (is_string($data)) {
+            $this->data = json_decode($data, true);
+        } else if (is_object($data)) {
+            $this->data = json_decode(json_encode($data), true);
+        } else if (is_array($data)) {
+            $this->data = $data;
+        }
+
+        if (is_null($this->data)) {
+            throw new PlDBBadValueException($data, $field, 'cannot interpret data as json: ' . $data);
+        }
+    }
+
+    public function format()
+    {
+        return XDB::escape(json_encode($this->data));
+    }
+
+    public function offsetExists($offset)
+    {
+        return isset($this->data[$offset]);
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->data[$offset];
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        $this->data[$offset] = $value;
+    }
+
+    public function offsetUnset($offset)
+    {
+        unset($this->data[$offset]);
     }
 }
 
@@ -261,6 +319,11 @@ class PlDBTable
     public function formatField($field, $value)
     {
         return $this->field($field)->format($value);
+    }
+
+    public function registerFieldFormatter($field, $class)
+    {
+        return $this->field($field)->registerFormatter($class);
     }
 
     public function defaultValue($field)
@@ -476,6 +539,18 @@ class PlDBTableEntry extends PlAbstractIterable
         }
         $this->autoFetch = $autoFetch;
         $this->changed = new PlFlagSet();
+    }
+
+    /** Register a custom formatter for a field.
+     *
+     * A formatter can be used to perform on-the-fly conversion from db storage to a user-friendly format.
+     * For example, if you have a textual field that contain json, you can use a JSonFieldFormatter on this
+     * field to perform automatic decoding when reading from the database (or when assigning the field)
+     * and automatic json_encoding when storing the object back to the db.
+     */
+    protected function registerFieldFormatter($field, $formatterClass)
+    {
+        $this->table->registerFieldFormatter($field, $formatterClass);
     }
 
     /** This hook is called when the entry is going to be updated in the db.
