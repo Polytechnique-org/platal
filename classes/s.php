@@ -56,8 +56,8 @@ class S
 
     public static function i($key, $default = 0)
     {
-        $i = S::v($key, $default);
-        return is_numeric($i) ? intval($i) : $default;
+        $i = to_integer(S::v($key, $default));
+        return $i === false ? $default : $i;
     }
 
     public static function t($key, $default = '')

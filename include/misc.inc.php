@@ -380,6 +380,23 @@ function ends_with($string, $suffix, $caseSensitive = true)
     }
 }
 
+/** Check if the input data can be seen as an integer.
+ */
+function can_convert_to_integer($data)
+{
+    return is_int($data) || ctype_digit($data);
+}
+
+/** Interpret the input data as an integer or return false.
+ */
+function to_integer($data)
+{
+    if (!can_convert_to_integer($data)) {
+        return false;
+    }
+    return intval($data);
+}
+
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

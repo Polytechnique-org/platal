@@ -67,8 +67,8 @@ class Env
 
     public static function i($key, $default = 0)
     {
-        $i = Env::_get($key, $default);
-        return is_numeric($i) ? intval($i) : $default;
+        $i = to_integer(Env::_get($key, $default));
+        return $i === false ? $default : $i;
     }
 
     public static function l(array $keys)
@@ -125,8 +125,8 @@ class Post
 
     public static function i($key, $default = 0)
     {
-        $i = Post::_get($key, $default);
-        return is_numeric($i) ? intval($i) : $default;
+        $i = to_integer(Post::_get($key, $default));
+        return $i === false ? $default : $i;
     }
 
      public static function l(array $keys)
@@ -183,8 +183,8 @@ class Get
 
     public static function i($key, $default = 0)
     {
-        $i = Get::_get($key, $default);
-        return is_numeric($i) ? intval($i) : $default;
+        $i = to_integer(Get::_get($key, $default));
+        return $i === false ? $default : $i;
     }
 
     public static function l(array $keys)
@@ -258,8 +258,8 @@ class Cookie
 
     public static function i($key, $default = 0)
     {
-        $i = Cookie::_get($key, $default);
-        return is_numeric($i) ? intval($i) : $default;
+        $i = to_integer(Cookie::_get($key, $default));
+        return $i === false ? $default : $i;
     }
 
     public static function l(array $keys)

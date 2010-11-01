@@ -79,8 +79,8 @@ class PlDict
 
     public function i($key, $default = 0)
     {
-        $i = $this->_get($key, $default);
-        return (is_int($i) || ctype_digit($i)) ? intval($i) : $default;
+        $i = to_integer($this->_get($key, $default));
+        return $i === false ? $default : $i;
     }
 
     public function l(array $keys)
