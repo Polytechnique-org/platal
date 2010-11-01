@@ -166,8 +166,7 @@ class DateFieldFormatter implements PlDBTableFieldFormatter
 
     public function __construct(PlDBTableField $field, $date)
     {
-        $date = $value;
-        $this->datetime = make_datetime($value);
+        $this->datetime = make_datetime($date);
         if (is_null($this->datetime)) {
             throw new PlDBBadValueException($date, $field, 'value is expected to be a date/time, ' . $date . ' given');
         }
@@ -650,7 +649,7 @@ class PlDBTableEntry extends PlAbstractIterable
     public function copy(PlDBTableEntry $other)
     {
         Platal::assert($this->table == $other->table,
-                       "Trying to fill an entry of table {$this->table} with content of {$other->table}.");
+                       "Trying to fill an entry of table {$this->table->table} with content of {$other->table->table}.");
         $this->changed = $other->changed;
         $this->fetched = $other->fetched;
         $this->data    = $other->data;
