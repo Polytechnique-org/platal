@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS fusionax_anciens (
   INDEX (pid)
 ) ENGINE=InnoDB, CHARSET=utf8;
 
-LOAD DATA LOCAL INFILE '{?}Anciens.txt' INTO TABLE `fusionax_anciens` FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\r\n'
+LOAD DATA LOCAL INFILE '{?}Anciens.txt' INTO TABLE `fusionax_anciens` CHARACTER SET utf8 FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\r\n'
 (AN, ax_id, @login, @password, promotion_etude, @gpe_promo, Nom_patronymique, partic_patro, prenom, Nom_usuel, partic_nom,
   Nom_complet, @civilite, Code_nationalite, @type, corps_sortie, @StringDate_deces, grade, Mel_usage, Mel_publiable, @xxx, Mob_publiable,
   tel_mobile, @xxx, @xxx, @xxx, @xxx, @xxx, @xxx, @xxx, @X_M_D, @xxx, @xxx, @xxx, @xxx, @xxx, @xxx, @Type_adr,
