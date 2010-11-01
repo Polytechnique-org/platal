@@ -120,6 +120,23 @@ class PlCache
         return $backend->has($key, $type);
     }
 
+    /** Clear the cache.
+     */
+    private static function clear($type)
+    {
+        $backend = self::getBackend($type);
+        $backend->clear($type);
+    }
+
+
+    /** Clear all the cached data.
+     */
+    public static function clearAll()
+    {
+        self::clearGlobal();
+        self::clearSession();
+        self::clearLocal();
+    }
 
     /** Global data storage. Global data is independent from
      * the current session and can thus be shared by several
@@ -153,6 +170,11 @@ class PlCache
         return self::has($key, self::TIMER);
     }
 
+    public static function clearGlobal()
+    {
+        return self::clear(self::TIMER);
+    }
+
 
     /** Session data storage. Session data is session-dependent
      * and thus must not be shared between sessions but can
@@ -179,6 +201,11 @@ class PlCache
         return self::has($key, self::SESSION);
     }
 
+    public static function clearSession()
+    {
+        return self::clear(self::SESSION);
+    }
+
 
     /** Script local data storage. This stores data that
      * expires at the end of the execution of the current
@@ -203,6 +230,11 @@ class PlCache
     public static function hasLocal($key)
     {
         return self::has($key, self::SCRIPT);
+    }
+
+    public static function clearLocal()
+    {
+        return self::clear(self::SCRIPT);
     }
 }
 
@@ -244,6 +276,10 @@ interface PlCacheBackend
     /** Remove the entry from the cache.
      */
     public function invalidate($key, $type);
+
+    /** Remove all the entries of the given type from the cache.
+     */
+    public function clear($type);
 }
 
 class PlDummyCache implements PlCacheBackend
@@ -267,6 +303,10 @@ class PlDummyCache implements PlCacheBackend
     }
 
     public function invalidate($key, $type)
+    {
+    }
+
+    public function clear($type)
     {
     }
 }
@@ -359,6 +399,11 @@ class PlStaticCache extends PlArrayCache
     {
         unset($this->data[$key]);
     }
+
+    public function clear($type)
+    {
+        $this->data = array();
+    }
 }
 
 class PlSessionCache extends PlArrayCache
@@ -367,9 +412,14 @@ class PlSessionCache extends PlArrayCache
     {
     }
 
+    private function prefix($type)
+    {
+        return '__cache_' . $type . '_';
+    }
+
     protected function arrayKey($key, $type)
     {
-        return '__cache_' . $key;
+        return $this->prefix($type) . $key;
     }
 
     public function get($key, $type, $callback, $cbargs, $expire)
@@ -387,6 +437,16 @@ class PlSessionCache extends PlArrayCache
     public function invalidate($key, $type)
     {
         S::kill($this->arrayKey($key, $type));
+    }
+
+    public function clear($type)
+    {
+        $prefix = $this->prefix($type);
+        foreach ($_SESSION as $key=>$value) {
+            if (starts_with($key, $prefix)) {
+                unset($_SESSION[$key]);
+            }
+        }
     }
 }
 
@@ -435,6 +495,11 @@ class PlMemcacheCache implements PlCacheBackend
     public function invalidate($key, $type)
     {
         return $this->context->delete($key);
+    }
+
+    public function clear($type)
+    {
+        return $this->context->flush();
     }
 }
 
