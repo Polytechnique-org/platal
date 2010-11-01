@@ -164,6 +164,7 @@ abstract class PlPage extends Smarty
         if (!$globals->debug) {
             error_reporting(0);
             $this->display($skin);
+            pl_print_errors(true);
             exit;
         }
 
@@ -370,9 +371,8 @@ abstract class PlPage extends Smarty
     protected function jsonDisplay()
     {
         pl_content_headers("text/javascript");
-        if (!empty($GLOBALS['pl_errors'])) {
-            $this->jsonAssign('pl_errors', join("\n", $GLOBALS['pl_errors']));
-            $GLOBALS['pl_errors'] = array();
+        if (!empty(PlBacktrace::$bt)) {
+            $this->jsonAssign('pl_backtraces', PlBacktrace::$bt);
         }
         array_walk_recursive($this->_jsonVars, "escape_XDB");
         $jsonbegin = Env::v('jsonBegin');
@@ -388,6 +388,17 @@ abstract class PlPage extends Smarty
         exit;
     }
     // }}}
+
+    public function runJSon()
+    {
+        pl_content_headers("text/javascript");
+        if (!empty(PlBacktrace::$bt)) {
+            $this->jsonAssign('pl_backtraces', PlBacktrace::$bt);
+        }
+        echo json_encode($this->_jsonVars);
+        exit;
+    }
+
     // {{{ function jsonAssign
     public function jsonAssign($var, $value)
     {

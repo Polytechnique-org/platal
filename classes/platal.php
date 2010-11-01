@@ -23,6 +23,7 @@ define('PL_DO_AUTH',   300);
 define('PL_FORBIDDEN', 403);
 define('PL_NOT_FOUND', 404);
 define('PL_WIKI',      500);
+define('PL_JSON',      501);
 
 abstract class PlHook
 {
@@ -361,7 +362,8 @@ abstract class Platal
 
         try {
             $page->assign('platal', $this);
-            switch ($this->call_hook($page)) {
+            $res = $this->call_hook($page);
+            switch ($res) {
               case PL_FORBIDDEN:
                 $this->mods['core']->handler_403($page);
                 break;
@@ -385,7 +387,11 @@ abstract class Platal
         }
 
         $page->assign('platal', $this);
-        $page->run();
+        if ($res == PL_JSON) {
+            $page->runJSon();
+        } else {
+            $page->run();
+        }
     }
 
     public function error403()

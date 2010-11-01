@@ -65,6 +65,7 @@ function pl_core_include($file)
 
 function pl_error_handler($errno, $errstr, $errfile, $errline)
 {
+
     static $errortype;
     if (!error_reporting())
         return;
@@ -93,23 +94,15 @@ function pl_error_handler($errno, $errstr, $errfile, $errline)
             return;
         }
     }
-
     $type = isset($errortype[$errno]) ? $errortype[$errno] : $errno;
-    $errstr = utf8_encode(htmlentities($errstr));
-    if (php_sapi_name() == 'cli') {
-        $GLOBALS['pl_errors'] = "$type: $errstr\n  $errfile:$errline\n";
-    } else {
-        $GLOBALS['pl_errors'][] =
-            "<div class='phperror'>".
-            "<strong>{$type}</strong> <em>$errstr</em><br />".
-            "<tt>$errfile : $errline</tt>".
-            "</div>";
+    $error = strpos($type, 'Warning') !== false || strpos($type, 'Error') !==false;
+    if (!isset(PlBacktrace::$bt['PHP Errors'])) {
+        new PlBacktrace('PHP Errors');
     }
-}
-
-function pl_clear_errors()
-{
-    unset($GLOBALS['pl_errors']);
+    PlBacktrace::$bt['PHP Errors']->newEvent("$type: $errstr",
+                                             0, $error ? $errstr : null,
+                                             array(array('file' => $errfile,
+                                                         'line' => $errline)));
 }
 
 function pl_dump_env()
@@ -122,15 +115,27 @@ function pl_dump_env()
     echo "</pre></div>";
 }
 
-function pl_print_errors()
+function pl_print_errors($html = false)
 {
-    if (!empty($GLOBALS['pl_errors'])) {
-        print join("\n", $GLOBALS['pl_errors']);
+    if (!isset(PlBacktrace::$bt['PHP Errors'])) {
+        return;
+    }
+    foreach (PlBacktrace::$bt['PHP Errors']->traces as $trace) {
+        if ($html) {
+            echo "<pre>";
+        }
+        print "{$trace['action']}\n";
+        print "  {$trace['data'][0]['file']}: {$trace['data'][0]['line']}\n";
+        if ($html) {
+            echo "</pre>";
+        }
     }
 }
 
 set_error_handler('pl_error_handler', E_ALL | E_STRICT);
-register_shutdown_function('pl_print_errors');
+if (php_sapi_name() == 'cli') {
+    register_shutdown_function('pl_print_errors');
+}
 //register_shutdown_function('pl_dump_env');
 
 /** Check if the string is utf8
