@@ -74,6 +74,7 @@ class PlDBTableField
     public $defaultValue;
     public $autoIncrement;
 
+    private $validator;
     private $formatter;
 
     public function __construct(array $column)
@@ -104,6 +105,11 @@ class PlDBTableField
         $this->formatter = $class;
     }
 
+    public function registerValidator($class)
+    {
+        $this->validator = $class;
+    }
+
     public function format($value, $badNullFallbackToDefault = false)
     {
         if (is_null($value)) {
@@ -114,7 +120,12 @@ class PlDBTableField
                 return $this->defaultValue;
             }
             throw new PlDBBadValueException($value, $this, 'null not allowed');
-        } else if (!is_null($this->formatter)) {
+        }
+        if (!is_null($this->validator)) {
+            $class = $this->validator;
+            new $class($this, $value);
+        }
+        if (!is_null($this->formatter)) {
             $class = $this->formatter;
             $value = new $class($this, $value);
         } else if ($this->type == 'enum') {
@@ -154,9 +165,13 @@ class PlDBTableField
     }
 }
 
-interface PlDBTableFieldFormatter extends XDBFormat
+interface PlDBTableFieldValidator
 {
     public function __construct(PlDBTableField $field, $value);
+}
+
+interface PlDBTableFieldFormatter extends PlDBTableFieldValidator, XDBFormat
+{
 }
 
 class DateFieldFormatter implements PlDBTableFieldFormatter
@@ -324,6 +339,12 @@ class PlDBTable
     {
         return $this->field($field)->registerFormatter($class);
     }
+
+    public function registerFieldValidator($field, $class)
+    {
+        return $this->field($field)->registerValidator($class);
+    }
+
 
     public function defaultValue($field)
     {
@@ -550,6 +571,16 @@ class PlDBTableEntry extends PlAbstractIterable
     protected function registerFieldFormatter($field, $formatterClass)
     {
         $this->table->registerFieldFormatter($field, $formatterClass);
+    }
+
+    /** Register a custom validator for a field.
+     *
+     * A validator perform a pre-filter on the value of a field. As opposed to the formatters, it does
+     * not affects how the value is stored in the database.
+     */
+    protected function registerFieldValidator($field, $validatorClass)
+    {
+        $this->table->registerFieldValidator($field, $validatorClass);
     }
 
     /** This hook is called when the entry is going to be updated in the db.
