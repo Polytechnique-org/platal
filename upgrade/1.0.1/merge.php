@@ -264,6 +264,9 @@ echo "Addresses inclusions finished.\n";
 
 // Retrieves education from AX database. This is the hardest part since AX only kept education as an unformated string.
 echo "Starts educations inclusions.\n";
+// Deletes empty educations.
+XDB::rawExecute("DELETE FROM  fusionax_formations
+                       WHERE  Intitule_formation = '' AND Intitule_diplome = '' AND Descr_formation = ''");
 // Insert ids into fusionax_formations to prevent many joins.
 XDB::rawExecute('UPDATE  fusionax_formations           AS f
               LEFT JOIN  profile_education_enum        AS pe ON (pe.name = f.Intitule_formation)

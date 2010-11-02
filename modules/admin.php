@@ -757,7 +757,7 @@ class AdminModule extends PLModule
             return false;
         }
 
-        array_map('trim', $infos);
+        $infos = array_map('trim', $infos);
         $hrid = self::getHrid($infos[1], $infos[0], $promo);
         $res1 = XDB::query('SELECT  COUNT(*)
                               FROM  accounts
@@ -788,7 +788,9 @@ class AdminModule extends PLModule
 
     private static function formatBirthDate($birthDate)
     {
-        return date("Y-m-d", strtotime($birthDate));
+        // strtotime believes dd/mm/yyyy to be an US date (i.e mm/dd/yyyy), and
+        // dd-mm-yyyy to be a normal date (i.e dd-mm-yyyy)...
+        return date("Y-m-d", strtotime(str_replace('/', '-', $birthDate)));
     }
 
     function handler_add_accounts(&$page, $action = null, $promo = null)

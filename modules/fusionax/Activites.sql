@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `fusionax_activites` (
   INDEX (jobid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-LOAD DATA LOCAL INFILE '{?}Activites.txt' INTO TABLE `fusionax_activites` FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\r\n'
+LOAD DATA LOCAL INFILE '{?}Activites.txt' INTO TABLE `fusionax_activites` CHARACTER SET utf8 FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\r\n'
 (AC, ax_id, Code_etab, Raison_sociale, Libelle_fonctio, Annuaire,
 @Ligne1, @Ligne2, @Ligne3, @code_postal, @ville, @zip_cedex, @etat_distr, @pays, @tel, @fax, @StringDate_maj);
 

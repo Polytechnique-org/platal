@@ -20,26 +20,30 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h2>Fusion des annuaires X.org - AX</h2>
+<h2><a href="fusionax">Fusion des annuaires X.org - AX</a> / formations</h2>
 
 <p>
-  Aucune action n'est lancée depuis cette page. Il faut préalablement aller sur
-  les liens suivants pour effectuer les différentes taches.
+  Il y a {$missingEducationCount} université{if $missingEducationCount > 1}s{/if} manquante{if $missingEducationCount > 1}s{/if} dans
+  notre base{if $missingEducationCount eq 0}.</p>{else}&nbsp;:
 </p>
-
 <ul>
-  <li>Voir la <a href="Fusion">documentation</a></li>
-  <li><a href="fusionax/import">Import de la base AX</a></li>
-  <li>Mise en <a href="fusionax/ids">correspondance simple</a></li>
-  <li>Création des <a href="fusionax/view">VIEW annexes nécessaires aux corrélations</a></li>
-  <li>Corrélation des <a href="fusionax/deceased">dates de décès</a></li>
-  <li>Corrélation des <a href="fusionax/promo">promotions</a></li>
-  <li>Corrélation des <a href="fusionax/names">noms</a></li>
-  <li>Corrélation des <a href="fusionax/edu">formations</a></li>
-</ul>
+  {iterate from=$missingEducation item=education}<li>{$education.Intitule_diplome}</li>{/iterate}
+</ul>{/if}
 
 <p>
-  Une fois ces vérifications faites, un root peut lancer le script merge.php dans le répertoire upgrade/1.0.1/
+  Il y a {$missingDegreeCount} diplôme{if $missingDegreeCount > 1}s{/if} manquant{if $missingDegreeCount > 1}s{/if} dans
+  notre base{if $missingDegreeCount eq 0}.</p>{else}&nbsp;:
 </p>
+<ul>
+  {iterate from=$missingDegree item=degree}<li>{$degree.Intitule_formation}</li>{/iterate}
+</ul>{/if}
+
+<p>
+  Il y a {$missingCoupleCount} couple{if $missingCoupleCount > 1}s{/if} manquant{if $missingCoupleCount > 1}s{/if} dans
+  notre base{if $missingCoupleCount eq 0}.</p>{else}&nbsp;:
+</p>
+<ul>
+  {iterate from=$missingCouple item=couple}<li>{$couple.edu}, {$couple.degree} ({$couple.eduid}, {$couple.degreeid})</li>{/iterate}
+</ul>{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

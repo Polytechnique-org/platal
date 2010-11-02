@@ -161,13 +161,21 @@ function prepareType(id)
     var edu    = $('.edu_' + id).find("[name='edus[" + id + "][eduid]']").val() - 1;
     var sel    = $('.edu_' + id).find('[name=edu_' + id + '_tmp]').val();
     var html   = '';
-    var length = educationDegree[edu].length;
+    if (educationDegree[edu]) {
+        var length = educationDegree[edu].length;
+    } else {
+        var length = 0;
+    }
     for (i = 0; i < length; ++i) {
         html += '<option value="' + educationDegree[edu][i] + '"';
         if (sel == educationDegree[edu][i]) {
             html += ' selected="selected"';
         }
         html += '>' + educationDegreeName[educationDegree[edu][i] - 1] + '</option>';
+    }
+    // XXX: to be removed once SQL table profile_merge_issues is.
+    if (sel != '' && html == '') {
+        html += '<option value="' + sel + '" selected="selected">' + educationDegreeName[sel - 1] + '</option>';
     }
     $('.edu_' + id).find("[name='edus[" + id + "][degreeid]']").html(html);
 }
