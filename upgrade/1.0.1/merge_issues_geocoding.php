@@ -18,7 +18,6 @@ $it = XDB::rawIterator('SELECT  *
                       ORDER BY  pid, jobid, type, id');
 $total = $it->total();
 $i = 0;
-$j = 0;
 printf("\r%u / %u",  $i, $total);
 $pid = 0;
 $jobid = 0;
@@ -34,13 +33,8 @@ while ($item = $it->next()) {
     }
 
     ++$i;
-    ++$j;
-    if ($j == 10) {
-        $j = 0;
-        printf("\r%u / %u",  $i, $total);
-    }
+    printf("\r%u / %u",  $i, $total);
 }
-printf("\r%u / %u",  $i, $total);
 print "\nGeocoding done.\n\n";
 print "That's all folks!\n";
 
