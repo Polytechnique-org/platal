@@ -28,7 +28,7 @@ while ($item = $it->next()) {
         printf("\r%u / %u",  $i, $total);
     }
 }
-printf("\r%u / %u",  $i, $n);
+printf("\r%u / %u",  $i, $total);
 print "\nFormating done.\n\n";
 
 print "Deletes duplicated phones. (2/2)\n";
@@ -41,17 +41,14 @@ $pids = XDB::rawFetchColumn("SELECT  DISTINCT(pid)
 $total = count($pids);
 $done = 0;
 $aux = 0;
+$deleted = 0;
 $phones = array();
 $duplicates = array();
 foreach ($pids as $pid) {
     $count = 0;
-    $it = XDB::iterator("SELECT  search_tel AS search, display_tel AS display, comment, link_id,
-                                 tel_type AS type, link_type, tel_id AS id, pid, pub
-                           FROM  profile_phones
-                          WHERE  link_type = 'user' AND pid = {?}
-                       ORDER BY  tel_id", $pid);
+    Phone::iterate(array($pid), array(Phone::LINK_PROFILE), array(0));
     while ($item = $it->next()) {
-        $phones[] = new Phone($item);
+        $phones[] = $item;
         ++$count;
     }
     for ($i = 0; $i < $count; ++$i) {
@@ -65,6 +62,7 @@ foreach ($pids as $pid) {
         unset($phones[$key]);
     }
     if (count($phones) != $count) {
+        $deleted += ($count - count($phones));
         Phone::deletePhones($pid, 'user');
         $id = 0;
         foreach ($phones as $phone) {
@@ -87,7 +85,9 @@ foreach ($pids as $pid) {
     }
 }
 printf("\r%u / %u",  $done, $total);
-print "\n\nThat's all folks!\n";
+print "\n$deleted phones deleted.\n\n";
+
+print "That's all folks!\n";
 
 /* vim:set et sw=4 sts=4 ts=4: */
 ?>
