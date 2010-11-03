@@ -209,18 +209,19 @@ abstract class MassMailer
         $emailsCount = 0;
 
         while (true) {
+            $sent = array();
             $users = User::getBulkUsersWithUIDs(XDB::fetchColumn($query));
             if (count($users) == 0) {
                 return $emailsCount;
             }
             foreach ($users as $user) {
-                $sent[] = XDB::format('uid = {?}', $user->id());
+                $sent[] = $user->id();
                 $this->sendTo($user, $hash);
                 ++$emailsCount;
             }
             XDB::execute("UPDATE  {$this->_subscriptionTable}
                              SET  last = {?}
-                           WHERE " . implode(' OR ', $sent), $this->_id);
+                           WHERE  uid IN {?}", $this->_id, $sent);
 
             sleep(60);
         }
