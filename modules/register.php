@@ -452,10 +452,10 @@ class RegisterModule extends PLModule
         $market = array();
         while (list($senderid, $maketingEmails, $lastDate) = $res->next()) {
             $sender = User::getWithUID($senderid);
-            $market[] = " - par $sender->fullName() sur $maketingEmails (le plus récemment le $lastDate)";
+            $market[] = " - par {$sender->fullName()} sur $maketingEmails (le plus récemment le $lastDate)";
             $mymail = new PlMailer('register/marketer.mail.tpl');
             $mymail->setSubject("$firstname $lastname s'est inscrit à Polytechnique.org !");
-            $mymail->addTo("\"$sender->fullName()\" <$sender->bestEmail()@{$globals->mail->domain}>");
+            $mymail->addTo("\"{$sender->fullName()}\" <{$sender->bestEmail()}@{$globals->mail->domain}>");
             $mymail->assign('sender', $sender);
             $mymail->assign('firstname', $firstname);
             $mymail->assign('lastname', $lastname);
