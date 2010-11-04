@@ -449,6 +449,7 @@ class RegisterModule extends PLModule
                          SET  success = NOW()
                        WHERE  uid = {?}", $uid);
 
+        $market = array();
         while (list($senderid, $maketingEmails, $lastDate) = $res->next()) {
             $sender = User::getWithUID($senderid);
             $market[] = " - par $sender->fullName() sur $maketingEmails (le plus récemment le $lastDate)";
