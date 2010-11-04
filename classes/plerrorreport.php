@@ -74,7 +74,12 @@ class PlErrorReportIterator implements PlIterator
 
     public function __construct()
     {
-        $this->file = fopen(Platal::globals()->spoolroot . '/spool/tmp/site_errors', 'r');
+        $file = Platal::globals()->spoolroot . '/spool/tmp/site_errors';
+        if (file_exists($file)) {
+            $this->file = fopen($file, 'r');
+        } else {
+            $this->file = null;
+        }
     }
 
     public function next()
