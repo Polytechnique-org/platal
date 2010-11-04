@@ -182,11 +182,11 @@ class CoreModule extends PLModule
     function handler_siteerror($page) {
         global $globals;
         $page->coreTpl('site_errors.tpl');
-        $page->assign('errors', PlErrorReport::iterate());
         if (Post::has('clear')) {
             PlErrorReport::clear();
             $page->trigSuccess("Erreurs effacées.");
         }
+        $page->assign('errors', PlErrorReport::iterate());
     }
 }
 
