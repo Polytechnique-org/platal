@@ -101,7 +101,7 @@
   {if $name eq "email"}<td></td>{/if}
   <td>
     <span class="{$new}" style="display: none">
-      <input type="text" maxlength="60" {if $error}class="error" value="{$val}"{/if} name="{if (($name neq "email_directory")
+      <input type="text" maxlength="255" {if $error}class="error" value="{$val}"{/if} name="{if (($name neq "email_directory")
       && ($name neq "email"))}jobs[{$i}][{$prefix}email_new]{else}{$name}_new{/if}"/>
     </span>
     <script type="text/javascript">//<![CDATA[
