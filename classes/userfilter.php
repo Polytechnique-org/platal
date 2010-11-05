@@ -24,8 +24,8 @@
  * CONDITIONS
  ******************/
 
-// {{{ interface UserFilterCondition
-/** This interface describe objects which filter users based
+// {{{ abstract class UserFilterCondition
+/** This class describe objects which filter users based
  *      on various parameters.
  * The parameters of the filter must be given to the constructor.
  * The buildCondition function is called by UserFilter when
@@ -34,15 +34,19 @@
  *     adequate joins. It must return the 'WHERE' condition to use
  *     with the filter.
  */
-interface UserFilterCondition extends PlFilterCondition
+abstract class UserFilterCondition implements PlFilterCondition
 {
+    public function export()
+    {
+        throw new Exception("This class is not exportable");
+    }
 }
 // }}}
 
 // {{{ class UFC_HasProfile
 /** Filters users who have a profile
  */
-class UFC_HasProfile implements UserFilterCondition
+class UFC_HasProfile extends UserFilterCondition
 {
     public function buildCondition(PlFilter &$uf)
     {
@@ -55,7 +59,7 @@ class UFC_HasProfile implements UserFilterCondition
 // {{{ class UFC_AccountType
 /** Filters users who have one of the given account types
  */
-class UFC_AccountType implements UserFilterCondition
+class UFC_AccountType extends UserFilterCondition
 {
     private $types;
 
@@ -75,7 +79,7 @@ class UFC_AccountType implements UserFilterCondition
 // {{{ class UFC_AccountPerm
 /** Filters users who have one of the given permissions
  */
-class UFC_AccountPerm implements UserFilterCondition
+class UFC_AccountPerm extends UserFilterCondition
 {
     private $perms;
 
@@ -106,7 +110,7 @@ class UFC_AccountPerm implements UserFilterCondition
 /** Filters users based on their hruid
  * @param $val Either an hruid, or a list of those
  */
-class UFC_Hruid implements UserFilterCondition
+class UFC_Hruid extends UserFilterCondition
 {
     private $hruids;
 
@@ -127,7 +131,7 @@ class UFC_Hruid implements UserFilterCondition
 /** Filters users based on the hrpid of their profiles
  * @param $val Either an hrpid, or a list of those
  */
-class UFC_Hrpid implements UserFilterCondition
+class UFC_Hrpid extends UserFilterCondition
 {
     private $hrpids;
 
@@ -148,7 +152,7 @@ class UFC_Hrpid implements UserFilterCondition
 /** Filters users based on one of their last IPs
  * @param $ip IP from which connection are checked
  */
-class UFC_Ip implements UserFilterCondition
+class UFC_Ip extends UserFilterCondition
 {
     private $ip;
 
@@ -167,7 +171,7 @@ class UFC_Ip implements UserFilterCondition
 // }}}
 
 // {{{ class UFC_Comment
-class UFC_Comment implements UserFilterCondition
+class UFC_Comment extends UserFilterCondition
 {
     private $text;
 
@@ -190,7 +194,7 @@ class UFC_Comment implements UserFilterCondition
  * @param $grade Formation on which to restrict, UserFilter::DISPLAY for "any formation"
  * @param $promo Promotion on which the filter is based
  */
-class UFC_Promo implements UserFilterCondition
+class UFC_Promo extends UserFilterCondition
 {
 
     private $grade;
@@ -230,7 +234,7 @@ class UFC_Promo implements UserFilterCondition
  * @param type Parameter type (Xorg, AX, School)
  * @param value School id value
  */
-class UFC_SchoolId implements UserFilterCondition
+class UFC_SchoolId extends UserFilterCondition
 {
     const AX     = 'ax';
     const Xorg   = 'xorg';
@@ -271,7 +275,7 @@ class UFC_SchoolId implements UserFilterCondition
 /** Filters users by formation
  * @param $val The formation to search (either ID or array of IDs)
  */
-class UFC_EducationSchool implements UserFilterCondition
+class UFC_EducationSchool extends UserFilterCondition
 {
     private $val;
 
@@ -289,7 +293,7 @@ class UFC_EducationSchool implements UserFilterCondition
 // }}}
 
 // {{{ class UFC_EducationDegree
-class UFC_EducationDegree implements UserFilterCondition
+class UFC_EducationDegree extends UserFilterCondition
 {
     private $diploma;
 
@@ -307,7 +311,7 @@ class UFC_EducationDegree implements UserFilterCondition
 // }}}
 
 // {{{ class UFC_EducationField
-class UFC_EducationField implements UserFilterCondition
+class UFC_EducationField extends UserFilterCondition
 {
     private $val;
 
@@ -330,7 +334,7 @@ class UFC_EducationField implements UserFilterCondition
  * @param $text Text on which to filter
  * @param $mode Flag indicating search type (prefix, suffix, with particule...)
  */
-class UFC_Name implements UserFilterCondition
+class UFC_Name extends UserFilterCondition
 {
     const EXACT    = XDB::WILDCARD_EXACT;    // 0x000
     const PREFIX   = XDB::WILDCARD_PREFIX;   // 0x001
@@ -382,7 +386,7 @@ class UFC_Name implements UserFilterCondition
  * @param $flags Flags the tokens must have (e.g 'public' for public search)
  * @param $soundex (bool) Whether those tokens are fulltext or soundex
  */
-class UFC_NameTokens implements UserFilterCondition
+class UFC_NameTokens extends UserFilterCondition
 {
     /* Flags */
     const FLAG_PUBLIC = 'public';
@@ -432,7 +436,7 @@ class UFC_NameTokens implements UserFilterCondition
 // }}}
 
 // {{{ class UFC_Nationality
-class UFC_Nationality implements UserFilterCondition
+class UFC_Nationality extends UserFilterCondition
 {
     private $val;
 
@@ -460,7 +464,7 @@ class UFC_Nationality implements UserFilterCondition
  * @param $comparison Comparison operator
  * @param $date Date to which death date should be compared (DateTime object, string or timestamp)
  */
-class UFC_Dead implements UserFilterCondition
+class UFC_Dead extends UserFilterCondition
 {
     private $comparison;
     private $date;
@@ -489,7 +493,7 @@ class UFC_Dead implements UserFilterCondition
  * @param $comparison Comparison operator
  * @param $date Date to which users registration date should be compared
  */
-class UFC_Registered implements UserFilterCondition
+class UFC_Registered extends UserFilterCondition
 {
     private $active;
     private $comparison;
@@ -523,7 +527,7 @@ class UFC_Registered implements UserFilterCondition
  * @param $comparison Comparison operator
  * @param $date Date to which profile update date must be compared
  */
-class UFC_ProfileUpdated implements UserFilterCondition
+class UFC_ProfileUpdated extends UserFilterCondition
 {
     private $comparison;
     private $date;
@@ -547,7 +551,7 @@ class UFC_ProfileUpdated implements UserFilterCondition
  * @param $comparison Comparison operator
  * @param $date Date to which users next birthday date should be compared
  */
-class UFC_Birthday implements UserFilterCondition
+class UFC_Birthday extends UserFilterCondition
 {
     private $comparison;
     private $date;
@@ -570,7 +574,7 @@ class UFC_Birthday implements UserFilterCondition
 /** Filters users based on sex
  * @parm $sex One of User::GENDER_MALE or User::GENDER_FEMALE, for selecting users
  */
-class UFC_Sex implements UserFilterCondition
+class UFC_Sex extends UserFilterCondition
 {
     private $sex;
     public function __construct($sex)
@@ -595,7 +599,7 @@ class UFC_Sex implements UserFilterCondition
  * @param $group Group whose members we are selecting
  * @param $anim Whether to restrict selection to animators of that group
  */
-class UFC_Group implements UserFilterCondition
+class UFC_Group extends UserFilterCondition
 {
     private $group;
     private $anim;
@@ -625,7 +629,7 @@ class UFC_Group implements UserFilterCondition
 /** Selects users based on their belonging to a given (list of) binet
  * @param $binet either a binet_id or an array of binet_ids
  */
-class UFC_Binet implements UserFilterCondition
+class UFC_Binet extends UserFilterCondition
 {
     private $val;
 
@@ -650,7 +654,7 @@ class UFC_Binet implements UserFilterCondition
 /** Selects users based on section
  * @param $section ID of the section
  */
-class UFC_Section implements UserFilterCondition
+class UFC_Section extends UserFilterCondition
 {
     private $section;
 
@@ -675,7 +679,7 @@ class UFC_Section implements UserFilterCondition
 /** Filters users based on an email or a list of emails
  * @param $emails List of emails whose owner must be selected
  */
-class UFC_Email implements UserFilterCondition
+class UFC_Email extends UserFilterCondition
 {
     private $emails;
     public function __construct()
@@ -723,7 +727,7 @@ class UFC_Email implements UserFilterCondition
 // }}}
 
 // {{{ class UFC_Address
-abstract class UFC_Address implements UserFilterCondition
+abstract class UFC_Address extends UserFilterCondition
 {
     /** Valid address type ('hq' is reserved for company addresses)
      */
@@ -919,7 +923,7 @@ class UFC_AddressField extends UFC_Address
  * @param $corps Corps we are looking for (abbreviation)
  * @param $type Whether we search for original or current corps
  */
-class UFC_Corps implements UserFilterCondition
+class UFC_Corps extends UserFilterCondition
 {
     const CURRENT   = 1;
     const ORIGIN    = 2;
@@ -952,7 +956,7 @@ class UFC_Corps implements UserFilterCondition
 /** Filters users based on their rank in the corps
  * @param $rank Rank we are looking for (abbreviation)
  */
-class UFC_Corps_Rank implements UserFilterCondition
+class UFC_Corps_Rank extends UserFilterCondition
 {
     private $rank;
     public function __construct($rank)
@@ -981,7 +985,7 @@ class UFC_Corps_Rank implements UserFilterCondition
  * @param $type The field being searched (self::JOBID, self::JOBNAME or self::JOBACRONYM)
  * @param $value The searched value
  */
-class UFC_Job_Company implements UserFilterCondition
+class UFC_Job_Company extends UserFilterCondition
 {
     const JOBID = 'id';
     const JOBNAME = 'name';
@@ -1020,7 +1024,7 @@ class UFC_Job_Company implements UserFilterCondition
  * jobs.
  * @param $val The ID of the job term, or an array of such IDs
  */
-class UFC_Job_Terms implements UserFilterCondition
+class UFC_Job_Terms extends UserFilterCondition
 {
     private $val;
 
@@ -1051,7 +1055,7 @@ class UFC_Job_Terms implements UserFilterCondition
  * @param $description The text being searched for
  * @param $fields The fields to search for (CV, user-defined)
  */
-class UFC_Job_Description implements UserFilterCondition
+class UFC_Job_Description extends UserFilterCondition
 {
 
     private $description;
@@ -1095,7 +1099,7 @@ class UFC_Job_Description implements UserFilterCondition
  * @param $type Type of network (-1 for any)
  * @param $value Value to search
  */
-class UFC_Networking implements UserFilterCondition
+class UFC_Networking extends UserFilterCondition
 {
     private $type;
     private $value;
@@ -1126,7 +1130,7 @@ class UFC_Networking implements UserFilterCondition
  * @param $phone_type Type of phone (fixed/mobile/fax)
  * @param $number Phone number
  */
-class UFC_Phone implements UserFilterCondition
+class UFC_Phone extends UserFilterCondition
 {
     const NUM_PRO   = 'pro';
     const NUM_USER  = 'user';
@@ -1175,7 +1179,7 @@ class UFC_Phone implements UserFilterCondition
  * @param $medal ID of the medal
  * @param $grade Grade of the medal (null for 'any')
  */
-class UFC_Medal implements UserFilterCondition
+class UFC_Medal extends UserFilterCondition
 {
     private $medal;
     private $grade;
@@ -1207,7 +1211,7 @@ class UFC_Medal implements UserFilterCondition
 // {{{ class UFC_Photo
 /** Filters profiles with photo
  */
-class UFC_Photo implements UserFilterCondition
+class UFC_Photo extends UserFilterCondition
 {
     public function buildCondition(PlFilter &$uf)
     {
@@ -1218,7 +1222,7 @@ class UFC_Photo implements UserFilterCondition
 // }}}
 
 // {{{ class UFC_Mentor
-class UFC_Mentor implements UserFilterCondition
+class UFC_Mentor extends UserFilterCondition
 {
     public function buildCondition(PlFilter &$uf)
     {
@@ -1233,7 +1237,7 @@ class UFC_Mentor implements UserFilterCondition
 /** Filters users by mentoring expertise
  * @param $expertise Domain of expertise
  */
-class UFC_Mentor_Expertise implements UserFilterCondition
+class UFC_Mentor_Expertise extends UserFilterCondition
 {
     private $expertise;
 
@@ -1254,7 +1258,7 @@ class UFC_Mentor_Expertise implements UserFilterCondition
 /** Filters users by mentoring country
  * @param $country Two-letters code of country being searched
  */
-class UFC_Mentor_Country implements UserFilterCondition
+class UFC_Mentor_Country extends UserFilterCondition
 {
     private $country;
 
@@ -1275,7 +1279,7 @@ class UFC_Mentor_Country implements UserFilterCondition
 /** Filters users based on the job terms they used in mentoring.
  * @param $val The ID of the job term, or an array of such IDs
  */
-class UFC_Mentor_Terms implements UserFilterCondition
+class UFC_Mentor_Terms extends UserFilterCondition
 {
     private $val;
 
@@ -1296,7 +1300,7 @@ class UFC_Mentor_Terms implements UserFilterCondition
 /** Filters users based on a relation toward a user
  * @param $user User to which searched users are related
  */
-abstract class UFC_UserRelated implements UserFilterCondition
+abstract class UFC_UserRelated extends UserFilterCondition
 {
     protected $user;
     public function __construct(PlUser &$user)
@@ -1386,7 +1390,7 @@ class UFC_WatchContact extends UFC_Contact
 /** Filters users using the hash generated
  * to send marketing emails to him.
  */
-class UFC_MarketingHash implements UserFilterCondition
+class UFC_MarketingHash extends UserFilterCondition
 {
     private $hash;
 
@@ -2045,6 +2049,18 @@ class UserFilter extends PlFilter
         }
         $this->sort[] = $sort;
         $this->orderby = null;
+    }
+
+    public function export()
+    {
+        $export = array('condition' => $this->root->export());
+        if (!empty($this->sort)) {
+            $export['sort'] = array();
+            foreach ($this->sort as $sort) {
+                $export['sort'][] = $sort->export();
+            }
+        }
+        return $export;
     }
 
     static public function getLegacy($promo_min, $promo_max)
