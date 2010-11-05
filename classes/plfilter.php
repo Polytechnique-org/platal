@@ -77,7 +77,7 @@ abstract class PlFilterOrder implements PlExportable
         $this->desc = $desc;
     }
 
-    public function buildSort(PlFilter &$pf)
+    public function buildSort(PlFilter $pf)
     {
         $sel = $this->getSortTokens($pf);
         $this->_tokens = $sel;
@@ -93,10 +93,10 @@ abstract class PlFilterOrder implements PlExportable
     }
 
     /** This function must return the tokens to use for ordering
-     * @param &$pf The PlFilter whose results must be ordered
+     * @param $pf The PlFilter whose results must be ordered
      * @return The name of the field to use for ordering results
      */
-    abstract protected function getSortTokens(PlFilter &$pf);
+    abstract protected function getSortTokens(PlFilter $pf);
 }
 // }}}
 
@@ -110,7 +110,7 @@ abstract class PlFilterGroupableOrder extends PlFilterOrder
      * the returned token will be used to group the values.
      * It will always be called AFTER getSortTokens().
      */
-    public function getGroupToken(PlFilter &$pf)
+    public function getGroupToken(PlFilter $pf)
     {
         return $this->_tokens;
     }
@@ -128,7 +128,7 @@ class PFO_Random extends PlFilterOrder
         $this->seed = $seed;
     }
 
-    protected function getSortTokens(PlFilter &$pf)
+    protected function getSortTokens(PlFilter $pf)
     {
         if ($this->seed == null) {
             return 'RAND()';
@@ -153,7 +153,7 @@ interface PlFilterCondition extends PlExportable
     const COND_TRUE  = 'TRUE';
     const COND_FALSE = 'FALSE';
 
-    public function buildCondition(PlFilter &$pf);
+    public function buildCondition(PlFilter $pf);
 }
 // }}}
 
@@ -162,16 +162,16 @@ abstract class PFC_OneChild implements PlFilterCondition
 {
     protected $child;
 
-    public function __construct(&$child = null)
+    public function __construct($child = null)
     {
         if (!is_null($child) && ($child instanceof PlFilterCondition)) {
             $this->setChild($child);
         }
     }
 
-    public function setChild(PlFilterCondition &$cond)
+    public function setChild(PlFilterCondition $cond)
     {
-        $this->child =& $cond;
+        $this->child = $cond;
     }
 
     public function export()
@@ -193,16 +193,16 @@ abstract class PFC_NChildren implements PlFilterCondition
 
     public function addChildren(array $conds)
     {
-        foreach ($conds as &$cond) {
+        foreach ($conds as $cond) {
             if (!is_null($cond) && ($cond instanceof PlFilterCondition)) {
                 $this->addChild($cond);
             }
         }
     }
 
-    public function addChild(PlFilterCondition &$cond)
+    public function addChild(PlFilterCondition $cond)
     {
-        $this->children[] =& $cond;
+        $this->children[] = $cond;
     }
 
     protected function catConds(array $cond, $op, $fallback)
@@ -229,7 +229,7 @@ abstract class PFC_NChildren implements PlFilterCondition
 // {{{ class PFC_True
 class PFC_True implements PlFilterCondition
 {
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         return self::COND_TRUE;
     }
@@ -244,7 +244,7 @@ class PFC_True implements PlFilterCondition
 // {{{ class PFC_False
 class PFC_False implements PlFilterCondition
 {
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         return self::COND_FALSE;
     }
@@ -259,7 +259,7 @@ class PFC_False implements PlFilterCondition
 // {{{ class PFC_Not
 class PFC_Not extends PFC_OneChild
 {
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $val = $this->child->buildCondition($uf);
         if ($val == self::COND_TRUE) {
@@ -283,14 +283,14 @@ class PFC_Not extends PFC_OneChild
 // {{{ class PFC_And
 class PFC_And extends PFC_NChildren
 {
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         if (empty($this->children)) {
             return self::COND_FALSE;
         } else {
             $true = self::COND_FALSE;
             $conds = array();
-            foreach ($this->children as &$child) {
+            foreach ($this->children as $child) {
                 $val = $child->buildCondition($uf);
                 if ($val == self::COND_TRUE) {
                     $true = self::COND_TRUE;
@@ -315,14 +315,14 @@ class PFC_And extends PFC_NChildren
 // {{{ class PFC_Or
 class PFC_Or extends PFC_NChildren
 {
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         if (empty($this->children)) {
             return self::COND_TRUE;
         } else {
             $true = self::COND_TRUE;
             $conds = array();
-            foreach ($this->children as &$child) {
+            foreach ($this->children as $child) {
                 $val = $child->buildCondition($uf);
                 if ($val == self::COND_TRUE) {
                     return self::COND_TRUE;
@@ -353,9 +353,9 @@ abstract class PlFilter implements PlExportable
      */
     public abstract function filter(array $objects, $limit = null);
 
-    public abstract function setCondition(PlFilterCondition &$cond);
+    public abstract function setCondition(PlFilterCondition $cond);
 
-    public abstract function addSort(PlFilterOrder &$sort);
+    public abstract function addSort(PlFilterOrder $sort);
 
     public abstract function getTotalCount();
 
