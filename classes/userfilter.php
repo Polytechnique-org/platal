@@ -48,7 +48,7 @@ abstract class UserFilterCondition implements PlFilterCondition
  */
 class UFC_HasProfile extends UserFilterCondition
 {
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $uf->requireProfiles();
         return '$PID IS NOT NULL';
@@ -68,7 +68,7 @@ class UFC_AccountType extends UserFilterCondition
         $this->types = pl_flatten(func_get_args());
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $uf->requireAccounts();
         return XDB::format('a.type IN {?}', $this->types);
@@ -88,7 +88,7 @@ class UFC_AccountPerm extends UserFilterCondition
         $this->perms = pl_flatten(func_get_args());
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $uf->requirePerms();
         $conds = array();
@@ -119,7 +119,7 @@ class UFC_Hruid extends UserFilterCondition
         $this->hruids = pl_flatten(func_get_args());
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $uf->requireAccounts();
         return XDB::format('a.hruid IN {?}', $this->hruids);
@@ -140,7 +140,7 @@ class UFC_Hrpid extends UserFilterCondition
         $this->hrpids = pl_flatten(func_get_args());
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $uf->requireProfiles();
         return XDB::format('p.hrpid IN {?}', $this->hrpids);
@@ -161,7 +161,7 @@ class UFC_Ip extends UserFilterCondition
         $this->ip = $ip;
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $sub = $uf->addLoggerFilter();
         $ip = ip_to_uint($this->ip);
@@ -180,7 +180,7 @@ class UFC_Comment extends UserFilterCondition
         $this->text = $text;
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $uf->requireProfiles();
         return $uf->getVisibilityCondition('p.freetext_pub') . ' AND p.freetext ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->text);
@@ -215,7 +215,7 @@ class UFC_Promo extends UserFilterCondition
         }
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         if ($this->grade == UserFilter::DISPLAY) {
             $sub = $uf->addDisplayFilter();
@@ -257,7 +257,7 @@ class UFC_SchoolId extends UserFilterCondition
         self::assertType($type);
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $uf->requireProfiles();
         $id = $this->id;
@@ -284,7 +284,7 @@ class UFC_EducationSchool extends UserFilterCondition
         $this->val = pl_flatten(func_get_args());
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $sub = $uf->addEducationFilter();
         return XDB::format('pe' . $sub . '.eduid IN {?}', $this->val);
@@ -302,7 +302,7 @@ class UFC_EducationDegree extends UserFilterCondition
         $this->diploma = pl_flatten(func_get_args());
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $sub = $uf->addEducationFilter();
         return XDB::format('pe' . $sub . '.degreeid IN {?}', $this->diploma);
@@ -320,7 +320,7 @@ class UFC_EducationField extends UserFilterCondition
         $this->val = pl_flatten(func_get_args());
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $sub = $uf->addEducationFilter();
         return XDB::format('pe' . $sub . '.fieldid IN {?}', $this->val);
@@ -354,13 +354,13 @@ class UFC_Name extends UserFilterCondition
         $this->mode = $mode;
     }
 
-    private function buildNameQuery($type, $variant, $where, UserFilter &$uf)
+    private function buildNameQuery($type, $variant, $where, UserFilter $uf)
     {
         $sub = $uf->addNameFilter($type, $variant);
         return str_replace('$ME', 'pn' . $sub, $where);
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $left = '$ME.name';
         if (($this->mode & self::PARTICLE) == self::PARTICLE) {
@@ -412,7 +412,7 @@ class UFC_NameTokens extends UserFilterCondition
         $this->exact = $exact;
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $conds = array();
         foreach ($this->tokens as $i => $token) {
@@ -445,7 +445,7 @@ class UFC_Nationality extends UserFilterCondition
         $this->val = pl_flatten(func_get_args());
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $uf->requireProfiles();
         $nat = XDB::formatArray($this->val);
@@ -475,7 +475,7 @@ class UFC_Dead extends UserFilterCondition
         $this->date = make_datetime($date);
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $uf->requireProfiles();
         $str = 'p.deathdate IS NOT NULL';
@@ -506,7 +506,7 @@ class UFC_Registered extends UserFilterCondition
         $this->date = make_datetime($date);
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $uf->requireAccounts();
         if ($this->active) {
@@ -538,7 +538,7 @@ class UFC_ProfileUpdated extends UserFilterCondition
         $this->date = $date;
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $uf->requireProfiles();
         return 'p.last_change ' . $this->comparison . XDB::format(' {?}', date('Y-m-d H:i:s', $this->date));
@@ -562,7 +562,7 @@ class UFC_Birthday extends UserFilterCondition
         $this->date = $date;
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $uf->requireProfiles();
         return 'p.next_birthday ' . $this->comparison . XDB::format(' {?}', date('Y-m-d', $this->date));
@@ -582,7 +582,7 @@ class UFC_Sex extends UserFilterCondition
         $this->sex = $sex;
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         if ($this->sex != User::GENDER_MALE && $this->sex != User::GENDER_FEMALE) {
             return self::COND_FALSE;
@@ -609,7 +609,7 @@ class UFC_Group extends UserFilterCondition
         $this->anim = $anim;
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         // Groups have AX visibility.
         if ($uf->getVisibilityLevel() == ProfileVisibility::VIS_PUBLIC) {
@@ -638,7 +638,7 @@ class UFC_Binet extends UserFilterCondition
         $this->val = pl_flatten(func_get_args());
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         // Binets are private.
         if ($uf->getVisibilityLevel() != ProfileVisibility::VIS_PRIVATE) {
@@ -663,7 +663,7 @@ class UFC_Section extends UserFilterCondition
         $this->section = pl_flatten(func_get_args());
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         // Sections are private.
         if ($uf->getVisibilityLevel() != ProfileVisibility::VIS_PRIVATE) {
@@ -687,7 +687,7 @@ class UFC_Email extends UserFilterCondition
         $this->emails = pl_flatten(func_get_args());
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $foreign = array();
         $virtual = array();
@@ -830,7 +830,7 @@ class UFC_AddressText extends UFC_Address
         return XDB::formatWildcards($this->textSearchMode, $txt);
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $sub = $uf->addAddressFilter();
         $conds = $this->initConds($sub, $uf->getVisibilityCondition($sub . '.pub'));
@@ -887,7 +887,7 @@ class UFC_AddressField extends UFC_Address
         $this->fieldtype = $fieldtype;
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $sub = $uf->addAddressFilter();
         $conds = $this->initConds($sub, $uf->getVisibilityCondition($sub . '.pub'));
@@ -937,7 +937,7 @@ class UFC_Corps extends UserFilterCondition
         $this->type  = $type;
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         /** Tables shortcuts:
          * pc for profile_corps,
@@ -964,7 +964,7 @@ class UFC_Corps_Rank extends UserFilterCondition
         $this->rank = $rank;
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         /** Tables shortcuts:
          * pc for profile_corps
@@ -1008,7 +1008,7 @@ class UFC_Job_Company extends UserFilterCondition
         }
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $sub = $uf->addJobCompanyFilter();
         $cond  = $sub . '.' . $this->type . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->value);
@@ -1036,7 +1036,7 @@ class UFC_Job_Terms extends UserFilterCondition
         $this->val = $val;
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $sub = $uf->addJobTermsFilter(count($this->val));
         $conditions = array();
@@ -1067,7 +1067,7 @@ class UFC_Job_Description extends UserFilterCondition
         $this->description = $description;
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $conds = array();
 
@@ -1110,7 +1110,7 @@ class UFC_Networking extends UserFilterCondition
         $this->value = $value;
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $sub = $uf->addNetworkingFilter();
         $conds = array();
@@ -1155,7 +1155,7 @@ class UFC_Phone extends UserFilterCondition
         $this->phone_type = $phone_type;
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $sub = $uf->addPhoneFilter();
         $conds = array();
@@ -1190,7 +1190,7 @@ class UFC_Medal extends UserFilterCondition
         $this->grade = $grade;
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $conds = array();
 
@@ -1213,7 +1213,7 @@ class UFC_Medal extends UserFilterCondition
  */
 class UFC_Photo extends UserFilterCondition
 {
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $sub = $uf->addPhotoFilter();
         return $sub . '.attach IS NOT NULL AND ' . $uf->getVisibilityCondition($sub . '.pub');
@@ -1224,7 +1224,7 @@ class UFC_Photo extends UserFilterCondition
 // {{{ class UFC_Mentor
 class UFC_Mentor extends UserFilterCondition
 {
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $sub = $uf->addMentorFilter(UserFilter::MENTOR);
         return $sub . '.expertise IS NOT NULL';
@@ -1246,7 +1246,7 @@ class UFC_Mentor_Expertise extends UserFilterCondition
         $this->expertise = $expertise;
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $sub = $uf->addMentorFilter(UserFilter::MENTOR_EXPERTISE);
         return $sub . '.expertise ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->expertise);
@@ -1267,7 +1267,7 @@ class UFC_Mentor_Country extends UserFilterCondition
         $this->country = pl_flatten(func_get_args());
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $sub = $uf->addMentorFilter(UserFilter::MENTOR_COUNTRY);
         return $sub . '.country IN ' . XDB::format('{?}', $this->country);
@@ -1288,7 +1288,7 @@ class UFC_Mentor_Terms extends UserFilterCondition
         $this->val = $val;
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $sub = $uf->addMentorFilter(UserFilter::MENTOR_TERM);
         return $sub . '.jtid_1 = ' . XDB::escape($this->val);
@@ -1315,7 +1315,7 @@ abstract class UFC_UserRelated extends UserFilterCondition
  */
 class UFC_Contact extends UFC_UserRelated
 {
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $sub = $uf->addContactFilter($this->user->id());
         return 'c' . $sub . '.contact IS NOT NULL';
@@ -1328,7 +1328,7 @@ class UFC_Contact extends UFC_UserRelated
  */
 class UFC_WatchRegistration extends UFC_UserRelated
 {
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         if (!$this->user->watchType('registration')) {
             return PlFilterCondition::COND_FALSE;
@@ -1357,7 +1357,7 @@ class UFC_WatchPromo extends UFC_UserRelated
         $this->grade = $grade;
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $promos = $this->user->watchPromos();
         if (count($promos) == 0) {
@@ -1376,7 +1376,7 @@ class UFC_WatchPromo extends UFC_UserRelated
  */
 class UFC_WatchContact extends UFC_Contact
 {
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         if (!$this->user->watchContacts()) {
             return PlFilterCondition::COND_FALSE;
@@ -1399,7 +1399,7 @@ class UFC_MarketingHash extends UserFilterCondition
         $this->hash = $hash;
     }
 
-    public function buildCondition(PlFilter &$uf)
+    public function buildCondition(PlFilter $uf)
     {
         $table = $uf->addMarketingHash();
         return XDB::format('rm.hash = {?}', $this->hash);
@@ -1426,7 +1426,7 @@ class UFO_Promo extends PlFilterGroupableOrder
         $this->grade = $grade;
     }
 
-    protected function getSortTokens(PlFilter &$uf)
+    protected function getSortTokens(PlFilter $uf)
     {
         if (UserFilter::isGrade($this->grade)) {
             $sub = $uf->addEducationFilter($this->grade);
@@ -1460,7 +1460,7 @@ class UFO_Name extends PlFilterOrder
         $this->particle = $particle;
     }
 
-    protected function getSortTokens(PlFilter &$uf)
+    protected function getSortTokens(PlFilter $uf)
     {
         if (Profile::isDisplayName($this->type)) {
             $sub = $uf->addDisplayFilter();
@@ -1486,7 +1486,7 @@ class UFO_Name extends PlFilterOrder
 // {{{ class UFO_Score
 class UFO_Score extends PlFilterOrder
 {
-    protected function getSortTokens(PlFilter &$uf)
+    protected function getSortTokens(PlFilter $uf)
     {
         $toks = $uf->getNameTokens();
         $scores = array();
@@ -1509,7 +1509,7 @@ class UFO_Score extends PlFilterOrder
  */
 class UFO_Registration extends PlFilterOrder
 {
-    protected function getSortTokens(PlFilter &$uf)
+    protected function getSortTokens(PlFilter $uf)
     {
         $uf->requireAccounts();
         return 'a.registration_date';
@@ -1522,7 +1522,7 @@ class UFO_Registration extends PlFilterOrder
  */
 class UFO_Birthday extends PlFilterOrder
 {
-    protected function getSortTokens(PlFilter &$uf)
+    protected function getSortTokens(PlFilter $uf)
     {
         $uf->requireProfiles();
         return 'p.next_birthday';
@@ -1535,7 +1535,7 @@ class UFO_Birthday extends PlFilterOrder
  */
 class UFO_ProfileUpdate extends PlFilterOrder
 {
-    protected function getSortTokens(PlFilter &$uf)
+    protected function getSortTokens(PlFilter $uf)
     {
         $uf->requireProfiles();
         return 'p.last_change';
@@ -1548,7 +1548,7 @@ class UFO_ProfileUpdate extends PlFilterOrder
  */
 class UFO_Death extends PlFilterOrder
 {
-    protected function getSortTokens(PlFilter &$uf)
+    protected function getSortTokens(PlFilter $uf)
     {
         $uf->requireProfiles();
         return 'p.deathdate';
@@ -1561,7 +1561,7 @@ class UFO_Death extends PlFilterOrder
  */
 class UFO_Uid extends PlFilterOrder
 {
-    protected function getSortTokens(PlFilter &$uf)
+    protected function getSortTokens(PlFilter $uf)
     {
         $uf->requireAccounts();
         return '$UID';
@@ -1574,7 +1574,7 @@ class UFO_Uid extends PlFilterOrder
  */
 class UFO_Hruid extends PlFilterOrder
 {
-    protected function getSortTokens(PlFilter &$uf)
+    protected function getSortTokens(PlFilter $uf)
     {
         $uf->requireAccounts();
         return 'a.hruid';
@@ -1587,7 +1587,7 @@ class UFO_Hruid extends PlFilterOrder
  */
 class UFO_Pid extends PlFilterOrder
 {
-    protected function getSortTokens(PlFilter &$uf)
+    protected function getSortTokens(PlFilter $uf)
     {
         $uf->requireProfiles();
         return '$PID';
@@ -1600,7 +1600,7 @@ class UFO_Pid extends PlFilterOrder
  */
 class UFO_Hrpid extends PlFilterOrder
 {
-    protected function getSortTokens(PlFilter &$uf)
+    protected function getSortTokens(PlFilter $uf)
     {
         $uf->requireProfiles();
         return 'p.hrpid';
@@ -2035,13 +2035,13 @@ class UserFilter extends PlFilter
         }
     }
 
-    public function setCondition(PlFilterCondition &$cond)
+    public function setCondition(PlFilterCondition $cond)
     {
         $this->root =& $cond;
         $this->query = null;
     }
 
-    public function addSort(PlFilterOrder &$sort)
+    public function addSort(PlFilterOrder $sort)
     {
         if (count($this->sort) == 0 && $sort instanceof PlFilterGroupableOrder)
         {
