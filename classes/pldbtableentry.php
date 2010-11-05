@@ -170,7 +170,7 @@ interface PlDBTableFieldValidator
     public function __construct(PlDBTableField $field, $value);
 }
 
-interface PlDBTableFieldFormatter extends PlDBTableFieldValidator, XDBFormat
+interface PlDBTableFieldFormatter extends PlDBTableFieldValidator, XDBFormat, PlExportable
 {
 }
 
@@ -196,12 +196,17 @@ class DateFieldFormatter implements PlDBTableFieldFormatter
 
     public function format()
     {
-        return XDB::escape($this->datetime->format($this->storageFormat));
+        return XDB::escape($this->export());
     }
 
     public function date($format)
     {
         return $this->datetime->format($format);
+    }
+
+    public function export()
+    {
+        return $this->datetime->format($this->storageFormat);
     }
 }
 
@@ -231,6 +236,11 @@ class JSonFieldFormatter implements PlDBTableFieldFormatter, ArrayAccess
     public function format()
     {
         return XDB::escape(json_encode($this->data));
+    }
+
+    public function export()
+    {
+        return $this->data;
     }
 
     public function offsetExists($offset)
@@ -535,13 +545,26 @@ class PlDBTable
                                                                   $allowIncomplete));
     }
 
+    public function exportEntry(PlDBTableEntry $entry)
+    {
+        $export = array();
+        foreach ($this->schema as $key=>$field) {
+            $value = $entry->$key;
+            if ($value instanceof PlExportable) {
+                $value = $value->export();
+            }
+            $export[$key] = $value;
+        }
+        return $export;
+    }
+
     public static function get($name)
     {
         return new PlDBTable($name);
     }
 }
 
-class PlDBTableEntry extends PlAbstractIterable
+class PlDBTableEntry extends PlAbstractIterable implements PlExportable
 {
     private $table;
     private $changed;
@@ -743,6 +766,11 @@ class PlDBTableEntry extends PlAbstractIterable
             return 0;
         }
         return $this->table->deleteEntry($this, true);
+    }
+
+    public function export()
+    {
+        return $this->table->exportEntry($this);
     }
 }
 
