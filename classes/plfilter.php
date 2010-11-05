@@ -62,6 +62,11 @@ abstract class PlFilterOrder implements PlExportable
         $this->_tokens = null;
     }
 
+    public function export()
+    {
+        throw new Exception("This instance is not exportable");
+    }
+
     public function toggleDesc()
     {
         $this->desc = !$this->desc;
