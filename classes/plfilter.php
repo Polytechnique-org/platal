@@ -53,7 +53,7 @@ class PlLimit
  *     descending order).
  * The getSortTokens function is used to get actual ordering part of the query.
  */
-abstract class PlFilterOrder
+abstract class PlFilterOrder implements PlExportable
 {
     protected $desc = false;
     public function __construct($desc = false)
@@ -131,11 +131,19 @@ class PFO_Random extends PlFilterOrder
             return XDB::format('RAND({?})', $this->seed);
         }
     }
+
+    public function export()
+    {
+        $export = array('type' => 'random',);
+        if ($this->seed !== null)
+            $export['seed'] = $this->seed;
+        return $export;
+    }
 }
 // }}}
 
 // {{{ interface PlFilterCondition
-interface PlFilterCondition
+interface PlFilterCondition extends PlExportable
 {
     const COND_TRUE  = 'TRUE';
     const COND_FALSE = 'FALSE';
@@ -159,6 +167,11 @@ abstract class PFC_OneChild implements PlFilterCondition
     public function setChild(PlFilterCondition &$cond)
     {
         $this->child =& $cond;
+    }
+
+    public function export()
+    {
+        return array('child' => $child->export());
     }
 }
 // }}}
@@ -197,6 +210,14 @@ abstract class PFC_NChildren implements PlFilterCondition
             return '(' . implode(') ' . $op . ' (', $cond) . ')';
         }
     }
+
+    public function export()
+    {
+        $export = array();
+        foreach ($this->children as $child)
+            $export[] = $child->export();
+        return array('children' => $export);
+    }
 }
 // }}}
 
@@ -207,6 +228,11 @@ class PFC_True implements PlFilterCondition
     {
         return self::COND_TRUE;
     }
+
+    public function export()
+    {
+        return array('type' => 'true');
+    }
 }
 // }}}
 
@@ -216,6 +242,11 @@ class PFC_False implements PlFilterCondition
     public function buildCondition(PlFilter &$uf)
     {
         return self::COND_FALSE;
+    }
+
+    public function export()
+    {
+        return array('type' => 'false');
     }
 }
 // }}}
@@ -233,6 +264,13 @@ class PFC_Not extends PFC_OneChild
         } else {
             return 'NOT (' . $val . ')';
         }
+    }
+
+    public function export()
+    {
+        $export = parent::export();
+        $export['type'] = 'not';
+        return $export;
     }
 }
 // }}}
@@ -260,6 +298,12 @@ class PFC_And extends PFC_NChildren
             return $this->catConds($conds, 'AND', $true);
         }
     }
+
+    public function export() {
+        $export = parent::export();
+        $export['type'] = 'and';
+        return $export;
+    }
 }
 // }}}
 
@@ -286,11 +330,17 @@ class PFC_Or extends PFC_NChildren
             return $this->catConds($conds, 'OR', $true);
         }
     }
+
+    public function export() {
+        $export = parent::export();
+        $export['type'] = 'or';
+        return $export;
+    }
 }
 // }}}
 
 // {{{ class PlFilter
-abstract class PlFilter
+abstract class PlFilter implements PlExportable
 {
     /** Filters objects matching the PlFilter
      * @param $objects The objects to filter
