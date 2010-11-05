@@ -244,7 +244,7 @@ def list_call_dispatcher(method, userdesc, perms, vhost, *arg):
         if has_annotation(method, "root") and perms != "admin":
             return 0
         if has_annotation(method, "mlist"):
-            listname = arg[0]
+            listname = str(arg[0])
             arg = arg[1:]
             mlist = MailList.MailList(vhost + VHOST_SEP + listname.lower(), lock=0)
             if has_annotation(method, "admin") and not is_admin_on(userdesc, perms, mlist):
