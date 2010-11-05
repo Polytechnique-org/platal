@@ -224,7 +224,7 @@ function cleanForm(f) {
     alert("Aucun critère n'a été spécifié");
     return false;
   }
-  document.location = f.action + '?' + query;
+  document.location = baseurl + 'adv?' + query;
   return false;
 }
 -->
