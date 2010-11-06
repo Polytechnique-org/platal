@@ -466,14 +466,60 @@ class UserFilter extends PlFilter
 
     public function export()
     {
-        $export = array('condition' => $this->root->export());
+        $export = array('conditions' => $this->root->export());
         if (!empty($this->sort)) {
-            $export['sort'] = array();
+            $export['sorts'] = array();
             foreach ($this->sort as $sort) {
-                $export['sort'][] = $sort->export();
+                $export['sorts'][] = $sort->export();
             }
         }
         return $export;
+    }
+
+    public function exportConditions()
+    {
+        return $this->root->export();
+    }
+
+    public static function fromExport(array $export)
+    {
+        $export = new PlDict($export);
+        if (!$export->has('conditions')) {
+            throw new Exception("Cannot build a user filter without conditions");
+        }
+        $cond = UserFilterCondition::fromExport($export->v('conditions'));
+        $sorts = null;
+        if ($export->has('sorts')) {
+            $sorts = array();
+            foreach ($export->v('sorts') as $sort) {
+                $sorts[] = UserFilterOrder::fromExport($sort);
+            }
+        }
+        return new UserFilter($cond, $sorts);
+    }
+
+    public static function fromJSon($json)
+    {
+        $export = json_decode($json, true);
+        if (is_null($export)) {
+            throw new Exception("Invalid json: $json");
+        }
+        return self::fromExport($json);
+    }
+
+    public static function fromExportedConditions(array $export)
+    {
+        $cond = UserFilterCondition::fromExport($export);
+        return new UserFilter($cond);
+    }
+
+    public static function fromJSonConditions($json)
+    {
+        $export = json_decode($json, true);
+        if (is_null($export)) {
+            throw new Exception("Invalid json: $json");
+        }
+        return self::fromExportedConditions($json);
     }
 
     static public function getLegacy($promo_min, $promo_max)
@@ -1291,7 +1337,6 @@ class UserFilter extends PlFilter
     }
 }
 // }}}
-
 // {{{ class ProfileFilter
 class ProfileFilter extends UserFilter
 {
