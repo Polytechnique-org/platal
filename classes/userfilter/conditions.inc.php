@@ -31,13 +31,166 @@
  */
 abstract class UserFilterCondition implements PlFilterCondition
 {
+    const OP_EQUALS     = '==';
+    const OP_GREATER    = '>';
+    const OP_NOTGREATER = '<=';
+    const OP_LESSER     = '<';
+    const OP_NOTLESSER  = '>=';
+    const OP_NULL       = 'null';
+    const OP_NOTNULL    = 'not null';
+    const OP_CONTAINS   = 'contains';
+    const OP_PREFIX     = 'prefix';
+    const OP_SUFFIX     = 'suffix';
+
+    protected function buildExport($type)
+    {
+        $export = array('type' => $type);
+        return $export;
+    }
+
     public function export()
     {
         throw new Exception("This class is not exportable");
     }
+
+    public static function comparisonFromXDBWildcard($wildcard)
+    {
+        switch ($wildcard) {
+          case XDB::WILDCARD_EXACT:
+            return self::OP_EQUALS;
+          case XDB::WILDCARD_PREFIX:
+            return self::OP_PREFIX;
+          case XDB::WILDCARD_SUFFIX:
+            return self::OP_SUFFIX;
+          case XDB::WILDCARD_CONTAINS:
+            return self::OP_CONTAINS;
+        }
+        throw new Exception("Unknown wildcard mode: $wildcard");
+    }
+
+    public static function xdbWildcardFromComparison($comparison)
+    {
+        if (!self::isStringComparison($comparison)) {
+            throw new Exception("Unknown string coparison: $comparison");
+        }
+        switch ($comparison) {
+          case self::OP_EQUALS:
+            return XDB::WILDCARD_EXACT;
+          case self::OP_PREFIX:
+            return XDB::WILDCARD_PREFIX;
+          case self::OP_SUFFIX:
+            return XDB::WILDCARD_SUFFIX;
+          case self::OP_CONTAINS:
+            return XDB::WILDCARD_CONTAINS;
+        }
+    }
+
+    private static function isNumericComparison($comparison)
+    {
+        return $comparison == self::OP_EQUALS
+            || $comparison == self::OP_GREATER
+            || $comparison == self::OP_NOTGREATER
+            || $comparison == self::OP_LESSER
+            || $comparison == self::OP_NOTLESSER;
+    }
+
+    private static function isStringComparison($comparison)
+    {
+        return $comparison == self::OP_EQUALS
+            || $comparison == self::OP_CONTAINS
+            || $comparison == self::OP_PREFIX
+            || $comparison == self::OP_SUFFIX;
+    }
+
+    public static function fromExport(array $export)
+    {
+        $export = new PlDict($export);
+        if (!$export->has('type')) {
+            throw new Exception("Missing type in export");
+        }
+        $type = $export->s('type');
+        $cond = null;
+        switch ($type) {
+          case 'and':
+          case 'or':
+          case 'not':
+          case 'true':
+          case 'false':
+            $class = 'pfc_' . $type;
+            $cond = new $class();
+            break;
+
+          case 'host':
+            if ($export->has('ip')) {
+                $cond = new UFC_Ip($export->s('ip'));
+            }
+            break;
+
+          case 'comment':
+            if ($export->has('text') && $export->s('comparison') == self::OP_CONTAINS) {
+                $cond = new UFC_Comment($export->s('text'));
+            }
+            break;
+
+          case 'promo':
+            if ($export->has('promo') && self::isNumericComparison($export->s('comparison'))) {
+                $cond = new UFC_Promo($export->s('comparison'),
+                                      $export->s('grade', UserFilter::DISPLAY),
+                                      $export->s('promo'));
+            }
+            break;
+
+          case 'lastname':
+          case 'name':
+          case 'firstname':
+          case 'nickname':
+          case 'pseudonym':
+            if ($export->has('text')) {
+                $flag = self::xdbWildcardFromComparison($export->s('comparison'));
+                if ($export->b('search_in_variants')) {
+                    $flag |= UFC_Name::VARIANTS;
+                }
+                if ($export->b('search_in_particle')) {
+                    $flag |= UFC_Name::PARTICLE;
+                }
+                $cond = new UFC_Name($type, $export->s('text'), $flag);
+            }
+            break;
+
+          case 'account_type':
+          case 'account_perm':
+          case 'hrpid':
+          case 'hruid':
+            $values = $export->v('values', array());
+            $class = 'ufc_' . str_replace('_', '', $type);
+            $cond = new $class($values);
+            break;
+
+          case 'has_profile':
+            $class = 'ufc_' . str_replace('_', '', $type);
+            $cond = new $class();
+            break;
+
+          default:
+            throw new Exception("Unknown condition type: $type");
+        }
+        if (is_null($cond)) {
+            throw new Exception("Unsupported $type definition");
+        }
+        if ($cond instanceof PFC_NChildren) {
+            $children = $export->v('children', array());
+            foreach ($children as $child) {
+                $cond->addChild(self::fromExport($child));
+            }
+        } else if ($cond instanceof PFC_OneChild) {
+            if ($export->has('child')) {
+                $cond->setChild(self::fromExport($export->v('child')));
+            }
+        }
+        return $cond;
+    }
 }
 // }}}
-
 // {{{ class UFC_HasProfile
 /** Filters users who have a profile
  */
@@ -48,9 +201,13 @@ class UFC_HasProfile extends UserFilterCondition
         $uf->requireProfiles();
         return '$PID IS NOT NULL';
     }
+
+    public function export()
+    {
+        return $this->buildExport('has_profile');
+    }
 }
 // }}}
-
 // {{{ class UFC_AccountType
 /** Filters users who have one of the given account types
  */
@@ -68,9 +225,15 @@ class UFC_AccountType extends UserFilterCondition
         $uf->requireAccounts();
         return XDB::format('a.type IN {?}', $this->types);
     }
+
+    public function export()
+    {
+        $export = $this->buildExport('account_type');
+        $export['values'] = $this->types;
+        return $export;
+    }
 }
 // }}}
-
 // {{{ class UFC_AccountPerm
 /** Filters users who have one of the given permissions
  */
@@ -98,9 +261,15 @@ class UFC_AccountPerm extends UserFilterCondition
             return implode(' OR ', $conds);
         }
     }
+
+    public function export()
+    {
+        $export = $this->buildExport('account_perm');
+        $export['values'] = $this->perms;
+        return $export;
+    }
 }
 // }}}
-
 // {{{ class UFC_Hruid
 /** Filters users based on their hruid
  * @param $val Either an hruid, or a list of those
@@ -119,9 +288,15 @@ class UFC_Hruid extends UserFilterCondition
         $uf->requireAccounts();
         return XDB::format('a.hruid IN {?}', $this->hruids);
     }
+
+    public function export()
+    {
+        $export = $this->buildExport('hruid');
+        $export['values'] = $this->hruids;
+        return $export;
+    }
 }
 // }}}
-
 // {{{ class UFC_Hrpid
 /** Filters users based on the hrpid of their profiles
  * @param $val Either an hrpid, or a list of those
@@ -140,9 +315,15 @@ class UFC_Hrpid extends UserFilterCondition
         $uf->requireProfiles();
         return XDB::format('p.hrpid IN {?}', $this->hrpids);
     }
+
+    public function export()
+    {
+        $export = $this->buildExport('hrpid');
+        $export['values'] = $this->hrpids;
+        return $export;
+    }
 }
 // }}}
-
 // {{{ class UFC_Ip
 /** Filters users based on one of their last IPs
  * @param $ip IP from which connection are checked
@@ -162,9 +343,15 @@ class UFC_Ip extends UserFilterCondition
         $ip = ip_to_uint($this->ip);
         return XDB::format($sub . '.ip = {?} OR ' . $sub . '.forward_ip = {?}', $ip, $ip);
     }
+
+    public function export()
+    {
+        $export = $this->buildExport('host');
+        $export['ip'] = $this->ip;
+        return $export;
+    }
 }
 // }}}
-
 // {{{ class UFC_Comment
 class UFC_Comment extends UserFilterCondition
 {
@@ -180,9 +367,16 @@ class UFC_Comment extends UserFilterCondition
         $uf->requireProfiles();
         return $uf->getVisibilityCondition('p.freetext_pub') . ' AND p.freetext ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->text);
     }
+
+    public function export()
+    {
+        $export = $this->buildExport('comment');
+        $export['comparison'] = self::OP_CONTAINS;
+        $export['text'] = $this->text;
+        return $export;
+    }
 }
 // }}}
-
 // {{{ class UFC_Promo
 /** Filters users based on promotion
  * @param $comparison Comparison operator (>, =, ...)
@@ -221,9 +415,18 @@ class UFC_Promo extends UserFilterCondition
             return $field . ' IS NOT NULL AND ' . $field . ' ' . $this->comparison . ' ' . XDB::format('{?}', $this->promo);
         }
     }
+
+    public function export()
+    {
+        $export['comparison'] = $this->comparison;
+        if ($this->grade != UserFilter::DISPLAY) {
+            $export['grade'] = $this->grade;
+        }
+        $export['promo'] = $this->promo;
+        return $export;
+    }
 }
 // }}}
-
 // {{{ class UFC_SchoolId
 /** Filters users based on their shoold identifier
  * @param type Parameter type (Xorg, AX, School)
@@ -272,7 +475,6 @@ class UFC_SchoolId extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_EducationSchool
 /** Filters users by formation
  * @param $val The formation to search (either ID or array of IDs)
@@ -293,7 +495,6 @@ class UFC_EducationSchool extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_EducationDegree
 class UFC_EducationDegree extends UserFilterCondition
 {
@@ -311,7 +512,6 @@ class UFC_EducationDegree extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_EducationField
 class UFC_EducationField extends UserFilterCondition
 {
@@ -329,7 +529,6 @@ class UFC_EducationField extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Name
 /** Filters users based on name
  * @param $type Type of name field on which filtering is done (firstname, lastname...)
@@ -379,9 +578,22 @@ class UFC_Name extends UserFilterCondition
         }
         return implode(' OR ', $conds);
     }
+
+    public function export()
+    {
+        $export = $this->buildExport($this->type);
+        if ($this->mode & self::VARIANTS) {
+            $export['search_in_variants'] = true;
+        }
+        if ($this->mode & self::PARTICLE) {
+            $export['search_in_particle'] = true;
+        }
+        $export['comparison'] = self::comparisonFromXDBWildcard($this->mode & 0x3);
+        $export['text'] = $this->text;
+        return $export;
+    }
 }
 // }}}
-
 // {{{ class UFC_NameTokens
 /** Selects users based on tokens in their name (for quicksearch)
  * @param $tokens An array of tokens to search
@@ -436,7 +648,6 @@ class UFC_NameTokens extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Nationality
 class UFC_Nationality extends UserFilterCondition
 {
@@ -460,7 +671,6 @@ class UFC_Nationality extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Dead
 /** Filters users based on death date
  * @param $comparison Comparison operator
@@ -488,7 +698,6 @@ class UFC_Dead extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Registered
 /** Filters users based on registration state
  * @param $active Whether we want to use only "active" users (i.e with a valid redirection)
@@ -523,7 +732,6 @@ class UFC_Registered extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_ProfileUpdated
 /** Filters users based on profile update date
  * @param $comparison Comparison operator
@@ -547,7 +755,6 @@ class UFC_ProfileUpdated extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Birthday
 /** Filters users based on next birthday date
  * @param $comparison Comparison operator
@@ -571,7 +778,6 @@ class UFC_Birthday extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Sex
 /** Filters users based on sex
  * @parm $sex One of User::GENDER_MALE or User::GENDER_FEMALE, for selecting users
@@ -595,7 +801,6 @@ class UFC_Sex extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Group
 /** Filters users based on group membership
  * @param $group Group whose members we are selecting
@@ -626,7 +831,6 @@ class UFC_Group extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Binet
 /** Selects users based on their belonging to a given (list of) binet
  * @param $binet either a binet_id or an array of binet_ids
@@ -651,7 +855,6 @@ class UFC_Binet extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Section
 /** Selects users based on section
  * @param $section ID of the section
@@ -676,7 +879,6 @@ class UFC_Section extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Email
 /** Filters users based on an email or a list of emails
  * @param $emails List of emails whose owner must be selected
@@ -727,7 +929,6 @@ class UFC_Email extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Address
 abstract class UFC_Address extends UserFilterCondition
 {
@@ -801,7 +1002,6 @@ abstract class UFC_Address extends UserFilterCondition
 
 }
 // }}}
-
 // {{{ class UFC_AddressText
 /** Select users based on their address, using full text search
  * @param $text Text for filter in fulltext search
@@ -857,7 +1057,6 @@ class UFC_AddressText extends UFC_Address
     }
 }
 // }}}
-
 // {{{ class UFC_AddressField
 /** Filters users based on their address,
  * @param $val Either a code for one of the fields, or an array of such codes
@@ -919,7 +1118,6 @@ class UFC_AddressField extends UFC_Address
     }
 }
 // }}}
-
 // {{{ class UFC_Corps
 /** Filters users based on the corps they belong to
  * @param $corps Corps we are looking for (abbreviation)
@@ -953,7 +1151,6 @@ class UFC_Corps extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Corps_Rank
 /** Filters users based on their rank in the corps
  * @param $rank Rank we are looking for (abbreviation)
@@ -981,7 +1178,6 @@ class UFC_Corps_Rank extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Job_Company
 /** Filters users based on the company they belong to
  * @param $type The field being searched (self::JOBID, self::JOBNAME or self::JOBACRONYM)
@@ -1020,7 +1216,6 @@ class UFC_Job_Company extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Job_Terms
 /** Filters users based on the job terms they assigned to one of their
  * jobs.
@@ -1051,7 +1246,6 @@ class UFC_Job_Terms extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Job_Description
 /** Filters users based on their job description
  * @param $description The text being searched for
@@ -1095,7 +1289,6 @@ class UFC_Job_Description extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Networking
 /** Filters users based on network identity (IRC, ...)
  * @param $type Type of network (-1 for any)
@@ -1125,7 +1318,6 @@ class UFC_Networking extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Phone
 /** Filters users based on their phone number
  * @param $num_type Type of number (pro/user/home)
@@ -1175,7 +1367,6 @@ class UFC_Phone extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Medal
 /** Filters users based on their medals
  * @param $medal ID of the medal
@@ -1209,7 +1400,6 @@ class UFC_Medal extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Photo
 /** Filters profiles with photo
  */
@@ -1222,7 +1412,6 @@ class UFC_Photo extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Mentor
 class UFC_Mentor extends UserFilterCondition
 {
@@ -1233,8 +1422,6 @@ class UFC_Mentor extends UserFilterCondition
     }
 }
 // }}}
-
-
 // {{{ class UFC_Mentor_Expertise
 /** Filters users by mentoring expertise
  * @param $expertise Domain of expertise
@@ -1255,7 +1442,6 @@ class UFC_Mentor_Expertise extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Mentor_Country
 /** Filters users by mentoring country
  * @param $country Two-letters code of country being searched
@@ -1276,7 +1462,6 @@ class UFC_Mentor_Country extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Mentor_Terms
 /** Filters users based on the job terms they used in mentoring.
  * @param $val The ID of the job term, or an array of such IDs
@@ -1297,7 +1482,6 @@ class UFC_Mentor_Terms extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_UserRelated
 /** Filters users based on a relation toward a user
  * @param $user User to which searched users are related
@@ -1311,7 +1495,6 @@ abstract class UFC_UserRelated extends UserFilterCondition
     }
 }
 // }}}
-
 // {{{ class UFC_Contact
 /** Filters users who belong to selected user's contacts
  */
@@ -1324,7 +1507,6 @@ class UFC_Contact extends UFC_UserRelated
     }
 }
 // }}}
-
 // {{{ class UFC_WatchRegistration
 /** Filters users being watched by selected user
  */
@@ -1344,7 +1526,6 @@ class UFC_WatchRegistration extends UFC_UserRelated
     }
 }
 // }}}
-
 // {{{ class UFC_WatchPromo
 /** Filters users belonging to a promo watched by selected user
  * @param $user Selected user (the one watching promo)
@@ -1372,7 +1553,6 @@ class UFC_WatchPromo extends UFC_UserRelated
     }
 }
 // }}}
-
 // {{{ class UFC_WatchContact
 /** Filters users watched by selected user
  */
@@ -1387,7 +1567,6 @@ class UFC_WatchContact extends UFC_Contact
     }
 }
 // }}}
-
 // {{{ class UFC_MarketingHash
 /** Filters users using the hash generated
  * to send marketing emails to him.
