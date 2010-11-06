@@ -118,7 +118,7 @@ Bienvenue {$smarty.session.user->displayName()}{if t($birthday)}
   	if (link.childNodes[i].nodeName == 'STRONG') {
   		link.replaceChild(link.childNodes[i].firstChild,link.childNodes[i]);
   	}
-  	Ajax.update_html(null, 'events/read/'+id);
+    $.xget('events/read/'+id);
   	return false;
   }
   -->

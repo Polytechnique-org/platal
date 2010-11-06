@@ -20,7 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{javascript name=ajax}
 {assign var=terms value=$profile->getMentoringTerms()}
 {assign var=countries value=$profile->getMentoringCountries()}
 <div id="fiche">

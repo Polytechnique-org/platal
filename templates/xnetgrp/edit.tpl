@@ -191,7 +191,6 @@
   </div>
 
   <div class="center">
-    {javascript name=ajax}
     <div id="preview_descr" style="display: none; text-align: justify"></div>
     <br />
     <a href="wiki_help" class="popup3">

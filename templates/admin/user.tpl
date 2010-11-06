@@ -464,7 +464,6 @@ $(document).ready(function() {
   </table>
 </form>
 
-{javascript name="ajax"}
 {test_email hruid=$user->login()}
 
 <h1>Autres adresses de l'utilisateur</h1>

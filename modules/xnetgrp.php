@@ -252,7 +252,6 @@ class XnetGrpModule extends PLModule
         $mmlist = new MMList(S::user(), $globals->asso('mail_domain'));
         $page->assign('listes', $mmlist->get_lists());
         $page->assign('user', S::user());
-        $page->addJsLink('ajax.js');
 
         if (Post::has('send')) {
             S::assert_xsrf_token();
@@ -627,7 +626,6 @@ class XnetGrpModule extends PLModule
         global $globals;
 
         $page->changeTpl('xnetgrp/membres-add.tpl');
-        $page->addJsLink('ajax.js');
 
         if (is_null($email)) {
             return;

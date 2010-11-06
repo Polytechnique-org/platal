@@ -20,6 +20,22 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<script type="text/javascript">
+  //<![CDATA[
+  {literal}
+  function updateHtml(id, url)
+  {
+      if (is_IE) {
+          return true;
+      } else {
+          $('#' + id).updateHtml(url);
+          return false;
+      }
+  }
+  {/literal}
+  //]]>
+</script>
+
 <h1>
   Listes de diffusion de Polytechnique.org
 </h1>

@@ -311,9 +311,9 @@
       {literal}
       function removeAttachments()
       {
-          Ajax.update_html(null, 'emails/send', null);
-          document.getElementById('att_already').style.display = 'none';
-          document.getElementById('att_form').style.display = '';
+          $.xget('email/send');
+          $('#att_already').hide();
+          $('#att_form').show();
       }
       {/literal}
     //]]></script>

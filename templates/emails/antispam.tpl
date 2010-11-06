@@ -22,27 +22,29 @@
 
 {include wiki=Xorg.Antispam part=1}
 
-{javascript name=ajax}
 <script type="text/javascript">//<![CDATA[
   {literal}
-  function bogoUpdated()
-  {
-    showTempMessage('bogo-msg', "Le changement de réglage de l'antispam a bien été effectué.", true);
-  }
+  $(document).ready(function() {
+      var url = '{/literal}{$globals->baseurl}/emails/antispam/{literal}';
+      var msg = "Le changement de réglage de l'antispam a bien été effectué.";
+      $(':radio[name=statut_filtre]').change(function() {
+          $("#bogo-msg").successMessage(url + $(this).val(), msg);
+      });
+  });
   {/literal}
 //]]></script>
   <fieldset>
     <legend><strong>Choisis ton propre réglage&nbsp;:</strong></legend>
-    <input id='s0' type='radio' name='statut_filtre' value='0' {if $filtre eq 0}checked="checked"{/if} onclick="Ajax.update_html(null, '{$globals->baseurl}/emails/antispam/'+this.value, bogoUpdated)" />
+    <input id='s0' type='radio' name='statut_filtre' value='0' {if $filtre eq 0}checked="checked"{/if} />
     <label for='s0'>(1) le filtre anti-spam n'agit pas sur tes emails</label>
     <br />
-    <input id='s1' type='radio' name='statut_filtre' value='1' {if $filtre eq 1}checked="checked"{/if} onclick="Ajax.update_html(null, '{$globals->baseurl}/emails/antispam/'+this.value, bogoUpdated)" />
+    <input id='s1' type='radio' name='statut_filtre' value='1' {if $filtre eq 1}checked="checked"{/if} />
     <label for='s1'>(2) le filtre anti-spam marque les emails</label>
     <br />
-    <input id='s2' type='radio' name='statut_filtre' value='2' {if $filtre eq 2}checked="checked"{/if} onclick="Ajax.update_html(null, '{$globals->baseurl}/emails/antispam/'+this.value, bogoUpdated)" />
+    <input id='s2' type='radio' name='statut_filtre' value='2' {if $filtre eq 2}checked="checked"{/if} />
     <label for='s2'>(3) le filtre anti-spam marque les emails, et élimine les spams avec des notes les plus hautes</label>
     <br />
-    <input id='s3' type='radio' name='statut_filtre' value='3' {if $filtre eq 3}checked="checked"{/if} onclick="Ajax.update_html(null, '{$globals->baseurl}/emails/antispam/'+this.value, bogoUpdated)" />
+    <input id='s3' type='radio' name='statut_filtre' value='3' {if $filtre eq 3}checked="checked"{/if} />
     <label for='s3'>(4) le filtre anti-spam élimine les emails détectés comme spams</label>
   </fieldset>
 

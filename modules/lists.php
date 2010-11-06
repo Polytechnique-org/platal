@@ -91,7 +91,6 @@ class ListsModule extends PLModule
         $domain = $this->prepare_client($page);
 
         $page->changeTpl('lists/index.tpl');
-        $page->addJsLink('ajax.js');
         $page->setTitle('Listes de diffusion');
 
 

@@ -62,7 +62,7 @@
       page = "{$globals->baseurl}/" + page;
       {literal}
     }
-    Ajax.update_html('preview', page, null);
+    $('#preview').updateHtml(page);
     return false;
   }
   {/literal}

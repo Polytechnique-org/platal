@@ -330,7 +330,6 @@ class ProfileModule extends PLModule
         }
 
         // Build the page
-        $page->addJsLink('ajax.js');
         $page->addJsLink('education.js', false); /* dynamic content */
         $page->addJsLink('grades.js', false);    /* dynamic content */
         $page->addJsLink('profile.js');

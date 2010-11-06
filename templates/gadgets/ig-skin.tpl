@@ -26,7 +26,6 @@
     <link rel="stylesheet" type="text/css" href="css/igoogle.css" media="all"/>
     <script type="text/javascript">var platal_baseurl = "{$globals->baseurl}/";</script>
     {javascript name=jquery}
-    {javascript name=ajax}
     {javascript name=xorg}
     {javascript name=igoogle}
   </head>
