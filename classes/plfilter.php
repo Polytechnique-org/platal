@@ -228,8 +228,9 @@ abstract class PFC_NChildren implements PlFilterCondition
     public function export()
     {
         $export = array();
-        foreach ($this->children as $child)
+        foreach ($this->children as $child) {
             $export[] = $child->export();
+        }
         return array('children' => $export);
     }
 }
