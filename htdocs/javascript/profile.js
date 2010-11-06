@@ -71,10 +71,12 @@ function addSearchName(isFemale)
     while ($('#search_name_' + i).length != 0) {
         i++;
     }
-    Ajax.update_html('search_name_' + i, 'profile/ajax/searchname/' + i + '/' + isFemale, function(data){
-        $('#searchname').before(data);
-        changeNameFlag(i);
-    });
+    $('#search_name_' + i)
+        .updateHtml('profile/ajax/searchname/' + i + '/' + isFemale,
+                    function(data) {
+                        $('#searchname').before(data);
+                        changeNameFlag(i);
+                    });
 }
 
 function removeSearchName(i, isFemale)
@@ -111,11 +113,12 @@ function updateNameDisplay(isFemale)
             searchnames += $('#search_name_' + i).find(':text').val() + ';;';
         }
     }
-    Ajax.update_html(null, 'profile/ajax/buildnames/' + searchnames + '/' + isFemale, function(data){
-        var name = data.split(';');
-        $('#public_name').html(name[0]);
-        $('#private_name').html(name[0] + name[1]);
-    });
+    $.xget('profile/ajax/buildnames/' + searchnames + '/' + isFemale, 'text',
+           function(data){
+               var name = data.split(';');
+               $('#public_name').html(name[0]);
+               $('#private_name').html(name[0] + name[1]);
+           });
 }
 
 function toggleParticle(id)
@@ -315,7 +318,8 @@ function addAddress()
         i++;
     }
     $('#add_address').before('<div id="addresses_' + i + '_cont"></div>');
-    Ajax.update_html('addresses_' + i + '_cont', 'profile/ajax/address/' + i, checkCurrentAddress());
+    $('#addresses_' + i + '_cont').updateHtml('profile/ajax/address/' + i,
+                                              checkCurrentAddress());
 }
 
 function addressChanged(prefid)
@@ -348,7 +352,7 @@ function addTel(prefid, prefname)
         i++;
     }
     $('#' + prefix + 'add').before('<div id="' + prefix + i + '" style="clear: both; padding-top: 4px; padding-bottom: 4px"></div>');
-    Ajax.update_html(prefix + i, 'profile/ajax/tel/' + prefid + '/' + prefname + '/' + i);
+    $('#' + prefix + i).updateHtml('profile/ajax/tel/' + prefid + '/' + prefname + '/' + i);
 }
 
 function removeTel(prefname, prefid, id)

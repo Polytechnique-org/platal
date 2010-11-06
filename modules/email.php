@@ -370,7 +370,6 @@ class EmailModule extends PLModule
     function handler_send(&$page)
     {
         $page->changeTpl('emails/send.tpl');
-        $page->addJsLink('ajax.js');
 
         $page->setTitle('Envoyer un email');
 

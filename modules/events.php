@@ -103,7 +103,6 @@ class EventsModule extends PLModule
     function handler_ev(&$page, $action = 'list', $eid = null, $pound = null)
     {
         $page->changeTpl('events/index.tpl');
-        $page->addJsLink('ajax.js');
 
         $user = S::user();
 
@@ -254,7 +253,6 @@ class EventsModule extends PLModule
     function handler_ev_submit(&$page)
     {
         $page->changeTpl('events/submit.tpl');
-        $page->addJsLink('ajax.js');
 
         $wp = new PlWikiPage('Xorg.Annonce');
         $wp->buildCache();
@@ -332,7 +330,6 @@ class EventsModule extends PLModule
     function handler_admin_events(&$page, $action = 'list', $eid = null)
     {
         $page->changeTpl('events/admin.tpl');
-        $page->addJsLink('ajax.js');
         $page->setTitle('Administration - Evenements');
         $page->register_modifier('hde', 'html_entity_decode');
 

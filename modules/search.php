@@ -66,7 +66,6 @@ class SearchModule extends PLModule
                 $page->changeTpl('search/index.tpl');
                 $page->setTitle('Annuaire');
                 $page->assign('formulaire', 1);
-                $page->addJsLink('ajax.js');
                 return;
             }
 
@@ -140,7 +139,6 @@ class SearchModule extends PLModule
             }
         } else {
             $page->assign('formulaire',1);
-            $page->addJsLink('ajax.js');
         }
 
         $page->changeTpl('search/index.tpl');
@@ -192,7 +190,6 @@ class SearchModule extends PLModule
         }
 
         $page->changeTpl('search/index.tpl', $model == 'mini' ? SIMPLE : SKINNED);
-        $page->addJsLink('ajax.js');
         $page->assign('public_directory',0);
     }
 

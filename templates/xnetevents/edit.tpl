@@ -167,7 +167,6 @@ function deadlineChange(box)
           <li>&lt;salutation&gt;, &lt;prenom&gt;, &lt;nom&gt;, &lt;montant&gt; et &lt;comment&gt; seront <strong>automatiquement</strong> remplacés par les informations adaptées.</li>
           <li><a href="wiki_help" class="popup3">{icon name=information} Tu peux utiliser une syntaxe wiki pour formatter ton texte.</a></li>
         </ul>
-        {javascript name=ajax}
         <div id="pay_preview" style="display: none">
           <strong>Aperçu du texte&nbsp;:</strong>
           <hr />

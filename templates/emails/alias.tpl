@@ -36,15 +36,13 @@
   </h1>
 
 {if $actuel}
-  {javascript name=ajax}
   {if $user->hasProfile()}
   <table class="flags">
     <tr>
       <td class="orange">
         <input type="checkbox" {if $mail_public}checked="checked"{/if}
-            onclick="
-                Ajax.update_html(null,'{$globals->baseurl}/emails/alias/set/'+(this.checked?'public':'private')+'?token={xsrf_token}');
-                document.getElementById('mail_public').innerHTML = (this.checked?'public et apparaît donc sur ta fiche':'privé et n\'apparaît nulle part sur le site') + '.';
+            onclick="$.xget('{$globals->baseurl}/emails/alias/set/'+(this.checked?'public':'private')+'?token={xsrf_token}');
+                $('#mail_public').html((this.checked?'public et apparaît donc sur ta fiche':'privé et n\'apparaît nulle part sur le site') + '.');
             " />
       </td>
       <td>

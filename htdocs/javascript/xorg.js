@@ -258,7 +258,6 @@ function auto_links() {
 
 // }}}
 
-
 /***************************************************************************
  * Password check
  */
@@ -356,6 +355,108 @@ function checkPassword(box, okLabel) {
         submitButton.attr("value", "Mot de passe trop faible");
         submitButton.attr("disabled", "disabled");
     }
+}
+
+// }}}
+// {{{ jQuery object extension
+
+(function($) {
+    $.xget = function(source, type, onSuccess, onError) {
+        function ajaxHandler(data, textStatus) {
+            if (textStatus == 'success') {
+                if (onSuccess) {
+                    onSuccess(data);
+                }
+            } else if (textStatus == 'error') {
+                if (onError) {
+                    onError(data);
+                } else {
+                    alert("Une error s'est produite lors du traitement de la requête.\n"
+                        + "Ta session a peut-être expiré");
+                }
+            }
+        }
+        $.get(source, ajaxHandler, type);
+        return false;
+    }
+
+    $.fn.tmpMessage = function(message, success) {
+        if (success) {
+            this.html("<img src='images/icons/wand.gif' alt='' /> " + message)
+                .css('color', 'green');
+        } else {
+            this.html("<img src='images/icons/error.gif' alt='' /> " + message)
+                .css('color', 'red');
+        }
+        return this.css('fontWeight', 'bold')
+                   .show()
+                   .delay(1000)
+                   .fadeOut(500);
+    }
+
+    $.fn.updateHtml = function(source, callback) {
+        var elements = this;
+        function handler(data) {
+            elements.html(data);
+            if (callback) {
+                callback(data);
+            }
+        }
+        $.xget(source, 'text', handler);
+        return this;
+    }
+
+    $.fn.successMessage = function(source, message) {
+        var elements = this;
+        $.xget(source, 'text', function() {
+            elements.tmpMessage(message, true);
+        });
+        return this;
+    }
+
+    $.fn.wiki = function(text, withTitle) {
+        if (text == '') {
+            return this.html('');
+        }
+        var url = 'wiki_preview';
+        if (!withTitle) {
+            url += '/notitile';
+        }
+        var $this = this;
+        $.post(url, { text: text },
+               function (data) {
+                   $this.html(data);
+               }, 'text');
+        return this;
+    }
+})(jQuery);
+
+// }}}
+// {{{ preview wiki
+
+function previewWiki(idFrom, idTo, withTitle, idShow)
+{
+    $('#' + idTo).wiki($('#' + idFrom).val(), withTitle);
+    if (idShow != null) {
+        $('#' + idShow).show();
+    }
+}
+
+// }}}
+// {{{ send test email
+
+function sendTestEmail(token, hruid)
+{
+    var url = 'emails/test';
+    var msg = "Un email a été envoyé avec succès";
+    if (hruid != null) {
+        url += '/' + hruid;
+        msg += " sur l'adresse de " + hruid + ".";
+    } else {
+        msg += " sur ton addresse.";
+    }
+    $('#mail_sent').successMessage($url + '?token=' + token, msg);
+    return false;
 }
 
 // }}}

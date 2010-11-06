@@ -33,14 +33,12 @@
 Actuellement, {$mentors_number} mentors et référents se sont déclarés sur {#globals.core.sitename#}.
 </p>
 
-{javascript name=ajax}
 {javascript name=jquery.jstree}
 {javascript name=jobtermstree}
 <script type="text/javascript">//<![CDATA[
 
 var baseurl = platal_baseurl + "referent/";
 {literal}
-var Ajax2 = new AjaxEngine();
 
 /** Hides or display tree of all job terms */
 function toggleJobTermsTree()

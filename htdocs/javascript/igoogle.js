@@ -30,7 +30,7 @@ function markEventAsRead(event_id)
     _toggle(_gel("mark-read-" + event_id));
     _gel("evt-" + event_id).setAttribute("class", "read");
     _gel("link-" + event_id).setAttribute("href", "events/unread/" + event_id);
-    Ajax.update_html(null, "events/read/" + event_id);
+    $.xget("events/read/" + event_id, 'text');
     return false;
 }
 
