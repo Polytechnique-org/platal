@@ -19,6 +19,49 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+// {{{ abstract class UserFilterOrder
+/** Class providing factories for the UserFilterOrders.
+ */
+abstract class UserFilterOrders
+{
+    public static function fromExport(array $export)
+    {
+        $export = new PlDict($export);
+        if (!$export->has('type')) {
+            throw new Exception("Missing type in export");
+        }
+        $type = $export->s('type');
+        $desc = ($export->s('order') == 'desc');
+        switch ($type) {
+          case 'promo':
+            return new UFO_Promo($export->v('grade'), $desc);
+
+          case 'lastname':
+          case 'name':
+          case 'firstname':
+          case 'nickname':
+          case 'pseudonym':
+            return new UFO_Name($type, $export->v('variant'),
+                                $export->b('particle'), $desc);
+
+          case 'score':
+          case 'registration':
+          case 'birthday':
+          case 'profile_update':
+          case 'death':
+          case 'uid':
+          case 'hruid':
+          case 'pid':
+          case 'hrpid':
+            $class = 'UFO_' . str_replace('_', '', $type);
+            return new $class($desc);
+
+          default:
+            throw new Exception("Unknown order field: $type");
+        }
+    }
+}
+// }}}
 // {{{ class UFO_Promo
 /** Orders users by promotion
  * @param $grade Formation whose promotion users should be sorted by (restricts results to users of that formation)
@@ -44,9 +87,17 @@ class UFO_Promo extends PlFilterGroupableOrder
             return 'pd' . $sub . '.promo';
         }
     }
+
+    public function export()
+    {
+        $export = $this->buildExport('promo');
+        if (!is_null($this->grade)) {
+            $export['grade'] = $this->grade;
+        }
+        return $export;
+    }
 }
 // }}}
-
 // {{{ class UFO_Name
 /** Sorts users by name
  * @param $type Type of name on which to sort (firstname...)
@@ -88,9 +139,20 @@ class UFO_Name extends PlFilterOrder
             }
         }
     }
+
+    public function export()
+    {
+        $export = $this->buildExport($this->type);
+        if (!is_null($this->variant)) {
+            $export['variant'] = $this->variant;
+        }
+        if ($this->particle) {
+            $export['particle'] = true;
+        }
+        return $export;
+    }
 }
 // }}}
-
 // {{{ class UFO_Score
 class UFO_Score extends PlFilterOrder
 {
@@ -109,9 +171,13 @@ class UFO_Score extends PlFilterOrder
         }
         return implode(' + ', $scores);
     }
+
+    public function export()
+    {
+        return $this->buildExport('score');
+    }
 }
 // }}}
-
 // {{{ class UFO_Registration
 /** Sorts users based on registration date
  */
@@ -122,9 +188,13 @@ class UFO_Registration extends PlFilterOrder
         $uf->requireAccounts();
         return 'a.registration_date';
     }
+
+    public function export()
+    {
+        return $this->buildExport('registration');
+    }
 }
 // }}}
-
 // {{{ class UFO_Birthday
 /** Sorts users based on next birthday date
  */
@@ -135,9 +205,13 @@ class UFO_Birthday extends PlFilterOrder
         $uf->requireProfiles();
         return 'p.next_birthday';
     }
+
+    public function export()
+    {
+        return $this->buildExport('birthday');
+    }
 }
 // }}}
-
 // {{{ class UFO_ProfileUpdate
 /** Sorts users based on last profile update
  */
@@ -148,9 +222,13 @@ class UFO_ProfileUpdate extends PlFilterOrder
         $uf->requireProfiles();
         return 'p.last_change';
     }
+
+    public function export()
+    {
+        return $this->buildExport('profile_update');
+    }
 }
 // }}}
-
 // {{{ class UFO_Death
 /** Sorts users based on death date
  */
@@ -161,9 +239,13 @@ class UFO_Death extends PlFilterOrder
         $uf->requireProfiles();
         return 'p.deathdate';
     }
+
+    public function export()
+    {
+        return $this->buildExport('death');
+    }
 }
 // }}}
-
 // {{{ class UFO_Uid
 /** Sorts users based on their uid
  */
@@ -174,9 +256,13 @@ class UFO_Uid extends PlFilterOrder
         $uf->requireAccounts();
         return '$UID';
     }
+
+    public function export()
+    {
+        return $this->buildExport('uid');
+    }
 }
 // }}}
-
 // {{{ class UFO_Hruid
 /** Sorts users based on their hruid
  */
@@ -187,9 +273,13 @@ class UFO_Hruid extends PlFilterOrder
         $uf->requireAccounts();
         return 'a.hruid';
     }
+
+    public function export()
+    {
+        return $this->buildExport('hruid');
+    }
 }
 // }}}
-
 // {{{ class UFO_Pid
 /** Sorts users based on their pid
  */
@@ -200,9 +290,13 @@ class UFO_Pid extends PlFilterOrder
         $uf->requireProfiles();
         return '$PID';
     }
+
+    public function export()
+    {
+        return $this->buildExport('pid');
+    }
 }
 // }}}
-
 // {{{ class UFO_Hrpid
 /** Sorts users based on their hrpid
  */
@@ -212,6 +306,11 @@ class UFO_Hrpid extends PlFilterOrder
     {
         $uf->requireProfiles();
         return 'p.hrpid';
+    }
+
+    public function export()
+    {
+        return $this->buildExport('hrpid');
     }
 }
 // }}}
