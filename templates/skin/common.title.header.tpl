@@ -19,44 +19,30 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-          <script type="text/javascript">
-            //<![CDATA[
-            {literal}
-            $(document).ready(function() {
-                $("#date-heure").html(getNow());
-            });
-            {/literal}
-            //]]>
-          </script>
-          <table>
-            <tr>
-              <td class="date-heure">
-              </td>
-              <td class="inscrits">
-                {$globals->core->NbIns|number_format} polytechniciens sur le web
-                {if t($smarty.request.quick)}
-                  {assign var=requestQuick value=$smarty.request.quick}
-                {else}
-                  {assign var=requestQuick value='Recherche dans l\'annuaire'}
-                {/if}
-                <form action="search" method="get">
-                    <div>
-                        <button id="quick_button" type="submit" style="display: none"
-                                onclick="if ($('#quick').val() === 'Recherche dans l\'annuaire') $('#quick').val('')">
-                          OK
-                        </button>
-                        <input type="text" size="20" name="quick" id="quick" class="quick_search"
-                               value="{$requestQuick}"
-                               onfocus="if (this.value === 'Recherche dans l\'annuaire') this.value='';
-                                        $('#quick_button').show()"
-                               onblur="if (this.value === '') this.value='{$requestQuick|escape:javascript}'"
-                               />
-                    </div>
-                </form>
-                {if $smarty.session.auth gt AUTH_PUBLIC && $smarty.session.notifs}
-                <a href="carnet/panel">{$smarty.session.notifs} événement{if $smarty.session.notifs gt 1}s{/if}</a>
-                {/if}
-              </td>
-            </tr>
-          </table>
+
+<table>
+  <tr>
+    <td class="date-heure"></td>
+    <td class="inscrits">
+      {$globals->core->NbIns|number_format} polytechniciens sur le web
+      {if t($smarty.request.quick)}
+        {assign var=requestQuick value=$smarty.request.quick}
+      {else}
+        {assign var=requestQuick value='Recherche dans l\'annuaire'}
+      {/if}
+      <form action="search" method="get">
+          <div>
+              <button id="quick_button" type="submit" style="display: none">
+                OK
+              </button>
+              <input type="text" size="20" name="quick" id="quick" class="quick_search"
+                     value="{$requestQuick}" />
+          </div>
+      </form>
+      {if $smarty.session.auth gt AUTH_PUBLIC && $smarty.session.notifs}
+      <a href="carnet/panel">{$smarty.session.notifs} événement{if $smarty.session.notifs gt 1}s{/if}</a>
+      {/if}
+    </td>
+  </tr>
+</table>
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

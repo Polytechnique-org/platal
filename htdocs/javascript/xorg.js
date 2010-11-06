@@ -21,23 +21,29 @@
 var is_IE       = $.browser.msie;
 
 // {{{ function getNow()
+var days   = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+var months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet',
+              'août', 'septembre', 'octobre', 'novembre', 'décembre']
 
 function getNow() {
-    dt = new Date();
-    dy = dt.getDay();
-    mh = dt.getMonth();
-    wd = dt.getDate();
-    yr = dt.getYear();
+    var dt = new Date();
+    var dy = dt.getDay();
+    var mh = dt.getMonth();
+    var wd = dt.getDate();
+    var yr = dt.getYear();
     if (yr<1000) yr += 1900;
-    hr = dt.getHours();
-    mi = dt.getMinutes();
+    var hr = dt.getHours();
+    var mi = dt.getMinutes();
+    if (mi < 10) {
+        mi = '0' + mi;
+    }
+    var se = dt.getSeconds();
+    if (se < 10) {
+        se = '0' + se;
+    }
 
-    time   = (mi < 10) ? hr +':0'+mi : hr+':'+mi;
-    days   = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
-    months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet',
-           'août', 'septembre', 'octobre', 'novembre', 'décembre']
-
-    return days[dy]+' '+wd+' '+months[mh]+' '+yr+'<br />'+time;
+    $(".date-heure").html(days[dy] + ' ' + wd + ' ' + months[mh] + ' ' + yr + '<br />'
+                        + hr + ':' + mi + ':' + se);
 }
 
 // }}}
@@ -205,10 +211,10 @@ function goodiesPopup(node, goodies) {
 // {{{ function auto_links()
 
 function auto_links() {
-    url  = document.URL;
-    fqdn = url.replace(/^https?:\/\/([^\/]*)\/.*$/,'$1');
-    light = (url.indexOf('display=light') > url.indexOf('?'));
-    resource_page = (url.indexOf('rss') > -1 || url.indexOf('ical') > -1);
+    var url  = document.URL;
+    var fqdn = url.replace(/^https?:\/\/([^\/]*)\/.*$/,'$1');
+    var light = (url.indexOf('display=light') > url.indexOf('?'));
+    var resource_page = (url.indexOf('rss') > -1 || url.indexOf('ical') > -1);
 
     $("a,link").each(
         function(i) {
@@ -359,6 +365,27 @@ function checkPassword(box, okLabel) {
  * The real OnLoad
  */
 
-$(document).ready(auto_links);
+$(document).ready(function() {
+    auto_links();
+    getNow();
+    setInterval(getNow, 1000);
+    $("#quick")
+        .focus(function() {
+            if ($(this).val() === 'Recherche dans l\'annuaire') {
+                $(this).val('');
+            }
+            $("#quick_button").show();
+        })
+        .blur(function() {
+            $("#quick_button").hide();
+        });
+    $("#quick_button").click(function() {
+        if ($("#quick").val() === 'Recherche dans l\'annuaire'
+            || $("#quick").val() === '') {
+            return false;
+        }
+        return true;
+    });
+});
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
