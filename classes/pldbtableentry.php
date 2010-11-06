@@ -223,7 +223,11 @@ class JSonFieldFormatter implements PlDBTableFieldFormatter, ArrayAccess
         if (is_string($data)) {
             $this->data = json_decode($data, true);
         } else if (is_object($data)) {
-            $this->data = json_decode(json_encode($data), true);
+            if ($data instanceof PlExportable) {
+                $this->data = $data->export();
+            } else {
+                $this->data = json_decode(json_encode($data), true);
+            }
         } else if (is_array($data)) {
             $this->data = $data;
         }
