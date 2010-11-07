@@ -361,74 +361,113 @@ function checkPassword(box, okLabel) {
 // {{{ jQuery object extension
 
 (function($) {
-    $.xget = function(source, type, onSuccess, onError) {
-        function ajaxHandler(data, textStatus) {
-            if (textStatus == 'success') {
-                if (onSuccess) {
-                    onSuccess(data);
-                }
-            } else if (textStatus == 'error') {
-                if (onError) {
-                    onError(data);
-                } else {
-                    alert("Une error s'est produite lors du traitement de la requête.\n"
-                        + "Ta session a peut-être expiré");
+    /* Add new functions to jQuery namesapce */
+    $.extend({
+        xajax: function(source, method, data, onSuccess, onError, type) {
+            /* Shift argument */
+            if ($.isFunction(data)) {
+                type = type || onError;
+                onError = onSuccess;
+                onSuccess = data;
+                data = null;
+            }
+            if (onError != null && !$.isFunction(onError)) {
+                type = type || onError;
+                onError = null;
+            }
+
+            function ajaxHandler(data, textStatus, xhr) {
+                if (textStatus == 'success') {
+                    if (onSuccess) {
+                        onSuccess(data, textStatus, xhr);
+                    }
+                } else if (textStatus == 'error') {
+                    if (onError) {
+                        onError(data, textStatus, xhr);
+                    } else {
+                        alert("Une error s'est produite lors du traitement de la requête.\n"
+                            + "Ta session a peut-être expiré");
+                    }
                 }
             }
-        }
-        $.get(source, ajaxHandler, type);
-        return false;
-    }
+            return $.ajax({
+                url: source,
+                type: method,
+                success: ajaxHandler,
+                data : data,
+                dataType: type
+            });
+        },
 
-    $.fn.tmpMessage = function(message, success) {
-        if (success) {
-            this.html("<img src='images/icons/wand.gif' alt='' /> " + message)
-                .css('color', 'green');
-        } else {
-            this.html("<img src='images/icons/error.gif' alt='' /> " + message)
-                .css('color', 'red');
-        }
-        return this.css('fontWeight', 'bold')
-                   .show()
-                   .delay(1000)
-                   .fadeOut(500);
-    }
+        xget: function(source, data, onSuccess, onError, type) {
+            return $.xajax(source, 'GET', data, onSuccess, onError, type);
+        },
 
-    $.fn.updateHtml = function(source, callback) {
-        var elements = this;
-        function handler(data) {
-            elements.html(data);
-            if (callback) {
-                callback(data);
+        xgetJSON: function(source, data, onSuccess, onError) {
+            return $.xget(source, data, onSuccess, onError, 'json');
+        },
+
+        xgetScript: function(source, onSuccess, onError) {
+            return $.xget(source, null, onSuccess, onError, 'script');
+        },
+
+        xpost: function(source, data, onSuccess, onError, type) {
+            return $.xajax(source, 'POST', data, onSuccess, onError, type);
+        }
+    });
+
+    /* Add new functions to jQuery objects */
+    $.fn.extend({
+        tmpMessage: function(message, success) {
+            if (success) {
+                this.html("<img src='images/icons/wand.gif' alt='' /> " + message)
+                    .css('color', 'green');
+            } else {
+                this.html("<img src='images/icons/error.gif' alt='' /> " + message)
+                    .css('color', 'red');
             }
-        }
-        $.xget(source, 'text', handler);
-        return this;
-    }
+            return this.css('fontWeight', 'bold')
+                       .show()
+                       .delay(1000)
+                       .fadeOut(500);
+        },
 
-    $.fn.successMessage = function(source, message) {
-        var elements = this;
-        $.xget(source, 'text', function() {
-            elements.tmpMessage(message, true);
-        });
-        return this;
-    }
+        updateHtml: function(source, callback) {
+            var elements = this;
+            function handler(data) {
+                elements.html(data);
+                if (callback) {
+                    callback(data);
+                }
+            }
+            $.xget(source, handler, 'text');
+            return this;
+        },
 
-    $.fn.wiki = function(text, withTitle) {
-        if (text == '') {
-            return this.html('');
+        successMessage: function(source, message) {
+            var elements = this;
+            $.xget(source, function() {
+                elements.tmpMessage(message, true);
+            });
+            return this;
+        },
+
+        wiki: function(text, withTitle) {
+            if (text == '') {
+                return this.html('');
+            }
+            var url = 'wiki_preview';
+            if (!withTitle) {
+                url += '/notitile';
+            }
+            var $this = this;
+            $.post(url, { text: text },
+                   function (data) {
+                       $this.html(data);
+                   }, 'text');
+            return this;
         }
-        var url = 'wiki_preview';
-        if (!withTitle) {
-            url += '/notitile';
-        }
-        var $this = this;
-        $.post(url, { text: text },
-               function (data) {
-                   $this.html(data);
-               }, 'text');
-        return this;
-    }
+    });
 })(jQuery);
 
 // }}}
