@@ -127,23 +127,6 @@ class AdminModule extends PLModule
         $page->assign_by_ref('mails', $sql);
     }
 
-    function handler_postfix_regexpsbounces(&$page, $new = null) {
-        $page->changeTpl('admin/emails_bounces_re.tpl');
-        $page->setTitle('Administration - Postfix : Regexps Bounces');
-        $page->assign('new', $new);
-
-        if (Post::has('submit')) {
-            foreach (Env::v('lvl') as $id=>$val) {
-                XDB::query(
-                        "REPLACE INTO emails_bounces_re (id,pos,lvl,re,text) VALUES ({?}, {?}, {?}, {?}, {?})",
-                        $id, $_POST['pos'][$id], $_POST['lvl'][$id], $_POST['re'][$id], $_POST['text'][$id]
-                );
-            }
-        }
-
-        $page->assign('bre', XDB::iterator("SELECT * FROM emails_bounces_re ORDER BY pos"));
-    }
-
     // {{{ logger view
 
     /** Retrieves the available days for a given year and month.

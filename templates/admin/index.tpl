@@ -32,8 +32,6 @@
       <a href="admin/postfix/whitelist">Whitelist</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/postfix/delayed">Retardés</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/postfix/regexp_bounces">Regexps Bounces</a>
     </td>
   </tr>
   <tr class="pair">
