@@ -47,13 +47,9 @@
   {if $search_results_nb eq 1}{literal}
     <script type="text/javascript">
       // popup automatically if only one result
-      var alinks = document.getElementById('content').getElementsByTagName('a');
-      for (i = 0; i < alinks.length; i++) {
-        if (alinks[i].className == 'popup2') {
-          popWin(alinks[i], 840, 600);
-          break;
-        }
-      }
+      $(document).ready(function() {
+        $('#content a.popup2').click();
+      });
     </script>
   {/literal}{/if}
 
