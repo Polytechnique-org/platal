@@ -85,6 +85,18 @@ class SurveyModule extends PLModule
         if (!$survey->canSee(S::user())) {
             return PL_FORBIDDEN;
         }
+        if (Post::has('vote')) {
+            $answers = Post::v('qid');
+            $vote = $survey->vote(S::user(), $answers);
+            if (is_null($vote)) {
+                $page->kill("Tu n'as pas le droit de voter à ce sondage.");
+            } else if ($vote->inError()) {
+                $page->trigError("Certaines réponses sont invalides et doivent être corrigées");
+            } else {
+                $vote->insert(true);
+                $page->trigSuccess("Ton vote a été enregistré");
+            }
+        }
         $page->assign('survey', $survey);
     }
 }

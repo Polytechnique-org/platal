@@ -19,10 +19,15 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+require_once dirname(__FILE__) . '/question.inc.php';
+require_once dirname(__FILE__) . '/answer.inc.php';
+
 class Survey extends PlDBTableEntry implements SurveyQuestionContainer
 {
     private $fetchQuestions = true;
     public $questions = array();
+    public $viewerFilter = null;
+    public $voterFilter = null;
 
     public function __construct()
     {
@@ -34,6 +39,16 @@ class Survey extends PlDBTableEntry implements SurveyQuestionContainer
 
     protected function postFetch()
     {
+        if (!is_null($this->voters)) {
+            $this->voterFilter = UserFilter::fromExportedConditions($this->voters);
+        } else {
+            $this->voterFilter = null;
+        }
+        if (!is_null($this->viewers)) {
+            $this->viewerFilter = UserFilter::fromExportedConditions($this->viewers);
+        } else {
+            $this->viewerFilter = null;
+        }
         if (!$this->fetchQuestions) {
             return true;
         }
@@ -56,6 +71,21 @@ class Survey extends PlDBTableEntry implements SurveyQuestionContainer
                 $stack[$pos]->addQuestion($question);
             }
             array_push($stack, $question);
+        }
+        return true;
+    }
+
+    protected function preSave()
+    {
+        if (!is_null($this->voterFilter)) {
+            $this->voters = $this->voterFilter->exportConditions();
+        } else {
+            $this->voters = null;
+        }
+        if (!is_null($this->viewerFilter)) {
+            $this->viewers = $this->viewerFilter->exportConditions();
+        } else {
+            $this->viewers = null;
         }
         return true;
     }
@@ -91,6 +121,24 @@ class Survey extends PlDBTableEntry implements SurveyQuestionContainer
         return $question;
     }
 
+    public function questionForId($qid)
+    {
+        $prev = null;
+        foreach ($this->questions as $question) {
+            if ($qid == $question->qid) {
+                return $question;
+            } else if ($qid < $question->qid) {
+                Platal::assert($prev instanceof SurveyQuestionGroup,
+                               "Id gap must be caused by question groups");
+                return $prev->child($qid);
+            }
+            $prev = $question;
+        }
+        Platal::assert($prev instanceof SurveyQuestionGroup,
+                       "Id gap must be caused by question groups");
+        return $prev->child($qid);
+    }
+
     public function reassignQuestionIds()
     {
         $id = 0;
@@ -115,12 +163,77 @@ class Survey extends PlDBTableEntry implements SurveyQuestionContainer
         return $export;
     }
 
+    /* Return an indicator of the progression of the survey:
+     *  negative values means 'the survey is not started'
+     *  0 means 'the survey is in progress'
+     *  positive values means 'the survey expired'
+     */
+    public function progression()
+    {
+        if (!$this->flags->hasFlag('validated')) {
+            return -2;
+        }
+        $now = time();
+        if ($this->begin->format('U') > $now) {
+            return -1;
+        }
+        if ($this->end->format('U') <= $now) {
+            return 1;
+        }
+        return 0;
+    }
+
     public function canSee(User $user)
     {
-        if ($this->uid == $user->id() || $user->hasFlag('admin')) {
+        if ($this->canSeeResults($user) || $this->canVote($user)) {
             return true;
         }
         return false;
+    }
+
+    public function canSeeResults(User $user)
+    {
+        if ($user->id() == $this->uid || $user->hasFlag('admin')) {
+            return true;
+        }
+        if (is_null($this->viewerFilter)) {
+            return $this->viewerFilter->checkUser($user);
+        }
+        return false;
+    }
+
+    public function canVote(User $user)
+    {
+        $status = $this->progression();
+        if ($status < 0) {
+            return "Ce sondage n'est pas encore commencé";
+        } else if ($status > 0) {
+            return "Ce sondage est terminé";
+        }
+        if (!is_null($this->voterFilter) && !$this->voterFilter->checkUser($user)) {
+            return "Ce sondage ne s'adresse pas à toi";
+        }
+        $vote = SurveyVote::getVote($this, $user, false);
+        if (is_null($vote)) {
+            return "Tu as déjà voté à ce sondage.";
+        }
+        return true;
+    }
+
+    public function vote(User $user, array $answers)
+    {
+        if (!$this->canVote($user)) {
+            return array('survey' => "Tu n'es pas autorisé à voter à ce sondage.");
+        }
+        $vote = SurveyVote::getVote($this, $user);
+        if (is_null($vote)) {
+            return $vote;
+        }
+        $answers = new PlDict($answers);
+        foreach ($this->questions as $question) {
+            $question->vote($vote, $answers);
+        }
+        return $vote;
     }
 
     public static function get($name, $fetchQuestions = true)
@@ -158,100 +271,6 @@ class ShortNameFieldValidator implements PlDBTableFieldValidator
             throw new PlDBBadValueException($value, $field,
                                             'The shortname can only contain alphanumerical caracters, dashes, underscores and dots');
         }
-    }
-}
-
-interface SurveyQuestionContainer
-{
-    public function addQuestion(SurveyQuestion $question, $pos = null);
-    public function newQuestion($type, $pos = null);
-    public function reassignQuestionIds();
-}
-
-class SurveyQuestion extends PlDBTableEntry
-{
-    protected $survey;
-    protected $parentQuestion;
-
-    public function __construct(Survey $survey)
-    {
-        parent::__construct('survey_questions');
-        $this->registerFieldFormatter('parameters', 'JSonFieldFormatter');
-        $this->survey = $survey;
-    }
-
-    public function typedInstance()
-    {
-        $instance = self::instanceForType($this->survey, $this->type);
-        $instance->copy($this);
-        return $instance;
-    }
-
-    public static function instanceForType(Survey $survey, $type)
-    {
-        require_once dirname(__FILE__) . '/' . $type . '.inc.php';
-        $class = 'SurveyQuestion' . $type;
-        return new $class($survey);
-    }
-}
-
-class SurveyQuestionGroup extends SurveyQuestion implements SurveyQuestionContainer
-{
-    public $children = array();
-
-    public function __construct(Survey $survey)
-    {
-        parent::__construct($survey);
-    }
-
-    public function addQuestion(SurveyQuestion $question, $pos = null)
-    {
-        $question->parentQuestion = $this;
-        if (is_null($pos)) {
-            $this->children[] = $question;
-        } else {
-            array_splice($this->children, $pos, 0, $question);
-        }
-    }
-
-    public function newQuestion($type, $pos = null)
-    {
-        $question = SurveyQuestion::instanceForType($this->survey, $type);
-        $this->addQuestion($question, $pos);
-        return $question;
-    }
-
-    public function reassignQuestionIds()
-    {
-        $id = $this->qid + 1;
-        foreach ($this->children as $question) {
-            $question->qid = $id;
-            if ($question instanceof SurveyQuestionContainer) {
-                $id = $question->reassignQuestionIds();
-            } else {
-                $id++;
-            }
-        }
-        return $id;
-    }
-
-    protected function postSave()
-    {
-        foreach ($this->children as $question) {
-            $question->sid = $this->sid;
-            $question->parent = $this->qid;
-            $question->insert();
-        }
-    }
-
-    public function export()
-    {
-        $export = parent::export();
-        $export['children'] = array();
-        foreach ($this->children as $child) {
-            $export['children'][] = $child->export();
-        }
-        return $export;
     }
 }
 

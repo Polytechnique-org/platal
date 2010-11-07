@@ -20,21 +20,9 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$survey->title}</h1>
-
-<p>{$survey->description|miniwiki}</p>
-
 <div>
-<form action="survey/vote/{$survey->shortname}" method="post">
-  {foreach from=$survey->questions item=question}
-    {include file=$question->voteTemplate() question=$question}
-  {/foreach}
-
-  <div class="center">
-    {xsrf_token_field}
-    <input type="submit" name="vote" value="Enregister mon vote" />
-  </div>
-</form>
+  <div>{$question->label}</div>
+  <input type="text" name="qid[{$question->qid}]" value="" />
 </div>
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

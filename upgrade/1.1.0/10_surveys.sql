@@ -16,12 +16,11 @@ CREATE TABLE surveys (
     description TEXT NOT NULL,
     begin       DATE NOT NULL,
     end         DATE NOT NULL,
-    anonymous   TINYINT(1) DEFAULT 0,
 
     voters      TEXT DEFAULT NULL COMMENT "Filter users who can vote",
     viewers     TEXT DEFAULT NULL COMMENT "Filter users who can see the results",
 
-    flags       SET('validated'),
+    flags       SET('validated', 'anonymous'),
 
     PRIMARY KEY id (id),
     UNIQUE KEY shortname (shortname),
@@ -47,10 +46,10 @@ CREATE TABLE survey_questions (
 ) ENGINE=InnoDB, CHARSET=utf8, COMMENT="Describe the questions of the surveys";
 
 CREATE TABLE survey_votes (
+    vid         INT(11) UNSIGNED NOT NULL auto_increment,
     sid         INT(11) UNSIGNED NOT NULL,
-    vid         INT(11) UNSIGNED NOT NULL,
 
-    PRIMARY KEY id (sid, vid),
+    PRIMARY KEY vid (vid),
     FOREIGN KEY (sid) REFERENCES surveys (id)
                       ON UPDATE CASCADE
                       ON DELETE CASCADE
@@ -72,12 +71,15 @@ CREATE TABLE survey_voters (
 
 CREATE TABLE survey_vote_answers (
     sid         INT(11) UNSIGNED NOT NULL,
-    vid         INT(11) UNSIGNED NOT NULL,
     qid         INT(11) UNSIGNED NOT NULL,
+    vid         INT(11) UNSIGNED NOT NULL,
 
     answer      TEXT DEFAULT NULL,
 
     PRIMARY KEY id (sid, vid, qid),
+    FOREIGN KEY (vid) REFERENCES survey_votes (vid)
+                      ON UPDATE CASCADE
+                      ON DELETE CASCADE,
     FOREIGN KEY (sid, qid) REFERENCES survey_questions (sid, qid)
                            ON UPDATE CASCADE
                            ON DELETE CASCADE

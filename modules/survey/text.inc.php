@@ -26,6 +26,17 @@ class SurveyQuestionText extends SurveyQuestion
         parent::__construct($survey);
         $this->type = "text";
     }
+
+    protected function buildAnswer(SurveyAnswer $answer, PlDict $data)
+    {
+        $value = $data->t($this->qid);
+        if (!empty($value)) {
+            $answer->answer = array('text' => $value);
+        } else {
+            $answer->answer = null;
+        }
+        return true;
+    }
 }
 
 // vim:set et sw=4 sts=4 ts=4 foldmethod=marker enc=utf-8:
