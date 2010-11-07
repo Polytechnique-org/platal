@@ -129,15 +129,6 @@ RegExp.escape = function(text) {
  * POPUP THINGS
  */
 
-// {{{ function popWin()
-
-function popWin(theNode, w, h) {
-    window.open(theNode.href, '_blank',
-        'toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width='+w+',height='+h);
-    return false;
-}
-
-// }}}
 // {{{ function goodiesPopup()
 
 var __goodies_active = true;
@@ -216,43 +207,44 @@ function auto_links() {
     var light = (url.indexOf('display=light') > url.indexOf('?'));
     var resource_page = (url.indexOf('rss') > -1 || url.indexOf('ical') > -1);
 
-    $("a,link").each(
-        function(i) {
-            node = $(this);
-            href =  this.href;
-            if(!href || node.hasClass('xdx')
-               || href.indexOf('mailto:') > -1 || href.indexOf('javascript:') > -1) {
-                return;
-            }
-            if ((href.indexOf(fqdn) < 0 && this.className.indexOf('popup') < 0) || node.hasClass('popup')) {
-                node.click(function () { window.open(this.href); return false; });
-            }
-            if (href.indexOf(fqdn) > -1 && light) {
-                href = href.replace(/([^\#\?]*)\??([^\#]*)(\#.*)?/, "$1?display=light&$2$3");
-                this.href = href;
-            }
-            rss  = href.indexOf('rss') > -1;
-            ical = href.indexOf('ical') > -1;
-            if (rss || ical) {
-                if (href.indexOf('http') < 0) {
-                    href = 'http://' + fqdn + '/' + href;
-                }
-            }
-            if (this.nodeName.toLowerCase() == 'a' && !resource_page) {
-                if (rss && href.indexOf('prefs/rss') < 0 &&  (href.indexOf('xml') > -1 || href.indexOf('hash'))) {
-                    goodiesPopup(this, __goodies_rss);
-                } else if (ical) {
-                    goodiesPopup(this, __goodies_ical);
-                }
-            }
-            if(matches = (/^popup_([0-9]*)x([0-9]*)$/).exec(this.className)) {
-                var w = matches[1], h = matches[2];
-                node.click(function() { return popWin(this, w, h); });
+    $("a,link").each(function(i) {
+        var node = $(this);
+        var href = this.href;
+        if(!href || node.hasClass('xdx')
+           || href.indexOf('mailto:') > -1 || href.indexOf('javascript:') > -1) {
+            return;
+        }
+        if ((href.indexOf(fqdn) < 0 && this.className.indexOf('popup') < 0) || node.hasClass('popup')) {
+            node.click(function () {
+                window.open(href);
+                return false;
+            });
+        }
+        if (href.indexOf(fqdn) > -1 && light) {
+            href = href.replace(/([^\#\?]*)\??([^\#]*)(\#.*)?/, "$1?display=light&$2$3");
+            this.href = href;
+        }
+        var rss  = href.indexOf('rss') > -1;
+        var ical = href.indexOf('ical') > -1;
+        if (rss || ical) {
+            if (href.indexOf('http') < 0) {
+                href = 'http://' + fqdn + '/' + href;
             }
         }
-    );
-    $('.popup2').click(function() { return popWin(this, 840, 600); });
-    $('.popup3').click(function() { return popWin(this, 640, 800); });
+        if (this.nodeName.toLowerCase() == 'a' && !resource_page) {
+            if (rss && href.indexOf('prefs/rss') < 0 &&  (href.indexOf('xml') > -1 || href.indexOf('hash'))) {
+                goodiesPopup(this, __goodies_rss);
+            } else if (ical) {
+                goodiesPopup(this, __goodies_ical);
+            }
+        }
+        if(matches = (/^popup_([0-9]*)x([0-9]*)$/).exec(this.className)) {
+            var w = matches[1], h = matches[2];
+            node.popWin(w, h);
+        }
+    });
+    $('.popup2').popWin(840, 600);
+    $('.popup3').popWin(640, 800);
 }
 
 
@@ -363,6 +355,11 @@ function checkPassword(box, okLabel) {
 (function($) {
     /* Add new functions to jQuery namesapce */
     $.extend({
+        /* The goal of the following functions is to provide an AJAX API that
+         * take a different callback in case of HTTP success code (2XX) and in
+         * other cases.
+         */
+
         xajax: function(source, method, data, onSuccess, onError, type) {
             /* Shift argument */
             if ($.isFunction(data)) {
@@ -409,6 +406,10 @@ function checkPassword(box, okLabel) {
 
         xgetScript: function(source, onSuccess, onError) {
             return $.xget(source, null, onSuccess, onError, 'script');
+        },
+
+        xgetText: function(source, data, onSuccess, onError) {
+            return $.xget(source, data, onSuccess, onError, 'text');
         },
 
         xpost: function(source, data, onSuccess, onError, type) {
@@ -466,6 +467,16 @@ function checkPassword(box, okLabel) {
                        $this.html(data);
                    }, 'text');
             return this;
+        },
+
+        popWin: function(w, h) {
+            return this.click(function() {
+                window.open(this.href, '_blank',
+                            'toolbar=0,location=0,directories=0,status=0,'
+                           +'menubar=0,scrollbars=1,resizable=1,'
+                           +'width='+w+',height='+h);
+                return false;
+            });
         }
     });
 })(jQuery);
