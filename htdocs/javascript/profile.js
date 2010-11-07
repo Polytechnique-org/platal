@@ -119,7 +119,7 @@ function updateNameDisplay(isFemale)
             searchnames += $('#search_name_' + i).find(':text').val() + ';;';
         }
     }
-    $.xget('profile/ajax/buildnames/' + searchnames + '/' + isFemale, 'text',
+    $.xget('profile/ajax/buildnames/' + searchnames + '/' + isFemale,
            function(data){
                var name = data.split(';');
                $('#public_name').html(name[0]);

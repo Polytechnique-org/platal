@@ -102,7 +102,7 @@
     {
         activeEnable();
         $.xget('emails/redirect/' + (checked ? '' : 'in') + 'active/' + email,
-               'text', redirectUpdate);
+               redirectUpdate);
     }
 
     function rewriteUpdate(mail, allow, box)
