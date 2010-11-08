@@ -66,7 +66,7 @@ function add_user_to_url(f) {
 
   <ul>
     <li><a href="admin/add_accounts">Ajout d'un ensemble d'utilisateurs</a></li>
-    <li>Ajouter une secrétaire de l'AX:</li>
+    <li>Ajouter un compte manuel :</li>
   </ul>
   <p>
     <form action="admin/accounts" method="post">
@@ -80,6 +80,7 @@ function add_user_to_url(f) {
               <option value="fx">Personnel de la FX</option>
               <option value="school">Personnel de l'Ecole</option>
             </select>
+            <a href="admin/account/types">Détail des permissions associées</a>
           </td>
         </tr>
         <tr>
