@@ -315,7 +315,7 @@ class CarnetModule extends PLModule
         }
         if ($search && trim(Env::v('quick'))) {
             $base = 'carnet/contacts/search';
-            $view = new SearchSet(true, false, new UFC_Contact($user));
+            $view = new SearchSet(true, new UFC_Contact($user));
         } else {
             $base = 'carnet/contacts';
             $view = new ProfileSet(new UFC_Contact($user));
