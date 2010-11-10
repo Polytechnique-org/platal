@@ -36,6 +36,7 @@ L'icône {icon name=cross title='retirer membre'} permet de désinscrire de la l
 qui y était abonné.
 </p>
 
+{if t($unregistered)}
 {if $unregistered|@count neq 0}
 <h1>Marketing d'utilisateurs non-inscrits</h1>
 
@@ -98,6 +99,7 @@ emails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la
 </p>
 
 {/if}
+{/if}
 
 <h1>
   modérateurs de la liste
@@ -106,25 +108,29 @@ emails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la
 <form method='post' action='{$smarty.server.REQUEST_URI}'>
   {xsrf_token_field}
   <table class='tinybicol' cellpadding='0' cellspacing='0'>
-    {foreach from=$owners item=xs key=promo}
+    {foreach from=$owners item=users key=alpha}
+    {foreach from=$users item=user name=all}
     <tr>
-      <td class='titre'>{if $promo}{$promo}{else}non-X{/if}</td>
-      <td>
-        {foreach from=$xs item=x}
-        {if $promo && strpos($x.l, '@') === false}
-        <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
-        {elseif $x.x}
-        <a href="{$platal->ns}member/{$x.x}">{if $x.n|trim}{$x.n}{else}{$x.l}{/if}</a>
-        {elseif $x.n}
-        {$x.n}
-        {else}
-        {$x.l}
+      <td class='titre' style="width: 20%">
+        {if $smarty.foreach.all.first}
+        {if $alpha}{$alpha}{/if}
         {/if}
-        <a href='{$platal->pl_self(1)}?del_owner={$x.l}&amp;token={xsrf_token}'>{icon name=cross title='retirer modérateur'}</a>
-        <br />
-        {/foreach}
+      </td>
+      <td>
+        {if t($user.x)}
+        {if t($user.b)}{assign var=lostUsers value=true}{/if}
+        {profile user=$user.x promo=false}
+        {elseif t($user.x)}
+        <a href="{$platal->ns}member/{$user.x}">{if $user.n|trim}{$x.n}{else}{$user.l}{/if}</a>
+        {elseif t($user.n)}
+        {$user.n}
+        {else}
+        {$user.l}
+        {/if}
+        <a href='{$platal->pl_self(1)}?del_owner={$user.l}&amp;token={xsrf_token}'>{icon name=cross title='retirer modérateur'}</a>
       </td>
     </tr>
+    {/foreach}
     {/foreach}
     <tr class="pair">
       <td class='titre'>Ajouter</td>
@@ -144,25 +150,29 @@ emails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la
 <form method='post' action='{$smarty.server.REQUEST_URI}' enctype="multipart/form-data">
   {xsrf_token_field}
   <table class='bicol' cellpadding='0' cellspacing='0'>
-    {foreach from=$members item=xs key=promo}
+    {foreach from=$members item=users key=alpha}
+    {foreach from=$users item=user name=all}
     <tr>
-      <td class='titre'>{if $promo}{$promo}{else}non-X{/if}</td>
-      <td>
-        {foreach from=$xs item=x}
-        {if $promo && strpos($x.l, '@') === false}
-        <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
-        {elseif $x.x}
-        <a href="{$platal->ns}member/{$x.x}">{if $x.n|trim}{$x.n}{else}{$x.l}{/if}</a>
-        {elseif $x.n}
-        {$x.n}
-        {else}
-        {$x.l}
+      <td class='titre' style="width: 20%">
+        {if $smarty.foreach.all.first}
+        {if $alpha}{$alpha}{/if}
         {/if}
-        <a href='{$platal->pl_self(1)}?del_member={$x.l}&amp;token={xsrf_token}'>{icon name=cross title='retirer membre'}</a>
-        <br />
-        {/foreach}
+      </td>
+      <td>
+        {if t($user.x)}
+        {if t($user.b)}{assign var=lostUsers value=true}{/if}
+        {profile user=$user.x promo=false}
+        {elseif t($user.x)}
+        <a href="{$platal->ns}member/{$user.x}">{if $user.n|trim}{$x.n}{else}{$user.l}{/if}</a>
+        {elseif t($user.n)}
+        {$user.n}
+        {else}
+        {$user.l}
+        {/if}
+        <a href='{$platal->pl_self(1)}?del_member={$user.l}&amp;token={xsrf_token}'>{icon name=cross title='retirer membre'}</a>
       </td>
     </tr>
+    {/foreach}
     {/foreach}
     <tr>
       <th colspan="2">Ajouter</th>
