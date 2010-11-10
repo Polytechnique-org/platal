@@ -26,7 +26,7 @@
 {elseif $mail_part eq 'text'}
 {if $sender->isFemale()}Chère{else}Cher{/if} {$sender->firstName()},
 
-Nous t'écrivons pour t'informer que {$firstname} {$lastname} ({$promo}), que tu avais incité{if $sex eq PlUser::GENDER_FEMALE}e{/if} à s'inscrire à Polytechnique.org, vient à l'instant de terminer son inscription.
+Nous t'écrivons pour t'informer que {$firstname} {$lastname} ({$promo}), que tu avais incité{if $sex eq 'female'}e{/if} à s'inscrire à Polytechnique.org, vient à l'instant de terminer son inscription.
 
 Merci de ta participation active à la reconnaissance de ce site !!!
 {include file="signature.mail.tpl"}
