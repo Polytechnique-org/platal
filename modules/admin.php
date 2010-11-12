@@ -1498,7 +1498,9 @@ class AdminModule extends PLModule
                                       NAF_code = {?}, AX_code = {?}, holdingid = {?}
                                WHERE  id = {?}',
                              Env::t('name'), Env::t('acronym'), Env::t('url'), Env::t('email'),
-                             Env::t('NAF_code'), Env::i('AX_code'), Env::i('holdingId'), $id);
+                             (Env::t('NAF_code') == 0 ? null : Env::t('NAF_code')),
+                             (Env::i('AX_code') == 0 ? null : Env::t('AX_code')),
+                             (Env::i('holdingId') == 0 ? null : Env::t('holdingId')), $id);
 
                 $phone = new Phone(array('display' => Env::v('tel'), 'link_id' => $id, 'id' => 0, 'type' => 'fixed',
                                          'link_type' => Phone::LINK_COMPANY, 'pub' => 'public'));
