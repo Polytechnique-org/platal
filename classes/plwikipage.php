@@ -432,6 +432,9 @@ class PlWikiPage
             global $platal;
             $page =& Platal::page();
             $platal->force_login($page);
+        } else if ($perm == 'admin' && !S::admin()) {
+            global $platal;
+            $platal->error403();
         }
     }
 
