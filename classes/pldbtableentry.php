@@ -481,34 +481,46 @@ class PlDBTable
     const SAVE_INSERT_MISSING   = 0x01;
     const SAVE_UPDATE_EXISTING  = 0x02;
     const SAVE_IGNORE_DUPLICATE = 0x04;
-    public function saveEntry(PlDBTableEntry $entry, $flags)
+    public function saveEntries(array $entries, $flags)
     {
         $flags &= (self::SAVE_INSERT_MISSING | self::SAVE_UPDATE_EXISTING | self::SAVE_IGNORE_DUPLICATE);
         Platal::assert($flags != 0, "Hey, the flags ($flags) here are so stupid, don't know what to do");
         if ($flags == self::SAVE_UPDATE_EXISTING) {
-            $values = array();
-            foreach ($this->mutableFields as $field) {
-                if ($entry->hasChanged($field)) {
-                    $values[] = XDB::format($field . ' = {?}', $entry->$field);
+            foreach ($entries as $entry) {
+                $values = array();
+                foreach ($this->mutableFields as $field) {
+                    if ($entry->hasChanged($field)) {
+                        $values[] = XDB::format($field . ' = {?}', $entry->$field);
+                    }
                 }
-            }
-            if (count($values) > 0) {
-                XDB::rawExecute('UPDATE ' . $this->table . '
-                                    SET ' . implode(', ', $values) . '
-                                  WHERE ' . $this->buildKeyCondition($entry,
-                                                                     $this->keyFields(self::PRIMARY_KEY),
-                                                                     false));
+                if (count($values) > 0) {
+                    XDB::rawExecute('UPDATE ' . $this->table . '
+                                        SET ' . implode(', ', $values) . '
+                                      WHERE ' . $this->buildKeyCondition($entry,
+                                                                         $this->keyFields(self::PRIMARY_KEY),
+                                                                         false));
+                }
             }
         } else {
-            $values = array();
-            foreach ($this->schema as $field=>$type) {
-                if ($entry->hasChanged($field)) {
-                    $values[$field] = XDB::escape($entry->$field);
+            $fields = new PlFlagSet();
+            foreach ($entries as $entry) {
+                foreach ($this->schema as $field=>$type) {
+                    if ($type->inPrimaryKey || $entry->hasChanged($field)) {
+                        $fields->addFlag($field);
+                    }
                 }
             }
-            if (count($values) > 0) {
-                $query = $this->table . ' (' . implode(', ', array_keys($values)) . ')
-                               VALUES  (' . implode(', ', $values) . ')';
+            if (count($fields->export()) > 0) {
+                foreach ($entries as $entry) {
+                    $v = array();
+                    foreach ($fields as $field) {
+                        $v[$field] = XDB::escape($entry->$field);
+                    }
+                    $values[] = '(' . implode(', ', $v) . ')';
+                }
+
+                $query = $this->table . ' (' . implode(', ', $fields->export()) . ')
+                               VALUES ' . implode(",\n", $values);
                 if (($flags & self::SAVE_UPDATE_EXISTING)) {
                     $update = array();
                     foreach ($this->mutableFields as $field) {
@@ -517,23 +529,26 @@ class PlDBTable
                         }
                     }
                     if (count($update) > 0) {
-                        $query = 'INSERT ' . $query;
+                        $query = 'INSERT INTO ' . $query;
                         $query .= "\n  ON DUPLICATE KEY UPDATE " . implode(', ', $update);
                     } else {
-                        $query = 'INSERT IGNORE ' . $query;
+                        $query = 'INSERT IGNORE INTO ' . $query;
                     }
                 } else if (($flags & self::SAVE_IGNORE_DUPLICATE)) {
-                    $query = 'INSERT IGNORE ' . $query;
+                    $query = 'INSERT IGNORE INTO ' . $query;
                 } else {
-                    $query = 'INSERT ' . $query;
+                    $query = 'INSERT INTO ' . $query;
                 }
                 XDB::rawExecute($query);
-                $id = XDB::insertId();
-                if ($id) {
-                    foreach ($this->primaryKey as $field) {
-                        if ($this->schema[$field]->autoIncrement) {
-                            $entry->$field = $id;
-                            break;
+                if (count($entries) == 1) {
+                    $id = XDB::insertId();
+                    if ($id) {
+                        $entry = end($entries);
+                        foreach ($this->primaryKey as $field) {
+                            if ($this->schema[$field]->autoIncrement) {
+                                $entry->$field = $id;
+                                break;
+                            }
                         }
                     }
                 }
@@ -737,13 +752,7 @@ class PlDBTableEntry extends PlAbstractIterable implements PlExportable
 
     public function save($flags)
     {
-        if (!$this->preSave()) {
-            return false;
-        }
-        $this->table->saveEntry($this, $flags);
-        $this->changed->clear();
-        $this->postSave();
-        return true;
+        return self::saveBatch(array($this), $flags);
     }
 
     public function update($insertMissing = false)
@@ -775,6 +784,36 @@ class PlDBTableEntry extends PlAbstractIterable implements PlExportable
     public function export()
     {
         return $this->table->exportEntry($this);
+    }
+
+    protected static function saveBatch($entries, $flags)
+    {
+        $table = null;
+        foreach ($entries as $entry) {
+            if (is_null($table)) {
+                $table = $entry->table;
+            } else {
+                Platal::assert($table === $entry->table, "Cannot save batch of entries of different kinds");
+            }
+            if (!$entry->preSave()) {
+                return false;
+            }
+        }
+        $table->saveEntries($entries, $flags);
+        foreach ($entries as $entry) {
+            $entry->changed->clear();
+            $entry->postSave();
+        }
+        return true;
+    }
+
+    public static function insertBatch($entries, $allowUpdate = false)
+    {
+        $flags = PlDBTable::SAVE_INSERT_MISSING;
+        if ($allowUpdate) {
+            $flags |= PlDBTable::SAVE_UPDATE_EXISTING;
+        }
+        return self::saveBatch($entries, $flags);
     }
 }
 
