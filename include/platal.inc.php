@@ -96,6 +96,8 @@ function pl_error_handler($errno, $errstr, $errfile, $errline)
     }
     $type = isset($errortype[$errno]) ? $errortype[$errno] : $errno;
     $error = strpos($type, 'Warning') !== false || strpos($type, 'Error') !==false;
+
+    pl_autoload('PlBacktrace');
     if (!isset(PlBacktrace::$bt['PHP Errors'])) {
         new PlBacktrace('PHP Errors');
     }
