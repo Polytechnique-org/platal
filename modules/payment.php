@@ -310,15 +310,16 @@ class PaymentModule extends PLModule
         $res = XDB::query("SELECT  mail, text, confirmation
                              FROM  payments
                             WHERE  id={?}", $ref);
-        if (!list($conf_mail, $conf_title, $conf_text) = $res->fetchOneRow()) {
+        if ($res->numRows() != 1) {
             cb_erreur("référence de commande inconnue");
         }
+        list($conf_mail, $conf_title, $conf_text) = $res->fetchOneRow();
 
         /* on extrait le montant */
         if (Env::v('vads_currency') != "978") {
             cb_erreur("monnaie autre que l'euro");
         }
-        $montant = sprintf("%.02f", ((float)Env::v('vads_amount'))/100) . " EUR";
+        $montant = sprintf("%.02f", ((float)Env::v('vads_amount'))/100);
 
         /* on extrait le code de retour */
         if (Env::v('vads_result') != "00") {
@@ -335,7 +336,8 @@ class PaymentModule extends PLModule
         $res = XDB::query('SELECT  eid
                              FROM  group_events
                             WHERE  paiement_id = {?}', $ref);
-        if ($eid = $res->fetchOneCell()) {
+        if ($res->numRows() == 1) {
+            $eid = $res->fetchOneCell();
             require_once dirname(__FILE__) . '/xnetevents/xnetevents.inc.php';
             $evt = get_event_detail($eid);
             subscribe_lists_event($user->id(), $evt, 1, $montant, true);
@@ -343,7 +345,7 @@ class PaymentModule extends PLModule
 
         /* on genere le mail de confirmation */
         $conf_text = str_replace(
-            array('<prenom>', '<nom>', '<promo>', '<montant>', '<salutation>', '<cher>', 'comment>'),
+            array('<prenom>', '<nom>', '<promo>', '<montant>', '<salutation>', '<cher>', '<comment>'),
             array($user->firstName(), $user->lastName(), $user->promo(), $montant,
                   $user->isFemale() ? 'Chère' : 'Cher', $user->isFemale() ? 'Chère' : 'Cher',
                   Env::v('comment')), $conf_text);
