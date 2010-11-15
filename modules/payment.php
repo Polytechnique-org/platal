@@ -296,7 +296,7 @@ class PaymentModule extends PLModule
         //}
 
         /* on extrait les informations sur l'utilisateur */
-        $user = User::get(Env::v('vads_cust_id'));
+        $user = User::get(Env::i('vads_cust_id'));
         if (!$user) {
             cb_erreur("uid invalide");
         }
@@ -319,7 +319,8 @@ class PaymentModule extends PLModule
         if (Env::v('vads_currency') != "978") {
             cb_erreur("monnaie autre que l'euro");
         }
-        $montant = sprintf("%.02f", ((float)Env::v('vads_amount'))/100);
+        $amount = ((float)Env::i('vads_amount')) / 100;
+        $montant = sprintf("%.02f EUR", $amount);
 
         /* on extrait le code de retour */
         if (Env::v('vads_result') != "00") {
@@ -340,7 +341,7 @@ class PaymentModule extends PLModule
             $eid = $res->fetchOneCell();
             require_once dirname(__FILE__) . '/xnetevents/xnetevents.inc.php';
             $evt = get_event_detail($eid);
-            subscribe_lists_event($user->id(), $evt, 1, $montant, true);
+            subscribe_lists_event($user->id(), $evt, 1, $amount, true);
         }
 
         /* on genere le mail de confirmation */
