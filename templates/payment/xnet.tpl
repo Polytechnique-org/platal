@@ -34,10 +34,10 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso->nom}&nbsp;
 {if $event[$p.id]}
 {assign var='ev' value=$event[$p.id]}
 <p>
-  {if $p.url}
+  {if t($p.url)}
   Plus d'informations sur ce télépaiement sont disponibles sur <a href="{$p.url}">cette page</a>.<br />
   {/if}
-  {if $ev.eid}
+  {if t($ev.eid)}
   Ce paiement est associé à l'événement <a href="{$platal->ns}events">{$ev.title}</a>.<br />
     {if $ev.ins}
     Tu es inscrit à cet événements.
@@ -92,7 +92,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso->nom}&nbsp;
       {/if}Promo</a>
     </th>
     <th>
-      {if $order eq 't.comment'}
+      {if $order eq 'comment'}
         <a href='{$platal->ns}payment?order=comment&order_inv={$order_inv}'>
           <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}   siant" />
       {else}
@@ -110,9 +110,9 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso->nom}&nbsp;
   </tr>
   {assign var="somme" value=0}
   {foreach from=$trans[$p.id] item=p name=people}
-  {if $p.nom neq "somme totale"}
+  {if !t($p.limit)}
   <tr>
-    <td class="center">{$p.date|date_format:"%d/%m/%y"}</td>
+    <td class="center">{if $p.date eq 0}-{else}{$p.date|date_format:"%d/%m/%y"}{/if}</td>
     <td>
       {profile user=$p.user promo=false}
     </td>
