@@ -334,13 +334,13 @@ class PaymentModule extends PLModule
         echo "Paiement stored.\n";
 
         // We check if it is an Xnet payment and then update the related ML.
-        $res = XDB::query('SELECT  eid
+        $res = XDB::query('SELECT  eid, asso_id
                              FROM  group_events
                             WHERE  paiement_id = {?}', $ref);
         if ($res->numRows() == 1) {
-            $eid = $res->fetchOneCell();
+            list($eid, $asso_id) = $res->fetchOneRow();
             require_once dirname(__FILE__) . '/xnetevents/xnetevents.inc.php';
-            $evt = get_event_detail($eid);
+            $evt = get_event_detail($eid, false, $asso_id);
             subscribe_lists_event($user->id(), $evt, 1, $amount, true);
         }
 
