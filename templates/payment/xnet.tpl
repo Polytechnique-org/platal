@@ -20,6 +20,20 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{if t($anchor)}
+{literal}
+<script type="text/javascript">
+//<![CDATA[
+$(document).ready(function() {
+{/literal}
+  location.hash = "#{$anchor}";
+{literal}
+});
+// ]]>
+</script>
+{/literal}
+{/if}
+
 <h1>{$asso->nom}&nbsp;: Gestion des télépaiements </h1>
 
 <p class="descr">
@@ -29,7 +43,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso->nom}&nbsp;
 {foreach from=$titles item=p}
 
 <fieldset>
-<legend><a href="{$platal->ns}payment/{$p.id}">{icon name=money title="Télépaiement"}{$p.text}</a></legend>
+<legend id="legend_{$p.id}"><a href="{$platal->ns}payment/{$p.id}">{icon name=money title="Télépaiement"}{$p.text}</a></legend>
 
 {if $event[$p.id]}
 {assign var='ev' value=$event[$p.id]}

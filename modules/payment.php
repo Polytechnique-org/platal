@@ -522,6 +522,7 @@ class PaymentModule extends PLModule
                 }
                 $page->assign('order_id', $order_id);
                 $page->assign('order', $order);
+                $page->assign('anchor', 'legend_' . $order_id);
             } else {
                 $order_id = false;
                 $ordering = '';
