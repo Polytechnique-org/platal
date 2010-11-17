@@ -61,7 +61,8 @@ function checkCount($sql, $comment = '')
     }
 }
 
-function info($sql, $comment = '', $onlyCounts = false) {
+function info($sql, $comment = '', $onlyCounts = false)
+{
     global $opt_verbose;
     if ($opt_verbose) {
         if ($onlyCounts) {
@@ -70,6 +71,20 @@ function info($sql, $comment = '', $onlyCounts = false) {
             check($sql, $comment);
         }
     }
+}
+
+function infoCountEmpty($table, $field, $nonEmpty = false)
+{
+    $sql = "SELECT COUNT(*) FROM $table";
+    if ($nonEmpty) {
+        $sql .= " WHERE $field IS NOT NULL OR $field != ''";
+        $negation = ' non';
+    } else {
+        $sql .= " WHERE $field IS NULL OR $field = ''";
+        $negation = '';
+    }
+    $comment = "Nombre de champs '$field'$negation vides dans la table '$table'.";
+    info($sql, $comment, true);
 }
 
 /* Parses options. */
@@ -128,12 +143,19 @@ check("SELECT  a.alias AS username, b.alias AS loginbis, b.expire
         WHERE  a.type = 'a_vie'",
       "Donne la liste des homonymes qui ont un alias égal à leur loginbis depuis plus d'un mois, il est temps de supprimer leur alias.");
 
+// Counts empty profile fields that should never be empty.
+infoCountEmpty('profile_addresses', 'text');
+infoCountEmpty('profile_addresses', 'postalText');
+infoCountEmpty('profile_education', 'eduid');
+infoCountEmpty('profile_education', 'degreeid');
+infoCountEmpty('profile_job', 'jobid');
+infoCountEmpty('profile_mentor', 'expertise');
+infoCountEmpty('profile_networking', 'address');
+infoCountEmpty('profile_phones', 'search_tel');
+infoCountEmpty('profile_phones', 'display_tel');
+
 // XXX: counts the number of remaining issues due to the merge (to be removed once all merge related issues have been fixed)
-info('SELECT  COUNT(*)
-        FROM  profile_merge_issues
-       WHERE  issues IS NULL OR issues = \'\'',
-     'Dénombre les erreurs dues à la fusion restantes.',
-     true);
+infoCountEmpty('profile_merge_issues', 'issues', true);
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
