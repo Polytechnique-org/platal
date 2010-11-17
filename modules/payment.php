@@ -503,19 +503,44 @@ class PaymentModule extends PLModule
                   WHERE  asso_id = {?} AND NOT FIND_IN_SET('old', flags)
                ORDER BY  id DESC", $globals->asso('id'));
         $tit = $res->fetchAllAssoc();
-        $page->assign('titres', $tit);
+        $page->assign('titles', $tit);
 
-
-        // TODO: replug sort.
-        $page->assign('order', false);
         $trans = array();
         $event = array();
+        if (may_update()) {
+            static $orders = array('timestamp' => 'p', 'directory_name' => 'a', 'promo' => 'pd', 'comment' => 'p', 'amount' => 'p');
+
+            if (Get::has('order_id') && Get::has('order') && array_key_exists(Get::v('order'), $orders)) {
+                $order_id = Get::i('order_id');
+                $order = Get::v('order');
+                $ordering = ' ORDER BY ' . $orders[$order] . '.' . $order;
+                if (Get::has('order_inv') && Get::i('order_inv') == 1) {
+                    $ordering .= ' DESC';
+                    $page->assign('order_inv', 0);
+                } else {
+                    $page->assign('order_inv', 1);
+                }
+                $page->assign('order_id', $order_id);
+                $page->assign('order', $order);
+            } else {
+                $order_id = false;
+                $ordering = '';
+                $page->assign('order', false);
+            }
+        } else {
+            $ordering = '';
+            $page->assign('order', false);
+        }
         foreach($tit as $foo) {
             $pid = $foo['id'];
             if (may_update()) {
-                $res = XDB::query('SELECT  uid, IF(timestamp = \'0000-00-00\', 0, timestamp) AS date, comment, amount
-                                     FROM  payment_transactions
-                                    WHERE  ref = {?}', $pid);
+                $res = XDB::query('SELECT  p.uid, IF(p.timestamp = \'0000-00-00\', 0, p.timestamp) AS date, p.comment, p.amount
+                                     FROM  payment_transactions AS p
+                               INNER JOIN  accounts             AS a  ON (a.uid = p.uid)
+                                LEFT JOIN  account_profiles     AS ap ON (ap.uid = p.uid AND FIND_IN_SET(\'owner\', ap.perms))
+                                LEFT JOIN  profile_display      AS pd ON (ap.pid = pd.pid)
+                                    WHERE  p.ref = {?}' . (($order_id == $pid) ? $ordering : ''),
+                                  $pid);
                 $trans[$pid] = User::getBulkUsersWithUIDs($res->fetchAllAssoc(), 'uid', 'user');
                 $sum = 0;
                 foreach ($trans[$pid] as $i => $t) {

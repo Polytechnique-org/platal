@@ -26,7 +26,7 @@
 Voici la liste des paiements en ligne possible pour le groupe {$asso->nom}&nbsp;:
 </p>
 
-{foreach from=$titres item=p}
+{foreach from=$titles item=p}
 
 <fieldset>
 <legend><a href="{$platal->ns}payment/{$p.id}">{icon name=money title="Télépaiement"}{$p.text}</a></legend>
@@ -68,43 +68,43 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso->nom}&nbsp;
 <table cellpadding="0" cellspacing="0" id="list_{$p.id}" class='bicol'>
   <tr>
     <th>
-      {if $order eq 'timestamp'}
-        <a href='{$platal->ns}payment?order={$order}&order_inv={$order_inv}'>
+      {if $order eq 'timestamp' && $order_id eq $p.id}
+        <a href='{$platal->ns}payment?order={$order}&order_inv={$order_inv}&order_id={$p.id}'>
           <img src="{$platal->baseurl}images/{if !$order_inv}dn{else}up{/if}.png" alt="" title="Tri {if $order_inv}dé{/if}croissant" />
       {else}
-        <a href='{$platal->ns}payment?order=timestamp'>
+        <a href='{$platal->ns}payment?order=timestamp&order_id={$p.id}'>
       {/if}Date</a>
     </th>
     <th colspan="2">
-      {if $order eq 'nom'}
-        <a href='{$platal->ns}payment?order={$order}&order_inv={$order_inv}'>
+      {if $order eq 'directory_name' && $order_id eq $p.id}
+        <a href='{$platal->ns}payment?order={$order}&order_inv={$order_inv}&order_id={$p.id}'>
           <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}croissant" />
       {else}
-        <a href='{$platal->ns}payment?order=nom'>{/if}
+        <a href='{$platal->ns}payment?order=directory_name&order_id={$p.id}'>{/if}
       NOM Prénom</a>
     </th>
     <th>
-      {if $order eq 'promo'}
-        <a href='{$platal->ns}payment?order={$order}&order_inv={$order_inv}'>
+      {if $order eq 'promo' && $order_id eq $p.id}
+        <a href='{$platal->ns}payment?order={$order}&order_inv={$order_inv}&order_id={$p.id}'>
           <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}croissant" />
       {else}
-        <a href='{$platal->ns}payment?order=promo'>
+        <a href='{$platal->ns}payment?order=promo&order_id={$p.id}'>
       {/if}Promo</a>
     </th>
     <th>
-      {if $order eq 'comment'}
-        <a href='{$platal->ns}payment?order=comment&order_inv={$order_inv}'>
+      {if $order eq 'comment' && $order_id eq $p.id}
+        <a href='{$platal->ns}payment?order=comment&order_inv={$order_inv}&order_id={$p.id}'>
           <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}   siant" />
       {else}
-        <a href='{$platal->ns}payment?order=comment'>
+        <a href='{$platal->ns}payment?order=comment&order_id={$p.id}'>
       {/if}Commentaire</a>
     </th>
     <th>
-      {if $order eq 'amount'}
-        <a href='{$platal->ns}payment?order={$order}&order_inv={$order_inv}'>
+      {if $order eq 'amount' && $order_id eq $p.id}
+        <a href='{$platal->ns}payment?order={$order}&order_inv={$order_inv}&order_id={$p.id}'>
           <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}croissant" />
       {else}
-        <a href='{$platal->ns}payment?order=montant'>
+        <a href='{$platal->ns}payment?order=amount&order_id={$p.id}'>
       {/if}Montant</a>
     </th>
   </tr>
