@@ -46,21 +46,34 @@ class JobTerms {
             $table = 'profile_mentor_term';
             break;
         }
+        // we are in a tree looking for certain job terms:
+        $countingterms = false;
         if ($table) {
             $count = ', COUNT(DISTINCT j.pid) AS nb';
             $join = ' INNER JOIN  profile_job_term_relation AS r2 ON (r2.jtid_1 = e.jtid)
                       INNER JOIN  '.$table.' AS j ON (j.jtid = r2.jtid_2)';
+            $countingterms = 'j.jtid';
         } else {
             $count = $join = '';
         }
         if (!empty($token_filter)) {
             $join .= ' INNER JOIN  profile_job_term_relation AS rtf ON (rtf.jtid_1 = e.jtid) '.
                 self::token_join_query(self::tokenize($token_filter), 'rtf', 'jtid_2');
+            if (!$countingterms) {
+                $countingterms = 'rtf.jtid_2';
+            }
         }
-        return XDB::iterator('SELECT  e.jtid, e.name, e.full_name'.$count.', IF(rf.jtid_1 IS NULL, 1, 0) AS leaf
+        if (!$countingterms) {
+            $select_leaf = 'IF(r_subbranch.jtid_1 IS NULL,1,0)';
+            $join .= ' LEFT JOIN  profile_job_term_relation AS r_subbranch ON (r_subbranch.jtid_1 = e.jtid AND r_subbranch.computed = "original") ';
+        } else {
+            // branches that have counting terms different that
+            // main branch will have subbranches
+            $select_leaf = 'MIN('.$countingterms.' = e.jtid)';
+        }
+        return XDB::iterator('SELECT  e.jtid, e.name, e.full_name'.$count.', '.$select_leaf.' AS leaf
                                 FROM  profile_job_term_enum AS e
                           INNER JOIN  profile_job_term_relation AS r ON (r.jtid_2 = e.jtid)'.$join.'
-                          LEFT JOIN   profile_job_term_relation AS rf ON (rf.jtid_1 = e.jtid AND rf.computed = "original")
                                WHERE  r.jtid_1 = {?} AND r.computed = "original"
                             GROUP BY  e.jtid
                             ORDER BY  e.name',
