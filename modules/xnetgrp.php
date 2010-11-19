@@ -700,8 +700,8 @@ class XnetGrpModule extends PLModule
         }
 
         if ($user) {
-            XDB::execute('REPLACE INTO  group_members (uid, asso_id)
-                                VALUES  ({?}, {?})',
+            XDB::execute('INSERT IGNORE INTO  group_members (uid, asso_id)
+                                      VALUES  ({?}, {?})',
                          $user->id(), $globals->asso('id'));
             $this->removeSubscriptionRequest($user->id());
             pl_redirect('member/' . $user->login());
@@ -1172,9 +1172,10 @@ class XnetGrpModule extends PLModule
                            $art['id'], $globals->asso('id'));
                 if ($art['photo'] && $upload->exists()) {
                     list($imgx, $imgy, $imgtype) = $upload->imageInfo();
-                    XDB::execute("REPLACE INTO  group_announces_photo
-                                           SET  eid = {?}, attachmime = {?}, x = {?}, y = {?}, attach = {?}",
-                                 $aid, $imgtype, $imgx, $imgy, $upload->getContents());
+                    XDB::execute('INSERT INTO  group_announces_photo (eid, attachmime, attach, x, y)
+                                       VALUES  ({?}, {?}, {?}, {?}, {?})
+                      ON DUPLICATE KEY UPDATE  attachmime = VALUES(attachmime), attach = VALUES(attach), x = VALUES(x), y = VALUES(y)',
+                                 $aid, $imgtype, $upload->getContents(), $imgx, $imgy);
                     $upload->rm();
                 }
             }

@@ -555,7 +555,10 @@ class Redirect
         if (!isvalid_email_redirection($email_stripped)) {
             return ERROR_LOOP_EMAIL;
         }
-        XDB::execute('REPLACE INTO emails (uid,email,flags) VALUES({?},{?},"active")', $this->user->id(), $email);
+        // If the email was already present for this user, we reset it to the default values, we thus use REPLACE INTO.
+        XDB::execute('REPLACE INTO  emails (uid, email, flags)
+                            VALUES  ({?}, {?}, \'active\')',
+                     $this->user->id(), $email);
         if ($logger = S::v('log', null)) { // may be absent --> step4.php
             S::logger()->log('email_add', $email . ($this->user->id() != S::v('uid') ? " (admin on {$this->user->login()})" : ""));
         }

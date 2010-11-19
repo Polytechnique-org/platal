@@ -144,8 +144,9 @@ class EventsModule extends PLModule
                             FROM announce_read AS ev
                       INNER JOIN announces AS e ON e.id = ev.evt_id
                            WHERE expiration < NOW()');
-            XDB::execute('REPLACE INTO announce_read VALUES({?},{?})',
-                $eid, S::v('uid'));
+            XDB::execute('INSERT IGNORE INTO  announce_read (evt_id, uid)
+                                      VALUES  ({?}, {?})',
+                         $eid, S::v('uid'));
             pl_redirect('events#'.$pound);
         }
 
@@ -382,9 +383,10 @@ class EventsModule extends PLModule
                               Post::v('promo_min'), Post::v('promo_max'),
                               $flags, $eid);
                 if ($upload->exists() && list($x, $y, $type) = $upload->imageInfo()) {
-                    XDB::execute('REPLACE INTO  announce_photos
-                                           SET  eid = {?}, attachmime = {?}, x = {?}, y = {?}, attach = {?}',
-                                 $eid, $type, $x, $y, $upload->getContents());
+                    XDB::execute('INSERT INTO  announce_photos (eid, attachmime, attach, x, y)
+                                       VALUES  ({?}, {?}, {?}, {?}, {?})
+                      ON DUPLICATE KEY UPDATE  attachmime = VALUES(attachmime), attach = VALUES(attach), x = VALUES(x), y = VALUES(y)',
+                                 $eid, $type, $upload->getContents(), $x, $y);
                     $upload->rm();
                 }
             }

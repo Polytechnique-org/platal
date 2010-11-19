@@ -385,8 +385,9 @@ class EmailModule extends PLModule
                 $_POST['to_contacts'] = explode(';', @$_POST['to_contacts']);
                 $_POST['cc_contacts'] = explode(';', @$_POST['cc_contacts']);
                 $data = serialize($_POST);
-                XDB::execute("REPLACE INTO  email_send_save
-                                    VALUES  ({?}, {?})",
+                XDB::execute('INSERT INTO  email_send_save (uid, data)
+                                   VALUES  ({?}, {?})
+                  ON DUPLICATE KEY UPDATE  data = VALUES(data)',
                              S::user()->id('uid'), $data);
             }
             exit;

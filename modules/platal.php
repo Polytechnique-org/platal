@@ -156,8 +156,9 @@ class PlatalModule extends PLModule
                 $page->trigError('URL invalide');
             } else {
                 $url = Env::t('url');
-                XDB::execute('REPLACE INTO  carvas (uid, url)
-                                    VALUES  ({?}, {?})',
+                XDB::execute('INSERT INTO  carvas (uid, url)
+                                   VALUES  ({?}, {?})
+                  ON DUPLICATE KEY UPDATE  url = VALUES(url)',
                              S::i('uid'), $url);
                 S::logger()->log('carva_add', 'http://' . $url);
                 $page->trigSuccess("Redirection activée vers <a href='http://$url'>$url</a>");

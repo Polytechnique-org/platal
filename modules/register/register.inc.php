@@ -161,10 +161,9 @@ function createAliases(&$subState)
             XDB::execute('UPDATE  aliases
                              SET  expire = ADDDATE(NOW(), INTERVAL 1 MONTH)
                            WHERE  alias = {?}', $emailXorg);
-            XDB::execute('REPLACE INTO  homonyms (homonyme_id, uid)
-                                VALUES  ({?}, {?})', $subState->i('uid'), $h_id);
-            XDB::execute('REPLACE INTO  homonyms (homonyme_id, uid)
-                                VALUES  ({?}, {?})', $h_id, $subState->i('uid'));
+            XDB::execute('INSERT IGNORE INTO  homonyms (homonyme_id, uid)
+                                      VALUES  ({?}, {?}), ({?}, {?})',
+                         $subState->i('uid'), $h_id, $h_id, $subState->i('uid'));
             $res = XDB::query('SELECT  alias
                                  FROM  aliases
                                 WHERE  uid = {?} AND expire IS NULL', $h_id);
@@ -199,9 +198,9 @@ function finishRegistration($subState)
     global $globals;
 
     $hash = rand_url_id(12);
-    XDB::execute('REPLACE INTO  register_pending (uid, forlife, bestalias, mailorg2, password,
-                                                  email, date, relance, naissance, hash, services)
-                        VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, NOW(), 0, {?}, {?}, {?})',
+    XDB::execute('INSERT INTO  register_pending (uid, forlife, bestalias, mailorg2, password,
+                                                 email, date, relance, naissance, hash, services)
+                       VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, NOW(), 0, {?}, {?}, {?})',
                  $subState->i('uid'), $subState->s('forlife'), $subState->s('bestalias'),
                  $subState->s('emailXorg2'), $subState->s('password'), $subState->s('email'),
                  $subState->s('birthdate'), $hash, implode(',', $subState->v('services')));

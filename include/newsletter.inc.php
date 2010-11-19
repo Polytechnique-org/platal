@@ -94,21 +94,25 @@ class NewsLetter extends MassMailer
     {
         $a->_cid = ($a->_cid == 0) ? null : $a->_cid;
         if ($a->_aid >= 0) {
-            XDB::execute('REPLACE INTO  newsletter_art (id, aid, cid, pos, title, body, append)
-                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                          $this->_id, $a->_aid, $a->_cid, $a->_pos,
-                          $a->_title, $a->_body, $a->_append);
-                          $this->_arts['a' . $a->_aid] = $a;
+            XDB::execute('UPDATE  newsletter_art
+                             SET  cid = {?}, pos = {?}, title = {?}, body = {?}, append = {?}
+                           WHERE  id = {?} AND aid = {?}',
+                         $a->_cid, $a->_pos, $a->_title, $a->_body, $a->_append, $this->_id, $a->_aid);
         } else {
-            XDB::execute('INSERT INTO  newsletter_art
-                               SELECT  {?}, MAX(aid)+1, {?}, '
-                                       . ($a->_pos ? intval($a->_pos) : 'MAX(pos)+1')
-                                       . ', {?}, {?}, {?}
-                                 FROM  newsletter_art AS a
-                                WHERE  a.id = {?}',
-                         $this->_id, $a->_cid, $a->_title, $a->_body, $a->_append, $this->_id);
-                         $this->_arts['a' . $a->_aid] = $a;
+            XDB::startTransaction();
+            list($aid, $pos) = XDB::fetchOneRow('SELECT  MAX(aid) AS aid, MAX(pos) AS pos
+                                                   FROM  newsletter_art AS a
+                                                  WHERE  a.id = {?}',
+                                                $this->_id);
+            $a->_aid = ++$aid;
+            $a->_pos = ($a->_pos ? $a->_pos : ++$pos);
+            XDB::execute('INSERT INTO  newsletter_art (id, aid, cid, pos, title, body, append)
+                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                         $this->_id, $a->_aid, $a->_cid, $a->_pos,
+                         $a->_title, $a->_body, $a->_append);
+            XDB::commit();
         }
+        $this->_arts['a' . $a->_aid] = $a;
     }
 
     public function delArticle($aid)
@@ -148,8 +152,8 @@ class NewsLetter extends MassMailer
     static public function subscribe($uid = null)
     {
         $user = is_null($uid) ? S::v('uid') : $uid;
-        XDB::execute("REPLACE INTO  newsletter_ins (uid,last)
-                            VALUES  ({?}, NULL)", $user);
+        XDB::execute('INSERT IGNORE INTO  newsletter_ins (uid, last, hash)
+                                  VALUES  ({?}, NULL, NULL)', $user);
     }
 
     protected function subscriptionWhere()

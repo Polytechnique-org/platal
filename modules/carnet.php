@@ -292,9 +292,10 @@ class CarnetModule extends PLModule
 
             case 'ajouter':
                 if (($contact = User::get(Env::v('user')))) {
-                    if (XDB::execute("REPLACE INTO  contacts (uid, contact)
-                                            VALUES  ({?}, {?})",
-                                     $uid, $contact->id())) {
+                    XDB::execute('INSERT IGNORE INTO  contacts (uid, contact)
+                                              VALUES  ({?}, {?})',
+                                 $uid, $contact->id());
+                    if (XDB::affectedRows() > 0) {
                         Platal::session()->updateNbNotifs();
                         $page->trigSuccess('Contact ajouté&nbsp;!');
                     } else {

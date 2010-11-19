@@ -26,14 +26,11 @@ class ReminderPromotionMl extends Reminder
         $user = S::user();
         switch ($action) {
           case 'yes':
-            $res = XDB::query('SELECT  id
-                                 FROM  groups
-                                WHERE  diminutif = {?}',
-                              $user->profile()->yearPromo());
-            $asso_id = $res->fetchOneCell();
-            XDB::execute('REPLACE INTO  group_members (uid, asso_id)
-                                VALUES  ({?}, {?})',
-                         $user->id(), $asso_id);
+            XDB::execute('INSERT IGNORE INTO  group_members (uid, asso_id)
+                                      SELECT  {?}, id
+                                        FROM  groups
+                                       WHERE  diminutif = {?}'
+                         $user->id(), $user->profile()->yearPromo());
             $mmlist = new MMList($user);
             $mmlist->subscribe('promo' . $user->profile()->yearPromo());
 

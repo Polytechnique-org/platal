@@ -284,8 +284,9 @@ class ProfileSettingJob implements ProfileSetting
             }
         }
         if (count($terms_values) > 0) {
-            XDB::execute('REPLACE INTO  profile_job_term (pid, jid, jtid, computed)
-                                VALUES  '.implode(', ', $terms_values));
+            XDB::rawExecute('INSERT INTO  profile_job_term (pid, jid, jtid, computed)
+                                  VALUES  ' . implode(', ', $terms_values) . '
+                 ON DUPLICATE KEY UPDATE  computed = VALUES(computed)');
         }
     }
 
@@ -323,8 +324,10 @@ class ProfileSettingCorps implements ProfileSetting
 
     public function save(ProfilePage &$page, $field, $value)
     {
-        XDB::execute('REPLACE INTO  profile_corps (original_corpsid, current_corpsid, rankid, corps_pub, pid)
-                            VALUES  ({?}, {?}, {?}, {?}, {?})',
+        XDB::execute('INSERT INTO  profile_corps (original_corpsid, current_corpsid, rankid, corps_pub, pid)
+                           VALUES  ({?}, {?}, {?}, {?}, {?})
+          ON DUPLICATE KEY UPDATE  original_corpsid = VALUES(original_corpsid), current_corpsid = VALUES(current_corpsid)
+                                   rankid = VALUES(rankid), corps_pub = VALUES(corps_pub)',
                       $value['original'], $value['current'], $value['rank'], $value['pub'], $page->pid());
     }
 

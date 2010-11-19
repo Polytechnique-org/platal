@@ -199,29 +199,29 @@ class FusionAxModule extends PLModule
                 $directoryName = $lastname . ' ' . $firstname;
                 ++$xorgId;
 
-                XDB::execute('REPLACE INTO  profiles (hrpid, xorg_id, ax_id, sex)
-                                    VALUES  ({?}, {?}, {?}, {?})',
+                XDB::execute('INSERT INTO  profiles (hrpid, xorg_id, ax_id, sex)
+                                   VALUES  ({?}, {?}, {?}, {?})',
                              $hrid, $xorgId, $ax_id, $sex);
                 $pid = XDB::insertId();
-                XDB::execute('REPLACE INTO  profile_name (pid, name, typeid)
-                                    VALUES  ({?}, {?}, {?})',
+                XDB::execute('INSERT INTO  profile_name (pid, name, typeid)
+                                   VALUES  ({?}, {?}, {?})',
                              $pid, $lastname, $nameTypes['name_ini']);
-                XDB::execute('REPLACE INTO  profile_name (pid, name, typeid)
-                                    VALUES  ({?}, {?}, {?})',
+                XDB::execute('INSERT INTO  profile_name (pid, name, typeid)
+                                   VALUES  ({?}, {?}, {?})',
                              $pid, $firstname, $nameTypes['firstname_ini']);
-                XDB::execute('REPLACE INTO  profile_display (pid, yourself, public_name, private_name,
-                                                             directory_name, short_name, sort_name, promo)
-                                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                XDB::execute('INSERT INTO  profile_display (pid, yourself, public_name, private_name,
+                                                            directory_name, short_name, sort_name, promo)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
                              $pid, $firstname, $fullName, $fullName, $directoryName, $fullName, $directoryName, $promo);
-                XDB::execute('REPLACE INTO  profile_education (pid, eduid, degreeid, entry_year, grad_year, flags)
-                                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?})',
+                XDB::execute('INSERT INTO  profile_education (pid, eduid, degreeid, entry_year, grad_year, flags)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?})',
                              $pid, $eduSchools[Profile::EDU_X], $degreeid, $entry_year, $grad_year, 'primary');
-                XDB::execute('REPLACE INTO  accounts (hruid, type, is_admin, state, full_name, directory_name, display_name, sex)
-                                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, full_name, directory_name, display_name, sex)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
                              $hrid, $type, 0, 'active', $fullName, $directoryName, $lastname, $sex);
                 $uid = XDB::insertId();
-                XDB::execute('REPLACE INTO  account_profiles (uid, pid, perms)
-                                    VALUES  ({?}, {?}, {?})',
+                XDB::execute('INSERT INTO  account_profiles (uid, pid, perms)
+                                   VALUES  ({?}, {?}, {?})',
                              $uid, $pid, 'owner');
             }
             $report[] = 'Promo 1920 ajoutée.';

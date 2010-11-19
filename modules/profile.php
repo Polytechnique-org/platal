@@ -607,8 +607,9 @@ class ProfileModule extends PLModule
             }
             $res .= "\n";
         }
-        XDB::query('REPLACE INTO  search_autocomplete
-                          VALUES  ({?}, {?}, {?}, NOW())',
+        XDB::query('INSERT INTO  search_autocomplete (name, query, result, generated)
+                         VALUES  ({?}, {?}, {?}, NOW())
+               ON DUPLICATE KEY  result = VALUES(result), generated = NOW()',
                     $type, $q_normalized, $res);
         echo $res;
         exit();
@@ -687,13 +688,14 @@ class ProfileModule extends PLModule
                 S::assert_xsrf_token();
 
                 $data = file_get_contents($_FILES['userfile']['tmp_name']);
-            	list($x, $y) = getimagesize($_FILES['userfile']['tmp_name']);
-            	$mimetype = substr($_FILES['userfile']['type'], 6);
-            	unlink($_FILES['userfile']['tmp_name']);
-                XDB::execute(
-                        "REPLACE INTO profile_photos SET pid={?}, attachmime = {?}, attach={?}, x={?}, y={?}",
-                        $user->profile()->id(), $mimetype, $data, $x, $y);
-            	break;
+                list($x, $y) = getimagesize($_FILES['userfile']['tmp_name']);
+                $mimetype = substr($_FILES['userfile']['type'], 6);
+                unlink($_FILES['userfile']['tmp_name']);
+                XDB::execute('INSERT INTO  profile_photos (pid, attachmime, attach, x, y)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?})
+                  ON DUPLICATE KEY UPDATE  attachmime = VALUES(attachmime), attach = VALUES(attach), x = VALUES(x), y = VALUES(y)',
+                             $user->profile()->id(), $mimetype, $data, $x, $y);
+                break;
 
             case "delete":
                 S::assert_xsrf_token();

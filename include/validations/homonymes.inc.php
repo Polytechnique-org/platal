@@ -124,7 +124,9 @@ est ambigu pour des raisons d'homonymie et signalera ton email exact.";
         switch_bestalias($this->user, $this->loginbis);
         if (!$this->warning) {
             XDB::execute("UPDATE aliases SET type = 'homonyme', expire = NOW() WHERE alias = {?}", $this->loginbis);
-            XDB::execute("REPLACE INTO homonyms (homonyme_id, uid) VALUES({?}, {?})", $this->user->id(), $this->user->id());
+            XDB::execute('INSERT IGNORE INTO  homonyms (homonyme_id, uid)
+                                      VALUES  ({?}, {?})',
+                         $this->user->id(), $this->user->id());
         }
 
         return true;
