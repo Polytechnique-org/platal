@@ -255,12 +255,12 @@ class FusionAxModule extends PLModule
         $page->changeTpl('fusionax/view.tpl');
         if ($action == 'create') {
             XDB::execute('DROP VIEW IF EXISTS fusionax_deceased');
-            XDB::execute('CREATE VIEW  fusionax_deceased AS
+            XDB::execute("CREATE VIEW  fusionax_deceased AS
                                SELECT  p.pid, a.ax_id, pd.private_name, pd.promo, p.deathdate AS deces_xorg, a.Date_deces AS deces_ax
                                  FROM  profiles         AS p
                            INNER JOIN  profile_display  AS pd ON (p.pid = pd.pid)
                            INNER JOIN  fusionax_anciens AS a ON (a.ax_id = p.ax_id)
-                                WHERE  p.deathdate != a.Date_deces');
+                                WHERE  p.deathdate != a.Date_deces OR (p.deathdate IS NULL AND a.Date_deces != '0000-00-00')");
             XDB::execute('DROP VIEW IF EXISTS fusionax_promo');
             XDB::execute('CREATE VIEW  fusionax_promo AS
                                SELECT  p.pid, p.ax_id, pd.private_name, pd.promo, pe.entry_year AS promo_etude_xorg,
