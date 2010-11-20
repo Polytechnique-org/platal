@@ -636,7 +636,7 @@ class ProfilePageGeneral extends ProfilePage
                            WHERE  pid = {?}",
                          $this->values['photo_pub'], $this->pid());
         }
-        if ($this->changed['yourself']) {
+        if (S::user()->isMe($this->owner) && $this->changed['yourself']) {
             if ($this->owner) {
                 XDB::execute('UPDATE  accounts
                                  SET  display_name = {?}
