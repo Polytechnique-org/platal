@@ -574,7 +574,11 @@ class ProfilePageGeneral extends ProfilePage
         $res = XDB::query("SELECT  pub
                              FROM  profile_photos
                             WHERE  pid = {?}", $this->pid());
-        $this->values['photo_pub'] = $res->fetchOneCell();
+        if ($res->numRows() == 0) {
+            $this->values['photo_pub'] = 'private';
+        } else {
+            $this->values['photo_pub'] = $res->fetchOneCell();
+        }
 
         if ($this->owner) {
             $res = XDB::query("SELECT  COUNT(*)
