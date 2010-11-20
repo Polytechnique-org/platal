@@ -454,7 +454,7 @@ class FusionAxModule extends PLModule
         if ($action == 'updateXorg') {
             XDB::execute('UPDATE  fusionax_deceased
                              SET  deces_xorg = deces_ax
-                           WHERE  deces_xorg = "0000-00-00"');
+                           WHERE  deces_xorg IS NULL');
         }
         if ($action == 'updateAX') {
             XDB::execute('UPDATE  fusionax_deceased
@@ -475,7 +475,7 @@ class FusionAxModule extends PLModule
         $page->assign('deceasedErrors', $deceasedErrorsSql->fetchOneCell());
         $res = XDB::iterator('SELECT  pid, ax_id, promo, private_name, deces_ax
                                 FROM  fusionax_deceased
-                               WHERE  deces_xorg = "0000-00-00"
+                               WHERE  deces_xorg IS NULL
                                LIMIT  10');
         $page->assign('nbDeceasedMissingInXorg', $res->total());
         $page->assign('deceasedMissingInXorg', $res);
