@@ -545,11 +545,12 @@ class ProfilePageGeneral extends ProfilePage
         if (!S::user()->isMe($this->owner)) {
             $this->settings['deathdate'] = new ProfileSettingDate(true);
         }
+        if (S::user()->isMe($this->owner)) {
+            $this->settings['yourself'] = null;
+        }
         if (S::user()->checkPerms('directory_private')
             || S::user()->isMyProfile($this->owner)) {
-            $this->settings['yourself']
-                                      = $this->settings['freetext']
-                                      = null;
+            $this->settings['freetext'] = null;
             $this->settings['freetext_pub']
                                       = $this->settings['photo_pub']
                                       = new ProfileSettingPub();
