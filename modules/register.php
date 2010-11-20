@@ -71,7 +71,7 @@ class RegisterModule extends PLModule
                                    SELECT  m.uid, m.sender, 0
                                      FROM  register_marketing AS m
                                     WHERE  m.hash
-                         ON DUPLICATE KEY  sender = VALUES(sender), success = VALUES(success)',
+                  ON DUPLICATE KEY UPDATE  sender = VALUES(sender), success = VALUES(success)',
                              $subState->s('hash'));
             }
         }

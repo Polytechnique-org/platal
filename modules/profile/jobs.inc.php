@@ -326,7 +326,7 @@ class ProfileSettingCorps implements ProfileSetting
     {
         XDB::execute('INSERT INTO  profile_corps (original_corpsid, current_corpsid, rankid, corps_pub, pid)
                            VALUES  ({?}, {?}, {?}, {?}, {?})
-          ON DUPLICATE KEY UPDATE  original_corpsid = VALUES(original_corpsid), current_corpsid = VALUES(current_corpsid)
+          ON DUPLICATE KEY UPDATE  original_corpsid = VALUES(original_corpsid), current_corpsid = VALUES(current_corpsid),
                                    rankid = VALUES(rankid), corps_pub = VALUES(corps_pub)',
                       $value['original'], $value['current'], $value['rank'], $value['pub'], $page->pid());
     }
