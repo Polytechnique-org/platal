@@ -85,34 +85,7 @@
 
 {if $owners|@count}
 <table class='tinybicol' cellpadding='0' cellspacing='0'>
-  {foreach from=$owners item=xs key=promo}
-  {foreach from=$xs item=user name=all}
-  <tr>
-    <td class='titre'>
-      {if $smarty.foreach.all.first}
-      {if $promo}{$promo}{else}non-X{/if}
-      {/if}
-    </td>
-    <td>
-      {if $promo && $user.x}
-      {if $user.b}{assign var=lostUsers value=true}{/if}
-      {profile user=$user.x promo=false}
-      {elseif $user.x}
-      <a href="{$platal->ns}member/{$user.x}">{if $user.n|trim}{$x.n}{else}{$user.l}{/if}</a>
-      {elseif $user.n}
-      {$user.n}
-      {else}
-      {$user.l}
-      {/if}
-    </td>
-    {if $user.p}
-    <td class="right">
-      {$user.p}
-    </td>
-    {/if}
-  </tr>
-  {/foreach}
-  {/foreach}
+  {include file='lists/display_list.tpl' list=$owners delete=false no_sort_key='non-X' promo=$smarty.get.alpha}
 </table>
 {/if}
 
@@ -129,45 +102,17 @@
 {if $members|@count}
 <table class='bicol' cellpadding='0' cellspacing='0'>
   {if $details.own || hasPerms('admin,groupadmin')}
-  <tr><td colspan="3">
+  <tr><td colspan="2">
   <a href="{$platal->ns}lists/csv/{$platal->argv[1]}/{$platal->argv[1]}.csv">
     {icon name="page_excel" title="Télécharger la liste des membres"}
     Télécharger la liste des membres au format Excel
   </a>
   </td></tr>
   {/if}
-  {assign var=lostUsers value=false}
-  {foreach from=$members item=users key=promo}
-  {foreach from=$users item=user name=all}
-  <tr>
-    <td class='titre' style="width: 20%">
-      {if $smarty.foreach.all.first}
-      {if $promo}{$promo}{else}non-X{/if}
-      {/if}
-    </td>
-    <td>
-      {if $promo && $user.x}
-      {if $user.b}{assign var=lostUsers value=true}{/if}
-      {profile user=$user.x promo=false}
-      {elseif $user.x}
-      <a href="{$platal->ns}member/{$user.x}">{if $user.n|trim}{$x.n}{else}{$user.l}{/if}</a>
-      {elseif $user.n}
-      {$user.n}
-      {else}
-      {$user.l}
-      {/if}
-    </td>
-    {if $user.p}
-    <td class="right">
-      {$user.p}
-    </td>
-    {/if}
-  </tr>
-  {/foreach}
-  {/foreach}
+  {include file='lists/display_list.tpl' list=$members delete=false no_sort_key='non-X' promo=$smarty.get.alpha}
 </table>
 
-{if $lostUsers}
+{if t($lostUsers)}
 <p class="smaller">
   {icon name=error}&nbsp;Un camarade signalé par ce symbole n'a plus d'adresse de redirection et ne peut donc
   plus être contacté via son adresse polytechnique.org. Si tu connais sa nouvelle adresse, tu peux nous la communiquer en

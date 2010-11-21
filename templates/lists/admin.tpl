@@ -108,33 +108,10 @@ emails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la
 <form method='post' action='{$smarty.server.REQUEST_URI}'>
   {xsrf_token_field}
   <table class='tinybicol' cellpadding='0' cellspacing='0'>
-    {foreach from=$owners item=users key=alpha}
-    {foreach from=$users item=user name=all}
-    <tr>
-      <td class='titre' style="width: 20%">
-        {if $smarty.foreach.all.first}
-        {if $alpha}{$alpha}{/if}
-        {/if}
-      </td>
-      <td>
-        {if t($user.x)}
-        {if t($user.b)}{assign var=lostUsers value=true}{/if}
-        {profile user=$user.x promo=false}
-        {elseif t($user.x)}
-        <a href="{$platal->ns}member/{$user.x}">{if $user.n|trim}{$x.n}{else}{$user.l}{/if}</a>
-        {elseif t($user.n)}
-        {$user.n}
-        {else}
-        {$user.l}
-        {/if}
-        <a href='{$platal->pl_self(1)}?del_owner={$user.l}&amp;token={xsrf_token}'>{icon name=cross title='retirer modérateur'}</a>
-      </td>
-    </tr>
-    {/foreach}
-    {/foreach}
+    {include file='lists/display_list.tpl' list=$owners delete='del_owner' no_sort_key='' promo=true}
     <tr class="pair">
       <td class='titre'>Ajouter</td>
-      <td>
+      <td colspan="2">
         <input type='text' size='30' name='add_owner' />
         <input type='submit' value='ajouter' />
       </td>
@@ -150,47 +127,24 @@ emails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la
 <form method='post' action='{$smarty.server.REQUEST_URI}' enctype="multipart/form-data">
   {xsrf_token_field}
   <table class='bicol' cellpadding='0' cellspacing='0'>
-    {foreach from=$members item=users key=alpha}
-    {foreach from=$users item=user name=all}
+    {include file='lists/display_list.tpl' list=$members delete='del_member' no_sort_key='' promo=true}
     <tr>
-      <td class='titre' style="width: 20%">
-        {if $smarty.foreach.all.first}
-        {if $alpha}{$alpha}{/if}
-        {/if}
-      </td>
-      <td>
-        {if t($user.x)}
-        {if t($user.b)}{assign var=lostUsers value=true}{/if}
-        {profile user=$user.x promo=false}
-        {elseif t($user.x)}
-        <a href="{$platal->ns}member/{$user.x}">{if $user.n|trim}{$x.n}{else}{$user.l}{/if}</a>
-        {elseif t($user.n)}
-        {$user.n}
-        {else}
-        {$user.l}
-        {/if}
-        <a href='{$platal->pl_self(1)}?del_member={$user.l}&amp;token={xsrf_token}'>{icon name=cross title='retirer membre'}</a>
-      </td>
-    </tr>
-    {/foreach}
-    {/foreach}
-    <tr>
-      <th colspan="2">Ajouter</th>
+      <th colspan="3">Ajouter</th>
     </tr>
     <tr class="pair">
       <td class="titre">Liste</td>
-      <td>
+      <td colspan="2">
         <input type='text' size='40' name='add_member' />
       </td>
     </tr>
     <tr class="pair">
       <td class="titre">ou fichier(*)</td>
-      <td>
+      <td colspan="2">
         <input type="file" name="add_member_file" />*
       </td>
     </tr>
     <tr class="pair">
-      <td colspan="2" class="center">
+      <td colspan="3" class="center">
         <input type='submit' value='ajouter' />
       </td>
     </tr>

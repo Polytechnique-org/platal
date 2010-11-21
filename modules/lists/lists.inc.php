@@ -21,33 +21,35 @@
 
 // {{{ function list_sort_owners
 
-function list_sort_owners(&$members, $tri_promo = true)
+function list_sort_owners($members, $tri_promo = true)
 {
     global $globals;
 
-    $membres = Array();
+    // $membres' structure is the following: $sortKey => $key => $listMember
+    $membres = array();
 
-    foreach($members as $mem) {
-        $user = User::getSilent($mem);
+    foreach($members as $member) {
+        $user = User::getSilent($member);
         if (!$user) {
-            $membres[0][] = array('l' => $mem, 'p' => (!$tri_promo ? 'inconnus' : null), 'n' => null, 'x' => null, 'b' => null);
+            $membres[0][$member] = array('name' => null, 'email' => $member, 'category' => null, 'uid' => null, 'lost' => null, 'hasProfile' => null);
         } else {
+            $hasProfile = $user->hasProfile();
             $uid = $user->id();
-            $nom = $user->directoryName();
-            $promo = $user->category();
-            if (!$promo) {
-                $promo = 'extérieurs';
+            $name = $user->directoryName();
+            $category = $user->category();
+            $key = $tri_promo ? ($category ? $category : 'AAAAA') : strtoupper($name{0});
+            if (!$category) {
+                $category = 'extérieurs';
             }
-            $key = $tri_promo ? ($promo != 'extérieurs' ? $promo : 0) : strtoupper(@$nom{0});
-            if ($tri_promo) {
-                $promo = null;
-            }
-            $membres[$key][$nom.$mem] = array('n' => $nom, 'l' => $mem, 'p' => $promo, 'x' => $uid, 'b' => $user->lost);
+            $membres[$key][$name . $member] = array('name' => $name, 'email' => $member, 'category' => $category,
+                                                    'uid' => $uid, 'lost' => $user->lost, 'hasProfile' => $hasProfile);
         }
     }
 
     ksort($membres);
-    foreach($membres as $key=>$val) ksort($membres[$key]);
+    foreach($membres as $membre)  {
+        ksort($membre);
+    }
     return $membres;
 }
 
