@@ -109,12 +109,12 @@ function payment_submit(form)
     <tr>
       <td>Transaction</td>
       <td>
-        {if $asso}
+        {if t($asso)}
         <strong>{$pay->text}</strong><input type="hidden" name="ref" value="{$pay->id}" />
         {else}
         <select name="ref" onchange="payment_submit(this.form)">
           {select_db_table table="payments" valeur=$pay->id
-                           where="WHERE FIND_IN_SET(\'old\',t.flags)=0"
+                           where="WHERE FIND_IN_SET('old', t.flags) = 0"
                            join="LEFT JOIN groups AS g ON (t.asso_id = g.id)" group="g.nom"}
         </select>
         {/if}
@@ -150,7 +150,7 @@ function payment_submit(form)
   </table>
 </form>
 
-{if $transactions}
+{if t($transactions)}
 <p class="descr">Tu as déjà effectué des paiements pour cette transaction&nbsp;:</p>
 <table class="bicol">
 <tr><th>Date</th><th>Montant</th></tr>
