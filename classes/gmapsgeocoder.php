@@ -107,7 +107,6 @@ class GMapsGeocoder extends Geocoder {
         $parameters = array(
             'key'    => $globals->geocoder->gmaps_key,
             'sensor' => 'false',   // The queried address wasn't obtained from a GPS sensor.
-            'hl'     => 'fr',      // Output langage.
             'oe'     => 'utf8',    // Output encoding.
             'output' => 'json',    // Output format.
             'gl'     => 'fr',      // Location preferences (addresses are in France by default).
