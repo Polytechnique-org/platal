@@ -148,6 +148,7 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
             userdesc = UserDesc(forlife, name, None, 0)
             return (userdesc, perms, vhost)
         else:
+            print "no user found for uid: %s, passwd: %s" % (uid, md5)
             return None
 
 ################################################################################
