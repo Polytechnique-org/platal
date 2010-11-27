@@ -81,12 +81,13 @@ class Address
     public $pub = 'private';
 
     // Database's fields required for 'home' addresses.
-    public $flags = null; // 'current', 'temporary', 'secondary', 'mail', 'cedex'
+    public $flags = null; // 'current', 'temporary', 'secondary', 'mail', 'cedex', 'deliveryIssue'
     public $comment = null;
     public $current = null;
     public $temporary = null;
     public $secondary = null;
     public $mail = null;
+    public $deliveryIssue = null;
 
     // Remaining fields that do not belong to profile_addresses.
     public $phones = array();
@@ -105,7 +106,7 @@ class Address
         if (!is_null($this->flags)) {
             $this->flags = new PlFlagSet($this->flags);
         } else {
-            static $flags = array('current', 'temporary', 'secondary', 'mail');
+            static $flags = array('current', 'temporary', 'secondary', 'mail', 'deliveryIssue');
 
             $this->flags = new PlFlagSet();
             foreach ($flags as $flag) {
@@ -211,7 +212,7 @@ class Address
             $address['pub'] = $this->pub;
         }
         if ($this->type == self::LINK_PROFILE) {
-            static $flags = array('current', 'temporary', 'secondary', 'mail', 'cedex');
+            static $flags = array('current', 'temporary', 'secondary', 'mail', 'cedex', 'deliveryIssue');
 
             foreach ($flags as $flag) {
                 $address[$flag] = $this->flags->hasFlag($flag);
@@ -231,11 +232,12 @@ class Address
         }
         if ($this->type == self::LINK_PROFILE) {
             static $flags = array(
-                'current'   => 'actuelle',
-                'temporary' => 'temporaire',
-                'secondary' => 'secondaire',
-                'mail'      => 'conctactable par courier',
-                'cedex'     => 'type cédex',
+                'current'       => 'actuelle',
+                'temporary'     => 'temporaire',
+                'secondary'     => 'secondaire',
+                'mail'          => 'conctactable par courier',
+                'deliveryIssue' => 'n\'habite pas à l\'adresse indiquée',
+                'cedex'         => 'type cédex',
             );
 
             $address .= ', commentaire : ' . $this->comment;
