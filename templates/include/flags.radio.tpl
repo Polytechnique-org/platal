@@ -22,7 +22,7 @@
 {if t($withtext)}
 <a href="Xorg/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ?</a>
 {/if}
-{if !t($val)}{assign var=val value='private'}{/if}
+{if !t($val)}{assign var=val value='ax'}{/if}
 <label><input type="radio" name="{$name}" value="public"{if $val eq 'public'} checked="checked"{/if}
        {if t($disabled)}disabled="disabled"{/if} />
 {icon name="flag_green" title="site public"}

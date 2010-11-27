@@ -78,7 +78,7 @@ class Address
     public $geocodeChosen = null;
 
     // Database's field required for both 'home' and 'job' addresses.
-    public $pub = 'private';
+    public $pub = 'ax';
 
     // Database's fields required for 'home' addresses.
     public $flags = null; // 'current', 'temporary', 'secondary', 'mail', 'cedex', 'deliveryIssue'
