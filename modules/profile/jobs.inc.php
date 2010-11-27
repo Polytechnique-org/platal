@@ -312,10 +312,11 @@ class ProfileSettingCorps implements ProfileSetting
     {
         $success = true;
         if (is_null($value)) {
-            $res = XDB::query("SELECT  original_corpsid AS original, current_corpsid AS current,
-                                       rankid AS rank, corps_pub AS pub
-                                 FROM  profile_corps
-                                WHERE  pid = {?}",
+            $res = XDB::query('SELECT  c.original_corpsid AS original, e.name AS originalText,
+                                       c.current_corpsid AS current, c.rankid AS rank, c.corps_pub AS pub
+                                 FROM  profile_corps      AS c
+                           INNER JOIN  profile_corps_enum AS e ON (c.original_corpsid = e.id)
+                                WHERE  c.pid = {?}',
                             $page->pid());
             return $res->fetchOneAssoc();
         }
@@ -324,11 +325,19 @@ class ProfileSettingCorps implements ProfileSetting
 
     public function save(ProfilePage &$page, $field, $value)
     {
-        XDB::execute('INSERT INTO  profile_corps (original_corpsid, current_corpsid, rankid, corps_pub, pid)
-                           VALUES  ({?}, {?}, {?}, {?}, {?})
-          ON DUPLICATE KEY UPDATE  original_corpsid = VALUES(original_corpsid), current_corpsid = VALUES(current_corpsid),
-                                   rankid = VALUES(rankid), corps_pub = VALUES(corps_pub)',
-                      $value['original'], $value['current'], $value['rank'], $value['pub'], $page->pid());
+        if (!S::user()->isMe($page->owner)) {
+            XDB::execute('INSERT INTO  profile_corps (original_corpsid, current_corpsid, rankid, corps_pub, pid)
+                               VALUES  ({?}, {?}, {?}, {?}, {?})
+              ON DUPLICATE KEY UPDATE  original_corpsid = VALUES(original_corpsid), current_corpsid = VALUES(current_corpsid),
+                                       rankid = VALUES(rankid), corps_pub = VALUES(corps_pub)',
+                          $value['original'], $value['current'], $value['rank'], $value['pub'], $page->pid());
+        } else {
+            XDB::execute('INSERT INTO  profile_corps (current_corpsid, rankid, corps_pub, pid)
+                               VALUES  ({?}, {?}, {?}, {?})
+              ON DUPLICATE KEY UPDATE  current_corpsid = VALUES(current_corpsid),
+                                       rankid = VALUES(rankid), corps_pub = VALUES(corps_pub)',
+                          $value['current'], $value['rank'], $value['pub'], $page->pid());
+        }
     }
 
     public function getText($value)
@@ -384,10 +393,12 @@ class ProfilePageJobs extends ProfilePage
         require_once 'emails.combobox.inc.php';
         fill_email_combobox($page, $this->owner);
 
-        $res = XDB::iterator("SELECT  id, name
-                                FROM  profile_corps_enum
-                            ORDER BY  id = 1 DESC, name");
-        $page->assign('original_corps', $res->fetchAllAssoc());
+        if (!S::user()->isMe($page->owner)) {
+            $res = XDB::iterator('SELECT  id, name
+                                    FROM  profile_corps_enum
+                                ORDER BY  id = 1 DESC, name');
+            $page->assign('original_corps', $res->fetchAllAssoc());
+        }
 
         $res = XDB::iterator("SELECT  id, name
                                 FROM  profile_corps_enum
