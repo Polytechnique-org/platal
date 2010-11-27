@@ -44,7 +44,7 @@
 
 
 <div class="contact {if !$registered || $dead }grayed{/if}"
-     {if $registered}title="fiche mise à jour le {$profile->last_change|date_format}"{/if}>
+     {if $profile->last_change}title="fiche mise à jour le {$profile->last_change|date_format}"{/if}>
   <div class="identity">
     {if $withAuth}
     <div class="photo">
@@ -54,9 +54,9 @@
 
     <div class="nom">
       {if $profile->isFemale()}&bull;{/if}
-      {if !$dead && $registered}<a href="profile/{$profile->hrid()}" class="popup2">{/if}
+      {if !$dead && ($withAuth || $registered)}<a href="profile/{$profile->hrid()}" class="popup2">{/if}
       {$profile->directory_name}
-      {if !$dead && $registered}</a>{/if}
+      {if !$dead && ($withAuth || $registered)}</a>{/if}
     </div>
 
     <div class="edu">

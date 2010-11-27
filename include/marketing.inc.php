@@ -329,9 +329,9 @@ class ListMarketing extends AnnuaireMarketing
 
     public function process(array $user)
     {
-        return XDB::execute("REPLACE INTO  register_subs (uid, type, sub, domain)
-            VALUES  ({?}, 'list', {?}, {?})",
-                $user['id'], $this->name, $this->domain);
+        return XDB::execute("INSERT IGNORE INTO  register_subs (uid, type, sub, domain)
+                                         VALUES  ({?}, 'list', {?}, {?})",
+                            $user['id'], $this->name, $this->domain);
     }
 }
 
@@ -359,9 +359,9 @@ class GroupMarketing extends AnnuaireMarketing
 
     public function process(array $user)
     {
-        return XDB::execute("REPLACE INTO  register_subs (uid, type, sub, domain)
-            VALUES  ({?}, 'group', {?}, '')",
-                $user['id'], $this->group);
+        return XDB::execute("INSERT IGNORE INTO  register_subs (uid, type, sub, domain)
+                                         VALUES  ({?}, 'group', {?}, '')",
+                            $user['id'], $this->group);
     }
 }
 

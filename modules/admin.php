@@ -957,8 +957,8 @@ class AdminModule extends PLModule
                     XDB::execute("UPDATE  aliases
                                      SET  type = 'homonyme', expire=NOW()
                                    WHERE  alias = {?}", $loginbis);
-                    XDB::execute("REPLACE INTO  homonyms (homonyme_id, uid)
-                                        VALUES  ({?}, {?})", $target, $target);
+                    XDB::execute('INSERT IGNORE INTO  homonyms (homonyme_id, uid)
+                                              VALUES  ({?}, {?})', $target, $target);
                     send_robot_homonyme($user, $loginbis);
                     $op = 'list';
                     $page->trigSuccess('Email envoyé à ' . $user->forlifeEmail() . ', alias supprimé.');
@@ -1093,8 +1093,9 @@ class AdminModule extends PLModule
                     $hide[] = $cat;
                 }
             $hide_requests = join(',', $hide);
-            XDB::query('REPLACE INTO  requests_hidden (uid, hidden_requests)
-                              VALUES  ({?}, {?})',
+            XDB::query('INSERT INTO  requests_hidden (uid, hidden_requests)
+                             VALUES  ({?}, {?})
+            ON DUPLICATE KEY UPDATE  hidden_requests = VALUES(hidden_requests)',
                        S::v('uid'), $hide_requests);
         } elseif ($hide_requests)  {
             foreach (explode(',', $hide_requests) as $hide_type)
@@ -1481,7 +1482,9 @@ class AdminModule extends PLModule
                                       NAF_code = {?}, AX_code = {?}, holdingid = {?}
                                WHERE  id = {?}',
                              Env::t('name'), Env::t('acronym'), Env::t('url'), Env::t('email'),
-                             Env::t('NAF_code'), Env::i('AX_code'), Env::i('holdingId'), $id);
+                             (Env::t('NAF_code') == 0 ? null : Env::t('NAF_code')),
+                             (Env::i('AX_code') == 0 ? null : Env::t('AX_code')),
+                             (Env::i('holdingId') == 0 ? null : Env::t('holdingId')), $id);
 
                 $phone = new Phone(array('display' => Env::v('tel'), 'link_id' => $id, 'id' => 0, 'type' => 'fixed',
                                          'link_type' => Phone::LINK_COMPANY, 'pub' => 'public'));

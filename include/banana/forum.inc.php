@@ -238,8 +238,10 @@ class ForumsBanana extends Banana
                 } else {
                     $last_seen = '0000-00-00';
                 }
-                XDB::execute('REPLACE INTO  forum_profiles (uid, sig, mail, name, flags, tree_unread, tree_read, last_seen)
-                                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                XDB::execute('INSERT INTO  forum_profiles (uid, sig, mail, name, flags, tree_unread, tree_read, last_seen)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})
+                  ON DUPLICATE KEY UPDATE  sig = VALUES(sig), mail = VALUES(mail), name = VALUES(name), flags = VALUES(flags),
+                                           tree_unread = VALUES(tree_unread), tree_read = VALUES(tree_read), last_seen = VALUES(last_seen)',
                              $this->user->id(), Post::v('bananasig'),
                              Post::v('bananamail'), Post::v('banananame'),
                              $flags, $unread, $read, $last_seen);

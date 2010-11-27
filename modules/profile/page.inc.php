@@ -304,8 +304,9 @@ abstract class ProfilePage implements PlWizardPage
         $user = S::user();
         if ($owner->isActive() && $owner->id() != $user->id()) {
             foreach ($changedFields as $field => $values) {
-                XDB::execute('REPLACE INTO  profile_modifications (pid, uid, field, oldText, newText)
-                                    VALUES  ({?}, {?}, {?}, {?}, {?})',
+                XDB::execute('INSERT INTO  profile_modifications (pid, uid, field, oldText, newText)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?})
+                  ON DUPLICATE KEY UPDATE  oldText = VALUES(oldText), newText = VALUES(newText)',
                              $this->pid(), $user->id(), $field, $values[0], $values[1]);
             }
         }

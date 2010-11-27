@@ -263,9 +263,10 @@ class SearchModule extends PLModule
         if ($nbResults == 0) {
             $res = $q."|-2\n";
         }
-        XDB::query('REPLACE INTO  search_autocomplete
-                          VALUES  ({?}, {?}, {?}, NOW())',
-                    $type, $q, $res);
+        XDB::query('INSERT INTO  search_autocomplete (name, query, result, generated)
+                         VALUES  ({?}, {?}, {?}, NOW())
+        ON DUPLICATE KEY UPDATE  result = VALUES(result), generated = VALUES(generated)',
+                   $type, $q, $res);
         echo $res;
         exit();
     }

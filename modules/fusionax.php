@@ -199,29 +199,29 @@ class FusionAxModule extends PLModule
                 $directoryName = $lastname . ' ' . $firstname;
                 ++$xorgId;
 
-                XDB::execute('REPLACE INTO  profiles (hrpid, xorg_id, ax_id, sex)
-                                    VALUES  ({?}, {?}, {?}, {?})',
+                XDB::execute('INSERT INTO  profiles (hrpid, xorg_id, ax_id, sex)
+                                   VALUES  ({?}, {?}, {?}, {?})',
                              $hrid, $xorgId, $ax_id, $sex);
                 $pid = XDB::insertId();
-                XDB::execute('REPLACE INTO  profile_name (pid, name, typeid)
-                                    VALUES  ({?}, {?}, {?})',
+                XDB::execute('INSERT INTO  profile_name (pid, name, typeid)
+                                   VALUES  ({?}, {?}, {?})',
                              $pid, $lastname, $nameTypes['name_ini']);
-                XDB::execute('REPLACE INTO  profile_name (pid, name, typeid)
-                                    VALUES  ({?}, {?}, {?})',
+                XDB::execute('INSERT INTO  profile_name (pid, name, typeid)
+                                   VALUES  ({?}, {?}, {?})',
                              $pid, $firstname, $nameTypes['firstname_ini']);
-                XDB::execute('REPLACE INTO  profile_display (pid, yourself, public_name, private_name,
-                                                             directory_name, short_name, sort_name, promo)
-                                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                XDB::execute('INSERT INTO  profile_display (pid, yourself, public_name, private_name,
+                                                            directory_name, short_name, sort_name, promo)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
                              $pid, $firstname, $fullName, $fullName, $directoryName, $fullName, $directoryName, $promo);
-                XDB::execute('REPLACE INTO  profile_education (pid, eduid, degreeid, entry_year, grad_year, flags)
-                                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?})',
+                XDB::execute('INSERT INTO  profile_education (pid, eduid, degreeid, entry_year, grad_year, flags)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?})',
                              $pid, $eduSchools[Profile::EDU_X], $degreeid, $entry_year, $grad_year, 'primary');
-                XDB::execute('REPLACE INTO  accounts (hruid, type, is_admin, state, full_name, directory_name, display_name, sex)
-                                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, full_name, directory_name, display_name, sex)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
                              $hrid, $type, 0, 'active', $fullName, $directoryName, $lastname, $sex);
                 $uid = XDB::insertId();
-                XDB::execute('REPLACE INTO  account_profiles (uid, pid, perms)
-                                    VALUES  ({?}, {?}, {?})',
+                XDB::execute('INSERT INTO  account_profiles (uid, pid, perms)
+                                   VALUES  ({?}, {?}, {?})',
                              $uid, $pid, 'owner');
             }
             $report[] = 'Promo 1920 ajoutée.';
@@ -235,7 +235,7 @@ class FusionAxModule extends PLModule
             $next = 'clean';
         } elseif ($action == 'clean') {
             // nettoyage du fichier temporaire
-            //exec('rm -Rf ' . $spoolpath);
+            exec('rm -Rf ' . $spoolpath);
             $report[] = 'Import finit.';
         }
         foreach($report as $t) {
@@ -255,12 +255,12 @@ class FusionAxModule extends PLModule
         $page->changeTpl('fusionax/view.tpl');
         if ($action == 'create') {
             XDB::execute('DROP VIEW IF EXISTS fusionax_deceased');
-            XDB::execute('CREATE VIEW  fusionax_deceased AS
+            XDB::execute("CREATE VIEW  fusionax_deceased AS
                                SELECT  p.pid, a.ax_id, pd.private_name, pd.promo, p.deathdate AS deces_xorg, a.Date_deces AS deces_ax
                                  FROM  profiles         AS p
                            INNER JOIN  profile_display  AS pd ON (p.pid = pd.pid)
                            INNER JOIN  fusionax_anciens AS a ON (a.ax_id = p.ax_id)
-                                WHERE  p.deathdate != a.Date_deces');
+                                WHERE  p.deathdate != a.Date_deces OR (p.deathdate IS NULL AND a.Date_deces != '0000-00-00')");
             XDB::execute('DROP VIEW IF EXISTS fusionax_promo');
             XDB::execute('CREATE VIEW  fusionax_promo AS
                                SELECT  p.pid, p.ax_id, pd.private_name, pd.promo, pe.entry_year AS promo_etude_xorg,
@@ -454,7 +454,7 @@ class FusionAxModule extends PLModule
         if ($action == 'updateXorg') {
             XDB::execute('UPDATE  fusionax_deceased
                              SET  deces_xorg = deces_ax
-                           WHERE  deces_xorg = "0000-00-00"');
+                           WHERE  deces_xorg IS NULL');
         }
         if ($action == 'updateAX') {
             XDB::execute('UPDATE  fusionax_deceased
@@ -475,7 +475,7 @@ class FusionAxModule extends PLModule
         $page->assign('deceasedErrors', $deceasedErrorsSql->fetchOneCell());
         $res = XDB::iterator('SELECT  pid, ax_id, promo, private_name, deces_ax
                                 FROM  fusionax_deceased
-                               WHERE  deces_xorg = "0000-00-00"
+                               WHERE  deces_xorg IS NULL
                                LIMIT  10');
         $page->assign('nbDeceasedMissingInXorg', $res->total());
         $page->assign('deceasedMissingInXorg', $res);

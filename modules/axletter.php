@@ -188,10 +188,15 @@ class AXLetterModule extends PLModule
                 break;
 
               case 'Confirmer':
-                XDB::execute("REPLACE INTO  axletter
-                                       SET  id = {?}, short_name = {?}, subject = {?}, title = {?}, body = {?},
-                                            signature = {?}, promo_min = {?}, promo_max = {?}, echeance = {?}, subset = {?}, subset_rm = {?}",
-                             $id, $short_name, $subject, $title, $body, $signature, $promo_min, $promo_max, $echeance, $subset ? implode("\n", $subset_to) : null, $subset_rm);
+                XDB::execute('INSERT INTO  axletter (id, short_name, subject, title, body, signature,
+                                                     promo_min, promo_max, echeance, subset, subset_rm)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})
+                  ON DUPLICATE KEY UPDATE  short_name = VALUES(short_name), subject = VALUES(subject), title = VALUES(title),
+                                           body = VALUES(body), signature = VALUES(signature), promo_min = VALUES(promo_min),
+                                           promo_max = VALUES(promo_max), echeance = VALUES(echeance), subset = VALUES(subset),
+                                           subset_rm = VALUES(subset_rm)',
+                             $id, $short_name, $subject, $title, $body, $signature, $promo_min, $promo_max, $echeance,
+                             $subset ? implode("\n", $subset_to) : null, $subset_rm);
                 if (!$saved) {
                     global $globals;
                     $mailer = new PlMailer();

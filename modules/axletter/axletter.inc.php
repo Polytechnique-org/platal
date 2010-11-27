@@ -131,8 +131,8 @@ class AXLetter extends MassMailer
     static public function subscribe($uid = null)
     {
         $user = is_null($uid) ? S::v('uid') : $uid;
-        XDB::execute("REPLACE INTO  axletter_ins (uid,last)
-                            VALUES  ({?}, 0)", $user);
+        XDB::execute('INSERT IGNORE INTO  axletter_ins (uid, last)
+                                  VALUES  ({?}, 0)', $user);
     }
 
     static public function hasPerms()

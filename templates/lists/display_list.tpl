@@ -20,15 +20,39 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{config_load file="mails.conf" section="marketing"}
-{if $mail_part eq 'head'}
-{from full=#from#}
-{elseif $mail_part eq 'text'}
-{if $sender->isFemale()}Chère{else}Cher{/if} {$sender->firstName()},
+{assign var=lostUsers value=false}
+{foreach from=$list item=users key=sort_key}
+{foreach from=$users item=user name=all}
+<tr>
+  <td class='titre' style="width: 20%">
+    {if $smarty.foreach.all.first}
+    {if $sort_key neq 'AAAAA'}{$sort_key}{else}{$no_sort_key}{/if}
+    {/if}
+  </td>
+  <td>
+    {if t($user.hasProfile)}
+    {if t($user.lost)}{assign var=lostUsers value=true}{/if}
+    {profile user=$user.uid promo=$promo}
+    {elseif t($user.uid)}
+    {if t($user.name)}{$user.name}{else}{$user.email}{/if}{if t($promo)} (extérieur){/if}
+    {elseif t($user.name)}
+    {$user.name}
+    {else}
+    {$user.email}
+    {/if}
+  </td>
+  {if t($delete)}
+  <td class="center">
+    {if t($user.uid)}
+    <a href="{$platal->ns}member/{$user.uid}">{icon name=user_edit title='Éditer'}</a>&nbsp;
+    {else}
+    {icon name=null}&nbsp;
+    {/if}
+    <a href='{$platal->pl_self(1)}?{$delete}={$user.email}&amp;token={xsrf_token}'>{icon name=cross title='Retirer'}</a>
+  </td>
+  {/if}
+</tr>
+{/foreach}
+{/foreach}
 
-Nous t'écrivons pour t'informer que {$firstname} {$lastname} ({$promo}), que tu avais incité{if $sex eq 'female'}e{/if} à s'inscrire à Polytechnique.org, vient à l'instant de terminer son inscription.
-
-Merci de ta participation active à la reconnaissance de ce site !!!
-{include file="signature.mail.tpl"}
-{/if}
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

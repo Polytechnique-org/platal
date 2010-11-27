@@ -545,11 +545,12 @@ class ProfilePageGeneral extends ProfilePage
         if (!S::user()->isMe($this->owner)) {
             $this->settings['deathdate'] = new ProfileSettingDate(true);
         }
+        if (S::user()->isMe($this->owner)) {
+            $this->settings['yourself'] = null;
+        }
         if (S::user()->checkPerms('directory_private')
             || S::user()->isMyProfile($this->owner)) {
-            $this->settings['yourself']
-                                      = $this->settings['freetext']
-                                      = null;
+            $this->settings['freetext'] = null;
             $this->settings['freetext_pub']
                                       = $this->settings['photo_pub']
                                       = new ProfileSettingPub();
@@ -574,7 +575,11 @@ class ProfilePageGeneral extends ProfilePage
         $res = XDB::query("SELECT  pub
                              FROM  profile_photos
                             WHERE  pid = {?}", $this->pid());
-        $this->values['photo_pub'] = $res->fetchOneCell();
+        if ($res->numRows() == 0) {
+            $this->values['photo_pub'] = 'private';
+        } else {
+            $this->values['photo_pub'] = $res->fetchOneCell();
+        }
 
         if ($this->owner) {
             $res = XDB::query("SELECT  COUNT(*)
@@ -636,7 +641,7 @@ class ProfilePageGeneral extends ProfilePage
                            WHERE  pid = {?}",
                          $this->values['photo_pub'], $this->pid());
         }
-        if ($this->changed['yourself']) {
+        if (S::user()->isMe($this->owner) && $this->changed['yourself']) {
             if ($this->owner) {
                 XDB::execute('UPDATE  accounts
                                  SET  display_name = {?}

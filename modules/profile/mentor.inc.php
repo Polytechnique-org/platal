@@ -164,8 +164,9 @@ class ProfilePageMentor extends ProfilePage
                              $this->pid());
                 $this->values['expertise'] = null;
             } else {
-                XDB::execute("REPLACE INTO  profile_mentor (pid, expertise)
-                                    VALUES  ({?}, {?})",
+                XDB::execute('INSERT INTO  profile_mentor (pid, expertise)
+                                   VALUES  ({?}, {?})
+                  ON DUPLICATE KEY UPDATE  expertise = VALUES(expertise)',
                              $this->pid(), $expertise);
                 $this->values['expertise'] = $expertise;
             }

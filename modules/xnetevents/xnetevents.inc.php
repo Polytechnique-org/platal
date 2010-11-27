@@ -198,8 +198,8 @@ function subscribe_lists_event($uid, $evt, $participate, $paid, $payment = false
     function subscribe($list, $email)
     {
         if ($list && $email) {
-            XDB::execute('REPLACE INTO  virtual_redirect
-                                VALUES  ({?}, {?})',
+            XDB::execute('INSERT IGNORE INTO  virtual_redirect
+                                      VALUES  ({?}, {?})',
                          $list, $email);
         }
     }

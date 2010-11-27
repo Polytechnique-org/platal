@@ -25,7 +25,7 @@
 {if $user && $is_admin && $show_form}
 
 <h2>
-  Demande de la part de&nbsp;: <a href="profile/{$user->login()}" class="popup2">{$user->fullName()} (X{$user->promo()})</a>
+  Demande de la part de&nbsp;: <a href="profile/{$user->login()}" class="popup2">{$user->fullName()} ({$user->promo()})</a>
 </h2>
 
 {if $reason}

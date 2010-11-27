@@ -74,8 +74,9 @@ class WatchProfileUpdate extends WatchOperation
 
     public static function register(Profile &$profile, $field)
     {
-        XDB::execute('REPLACE INTO  watch_profile (pid, ts, field)
-                            VALUES  ({?}, NOW(), {?})',
+        XDB::execute('INSERT INTO  watch_profile (pid, ts, field)
+                           VALUES  ({?}, NOW(), {?})
+          ON DUPLICATE KEY UPDATE  ts = NOW()',
                      $profile->id(), $field);
     }
 

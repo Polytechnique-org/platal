@@ -486,10 +486,10 @@ class Profile
     {
         if ($this->has_photo) {
             if ($data && ($this->photo == null || $this->photo->mimeType == null)) {
-                $res = XDB::fetchOneAssoc('SELECT  attach, attachmime, x, y
+                $res = XDB::fetchOneAssoc('SELECT  attach, attachmime, x, y, last_update
                                              FROM  profile_photos
                                             WHERE  pid = {?}', $this->pid);
-                $this->photo = PlImage::fromData($res['attach'], $res['attachmime'], $res['x'], $res['y']);
+                $this->photo = PlImage::fromData($res['attach'], 'image/' .$res['attachmime'], $res['x'], $res['y'], $res['last_update']);
             } else if ($this->photo == null) {
                 $this->photo = PlImage::fromData(null, null, $this->photo_width, $this->photo_height);
             }

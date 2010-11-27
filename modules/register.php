@@ -67,10 +67,11 @@ class RegisterModule extends PLModule
                 $subState->merge($res->fetchOneRow());
                 $subState->set('yearpromo', substr($subState->s('promo'), 1, 4));
 
-                XDB::execute('REPLACE INTO  register_mstats (uid,sender,success)
-                                    SELECT  m.uid, m.sender, 0
-                                      FROM  register_marketing AS m
-                                     WHERE  m.hash',
+                XDB::execute('INSERT INTO  register_mstats (uid, sender, success)
+                                   SELECT  m.uid, m.sender, 0
+                                     FROM  register_marketing AS m
+                                    WHERE  m.hash
+                  ON DUPLICATE KEY UPDATE  sender = VALUES(sender), success = VALUES(success)',
                              $subState->s('hash'));
             }
         }
@@ -368,8 +369,8 @@ class RegisterModule extends PLModule
                     $r = XDB::query('SELECT id FROM groups WHERE diminutif = {?}', $yearpromo);
                     if ($r->numRows()) {
                         $asso_id = $r->fetchOneCell();
-                        XDB::execute('REPLACE INTO  group_members (uid, asso_id)
-                                            VALUES  ({?}, {?})',
+                        XDB::execute('INSERT IGNORE INTO  group_members (uid, asso_id)
+                                                  VALUES  ({?}, {?})',
                                      $uid, $asso_id);
                         $mmlist = new MMList($uid, S::v('password'));
                         $mmlist->subscribe("promo" . S::v('promo'));
@@ -398,10 +399,10 @@ class RegisterModule extends PLModule
         Profile::rebuildSearchTokens($pid);
 
         // Notify other users which were watching for her arrival.
-        XDB::execute('REPLACE INTO  contacts (uid, contact)
-                            SELECT  uid, ni_id
-                              FROM  watch_nonins
-                             WHERE  ni_id = {?}', $uid);
+        XDB::execute('INSERT INTO  contacts (uid, contact)
+                           SELECT  uid, ni_id
+                             FROM  watch_nonins
+                            WHERE  ni_id = {?}', $uid);
         XDB::execute('DELETE FROM  watch_nonins
                             WHERE  ni_id = {?}', $uid);
         Platal::session()->updateNbNotifs();
