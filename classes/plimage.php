@@ -23,6 +23,7 @@ class PlImage {
     protected $mime = null;
     protected $x = null;
     protected $y = null;
+    protected $ts = null;
 
     protected $data = null;
     protected $file = null;
@@ -33,6 +34,9 @@ class PlImage {
 
     public function send()
     {
+        if (!is_null($this->ts)) {
+            header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $this->ts) . ' GMT');
+        }
         pl_cached_dynamic_content_headers($this->mime);
         if (empty($this->data)) {
             readfile($this->file);
@@ -68,23 +72,25 @@ class PlImage {
         return $this->mime;
     }
 
-    public static function fromData($data, $mime, $x = null, $y = null)
+    public static function fromData($data, $mime, $x = null, $y = null, $ts = null)
     {
         $image = new PlImage();
         $image->data = $data;
         $image->mime = $mime;
         $image->x    = $x;
         $image->y    = $y;
+        $image->ts   = $ts;
         return $image;
     }
 
-    public static function fromFile($path, $mime, $x = null, $y = null)
+    public static function fromFile($path, $mime, $x = null, $y = null, $ts = null)
     {
         $image = new PlImage();
         $image->file = $path;
         $image->mime = $mime;
         $image->x    = $x;
         $image->y    = $y;
+        $image->ts   = $ts;
         return $image;
     }
 }
