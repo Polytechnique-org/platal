@@ -241,6 +241,7 @@ def list_call_dispatcher(method, userdesc, perms, vhost, *arg):
         @root:  the handler requires site admin rights
     """
     try:
+        print "calling method: %s" % method
         if has_annotation(method, "root") and perms != "admin":
             return 0
         if has_annotation(method, "mlist"):
@@ -312,7 +313,7 @@ def get_list_info(userdesc, perms, mlist, front_page=0):
                 'nbsub': len(members)
                 }
         return (details, members)
-    return 0
+    return None
 
 def get_options(userdesc, perms, mlist, opts):
     """ Get the options of a list.
@@ -365,8 +366,9 @@ def get_lists(userdesc, perms, vhost, email=None):
         except:
             continue
         try:
-            details = get_list_info(udesc, perms, mlist, (email is None and vhost == PLATAL_DOMAIN))[0]
-            result.append(details)
+            details = get_list_info(udesc, perms, mlist, (email is None and vhost == PLATAL_DOMAIN))
+            if details is not None:
+                result.append(details[0])
         except Exception, e:
             sys.stderr.write('Can\'t get list %s: %s\n' % (name, str(e)))
             continue
