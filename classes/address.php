@@ -74,7 +74,6 @@ class Address
     public $east = null;
     public $west = null;
     public $geocodedText = null;
-    public $geocodedPostalText = null;
     public $geocodeChosen = null;
 
     // Database's field required for both 'home' and 'job' addresses.
@@ -142,11 +141,56 @@ class Address
         return ($this->flags != null && $this->flags->hasFlag($flag));
     }
 
+    // Returns the address formated for postal use.
+    // The main rules are (cf AFNOR XPZ 10-011):
+    // -everything in upper case;
+    // -if there are more then than 38 characters in a line, split it;
+    // -if there are more then than 32 characters in the description of the "street", use abbreviations.
+    public function formatPostalAddress() {
+         static $abbreviations = array(
+             'IMPASSE'   => 'IMP',
+             'RUE'       => 'R',
+             'AVENUE'    => 'AV',
+             'BOULEVARD' => 'BVD',
+             'ROUTE'     => 'R',
+             'STREET'    => 'ST',
+             'ROAD'      => 'RD',
+             );
+
+        $text = strtoupper($text);
+        $arrayText = explode("\n", $text);
+        $postalText = '';
+
+        foreach ($arrayText as $i => $line) {
+            $postalText .= (($i == 0) ? '' : "\n");
+            if (($length = strlen($line)) > 32) {
+                $words = explode(' ', $line);
+                $count = 0;
+                foreach ($words as $word) {
+                    if (isset($abbreviations[$word])) {
+                        $word = $abbreviations[$word];
+                    }
+                    if ($count + ($wordLength = strlen($word)) <= 38) {
+                        $postalText .= (($count == 0) ? '' : ' ') . $word;
+                        $count += (($count == 0) ? 0 : 1) + $wordLength;
+                    } else {
+                        $postalText .= "\n" . $word;
+                        $count = strlen($word);
+                    }
+                }
+            } else {
+                $postalText .= $line;
+            }
+        }
+        $this->postalText = $postalText;
+    }
+
     public function format(array $format = array())
     {
         if (empty($format)) {
             $format['requireGeocoding'] = false;
             $format['stripGeocoding'] = false;
+            $format['postalText'] = false;
         }
         $this->text = trim($this->text);
         if ($this->removed == 1) {
@@ -169,6 +213,9 @@ class Address
                 $mailer->assign('geoloc', $this->geocodedText);
                 $mailer->send();
             }
+        }
+        if ($format['postalText']) {
+            $this->formatPostalAddress();
         }
         if ($this->countryId == '') {
             $this->countryId = null;
@@ -204,7 +251,6 @@ class Address
         );
         if (!is_null($this->geocodedText)) {
             $address['geocodedText'] = $this->geocodedText;
-            $address['geocodedPostalText'] = $this->geocodedPostalText;
             $address['geocodeChosen'] = $this->geocodeChosen;
         }
 
@@ -262,7 +308,7 @@ class Address
     {
         static $areas = array('administrativeArea', 'subAdministrativeArea', 'locality');
 
-        $this->format();
+        $this->format(array('postalText'));
         if (!$this->isEmpty()) {
             foreach ($areas as $area) {
                 Geocoder::getAreaId($this, $area);

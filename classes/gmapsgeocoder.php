@@ -64,7 +64,6 @@ class GMapsGeocoder extends Geocoder {
 
     public function stripGeocodingFromAddress(Address &$address) {
         $address->geocodedText = null;
-        $address->geocodedPostalText = null;
         $address->geoloc_choice = null;
         $address->countryId = null;
         $address->country = null;
@@ -96,7 +95,6 @@ class GMapsGeocoder extends Geocoder {
     // Prepares address to be geocoded
     private function prepareAddress(Address &$address) {
         $address->text = preg_replace('/\s*\n\s*/m', "\n", trim($address->text));
-        $address->postalText = $this->getPostalAddress($address->text);
     }
 
     // Builds the Google Maps geocoder url to fetch information about @p address.
@@ -245,7 +243,6 @@ class GMapsGeocoder extends Geocoder {
         if ($extraLines) {
             $address->geocodedText = $extraLines . "\n" . $address->geocodedText;
         }
-        $address->geocodedPostalText = $this->getPostalAddress($address->geocodedText);
         $geoloc = strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"),
                                           array('', "\n"), $address->geocodedText));
         $text   = strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"),
@@ -273,57 +270,10 @@ class GMapsGeocoder extends Geocoder {
 
         if ($same) {
             $address->geocodedText = null;
-            $address->geocodedPostalText = null;
         } else {
             $address->geocodedText = str_replace("\n", "\r\n", $address->geocodedText);
-            $address->geocodedPostalText = str_replace("\n", "\r\n", $address->geocodedPostalText);
         }
         $address->text = str_replace("\n", "\r\n", $address->text);
-        $address->postalText = str_replace("\n", "\r\n", $address->postalText);
-    }
-
-    // Returns the address formated for postal use.
-    // The main rules are (cf AFNOR XPZ 10-011):
-    // -everything in upper case;
-    // -if there are more then than 38 characters in a line, split it;
-    // -if there are more then than 32 characters in the description of the "street", use abbreviations.
-    private function getPostalAddress($text) {
-         static $abbreviations = array(
-             'IMPASSE'   => 'IMP',
-             'RUE'       => 'R',
-             'AVENUE'    => 'AV',
-             'BOULEVARD' => 'BVD',
-             'ROUTE'     => 'R',
-             'STREET'    => 'ST',
-             'ROAD'      => 'RD',
-             );
-
-        $text = strtoupper($text);
-        $arrayText = explode("\n", $text);
-        $postalText = '';
-
-        foreach ($arrayText as $i => $line) {
-            $postalText .= (($i == 0) ? '' : "\n");
-            if (($length = strlen($line)) > 32) {
-                $words = explode(' ', $line);
-                $count = 0;
-                foreach ($words as $word) {
-                    if (isset($abbreviations[$word])) {
-                        $word = $abbreviations[$word];
-                    }
-                    if ($count + ($wordLength = strlen($word)) <= 38) {
-                        $postalText .= (($count == 0) ? '' : ' ') . $word;
-                        $count += (($count == 0) ? 0 : 1) + $wordLength;
-                    } else {
-                        $postalText .= "\n" . $word;
-                        $count = strlen($word);
-                    }
-                }
-            } else {
-                $postalText .= $line;
-            }
-        }
-        return $postalText;
     }
 
     // Trims the name of the real country if it contains an ISO 3166-1 non-country
