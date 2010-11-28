@@ -598,7 +598,8 @@ abstract class ProfileValidate extends Validate
     {
         $res = XDB::iterRow('SELECT  data
                                FROM  requests
-                              WHERE  pid = {?} and type = {?}',
+                              WHERE  pid = {?} and type = {?}
+                           ORDER BY  stamp',
                             $pid, $type);
         $array = array();
         while (list($data) = $res->next()) {

@@ -202,7 +202,7 @@ class ProfileSettingJob implements ProfileSetting
         $success = true;
         foreach ($value as $key => $job) {
             $job['name'] = trim($job['name']);
-            if ($job['name'] == '' && $entreprise) {
+            if ($job['name'] == '' && $entreprise[$entr_val]->id == $key) {
                 $job['tmp_name'] = $entreprise[$entr_val]->name;
                 ++$entr_val;
             } else if ($job['name'] == '') {
