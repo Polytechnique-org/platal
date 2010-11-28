@@ -49,13 +49,13 @@ class ProfileSettingJob implements ProfileSetting
         return array(
             'id'               => '0',
             'jobid'            => '',
-            'pub'              => 'private',
+            'pub'              => 'ax',
             'name'             => '',
             'description'      => '',
             'w_url'            => '',
             'w_address'        => $address->toFormArray(),
             'w_email'          => '',
-            'w_email_pub'      => 'private',
+            'w_email_pub'      => 'ax',
             'w_email_new'      => '',
             'w_phone'          => array(0 => $phone->toFormArray()),
             'terms'            => array()
