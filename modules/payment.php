@@ -312,7 +312,7 @@ class PaymentModule extends PLModule
         $ref = $matches[1];
         $res = XDB::query('SELECT  mail, text, confirmation
                              FROM  payments
-                            WHERE  id={?}", $ref);
+                            WHERE  id={?}', $ref);
         if ($res->numRows() != 1) {
             cb_erreur("référence de commande inconnue");
         }
