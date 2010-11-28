@@ -308,7 +308,7 @@ class Address
     {
         static $areas = array('administrativeArea', 'subAdministrativeArea', 'locality');
 
-        $this->format(array('postalText'));
+        $this->format(array('postalText' => true));
         if (!$this->isEmpty()) {
             foreach ($areas as $area) {
                 Geocoder::getAreaId($this, $area);

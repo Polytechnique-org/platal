@@ -23,7 +23,7 @@ $pid = 0;
 $jobid = 0;
 while ($item = $it->next()) {
     $address = new Address($item);
-    $address->format(array(true, true));
+    $address->format(array('requireGeocoding' => true, 'stripGeocoding' => true));
     $address->delete();
     $address->save();
     if (!($pid == $address->pid && $jobid == $address->jobid)) {
