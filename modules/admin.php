@@ -1507,7 +1507,7 @@ class AdminModule extends PLModule
                                          'link_type' => Phone::LINK_COMPANY, 'pub' => 'public'));
                 $fax = new Phone(array('display' => Env::v('fax'), 'link_id' => $id, 'id' => 1, 'type' => 'fax',
                                          'link_type' => Phone::LINK_COMPANY, 'pub' => 'public'));
-                $address = new Address(array('jobid' => $jobid, 'type' => Address::LINK_COMPANY, 'text' => Env::t('address')));
+                $address = new Address(array('jobid' => $id, 'type' => Address::LINK_COMPANY, 'text' => Env::t('address')));
                 $phone->save();
                 $fax->save();
                 $address->save();
