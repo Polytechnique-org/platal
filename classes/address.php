@@ -191,6 +191,10 @@ class Address
             $format['requireGeocoding'] = false;
             $format['stripGeocoding'] = false;
             $format['postalText'] = false;
+        } else {
+            foreach (array('requireGeocoding', 'stripGeocoding', 'postalText') as $type) {
+                $format[$type] = (isset($format[$type])) ? $format[$type] : false;
+            }
         }
         $this->text = trim($this->text);
         if ($this->removed == 1) {
