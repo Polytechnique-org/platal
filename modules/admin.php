@@ -1484,15 +1484,19 @@ class AdminModule extends PLModule
             Phone::deletePhones(0, Phone::LINK_COMPANY, $id);
             Address::deleteAddresses(null, Address::LINK_COMPANY, $id);
             if (Env::has('change')) {
-                XDB::execute('UPDATE  profile_job
-                                 SET  jobid = {?}
-                               WHERE  jobid = {?}',
-                             Env::i('newJobId'), $id);
-                XDB::execute('DELETE FROM  profile_job_enum
-                                    WHERE  id = {?}',
-                             $id);
+                if (Env::has('newJobId') && Env::i('newJobId') > 0) {
+                    XDB::execute('UPDATE  profile_job
+                                     SET  jobid = {?}
+                                   WHERE  jobid = {?}',
+                                 Env::i('newJobId'), $id);
+                    XDB::execute('DELETE FROM  profile_job_enum
+                                        WHERE  id = {?}',
+                                 $id);
 
-                $page->trigSuccess("L'entreprise a bien été remplacée.");
+                    $page->trigSuccess("L'entreprise a bien été remplacée.");
+                } else {
+                    $page->trigError("L'entreprise n'a pas été remplacée car l'identifiant fourni n'est pas valide.");
+                }
             } else {
                 XDB::execute('UPDATE  profile_job_enum
                                  SET  name = {?}, acronym = {?}, url = {?}, email = {?},
