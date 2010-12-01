@@ -405,18 +405,25 @@ class Address
     {
         // First we define numbers and separators.
         $numberReq = '(\d{1,4})\s*(BIS|TER|QUATER|[A-Z])?';
-        $separatorReq = '\s*(?:\\|-|&|A|ET)\s*';
+        $separatorReq = '\s*(?:\\|-|&|A|ET)?\s*';
 
-        // Then we retrieve the number(s) and the reste of the line.
-        preg_match('/^' . $numberReq . '(?:' . $separatorReq . $numberReq . ')?\s*(.*)$', $matches);
+        // Then we retrieve the number(s) and the rest of the line.
+        // $matches contains:
+        //  -0: the full patern, here the given line,
+        //  -1: the number,
+        //  -2: its optionnal quantifier,
+        //  -3: an optionnal second number,
+        //  -4: the second number's optionnal quantifier,
+        //  -5: the rest of the line.
+        preg_match('/^' . $numberReq . '(?:' . $separatorReq . $numberReq . ')?\s+(.*)/', $line, $matches);
         $number = $matches[1];
         $line = $matches[5];
 
         // If there is a precision on the address, we concatenate it to the number.
         if ($matches[2] != '') {
-            $number .= $matches[2]{1};
+            $number .= $matches[2]{0};
         } elseif ($matches[4] != '') {
-            $number .= $matches[4]{1};
+            $number .= $matches[4]{0};
         }
 
         return $number;
@@ -458,9 +465,10 @@ class Address
      * address line per array line.
      * @param $count: array size.
      */
-    private function formatPostalAddressFR($arrayText, $count)
+    private function formatPostalAddressFR($arrayText)
     {
         // First removes country if any.
+        $count = count($arrayText);
         if ($arrayText[$count - 1] == 'FRANCE') {
             unset($arrayText[$count - 1]);
             --$count;
@@ -531,11 +539,11 @@ class Address
         $countries = array_map('strtoupper', $countries);
         $count = count($arrayText);
         if (in_array(strtoupper($address->country), Address::$formattings)) {
-            $text = call_user_func(array($this, 'formatPostalAddress' . Address::$formattings[strtoupper($address->country)]), $arrayText, $count);
+            $text = call_user_func(array($this, 'formatPostalAddress' . Address::$formattings[strtoupper($address->country)]), $arrayText);
         } elseif (array_key_exists($arrayText[$count - 1], Address::$formattings)) {
-            $text = call_user_func(array($this, 'formatPostalAddress' . Address::$formattings[$arrayText[$count - 1]]), $arrayText, $count);
+            $text = call_user_func(array($this, 'formatPostalAddress' . Address::$formattings[$arrayText[$count - 1]]), $arrayText);
         } elseif (!in_array($arrayText[$count - 1], $countries)) {
-            $text = $this->formatPostalAddressFR($arrayText, $count);
+            $text = $this->formatPostalAddressFR($arrayText);
         } else {
             $text = implode("\n", $arrayText);
         }
