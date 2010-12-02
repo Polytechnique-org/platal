@@ -31,7 +31,8 @@ $res = XDB::iterator('SELECT  p.hrpid, pm.pid, a.full_name, pm.field, pm.oldText
                   INNER JOIN  profile_display       AS pd ON (pm.pid = pd.pid)
                   INNER JOIN  account_profiles      AS ap ON (pm.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
                   INNER JOIN  aliases               AS al ON (ap.uid = al.uid AND FIND_IN_SET(\'bestalias\', al.flags))
-                    ORDER BY  pm.pid, pm.field');
+                       WHERE  pm.type = \'third_party\'
+                    ORDER BY  pm.pid, pm.field, pm.timestamp');
 
 if ($res->total() > 0) {
     $date = time();
@@ -83,7 +84,8 @@ if ($res->total() > 0) {
     $mailer->assign('date', $date);
     $mailer->send();
 
-    XDB::execute('DELETE FROM  profile_modifications');
+    XDB::execute('DELETE FROM  profile_modifications
+                        WHERE  type = \'third_party\'');
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

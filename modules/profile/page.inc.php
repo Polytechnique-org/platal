@@ -270,13 +270,13 @@ abstract class ProfilePage implements PlWizardPage
             if ($this->changed[$field]) {
                 if (!is_null($setting)) {
                     $changedFields[$field] = array(
-                        str_replace("\n", " - ", $setting->getText($this->orig[$field])),
-                        str_replace("\n", " - ", $setting->getText($this->values[$field])),
+                        preg_replace('/(\r\n|\n|\r)/', ' - ', $setting->getText($this->orig[$field])),
+                        preg_replace('/(\r\n|\n|\r)/', ' - ', $setting->getText($this->values[$field])),
                     );
                 } else {
                     $changedFields[$field] = array(
-                        str_replace("\n", " - ", $this->orig[$field]),
-                        str_replace("\n", " - ", $this->values[$field]),
+                        preg_replace('/(\r\n|\n|\r)/', ' - ', $this->orig[$field]),
+                        preg_replace('/(\r\n|\n|\r)/', ' - ', $this->values[$field]),
                     );
                 }
                 if (!is_null($setting)) {
@@ -296,18 +296,20 @@ abstract class ProfilePage implements PlWizardPage
         global $platal;
         S::logger()->log('profil', $platal->pl_self(2));
 
-        /** If the update was made by a third party and the profile corresponds
-         * to a registered user, stores both former and new text.
-         * This will be daily sent to the user.
+        /** Stores all profile modifications for active users in order to:
+         *  -daily notify the user in case of third party edition,
+         *  -display the modification to the secretaries for verification in
+         *  case of an edition made by the user.
          */
         $owner = $this->profile->owner();
         $user = S::user();
-        if ($owner->isActive() && $owner->id() != $user->id()) {
+        if ($owner->isActive()) {
             foreach ($changedFields as $field => $values) {
-                XDB::execute('INSERT INTO  profile_modifications (pid, uid, field, oldText, newText)
-                                   VALUES  ({?}, {?}, {?}, {?}, {?})
-                  ON DUPLICATE KEY UPDATE  oldText = VALUES(oldText), newText = VALUES(newText)',
-                             $this->pid(), $user->id(), $field, $values[0], $values[1]);
+                XDB::execute('INSERT INTO  profile_modifications (pid, uid, field, oldText, newText, type, timestamp)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, NOW())
+                  ON DUPLICATE KEY UPDATE  uid = VALUES(uid), oldText = IF(VALUES(type) != type, VALUES(oldText), oldText),
+                                           newText = VALUES(newText), type = VALUES(type), timestamp = NOW()',
+                             $this->pid(), $user->id(), $field, $values[0], $values[1], ($owner->id() == $user->id()) ? 'self' : 'third_party');
             }
         }
         return true;
