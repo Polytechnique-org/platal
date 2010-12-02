@@ -29,7 +29,7 @@ class ReminderPromotionMl extends Reminder
             XDB::execute('INSERT IGNORE INTO  group_members (uid, asso_id)
                                       SELECT  {?}, id
                                         FROM  groups
-                                       WHERE  diminutif = {?}'
+                                       WHERE  diminutif = {?}',
                          $user->id(), $user->profile()->yearPromo());
             $mmlist = new MMList($user);
             $mmlist->subscribe('promo' . $user->profile()->yearPromo());
