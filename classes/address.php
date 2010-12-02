@@ -642,9 +642,10 @@ class Address
 
     private function toString()
     {
-        $address = 'Adresse : ' . $this->text;
+        $address = $this->text;
         if ($this->type == self::LINK_PROFILE || $this->type == self::LINK_JOB) {
-            $address .= ', affichage : ' . $this->pub;
+            static $pubs = array('public' => 'publique', 'ax' => 'annuaire AX', 'private' => 'privé');
+            $address .= ' (affichage ' . $pubs[$this->pub];
         }
         if ($this->type == self::LINK_PROFILE) {
             static $flags = array(
@@ -656,15 +657,25 @@ class Address
                 'cedex'         => 'type cédex',
             );
 
-            $address .= ', commentaire : ' . $this->comment;
+            if (!$this->flags->hasFlag('temporary')) {
+                $address .= ', permanente';
+            }
+            if (!$this->flags->hasFlag('secondary')) {
+                $address .= ', principale';
+            }
             foreach ($flags as $flag => $flagName) {
                 if ($this->flags->hasFlag($flag)) {
                     $address .= ', ' . $flagName;
                 }
             }
+            if ($this->comment) {
+                $address .= ', commentaire : ' . $this->comment;
+            }
             if ($phones = Phone::formArrayToString($this->phones)) {
                 $address .= ', ' . $phones;
             }
+        } elseif ($this->type == self::LINK_JOB) {
+            $address .= ')';
         }
         return $address;
     }
@@ -794,7 +805,7 @@ class Address
 
     static public function formArrayToString(array $data)
     {
-        return implode(' ; ', self::formArrayWalk($data, 'toString'));
+        return implode(', ', self::formArrayWalk($data, 'toString'));
     }
 
     static public function iterate(array $pids = array(), array $types = array(),

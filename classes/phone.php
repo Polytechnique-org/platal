@@ -286,8 +286,10 @@ class Phone
 
     private function toString()
     {
-        return 'type : ' . $this->type .', numéro : ' . $this->display
-            . ', commentaire : « ' . $this->comment . ' », affichage : ' . $this->pub;
+        static $pubs = array('public' => 'publique', 'ax' => 'annuaire AX', 'private' => 'privé');
+        static $types = array('fax' => 'fax', 'fixed' => 'fixe', 'mobile' => 'mobile');
+        return $this->display . ' (' . $types[$this->type] . (($this->comment) ? ', commentaire : « ' . $this->comment . ' »' : '')
+            . ', affichage ' . $pubs[$this->pub] . ')';
     }
 
     private function isEmpty()
@@ -372,7 +374,7 @@ class Phone
 
     static public function formArrayToString(array $data)
     {
-        return implode(' ; ', self::formArrayWalk($data, 'toString'));
+        return implode(', ', self::formArrayWalk($data, 'toString'));
     }
 
     static public function iterate(array $pids = array(), array $link_types = array(),

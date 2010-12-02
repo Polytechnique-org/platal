@@ -292,15 +292,34 @@ class ProfileSettingJob implements ProfileSetting
 
     public function getText($value)
     {
+        static $pubs = array('public' => 'publique', 'ax' => 'annuaire AX', 'private' => 'privé');
         $jobs = array();
         foreach ($value as $id => $job) {
             $address = Address::formArrayToString(array($job['w_address']));
             $phones = Phone::formArrayToString($job['w_phone']);
-            // TODO: add jobterms here.
-            $jobs[] = 'Entreprise : ' . $job['name']
-                    . ', description : ' . $job['description'] . ', web : ' . $job['w_url']
-                    . ', email : ' . $job['w_email']
-                    . ($phones ? ', ' . $phones : '') . ($address ? ', ' . $address : '');
+            $jobs[$id] = $job['name'];
+            $jobs[$id] .= ($job['description'] ? (', ' . $job['description']) : '');
+            $jobs[$id] .= ' (affichage ' . $pubs[$job['pub']];
+            if (count($job['terms'])) {
+                $terms = array();
+                foreach ($job['terms'] as $term) {
+                    $terms[] = $term['full_name'];
+                }
+                $jobs[$id] .= ', mots-clefs : ' . implode(', ', $terms);
+            }
+            if ($job['w_url']) {
+                $jobs[$id] .= ', page perso : ' . $job['w_url'];
+            }
+            if ($address) {
+                $jobs[$id] .= ', adresse : ' . $address;
+            }
+            if ($job['w_email']) {
+                $jobs[$id] .= ', email : ' . $job['w_email'];
+            }
+            if ($phones) {
+                $jobs[$id] .= ', téléphones : ' . $phones;
+            }
+            $jobs[$id] .= ')';
         }
         return implode(' ; ' , $jobs);
     }
@@ -342,10 +361,11 @@ class ProfileSettingCorps implements ProfileSetting
 
     public function getText($value)
     {
+        static $pubs = array('public' => 'publique', 'ax' => 'annuaire AX', 'private' => 'privé');
         $corpsList = DirEnum::getOptions(DirEnum::CORPS);
         $rankList  = DirEnum::getOptions(DirEnum::CORPSRANKS);
-        return 'Corps actuel : ' . $corpsList[$value['current']] . ' , rang : ' . $corpsList[$value['rank']]
-            . ' , corps d\'origine : ' . $corpsList[$value['original']] . ' , affichage : ' . $value['pub'];
+        return $corpsList[$value['current']] . ', ' . $corpsList[$value['rank']] . ' ('
+            . 'corps d\'origine : ' . $corpsList[$value['original']] . ', affichage ' . $pubs[$value['pub']] . ')';
     }
 }
 

@@ -156,7 +156,8 @@ class ProfileSettingPub extends ProfileNoSave
     }
 
     public function getText($value) {
-        return $value;
+        static $pubs = array('public' => 'publique', 'ax' => 'annuaire AX', 'private' => 'privé');
+        return $pubs[$value];
     }
 }
 
