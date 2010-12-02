@@ -318,6 +318,8 @@ class ProfileModule extends PLModule
             $opened_tab = $hrpid;
             $hrpid = $aux;
             $url_error = true;
+        } else {
+            $url_error = false;
         }
         $profile = $this->findProfile($hrpid);
         if (! ($profile instanceof Profile) && ($profile == PL_NOT_FOUND || $profile == PL_FORBIDDEN)) {

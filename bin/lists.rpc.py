@@ -137,7 +137,7 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
                               % (PLATAL_DOMAIN, uid, md5))
         if res:
             name, forlife, perms = res
-            if vhost != PLATAL_DOMAIN:
+            if vhost != PLATAL_DOMAIN and perms != 'admin':
                 res = mysql_fetchone ("""SELECT  m.uid, IF(m.perms = 'admin', 'admin', 'lists')
                                            FROM  group_members AS m
                                      INNER JOIN  groups        AS g ON (m.asso_id = g.id)

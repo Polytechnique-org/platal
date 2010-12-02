@@ -522,7 +522,6 @@ class ProfilePageGeneral extends ProfilePage
         parent::__construct($wiz);
         $this->settings['search_names']
                                   = new ProfileSettingSearchNames();
-        $this->settings['birthdate'] = new ProfileSettingDate();
         $this->settings['nationality1']
                                   = $this->settings['nationality2']
                                   = $this->settings['nationality3']
@@ -544,9 +543,10 @@ class ProfilePageGeneral extends ProfilePage
         /* Some fields editable under condition */
         if (!S::user()->isMe($this->owner)) {
             $this->settings['deathdate'] = new ProfileSettingDate(true);
-        }
-        if (S::user()->isMe($this->owner)) {
+            $this->settings['birthdate'] = new ProfileSettingDate(true);
+        } else {
             $this->settings['yourself'] = null;
+            $this->settings['birthdate'] = new ProfileSettingDate();
         }
         if (S::user()->checkPerms('directory_private')
             || S::user()->isMyProfile($this->owner)) {
@@ -562,7 +562,7 @@ class ProfilePageGeneral extends ProfilePage
     protected function _fetchData()
     {
         // Checkout all data...
-        $res = XDB::query("SELECT  p.nationality1, p.nationality2, p.nationality3, p.birthdate,
+        $res = XDB::query("SELECT  p.nationality1, p.nationality2, p.nationality3, IF(p.birthdate = 0, '', p.birthdate) AS birthdate,
                                    p.email_directory as email_directory, pd.promo AS promo_display,
                                    p.freetext, p.freetext_pub, p.ax_id AS matricule_ax, pd.yourself,
                                    p.deathdate

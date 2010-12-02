@@ -1467,15 +1467,19 @@ class AdminModule extends PLModule
             Phone::deletePhones(0, Phone::LINK_COMPANY, $id);
             Address::deleteAddresses(null, Address::LINK_COMPANY, $id);
             if (Env::has('change')) {
-                XDB::execute('UPDATE  profile_job
-                                 SET  jobid = {?}
-                               WHERE  jobid = {?}',
-                             Env::i('newJobId'), $id);
-                XDB::execute('DELETE FROM  profile_job_enum
-                                    WHERE  id = {?}',
-                             $id);
+                if (Env::has('newJobId') && Env::i('newJobId') > 0) {
+                    XDB::execute('UPDATE  profile_job
+                                     SET  jobid = {?}
+                                   WHERE  jobid = {?}',
+                                 Env::i('newJobId'), $id);
+                    XDB::execute('DELETE FROM  profile_job_enum
+                                        WHERE  id = {?}',
+                                 $id);
 
-                $page->trigSuccess("L'entreprise a bien été remplacée.");
+                    $page->trigSuccess("L'entreprise a bien été remplacée.");
+                } else {
+                    $page->trigError("L'entreprise n'a pas été remplacée car l'identifiant fourni n'est pas valide.");
+                }
             } else {
                 XDB::execute('UPDATE  profile_job_enum
                                  SET  name = {?}, acronym = {?}, url = {?}, email = {?},
@@ -1490,7 +1494,7 @@ class AdminModule extends PLModule
                                          'link_type' => Phone::LINK_COMPANY, 'pub' => 'public'));
                 $fax = new Phone(array('display' => Env::v('fax'), 'link_id' => $id, 'id' => 1, 'type' => 'fax',
                                          'link_type' => Phone::LINK_COMPANY, 'pub' => 'public'));
-                $address = new Address(array('jobid' => $jobid, 'type' => Address::LINK_COMPANY, 'text' => Env::t('address')));
+                $address = new Address(array('jobid' => $id, 'type' => Address::LINK_COMPANY, 'text' => Env::t('address')));
                 $phone->save();
                 $fax->save();
                 $address->save();

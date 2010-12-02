@@ -67,7 +67,7 @@ class Phone
     // The following fields are the fields of the form in the profile edition.
     private $type = 'fixed';
     public $display = '';
-    private $pub = 'private';
+    private $pub = 'ax';
     public $comment = '';
     private $error = false;
 

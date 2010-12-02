@@ -193,7 +193,7 @@ class XnetGrpModule extends PLModule
                              flags={?}
                       WHERE  id={?}",
                       Post::v('nom'), Post::v('diminutif'),
-                      Post::v('cat'), Post::i('dom'),
+                      Post::v('cat'), (Post::i('dom') == 0) ? null : Post::i('dom'),
                       Post::v('descr'), $site,
                       Post::v('mail'), Post::v('resp'),
                       Post::v('forum'), Post::v('mail_domain'),

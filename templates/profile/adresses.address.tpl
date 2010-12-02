@@ -96,6 +96,16 @@
             on peut {if $isMe}m'{/if}y envoyer du courrier par la poste
           </label>
         </div>
+        {if !t($isMe)}
+        <div>
+          <label>
+            <input type="checkbox" name="{$prefname}[deliveryIssue]" {if $address.deliveryIssue}checked="checked"{/if} />
+            n'habite pas à l'adresse indiquée
+          </label>
+        </div>
+        {else}
+        <div style="display: none"><input type="hidden" name="deliveryIssue" value="{$address.deliveryIssue}" /></div>
+        {/if}
         <div>
           <label>
             Commentaire&nbsp;:

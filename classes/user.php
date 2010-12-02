@@ -813,7 +813,7 @@ class User extends PlUser
         XDB::execute('UPDATE  log_last_sessions
                          SET  id = {?}
                        WHERE  uid = {?}',
-                     $newuser->id());
+                     $lastSession, $newuser->id());
         XDB::execute('DELETE FROM  accounts
                             WHERE  uid = {?}',
                      $this->id());

@@ -49,6 +49,238 @@ class Address
     const LINK_COMPANY = 'hq';
     const LINK_PROFILE = 'home';
 
+    // List of all available postal formattings.
+    private static $formattings = array('FRANCE' => 'FR');
+
+    // Abbreviations to be used to format French postal addresses.
+    private static $streetAbbreviations = array(
+        'ALLEE'                        => 'ALL',
+        'AVENUE'                       => 'AV',
+        'BOULEVARD'                    => 'BD',
+        'CENTRE'                       => 'CTRE',
+        'CENTRE COMMERCIAL'            => 'CCAL',
+        'IMMEUBLE'                     => 'IMM',
+        'IMMEUBLES'                    => 'IMM',
+        'IMPASSE'                      => 'IMP',
+        'LIEU-DIT'                     => 'LD',
+        'LOTISSEMENT'                  => 'LOT',
+        'PASSAGE'                      => 'PAS',
+        'PLACE'                        => 'PL',
+        'RESIDENCE'                    => 'RES',
+        'ROND-POINT'                   => 'RPT',
+        'ROUTE'                        => 'RTE',
+        'SQUARE'                       => 'SQ',
+        'VILLAGE'                      => 'VLGE',
+        'ZONE D\'ACTIVITE'             => 'ZA',
+        'ZONE D\'AMENAGEMENT CONCERTE' => 'ZAC',
+        'ZONE D\'AMENAGEMENT DIFFERE'  => 'ZAD',
+        'ZONE INDUSTRIELLE'            => 'ZI'
+    );
+    private static $otherAbbreviations = array(
+        'ADJUDANT'               => 'ADJ',
+        'AERODROME'              => 'AERD',
+        'AEROGARE'               => 'AERG',
+        'AERONAUTIQUE'           => 'AERN',
+        'AEROPORT'               => 'AERP',
+        'AGENCE'                 => 'AGCE',
+        'AGRICOLE'               => 'AGRIC',
+        'ANCIEN'                 => 'ANC',
+        'ANCIENNEMENT'           => 'ANC',
+        'APPARTEMENT'            => 'APP',
+        'APPARTEMENTS'           => 'APP',
+        'ARMEMENT'               => 'ARMT',
+        'ARRONDISSEMENT'         => 'ARR',
+        'ASPIRANT'               => 'ASP',
+        'ASSOCIATION'            => 'ASSOC',
+        'ASSURANCE'              => 'ASSUR',
+        'ATELIER'                => 'AT',
+        'BARAQUEMENT'            => 'BRQ',
+        'BAS'                    => 'BAS',
+        'BASSE'                  => 'BAS',
+        'BASSES'                 => 'BAS',
+        'BATAILLON'              => 'BTN',
+        'BATAILLONS'             => 'BTN',
+        'BATIMENT'               => 'BAT',
+        'BATIMENTS'              => 'BAT',
+        'BIS'                    => 'B',
+        'BOITE POSTALE'          => 'BP',
+        'CABINET'                => 'CAB',
+        'CANTON'                 => 'CANT',
+        'CARDINAL'               => 'CDL',
+        'CASE POSTALE'           => 'CP',
+        'CHAMBRE'                => 'CHBR',
+        'CITADELLE'              => 'CTD',
+        'COLLEGE'                => 'COLL',
+        'COLONEL'                => 'CNL',
+        'COLONIE'                => 'COLO',
+        'COMITE'                 => 'CTE',
+        'COMMANDANT'             => 'CDT',
+        'COMMERCIAL'             => 'CIAL',
+        'COMMUNE'                => 'COM',
+        'COMMUNAL'               => 'COM',
+        'COMMUNAUX'              => 'COM',
+        'COMPAGNIE'              => 'CIE',
+        'COMPAGNON'              => 'COMP',
+        'COMPAGNONS'             => 'COMP',
+        'COOPERATIVE'            => 'COOP',
+        'COURSE SPECIALE'        => 'CS',
+        'CROIX'                  => 'CRX',
+        'DELEGATION'             => 'DELEG',
+        'DEPARTEMENTAL'          => 'DEP',
+        'DEPARTEMENTAUX'         => 'DEP',
+        'DIRECTEUR'              => 'DIR',
+        'DIRECTECTION'           => 'DIR',
+        'DIVISION'               => 'DIV',
+        'DOCTEUR'                => 'DR',
+        'ECONOMIE'               => 'ECO',
+        'ECONOMIQUE'             => 'ECO',
+        'ECRIVAIN'               => 'ECRIV',
+        'ECRIVAINS'              => 'ECRIV',
+        'ENSEIGNEMENT'           => 'ENST',
+        'ENSEMBLE'               => 'ENS',
+        'ENTREE'                 => 'ENT',
+        'ENTREES'                => 'ENT',
+        'ENTREPRISE'             => 'ENTR',
+        'EPOUX'                  => 'EP',
+        'EPOUSE'                 => 'EP',
+        'ETABLISSEMENT'          => 'ETS',
+        'ETAGE'                  => 'ETG',
+        'ETAT MAJOR'             => 'EM',
+        'EVEQUE'                 => 'EVQ',
+        'FACULTE'                => 'FAC',
+        'FORET'                  => 'FOR',
+        'FORESTIER'              => 'FOR',
+        'FRANCAIS'               => 'FR',
+        'FRANCAISE'              => 'FR',
+        'FUSILIER'               => 'FUS',
+        'GENDARMERIE'            => 'GEND',
+        'GENERAL'                => 'GAL',
+        'GOUVERNEMENTAL'         => 'GOUV',
+        'GOUVERNEUR'             => 'GOU',
+        'GRAND'                  => 'GD',
+        'GRANDE'                 => 'GDE',
+        'GRANDES'                => 'GDES',
+        'GRANDS'                 => 'GDS',
+        'HAUT'                   => 'HT',
+        'HAUTE'                  => 'HTE',
+        'HAUTES'                 => 'HTES',
+        'HAUTS'                  => 'HTS',
+        'HOPITAL'                => 'HOP',
+        'HOPITAUX'               => 'HOP',
+        'HOSPICE'                => 'HOSP',
+        'HOSPITALIER'            => 'HOSP',
+        'HOTEL'                  => 'HOT',
+        'INFANTERIE'             => 'INFANT',
+        'INFERIEUR'              => 'INF',
+        'INFERIEUR'              => 'INF',
+        'INGENIEUR'              => 'ING',
+        'INSPECTEUR'             => 'INSP',
+        'INSTITUT'               => 'INST',
+        'INTERNATIONAL'          => 'INTERN',
+        'INTERNATIONALE'         => 'INTERN',
+        'LABORATOIRE'            => 'LABO',
+        'LIEUTENANT'             => 'LT',
+        'LIEUTENANT DE VAISSEAU' => 'LTDV',
+        'MADAME'                 => 'MME',
+        'MADEMOISELLE'           => 'MLLE',
+        'MAGASIN'                => 'MAG',
+        'MAISON'                 => 'MAIS',
+        'MAITRE'                 => 'ME',
+        'MARECHAL'               => 'MAL',
+        'MARITIME'               => 'MAR',
+        'MEDECIN'                => 'MED',
+        'MEDICAL'                => 'MED',
+        'MESDAMES'               => 'MMES',
+        'MESDEMOISELLES'         => 'MLLES',
+        'MESSIEURS'              => 'MM',
+        'MILITAIRE'              => 'MIL',
+        'MINISTERE'              => 'MIN',
+        'MONSEIGNEUR'            => 'MGR',
+        'MONSIEUR'               => 'M',
+        'MUNICIPAL'              => 'MUN',
+        'MUTUEL'                 => 'MUT',
+        'NATIONAL'               => 'NAL',
+        'NOTRE DAME'             => 'ND',
+        'NOUVEAU'                => 'NOUV',
+        'NOUVEL'                 => 'NOUV',
+        'NOUVELLE'               => 'NOUV',
+        'OBSERVATOIRE'           => 'OBS',
+        'PASTEUR'                => 'PAST',
+        'PETIT'                  => 'PT',
+        'PETITE'                 => 'PTE',
+        'PETITES'                => 'PTES',
+        'PETITS'                 => 'PTS',
+        'POLICE'                 => 'POL',
+        'PREFET'                 => 'PREF',
+        'PREFECTURE'             => 'PREF',
+        'PRESIDENT'              => 'PDT',
+        'PROFESSEUR'             => 'PR',
+        'PROFESSIONNEL'          => 'PROF',
+        'PROFESSIONNELE'         => 'PROF',
+        'PROLONGE'               => 'PROL',
+        'PROLONGEE'              => 'PROL',
+        'PROPRIETE'              => 'PROP',
+        'QUATER'                 => 'Q',
+        'QUINQUIES'              => 'C',
+        'RECTEUR'                => 'RECT',
+        'REGIMENT'               => 'RGT',
+        'REGION'                 => 'REG',
+        'REGIONAL'               => 'REG',
+        'REGIONALE'              => 'REG',
+        'REPUBLIQUE'             => 'REP',
+        'RESTAURANT'             => 'REST',
+        'SAINT'                  => 'ST',
+        'SAINTE'                 => 'STE',
+        'SAINTES'                => 'STES',
+        'SAINTS'                 => 'STS',
+        'SANATORIUM'             => 'SANA',
+        'SERGENT'                => 'SGT',
+        'SERVICE'                => 'SCE',
+        'SOCIETE'                => 'SOC',
+        'SOUS COUVERT'           => 'SC',
+        'SOUS-PREFET'            => 'SPREF',
+        'SUPERIEUR'              => 'SUP',
+        'SUPERIEURE'             => 'SUP',
+        'SYNDICAT'               => 'SYND',
+        'TECHNICIEN'             => 'TECH',
+        'TECHNICIENNE'           => 'TECH',
+        'TECHNICIQUE'            => 'TECH',
+        'TER'                    => 'T',
+        'TRI SERVICE ARRIVEE'    => 'TSA',
+        'TUNNEL'                 => 'TUN',
+        'UNIVERSITAIRE'          => 'UNVT',
+        'UNIVERSITE'             => 'UNIV',
+        'VELODROME'              => 'VELOD',
+        'VEUVE'                  => 'VVE',
+        'VIEILLE'                => 'VIEL',
+        'VIEILLES'               => 'VIEL',
+        'VIEUX'                  => 'VX'
+    );
+    private static $entrepriseAbbreviations = array(
+        'COOPERATIVE D\'UTILISATION DE MATERIEL AGRICOLE EN COMMUN' => 'CUMA',
+        'ETABLISSEMENT PUBLIC A CARACTERE INDUSTRIEL ET COMMERCIAL' => 'EPIC',
+        'ETABLISSEMENT PUBLIC ADMINISTRATIF'                        => 'EPA',
+        'GROUPEMENT AGRICOLE D\'EXPLOITATION EN COMMUN'             => 'GAEC',
+        'GROUPEMENT D\'INTERET ECONOMIQUE'                          => 'GIE',
+        'GROUPEMENT D\'INTERET PUBLIC'                              => 'GIP',
+        'GROUPEMENT EUROPEEN D\'INTERET ECONOMIQUE'                 => 'GEIE',
+        'OFFICE PUBLIC D\'HABITATION A LOYER MODERE'                => 'OPHLM',
+        'SOCIETE A RESPONSABILITE LIMITEE'                          => 'SARL',
+        'SOCIETE ANONYME'                                           => 'SA',
+        'SOCIETE CIVILE DE PLACEMENT COLLECTIF IMMOBILIER'          => 'SCPI',
+        'SOCIETE CIVILE PROFESSIONNELLE'                            => 'SCP',
+        'SOCIETE COOPERATIVE OUVRIERE DE PRODUCTION ET DE CREDIT'   => 'SCOP',
+        'SOCIETE D\'AMENAGEMENT FONCIER ET D\'EQUIPEMENT RURAL'     => 'SAFER',
+        'SOCIETE D\'ECONOMIE MIXTE'                                 => 'SEM',
+        'SOCIETE D\'INTERET COLLECTIF AGRICOLE'                     => 'SICA',
+        'SOCIETE D\'INVESTISSEMENT A CAPITAL VARIABLE'              => 'SICAV',
+        'SOCIETE EN NOM COLLECTIF'                                  => 'SNC',
+        'SOCIETE IMMOBILIERE POUR LE COMMERCE ET L\'INDUSTRIE'      => 'SICOMI',
+        'SOCIETE MIXTE D\'INTERET AGRICOLE'                         => 'SMIA',
+        'SYNDICAT INTERCOMMUNAL A VOCATION MULTIPLE'                => 'SIVOM',
+        'SYNDICAT INTERCOMMUNAL A VOCATION UNIQUE'                  => 'SIVU'
+    );
+
     // Primary key fields: the quadruplet ($pid, $jobid, $type, $id) defines a unique address.
     public $pid = 0;
     public $jobid = 0;
@@ -74,19 +306,19 @@ class Address
     public $east = null;
     public $west = null;
     public $geocodedText = null;
-    public $geocodedPostalText = null;
     public $geocodeChosen = null;
 
     // Database's field required for both 'home' and 'job' addresses.
-    public $pub = 'private';
+    public $pub = 'ax';
 
     // Database's fields required for 'home' addresses.
-    public $flags = null; // 'current', 'temporary', 'secondary', 'mail', 'cedex'
+    public $flags = null; // 'current', 'temporary', 'secondary', 'mail', 'cedex', 'deliveryIssue'
     public $comment = null;
     public $current = null;
     public $temporary = null;
     public $secondary = null;
     public $mail = null;
+    public $deliveryIssue = null;
 
     // Remaining fields that do not belong to profile_addresses.
     public $phones = array();
@@ -105,7 +337,7 @@ class Address
         if (!is_null($this->flags)) {
             $this->flags = new PlFlagSet($this->flags);
         } else {
-            static $flags = array('current', 'temporary', 'secondary', 'mail');
+            static $flags = array('current', 'temporary', 'secondary', 'mail', 'deliveryIssue');
 
             $this->flags = new PlFlagSet();
             foreach ($flags as $flag) {
@@ -141,11 +373,194 @@ class Address
         return ($this->flags != null && $this->flags->hasFlag($flag));
     }
 
+    /** Auxilary function for formatting postal addresses.
+     * If the needle is found in the haystack, it notifies the substitution's
+     * success, modifies the length accordingly and returns either the matching
+     * substitution or the needle.
+     */
+    private function substitute($needle, $haystack, &$length, &$success)
+    {
+        if (array_key_exists($needle, $haystack)) {
+            $success = true;
+            $length -= (strlen($needle) - strlen($haystack[$needle]));
+            return $haystack[$needle];
+        }
+        return $needle;
+    }
+
+    /** Checks if the line corresponds to a French street line.
+     * A line is considered a French street line if it starts by between 1 and 4 numbers.
+     */
+    private function isStreetFR($line)
+    {
+        return preg_match('/^\d{1,4}\D/', $line);
+    }
+
+    /** Retrieves a French street number and slit the rest of the line into an array.
+     * @param $words: array containing the rest of the line (a word per cell).
+     * @param $line: line to consider.
+     * Returns the street number.
+     */
+    private function getStreetNumberFR(&$line)
+    {
+        // First we define numbers and separators.
+        $numberReq = '(\d{1,4})\s*(BIS|TER|QUATER|[A-Z])?';
+        $separatorReq = '\s*(?:\\|-|&|A|ET)?\s*';
+
+        // Then we retrieve the number(s) and the rest of the line.
+        // $matches contains:
+        //  -0: the full patern, here the given line,
+        //  -1: the number,
+        //  -2: its optionnal quantifier,
+        //  -3: an optionnal second number,
+        //  -4: the second number's optionnal quantifier,
+        //  -5: the rest of the line.
+        preg_match('/^' . $numberReq . '(?:' . $separatorReq . $numberReq . ')?\s+(.*)/', $line, $matches);
+        $number = $matches[1];
+        $line = $matches[5];
+
+        // If there is a precision on the address, we concatenate it to the number.
+        if ($matches[2] != '') {
+            $number .= $matches[2]{0};
+        } elseif ($matches[4] != '') {
+            $number .= $matches[4]{0};
+        }
+
+        return $number;
+    }
+
+    /** Checks if the line corresponds to a French locality line.
+     * A line is considered a French locality line if it starts by exactly a
+     * postal code of exactly 5 numbers.
+     */
+    private function isLocalityFR($line)
+    {
+        return preg_match('/^\d{5}\D/', $line);
+    }
+
+    /** Retrieves a French postal code and slit the rest of the line into an array.
+     * @param $words: array containing the rest of the line (a word per cell).
+     * @param $line: line to consider.
+     * Returns the postal code, and cuts it out from the line.
+     */
+    private function getPostalCodeFR(&$line)
+    {
+        $number = substr($line, 0, 5);
+        $line = trim(substr($line, 5));
+        return $number;
+    }
+
+    /** Returns the address formated for French postal use (cf AFNOR XPZ 10-011).
+     * A postal addresse containts at most 6 lines of at most 38 characters each:
+     *  - addressee's identification ("MONSIEUR JEAN DURAND", "DURAND SA"…),
+     *  - delivery point identification ("CHEZ TOTO APPARTEMENT 2", "SERVICE ACHAT"…),
+     *  - building localisation complement ("ENTREE A BATIMENT DES JONQUILLES", "ZONE INDUSTRIELLE OUEST"…),
+     *  - N° and street name ("25 RUE DES FLEURS", "LES VIGNES"…),
+     *  - delivery service, street localisation complement ("BP 40122", "BP 40112 AREYRES"…),
+     *  - postal code and locality or cedex code and cedex ("33500 LIBOURNE", "33506 LIBOURNE CEDEX"…).
+     * Punctuation must be removed, all leters must be uppercased.
+     * Both locality and street name must not take more than 32 characters.
+     *
+     * @param $arrayText: array containing the address to be formated, one
+     * address line per array line.
+     * @param $count: array size.
+     */
+    private function formatPostalAddressFR($arrayText)
+    {
+        // First removes country if any.
+        $count = count($arrayText);
+        if ($arrayText[$count - 1] == 'FRANCE') {
+            unset($arrayText[$count - 1]);
+            --$count;
+        }
+
+        // All the lines must have less than 38 characters but street and
+        // locality lines whose limit is 32 characters.
+        foreach ($arrayText as $lineNumber => $line) {
+            if ($isStreetLine = $this->isStreetFR($line)) {
+                $formattedLine = $this->getStreetNumberFR($line) . ' ';
+                $limit = 32;
+            } elseif ($this->isLocalityFR($line)) {
+                $formattedLine = $this->getPostalCodeFR($line) . ' ';
+                $limit = 32;
+            } else {
+                $formattedLine = '';
+                $limit = 38;
+            }
+
+            $words = explode(' ', $line);
+            $count = count($words);
+            $length = $count - 1;
+            foreach ($words as $word) {
+                $length += strlen($word);
+            }
+
+            // Checks is length is ok. Otherwise, we try to shorten words and
+            // update the length of the current line accordingly.
+            for ($i = 0; $i < $count && $length > $limit; ++$i) {
+                $success = false;
+                if ($isStreetLine) {
+                    $sub = $this->substitute($words[$i], Address::$streetAbbreviations, $length, $success);
+                }
+                // Entreprises' substitution are only suitable for the first two lines.
+                if ($lineNumber <= 2 && !$success) {
+                    $sub = $this->substitute($words[$i], Address::$entrepriseAbbreviations, $length, $success);
+                }
+                if (!$success) {
+                    $sub = $this->substitute($words[$i], Address::$otherAbbreviations, $length, $success);
+                }
+
+                $formattedLine .= $sub . ' ';
+            }
+            for (; $i < $count; ++$i) {
+                $formattedLine .= $words[$i] . ' ';
+            }
+            $arrayText[$lineNumber] = trim($formattedLine);
+        }
+
+        return implode("\n", $arrayText);
+    }
+
+    // Formats postal addresses.
+    // First erases punctuation, accents… Then uppercase the address and finally
+    // calls the country's dedicated formatting function.
+    public function formatPostalAddress()
+    {
+        // Performs rough formatting.
+        $text = mb_strtoupper(replace_accent($this->text));
+        $text = str_replace(array(',', ';', '.', ':', '!', '?', '"', '«', '»'), '', $text);
+        $text = preg_replace('/( |\t)+/', ' ', $text);
+        $arrayText = explode("\n", $text);
+        $arrayText = array_map('trim', $arrayText);
+
+        // Search for country.
+        $countries = DirEnum::getOptions(DirEnum::COUNTRIES);
+        $countries = array_map('replace_accent', $countries);
+        $countries = array_map('strtoupper', $countries);
+        $count = count($arrayText);
+        if (in_array(strtoupper($address->country), Address::$formattings)) {
+            $text = call_user_func(array($this, 'formatPostalAddress' . Address::$formattings[strtoupper($address->country)]), $arrayText);
+        } elseif (array_key_exists($arrayText[$count - 1], Address::$formattings)) {
+            $text = call_user_func(array($this, 'formatPostalAddress' . Address::$formattings[$arrayText[$count - 1]]), $arrayText);
+        } elseif (!in_array($arrayText[$count - 1], $countries)) {
+            $text = $this->formatPostalAddressFR($arrayText);
+        } else {
+            $text = implode("\n", $arrayText);
+        }
+
+        $this->postalText = $text;
+    }
+
     public function format(array $format = array())
     {
         if (empty($format)) {
             $format['requireGeocoding'] = false;
             $format['stripGeocoding'] = false;
+            $format['postalText'] = false;
+        } else {
+            foreach (array('requireGeocoding', 'stripGeocoding', 'postalText') as $type) {
+                $format[$type] = (isset($format[$type])) ? $format[$type] : false;
+            }
         }
         $this->text = trim($this->text);
         if ($this->removed == 1) {
@@ -174,6 +589,9 @@ class Address
         }
         $this->geocodeChosen = null;
         $this->phones = Phone::formatFormArray($this->phones, $this->error);
+        if ($format['postalText']) {
+            $this->formatPostalAddress();
+        }
         return !$this->error;
     }
 
@@ -203,7 +621,6 @@ class Address
         );
         if (!is_null($this->geocodedText)) {
             $address['geocodedText'] = $this->geocodedText;
-            $address['geocodedPostalText'] = $this->geocodedPostalText;
             $address['geocodeChosen'] = $this->geocodeChosen;
         }
 
@@ -211,7 +628,7 @@ class Address
             $address['pub'] = $this->pub;
         }
         if ($this->type == self::LINK_PROFILE) {
-            static $flags = array('current', 'temporary', 'secondary', 'mail', 'cedex');
+            static $flags = array('current', 'temporary', 'secondary', 'mail', 'cedex', 'deliveryIssue');
 
             foreach ($flags as $flag) {
                 $address[$flag] = $this->flags->hasFlag($flag);
@@ -231,11 +648,12 @@ class Address
         }
         if ($this->type == self::LINK_PROFILE) {
             static $flags = array(
-                'current'   => 'actuelle',
-                'temporary' => 'temporaire',
-                'secondary' => 'secondaire',
-                'mail'      => 'conctactable par courier',
-                'cedex'     => 'type cédex',
+                'current'       => 'actuelle',
+                'temporary'     => 'temporaire',
+                'secondary'     => 'secondaire',
+                'mail'          => 'conctactable par courier',
+                'deliveryIssue' => 'n\'habite pas à l\'adresse indiquée',
+                'cedex'         => 'type cédex',
             );
 
             $address .= ', commentaire : ' . $this->comment;
@@ -260,7 +678,7 @@ class Address
     {
         static $areas = array('administrativeArea', 'subAdministrativeArea', 'locality');
 
-        $this->format();
+        $this->format(array('postalText' => true));
         if (!$this->isEmpty()) {
             foreach ($areas as $area) {
                 Geocoder::getAreaId($this, $area);

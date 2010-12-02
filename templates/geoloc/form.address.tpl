@@ -42,10 +42,10 @@
   <textarea cols="30" rows="4" class="valid {$prefid}_geoloc">{$address.geocodedText}</textarea>
 {/if}
 </div>
+{if !$isMe}<div><small><strong>Adress postale&nbsp;:</strong><br />{$address.postalText|nl2br}</small></div>{/if}
 {if t($address.geocodedText)}
 <input type="hidden" name="{$prefname}[geocodeChosen]" value="1" />
 <input type="hidden" name="{$prefname}[geocodedText]" value="{$address.geocodedText}" />
-<input type="hidden" name="{$prefname}[geocodedPostalText]" value="{$address.geocodedPostalText}" />
 {/if}
 <input type="hidden" name="{$prefname}[accuracy]" value="{$address.accuracy}" />
 <input type="hidden" name="{$prefname}[postalText]" value="{$address.postalText}" />

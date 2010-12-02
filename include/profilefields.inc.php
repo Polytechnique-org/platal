@@ -202,8 +202,12 @@ class Job
         }
         $this->company = CompanyList::get($this->jobid);
         if (is_null($this->company)) {
-            $entreprise = ProfileValidate::get_typed_requests($this->pid, 'entreprise');
-            $this->company = new Company(array('name' =>  $entreprise[$this->id]->name));
+            $entreprises = ProfileValidate::get_typed_requests($this->pid, 'entreprise');
+            foreach ($entreprises as $entreprise) {
+                if ($entreprise->id == $this->id) {
+                    $this->company = new Company(array('name' => $entreprise->name));
+                }
+            }
         }
     }
 

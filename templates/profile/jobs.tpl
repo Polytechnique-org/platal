@@ -48,11 +48,18 @@
   <tr>
     <td class="titre">Corps d'origine</td>
     <td>
+    {if $isMe}
+      {$corps.originalText}
+      <input type="hidden" name="corps[original]" value="{$corps.original}" />
+      <input type="hidden" name="corps[originalText]" value="{$corps.originalText}" />
+    {else}
       <select name="corps[original]">
         {foreach from=$original_corps item=o_corps}
         <option value="{$o_corps.id}" {if $o_corps.id eq $corps.original}selected="selected"{/if}>{$o_corps.name}</option>
         {/foreach}
       </select>
+      <input type="hidden" name="corps[originalText]" value="{$corps.originalText}" />
+    {/if}
     </td>
   </tr>
   <tr>
