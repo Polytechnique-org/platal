@@ -31,7 +31,7 @@ $res = XDB::iterator('SELECT  p.hrpid, pm.pid, a.full_name, pm.field, pm.oldText
                   INNER JOIN  profile_display       AS pd ON (pm.pid = pd.pid)
                   INNER JOIN  account_profiles      AS ap ON (pm.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
                   INNER JOIN  aliases               AS al ON (ap.uid = al.uid AND FIND_IN_SET(\'bestalias\', al.flags))
-                       WHERE  pm.type = \'third_party\'
+                       WHERE  pm.type = \'third_party\' AND pm.field != \'deathdate\'
                     ORDER BY  pm.pid, pm.field, pm.timestamp');
 
 if ($res->total() > 0) {
