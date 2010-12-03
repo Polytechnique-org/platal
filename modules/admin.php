@@ -50,7 +50,7 @@ class AdminModule extends PLModule
             'admin/accounts'               => $this->make_hook('accounts',               AUTH_MDP, 'admin'),
             'admin/account/watch'          => $this->make_hook('account_watch',          AUTH_MDP, 'admin'),
             'admin/account/types'          => $this->make_hook('account_types',          AUTH_MDP, 'admin'),
-            'admin/jobs'                   => $this->make_hook('jobs',                   AUTH_MDP, 'admin'),
+            'admin/jobs'                   => $this->make_hook('jobs',                   AUTH_MDP, 'admin,edit_directory'),
         );
     }
 
