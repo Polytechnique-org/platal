@@ -139,6 +139,13 @@
 </table>
 {/if}
 
+{if hasPerm('edit_directory')}
+<div class="menu_title">Administration</div>
+<div class="menu_item"><a href="admin/profile">Modifications</a></div>
+<div class="menu_item"><a href="admin/jobs">Entreprises</a></div>
+<div class="menu_item"><a href="admin/validate">Validations</a></div>
+{/if}
+
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
