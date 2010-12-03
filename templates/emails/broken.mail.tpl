@@ -42,7 +42,7 @@ polytechnicienne, il te suffit de te rendre sur la page :
 
     https://www.polytechnique.org/emails/redirect
 
-{include file="signature.mail.tpl"}
+{include file="include/signature.mail.tpl"}
 ---------------------------------------------------------------------------
 
   PS : si jamais tu ne disposes plus du mot de passe te permettant

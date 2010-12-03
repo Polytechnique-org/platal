@@ -38,7 +38,7 @@ Tu peux voir ta fiche là :
 Tu peux aussi l'éditer toi-même là :
 *{$globals->baseurl}/profile/edit/{$hrpid}
 
-{include file="signature.mail.tpl"}
+{include file="include/signature.mail.tpl"}
 
 {/if}
 

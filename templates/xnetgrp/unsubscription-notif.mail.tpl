@@ -32,6 +32,6 @@ Chers animateurs du groupe {$group},
 {else}
 {$user->fullName()} ({$user->forlifeEmail()}) vient d'être désinscrit du groupe par {$smarty.session.user->fullName()}.
 {/if}
-{include file="signature.mail.tpl"}
+{include file="include/signature.mail.tpl"}
 {/if}
 {* vim:set et sw=2 sts=2 sws=2: *}
