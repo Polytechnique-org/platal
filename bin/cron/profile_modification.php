@@ -24,36 +24,6 @@ require_once 'connect.db.inc.php';
 require_once 'plmailer.php';
 global $globals;
 
-$translations = array(
-    'search_names'    => 'Noms',
-    'nationality1'    => 'Nationalité',
-    'nationality2'    => '2e nationalité',
-    'nationality3'    => '3e nationalité',
-    'promo_display'   => 'Promotion affichée',
-    'email_directory' => 'Email annuaire papier',
-    'networking'      => 'Messageries…',
-    'tels'            => 'Téléphones',
-    'edus'            => 'Formations',
-    'promo'           => 'Promotion de sortie',
-    'birthdate'       => 'Date de naissance',
-    'yourself'        => 'Nom affiché',
-    'freetext'        => 'Commentaire',
-    'freetext_pub'    => 'Affichage de ton commentaire',
-    'photo_pub'       => 'Affichage de ta photo',
-    'addresses'       => 'Adresses',
-    'corps'           => 'Corps',
-    'cv'              => 'CV',
-    'jobs'            => 'Emplois',
-    'section'         => 'Section',
-    'binets'          => 'Binets',
-    'medals'          => 'Décorations',
-    'medals_pub'      => 'Affichage de tes décorations',
-    'competences'     => 'Compétences',
-    'langues'         => 'Langues',
-    'expertise'       => 'Expertises (mentoring)',
-    'terms'           => 'Compétences (mentoring)',
-    'countries'       => 'Pays (mentoring)'
-);
 $res = XDB::iterator('SELECT  p.hrpid, pm.pid, a.full_name, pm.field, pm.oldText, pm.newText, p.sex, pd.yourself, al.alias
                         FROM  profile_modifications AS pm
                   INNER JOIN  accounts              AS a  ON (pm.uid = a.uid)
@@ -76,7 +46,7 @@ if ($res->total() > 0) {
     $modifications = array();
     $modifications[] = array(
         'full_name' => $values['full_name'],
-        'field'     => $translations[$values['field']],
+        'field'     => $values['field'],
         'oldText'   => $values['oldText'],
         'newText'   => $values['newText'],
     );
@@ -100,7 +70,7 @@ if ($res->total() > 0) {
         $hrpid = $values['hrpid'];
         $modifications[] = array(
             'full_name' => $values['full_name'],
-            'field'     => $translations[$values['field']],
+            'field'     => $values['field'],
             'oldText'   => $values['oldText'],
             'newText'   => $values['newText'],
         );
