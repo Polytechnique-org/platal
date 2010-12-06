@@ -42,7 +42,7 @@ class AdminModule extends PLModule
             'admin/skins'                  => $this->make_hook('skins',                  AUTH_MDP, 'admin'),
             'admin/user'                   => $this->make_hook('user',                   AUTH_MDP, 'admin'),
             'admin/add_accounts'           => $this->make_hook('add_accounts',           AUTH_MDP, 'admin'),
-            'admin/validate'               => $this->make_hook('validate',               AUTH_MDP, 'admin'),
+            'admin/validate'               => $this->make_hook('validate',               AUTH_MDP, 'admin,edit_directory'),
             'admin/validate/answers'       => $this->make_hook('validate_answers',       AUTH_MDP, 'admin'),
             'admin/wiki'                   => $this->make_hook('wiki',                   AUTH_MDP, 'admin'),
             'admin/ipwatch'                => $this->make_hook('ipwatch',                AUTH_MDP, 'admin'),
@@ -1126,6 +1126,7 @@ class AdminModule extends PLModule
         global $globals;
         $globals->updateNbValid();
         $page->assign('vit', Validate::iterate());
+        $page->assign('isAdmin', S::admin());
     }
 
     function handler_validate_answers(&$page, $action = 'list', $id = null)

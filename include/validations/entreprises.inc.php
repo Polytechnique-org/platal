@@ -41,6 +41,8 @@ class EntrReq extends ProfileValidate
     public $suggestions;
     public $rules = 'Si l\'entreprise est déjà présente sous un autre nom dans la liste des suggestions, remplacer son nom par celui-ci avant de valider. Laisser les autres champs tels quels.';
 
+    public $requireAdmin = false;
+
     // }}}
     // {{{ constructor
 
