@@ -149,7 +149,7 @@ class ProfileSettingSearchNames implements ProfileSetting
             $this->search_names = array();
             foreach ($value as &$sn) {
                 $sn['name'] = trim($sn['name']);
-                if ($sn['type'] == 'firstname' || $sn['type'] == 'lastname') {
+                if (S::user()->isMe($this->owner) && ($sn['type'] == 'firstname' || $sn['type'] == 'lastname')) {
                     $sn['name'] = $this->prepare($page, $sn['type'], $sn['name'],
                                                  $initial[$sn['type']], $success_tmp);
                     $success = $success && $success_tmp;
