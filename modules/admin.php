@@ -51,6 +51,7 @@ class AdminModule extends PLModule
             'admin/account/watch'          => $this->make_hook('account_watch',          AUTH_MDP, 'admin'),
             'admin/account/types'          => $this->make_hook('account_types',          AUTH_MDP, 'admin'),
             'admin/jobs'                   => $this->make_hook('jobs',                   AUTH_MDP, 'admin,edit_directory'),
+            'admin/profile'                => $this->make_hook('profile',                AUTH_MDP, 'admin,edit_directory')
         );
     }
 
@@ -1538,6 +1539,37 @@ class AdminModule extends PLModule
                 $page->assign('selectedJob', $res->fetchOneAssoc());
             }
         }
+    }
+
+    function handler_profile(&$page)
+    {
+        $page->changeTpl('admin/profile.tpl');
+
+        if (Post::has('checked')) {
+            S::assert_xsrf_token();
+            $res = XDB::iterator('SELECT  DISTINCT(pm.pid), pd.public_name
+                                    FROM  profile_modifications AS pm
+                              INNER JOIN  profile_display       AS pd ON (pm.pid = pd.pid)
+                                   WHERE  pm.type = \'self\'');
+
+            while ($profile = $res->next()) {
+                if (Post::has('checked_' . $profile['pid'])) {
+                    XDB::execute('DELETE FROM  profile_modifications
+                                        WHERE  type = \'self\' AND pid = {?}', $profile['pid']);
+
+                    $page->trigSuccess('Profil de ' . $profile['public_name'] . ' vérifié.');
+                }
+            }
+        }
+
+        $res = XDB::iterator('SELECT  p.hrpid, pm.pid, pd.directory_name, GROUP_CONCAT(pm.field SEPARATOR \', \') AS field
+                                FROM  profile_modifications AS pm
+                          INNER JOIN  profiles              AS p  ON (pm.pid = p.pid)
+                          INNER JOIN  profile_display       AS pd ON (pm.pid = pd.pid)
+                               WHERE  pm.type = \'self\'
+                            GROUP BY  pd.directory_name
+                            ORDER BY  pd.directory_name');
+        $page->assign('updates', $res);
     }
 }
 

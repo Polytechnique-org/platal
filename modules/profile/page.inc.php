@@ -310,7 +310,8 @@ abstract class ProfilePage implements PlWizardPage
                                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, NOW())
                   ON DUPLICATE KEY UPDATE  uid = VALUES(uid), oldText = IF(VALUES(type) != type, VALUES(oldText), oldText),
                                            newText = VALUES(newText), type = VALUES(type), timestamp = NOW()',
-                             $this->pid(), $user->id(), $field, $values[0], $values[1], ($owner->id() == $user->id()) ? 'self' : 'third_party');
+                             $this->pid(), $user->id(), Profile::$descriptions[$field], $values[0], $values[1],
+                             ($owner->id() == $user->id()) ? 'self' : 'third_party');
             }
         }
         return true;
