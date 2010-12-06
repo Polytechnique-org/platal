@@ -129,7 +129,7 @@ class ProfileSettingPhones implements ProfileSetting
 
     public function save(ProfilePage &$page, $field, $value)
     {
-        Phone::deletePhones($page->pid(), Phone::LINK_PROFILE);
+        Phone::deletePhones($page->pid(), Phone::LINK_PROFILE, null, S::user()->isMe($page->owner) || S::admin());
         Phone::savePhones($value, $page->pid(), Phone::LINK_PROFILE);
     }
 

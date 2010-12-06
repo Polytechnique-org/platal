@@ -722,7 +722,7 @@ class Address
                      $this->pid, $this->jobid, $this->type, $this->id);
     }
 
-    static public function deleteAddresses($pid, $type, $jobid = null)
+    static public function deleteAddresses($pid, $type, $jobid = null, $deletePrivate = true)
     {
         $where = '';
         if (!is_null($pid)) {
@@ -732,10 +732,10 @@ class Address
             $where = XDB::format(' AND jobid = {?}', $jobid);
         }
         XDB::execute('DELETE FROM  profile_addresses
-                            WHERE  type = {?}' . $where,
+                            WHERE  type = {?}' . $where . (($deletePrivate) ? '' : ' AND pub IN (\'public\', \'ax\')'),
                      $type);
         if ($type == self::LINK_PROFILE) {
-            Phone::deletePhones($pid, Phone::LINK_ADDRESS);
+            Phone::deletePhones($pid, Phone::LINK_ADDRESS, null, $deletePrivate);
         }
     }
 

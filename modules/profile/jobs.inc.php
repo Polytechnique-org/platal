@@ -245,14 +245,14 @@ class ProfileSettingJob implements ProfileSetting
 
     public function save(ProfilePage &$page, $field, $value)
     {
-        XDB::execute("DELETE FROM  profile_job
-                            WHERE  pid = {?}",
+        $deletePrivate = S::user()->isMe($this->owner) || S::admin();
+        XDB::execute('DELETE FROM  pj, pjt
+                            USING  profile_job      AS pj
+                        LEFT JOIN  profile_job_term AS pjt ON (pj.pid = pjt.pid AND pj.id = pjt.jid)
+                            WHERE  pj.pid = {?}' . (($deletePrivate) ? '' : ' AND pj.pub IN (\'public\', \'ax\')'),
                      $page->pid());
-        XDB::execute("DELETE FROM  profile_job_term
-                            WHERE  pid = {?}",
-                     $page->pid());
-        Address::deleteAddresses($page->pid(), Address::LINK_JOB);
-        Phone::deletePhones($page->pid(), Phone::LINK_JOB);
+        Address::deleteAddresses($page->pid(), Address::LINK_JOB, null, $deletePrivate);
+        Phone::deletePhones($page->pid(), Phone::LINK_JOB, null, $deletePrivate);
         $terms_values = array();
         foreach ($value as $id => &$job) {
             if (isset($job['name']) && $job['name']) {

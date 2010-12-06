@@ -316,14 +316,14 @@ class Phone
                      $this->pid, $this->link_type, $this->link_id, $this->id);
     }
 
-    static public function deletePhones($pid, $link_type, $link_id = null)
+    static public function deletePhones($pid, $link_type, $link_id = null, $deletePrivate = true)
     {
         $where = '';
         if (!is_null($link_id)) {
             $where = XDB::format(' AND link_id = {?}', $link_id);
         }
         XDB::execute('DELETE FROM  profile_phones
-                            WHERE  pid = {?} AND link_type = {?}' . $where,
+                            WHERE  pid = {?} AND link_type = {?}' . $where . (($deletePrivate) ? '' : ' AND pub IN (\'public\', \'ax\')'),
                      $pid, $link_type);
     }
 
