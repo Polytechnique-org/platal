@@ -151,7 +151,7 @@ class ProfileSettingJob implements ProfileSetting
         if (count($job['terms'])) {
             $termsid = array();
             foreach ($job['terms'] as $term) {
-                if (!$term['full_name']) {
+                if (!isset($term['full_name'])) {
                     $termsid[] = $term['jtid'];
                 }
             }
@@ -162,7 +162,7 @@ class ProfileSettingJob implements ProfileSetting
                                  $termsid);
                 $term_id_to_name = $res->fetchAllAssoc('jtid', false);
                 foreach ($job['terms'] as &$term) {
-                    if (!$term['full_name']) {
+                    if (!isset($term['full_name'])) {
                         $term['full_name'] = $term_id_to_name[$term['jtid']];
                     }
                 }
