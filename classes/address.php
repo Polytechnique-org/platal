@@ -538,8 +538,8 @@ class Address
         $countries = array_map('replace_accent', $countries);
         $countries = array_map('strtoupper', $countries);
         $count = count($arrayText);
-        if (in_array(strtoupper($address->country), Address::$formattings)) {
-            $text = call_user_func(array($this, 'formatPostalAddress' . Address::$formattings[strtoupper($address->country)]), $arrayText);
+        if (in_array(strtoupper($this->countryId), Address::$formattings)) {
+            $text = call_user_func(array($this, 'formatPostalAddress' . strtoupper($this->countryId)), $arrayText);
         } elseif (array_key_exists($arrayText[$count - 1], Address::$formattings)) {
             $text = call_user_func(array($this, 'formatPostalAddress' . Address::$formattings[$arrayText[$count - 1]]), $arrayText);
         } elseif (!in_array($arrayText[$count - 1], $countries)) {
