@@ -349,27 +349,39 @@ class Phone
         }
     }
 
-    static private function formArrayWalk(array $data, $function, &$success = true, $requiresEmptyPhone = false)
+    static private function formArrayWalk(array $data, $function, &$success = true, $requiresEmptyPhone = false, $maxPublicity = null)
     {
+        static $publicity = array('private' => 0, 'ax' => 1, 'public' => 2);
+
         $phones = array();
         foreach ($data as $item) {
             $phone = new Phone($item);
             $success = (!$phone->error && ($phone->format() || $phone->isEmpty()) && $success);
             if (!$phone->isEmpty()) {
+                if (!is_null($maxPublicity) && array_key_exists($maxPublicity, $publicity)) {
+                    if ($publicity[$phone->pub] > $publicity[$maxPublicity]) {
+                        $phone->pub = $maxPublicity;
+                    }
+                }
                 $phones[] = call_user_func(array($phone, $function));
             }
         }
         if (count($phones) == 0 && $requiresEmptyPhone) {
             $phone = new Phone();
+            if (!is_null($maxPublicity) && array_key_exists($maxPublicity, $publicity)) {
+                if ($publicity[$phone->pub] > $publicity[$maxPublicity]) {
+                    $phone->pub = $maxPublicity;
+                }
+            }
             $phones[] = call_user_func(array($phone, $function));
         }
         return $phones;
     }
 
     // Formats an array of form phones into an array of form formatted phones.
-    static public function formatFormArray(array $data, &$success = true)
+    static public function formatFormArray(array $data, &$success = true, $maxPublicity = null)
     {
-        return self::formArrayWalk($data, 'toFormArray', $success, true);
+        return self::formArrayWalk($data, 'toFormArray', $success, true, $maxPublicity);
     }
 
     static public function formArrayToString(array $data)
