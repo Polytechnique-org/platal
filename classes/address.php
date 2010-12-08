@@ -588,7 +588,7 @@ class Address
             $this->countryId = null;
         }
         $this->geocodeChosen = null;
-        $this->phones = Phone::formatFormArray($this->phones, $this->error, $this->pub);
+        $this->phones = Phone::formatFormArray($this->phones, $this->error, new ProfileVisibility($this->pub));
         if ($format['postalText']) {
             $this->formatPostalAddress();
         }

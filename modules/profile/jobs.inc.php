@@ -131,10 +131,8 @@ class ProfileSettingJob implements ProfileSetting
         return $jobs;
     }
 
-    private function cleanJob(ProfilePage &$page, $jobid, array &$job, &$success)
+    private function cleanJob(ProfilePage &$page, $jobid, array &$job, &$success, $maxPublicity)
     {
-        static $publicity = array('private' => 0, 'ax' => 1, 'public' => 2);
-
         if ($job['w_email'] == "new@example.org") {
             $job['w_email'] = $job['w_email_new'];
         }
@@ -184,11 +182,10 @@ class ProfileSettingJob implements ProfileSetting
             }
         }
 
-        if ($publicity[$job['w_email_pub']] > $publicity[$job['pub']]) {
-            $job['w_email_pub'] = $job['pub'];
+        if ($maxPublicity->isVisible($job['w_email_pub'])) {
+            $job['w_email_pub'] = $maxPublicity->level();
         }
-
-        $job['w_phone'] = Phone::formatFormArray($job['w_phone'], $s, $job['pub']);
+        $job['w_phone'] = Phone::formatFormArray($job['w_phone'], $s, $maxPublicity);
 
         unset($job['removed']);
         unset($job['new']);
@@ -198,8 +195,6 @@ class ProfileSettingJob implements ProfileSetting
 
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
-        static $publicity = array('private' => 0, 'ax' => 1, 'public' => 2);
-
         $entreprise = ProfileValidate::get_typed_requests($page->pid(), 'entreprise');
         $entr_val = 0;
 
@@ -243,11 +238,12 @@ class ProfileSettingJob implements ProfileSetting
         foreach ($value as $key => &$job) {
             $address = new Address($job['w_address']);
             $s = $address->format();
-            if ($publicity[$address->pub] > $publicity[$job['pub']]) {
-                $address->pub = $job['pub'];
+            $maxPublicity = new ProfileVisibility($job['pub']);
+            if ($maxPublicity->isVisible($address->pub)) {
+                $address->pub = $maxPublicity->level();
             }
             $job['w_address'] = $address->toFormArray();
-            $this->cleanJob($page, $key, $job, $s);
+            $this->cleanJob($page, $key, $job, $s, $maxPublicity);
             if (!$init) {
                 $success = ($success && $s);
             }
