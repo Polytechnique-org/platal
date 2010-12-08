@@ -49,8 +49,12 @@
   </a>
 </div>
 <div style="float: right" class="flags">
-  {include file="include/flags.radio.tpl" name="`$telpref`[pub]"
-           val=$tel.pub disabled=$hiddentel}
+  {if t($mainField)}
+  {include file="include/flags.radio.tpl" name="`$telpref`[pub]" val=$tel.pub disabled=$hiddentel
+           mainField=$mainField mainId=$mainId subField=$subField subId=$telid}
+  {else}
+  {include file="include/flags.radio.tpl" name="`$telpref`[pub]" val=$tel.pub disabled=$hiddentel}
+  {/if}
 </div>
 <div id="{$id}_comment" style="clear: both;{if $tel.comment eq ''} display:none{/if}">
   Commentaire :

@@ -59,7 +59,7 @@
   <tr {if $hiddenaddr}style="display: none"{/if}>
     <td>
       <div style="margin-bottom: 0.2em" class="flags">
-        {include file="include/flags.radio.tpl" name="`$prefname`[pub]" val=$address.pub}
+        {include file="include/flags.radio.tpl" name="`$prefname`[pub]" val=$address.pub mainField='addresses' mainId=$i subField='phones' subId=-1}
       </div>
       <div style="clear: both"></div>
       <div style="float: left">
@@ -119,18 +119,19 @@
   <tr class="pair" {if $hiddenaddr}style="display: none"{/if}>
     <td>
       {foreach from=$address.phones key=t item=tel}
-        <div id="{"`$prefid`_tel_`$t`"}" style="clear: both">
-          {include file="profile/phone.tpl" prefname="`$prefname`[phones]"
-                   prefid="`$prefid`_tel" telid=$t tel=$tel}
+        <div id="{"`$prefid`_phones_`$t`"}" style="clear: both">
+          {include file="profile/phone.tpl" prefname="`$prefname`[phones]" prefid="`$prefid`_phones" telid=$t tel=$tel
+                   subField='phones' mainField='addresses' mainId=$i}
         </div>
       {/foreach}
       {if $address.phones|@count eq 0}
-        <div id="{"`$prefid`_tel_0"}" style="clear: both">
-          {include file="profile/phone.tpl" prefname="`$prefname`[phones]" prefid="`$prefid`_tel" telid=0 tel=0}
+        <div id="{"`$prefid`_phones_0"}" style="clear: both">
+          {include file="profile/phone.tpl" prefname="`$prefname`[phones]" prefid="`$prefid`_phones" telid=0 tel=0
+                   subField='phones' mainField='addresses' mainId=$i}
         </div>
       {/if}
-      <div id="{$prefid}_tel_add" class="center" style="clear: both; padding-top: 4px">
-        <a href="javascript:addTel('{$prefid}_tel','{$prefname}[phones]')">
+      <div id="{$prefid}_phones_add" class="center" style="clear: both; padding-top: 4px">
+        <a href="javascript:addTel('{$prefid}_phones','{$prefname}[phones]','phones','addresses','{$i}')">
           {icon name=add title="Ajouter un numéro de téléphone"} Ajouter un numéro de téléphone
         </a>
       </div>

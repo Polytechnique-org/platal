@@ -401,7 +401,7 @@ class ProfileModule extends PLModule
         $page->assign('address', array());
     }
 
-    function handler_ajax_tel(&$page, $prefid, $prefname, $telid)
+    function handler_ajax_tel(&$page, $prefid, $prefname, $telid, $subField, $mainField, $mainId)
     {
         pl_content_headers("text/html");
         $page->changeTpl('profile/phone.tpl', NO_SKIN);
@@ -410,6 +410,11 @@ class ProfileModule extends PLModule
         $page->assign('telid', $telid);
         $phone = new Phone();
         $page->assign('tel', $phone->toFormArray());
+        if ($mainField) {
+            $page->assign('subField', $subField);
+            $page->assign('mainField', $mainField);
+            $page->assign('mainId', $mainId);
+        }
     }
 
     function handler_ajax_edu(&$page, $eduid, $class)

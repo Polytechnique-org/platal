@@ -45,7 +45,7 @@ function wizPage_onLoad(id)
         }
         break;
       case 'emploi':
-        if ($('#job_0').find("[name='jobs[0][name]']").val() == '') {
+        if ($('#jobs_0').find("[name='jobs[0][name]']").val() == '') {
             registerEnterpriseAutocomplete(0);
         }
         break;
@@ -57,6 +57,12 @@ var educationDegreeAll;
 var educationDegreeName;
 var subgrades;
 var names;
+
+// Publicity follows the following ordering: private < ax < public.
+var publicity = [];
+publicity['private'] = 0;
+publicity['ax']      = 1;
+publicity['public']  = 2;
 
 // Names {{{1
 
@@ -339,7 +345,7 @@ function validGeoloc(prefid, id, geoloc)
 
 // {{{1 Phones
 
-function addTel(prefid, prefname)
+function addTel(prefid, prefname, subField, mainField, mainId)
 {
     var i = 0;
     var prefix  = prefid + '_';
@@ -347,7 +353,7 @@ function addTel(prefid, prefname)
         i++;
     }
     $('#' + prefix + 'add').before('<div id="' + prefix + i + '" style="clear: both; padding-top: 4px; padding-bottom: 4px"></div>');
-    Ajax.update_html(prefix + i, 'profile/ajax/tel/' + prefid + '/' + prefname + '/' + i);
+    Ajax.update_html(prefix + i, 'profile/ajax/tel/' + prefid + '/' + prefname + '/' + i + '/' + subField + '/' + mainField + '/' + mainId);
 }
 
 function removeTel(prefname, prefid, id)
@@ -519,7 +525,7 @@ function makeAddJob(id)
 function addJob()
 {
     var i = 0;
-    while ($('#job_' + i).length != 0) {
+    while ($('#jobs_' + i).length != 0) {
         ++i;
     }
     $.get(platal_baseurl + 'profile/ajax/job/' + i, makeAddJob(i));
@@ -547,23 +553,23 @@ function addJobTerm(jobid, jtid, full_name)
         jobid = '';
         formvarname = 'terms';
     } else {
-        parentpath = '#job_'+jobid+' ';
+        parentpath = '#jobs_'+jobid+' ';
         formvarname = 'jobs['+jobid+'][terms]';
     }
-    var lastJobTerm = $(parentpath + '.job_term:last');
+    var lastJobTerm = $(parentpath + '.jobs_term:last');
     if (lastJobTerm.length != 0) {
         termid = parseInt(lastJobTerm.children('input').attr('name').replace(/^(jobs\[[0-9]+\]\[terms\]|terms)\[([0-9]+)\]\[jtid\]/, '$2')) + 1;
         if ($('#job'+jobid+'_term'+jtid).length > 0) {
             return false;
         }
     }
-    var newdiv = '<div class="job_term" id="job'+jobid+'_term'+jtid+'">'+
+    var newdiv = '<div class="jobs_term" id="job'+jobid+'_term'+jtid+'">'+
         '<span>'+full_name+'</span>'+
         '<input type="hidden" name="'+formvarname+'['+termid+'][jtid]" value="'+jtid+'" />'+
         '<img title="Retirer ce mot-clef" alt="retirer" src="images/icons/cross.gif" />'+
         '</div>';
     if (lastJobTerm.length == 0) {
-        $(parentpath + '.job_terms').prepend(newdiv);
+        $(parentpath + '.jobs_terms').prepend(newdiv);
     } else {
         lastJobTerm.after(newdiv);
     }
@@ -611,7 +617,7 @@ function selectJobTerm(li)
     if (jobid < 0) {
         search_input = $('.term_search')[0];
     } else {
-        search_input = $('#job_'+jobid+' .term_search')[0];
+        search_input = $('#jobs_'+jobid+' .term_search')[0];
     }
     if (li.extra[0] >= 0) {
         search_input.value = '';
@@ -632,7 +638,7 @@ function toggleJobTermsTree(jobid, textfilter)
     if (jobid < 0) {
         treepath = '';
     } else {
-        treepath = '#job_'+jobid+' ';
+        treepath = '#jobs_'+jobid+' ';
     }
     treepath += '.term_tree';
     if ($(treepath + ' ul').length > 0) {
@@ -731,6 +737,44 @@ function removeElement(cat, id)
 {
     $('#' + cat + '_' + id).remove();
     updateElement(cat);
+}
+
+function updateSubPublicity(subFieldId, name, mainPub)
+{
+    var subPub = $(subFieldId).find("[name='" + name + "']:checked").val();
+    if (publicity[subPub] > publicity[mainPub]) {
+        $(subFieldId).find("[name='" + name + "']:checked").removeAttr('checked');
+        $(subFieldId).find('[value=' + mainPub + ']').attr('checked', 'checked');
+    }
+}
+
+function updatePublicity(mainField, mainId, subField, subId)
+{
+    var mainFieldId = '#' + mainField + '_' + mainId;
+    var mainPub = $(mainFieldId).find("[name='" + mainField + "[" + mainId + "][pub]']:checked").val();
+    if (subId == -1) {
+        var subFields = subField.split(',');
+        for (var i =0; i < subFields.length; ++i) {
+            var subFieldBaseId = mainFieldId + '_' + subFields[i];
+            var name = mainField + '[' + mainId + '][' + subFields[i] + ']';
+            if ($(subFieldBaseId).length != 0) {
+                updateSubPublicity(subFieldBaseId, name + '[pub]', mainPub);
+                updateSubPublicity(subFieldBaseId, mainField + '[' + mainId + '][' + subFields[i] + '_pub]', mainPub);
+            }
+            subId = 0;
+            while ($(subFieldBaseId + '_' + subId).length != 0) {
+                updateSubPublicity(subFieldBaseId + '_' + subId, name + '[' + subId + '][pub]', mainPub);
+                ++subId;
+            }
+        }
+    } else {
+        if (subId == '') {
+            updateSubPublicity(mainFieldId + '_' + subField, mainField + '[' + mainId + '][' + subField + '_pub]', mainPub);
+            updateSubPublicity(mainFieldId + '_' + subField, mainField + '[' + mainId + '][' + subField + '][pub]', mainPub);
+        } else {
+            updateSubPublicity(mainFieldId + '_' + subField + '_' + subId, mainField + '[' + mainId + '][' + subField + '][' + subId + '][pub]', mainPub);
+        }
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
