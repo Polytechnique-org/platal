@@ -257,7 +257,7 @@ class ProfileSettingJob implements ProfileSetting
 
     public function save(ProfilePage &$page, $field, $value)
     {
-        $deletePrivate = S::user()->isMe($this->owner) || S::admin();
+        $deletePrivate = S::user()->isMe($page->owner) || S::admin();
         XDB::execute('DELETE FROM  pj, pjt
                             USING  profile_job      AS pj
                         LEFT JOIN  profile_job_term AS pjt ON (pj.pid = pjt.pid AND pj.id = pjt.jid)
@@ -425,7 +425,7 @@ class ProfilePageJobs extends ProfilePage
         require_once 'emails.combobox.inc.php';
         fill_email_combobox($page, $this->owner);
 
-        if (!S::user()->isMe($page->owner)) {
+        if (!S::user()->isMe($this->owner)) {
             $res = XDB::iterator('SELECT  id, name
                                     FROM  profile_corps_enum
                                 ORDER BY  id = 1 DESC, name');
