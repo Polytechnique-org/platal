@@ -155,9 +155,6 @@ function pl_url($path, $query = null, $fragment = null)
 {
     global $platal;
 
-    if (Env::has('__embedded')) {
-        $path = 'embedded/' . Env::s('__embedded') . '/' . $path;
-    }
     $base = $platal->ns . $path . ($query ? '?'.$query : '');
     return $fragment ? $base.'#'.$fragment : $base;
 }
