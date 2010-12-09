@@ -34,6 +34,8 @@ class CoreModule extends PLModule
             'assert_errors' => $this->make_hook('siteerror',     AUTH_COOKIE, 'admin'),
             'site_errors'   => $this->make_hook('siteerror',     AUTH_COOKIE, 'admin'),
 
+            'embedded'      => $this->make_hook('embedded',      AUTH_PUBLIC),
+
             'wiki_help'     => $this->make_hook('wiki_help',     AUTH_PUBLIC),
             'wiki_preview'  => $this->make_hook('wiki_preview',  AUTH_COOKIE, 'user', NO_AUTH),
 
@@ -186,6 +188,19 @@ class CoreModule extends PLModule
             PlErrorReport::clear();
             $page->trigSuccess("Erreurs effacées.");
         }
+    }
+
+    function handler_embedded($page)
+    {
+        global $platal, $globals;
+        $allkeys = func_get_args();
+        $mode = $allkeys[1];
+        unset($allkeys[0]);
+        unset($allkeys[1]);
+        $_REQUEST['display'] = $mode;
+        $globals->baseurl .= '/embedded/' . $mode;
+        $platal->path = join('/', $allkeys);
+        $platal->run();
     }
 }
 
