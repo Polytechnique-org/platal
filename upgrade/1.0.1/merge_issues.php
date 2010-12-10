@@ -106,7 +106,7 @@ $phones = array();
 $duplicates = array();
 foreach ($pids as $pid) {
     $count = 0;
-    Phone::iterate(array($pid), array(Phone::LINK_PROFILE), array(0));
+    $it = Phone::iterate(array($pid), array(Phone::LINK_PROFILE), array(0));
     while ($item = $it->next()) {
         $phones[] = $item;
         ++$count;
