@@ -44,7 +44,6 @@ XDB::rawExecute("INSERT IGNORE INTO  profile_job_enum (name, acronym, AX_code)
 //  - the job is incomplete (ie no compagny name) : this is an issue,
 //  - the job is complete but the profile already has a job or more : this is an issue,
 //  - the job is complete and the the profile has no previous job : there is no issue.
-
 // We delete obvious duplicates and avoid multiple joins.
 XDB::rawExecute("DELETE  f
                    FROM  fusionax_activites   AS f
@@ -61,15 +60,12 @@ XDB::rawExecute('ALTER TABLE profile_job_enum DROP INDEX AX_code');
 XDB::rawExecute('DROP TABLE IF EXISTS fusionax_entreprises');
 
 // We first update the issues table.
-XDB::rawExecute("INSERT INTO  profile_merge_issues (pid, issues)
-                      SELECT  DISTINCT(f.pid), 'job'
-                        FROM  fusionax_activites AS f
-                       WHERE  (f.jobid IS NULL AND NOT EXISTS (SELECT  *
-                                                                 FROM  profile_job AS pj
-                                                                WHERE  pj.pid = f.pid))
-                              OR (f.jobid IS NOT NULL AND EXISTS (SELECT  *
-                                                                    FROM  profile_job AS pj
-                                                                   WHERE  pj.pid = f.pid))");
+XDB::rawExecute("INSERT IGNORE INTO  profile_merge_issues (pid, issues)
+                             SELECT  DISTINCT(f.pid), 'job'
+                               FROM  fusionax_activites AS f
+                              WHERE  f.jobid IS NULL OR EXISTS (SELECT  *
+                                                                  FROM  profile_job AS pj
+                                                                 WHERE  pj.pid = f.pid)");
 // We then add new jobs.
 $id = 0;
 $continue = 1;
@@ -79,7 +75,8 @@ while ($continue > 0) {
                                    FROM  fusionax_activites");
     XDB::rawExecute("DELETE  f
                        FROM  fusionax_activites AS f
-                 INNER JOIN  profile_job        AS pj ON (f.pid = pj.pid AND pj.id = $id AND pj.jobid = f.jobid AND pj.description = f.description)");
+                 INNER JOIN  profile_job        AS pj ON (f.pid = pj.pid AND pj.id = $id AND pj.description = f.description)
+                      WHERE  pj.jobid = f.jobid OR (pj.jobid IS NULL AND f.jobid IS NULL)");
     $continue = XDB::affectedRows();
 }
 XDB::rawExecute('DROP TABLE IF EXISTS fusionax_activites');
