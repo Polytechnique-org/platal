@@ -35,6 +35,7 @@ SET
 -- Mel_publiable is not certain yet :/
 
 ALTER TABLE fusionax_anciens ADD INDEX (ax_id);
+UPDATE fusionax_anciens SET corps_sortie = TRIM(corps_sortie), grade = TRIM(grade);
 
 -- Correspondances entre fiches X.org et fiches AX
 DROP TABLE IF EXISTS `fusionax_import`;
