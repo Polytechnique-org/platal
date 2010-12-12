@@ -378,12 +378,18 @@ class Address
      * success, modifies the length accordingly and returns either the matching
      * substitution or the needle.
      */
-    private function substitute($needle, $haystack, &$length, &$success)
+    private function substitute($needle, $haystack, &$length, &$success, $trim = false)
     {
         if (array_key_exists($needle, $haystack)) {
             $success = true;
             $length -= (strlen($needle) - strlen($haystack[$needle]));
             return $haystack[$needle];
+        } elseif ($trim) {
+            $success = true;
+            if (strlen($needle) > 4) {
+                $length -= (strlen($needle) - 4);
+                $needle = $needle{4};
+            }
         }
         return $needle;
     }
@@ -500,7 +506,7 @@ class Address
             for ($i = 0; $i < $count && $length > $limit; ++$i) {
                 $success = false;
                 if ($isStreetLine) {
-                    $sub = $this->substitute($words[$i], Address::$streetAbbreviations, $length, $success);
+                    $sub = $this->substitute($words[$i], Address::$streetAbbreviations, $length, $success, ($i == 0));
                 }
                 // Entreprises' substitution are only suitable for the first two lines.
                 if ($lineNumber <= 2 && !$success) {
