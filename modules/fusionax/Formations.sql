@@ -3,6 +3,7 @@
 DROP TABLE IF EXISTS `fusionax_formations`;
 
 CREATE TABLE IF NOT EXISTS `fusionax_formations` (
+  Date_maj DATE NOT NULL COMMENT 'Date de mise à jour de ces informations',
   FO CHAR(2) NOT NULL COMMENT 'Vaut toujours FO pour cette table',
   ax_id VARCHAR(8) NOT NULL COMMENT 'Id unique de l''ancien',
   Intitule_formation VARCHAR(255) NOT NULL DEFAULT 0 COMMENT 'Intitulé de la formation',
@@ -23,7 +24,10 @@ CREATE TABLE IF NOT EXISTS `fusionax_formations` (
 ) ENGINE=InnoDB, CHARSET=utf8;
 
 LOAD DATA LOCAL INFILE  '{?}Formations.txt' INTO TABLE  fusionax_formations CHARACTER SET utf8 FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n'
-(FO, ax_id, Intitule_formation, Intitule_diplome, Descr_formation);
+(@StringDate_maj, FO, ax_id, Intitule_formation, Intitule_diplome, Descr_formation)
+SET
+Date_maj = CONCAT(SUBSTRING(@StringDate_maj,7),'-',SUBSTRING(@StringDate_maj,4,2),'-',SUBSTRING(@StringDate_maj,1,2));
+
 
     UPDATE  fusionax_formations    AS f
 INNER JOIN  profile_education_enum AS e ON (f.Intitule_formation = e.abbreviation)

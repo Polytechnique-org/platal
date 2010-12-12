@@ -19,6 +19,14 @@ foreach (array('fusionax_activites', 'fusionax_adresses', 'fusionax_anciens', 'f
     XDB::rawExecute("DELETE FROM $table WHERE pid IS NULL");
 }
 
+echo "Update timestamp.\n";
+XDB::rawExecute("UPDATE  profiles AS p
+                    SET  p.last_change = GREATEST(COALESCE((SELECT MAX(Date_maj) FROM fusionax_anciens    AS f WHERE f.pid = p.pid), '0000-00-00'),
+                                                  COALESCE((SELECT MAX(Date_maj) FROM fusionax_activites  AS f WHERE f.pid = p.pid), '0000-00-00'),
+                                                  COALESCE((SELECT MAX(Date_maj) FROM fusionax_adresses   AS f WHERE f.pid = p.pid), '0000-00-00'),
+                                                  COALESCE((SELECT MAX(Date_maj) FROM fusionax_formations AS f WHERE f.pid = p.pid), '0000-00-00'),
+                                                  COALESCE(p.last_change, '0000-00-00'))");
+
 // Includes entreprises we do not have into profile_job_enum.
 // We first retrieve AX code, then add missing compagnies.
 echo "Starts jobs inclusions.\n";
@@ -138,6 +146,10 @@ XDB::rawExecute('UPDATE  profiles         AS p
 XDB::rawExecute('ALTER TABLE geoloc_countries DROP INDEX licensePlate');
 
 // Updates corps.
+XDB::rawExecute('UPDATE  profile_corps      AS pc
+             INNER JOIN  fusionax_anciens   AS f ON (f.pid = pc.pid)
+             INNER JOIN  profile_corps_enum AS c ON (f.corps_sortie = c.abbreviation)
+                    SET  pc.original_corpsid = c.id');
 XDB::rawExecute("INSERT IGNORE INTO  profile_corps (pid, original_corpsid, current_corpsid, rankid, corps_pub)
                              SELECT  f.pid, c.id, c.id, r.id, 'ax'
                                FROM  fusionax_anciens        AS f
