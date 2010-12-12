@@ -148,7 +148,7 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
             userdesc = UserDesc(forlife, name, None, 0)
             return (userdesc, perms, vhost)
         else:
-            print >> stderr, "no user found for uid: %s, passwd: %s" % (uid, md5)
+            print >> sys.stderr, "no user found for uid: %s, passwd: %s" % (uid, md5)
             return None
 
 ################################################################################
@@ -242,7 +242,7 @@ def list_call_dispatcher(method, userdesc, perms, vhost, *arg):
         @root:  the handler requires site admin rights
     """
     try:
-        print >> stderr, "calling method: %s" % method
+        print >> sys.stderr, "calling method: %s" % method
         if has_annotation(method, "root") and perms != "admin":
             return 0
         if has_annotation(method, "mlist"):
