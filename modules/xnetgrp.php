@@ -249,8 +249,7 @@ class XnetGrpModule extends PLModule
         global $globals;
 
         $page->changeTpl('xnetgrp/mail.tpl');
-        $mmlist = new MMList(S::v('uid'), S::v('password'),
-                           $globals->asso('mail_domain'));
+        $mmlist = new MMList(S::user(), $globals->asso('mail_domain'));
         $page->assign('listes', $mmlist->get_lists());
         $page->assign('user', S::user());
         $page->addJsLink('ajax.js');

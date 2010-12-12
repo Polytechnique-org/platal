@@ -372,7 +372,7 @@ class RegisterModule extends PLModule
                         XDB::execute('INSERT IGNORE INTO  group_members (uid, asso_id)
                                                   VALUES  ({?}, {?})',
                                      $uid, $asso_id);
-                        $mmlist = new MMList($uid, S::v('password'));
+                        $mmlist = new MMList($user);
                         $mmlist->subscribe("promo" . S::v('promo'));
                     }
                     break;
