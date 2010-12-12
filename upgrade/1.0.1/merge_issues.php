@@ -131,6 +131,10 @@ foreach ($pids as $pid) {
         for ($j = $i + 1; $j < $count; ++$j) {
             if (check($rawAddresses[$i], $rawAddresses[$j])) {
                 $duplicates[$j] = true;
+                $minPub = new ProfileVisibility($addresses[$j]->pub);
+                if ($minPub->isVisible($addresses[$i]->pub)) {
+                    $addresses[$i]->pub = $addresses[$j]->pub;
+                }
             }
         }
     }
@@ -211,7 +215,12 @@ foreach ($pids as $pid) {
     for ($i = 0; $i < $count; ++$i) {
         for ($j = $i + 1; $j < $count; ++$j) {
             if ($phones[$i]->search() == $phones[$j]->search()) {
-                $duplicates[$i] = true;
+                $duplicates[$j] = true;
+                $minPub = new ProfileVisibility($phones[$j]->pub);
+                if ($minPub->isVisible($phones[$i]->pub)) {
+                    $phones[$i]->pub = $phones[$j]->pub;
+                }
+
             }
         }
     }
