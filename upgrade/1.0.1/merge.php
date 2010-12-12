@@ -78,6 +78,7 @@ while ($continue > 0) {
                  INNER JOIN  profile_job        AS pj ON (f.pid = pj.pid AND pj.id = $id AND pj.description = f.description)
                       WHERE  pj.jobid = f.jobid OR (pj.jobid IS NULL AND f.jobid IS NULL)");
     $continue = XDB::affectedRows();
+    ++$id;
 }
 XDB::rawExecute('DROP TABLE IF EXISTS fusionax_activites');
 // We also have to add related phones and addresses.
@@ -307,6 +308,7 @@ while ($continue > 0) {
                  INNER JOIN  profile_education   AS pe ON (pe.pid = f.pid AND pe.id = $id AND pe.eduid = f.eduid AND pe.degreeid = f.degreeid
                                                            AND pe.fieldid = f.fieldid AND pe.program = f.Descr_formation)");
     $continue = XDB::affectedRows();
+    ++$id;
 }
 // Updates merge_issues table (eduid and degreeid should never be empty).
 XDB::rawExecute("UPDATE  profile_merge_issues AS pm
