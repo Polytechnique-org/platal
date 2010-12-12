@@ -266,11 +266,15 @@ echo "Starts educations inclusions.\n";
 XDB::rawExecute("DELETE FROM  fusionax_formations
                        WHERE  Intitule_formation = '' AND Intitule_diplome = '' AND Descr_formation = ''");
 // Insert ids into fusionax_formations to prevent many joins.
+XDB::rawExecute('ALTER TABLE profile_education_enum ADD INDEX (name(60))');
+XDB::rawExecute('ALTER TABLE profile_education_degree_enum ADD INDEX (abbreviation(60))');
 XDB::rawExecute('UPDATE  fusionax_formations           AS f
               LEFT JOIN  profile_education_enum        AS pe ON (pe.name = f.Intitule_formation)
               LEFT JOIN  profile_education_degree_enum AS pd ON (pd.abbreviation = f.Intitule_diplome)
               LEFT JOIN  profile_education_field_enum  AS pf ON (pf.field = f.Descr_formation)
                     SET  f.eduid = pe.id, f.degreeid = pd.id, f.fieldid = pf.id');
+XDB::rawExecute('ALTER TABLE profile_education_enum DROP INDEX name');
+XDB::rawExecute('ALTER TABLE profile_education_degree_enum DROP INDEX abbreviation');
 // Updates non complete educations.
 XDB::rawExecute("UPDATE  profile_education             AS e
              INNER JOIN  fusionax_formations           AS f  ON (f.pid = e.pid)
@@ -305,8 +309,11 @@ while ($continue > 0) {
                                    FROM  fusionax_formations");
     XDB::rawExecute("DELETE  f
                        FROM  fusionax_formations AS f
-                 INNER JOIN  profile_education   AS pe ON (pe.pid = f.pid AND pe.id = $id AND pe.eduid = f.eduid AND pe.degreeid = f.degreeid
-                                                           AND pe.fieldid = f.fieldid AND pe.program = f.Descr_formation)");
+                 INNER JOIN  profile_education   AS pe ON (pe.pid = f.pid AND pe.id = $id)
+                      WHERE  (pe.eduid = f.eduid OR (pe.eduid IS NULL AND f.eduid IS NULL))
+                             AND (pe.degreeid = f.degreeid OR (pe.degreeid IS NULL AND f.degreeid IS NULL))
+                             AND (pe.fieldid = f.fieldid OR (pe.fieldid IS NULL AND f.fieldid IS NULL))
+                             AND (pe.program = f.Descr_formation OR (pe.program IS NULL AND f.Descr_formation IS NULL))");
     $continue = XDB::affectedRows();
     ++$id;
 }
