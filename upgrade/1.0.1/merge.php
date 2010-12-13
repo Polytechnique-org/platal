@@ -154,7 +154,7 @@ XDB::rawExecute("INSERT IGNORE INTO  profile_corps (pid, original_corpsid, curre
                              SELECT  f.pid, c.id, c.id, r.id, 'ax'
                                FROM  fusionax_anciens        AS f
                          INNER JOIN  profile_corps_enum      AS c ON (f.corps_sortie = c.abbreviation)
-                         INNER JOIN  profile_corps_rank_enum AS r ON (f.grade = r.abbreviation)
+                         INNER JOIN  profile_corps_rank_enum AS r ON (f.grade = r.name)
                               WHERE  NOT EXISTS (SELECT  *
                                                    FROM  profile_corps AS pc
                                                   WHERE  f.pid = pc.pid AND pc.original_corpsid != 1)");
