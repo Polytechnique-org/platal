@@ -42,7 +42,8 @@ class FusionAxModule extends PLModule
                 'fusionax/deceased'         => $this->make_hook('deceased', AUTH_MDP, 'admin'),
                 'fusionax/promo'            => $this->make_hook('promo',    AUTH_MDP, 'admin'),
                 'fusionax/names'            => $this->make_hook('names',    AUTH_MDP, 'admin'),
-                'fusionax/edu'              => $this->make_hook('edu',      AUTH_MDP, 'admin')
+                'fusionax/edu'              => $this->make_hook('edu',      AUTH_MDP, 'admin'),
+                'fusionax/corps'            => $this->make_hook('corps',    AUTH_MDP, 'admin')
             );
         } elseif (Platal::globals()->merge->state == 'done') {
             return array(
@@ -605,6 +606,27 @@ class FusionAxModule extends PLModule
         $page->assign('missingEducationCount', $missingEducation->total());
         $page->assign('missingDegreeCount', $missingDegree->total());
         $page->assign('missingCoupleCount', $missingCouple->total());
+    }
+
+    function handler_corps(&$page)
+    {
+        $page->changeTpl('fusionax/corps.tpl');
+
+        $missingCorps = XDB::rawIterator('SELECT  DISTINCT(f.corps_sortie) AS name
+                                            FROM  fusionax_anciens AS f
+                                           WHERE  NOT EXISTS (SELECT  *
+                                                                FROM  profile_corps_enum AS c
+                                                               WHERE  f.corps_sortie = c.abbreviation)');
+        $missingGrade = XDB::rawIterator('SELECT  DISTINCT(f.grade) AS name
+                                            FROM  fusionax_anciens AS f
+                                           WHERE  NOT EXISTS (SELECT  *
+                                                                FROM  profile_corps_rank_enum AS c
+                                                               WHERE  f.grade = c.name)');
+
+        $page->assign('missingCorps', $missingCorps);
+        $page->assign('missingGrade', $missingGrade);
+        $page->assign('missingCorpsCount', $missingCorps->total());
+        $page->assign('missingGradeCount', $missingGrade->total());
     }
 
     function handler_issues_deathdate(&$page, $action = '')

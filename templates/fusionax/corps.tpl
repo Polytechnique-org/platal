@@ -20,27 +20,21 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h2>Fusion des annuaires X.org - AX</h2>
+<h2><a href="fusionax">Fusion des annuaires X.org - AX</a> / corps</h2>
 
 <p>
-  Aucune action n'est lancée depuis cette page. Il faut préalablement aller sur
-  les liens suivants pour effectuer les différentes taches.
+  Il y a {$missingCorpsCount} corps manquant{if $missingCorpsCount > 1}s{/if} dans notre base{if $missingCorpsCount eq 0}.</p>{else}&nbsp;:
 </p>
-
 <ul>
-  <li>Voir la <a href="Fusion">documentation</a></li>
-  <li><a href="fusionax/import">Import de la base AX</a></li>
-  <li>Mise en <a href="fusionax/ids">correspondance simple</a></li>
-  <li>Création des <a href="fusionax/view">VIEW annexes nécessaires aux corrélations</a></li>
-  <li>Corrélation des <a href="fusionax/deceased">dates de décès</a></li>
-  <li>Corrélation des <a href="fusionax/promo">promotions</a></li>
-  <li>Corrélation des <a href="fusionax/names">noms</a></li>
-  <li>Corrélation des <a href="fusionax/edu">formations</a></li>
-  <li>Corrélation des <a href="fusionax/corps">corps</a></li>
-</ul>
+  {iterate from=$missingCorps item=corps}<li>{$corps.name}</li>{/iterate}
+</ul>{/if}
 
 <p>
-  Une fois ces vérifications faites, un root peut lancer le script merge.php dans le répertoire upgrade/1.0.1/
+  Il y a {$missingGradeCount} grade{if $missingGradeCount > 1}s{/if} manquant{if $missingGradeCount > 1}s{/if} dans
+  notre base{if $missingGradeCount eq 0}.</p>{else}&nbsp;:
 </p>
+<ul>
+  {iterate from=$missingGrade item=grade}<li>{$grade.name}</li>{/iterate}
+</ul>{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
