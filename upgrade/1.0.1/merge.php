@@ -248,8 +248,8 @@ XDB::rawExecute("INSERT IGNORE INTO  profile_merge_issues (pid, issues)
                          INNER JOIN  profile_addresses AS pa ON (pa.pid = f.pid AND pa.type = 'home' AND pa.id = 0)
                               WHERE  f.text IS NOT NULL");
 
-XDB::rawExecute("INSERT INTO  profile_addresses (pid, type, id, pub, text)
-                      SELECT  f.pid, 'home', IF(pa.id IS NULL , 0, MAX(pa.id) + 1), 'ax', f.text
+XDB::rawExecute("INSERT INTO  profile_addresses (pid, type, id, pub, text, flags)
+                      SELECT  f.pid, 'home', IF(pa.id IS NULL , 0, MAX(pa.id) + 1), 'ax', f.text, 'mail'
                         FROM  fusionax_adresses AS f
                    LEFT JOIN  profile_addresses AS pa ON (pa.pid = f.pid AND pa.type = 'home')
                        WHERE  f.text IS NOT NULL

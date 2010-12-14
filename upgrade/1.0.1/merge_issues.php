@@ -135,6 +135,9 @@ foreach ($pids as $pid) {
                 if ($minPub->isVisible($addresses[$i]->pub)) {
                     $addresses[$i]->pub = $addresses[$j]->pub;
                 }
+                if ($addresses[$j]->hasFlag('mail') && !$addresses[$i]->hasFlag('mail')) {
+                    $addresses[$i]->addFlag('mail');
+                }
             }
         }
     }
