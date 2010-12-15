@@ -350,5 +350,43 @@ class GadgetView implements PlView
     }
 }
 
+class AddressesView implements PlView
+{
+    private $set;
+
+    public function __construct(PlSet &$set, array $params)
+    {
+        $this->set =& $set;
+    }
+
+    public function apply(PlPage &$page)
+    {
+        $res = $this->set->get(new PlLimit());
+        $visibility = new ProfileVisibility(ProfileVisibility::VIS_AX);
+        pl_content_headers('text/x-csv');
+
+        $csv = fopen('php://output', 'w');
+        fputcsv($csv, array('adresses'), ';');
+        foreach ($res as $profile) {
+            $addresses = $profile->getAddresses(Profile::ADDRESS_POSTAL);
+            if (!empty($addresses)) {
+                foreach ($addresses as $address) {
+                    if ($visibility->isVisible($address->pub)) {
+                        fputcsv($csv, array($profile->public_name, $address->postalText), ';');
+                        break;
+                    }
+                }
+            }
+        }
+        fclose($csv);
+        exit();
+    }
+
+    public function args()
+    {
+        return $this->set->args();
+    }
+}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

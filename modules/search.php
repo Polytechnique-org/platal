@@ -178,11 +178,17 @@ class SearchModule extends PLModule
                 $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true));
                 // TODO: Reactivate when the new map is completed.
                 // $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
+                if (S::user()->checkPerms(User::PERM_EDIT_DIRECTORY) || S::admin()) {
+                    $view->addMod('addresses', 'Addresses postales', false);
+                }
                 $view->apply('search/adv', $page, $model);
 
                 $nb_tot = $view->count();
                 if ($nb_tot > $globals->search->private_max) {
                     $this->form_prepare();
+                    if ($model != 'addresses' && (S::user()->checkPerms(User::PERM_EDIT_DIRECTORY) || S::admin())) {
+                        $page->assign('suggestAddresses', true);
+                    }
                     $page->trigError('Recherche trop générale.');
                 } else if ($nb_tot == 0) {
                     $this->form_prepare();

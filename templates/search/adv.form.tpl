@@ -22,6 +22,10 @@
 
 <h1>Recherche dans l'annuaire</h1>
 
+{if hasPerm('edit_directory,admin') && t($suggestAddresses)}
+<p class="center"><strong>Voulez-vous télécharger le <a href="{$globals->baseurl}/search/adv/addresses{$plset_args}">tableau des adresses postales</a> pour la recette précédente&nbsp;?</strong></p>
+{/if}
+
 {javascript name=jquery.form}
 
 <script type="text/javascript">// <!--
