@@ -123,7 +123,7 @@ class XmlrpcClient
             }
         } else {
             Platal::assert(!is_array($result) && isset($result['faultCode']),
-                           "RPC Error:\n" . $result['faultString'],
+                           "RPC Error:\n" . $answer,
                            "Une erreur est survenue lors de l'accès aux listes de diffusion.");
         }
 
