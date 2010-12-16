@@ -126,11 +126,12 @@ abstract class PlPage extends Smarty
             return $this->jsonDisplay();
         }
 
-        if (Env::v('display') == 'light') {
+        $display = Env::s('display');
+        if ($display == 'light' && $this->_page_type == SKINNED) {
             $this->_page_type = SIMPLE;
-        } elseif (Env::v('display') == 'raw') {
+        } elseif ($display == 'raw') {
             $this->_page_type = NO_SKIN;
-        } elseif (Env::v('display') == 'full') {
+        } elseif ($display == 'full') {
             $this->_page_typ = SKINNED;
         }
 

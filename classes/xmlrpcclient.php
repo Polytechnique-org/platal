@@ -107,6 +107,13 @@ class XmlrpcClient
         if ($this->bt) {
             $this->bt->stop();
         }
+        if (is_null($answer)) {
+            Platal::page()->trigError("L'accès aux listes de diffusion n'est pas disponible actuellement.");
+            $this->bt->update(0, "Connection failed");
+            return null;
+        }
+        Platal::assert(starts_with($answer, 'HTTP/1.0 200 OK'), "HTTP Error:\n" . $answer,
+                       "Une erreur est survenue lors de l'accès aux listes de diffusion.");
         $result = $this->find_and_decode_xml($answer);
         if ($this->bt) {
             if (is_array($result) && isset($result['faultCode'])) {
@@ -114,6 +121,10 @@ class XmlrpcClient
             } else {
                 $this->bt->update(count($result));
             }
+        } else {
+            Platal::assert(!is_array($result) || !isset($result['faultCode']),
+                           "RPC Error:\n" . $answer,
+                           "Une erreur est survenue lors de l'accès aux listes de diffusion.");
         }
 
         if (is_array($result) && isset($result['faultCode'])) {
