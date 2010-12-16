@@ -2,6 +2,10 @@ RewriteEngine on
 
 RewriteBase @REWRITE_BASE@
 
+# Rewrites static files from embedded/raw|light
+RewriteCond %{DOCUMENT_ROOT}/$2 -f
+RewriteRule ^(embedded/[^/]+/)(.*)$ $2 [L]
+
 # Rewrites URLs of the form 'index.php?q=x'.
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
