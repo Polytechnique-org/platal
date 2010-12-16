@@ -26,6 +26,11 @@ ini_set('memory_limit', '128M');
 $sent_mails = 0;
 $handler    = time();
 
+/* Cleanup dead locks */
+XDB::execute('UPDATE  email_list_moderate
+                 SET  handler = NULL
+               WHERE  handler < NOW() - 300');
+
 while ($sent_mails < $globals->lists->max_mail_per_min
        && time() - $handler < 60) {
     // take a lock on a mail
