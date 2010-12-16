@@ -483,7 +483,7 @@ class PaymentModule extends PLModule
             }
             $res = XDB::query("SELECT  1
                                  FROM  group_events AS e
-                           INNER JOIN  group_event_participants AS ep ON (ep.eid = e.eid AND uid = {?})
+                           INNER JOIN  group_event_participants AS ep ON (ep.eid = e.eid AND e.uid = {?})
                                 WHERE  e.paiement_id = {?} AND e.asso_id = {?}",
                               S::i('uid'), $pid, $globals->asso('id'));
             if ($res->numRows() == 0) {
