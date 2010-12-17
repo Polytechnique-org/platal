@@ -36,7 +36,7 @@ function get_all_redirects($membres, $mls, &$client)
     foreach ($mls as $ml) {
         if (list(,$members) = $client->get_members($ml)) {
             foreach ($members as $mem) {
-                $uf = new UserFilter(new UFC_Mail($mem[1]));
+                $uf = new UserFilter(new UFC_Email($mem[1]));
                 $user = $uf->getUsers();
                 if ($user) {
                     $tos[] = $user;
