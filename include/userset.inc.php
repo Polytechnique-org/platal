@@ -54,7 +54,7 @@ class SearchSet extends ProfileSet
 
     public function __construct($quick = false, PlFilterCondition $cond = null)
     {
-        if ($no_search) {
+        if (isset($no_search)) {
             return;
         }
 
