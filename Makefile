@@ -173,13 +173,16 @@ $(MEDAL_THUMBNAILS): $(subst /medals/thumb/,/medals/,$(@F))
 ##
 ## jquery
 ##
-JQUERY_VERSION=1.4.3
+JQUERY_VERSION=1.4.4
 JQUERY_PLUGINS=color form
 JQUERY_PLUGINS_PATHES=$(addprefix htdocs/javascript/jquery.,$(addsuffix .js,$(JQUERY_PLUGINS)))
 
-JQUERY_UI_VERSION=1.8.5
+JQUERY_UI_VERSION=1.8.7
 JQUERY_UI=core tabs widget
 JQUERY_UI_PATHES=$(addprefix htdocs/javascript/jquery.ui.,$(addsuffix .js,$(JQUERY_UI)))
+
+JQUERY_TMPL_VERSION=vBeta1.0.0
+JQUERY_TMPL_PATH=htdocs/javascript/jquery.tmpl.js
 
 JSTREE_VERSION=1.0rc2
 JSTREE_PATH=htdocs/javascript/jquery.jstree.js
@@ -187,7 +190,7 @@ JSTREE_PATH=htdocs/javascript/jquery.jstree.js
 # TODO: jquery.autocomplete.js should rather be downloaded from an official source. The issue
 # is that the version we use is not available anymore on the Internet, and the latest version
 # we could use is not backward compatible with our current code.
-jquery: htdocs/javascript/jquery.js $(JQUERY_PLUGINS_PATHES) $(JQUERY_UI_PATHES) $(JSTREE_PATH)
+jquery: htdocs/javascript/jquery.js $(JQUERY_PLUGINS_PATHES) $(JQUERY_UI_PATHES) $(JQUERY_TMPL_PATH) $(JSTREE_PATH)
 
 htdocs/javascript/jquery-$(JQUERY_VERSION).min.js: DOWNLOAD_SRC = http://jquery.com/src/$(@F)
 htdocs/javascript/jquery-$(JQUERY_VERSION).min.js:
@@ -207,6 +210,14 @@ htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js:
 	@$(download)
 
 $(JQUERY_UI_PATHES): htdocs/javascript/jquery.ui.%.js: htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js
+	ln -snf $(<F) $@
+
+htdocs/javascript/jquery.tmpl-$(JQUERY_TMPL_VERSION).js: DOWNLOAD_SRC = https://github.com/jquery/jquery-tmpl/raw/$(JQUERY_TMPL_VERSION)/jquery.tmpl.min.js --no-check-certificate
+htdocs/javascript/jquery.tmpl-$(JQUERY_TMPL_VERSION).js:
+	@-rm htdocs/javascript/jquery.tmpl*.js
+	@$(download)
+
+$(JQUERY_TMPL_PATH): htdocs/javascript/jquery.tmpl-$(JQUERY_TMPL_VERSION).js
 	ln -snf $(<F) $@
 
 $(JSTREE_PATH):
