@@ -770,7 +770,10 @@ class CompanyList
         if (!array_key_exists($id, self::$companies)) {
             self::preload();
         }
-        return self::$companies[$id];
+        if (isset(self::$companies[$id])) {
+            return self::$companies[$id];
+        }
+        return null;
     }
 }
 
