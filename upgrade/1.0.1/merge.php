@@ -147,12 +147,13 @@ XDB::rawExecute('ALTER TABLE geoloc_countries DROP INDEX licensePlate');
 
 // Updates corps.
 XDB::rawExecute("INSERT IGNORE INTO  profile_corps_enum (name, abbreviation)
-                             VALUES  ('Ancien élève étranger', 'Z')";
+                             VALUES  ('Ancien élève étranger', 'Z')");
 XDB::rawExecute("INSERT IGNORE INTO  profile_corps_rank_enum (name, abbreviation)
                              VALUES  ('Ing.ch.P.C.hon.', 'DEL1'), ('Ing.Mil.Air Retr.', 'DEL2'),
                                      ('Col.hon.Tra.', 'DEL3'), ('Colonel CR', 'DEL4'),
-                                     ('Conseil d'Etat', 'DEL5'), ('Commiss.Gén. Brigade aérienne', 'DEL6'),
-                                     ('Off. Mar. dém.', 'DEL7'), ('Maître des Requêtes', 'DEL8')");
+                                     ('Conseil d\'Etat', 'DEL5'), ('Commiss.Gén. Brigade aérienne', 'DEL6'),
+                                     ('Off. Mar. dém.', 'DEL7'), ('Maître des Requêtes', 'DEL8'),
+                                     ('', 'DEL9'), ('autres', 'DEL10')");
 XDB::rawExecute('UPDATE  profile_corps      AS pc
              INNER JOIN  fusionax_anciens   AS f ON (f.pid = pc.pid)
              INNER JOIN  profile_corps_enum AS c ON (f.corps_sortie = c.abbreviation)
@@ -181,8 +182,7 @@ XDB::rawExecute("UPDATE  profile_corps           AS c
                     SET  c.rankid = a.id
                   WHERE  r.name LIKE 'DEL%'");
 XDB::rawExecute("DELETE FROM  profile_corps_rank_enum
-                       WHERE  name LIKE 'DEL%'")
-
+                       WHERE  name LIKE 'DEL%'");
 
 // Updates email_directory.
 XDB::rawExecute("UPDATE  profiles         AS p
