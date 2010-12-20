@@ -95,7 +95,7 @@ function send_xnet_mails($from, $sujet, $body, $wiki, $tos, $replyto = null, $up
     }
 
     foreach ($tos as $user) {
-        if ($user instanceof $user) {
+        if ($user instanceof User) {
             $email = $user->bestEmail();
         } else {
             $email = $user;
