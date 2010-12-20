@@ -373,6 +373,11 @@ class Address
         return ($this->flags != null && $this->flags->hasFlag($flag));
     }
 
+    public function addFlag($flag)
+    {
+        $this->flags->addFlag($flag);
+    }
+
     /** Auxilary function for formatting postal addresses.
      * If the needle is found in the haystack, it notifies the substitution's
      * success, modifies the length accordingly and returns either the matching
