@@ -361,22 +361,19 @@ class AddressesView implements PlView
 
     public function apply(PlPage &$page)
     {
-        $res = $this->set->get(new PlLimit());
+        $pids = $this->set->getIds(new PlLimit());
         $visibility = new ProfileVisibility(ProfileVisibility::VIS_AX);
         pl_content_headers('text/x-csv');
 
         $csv = fopen('php://output', 'w');
         fputcsv($csv, array('adresses'), ';');
-        foreach ($res as $profile) {
-            $addresses = $profile->getAddresses(Profile::ADDRESS_POSTAL);
-            if (!empty($addresses)) {
-                foreach ($addresses as $address) {
-                    if ($visibility->isVisible($address->pub)) {
-                        fputcsv($csv, array($profile->public_name, $address->postalText), ';');
-                        break;
-                    }
-                }
-            }
+        $res = XDB::query('SELECT  pd.public_name, pa.postalText
+                             FROM  profile_addresses AS pa
+                       INNER JOIN  profile_display   AS pd ON (pd.pid = pa.pid)
+                            WHERE  pa.type = \'home\' AND pa.pub IN (\'public\', \'ax\') AND FIND_IN_SET(\'mail\', pa.flags) AND pa.pid IN {?}
+                         GROUP BY  pa.pid', $pids);
+        foreach ($res->fetchAllAssoc() as $item) {
+            fputcsv($csv, $item, ';');
         }
         fclose($csv);
         exit();
