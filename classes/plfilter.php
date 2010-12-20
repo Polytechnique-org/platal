@@ -319,6 +319,14 @@ abstract class PlFilter
      */
     public abstract function get($limit = null);
 
+    /** Get ids, selecting only those within a limit
+     * @param $limit The portion of the matching objects to select
+     */
+    public function getIds($limit = null)
+    {
+        return $this->get($limit);
+    }
+
     /** PRIVATE FUNCTIONS
      */
 
