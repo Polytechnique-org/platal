@@ -179,7 +179,7 @@ class SearchModule extends PLModule
                 // TODO: Reactivate when the new map is completed.
                 // $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
                 if (S::user()->checkPerms(User::PERM_EDIT_DIRECTORY) || S::admin()) {
-                    $view->addMod('addresses', 'Addresses postales', false);
+                    $view->addMod('addresses', 'Adresses postales', false);
                 }
                 $view->apply('search/adv', $page, $model);
 
