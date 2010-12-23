@@ -41,9 +41,10 @@ abstract class Geocoder {
         );
 
         $areaName = $area . 'Name';
+        $areaNameLocal = $areaName . 'Local';
         $areaId = $area . 'Id';
         if (!is_null($address->$areaName) && isset($databases[$area])) {
-            $res = XDB::query('SELECT  id
+            $res = XDB::query('SELECT  id, nameLocal
                                  FROM  ' . $databases[$area] . '
                                 WHERE  name = {?}',
                               $address->$areaName);

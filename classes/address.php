@@ -298,6 +298,9 @@ class Address
     public $localityName = null;
     public $subAdministrativeAreaName = null;
     public $administrativeAreaName = null;
+    public $localityNameLocal = null;
+    public $subAdministrativeAreaNameLocal = null;
+    public $administrativeAreaNameLocal = null;
     public $countryId = null;
     public $latitude = null;
     public $longitude = null;
@@ -609,26 +612,29 @@ class Address
     public function toFormArray()
     {
         $address = array(
-            'accuracy'                  => $this->accuracy,
-            'text'                      => $this->text,
-            'postalText'                => $this->postalText,
-            'postalCode'                => $this->postalCode,
-            'localityId'                => $this->localityId,
-            'subAdministrativeAreaId'   => $this->subAdministrativeAreaId,
-            'administrativeAreaId'      => $this->administrativeAreaId,
-            'countryId'                 => $this->countryId,
-            'localityName'              => $this->localityName,
-            'subAdministrativeAreaName' => $this->subAdministrativeAreaName,
-            'administrativeAreaName'    => $this->administrativeAreaName,
-            'latitude'                  => $this->latitude,
-            'longitude'                 => $this->longitude,
-            'north'                     => $this->north,
-            'south'                     => $this->south,
-            'east'                      => $this->east,
-            'west'                      => $this->west,
-            'error'                     => $this->error,
-            'changed'                   => $this->changed,
-            'removed'                   => $this->removed,
+            'accuracy'                       => $this->accuracy,
+            'text'                           => $this->text,
+            'postalText'                     => $this->postalText,
+            'postalCode'                     => $this->postalCode,
+            'localityId'                     => $this->localityId,
+            'subAdministrativeAreaId'        => $this->subAdministrativeAreaId,
+            'administrativeAreaId'           => $this->administrativeAreaId,
+            'countryId'                      => $this->countryId,
+            'localityName'                   => $this->localityName,
+            'subAdministrativeAreaName'      => $this->subAdministrativeAreaName,
+            'administrativeAreaName'         => $this->administrativeAreaName,
+            'localityNameLocal'              => $this->localityNameLocal,
+            'subAdministrativeAreaNameLocal' => $this->subAdministrativeAreaNameLocal,
+            'administrativeAreaNameLocal'    => $this->administrativeAreaNameLocal,
+            'latitude'                       => $this->latitude,
+            'longitude'                      => $this->longitude,
+            'north'                          => $this->north,
+            'south'                          => $this->south,
+            'east'                           => $this->east,
+            'west'                           => $this->west,
+            'error'                          => $this->error,
+            'changed'                        => $this->changed,
+            'removed'                        => $this->removed,
         );
         if (!is_null($this->geocodedText)) {
             $address['geocodedText'] = $this->geocodedText;
