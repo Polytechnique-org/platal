@@ -281,7 +281,7 @@ class GMapsGeocoder extends Geocoder {
     // all non-country items of ISO 3166-1.
     private function getTextToGeocode($text)
     {
-        $res = XDB::iterator('SELECT  country, countryFR
+        $res = XDB::iterator('SELECT  countryEn, country
                                 FROM  geoloc_countries
                                WHERE  belongsTo IS NOT NULL');
         $countries = array();

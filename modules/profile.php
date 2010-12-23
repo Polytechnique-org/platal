@@ -520,7 +520,7 @@ class ProfileModule extends PLModule
 
         // Retrieves referents' countries.
         $res = XDB::query(
-                "SELECT  gc.countryFR
+                "SELECT  gc.country
                    FROM  profile_mentor_country AS m
               LEFT JOIN  geoloc_countries       AS gc ON (m.country = gc.iso_3166_1_a2)
                   WHERE  pid = {?}", $pf->id());
@@ -534,11 +534,11 @@ class ProfileModule extends PLModule
         pl_content_headers("text/html");
         $page->changeTpl('include/field.select.tpl', NO_SKIN);
         $page->assign('name', 'pays_sel');
-        $it = XDB::iterator("SELECT  gc.iso_3166_1_a2 AS id, gc.countryFR AS field
+        $it = XDB::iterator("SELECT  gc.iso_3166_1_a2 AS id, gc.country AS field
                                FROM  geoloc_countries       AS gc
                          INNER JOIN  profile_mentor_country AS mp ON (mp.country = gc.iso_3166_1_a2)
                            GROUP BY  iso_3166_1_a2
-                           ORDER BY  countryFR");
+                           ORDER BY  country");
         $page->assign('list', $it);
     }
 

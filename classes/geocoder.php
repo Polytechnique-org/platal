@@ -48,12 +48,20 @@ abstract class Geocoder {
                                 WHERE  name = {?}',
                               $address->$areaName);
             if ($res->numRows() == 0) {
-                XDB::execute('INSERT INTO  ' . $databases[$area] . ' (name, country)
-                                   VALUES  ({?}, {?})',
-                             $address->$areaName, $address->countryId);
+                XDB::execute('INSERT INTO  ' . $databases[$area] . ' (name, nameLocal, country)
+                                   VALUES  ({?}, {?}, {?})',
+                             $address->$areaName, $address->$areaNameLocal, $address->countryId);
                 $address->$areaId = XDB::insertId();
             } else {
-                $address->$areaId = $res->fetchOneCell();
+                // XXX: remove this once all areas have both nameLocal and name.
+                list($id, $name) = $res->fetchOneRow();
+                if (is_null($name) && !is_null($address->$areaNameLocal)) {
+                    XDB::execute('UPDATE  ' . $databases[$area] . '
+                                     SET  nameLocal = {?}
+                                   WHERE  id = {?}',
+                                 $address->$areaNameLocal, $id);
+                }
+                $address->$areaId = $id;
             }
         } elseif (empty($address->$areaId)) {
             $address->$areaId = null;
