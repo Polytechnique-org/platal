@@ -547,19 +547,26 @@ class Address
         $arrayText = explode("\n", $text);
         $arrayText = array_map('trim', $arrayText);
 
-        // Search for country.
-        $countries = DirEnum::getOptions(DirEnum::COUNTRIES);
-        $countries = array_map('replace_accent', $countries);
-        $countries = array_map('strtoupper', $countries);
+        // Formats according to country rules. Thus we first identify the
+        // country, then apply corresponding formatting or translate country
+        // into default language.
         $count = count($arrayText);
         if (in_array(strtoupper($this->countryId), Address::$formattings)) {
             $text = call_user_func(array($this, 'formatPostalAddress' . strtoupper($this->countryId)), $arrayText);
-        } elseif (array_key_exists($arrayText[$count - 1], Address::$formattings)) {
-            $text = call_user_func(array($this, 'formatPostalAddress' . Address::$formattings[$arrayText[$count - 1]]), $arrayText);
-        } elseif (!in_array($arrayText[$count - 1], $countries)) {
-            $text = $this->formatPostalAddressFR($arrayText);
         } else {
-            $text = implode("\n", $arrayText);
+            list($countryId, $country) = XDB::fetchOneRow('SELECT  gc.iso_3166_1_a2, gc.country
+                                                             FROM  geoloc_countries AS gc
+                                                       INNER JOIN  geoloc_languages AS gl ON (gc.iso_3166_1_a2 = gl.iso_3166_1_a2)
+                                                            WHERE  gc.iso_3166_1_a2 = {?} OR gl.countryPlain = {?} OR gc.countryPlain = {?}',
+                                                          $this->countryId, $arrayText[$count - 1], $arrayText[$count - 1]);
+            if (is_null($countryId)) {
+                $text = $this->formatPostalAddressFR($arrayText);
+            } elseif (in_array(strtoupper($countryId), Address::$formattings)) {
+                $text = call_user_func(array($this, 'formatPostalAddress' . strtoupper($countryId)), $arrayText);
+            } else {
+                $arrayText[$count - 1] = mb_strtoupper(replace_accent($country));
+                $text = implode("\n", $arrayText);
+            }
         }
 
         $this->postalText = $text;
