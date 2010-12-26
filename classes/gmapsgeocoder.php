@@ -36,13 +36,16 @@ class GMapsGeocoder extends Geocoder {
     // Maximum levenshtein distance authorized between input and geocoded text in the whole text.
     const MAX_TOTAL_DISTANCE = 6;
 
-    public function getGeocodedAddress(Address &$address) {
+    public function getGeocodedAddress(Address &$address, $defaultLanguage = null, $forceLanguage = false) {
         $this->prepareAddress($address);
         $textAddress = $this->getTextToGeocode($address->text);
+        if (is_null($defaultLanguage)) {
+            $defaultLanguage = Platal::globals()->geocoder->gmaps_hl;
+        }
 
         // Try to geocode the full address.
-        if (($geocodedData = $this->getPlacemarkForAddress($textAddress))) {
-            $this->getUpdatedAddress($address, $geocodedData, null);
+        if (($geocodedData = $this->getPlacemarkForAddress($textAddress, $defaultLanguage))) {
+            $this->getUpdatedAddress($address, $geocodedData, null, $forceLanguage);
             return;
         }
 
@@ -55,8 +58,8 @@ class GMapsGeocoder extends Geocoder {
         for ($i = max(1, $linesCount - self::MAX_GMAPS_RPC_CALLS + 1); $i < $linesCount; ++$i) {
             $extraLines = implode("\n", array_slice($addressLines, 0, $i));
             $toGeocode  = implode("\n", array_slice($addressLines, $i));
-            if (($geocodedData = $this->getPlacemarkForAddress($toGeocode))) {
-                $this->getUpdatedAddress($address, $geocodedData, $extraLines);
+            if (($geocodedData = $this->getPlacemarkForAddress($toGeocode, $defaultLanguage))) {
+                $this->getUpdatedAddress($address, $geocodedData, $extraLines, $forceLanguage);
                 return;
             }
         }
@@ -77,19 +80,15 @@ class GMapsGeocoder extends Geocoder {
 
     // Updates the address with the geocoded information from Google Maps. Also
     // cleans up the final informations.
-    private function getUpdatedAddress(Address &$address, array $geocodedData, $extraLines) {
+    private function getUpdatedAddress(Address &$address, array $geocodedData, $extraLines, $forceLanguage) {
         $this->fillAddressWithGeocoding($address, $geocodedData, false);
-        $this->formatAddress($address, $extraLines);
+        $this->formatAddress($address, $extraLines, $forceLanguage);
     }
 
     // Retrieves the Placemark object (see #getPlacemarkFromJson()) for the @p
     // address, by querying the Google Maps API. Returns the array on success,
     // and null otherwise.
-    private function getPlacemarkForAddress($address, $defaultLanguage = null) {
-        if (is_null($defaultLanguage)) {
-            $defaultLanguage = Platal::globals()->geocoder->gmaps_hl;
-        }
-
+    private function getPlacemarkForAddress($address, $defaultLanguage) {
         $url     = $this->getGeocodingUrl($address, $defaultLanguage);
         $geoData = $this->getGeoJsonFromUrl($url);
 
@@ -283,7 +282,7 @@ class GMapsGeocoder extends Geocoder {
     // Formats the text of the geocoded address using the unused data and
     // compares it to the given address. If they are too different, the user
     // will be asked to choose between them.
-    private function formatAddress(Address &$address, $extraLines)
+    private function formatAddress(Address &$address, $extraLines, $forceLanguage)
     {
         if ($extraLines) {
             $address->geocodedText = $extraLines . "\n" . $address->geocodedText;
@@ -291,10 +290,12 @@ class GMapsGeocoder extends Geocoder {
 
         if ($this->compareAddress($address)) {
             $address->geocodedText = null;
-        } else {
-            $languages = XDB::fetchOneCell('SELECT  IF(ISNULL(gc1.belongsTo), gc1.languages, gc2.languages)
+        } elseif (!$forceLanguage) {
+            $languages = XDB::fetchOneCell('SELECT  IF(ISNULL(gc1.belongsTo), gl1.language, gl2.language)
                                               FROM  geoloc_countries AS gc1
+                                        INNER JOIN  geoloc_languages AS gl1 ON (gc1.iso_3166_1_a2 = gl1.iso_3166_1_a2)
                                          LEFT JOIN  geoloc_countries AS gc2 ON (gc1.belongsTo = gc2.iso_3166_1_a2)
+                                         LEFT JOIN  geoloc_languages AS gl2 ON (gc2.iso_3166_1_a2 = gl2.iso_3166_1_a2)
                                              WHERE  gc1.iso_3166_1_a2 = {?}',
                                            $address->countryId);
             $toGeocode = substr($address->text, strlen($extraLines));
