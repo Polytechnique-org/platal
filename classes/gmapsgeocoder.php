@@ -334,10 +334,12 @@ class GMapsGeocoder extends Geocoder {
         $countLines = count($textLines);
         $needle     = strtoupper(trim($textLines[$countLines - 2]));
         $isPseudoCountry = false;
-        foreach ($countries as $country) {
-            if (strtoupper($country) == $needle) {
-                $isPseudoCountry = true;
-                break;
+        if ($needle) {
+            foreach ($countries as $country) {
+                if (strtoupper($country) === $needle) {
+                    $isPseudoCountry = true;
+                    break;
+                }
             }
         }
 
