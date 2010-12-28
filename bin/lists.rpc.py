@@ -298,7 +298,7 @@ def get_list_info(userdesc, perms, mlist, front_page=0):
         if not is_member and (mlist.subscribe_policy > 1):
             is_pending = list_call_locked(is_subscription_pending, userdesc, perms, mlist, False)
             if is_pending is 0:
-                return 0
+                return None
 
         host = mlist.internal_name().split(VHOST_SEP)[0].lower()
         details = {
@@ -414,7 +414,10 @@ def get_members(userdesc, perms, mlist):
     """ List the members of a list.
             @mlist
     """
-    details, members = get_list_info(userdesc, perms, mlist)
+    infos = get_list_info(userdesc, perms, mlist)
+    if infos is None:
+        return None
+    details, members = infos
     members.sort()
     members = map(lambda member: (get_name(member), member), members)
     return (details, members, mlist.owner)
