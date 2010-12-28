@@ -60,6 +60,9 @@
     {if $myfield eq $t->idfield}
         {assign var="idval" value=$myrow.$myfield}
     {/if}
+    {if $t->idfield2 && $myfield eq $t->idfield2}
+        {assign var="idval2" value=$myrow.$myfield}
+    {/if}
     {if $myval.Type eq 'timestamp'}
       <span class="smaller">{$myrow.$myfield|date_format:"%x %X"}</span>
     {elseif $myval.Type eq 'checkbox'}
@@ -77,7 +80,7 @@
     <a href="{$t->pl}/edit/{$idval}">{icon name=page_edit title='éditer'}</a>
     {/if}
     {if !$readonly}
-    <a href="{$t->pl}/delete/{$idval}?token={xsrf_token}">{icon name=delete title='supprimer'}</a>
+    <a href="{$t->pl}/delete/{$idval}{if t($idval2)}/{$idval2}{/if}?token={xsrf_token}">{icon name=delete title='supprimer'}</a>
     {/if}
   </td>
   {/if}

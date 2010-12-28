@@ -113,6 +113,20 @@ abstract class PlSet
         return $res;
     }
 
+    /** Helper function, calls buildFilter with the adequate condition/orders.
+     * @param $orders Additional orders to use before the default ones.
+     * @return A newly created PlFilter.
+     */
+    private function buildFilterHelper($orders = array())
+    {
+        if (!is_array($orders)) {
+            $orders = array($orders);
+        }
+        $orders = array_merge($orders, $this->orders);
+
+        return $this->buildFilter($this->conds, $orders);
+    }
+
     /** This function returns the values of the set, and sets $count with the
      * total number of results.
      * @param $limit A PlLimit for selecting users
@@ -121,20 +135,30 @@ abstract class PlSet
      */
     public function &get(PlLimit $limit = null, $orders = array())
     {
-        if (!is_array($orders)) {
-            $orders = array($orders);
-        }
-
-        $orders = array_merge($orders, $this->orders);
-
-        $pf = $this->buildFilter($this->conds, $orders);
-
         if (is_null($limit)) {
             $limit = new PlLimit(self::DEFAULT_MAX_RES, 0);
         }
-        $it          = $this->getFilterResults($pf, $limit);
+        $pf = $this->buildFilterHelper($orders);
+        $it = $this->getFilterResults($pf, $limit);
         $this->count = $pf->getTotalCount();
         return $it;
+    }
+
+    /** This function returns the ids of the set, and sets $count with the
+     * total number of results.
+     * @param $limit A PlLimit for selecting profiles
+     * @param $orders An optional array of PFO to use before the "default" ones
+     * @return The result of $pf->getId();
+     */
+    public function &getIds(PlLimit $limit = null, $orders = array())
+    {
+        if (is_null($limit)) {
+            $limit = new PlLimit(self::DEFAULT_MAX_RES, 0);
+        }
+        $pf = $this->buildFilterHelper($orders);
+        $result = $pf->getIds($limit);
+        $this->count = count($result);
+        return $result;
     }
 
     /** Return an array containing all pertinent parameters for this page
