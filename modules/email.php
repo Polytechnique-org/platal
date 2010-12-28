@@ -920,18 +920,24 @@ class EmailModule extends PLModule
                 pl_content_headers("text/x-csv");
 
                 $csv = fopen('php://output', 'w');
-                fputcsv($csv, array('nom', 'promo', 'alias', 'bounce', 'nbmails', 'url'), ';');
+                fputcsv($csv, array('nom', 'promo', 'alias', 'bounce', 'nbmails', 'url', 'corps', 'job', 'networking'), ';');
                 foreach ($broken_user_list as $alias => $mails) {
                     $sel = Xdb::query(
-                        "SELECT  acc.uid, count(e.email) AS nb_mails,
+                        "SELECT  acc.uid, count(DISTINCT(e.email)) AS nb_mails,
                                  IFNULL(pd.public_name, acc.full_name) AS fullname,
-                                 IFNULL(pd.promo, 0) AS promo
-                           FROM  aliases          AS a
-                     INNER JOIN  accounts         AS acc ON (a.uid = acc.uid)
-                      LEFT JOIN  emails           AS e   ON (e.uid = acc.uid
-                                                             AND FIND_IN_SET('active', e.flags) AND e.panne = 0)
-                      LEFT JOIN  account_profiles AS ap  ON (acc.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
-                      LEFT JOIN  profile_display  AS pd  ON (pd.pid = ap.pid)
+                                 IFNULL(pd.promo, 0) AS promo, IFNULL(pce.name, 'Aucun') AS corps,
+                                 IFNULL(pje.name, 'Aucun') AS job, GROUP_CONCAT(pn.address SEPARATOR ', ') AS networking
+                           FROM  aliases            AS a
+                     INNER JOIN  accounts           AS acc ON (a.uid = acc.uid)
+                      LEFT JOIN  emails             AS e   ON (e.uid = acc.uid
+                                                               AND FIND_IN_SET('active', e.flags) AND e.panne = 0)
+                      LEFT JOIN  account_profiles   AS ap  ON (acc.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
+                      LEFT JOIN  profile_display    AS pd  ON (pd.pid = ap.pid)
+                      LEFT JOIN  profile_corps      AS pc  ON (pc.pid = ap.pid)
+                      LEFT JOIN  profile_corps_enum AS pce ON (pc.current_corpsid = pce.id)
+                      LEFT JOIN  profile_job        AS pj  ON (pj.pid = ap.pid)
+                      LEFT JOIN  profile_job_enum   AS pje ON (pj.jobid = pje.id)
+                      LEFT JOIN  profile_networking AS pn  ON (pn.pid = ap.pid)
                           WHERE  a.alias = {?}
                        GROUP BY  acc.uid", $alias);
 
@@ -943,7 +949,8 @@ class EmailModule extends PLModule
                         }
                         fputcsv($csv, array($x['fullname'], $x['promo'], $alias,
                                             join(',', $mails), $x['nb_mails'],
-                                            'https://www.polytechnique.org/marketing/broken/' . $alias), ';');
+                                            'https://www.polytechnique.org/marketing/broken/' . $alias,
+                                            $x['corps'], $x['job'], $x['networking']), ';');
                     }
                 }
                 fclose($csv);
