@@ -72,6 +72,7 @@ MYSQL_DB       = get_config('Core', 'dbdb')
 PLATAL_DOMAIN  = get_config('Mail', 'domain')
 PLATAL_DOMAIN2 = get_config('Mail', 'domain2', '')
 sys.stderr.write('PLATAL_DOMAIN = %s\n' % PLATAL_DOMAIN )
+sys.stderr.write("MYSQL_DB = %s\n" % MYSQL_DB)
 
 VHOST_SEP      = get_config('Lists', 'vhost_sep', '_')
 ON_CREATE_CMD  = get_config('Lists', 'on_create', '')
