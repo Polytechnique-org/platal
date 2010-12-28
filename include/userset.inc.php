@@ -115,9 +115,11 @@ class QuickSearchSet extends SearchSet
 // Specialized SearchSet for advanced search.
 class AdvancedSearchSet extends SearchSet
 {
-    public function __construct(PlFilterCondition $cond = null)
+    public function __construct($xorg_admin_fields, $ax_admin_fields,
+                                PlFilterCondition $cond = null)
     {
-        parent::__construct(new UFB_AdvancedSearch(), $cond);
+        parent::__construct(new UFB_AdvancedSearch($xorg_admin_fields, $ax_admin_fields),
+                            $cond);
     }
 }
 

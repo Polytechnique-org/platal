@@ -169,7 +169,10 @@ class SearchModule extends PLModule
             }
 
             require_once 'userset.inc.php';
-            $view = new AdvancedSearchSet();
+            // Enable X.org fields for X.org admins, and AX fields for AX secretaries.
+            $view = new AdvancedSearchSet(S::admin(),
+                                          S::user()->checkPerms(User::PERM_EDIT_DIRECTORY));
+
             if (!$view->isValid()) {
                 $this->form_prepare();
                 $page->trigError('Recherche invalide.');
