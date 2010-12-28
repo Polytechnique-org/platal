@@ -70,11 +70,12 @@ class PLTableEditor
      * $idfield : the field of the table which is the id, ex: id
      * $editid : is the id editable or not (if not, it is considered as an int)
      */
-    public function __construct($plname, $table, $idfield, $editid=false)
+    public function __construct($plname, $table, $idfield, $editid = false, $idfield2 = false)
     {
         $this->pl = $plname;
         $this->table = $table;
         $this->idfield = $idfield;
+        $this->idfield2 = $idfield2;
         $this->sortfield = $idfield;
         $this->idfield_editable = $editid;
         $this->whereclause = '1';
@@ -229,7 +230,7 @@ class PLTableEditor
     }
 
     // call when done
-    public function apply(PlPage &$page, $action, $id = false)
+    public function apply(PlPage &$page, $action, $id = false, $id2 = false)
     {
         $page->coreTpl('table-editor.tpl');
         $list = true;
@@ -239,8 +240,12 @@ class PLTableEditor
             if (!isset($this->delete_action)) {
                 foreach ($this->jtables as $table => $j)
                     XDB::execute("DELETE FROM {$table} WHERE {$j['joinid']} = {?}{$j['joinextra']}", $id);
-                XDB::execute("DELETE FROM {$this->table} WHERE {$this->idfield} = {?}",$id);
-                $page->trigSuccess("L'entrée ".$id." a été supprimée.");
+                $where = XDB::format("{$this->idfield} = {?}", $id);
+                if ($this->idfield2) {
+                    $where .= XDB::format(" AND {$this->idfield2} = {?}", $id2);
+                }
+                XDB::rawExecute("DELETE FROM {$this->table} WHERE " . $where);
+                $page->trigSuccess("L'entrée " . $id . (($id2) ? '-' . $id2 : '') . ' a été supprimée.');
             } else if ($this->delete_action) {
                 XDB::execute($this->delete_action, $id);
                 if (isset($this->delete_message)) {
