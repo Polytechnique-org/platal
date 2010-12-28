@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS `fusionax_activites` (
   `Raison_sociale` VARCHAR(255) NOT NULL COMMENT 'Raison sociale de l''établissement',
   `Libelle_fonctio` VARCHAR(255) NOT NULL COMMENT 'Libéllé de la fonction',
   `Annuaire` BOOLEAN NOT NULL COMMENT 'publiable dans l''annuaire papier',
+  `Date_maj` DATE NOT NULL COMMENT 'Date de mise à jour de ces informations',
   pid INT(11) UNSIGNED DEFAULT NULL,
   jobid INT(6) UNSIGNED DEFAULT NULL,
   description VARCHAR(255) DEFAULT NULL,
@@ -20,7 +21,9 @@ CREATE TABLE IF NOT EXISTS `fusionax_activites` (
 
 LOAD DATA LOCAL INFILE '{?}Activites.txt' INTO TABLE `fusionax_activites` CHARACTER SET utf8 FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\r\n'
 (AC, ax_id, Code_etab, Raison_sociale, Libelle_fonctio, Annuaire,
-@Ligne1, @Ligne2, @Ligne3, @code_postal, @ville, @zip_cedex, @etat_distr, @pays, @tel, @fax, @StringDate_maj);
+@Ligne1, @Ligne2, @Ligne3, @code_postal, @ville, @zip_cedex, @etat_distr, @pays, @tel, @fax, @StringDate_maj)
+SET
+`Date_maj` = CONCAT(SUBSTRING(@StringDate_maj,7),'-',SUBSTRING(@StringDate_maj,4,2),'-',SUBSTRING(@StringDate_maj,1,2));
 
 
 UPDATE fusionax_activites SET Raison_sociale = TRIM(Raison_sociale), Libelle_fonctio = TRIM(Libelle_fonctio);

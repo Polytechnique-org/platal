@@ -79,10 +79,26 @@ class ProfileSettingSkill implements ProfileSetting
 
     public function getText($value) {
         $skills = array();
-        foreach ($value as $skill) {
-            $skills[] = 'Compétance : ' . $skill['text'] . ', niveau : ' . $skill['level'];
+
+        if ($this->table == 'langskill') {
+            static $levels = array(
+                1 => 'connaissance basique',
+                2 => 'maîtrise des bases',
+                3 => 'maîtrise limitée',
+                4 => 'maîtrise générale',
+                5 => 'bonne maîtrise',
+                6 => 'maîtrise complète'
+            );
+            foreach ($value as $skill) {
+                $skills[] = $skill['text'] . ' (' . $levels[$skill['level']] . ')';
+            }
+        } else {
+            foreach ($value as $skill) {
+                $skills[] = $skill['text'] . ' (' . $skill['level'] . ')';
+            }
         }
-        return implode(' ; ' , $skills);
+
+        return implode(', ' , $skills);
     }
 }
 

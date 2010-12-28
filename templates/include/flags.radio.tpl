@@ -24,15 +24,15 @@
 {/if}
 {if !t($val)}{assign var=val value='ax'}{/if}
 <label><input type="radio" name="{$name}" value="public"{if $val eq 'public'} checked="checked"{/if}
-       {if t($disabled)}disabled="disabled"{/if} />
+       {if t($disabled)}disabled="disabled"{/if}{if t($mainField)} onchange="updatePublicity('{$mainField}','{$mainId}','{$subField}','{$subId}')"{/if} />
 {icon name="flag_green" title="site public"}
 {if t($withtext)}<span class="texte">site public</span>{/if}</label>
 <label><input type="radio" name="{$name}" value="ax"{if $val eq 'ax'} checked="checked"{/if}
-       {if t($disabled)}disabled="disabled"{/if} />
+       {if t($disabled)}disabled="disabled"{/if}{if t($mainField)} onchange="updatePublicity('{$mainField}','{$mainId}','{$subField}','{$subId}')"{/if} />
 {icon name="flag_orange" title="transmis à l'AX"}
 {if t($withtext)}<span class="texte">transmis à l'AX</span>{/if}</label>
 <label><input type="radio" name="{$name}" value="private"{if $val eq 'private'} checked="checked"{/if}
-       {if t($disabled)}disabled="disabled"{/if} />
+       {if t($disabled)}disabled="disabled"{/if}{if t($mainField)} onchange="updatePublicity('{$mainField}','{$mainId}','{$subField}','{$subId}')"{/if} />
 {icon name="flag_red" title="privé"}
 {if t($withtext)}<span class="texte">privé</span>{/if}</label>
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -19,6 +19,14 @@ foreach (array('fusionax_activites', 'fusionax_adresses', 'fusionax_anciens', 'f
     XDB::rawExecute("DELETE FROM $table WHERE pid IS NULL");
 }
 
+echo "Update timestamp.\n";
+XDB::rawExecute("UPDATE  profiles AS p
+                    SET  p.last_change = GREATEST(COALESCE((SELECT MAX(Date_maj) FROM fusionax_anciens    AS f WHERE f.pid = p.pid), '0000-00-00'),
+                                                  COALESCE((SELECT MAX(Date_maj) FROM fusionax_activites  AS f WHERE f.pid = p.pid), '0000-00-00'),
+                                                  COALESCE((SELECT MAX(Date_maj) FROM fusionax_adresses   AS f WHERE f.pid = p.pid), '0000-00-00'),
+                                                  COALESCE((SELECT MAX(Date_maj) FROM fusionax_formations AS f WHERE f.pid = p.pid), '0000-00-00'),
+                                                  COALESCE(p.last_change, '0000-00-00'))");
+
 // Includes entreprises we do not have into profile_job_enum.
 // We first retrieve AX code, then add missing compagnies.
 echo "Starts jobs inclusions.\n";
@@ -44,7 +52,6 @@ XDB::rawExecute("INSERT IGNORE INTO  profile_job_enum (name, acronym, AX_code)
 //  - the job is incomplete (ie no compagny name) : this is an issue,
 //  - the job is complete but the profile already has a job or more : this is an issue,
 //  - the job is complete and the the profile has no previous job : there is no issue.
-
 // We delete obvious duplicates and avoid multiple joins.
 XDB::rawExecute("DELETE  f
                    FROM  fusionax_activites   AS f
@@ -61,15 +68,12 @@ XDB::rawExecute('ALTER TABLE profile_job_enum DROP INDEX AX_code');
 XDB::rawExecute('DROP TABLE IF EXISTS fusionax_entreprises');
 
 // We first update the issues table.
-XDB::rawExecute("INSERT INTO  profile_merge_issues (pid, issues)
-                      SELECT  DISTINCT(f.pid), 'job'
-                        FROM  fusionax_activites AS f
-                       WHERE  (f.jobid IS NULL AND NOT EXISTS (SELECT  *
-                                                                 FROM  profile_job AS pj
-                                                                WHERE  pj.pid = f.pid))
-                              OR (f.jobid IS NOT NULL AND EXISTS (SELECT  *
-                                                                    FROM  profile_job AS pj
-                                                                   WHERE  pj.pid = f.pid))");
+XDB::rawExecute("INSERT IGNORE INTO  profile_merge_issues (pid, issues)
+                             SELECT  DISTINCT(f.pid), 'job'
+                               FROM  fusionax_activites AS f
+                              WHERE  f.jobid IS NULL OR EXISTS (SELECT  *
+                                                                  FROM  profile_job AS pj
+                                                                 WHERE  pj.pid = f.pid)");
 // We then add new jobs.
 $id = 0;
 $continue = 1;
@@ -79,8 +83,10 @@ while ($continue > 0) {
                                    FROM  fusionax_activites");
     XDB::rawExecute("DELETE  f
                        FROM  fusionax_activites AS f
-                 INNER JOIN  profile_job        AS pj ON (f.pid = pj.pid AND pj.id = $id AND pj.jobid = f.jobid AND pj.description = f.description)");
+                 INNER JOIN  profile_job        AS pj ON (f.pid = pj.pid AND pj.id = $id AND pj.description = f.description)
+                      WHERE  pj.jobid = f.jobid OR (pj.jobid IS NULL AND f.jobid IS NULL)");
     $continue = XDB::affectedRows();
+    ++$id;
 }
 XDB::rawExecute('DROP TABLE IF EXISTS fusionax_activites');
 // We also have to add related phones and addresses.
@@ -140,11 +146,23 @@ XDB::rawExecute('UPDATE  profiles         AS p
 XDB::rawExecute('ALTER TABLE geoloc_countries DROP INDEX licensePlate');
 
 // Updates corps.
+XDB::rawExecute("INSERT IGNORE INTO  profile_corps_enum (name, abbreviation)
+                             VALUES  ('Ancien élève étranger', 'Z')");
+XDB::rawExecute("INSERT IGNORE INTO  profile_corps_rank_enum (name, abbreviation)
+                             VALUES  ('Ing.ch.P.C.hon.', 'DEL1'), ('Ing.Mil.Air Retr.', 'DEL2'),
+                                     ('Col.hon.Tra.', 'DEL3'), ('Colonel CR', 'DEL4'),
+                                     ('Conseil d\'Etat', 'DEL5'), ('Commiss.Gén. Brigade aérienne', 'DEL6'),
+                                     ('Off. Mar. dém.', 'DEL7'), ('Maître des Requêtes', 'DEL8'),
+                                     ('', 'DEL9'), ('autres', 'DEL10')");
+XDB::rawExecute('UPDATE  profile_corps      AS pc
+             INNER JOIN  fusionax_anciens   AS f ON (f.pid = pc.pid)
+             INNER JOIN  profile_corps_enum AS c ON (f.corps_sortie = c.abbreviation)
+                    SET  pc.original_corpsid = c.id');
 XDB::rawExecute("INSERT IGNORE INTO  profile_corps (pid, original_corpsid, current_corpsid, rankid, corps_pub)
                              SELECT  f.pid, c.id, c.id, r.id, 'ax'
                                FROM  fusionax_anciens        AS f
                          INNER JOIN  profile_corps_enum      AS c ON (f.corps_sortie = c.abbreviation)
-                         INNER JOIN  profile_corps_rank_enum AS r ON (f.grade = r.abbreviation)
+                         INNER JOIN  profile_corps_rank_enum AS r ON (f.grade = r.name)
                               WHERE  NOT EXISTS (SELECT  *
                                                    FROM  profile_corps AS pc
                                                   WHERE  f.pid = pc.pid AND pc.original_corpsid != 1)");
@@ -158,6 +176,13 @@ XDB::rawExecute("UPDATE  profile_corps_enum
                   WHERE  name = 'Aucun (anc. démissionnaire)'");
 XDB::rawExecute("DELETE FROM  profile_corps_enum
                        WHERE  name = 'Ancien élève étranger'");
+XDB::rawExecute("UPDATE  profile_corps           AS c
+             INNER JOIN  profile_corps_rank_enum AS r ON (c.rankid = r.id)
+             INNER JOIN  profile_corps_rank_enum AS a ON (a.name = 'Aucun')
+                    SET  c.rankid = a.id
+                  WHERE  r.name LIKE 'DEL%'");
+XDB::rawExecute("DELETE FROM  profile_corps_rank_enum
+                       WHERE  name LIKE 'DEL%'");
 
 // Updates email_directory.
 XDB::rawExecute("UPDATE  profiles         AS p
@@ -238,8 +263,8 @@ XDB::rawExecute("INSERT IGNORE INTO  profile_merge_issues (pid, issues)
                          INNER JOIN  profile_addresses AS pa ON (pa.pid = f.pid AND pa.type = 'home' AND pa.id = 0)
                               WHERE  f.text IS NOT NULL");
 
-XDB::rawExecute("INSERT INTO  profile_addresses (pid, type, id, pub, text)
-                      SELECT  f.pid, 'home', IF(pa.id IS NULL , 0, MAX(pa.id) + 1), 'ax', f.text
+XDB::rawExecute("INSERT INTO  profile_addresses (pid, type, id, pub, text, flags)
+                      SELECT  f.pid, 'home', IF(pa.id IS NULL , 0, MAX(pa.id) + 1), 'ax', f.text, 'mail'
                         FROM  fusionax_adresses AS f
                    LEFT JOIN  profile_addresses AS pa ON (pa.pid = f.pid AND pa.type = 'home')
                        WHERE  f.text IS NOT NULL
@@ -268,11 +293,15 @@ echo "Starts educations inclusions.\n";
 XDB::rawExecute("DELETE FROM  fusionax_formations
                        WHERE  Intitule_formation = '' AND Intitule_diplome = '' AND Descr_formation = ''");
 // Insert ids into fusionax_formations to prevent many joins.
+XDB::rawExecute('ALTER TABLE profile_education_enum ADD INDEX (name(60))');
+XDB::rawExecute('ALTER TABLE profile_education_degree_enum ADD INDEX (abbreviation(60))');
 XDB::rawExecute('UPDATE  fusionax_formations           AS f
               LEFT JOIN  profile_education_enum        AS pe ON (pe.name = f.Intitule_formation)
               LEFT JOIN  profile_education_degree_enum AS pd ON (pd.abbreviation = f.Intitule_diplome)
               LEFT JOIN  profile_education_field_enum  AS pf ON (pf.field = f.Descr_formation)
                     SET  f.eduid = pe.id, f.degreeid = pd.id, f.fieldid = pf.id');
+XDB::rawExecute('ALTER TABLE profile_education_enum DROP INDEX name');
+XDB::rawExecute('ALTER TABLE profile_education_degree_enum DROP INDEX abbreviation');
 // Updates non complete educations.
 XDB::rawExecute("UPDATE  profile_education             AS e
              INNER JOIN  fusionax_formations           AS f  ON (f.pid = e.pid)
@@ -307,9 +336,13 @@ while ($continue > 0) {
                                    FROM  fusionax_formations");
     XDB::rawExecute("DELETE  f
                        FROM  fusionax_formations AS f
-                 INNER JOIN  profile_education   AS pe ON (pe.pid = f.pid AND pe.id = $id AND pe.eduid = f.eduid AND pe.degreeid = f.degreeid
-                                                           AND pe.fieldid = f.fieldid AND pe.program = f.Descr_formation)");
+                 INNER JOIN  profile_education   AS pe ON (pe.pid = f.pid AND pe.id = $id)
+                      WHERE  (pe.eduid = f.eduid OR (pe.eduid IS NULL AND f.eduid IS NULL))
+                             AND (pe.degreeid = f.degreeid OR (pe.degreeid IS NULL AND f.degreeid IS NULL))
+                             AND (pe.fieldid = f.fieldid OR (pe.fieldid IS NULL AND f.fieldid IS NULL))
+                             AND (pe.program = f.Descr_formation OR (pe.program IS NULL AND f.Descr_formation IS NULL))");
     $continue = XDB::affectedRows();
+    ++$id;
 }
 // Updates merge_issues table (eduid and degreeid should never be empty).
 XDB::rawExecute("UPDATE  profile_merge_issues AS pm

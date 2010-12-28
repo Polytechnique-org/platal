@@ -149,7 +149,7 @@ class ProfileSettingSearchNames implements ProfileSetting
             $this->search_names = array();
             foreach ($value as &$sn) {
                 $sn['name'] = trim($sn['name']);
-                if ($sn['type'] == 'firstname' || $sn['type'] == 'lastname') {
+                if (S::user()->isMe($this->owner) && ($sn['type'] == 'firstname' || $sn['type'] == 'lastname')) {
                     $sn['name'] = $this->prepare($page, $sn['type'], $sn['name'],
                                                  $initial[$sn['type']], $success_tmp);
                     $success = $success && $success_tmp;
@@ -237,7 +237,7 @@ class ProfileSettingSearchNames implements ProfileSetting
         $names = array();
         foreach ($value as $name) {
             if ($name['name'] != '') {
-                $names[] = $name['type_name'] . ' : ' . $name['name'];
+                $names[] = mb_strtolower($name['type_name']) . ' : ' . $name['name'];
             }
         }
         return implode(', ' , $names);
@@ -315,12 +315,32 @@ class ProfileSettingEdu implements ProfileSetting
         $degreesList = DirEnum::getOptions(DirEnum::EDUDEGREES);
         $fieldsList = DirEnum::getOptions(DirEnum::EDUFIELDS);
         $educations = array();
-        foreach ($value as $education) {
-            $educations[] = 'Université : ' . $schoolsList[$education['eduid']]
-                          . ', diplôme : ' . $degreesList[$education['degreeid']]
-                          . ', domaine : ' . $fieldsList[$education['fieldid']]
-                          . ', année d\'obtention : ' . $education['grad_year']
-                          . ', intitulé : ' . $education['program'];
+        foreach ($value as $id => $education) {
+            // XXX: the following condition should be removed once there are no more incomplete educations.
+            if (is_null($education['eduid']) || is_null($education['degreeid'])) {
+                if (is_null($education['eduid']) && is_null($education['degreeid'])) {
+                    $educations[$id] = 'formation manquante';
+                } else {
+                    $educations[$id] = (is_null($education['eduid']) ? 'université manquante' : $schoolsList[$education['eduid']]) . ', '
+                                     . (is_null($education['degreeid']) ? 'diplôme manquant' : $degreesList[$education['degreeid']]);
+                }
+            } else {
+                $educations[$id] = $schoolsList[$education['eduid']] . ', ' . $degreesList[$education['degreeid']];
+            }
+
+            $details = array();
+            if ($education['grad_year']) {
+                $details[] = $education['grad_year'];
+            }
+            if ($education['program']) {
+                $details[] = '« ' . $education['program'] . ' »';
+            }
+            if ($education['fieldid']) {
+                $details[] = $fieldsList[$education['fieldid']];
+            }
+            if (count($details)) {
+                $educations[$id] .= ' (' . implode(', ', $details) . ')';
+            }
         }
         return implode(', ', $educations);
     }
@@ -428,12 +448,12 @@ class ProfileSettingNetworking implements ProfileSetting
     }
 
     public function getText($value) {
+        static $pubs = array('public' => 'publique', 'ax' => 'annuaire AX', 'private' => 'privé');
         $networkings = array();
         foreach ($value as $network) {
-            $networkings[] = 'nom : ' . $network['name'] . ', adresse : ' . $network['address']
-                           . ', affichage : ' . $network['pub'];
+            $networkings[] = $network['name'] . ' : ' . $network['address'] . ' (affichage ' . $pubs[$network['pub']] . ')';
         }
-        return implode(' ; ' , $networkings);
+        return implode(', ' , $networkings);
     }
 }
 

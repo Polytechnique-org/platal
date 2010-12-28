@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS fusionax_anciens (
   Mel_publiable TINYINT(4) NOT NULL COMMENT 'Autorisation d''utiliser le mail',
   Mob_publiable TINYINT(4) NOT NULL COMMENT 'Autorisation d''utiliser le mobile',
   tel_mobile VARCHAR(30) NOT NULL COMMENT 'Numéro de téléphone mobile',
+  Date_maj DATE NOT NULL COMMENT 'Date de mise à jour de ces informations',
   pid INT(11) UNSIGNED DEFAULT NULL,
   PRIMARY KEY  (ax_id),
   INDEX (pid)
@@ -29,12 +30,14 @@ LOAD DATA LOCAL INFILE '{?}Anciens.txt' INTO TABLE `fusionax_anciens` CHARACTER 
 (AN, ax_id, @login, @password, promotion_etude, @gpe_promo, Nom_patronymique, partic_patro, prenom, Nom_usuel, partic_nom,
   Nom_complet, @civilite, Code_nationalite, @type, corps_sortie, @StringDate_deces, grade, Mel_usage, Mel_publiable, @xxx, Mob_publiable,
   tel_mobile, @xxx, @xxx, @xxx, @xxx, @xxx, @xxx, @xxx, @X_M_D, @xxx, @xxx, @xxx, @xxx, @xxx, @xxx, @Type_adr,
-  @Ligne1, @Ligne2, @Ligne3, @code_postal, @ville, @zip_cedex, @etat_distr, @pays, @tel, @fax, @date_MAJ)
+  @Ligne1, @Ligne2, @Ligne3, @code_postal, @ville, @zip_cedex, @etat_distr, @pays, @tel, @fax, @StringDate_maj)
 SET
-    Date_deces = CONCAT(SUBSTRING(@StringDate_deces,7),'-',SUBSTRING(@StringDate_deces,4,2),'-',SUBSTRING(@StringDate_deces,1,2));
+    Date_deces = CONCAT(SUBSTRING(@StringDate_deces,7),'-',SUBSTRING(@StringDate_deces,4,2),'-',SUBSTRING(@StringDate_deces,1,2)),
+    Date_maj = CONCAT(SUBSTRING(@StringDate_maj,7),'-',SUBSTRING(@StringDate_maj,4,2),'-',SUBSTRING(@StringDate_maj,1,2));
 -- Mel_publiable is not certain yet :/
 
 ALTER TABLE fusionax_anciens ADD INDEX (ax_id);
+UPDATE fusionax_anciens SET corps_sortie = TRIM(corps_sortie), grade = TRIM(grade);
 
 -- Correspondances entre fiches X.org et fiches AX
 DROP TABLE IF EXISTS `fusionax_import`;

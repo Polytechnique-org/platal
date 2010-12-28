@@ -42,6 +42,9 @@ abstract class Validate
     // Validations rules: comments for administrators.
     public $rules = 'Mieux vaut laisser une demande de validation à un autre administrateur que de valider une requête illégale ou que de refuser une demande légitime.';
 
+    // Unless differently stated, a validation must be done by a site administrator.
+    public $requireAdmin = true;
+
     // }}}
     // {{{ constructor
 
@@ -126,6 +129,11 @@ abstract class Validate
      */
     public function handle_formu()
     {
+        if ($this->requireAdmin && !S::admin()) {
+            $this->trigError('Vous n\'avez pas les permissions nécessaires pour valider cette demande.');
+            return false;
+        }
+
         if (Env::has('delete')) {
             $this->clean();
             $this->trigSuccess('Requête supprimée.');

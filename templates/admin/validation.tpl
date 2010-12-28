@@ -37,7 +37,7 @@ function toggleField(name, id, obj) {
 
 {iterate item=valid from=$vit}
 {assign var=type value=$valid->type}
-{if !t($hide_requests[$type])}
+{if !t($hide_requests[$type]) && !($valid->requireAdmin && !$isAdmin)}
 <br />
 <table class="bicol">
   <tr>

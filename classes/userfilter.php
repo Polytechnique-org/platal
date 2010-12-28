@@ -418,6 +418,10 @@ class UserFilter extends PlFilter
         return $this->getUsers($limit);
     }
 
+    public function getIds($limit = null)
+    {
+        return $this->getUIDs();
+    }
 
     public function getTotalCount()
     {
@@ -1343,6 +1347,11 @@ class ProfileFilter extends UserFilter
     public function get($limit = null)
     {
         return $this->getProfiles($limit);
+    }
+
+    public function getIds($limit = null)
+    {
+        return $this->getPIDs();
     }
 
     public function filter(array $profiles, $limit = null)

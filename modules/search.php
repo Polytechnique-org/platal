@@ -176,11 +176,17 @@ class SearchModule extends PLModule
                 $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true));
                 // TODO: Reactivate when the new map is completed.
                 // $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
+                if (S::user()->checkPerms(User::PERM_EDIT_DIRECTORY) || S::admin()) {
+                    $view->addMod('addresses', 'Adresses postales', false);
+                }
                 $view->apply('search/adv', $page, $model);
 
                 $nb_tot = $view->count();
                 if ($nb_tot > $globals->search->private_max) {
                     $this->form_prepare();
+                    if ($model != 'addresses' && (S::user()->checkPerms(User::PERM_EDIT_DIRECTORY) || S::admin())) {
+                        $page->assign('suggestAddresses', true);
+                    }
                     $page->trigError('Recherche trop générale.');
                 } else if ($nb_tot == 0) {
                     $this->form_prepare();
@@ -394,14 +400,14 @@ class SearchModule extends PLModule
         pl_content_headers("text/xml");
         $page->changeTpl('include/field.select.tpl', NO_SKIN);
         $page->assign('name', 'country');
-        $it = XDB::iterator("SELECT  gc.iso_3166_1_a2 AS id, gc.countryFR AS field
+        $it = XDB::iterator("SELECT  gc.iso_3166_1_a2 AS id, gc.country AS field
                                FROM  geoloc_countries       AS gc
                          INNER JOIN  profile_mentor_country AS mp ON (mp.country = gc.iso_3166_1_a2)
                          INNER JOIN  profile_mentor_term    AS mt ON (mt.pid = mp.pid)
                          INNER JOIN  profile_job_term_relation AS jtr ON (jtr.jtid_2 = mt.jtid)
                               WHERE  jtr.jtid_1 = {?}
                            GROUP BY  iso_3166_1_a2
-                           ORDER BY  countryFR", $jtid);
+                           ORDER BY  country", $jtid);
         $page->assign('list', $it);
     }
 }

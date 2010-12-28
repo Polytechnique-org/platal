@@ -22,7 +22,7 @@
 
 
 <script type="text/javascript" src="javascript/jquery.jstree.js"></script>
-{assign var=jobid value="job_"|cat:$i}
+{assign var=jobid value="jobs_"|cat:$i}
 {assign var=jobpref value="jobs[`$i`]"}
 {assign var=sector_text value="sector_text_"|cat:$i}
 {assign var=sector value="sector_"|cat:$i}
@@ -52,7 +52,8 @@
     <tr>
       <th colspan="2" style="text-align: right">
         <div class="flags" style="float: left; text-align: left">
-          {include file="include/flags.radio.tpl" name="`$jobpref`[pub]" val=$job.pub disabled=$hiddenjob}
+          {include file="include/flags.radio.tpl" name="`$jobpref`[pub]" val=$job.pub disabled=$hiddenjob
+                   mainField='jobs' mainId=$i subField='w_address,w_email,w_phone' subId=-1}
         </div>
         Entreprise n°{$i+1}&nbsp;:
         {if $hiddenjob}
@@ -121,7 +122,7 @@
     </tr>
     <tr class="pair" id="{$sector_text}" {if $hiddenjob}style="display: none"{/if}>
       <td class="titre">Mots-clefs</td>
-      <td class="job_terms">
+      <td class="jobs_terms">
         <input type="text" class="term_search" size="35"/>
         <a href="javascript:toggleJobTermsTree({$i})">{icon name="table" title="Tous les mots-clefs"}</a>
         <script type="text/javascript">
@@ -130,11 +131,11 @@
           {foreach from=$job.terms item=term}
           addJobTerm("{$i}", "{$term.jtid}", "{$term.full_name|replace:'"':'\\"'}");
           {/foreach}
-          $('#job_{$i} .term_search').autocomplete(platal_baseurl + 'profile/jobterms',
+          $('#jobs_{$i} .term_search').autocomplete(platal_baseurl + 'profile/jobterms',
             {ldelim}
               "formatItem" : displayJobTerm,
               "extraParams" : {ldelim} "jobid" : "{$i}" {rdelim},
-              "width" : $('#job_{$i} .term_search').width()*2,
+              "width" : $('#jobs_{$i} .term_search').width()*2,
               "onItemSelect" : selectJobTerm,
               "matchSubset" : false
             {rdelim});
@@ -161,12 +162,13 @@
                  name="{$jobpref}[w_url]" value="{$job.w_url}" />
       </td>
     </tr>
-    <tr class="pair" {if $hiddenjob}style="display: none"{/if}>
+    <tr id="{$jobid}_w_address" class="pair" {if $hiddenjob}style="display: none"{/if}>
       <td colspan="2">
         <div style="float: left">
           <div class="titre">Adresse</div>
           <div class="flags">
-            {include file="include/flags.radio.tpl" name="`$jobpref`[w_address][pub]" val=$job.w_address.pub}
+            {include file="include/flags.radio.tpl" name="`$jobpref`[w_address][pub]" val=$job.w_address.pub
+                     subField='w_address' mainField='jobs' mainId=$i subId=''}
           </div>
           <div style="margin-top: 20px; clear: both">
             {include file="geoloc/form.address.tpl" prefname="`$jobpref`[w_address]"
@@ -184,22 +186,25 @@
     </tr>
     {else}
     {include file="include/emails.combobox.tpl" name=$jobpref|cat:'[w_email]' val=$job.w_email
-             class="pair" i=$i error=$job.w_email_error prefix="w_" pub=$job.w_email_pub id=$i}
+             class="pair" divId="`$jobid`_w_email" i=$i error=$job.w_email_error prefix="w_" pub=$job.w_email_pub id=$i
+             subField='w_email' mainField='jobs' mainId=$i subId=''}
     {/if}
     <tr class="pair" {if $hiddenjob}style="display: none"{/if}>
       <td colspan="2">
         {foreach from=$job.w_phone key=t item=phone}
           <div id="{"`$jobid`_w_phone_`$t`"}" style="clear: both">
-            {include file="profile/phone.tpl" prefname="`$jobpref`[w_phone]" prefid="`$jobid`_w_phone" telid=$t tel=$phone}
+            {include file="profile/phone.tpl" prefname="`$jobpref`[w_phone]" prefid="`$jobid`_w_phone" telid=$t tel=$phone
+                     subField='w_phone' mainField='jobs' mainId=$i}
           </div>
         {/foreach}
         {if $job.w_phone|@count eq 0}
           <div id="{"`$jobid`_w_phone_0"}" style="clear: both">
-            {include file="profile/phone.tpl" prefname="`$jobpref`[w_phone]" prefid="`$jobid`_w_phone" telid=0 tel=0}
+            {include file="profile/phone.tpl" prefname="`$jobpref`[w_phone]" prefid="`$jobid`_w_phone" telid=0 tel=0
+                     subField='w_phone' mainField='jobs' mainId=$i}
           </div>
         {/if}
         <div id="{$jobid}_w_phone_add" class="center" style="clear: both; padding-top: 4px;">
-          <a href="javascript:addTel('{$jobid}_w_phone','{$jobpref}[w_phone]')">
+          <a href="javascript:addTel('{$jobid}_w_phone','{$jobpref}[w_phone]','w_phone','jobs','{$i}')">
             {icon name=add title="Ajouter un numéro de téléphone"} Ajouter un numéro de téléphone
           </a>
         </div>

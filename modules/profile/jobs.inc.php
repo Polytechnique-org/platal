@@ -131,7 +131,7 @@ class ProfileSettingJob implements ProfileSetting
         return $jobs;
     }
 
-    private function cleanJob(ProfilePage &$page, $jobid, array &$job, &$success)
+    private function cleanJob(ProfilePage &$page, $jobid, array &$job, &$success, $maxPublicity)
     {
         if ($job['w_email'] == "new@example.org") {
             $job['w_email'] = $job['w_email_new'];
@@ -149,7 +149,7 @@ class ProfileSettingJob implements ProfileSetting
         if (count($job['terms'])) {
             $termsid = array();
             foreach ($job['terms'] as $term) {
-                if (!$term['full_name']) {
+                if (!isset($term['full_name'])) {
                     $termsid[] = $term['jtid'];
                 }
             }
@@ -160,7 +160,7 @@ class ProfileSettingJob implements ProfileSetting
                                  $termsid);
                 $term_id_to_name = $res->fetchAllAssoc('jtid', false);
                 foreach ($job['terms'] as &$term) {
-                    if (!$term['full_name']) {
+                    if (!isset($term['full_name'])) {
                         $term['full_name'] = $term_id_to_name[$term['jtid']];
                     }
                 }
@@ -181,7 +181,11 @@ class ProfileSettingJob implements ProfileSetting
                 $job['jobid'] = $res->fetchOneCell();
             }
         }
-        $job['w_phone'] = Phone::formatFormArray($job['w_phone'], $s);
+
+        if ($maxPublicity->isVisible($job['w_email_pub'])) {
+            $job['w_email_pub'] = $maxPublicity->level();
+        }
+        $job['w_phone'] = Phone::formatFormArray($job['w_phone'], $s, $maxPublicity);
 
         unset($job['removed']);
         unset($job['new']);
@@ -234,8 +238,12 @@ class ProfileSettingJob implements ProfileSetting
         foreach ($value as $key => &$job) {
             $address = new Address($job['w_address']);
             $s = $address->format();
+            $maxPublicity = new ProfileVisibility($job['pub']);
+            if ($maxPublicity->isVisible($address->pub)) {
+                $address->pub = $maxPublicity->level();
+            }
             $job['w_address'] = $address->toFormArray();
-            $this->cleanJob($page, $key, $job, $s);
+            $this->cleanJob($page, $key, $job, $s, $maxPublicity);
             if (!$init) {
                 $success = ($success && $s);
             }
@@ -245,14 +253,14 @@ class ProfileSettingJob implements ProfileSetting
 
     public function save(ProfilePage &$page, $field, $value)
     {
-        XDB::execute("DELETE FROM  profile_job
-                            WHERE  pid = {?}",
+        $deletePrivate = S::user()->isMe($page->owner) || S::admin();
+        XDB::execute('DELETE FROM  pj, pjt
+                            USING  profile_job      AS pj
+                        LEFT JOIN  profile_job_term AS pjt ON (pj.pid = pjt.pid AND pj.id = pjt.jid)
+                            WHERE  pj.pid = {?}' . (($deletePrivate) ? '' : ' AND pj.pub IN (\'public\', \'ax\')'),
                      $page->pid());
-        XDB::execute("DELETE FROM  profile_job_term
-                            WHERE  pid = {?}",
-                     $page->pid());
-        Address::deleteAddresses($page->pid(), Address::LINK_JOB);
-        Phone::deletePhones($page->pid(), Phone::LINK_JOB);
+        Address::deleteAddresses($page->pid(), Address::LINK_JOB, null, $deletePrivate);
+        Phone::deletePhones($page->pid(), Phone::LINK_JOB, null, $deletePrivate);
         $terms_values = array();
         foreach ($value as $id => &$job) {
             if (isset($job['name']) && $job['name']) {
@@ -292,15 +300,34 @@ class ProfileSettingJob implements ProfileSetting
 
     public function getText($value)
     {
+        static $pubs = array('public' => 'publique', 'ax' => 'annuaire AX', 'private' => 'privé');
         $jobs = array();
         foreach ($value as $id => $job) {
             $address = Address::formArrayToString(array($job['w_address']));
             $phones = Phone::formArrayToString($job['w_phone']);
-            // TODO: add jobterms here.
-            $jobs[] = 'Entreprise : ' . $job['name']
-                    . ', description : ' . $job['description'] . ', web : ' . $job['w_url']
-                    . ', email : ' . $job['w_email']
-                    . ($phones ? ', ' . $phones : '') . ($address ? ', ' . $address : '');
+            $jobs[$id] = $job['name'];
+            $jobs[$id] .= ($job['description'] ? (', ' . $job['description']) : '');
+            $jobs[$id] .= ' (affichage ' . $pubs[$job['pub']];
+            if (count($job['terms'])) {
+                $terms = array();
+                foreach ($job['terms'] as $term) {
+                    $terms[] = $term['full_name'];
+                }
+                $jobs[$id] .= ', mots-clefs : ' . implode(', ', $terms);
+            }
+            if ($job['w_url']) {
+                $jobs[$id] .= ', page perso : ' . $job['w_url'];
+            }
+            if ($address) {
+                $jobs[$id] .= ', adresse : ' . $address;
+            }
+            if ($job['w_email']) {
+                $jobs[$id] .= ', email : ' . $job['w_email'];
+            }
+            if ($phones) {
+                $jobs[$id] .= ', téléphones : ' . $phones;
+            }
+            $jobs[$id] .= ')';
         }
         return implode(' ; ' , $jobs);
     }
@@ -342,10 +369,11 @@ class ProfileSettingCorps implements ProfileSetting
 
     public function getText($value)
     {
+        static $pubs = array('public' => 'publique', 'ax' => 'annuaire AX', 'private' => 'privé');
         $corpsList = DirEnum::getOptions(DirEnum::CORPS);
         $rankList  = DirEnum::getOptions(DirEnum::CORPSRANKS);
-        return 'Corps actuel : ' . $corpsList[$value['current']] . ' , rang : ' . $corpsList[$value['rank']]
-            . ' , corps d\'origine : ' . $corpsList[$value['original']] . ' , affichage : ' . $value['pub'];
+        return $corpsList[$value['current']] . ', ' . $corpsList[$value['rank']] . ' ('
+            . 'corps d\'origine : ' . $corpsList[$value['original']] . ', affichage ' . $pubs[$value['pub']] . ')';
     }
 }
 
@@ -393,7 +421,7 @@ class ProfilePageJobs extends ProfilePage
         require_once 'emails.combobox.inc.php';
         fill_email_combobox($page, $this->owner);
 
-        if (!S::user()->isMe($page->owner)) {
+        if (!S::user()->isMe($this->owner)) {
             $res = XDB::iterator('SELECT  id, name
                                     FROM  profile_corps_enum
                                 ORDER BY  id = 1 DESC, name');

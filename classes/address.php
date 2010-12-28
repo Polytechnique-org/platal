@@ -298,6 +298,9 @@ class Address
     public $localityName = null;
     public $subAdministrativeAreaName = null;
     public $administrativeAreaName = null;
+    public $localityNameLocal = null;
+    public $subAdministrativeAreaNameLocal = null;
+    public $administrativeAreaNameLocal = null;
     public $countryId = null;
     public $latitude = null;
     public $longitude = null;
@@ -373,17 +376,28 @@ class Address
         return ($this->flags != null && $this->flags->hasFlag($flag));
     }
 
+    public function addFlag($flag)
+    {
+        $this->flags->addFlag($flag);
+    }
+
     /** Auxilary function for formatting postal addresses.
      * If the needle is found in the haystack, it notifies the substitution's
      * success, modifies the length accordingly and returns either the matching
      * substitution or the needle.
      */
-    private function substitute($needle, $haystack, &$length, &$success)
+    private function substitute($needle, $haystack, &$length, &$success, $trim = false)
     {
         if (array_key_exists($needle, $haystack)) {
             $success = true;
             $length -= (strlen($needle) - strlen($haystack[$needle]));
             return $haystack[$needle];
+        } elseif ($trim) {
+            $success = true;
+            if (strlen($needle) > 4) {
+                $length -= (strlen($needle) - 4);
+                $needle = $needle{4};
+            }
         }
         return $needle;
     }
@@ -500,7 +514,7 @@ class Address
             for ($i = 0; $i < $count && $length > $limit; ++$i) {
                 $success = false;
                 if ($isStreetLine) {
-                    $sub = $this->substitute($words[$i], Address::$streetAbbreviations, $length, $success);
+                    $sub = $this->substitute($words[$i], Address::$streetAbbreviations, $length, $success, ($i == 0));
                 }
                 // Entreprises' substitution are only suitable for the first two lines.
                 if ($lineNumber <= 2 && !$success) {
@@ -533,19 +547,26 @@ class Address
         $arrayText = explode("\n", $text);
         $arrayText = array_map('trim', $arrayText);
 
-        // Search for country.
-        $countries = DirEnum::getOptions(DirEnum::COUNTRIES);
-        $countries = array_map('replace_accent', $countries);
-        $countries = array_map('strtoupper', $countries);
+        // Formats according to country rules. Thus we first identify the
+        // country, then apply corresponding formatting or translate country
+        // into default language.
         $count = count($arrayText);
-        if (in_array(strtoupper($address->country), Address::$formattings)) {
-            $text = call_user_func(array($this, 'formatPostalAddress' . Address::$formattings[strtoupper($address->country)]), $arrayText);
-        } elseif (array_key_exists($arrayText[$count - 1], Address::$formattings)) {
-            $text = call_user_func(array($this, 'formatPostalAddress' . Address::$formattings[$arrayText[$count - 1]]), $arrayText);
-        } elseif (!in_array($arrayText[$count - 1], $countries)) {
-            $text = $this->formatPostalAddressFR($arrayText);
+        if (in_array(strtoupper($this->countryId), Address::$formattings)) {
+            $text = call_user_func(array($this, 'formatPostalAddress' . strtoupper($this->countryId)), $arrayText);
         } else {
-            $text = implode("\n", $arrayText);
+            list($countryId, $country) = XDB::fetchOneRow('SELECT  gc.iso_3166_1_a2, gc.country
+                                                             FROM  geoloc_countries AS gc
+                                                       INNER JOIN  geoloc_languages AS gl ON (gc.iso_3166_1_a2 = gl.iso_3166_1_a2)
+                                                            WHERE  gc.iso_3166_1_a2 = {?} OR gl.countryPlain = {?} OR gc.countryPlain = {?}',
+                                                          $this->countryId, $arrayText[$count - 1], $arrayText[$count - 1]);
+            if (is_null($countryId)) {
+                $text = $this->formatPostalAddressFR($arrayText);
+            } elseif (in_array(strtoupper($countryId), Address::$formattings)) {
+                $text = call_user_func(array($this, 'formatPostalAddress' . strtoupper($countryId)), $arrayText);
+            } else {
+                $arrayText[$count - 1] = mb_strtoupper(replace_accent($country));
+                $text = implode("\n", $arrayText);
+            }
         }
 
         $this->postalText = $text;
@@ -588,7 +609,7 @@ class Address
             $this->countryId = null;
         }
         $this->geocodeChosen = null;
-        $this->phones = Phone::formatFormArray($this->phones, $this->error);
+        $this->phones = Phone::formatFormArray($this->phones, $this->error, new ProfileVisibility($this->pub));
         if ($format['postalText']) {
             $this->formatPostalAddress();
         }
@@ -598,26 +619,29 @@ class Address
     public function toFormArray()
     {
         $address = array(
-            'accuracy'                  => $this->accuracy,
-            'text'                      => $this->text,
-            'postalText'                => $this->postalText,
-            'postalCode'                => $this->postalCode,
-            'localityId'                => $this->localityId,
-            'subAdministrativeAreaId'   => $this->subAdministrativeAreaId,
-            'administrativeAreaId'      => $this->administrativeAreaId,
-            'countryId'                 => $this->countryId,
-            'localityName'              => $this->localityName,
-            'subAdministrativeAreaName' => $this->subAdministrativeAreaName,
-            'administrativeAreaName'    => $this->administrativeAreaName,
-            'latitude'                  => $this->latitude,
-            'longitude'                 => $this->longitude,
-            'north'                     => $this->north,
-            'south'                     => $this->south,
-            'east'                      => $this->east,
-            'west'                      => $this->west,
-            'error'                     => $this->error,
-            'changed'                   => $this->changed,
-            'removed'                   => $this->removed,
+            'accuracy'                       => $this->accuracy,
+            'text'                           => $this->text,
+            'postalText'                     => $this->postalText,
+            'postalCode'                     => $this->postalCode,
+            'localityId'                     => $this->localityId,
+            'subAdministrativeAreaId'        => $this->subAdministrativeAreaId,
+            'administrativeAreaId'           => $this->administrativeAreaId,
+            'countryId'                      => $this->countryId,
+            'localityName'                   => $this->localityName,
+            'subAdministrativeAreaName'      => $this->subAdministrativeAreaName,
+            'administrativeAreaName'         => $this->administrativeAreaName,
+            'localityNameLocal'              => $this->localityNameLocal,
+            'subAdministrativeAreaNameLocal' => $this->subAdministrativeAreaNameLocal,
+            'administrativeAreaNameLocal'    => $this->administrativeAreaNameLocal,
+            'latitude'                       => $this->latitude,
+            'longitude'                      => $this->longitude,
+            'north'                          => $this->north,
+            'south'                          => $this->south,
+            'east'                           => $this->east,
+            'west'                           => $this->west,
+            'error'                          => $this->error,
+            'changed'                        => $this->changed,
+            'removed'                        => $this->removed,
         );
         if (!is_null($this->geocodedText)) {
             $address['geocodedText'] = $this->geocodedText;
@@ -642,9 +666,10 @@ class Address
 
     private function toString()
     {
-        $address = 'Adresse : ' . $this->text;
+        $address = $this->text;
         if ($this->type == self::LINK_PROFILE || $this->type == self::LINK_JOB) {
-            $address .= ', affichage : ' . $this->pub;
+            static $pubs = array('public' => 'publique', 'ax' => 'annuaire AX', 'private' => 'privé');
+            $address .= ' (affichage ' . $pubs[$this->pub];
         }
         if ($this->type == self::LINK_PROFILE) {
             static $flags = array(
@@ -656,15 +681,25 @@ class Address
                 'cedex'         => 'type cédex',
             );
 
-            $address .= ', commentaire : ' . $this->comment;
+            if (!$this->flags->hasFlag('temporary')) {
+                $address .= ', permanente';
+            }
+            if (!$this->flags->hasFlag('secondary')) {
+                $address .= ', principale';
+            }
             foreach ($flags as $flag => $flagName) {
                 if ($this->flags->hasFlag($flag)) {
                     $address .= ', ' . $flagName;
                 }
             }
+            if ($this->comment) {
+                $address .= ', commentaire : ' . $this->comment;
+            }
             if ($phones = Phone::formArrayToString($this->phones)) {
                 $address .= ', ' . $phones;
             }
+        } elseif ($this->type == self::LINK_JOB) {
+            $address .= ')';
         }
         return $address;
     }
@@ -711,7 +746,7 @@ class Address
                      $this->pid, $this->jobid, $this->type, $this->id);
     }
 
-    static public function deleteAddresses($pid, $type, $jobid = null)
+    static public function deleteAddresses($pid, $type, $jobid = null, $deletePrivate = true)
     {
         $where = '';
         if (!is_null($pid)) {
@@ -721,10 +756,10 @@ class Address
             $where = XDB::format(' AND jobid = {?}', $jobid);
         }
         XDB::execute('DELETE FROM  profile_addresses
-                            WHERE  type = {?}' . $where,
+                            WHERE  type = {?}' . $where . (($deletePrivate) ? '' : ' AND pub IN (\'public\', \'ax\')'),
                      $type);
         if ($type == self::LINK_PROFILE) {
-            Phone::deletePhones($pid, Phone::LINK_ADDRESS);
+            Phone::deletePhones($pid, Phone::LINK_ADDRESS, null, $deletePrivate);
         }
     }
 
@@ -794,7 +829,7 @@ class Address
 
     static public function formArrayToString(array $data)
     {
-        return implode(' ; ', self::formArrayWalk($data, 'toString'));
+        return implode(', ', self::formArrayWalk($data, 'toString'));
     }
 
     static public function iterate(array $pids = array(), array $types = array(),
@@ -836,8 +871,10 @@ class AddressIterator implements PlIterator
                         pa.administrativeAreaId, pa.countryId,
                         pa.latitude, pa.longitude, pa.north, pa.south, pa.east, pa.west,
                         pa.pub, pa.comment,
-                        gl.name AS locality, gs.name AS subAdministrativeArea,
-                        ga.name AS administrativeArea, gc.countryFR AS country
+                        gl.name AS locality, gl.nameLocal AS localityLocal,
+                        gs.name AS subAdministrativeArea, gs.nameLocal AS subAdministrativeAreaLocal,
+                        ga.name AS administrativeArea, ga.nameLocal AS administrativeAreaLocal,
+                        gc.country, gc.countryLocal
                   FROM  profile_addresses             AS pa
              LEFT JOIN  geoloc_localities             AS gl ON (gl.id = pa.localityId)
              LEFT JOIN  geoloc_administrativeareas    AS ga ON (ga.id = pa.administrativeAreaId)

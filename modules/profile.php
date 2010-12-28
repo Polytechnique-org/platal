@@ -400,7 +400,7 @@ class ProfileModule extends PLModule
         $page->assign('address', array());
     }
 
-    function handler_ajax_tel(&$page, $prefid, $prefname, $telid)
+    function handler_ajax_tel(&$page, $prefid, $prefname, $telid, $subField, $mainField, $mainId)
     {
         pl_content_headers("text/html");
         $page->changeTpl('profile/phone.tpl', NO_SKIN);
@@ -409,6 +409,11 @@ class ProfileModule extends PLModule
         $page->assign('telid', $telid);
         $phone = new Phone();
         $page->assign('tel', $phone->toFormArray());
+        if ($mainField) {
+            $page->assign('subField', $subField);
+            $page->assign('mainField', $mainField);
+            $page->assign('mainId', $mainId);
+        }
     }
 
     function handler_ajax_edu(&$page, $eduid, $class)
@@ -514,7 +519,7 @@ class ProfileModule extends PLModule
 
         // Retrieves referents' countries.
         $res = XDB::query(
-                "SELECT  gc.countryFR
+                "SELECT  gc.country
                    FROM  profile_mentor_country AS m
               LEFT JOIN  geoloc_countries       AS gc ON (m.country = gc.iso_3166_1_a2)
                   WHERE  pid = {?}", $pf->id());
@@ -528,11 +533,11 @@ class ProfileModule extends PLModule
         pl_content_headers("text/html");
         $page->changeTpl('include/field.select.tpl', NO_SKIN);
         $page->assign('name', 'pays_sel');
-        $it = XDB::iterator("SELECT  gc.iso_3166_1_a2 AS id, gc.countryFR AS field
+        $it = XDB::iterator("SELECT  gc.iso_3166_1_a2 AS id, gc.country AS field
                                FROM  geoloc_countries       AS gc
                          INNER JOIN  profile_mentor_country AS mp ON (mp.country = gc.iso_3166_1_a2)
                            GROUP BY  iso_3166_1_a2
-                           ORDER BY  countryFR");
+                           ORDER BY  country");
         $page->assign('list', $it);
     }
 
@@ -751,10 +756,10 @@ class ProfileModule extends PLModule
         $table_editor->describe('degree', 'niveau', true);
         $table_editor->apply($page, $action, $id);
     }
-    function handler_admin_education_degree_set(&$page, $action = 'list', $id = null) {
+    function handler_admin_education_degree_set(&$page, $action = 'list', $id = null, $id2 = null) {
         $page->setTitle('Administration - Correspondances formations - niveau de formation');
         $page->assign('title', 'Gestion des correspondances formations - niveau de formation');
-        $table_editor = new PLTableEditor('admin/education_degree_set', 'profile_education_degree', 'eduid', true);
+        $table_editor = new PLTableEditor('admin/education_degree_set', 'profile_education_degree', 'eduid', true, 'degreeid');
         $table_editor->describe('eduid', 'id formation', true);
         $table_editor->describe('degreeid', 'id niveau', true);
 
@@ -765,7 +770,7 @@ class ProfileModule extends PLModule
         $table_editor->add_option_table('profile_education_degree_enum','profile_education_degree_enum.id = t.degreeid');
         $table_editor->add_option_field('profile_education_degree_enum.degree', 'degree_name', 'niveau');
 
-        $table_editor->apply($page, $action, $id);
+        $table_editor->apply($page, $action, $id, $id2);
     }
     function handler_admin_sections(&$page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Sections');

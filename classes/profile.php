@@ -103,6 +103,38 @@ class Profile
 
     const FETCH_ALL          = 0x0007FF; // OR of FETCH_*
 
+    static public $descriptions = array(
+        'search_names'    => 'Noms',
+        'nationality1'    => 'Nationalité',
+        'nationality2'    => '2e nationalité',
+        'nationality3'    => '3e nationalité',
+        'promo_display'   => 'Promotion affichée',
+        'email_directory' => 'Email annuaire papier',
+        'networking'      => 'Messageries…',
+        'tels'            => 'Téléphones',
+        'edus'            => 'Formations',
+        'promo'           => 'Promotion de sortie',
+        'birthdate'       => 'Date de naissance',
+        'yourself'        => 'Nom affiché',
+        'freetext'        => 'Commentaire',
+        'freetext_pub'    => 'Affichage du commentaire',
+        'photo'           => 'Photographie',
+        'photo_pub'       => 'Affichage de la photographie',
+        'addresses'       => 'Adresses',
+        'corps'           => 'Corps',
+        'cv'              => 'CV',
+        'jobs'            => 'Emplois',
+        'section'         => 'Section',
+        'binets'          => 'Binets',
+        'medals'          => 'Décorations',
+        'medals_pub'      => 'Affichage des décorations',
+        'competences'     => 'Compétences',
+        'langues'         => 'Langues',
+        'expertise'       => 'Expertises (mentoring)',
+        'terms'           => 'Compétences (mentoring)',
+        'countries'       => 'Pays (mentoring)'
+    );
+
     private $fetched_fields  = 0x000000;
 
     private $pid;

@@ -20,25 +20,46 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{config_load file="mails.conf" section="emails_broken"}
-{if $mail_part eq 'head'}
-{from full=#from#}
-{subject text=#subject#}
-{elseif $mail_part eq 'wiki'}
-Bonjour !
+<h1>Modifications récentes de profil</h1>
 
-Cet email a été généré automatiquement par le service de patte cassée de
-Polytechnique.org car un autre utilisateur, {$request->fullName()},
-nous a signalé qu'en t'envoyant un email, il avait reçu un message d'erreur
-indiquant que ton adresse de redirection {$email}
-ne fonctionnait plus !
+{if $updates->total() > 0}
+<script type="text/javascript">//<![CDATA[
+{literal}
+  function toggleSelection()
+  {
+    var checked = $(':checkbox.updates:checked');
+    var unchecked = $(':checkbox.updates:not(:checked)');
+    checked.removeAttr('checked');
+    unchecked.attr('checked', 'checked');
+  }
+{/literal}
+//]]></script>
 
-Nous te suggérons de vérifier cette adresse, et le cas échéant de mettre
-à jour tes adresses de redirection [[{$globals->baseurl}/emails|sur le site]].
-
-Pour plus de renseignements sur le service de patte cassée, n'hésite pas à
-consulter [[{$globals->baseurl}/emails/broken|la documentation sur le site]].
-{include file="include/signature.mail.tpl"}
+<form action="admin/profile" method="post">
+  {xsrf_token_field}
+  <table class="bicol" summary="liste des modifications de profil récentes">
+    <tr>
+      <th>Nom</th>
+      <th>Éléments modifiés</th>
+      <th>Liens</th>
+      <th><a href="javascript:toggleSelection()">{icon name="arrow_refresh" title="Inverser la sélection"}</a></th>
+    </tr>
+    {iterate item=update from=$updates}
+    <tr class="{cycle values="impair,pair"}">
+      <td>{$update.directory_name}</td>
+      <td class="center">{$update.field|wordwrap:80:'<br />'}</td>
+      <td class="center">
+        <a href="profile/{$update.hrpid}" class="popup2">{icon name=user_suit title="Voir le profil"}</a>
+        <a href="profile/edit/{$update.hrpid}">{icon name=user_edit title="Éditer le profil"}</a>
+      </td>
+      <td class="center"><input type="checkbox" name="checked_{$update.pid}" class="updates" /></td>
+    </tr>
+    {/iterate}
+  </table>
+  <p class="center"><input type="submit" name="checked" value="Valider" /></p>
+</form>
+{else}
+<p>Il n'y a rien à vérifier.</p>
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

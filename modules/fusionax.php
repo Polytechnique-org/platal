@@ -42,7 +42,8 @@ class FusionAxModule extends PLModule
                 'fusionax/deceased'         => $this->make_hook('deceased', AUTH_MDP, 'admin'),
                 'fusionax/promo'            => $this->make_hook('promo',    AUTH_MDP, 'admin'),
                 'fusionax/names'            => $this->make_hook('names',    AUTH_MDP, 'admin'),
-                'fusionax/edu'              => $this->make_hook('edu',      AUTH_MDP, 'admin')
+                'fusionax/edu'              => $this->make_hook('edu',      AUTH_MDP, 'admin'),
+                'fusionax/corps'            => $this->make_hook('corps',    AUTH_MDP, 'admin')
             );
         } elseif (Platal::globals()->merge->state == 'done') {
             return array(
@@ -580,20 +581,20 @@ class FusionAxModule extends PLModule
     {
         $page->changeTpl('fusionax/education.tpl');
 
-        $missingEducation = XDB::rawIterator("SELECT  DISTINCT(f.Intitule_diplome)
+        $missingEducation = XDB::rawIterator("SELECT  DISTINCT(f.Intitule_formation)
                                                 FROM  fusionax_formations AS f
-                                               WHERE  f.Intitule_diplome != '' AND NOT EXISTS (SELECT  *
-                                                                                                 FROM  profile_education_enum AS e
-                                                                                                WHERE  f.Intitule_diplome = e.name)");
-        $missingDegree = XDB::rawIterator("SELECT  DISTINCT(f.Intitule_formation)
+                                               WHERE  f.Intitule_formation != '' AND NOT EXISTS (SELECT  *
+                                                                                                   FROM  profile_education_enum AS e
+                                                                                                  WHERE  f.Intitule_formation = e.name)");
+        $missingDegree = XDB::rawIterator("SELECT  DISTINCT(f.Intitule_diplome)
                                              FROM  fusionax_formations AS f
-                                            WHERE  f.Intitule_formation != '' AND NOT EXISTS (SELECT  *
-                                                                                                FROM  profile_education_degree_enum AS e
-                                                                                               WHERE  f.Intitule_formation = e.abbreviation)");
-        $missingCouple = XDB::rawIterator("SELECT  DISTINCT(f.Intitule_diplome) AS edu, f.Intitule_formation AS degree, ee.id AS eduid, de.id AS degreeid
+                                            WHERE  f.Intitule_diplome != '' AND NOT EXISTS (SELECT  *
+                                                                                              FROM  profile_education_degree_enum AS e
+                                                                                             WHERE  f.Intitule_diplome = e.abbreviation)");
+        $missingCouple = XDB::rawIterator("SELECT  DISTINCT(f.Intitule_formation) AS edu, f.Intitule_diplome AS degree, ee.id AS eduid, de.id AS degreeid
                                              FROM  fusionax_formations           AS f
-                                       INNER JOIN  profile_education_enum        AS ee ON (f.Intitule_diplome = ee.name)
-                                       INNER JOIN  profile_education_degree_enum AS de ON (f.Intitule_formation = de.abbreviation)
+                                       INNER JOIN  profile_education_enum        AS ee ON (f.Intitule_formation = ee.name)
+                                       INNER JOIN  profile_education_degree_enum AS de ON (f.Intitule_diplome = de.abbreviation)
                                             WHERE  f.Intitule_diplome != '' AND f.Intitule_formation != ''
                                                    AND NOT EXISTS (SELECT  *
                                                                      FROM  profile_education_degree AS d
@@ -605,6 +606,27 @@ class FusionAxModule extends PLModule
         $page->assign('missingEducationCount', $missingEducation->total());
         $page->assign('missingDegreeCount', $missingDegree->total());
         $page->assign('missingCoupleCount', $missingCouple->total());
+    }
+
+    function handler_corps(&$page)
+    {
+        $page->changeTpl('fusionax/corps.tpl');
+
+        $missingCorps = XDB::rawIterator('SELECT  DISTINCT(f.corps_sortie) AS name
+                                            FROM  fusionax_anciens AS f
+                                           WHERE  NOT EXISTS (SELECT  *
+                                                                FROM  profile_corps_enum AS c
+                                                               WHERE  f.corps_sortie = c.abbreviation)');
+        $missingGrade = XDB::rawIterator('SELECT  DISTINCT(f.grade) AS name
+                                            FROM  fusionax_anciens AS f
+                                           WHERE  NOT EXISTS (SELECT  *
+                                                                FROM  profile_corps_rank_enum AS c
+                                                               WHERE  f.grade = c.name)');
+
+        $page->assign('missingCorps', $missingCorps);
+        $page->assign('missingGrade', $missingGrade);
+        $page->assign('missingCorpsCount', $missingCorps->total());
+        $page->assign('missingGradeCount', $missingGrade->total());
     }
 
     function handler_issues_deathdate(&$page, $action = '')

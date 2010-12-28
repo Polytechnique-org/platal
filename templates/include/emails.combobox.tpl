@@ -22,7 +22,7 @@
 
 {assign var=new value="new"|cat:$i}
 {assign var=combobox value="combobox"|cat:$i}
-<tr {if $class}class="{$class}"{/if}>
+<tr{if $class} class="{$class}"{/if}{if t($divId)} id="{$divId}"{/if}>
   <td class="titre">
   {if $name eq "email_directory"}
     Email&nbsp;annuaire&nbsp;AX
@@ -89,7 +89,12 @@
       <input type="checkbox" disabled="disabled" checked="checked"/>
       {icon name="flag_orange" title="Visible sur l'annuaire"}
     {elseif $name neq "email"}
+    {if t($mainField)}
+    {include file="include/flags.radio.tpl" name="`$jobpref`[`$prefix`email_pub]" val=$pub
+             mainField=$mainField mainId=$mainId subField=$subField subId=$subId}
+    {else}
     {include file="include/flags.radio.tpl" name="`$jobpref`[`$prefix`email_pub]" val=$pub}
+    {/if}
     {/if}
     </div>
     {/if}

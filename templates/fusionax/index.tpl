@@ -36,6 +36,7 @@
   <li>Corrélation des <a href="fusionax/promo">promotions</a></li>
   <li>Corrélation des <a href="fusionax/names">noms</a></li>
   <li>Corrélation des <a href="fusionax/edu">formations</a></li>
+  <li>Corrélation des <a href="fusionax/corps">corps</a></li>
 </ul>
 
 <p>

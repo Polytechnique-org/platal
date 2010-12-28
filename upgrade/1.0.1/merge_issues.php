@@ -8,6 +8,99 @@ require_once '../../classes/address.php';
 
 $globals->debug = 0; // Do not store backtraces.
 
+$abbreviations = array(
+    'commandant'    => 'cdt',
+    'docteur'       => 'dr',
+    'haut'          => 'ht',
+    'haute'         => 'ht',
+    'hauts'         => 'ht',
+    'hts'           => 'ht',
+    'general'       => 'gen',
+    'gal '          => 'gen ',
+    'grand'         => 'gd',
+    'grande'        => 'gd',
+    'grands'        => 'gd',
+    'gde '          => 'gd ',
+    'gds '          => 'gd ',
+    'lieutenant'    => 'lt',
+    'marechal'      => 'mal',
+    'notre dame'    => 'n d',
+    'nouveau'       => 'nouv',
+    'president'     => 'pdt',
+    'saint'         => 'st',
+    'sainte'        => 'st',
+    'saintes'       => 'st',
+    'saints'        => 'st',
+    'ste '          => 'st ',
+    'appartement'   => 'app',
+    'apt'           => 'app',
+    'appt'          => 'app',
+    'appart'        => 'app',
+    'arrondissement'=> 'arr',
+    'batiment'      => 'bat',
+    'escalier'      => 'esc',
+    'etage'         => 'etg',
+    'et '           => 'etg',
+    'immeuble'      => 'imm',
+    'lieu dit'      => 'ld',
+    ' lt '          => ' lt ',
+    'porte'         => 'pte',
+    'quartier'      => 'quart',
+    'residence'     => 'res',
+    'resi'          => 'res',
+    'villa'         => 'vla',
+    'village'       => 'vlge',
+    'vil '          => 'vlge ',
+    'allee'         => 'all',
+    'avenue'        => 'av',
+    'boulevard'     => 'bd',
+    'bld'           => 'bd',
+    'chemin'        => 'ch',
+    'chem '         => 'ch ',
+    'che '          => 'ch ',
+    'cours'         => 'crs',
+    'domaine'       => 'dom',
+    'doma '         => 'dom ',
+    'faubourg'      => 'fg',
+    'fbg'           => 'fg',
+    'hameau'        => 'ham',
+    'hame '         => 'ham ',
+    'impasse'       => 'imp',
+    'impa '         => 'imp ',
+    'lotissement'   => 'lot',
+    'montee'        => 'mte',
+    'passage'       => 'pass',
+    'place'         => 'pl',
+    'promenade'     => 'pro ',
+    'prom '         => 'pro ',
+    'quai'          => 'qu',
+    'rue'           => 'r',
+    'route'         => 'rte',
+    ' rde '         => ' rte ',
+    ' rle '         => ' rte ',
+    'sentier'       => 'sen',
+    'sent '         => 'sen ',
+    'square'        => 'sq',
+    'mount'         => 'mt',
+    'road'          => 'rd',
+    'street'        => 'st',
+    'str '          => 'str',
+    'bis'           => 'b',
+    'ter'           => 't'
+);
+$patterns = array();
+$replacements = array();
+foreach ($abbreviations as $key => $abbreviation) {
+    $patterns[] = '/' . $key . '/';
+    $replacements[] = $abbreviation;
+}
+
+function check($address1, $address2)
+{
+    return $address1['short'] == $address2['short'] || $address1['short'] == $address2['long']
+        || $address1['long'] == $address2['short'] || $address1['long'] == $address2['long'];
+}
+
 print "Deletes duplicated addresses. (1/3)\n";
 $pids = XDB::rawFetchColumn("SELECT  DISTINCT(pid)
                                FROM  profile_addresses AS a1
@@ -26,14 +119,25 @@ foreach ($pids as $pid) {
     $count = 0;
     $it = Address::iterate(array($pid), array(Address::LINK_PROFILE), array(0));
     while ($item = $it->next()) {
-        $addresses[] = $item;
-        $rawAddresses[] = preg_replace('/[^a-zA-Z0-9]/', '', replace_accent($item->text));
+        $addresses[$count] = $item;
+        $rawAddress = preg_replace('/[^a-z0-9]/', ' ', mb_strtolower(replace_accent($item->text)));
+        $rawAddresses[$count] = array(
+            'long'  => preg_replace('/\s+/', '', $rawAddress),
+            'short' => preg_replace('/\s+/', '', preg_replace($patterns, $replacements, $rawAddress)),
+        );
         ++$count;
     }
     for ($i = 0; $i < $count; ++$i) {
         for ($j = $i + 1; $j < $count; ++$j) {
-            if ($rawAddresses[$i] == $rawAddresses[$j]) {
-                $duplicates[$i] = true;
+            if (check($rawAddresses[$i], $rawAddresses[$j])) {
+                $duplicates[$j] = true;
+                $minPub = new ProfileVisibility($addresses[$j]->pub);
+                if ($minPub->isVisible($addresses[$i]->pub)) {
+                    $addresses[$i]->pub = $addresses[$j]->pub;
+                }
+                if ($addresses[$j]->hasFlag('mail') && !$addresses[$i]->hasFlag('mail')) {
+                    $addresses[$i]->addFlag('mail');
+                }
             }
         }
     }
@@ -106,7 +210,7 @@ $phones = array();
 $duplicates = array();
 foreach ($pids as $pid) {
     $count = 0;
-    Phone::iterate(array($pid), array(Phone::LINK_PROFILE), array(0));
+    $it = Phone::iterate(array($pid), array(Phone::LINK_PROFILE), array(0));
     while ($item = $it->next()) {
         $phones[] = $item;
         ++$count;
@@ -114,7 +218,12 @@ foreach ($pids as $pid) {
     for ($i = 0; $i < $count; ++$i) {
         for ($j = $i + 1; $j < $count; ++$j) {
             if ($phones[$i]->search() == $phones[$j]->search()) {
-                $duplicates[$i] = true;
+                $duplicates[$j] = true;
+                $minPub = new ProfileVisibility($phones[$j]->pub);
+                if ($minPub->isVisible($phones[$i]->pub)) {
+                    $phones[$i]->pub = $phones[$j]->pub;
+                }
+
             }
         }
     }

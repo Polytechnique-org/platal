@@ -54,7 +54,7 @@ class SearchSet extends ProfileSet
 
     public function __construct($quick = false, PlFilterCondition $cond = null)
     {
-        if ($no_search) {
+        if (isset($no_search)) {
             return;
         }
 
@@ -347,6 +347,41 @@ class GadgetView implements PlView
     public function args()
     {
         return null;
+    }
+}
+
+class AddressesView implements PlView
+{
+    private $set;
+
+    public function __construct(PlSet &$set, array $params)
+    {
+        $this->set =& $set;
+    }
+
+    public function apply(PlPage &$page)
+    {
+        $pids = $this->set->getIds(new PlLimit());
+        $visibility = new ProfileVisibility(ProfileVisibility::VIS_AX);
+        pl_content_headers('text/x-csv');
+
+        $csv = fopen('php://output', 'w');
+        fputcsv($csv, array('adresses'), ';');
+        $res = XDB::query('SELECT  pd.public_name, pa.postalText
+                             FROM  profile_addresses AS pa
+                       INNER JOIN  profile_display   AS pd ON (pd.pid = pa.pid)
+                            WHERE  pa.type = \'home\' AND pa.pub IN (\'public\', \'ax\') AND FIND_IN_SET(\'mail\', pa.flags) AND pa.pid IN {?}
+                         GROUP BY  pa.pid', $pids);
+        foreach ($res->fetchAllAssoc() as $item) {
+            fputcsv($csv, $item, ';');
+        }
+        fclose($csv);
+        exit();
+    }
+
+    public function args()
+    {
+        return $this->set->args();
     }
 }
 

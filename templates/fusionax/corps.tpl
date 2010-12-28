@@ -20,25 +20,21 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{config_load file="mails.conf" section="emails_broken"}
-{if $mail_part eq 'head'}
-{from full=#from#}
-{subject text=#subject#}
-{elseif $mail_part eq 'wiki'}
-Bonjour !
+<h2><a href="fusionax">Fusion des annuaires X.org - AX</a> / corps</h2>
 
-Cet email a été généré automatiquement par le service de patte cassée de
-Polytechnique.org car un autre utilisateur, {$request->fullName()},
-nous a signalé qu'en t'envoyant un email, il avait reçu un message d'erreur
-indiquant que ton adresse de redirection {$email}
-ne fonctionnait plus !
+<p>
+  Il y a {$missingCorpsCount} corps manquant{if $missingCorpsCount > 1}s{/if} dans notre base{if $missingCorpsCount eq 0}.</p>{else}&nbsp;:
+</p>
+<ul>
+  {iterate from=$missingCorps item=corps}<li>{$corps.name}</li>{/iterate}
+</ul>{/if}
 
-Nous te suggérons de vérifier cette adresse, et le cas échéant de mettre
-à jour tes adresses de redirection [[{$globals->baseurl}/emails|sur le site]].
-
-Pour plus de renseignements sur le service de patte cassée, n'hésite pas à
-consulter [[{$globals->baseurl}/emails/broken|la documentation sur le site]].
-{include file="include/signature.mail.tpl"}
-{/if}
+<p>
+  Il y a {$missingGradeCount} grade{if $missingGradeCount > 1}s{/if} manquant{if $missingGradeCount > 1}s{/if} dans
+  notre base{if $missingGradeCount eq 0}.</p>{else}&nbsp;:
+</p>
+<ul>
+  {iterate from=$missingGrade item=grade}<li>{$grade.name}</li>{/iterate}
+</ul>{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

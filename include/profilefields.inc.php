@@ -338,7 +338,7 @@ class ProfileEducation extends ProfileField
         $data = XDB::iterator('SELECT  pe.id, pe.pid,
                                        pe.entry_year, pe.grad_year, pe.program, pe.flags,
                                        pee.name AS school, pee.abbreviation AS school_short,
-                                       pee.url AS school_url, gc.countryFR AS country,
+                                       pee.url AS school_url, gc.country,
                                        pede.degree, pede.abbreviation AS degree_short, pede.level AS degree_level,
                                        pefe.field
                                  FROM  profile_education AS pe
@@ -489,7 +489,7 @@ class ProfileMentoringCountries extends ProfileField
 
     public static function fetchData(array $pids, ProfileVisibility $visibility)
     {
-        $data = XDB::iterator('SELECT  pmc.pid, pmc.country AS id, gc.countryFR AS name
+        $data = XDB::iterator('SELECT  pmc.pid, pmc.country AS id, gc.country AS name
                                  FROM  profile_mentor_country AS pmc
                             LEFT JOIN  geoloc_countries AS gc ON (gc.iso_3166_1_a2 = pmc.country)
                                 WHERE  pmc.pid IN {?}
@@ -770,7 +770,10 @@ class CompanyList
         if (!array_key_exists($id, self::$companies)) {
             self::preload();
         }
-        return self::$companies[$id];
+        if (isset(self::$companies[$id])) {
+            return self::$companies[$id];
+        }
+        return null;
     }
 }
 

@@ -29,6 +29,6 @@
 Nous t'écrivons pour t'informer que {$firstname} {$lastname} ({$promo}), que tu avais incité{if $sex eq 'female'}e{/if} à s'inscrire à Polytechnique.org, vient à l'instant de terminer son inscription.
 
 Merci de ta participation active à la reconnaissance de ce site !!!
-{include file="signature.mail.tpl"}
+{include file="include/signature.mail.tpl"}
 {/if}
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

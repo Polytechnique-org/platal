@@ -24,7 +24,7 @@
 
 <div>{icon name=information title="Afficher ma fiche référent"}Tu peux consulter ta <a class="popup2" href="referent/{$hrpid}">fiche référent</a> qui n'est accessible que par les X.
 </div>
-{if (!$expertise)||(!($sectors|@count))}
+{if !$expertise || !t($sectors) || !($sectors|@count)}
   <br /><div>
     <strong>{icon name=error title="Attention"} Attention&nbsp;: pour figurer dans la base de données des mentors, il faut remplir la
     dernière case en bas de cette page et avoir au moins un secteur d'activité de prédilection.</strong><br />

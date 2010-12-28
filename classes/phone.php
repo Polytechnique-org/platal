@@ -67,7 +67,7 @@ class Phone
     // The following fields are the fields of the form in the profile edition.
     private $type = 'fixed';
     public $display = '';
-    private $pub = 'ax';
+    public $pub = 'ax';
     public $comment = '';
     private $error = false;
 
@@ -286,8 +286,10 @@ class Phone
 
     private function toString()
     {
-        return 'type : ' . $this->type .', numéro : ' . $this->display
-            . ', commentaire : « ' . $this->comment . ' », affichage : ' . $this->pub;
+        static $pubs = array('public' => 'publique', 'ax' => 'annuaire AX', 'private' => 'privé');
+        static $types = array('fax' => 'fax', 'fixed' => 'fixe', 'mobile' => 'mobile');
+        return $this->display . ' (' . $types[$this->type] . (($this->comment) ? ', commentaire : « ' . $this->comment . ' »' : '')
+            . ', affichage ' . $pubs[$this->pub] . ')';
     }
 
     private function isEmpty()
@@ -314,14 +316,14 @@ class Phone
                      $this->pid, $this->link_type, $this->link_id, $this->id);
     }
 
-    static public function deletePhones($pid, $link_type, $link_id = null)
+    static public function deletePhones($pid, $link_type, $link_id = null, $deletePrivate = true)
     {
         $where = '';
         if (!is_null($link_id)) {
             $where = XDB::format(' AND link_id = {?}', $link_id);
         }
         XDB::execute('DELETE FROM  profile_phones
-                            WHERE  pid = {?} AND link_type = {?}' . $where,
+                            WHERE  pid = {?} AND link_type = {?}' . $where . (($deletePrivate) ? '' : ' AND pub IN (\'public\', \'ax\')'),
                      $pid, $link_type);
     }
 
@@ -347,32 +349,38 @@ class Phone
         }
     }
 
-    static private function formArrayWalk(array $data, $function, &$success = true, $requiresEmptyPhone = false)
+    static private function formArrayWalk(array $data, $function, &$success = true, $requiresEmptyPhone = false, $maxPublicity = null)
     {
         $phones = array();
         foreach ($data as $item) {
             $phone = new Phone($item);
             $success = (!$phone->error && ($phone->format() || $phone->isEmpty()) && $success);
             if (!$phone->isEmpty()) {
+                if (!is_null($maxPublicity) && $maxPublicity->isVisible($phone->pub)) {
+                    $phone->pub = $maxPublicity->level();
+                }
                 $phones[] = call_user_func(array($phone, $function));
             }
         }
         if (count($phones) == 0 && $requiresEmptyPhone) {
             $phone = new Phone();
+            if (!is_null($maxPublicity) && $maxPublicity->isVisible($phone->pub)) {
+                $phone->pub = $maxPublicity->level();
+            }
             $phones[] = call_user_func(array($phone, $function));
         }
         return $phones;
     }
 
     // Formats an array of form phones into an array of form formatted phones.
-    static public function formatFormArray(array $data, &$success = true)
+    static public function formatFormArray(array $data, &$success = true, $maxPublicity = null)
     {
-        return self::formArrayWalk($data, 'toFormArray', $success, true);
+        return self::formArrayWalk($data, 'toFormArray', $success, true, $maxPublicity);
     }
 
     static public function formArrayToString(array $data)
     {
-        return implode(' ; ', self::formArrayWalk($data, 'toString'));
+        return implode(', ', self::formArrayWalk($data, 'toString'));
     }
 
     static public function iterate(array $pids = array(), array $link_types = array(),

@@ -42,6 +42,6 @@ Rends-toi maintenant sur la page web suivante afin d'activer ta pré-inscription
 Si en cliquant dessus tu n'y arrives pas, copie intégralement ce lien dans la barre d'adresse de ton navigateur.
 
 Nous espérons que tu profiteras pleinement des services en ligne de Polytechnique.org ; s'ils te convainquent, n'oublie pas d'en parler aux camarades autour de toi !
-{include file="signature.mail.tpl"}
+{include file="include/signature.mail.tpl"}
 {/if}
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
