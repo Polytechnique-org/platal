@@ -757,10 +757,10 @@ class ProfileModule extends PLModule
         $table_editor->describe('degree', 'niveau', true);
         $table_editor->apply($page, $action, $id);
     }
-    function handler_admin_education_degree_set(&$page, $action = 'list', $id = null) {
+    function handler_admin_education_degree_set(&$page, $action = 'list', $id = null, $id2 = null) {
         $page->setTitle('Administration - Correspondances formations - niveau de formation');
         $page->assign('title', 'Gestion des correspondances formations - niveau de formation');
-        $table_editor = new PLTableEditor('admin/education_degree_set', 'profile_education_degree', 'eduid', true);
+        $table_editor = new PLTableEditor('admin/education_degree_set', 'profile_education_degree', 'eduid', true, 'degreeid');
         $table_editor->describe('eduid', 'id formation', true);
         $table_editor->describe('degreeid', 'id niveau', true);
 
@@ -771,7 +771,7 @@ class ProfileModule extends PLModule
         $table_editor->add_option_table('profile_education_degree_enum','profile_education_degree_enum.id = t.degreeid');
         $table_editor->add_option_field('profile_education_degree_enum.degree', 'degree_name', 'niveau');
 
-        $table_editor->apply($page, $action, $id);
+        $table_editor->apply($page, $action, $id, $id2);
     }
     function handler_admin_sections(&$page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Sections');
