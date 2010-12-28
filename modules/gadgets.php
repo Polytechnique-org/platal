@@ -74,7 +74,7 @@ class GadgetsModule extends PLModule
             global $globals;
             require_once 'userset.inc.php';
 
-            $view = new SearchSet(true);
+            $view = new QuickSearchSet();
             $view->addMod('gadget', 'Gadget', true);
             $view->apply(null, $page);
 

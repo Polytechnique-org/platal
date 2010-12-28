@@ -166,6 +166,7 @@ class UFB_QuickSearch extends UserFilterBuilder
     {
         $fields = array(
             new UFBF_Quick('quick', 'Recherche rapide'),
+            new UFBF_NotRegistered('nonins', 'Non inscrits'),
         );
         parent::__construct($fields, $envprefix);
     }
@@ -651,6 +652,22 @@ class UFBF_Sex extends UFBF_Enum
     protected function buildUFC(UserFilterBuilder &$ufb)
     {
         return new UFC_Sex(self::getVal($this->val));
+    }
+}
+// }}}
+
+// {{{ class UFBF_NotRegistered
+// Simple field for selecting only alive, not registered users (for quick search)
+class UFBF_NotRegistered extends UFBF_Bool
+{
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        if ($this->val) {
+            return new PFC_And(
+                new PFC_Not(new UFC_Dead()),
+                new PFC_Not(new UFC_Registered())
+            );
+        }
     }
 }
 // }}}

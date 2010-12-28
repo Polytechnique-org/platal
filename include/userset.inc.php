@@ -45,21 +45,15 @@ class ProfileSet extends PlSet
     }
 }
 
+require_once "ufbuilder.inc.php";
+
 class SearchSet extends ProfileSet
 {
-    public  $advanced = false;
-    private $score    = null;
-    private $quick    = false;
-    private $valid    = true;
+    protected $score    = null;
+    protected $valid    = true;
 
-    public function __construct($quick = false, PlFilterCondition $cond = null)
+    public function __construct(UserFilterBuilder &$ufb, PlFilterCondition $cond = null)
     {
-        if (isset($no_search)) {
-            return;
-        }
-
-        $this->quick = $quick;
-
         if (is_null($cond)) {
             $conds = new PFC_And();
         } else if ($cond instanceof PFC_And) {
@@ -68,70 +62,22 @@ class SearchSet extends ProfileSet
             $conds = new PFC_And($cond);
         }
 
-        if ($quick) {
-            $this->getQuick($conds);
-        } else {
-            $this->getAdvanced($conds);
+        if (!$ufb->isValid()) {
+            $this->valid = false;
+            return;
         }
+
+        $ufc = $ufb->getUFC();
+        $conds->addChild($ufc);
+
+        $orders = $ufb->getOrders();
+
+        parent::__construct($conds, $orders);
     }
 
     public function isValid()
     {
         return $this->valid;
-    }
-
-    /** Sets up the conditions for a Quick Search
-     * @param $conds Additional conds (as a PFC_And)
-     */
-    private function getQuick($conds)
-    {
-        if (!S::logged()) {
-            Env::kill('with_soundex');
-        }
-
-        require_once 'ufbuilder.inc.php';
-        $ufb = new UFB_QuickSearch();
-
-        if (!$ufb->isValid()) {
-            $this->valid = false;
-            return;
-        }
-
-        $ufc = $ufb->getUFC();
-        $conds->addChild($ufc);
-
-        $orders = $ufb->getOrders();
-
-        if (S::logged() && Env::has('nonins')) {
-            $conds = new PFC_And($conds,
-                new PFC_Not(new UFC_Dead()),
-                new PFC_Not(new UFC_Registered())
-            );
-        }
-
-        parent::__construct($conds, $orders);
-    }
-
-    /** Sets up the conditions for an Advanced Search
-     * @param $conds Additional conds (as a PFC_And)
-     */
-    private function getAdvanced($conds)
-    {
-        $this->advanced = true;
-        require_once 'ufbuilder.inc.php';
-        $ufb = new UFB_AdvancedSearch();
-
-        if (!$ufb->isValid()) {
-            $this->valid = false;
-            return;
-        }
-
-        $ufc = $ufb->getUFC();
-        $conds->addChild($ufc);
-
-        $orders = $ufb->getOrders();
-
-        parent::__construct($conds, $orders);
     }
 
     /** Add a "rechercher=Chercher" field to the query to simulate the POST
@@ -150,6 +96,28 @@ class SearchSet extends ProfileSet
     {
         $profiles = $pf->getProfiles($limit, Profile::FETCH_MINIFICHES);
         return $profiles;
+    }
+}
+
+// Specialized SearchSet for quick search.
+class QuickSearchSet extends SearchSet
+{
+    public function __construct(PlFilterCondition $cond = null)
+    {
+        if (!S::logged()) {
+            Env::kill('with_soundex');
+        }
+
+        parent::__construct(new UFB_QuickSearch(), $cond);
+    }
+}
+
+// Specialized SearchSet for advanced search.
+class AdvancedSearchSet extends SearchSet
+{
+    public function __construct(PlFilterCondition $cond = null)
+    {
+        parent::__construct(new UFB_AdvancedSearch(), $cond);
     }
 }
 
