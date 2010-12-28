@@ -26,7 +26,7 @@
     <td class="inscrits">
       {$globals->core->NbIns|number_format} polytechniciens sur le web
       {if t($smarty.request.quick)}
-        {assign var=requestQuick value=$smarty.request.quick}
+        {assign var=requestQuick value=$smarty.request.quick|smarty:nodefaults}
       {else}
         {assign var=requestQuick value='Recherche dans l\'annuaire'}
       {/if}

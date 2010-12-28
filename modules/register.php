@@ -328,6 +328,7 @@ class RegisterModule extends PLModule
         //
         // Create the user account.
         //
+        XDB::startTransaction();
         XDB::execute("UPDATE  accounts
                          SET  password = {?}, state = 'active',
                               registration_date = NOW(), email = NULL
@@ -343,6 +344,7 @@ class RegisterModule extends PLModule
             XDB::execute("INSERT INTO  aliases (uid, alias, type)
                                VALUES  ({?}, {?}, 'alias')", $uid, $emailXorg2);
         }
+        XDB::commit();
 
         // Add the registration email address as first and only redirection.
         require_once 'emails.inc.php';
@@ -373,7 +375,7 @@ class RegisterModule extends PLModule
                                                   VALUES  ({?}, {?})',
                                      $uid, $asso_id);
                         $mmlist = new MMList($user);
-                        $mmlist->subscribe("promo" . S::v('promo'));
+                        $mmlist->subscribe("promo" . $yearpromo);
                     }
                     break;
                 case 'nl':

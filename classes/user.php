@@ -690,7 +690,7 @@ class User extends PlUser
                             'forum_innd', 'forum_profiles', 'forum_subs',
                             'group_announces_read', 'group_members',
                             'group_member_sub_requests', 'reminder', 'requests',
-                            'requests_hidden');
+                            'requests_hidden', 'aliases');
             foreach ($tables as $t) {
                 XDB::execute('DELETE FROM  ' . $t . '
                                     WHERE  uid = {?}',
@@ -728,7 +728,7 @@ class User extends PlUser
             }
         }
 
-        $mmlist = new MMList($this);
+        $mmlist = new MMList(S::user());
         $mmlist->kill($this->hruid, $clearAll);
     }
 
