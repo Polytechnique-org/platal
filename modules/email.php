@@ -852,8 +852,6 @@ class EmailModule extends PLModule
             if ($list == '') {
                 $page->trigError('La liste est vide.');
             } else {
-                global $platal;
-
                 $broken_user_list = array();
                 $broken_list = explode("\n", $list);
                 sort($broken_list);
@@ -891,7 +889,7 @@ class EmailModule extends PLModule
                         if (!empty($x['nb_mails'])) {
                             $mail = new PlMailer('emails/broken.mail.tpl');
                             $mail->addTo("\"{$x['full_name']}\" <{$x['alias']}@"
-                                         . $globals->mail->domain . '>');
+                                         . Platal::globals()->mail->domain . '>');
                             $mail->assign('x', $x);
                             $mail->assign('email', $email);
                             $mail->send();
