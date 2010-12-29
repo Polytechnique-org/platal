@@ -55,30 +55,50 @@
       };
   }
 
-  // when changing country, open up region choice
+  // when changing country, open up administrativearea choice
   function changeCountry(a2) {
     $(".autocompleteTarget[name='country']").attr('value',a2);
 
     if (a2) {
       $(".autocomplete[name='countryTxt']").addClass('hidden_valid');
 
-      $("[name='region']").parent().load(baseurl + 'list/region/', { country:a2 }, function() {
-          if ($("select[name='region']").children("option").size() > 1) {
-            $("select[name='region']").attr('value', '{/literal}{$smarty.request.region}{literal}');
+      $("[name='administrativearea']").parent().load(baseurl + 'list/administrativearea/', { country:a2 }, function() {
+          if ($("select[name='administrativearea']").children("option").size() > 1) {
+            $("select[name='administrativearea']").attr('value', '{/literal}{$smarty.request.administrativearea}{literal}');
 
-            $("tr#region_ln").show();
+            $("tr#administrativearea_list").show();
           } else {
-            $("select[name='region']").attr('value', '');
+            $("select[name='administrativearea']").attr('value', '');
 
-            $("tr#region_ln").hide();
+            $("tr#administrativearea_list").hide();
           }
         });
     } else {
       $(".autocomplete[name='countryTxt']").removeClass('hidden_valid');
 
-      $("select[name='region']").attr('value', '');
+      $("select[name='administrativearea']").attr('value', '');
+      $("select[name='subadministrativearea']").attr('value', '');
 
-      $("tr#region_ln").hide();
+      $("tr#administrativearea_list").hide();
+      $("tr#subadministrativearea_list").hide();
+    }
+  }
+
+  // when changing administrativearea, open up subadministrativearea choice
+  function changeAdministrativeArea(id) {
+    if (id) {
+      $("[name='subadministrativearea']").parent().load(baseurl + 'list/subadministrativearea/', { administrativearea:id }, function() {
+          if ($("select[name='subadministrativearea']").children("option").size() > 1) {
+            $("select[name='subadministrativearea']").attr('value', '{/literal}{$smarty.request.subadministrativearea}{literal}');
+            $("tr#subadministrativearea_list").show();
+          } else {
+            $("select[name='subadministrativearea']").attr('value', '');
+            $("tr#subadministrativearea_list").hide();
+          }
+        });
+    } else {
+      $("select[name='subadministrativearea']").attr('value', '');
+      $("tr#subadministrativearea_list").hide();
     }
   }
 
@@ -120,7 +140,7 @@
       if (nameRealField == name)
         return null;
 
-      // if changing country, might want to open region choice
+      // if changing country, might want to open administrativearea choice
       if (nameRealField == 'country')
         return function(i) {
             if (i.extra[0] < 0) {
@@ -182,6 +202,7 @@
       $(".autocomplete[name='countryTxt']").change(function() { changeCountry(''); });
 
       changeCountry({/literal}'{$smarty.request.country}'{literal});
+      changeAdministrativeArea({/literal}'{$smarty.request.administrativearea}'{literal});
 
       $(".autocomplete[name='schoolTxt']").change(function() { changeSchool(''); });
 
@@ -354,10 +375,16 @@ function cleanForm(f) {
         <a href="country" class="autocompleteToSelect">{icon name="table" title="Tous les pays"}</a>
       </td>
     </tr>
-    <tr id="region_ln">
-      <td>Région ou département</td>
+    <tr id="administrativearea_list">
+      <td>Région, province, état&hellip;</td>
       <td>
-        <input name="region" type="hidden" size="32" value="{$smarty.request.region}"/>
+        <input name="administrativearea" type="hidden" size="32" value="{$smarty.request.administrativearea}" />
+      </td>
+    </tr>
+    <tr id="subadministrativearea_list">
+      <td>Département, comté&hellip;</td>
+      <td>
+        <input name="subadministrativearea" type="hidden" size="32" value="{$smarty.request.subadministrativearea}" />
       </td>
     </tr>
     <tr>
