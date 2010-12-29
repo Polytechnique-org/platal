@@ -514,6 +514,15 @@ function cleanForm(f) {
         </table>
       </td>
     </tr>
+        {if hasPerm('admin,edit_directory')}
+    <tr>
+      <td>Matricule AX</td>
+      <td>
+        <textarea name="schoolid_ax" rows="10" cols="12">{$smarty.request.schoolid_ax}</textarea>
+        <br />
+        <i>Entrer une liste de matricules AX (un par ligne)</i>
+      </td>
+        {/if}
         {if $smarty.session.auth ge AUTH_COOKIE}
     <tr>
       <td colspan="2">

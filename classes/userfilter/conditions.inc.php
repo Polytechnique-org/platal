@@ -430,7 +430,7 @@ class UFC_Promo extends UserFilterCondition
 // {{{ class UFC_SchoolId
 /** Filters users based on their shoold identifier
  * @param type Parameter type (Xorg, AX, School)
- * @param value School id value
+ * @param value Array of school ids
  */
 class UFC_SchoolId extends UserFilterCondition
 {
@@ -448,23 +448,30 @@ class UFC_SchoolId extends UserFilterCondition
         }
     }
 
-    public function __construct($type, $id)
+    /** Construct a UFC_SchoolId
+     * The first argument is the type, all following arguments can be either ids
+     * or arrays of ids to use:
+     * $ufc = new UFC_SchoolId(UFC_SchoolId::AX, $id1, $id2, array($id3, $id4));
+     */
+    public function __construct($type)
     {
         $this->type = $type;
-        $this->id   = $id;
+        $ids = func_get_args();
+        array_shift($ids);
+        $this->ids   = pl_flatten($ids);
         self::assertType($type);
     }
 
     public function buildCondition(PlFilter $uf)
     {
         $uf->requireProfiles();
-        $id = $this->id;
+        $ids = $this->ids;
         $type = $this->type;
         if ($type == self::School) {
             $type = self::Xorg;
-            $id   = Profile::getXorgId($id);
+            $ids  = array_map(array('Profile', 'getXorgId'), $ids);
         }
-        return XDB::format('p.' . $type . '_id = {?}', $id);
+        return XDB::format('p.' . $type . '_id IN {?}', $ids);
     }
 }
 // }}}

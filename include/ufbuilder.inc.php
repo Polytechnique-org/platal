@@ -166,6 +166,7 @@ class UFB_QuickSearch extends UserFilterBuilder
     {
         $fields = array(
             new UFBF_Quick('quick', 'Recherche rapide'),
+            new UFBF_NotRegistered('nonins', 'Non inscrits'),
         );
         parent::__construct($fields, $envprefix);
     }
@@ -175,7 +176,12 @@ class UFB_QuickSearch extends UserFilterBuilder
 // {{{ class UFB_AdvancedSearch
 class UFB_AdvancedSearch extends UserFilterBuilder
 {
-    public function __construct($envprefix = '')
+    /** Create a UFB_AdvancedSearch.
+     * @param $include_admin Whether to include 'admin-only' fields
+     * @param $include_ax Whether to include 'ax-only' fields
+     * @param $envprefix Optional prefix for form field names.
+     */
+    public function __construct($include_admin = false, $include_ax = false, $envprefix = '')
     {
         $fields = array(
             new UFBF_Name('name', 'Nom'),
@@ -210,6 +216,11 @@ class UFB_AdvancedSearch extends UserFilterBuilder
 
             new UFBF_Mentor('only_referent', 'Référent'),
         );
+
+        if ($include_admin || $include_ax) {
+            $fields[] = new UFBF_SchoolIds('schoolid_ax', 'Matricule AX', UFC_SchoolId::AX);
+        }
+
         parent::__construct($fields, $envprefix);
     }
 }
@@ -564,6 +575,48 @@ class UFBF_Quick extends UFB_Field
 }
 // }}}
 
+// {{{ class UFBF_SchoolIds
+class UFBF_SchoolIds extends UFB_Field
+{
+    // One of UFC_SchoolId types
+    protected $type;
+
+    public function __construct($envfield, $formtext, $type = UFC_SchoolId::AX)
+    {
+        parent::__construct($envfield, $formtext);
+        $this->type = $type;
+    }
+
+    protected function check(UserFilterBuilder &$ufb)
+    {
+        if ($ufb->blank($this->envfield)) {
+            $this->empty = true;
+            return true;
+        }
+
+        $value = $ufb->t($this->envfield);
+        $values = explode("\n", $value);
+        $ids = array();
+        foreach ($values as $val) {
+            if (preg_match('/^[0-9A-Z]{0,8}$/', $val)) {
+                $ids[] = $val;
+            }
+        }
+        if (count($ids) == 0) {
+            return $this->raise("Le champ %s ne contient aucune valeur valide.");
+        }
+
+        $this->val = $ids;
+        return true;
+    }
+
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_SchoolId($this->type, $this->val);
+    }
+}
+// }}}
+
 // {{{ class UFBF_Name
 class UFBF_Name extends UFBF_Text
 {
@@ -652,6 +705,22 @@ class UFBF_Sex extends UFBF_Enum
     protected function buildUFC(UserFilterBuilder &$ufb)
     {
         return new UFC_Sex(self::getVal($this->val));
+    }
+}
+// }}}
+
+// {{{ class UFBF_NotRegistered
+// Simple field for selecting only alive, not registered users (for quick search)
+class UFBF_NotRegistered extends UFBF_Bool
+{
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        if ($this->val) {
+            return new PFC_And(
+                new PFC_Not(new UFC_Dead()),
+                new PFC_Not(new UFC_Registered())
+            );
+        }
     }
 }
 // }}}

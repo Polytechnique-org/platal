@@ -119,7 +119,7 @@ class SearchModule extends PLModule
             $page->assign('formulaire', 0);
 
             require_once 'userset.inc.php';
-            $view = new SearchSet(true);
+            $view = new QuickSearchSet();
             $view->addMod('minifiche', 'Mini-fiches', true, array('with_score' => true, 'starts_with' => $byletter));
             if (S::logged() && !Env::i('nonins')) {
                 $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true, 'with_score' => true));
@@ -167,7 +167,10 @@ class SearchModule extends PLModule
             }
 
             require_once 'userset.inc.php';
-            $view = new SearchSet(false);
+            // Enable X.org fields for X.org admins, and AX fields for AX secretaries.
+            $view = new AdvancedSearchSet(S::admin(),
+                                          S::user()->checkPerms(User::PERM_EDIT_DIRECTORY));
+
             if (!$view->isValid()) {
                 $this->form_prepare();
                 $page->trigError('Recherche invalide.');
