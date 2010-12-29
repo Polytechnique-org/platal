@@ -39,19 +39,29 @@ abstract class Geocoder {
             'subAdministrativeArea' => 'geoloc_subadministrativeareas',
             'locality'              => 'geoloc_localities',
         );
+        static $extras = array(
+            'subAdministrativeArea' => array(
+                'field' => 'administrativearea',
+                'name'  => 'administrativeAreaName')
+            )
+        );
 
         $areaName = $area . 'Name';
         $areaNameLocal = $areaName . 'Local';
         $areaId = $area . 'Id';
         if (!is_null($address->$areaName) && isset($databases[$area])) {
+            $extra = (isset($extras[$area]) ? $extras[$area]['administrativeAreaName'] : false;
+
             $res = XDB::query('SELECT  id, nameLocal
                                  FROM  ' . $databases[$area] . '
                                 WHERE  name = {?}',
                               $address->$areaName);
             if ($res->numRows() == 0) {
-                XDB::execute('INSERT INTO  ' . $databases[$area] . ' (name, nameLocal, country)
-                                   VALUES  ({?}, {?}, {?})',
-                             $address->$areaName, $address->$areaNameLocal, $address->countryId);
+                XDB::execute('INSERT INTO  ' . $databases[$area] . ' (name, nameLocal, country' .
+                                           ($extra ? ', ' . $extras[$area]['field'] : '') . ')
+                                   VALUES  ({?}, {?}, {?}' . ($extra ? ', {?}' : '') . ')',
+                             $address->$areaName, $address->$areaNameLocal, $address->countryId,
+                             ($extra ? $address->$extra : null);
                 $address->$areaId = XDB::insertId();
             } else {
                 // XXX: remove this once all areas have both nameLocal and name.
