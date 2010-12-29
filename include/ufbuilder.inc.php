@@ -193,7 +193,8 @@ class UFB_AdvancedSearch extends UserFilterBuilder
 
             new UFBF_Town('city', 'Ville / Code Postal'),
             new UFBF_Country('countryTxt', 'country', 'Pays'),
-            new UFBF_AdminArea('region', 'Région'),
+            new UFBF_AdminArea('administrativearea', 'Région'),
+            new UFBF_SubAdminArea('subadministrativearea', 'Département'),
 
             new UFBF_JobCompany('entreprise', 'Entreprise'),
             new UFBF_JobDescription('jobdescription', 'Fonction'),
@@ -857,6 +858,32 @@ class UFBF_AdminArea extends UFBF_Index
         }
 
         return new UFC_AddressField($this->val, UFC_AddressField::FIELD_ADMAREA, UFC_Address::TYPE_ANY, $flags);
+    }
+}
+// }}}
+
+// {{{ class UFBF_SubAdminArea
+class UFBF_SubAdminArea extends UFBF_Index
+{
+    protected $direnum = DirEnum::SUBADMINAREAS;
+    protected $onlycurrentfield;
+
+    public function __construct($envfield, $formtext = '', $onlycurrentfield = 'only_current')
+    {
+        parent::__construct($envfield, $formtext);
+        $this->onlycurrentfield = $onlycurrentfield;
+    }
+
+
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        if ($ufb->isOn($this->onlycurrentfield)) {
+            $flags = UFC_Address::FLAG_CURRENT;
+        } else {
+            $flags = UFC_Address::FLAG_ANY;
+        }
+
+        return new UFC_AddressField($this->val, UFC_AddressField::FIELD_SUBADMAREA, UFC_Address::TYPE_ANY, $flags);
     }
 }
 // }}}

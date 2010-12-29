@@ -313,11 +313,19 @@ class SearchModule extends PLModule
           case 'nationalite':
             $ids = DirEnum::getOptionsIter(DirEnum::NATIONALITIES);
             break;
-          case 'region':
+          case 'administrativearea':
             if (Env::has('country')) {
                 $ids = DirEnum::getOptionsIter(DirEnum::ADMINAREAS, Env::v('country'));
             } else {
                 $ids = DirEnum::getOptionsIter(DirEnum::ADMINAREAS);
+            }
+            $page->assign('onchange', 'changeAdministrativeArea(this.value)');
+            break;
+          case 'subadministrativearea':
+            if (Env::has('administrativearea')) {
+                $ids = DirEnum::getOptionsIter(DirEnum::SUBADMINAREAS, Env::v('administrativearea'));
+            } else {
+                $ids = DirEnum::getOptionsIter(DirEnum::SUBADMINAREAS);
             }
             break;
           case 'school':

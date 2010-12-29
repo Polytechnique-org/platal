@@ -46,6 +46,7 @@ class DirEnum
     const NATIONALITIES  = 'nationalities';
     const COUNTRIES      = 'countries';
     const ADMINAREAS     = 'adminareas';
+    const SUBADMINAREAS  = 'subadminareas';
     const LOCALITIES     = 'localities';
 
     const COMPANIES      = 'companies';
@@ -596,6 +597,19 @@ class DE_AdminAreas extends DE_WithSuboption
     protected $from      = 'geoloc_administrativeareas';
 
     protected $ac_join   = 'INNER JOIN profile_addresses ON (profile_addresses.administrativeAreaId = geoloc_administrativeareas.id)';
+    protected $ac_unique = 'profile_addresses.pid';
+}
+// }}}
+
+// {{{ class DE_SubAdminAreas
+class DE_SubAdminAreas extends DE_WithSuboption
+{
+    protected $idfield   = 'geoloc_subadministrativeareas.id';
+    protected $optfield  = 'geoloc_subadministrativeareas.administrativearea';
+    protected $valfield  = 'geoloc_subadministrativeareas.name';
+    protected $from      = 'geoloc_subadministrativeareas';
+
+    protected $ac_join   = 'INNER JOIN profile_addresses ON (profile_addresses.subadministrativeAreaId = geoloc_subadministrativeareas.id)';
     protected $ac_unique = 'profile_addresses.pid';
 }
 // }}}
