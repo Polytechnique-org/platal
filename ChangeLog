@@ -1,6 +1,36 @@
 ================================================================================
 VERSION 1.0.2                                                         XX XX XXXX
 
+Bug/Wish:
+
+    * Admin:
+        - #1362: List last profile modifications for secretary             -JAC
+
+    * Core:
+        - #1355: Mode with propagation of the skinning mode                -FRU
+
+    * Profile:
+        - #1340: Allows secretaries and admin to fully edit profiles' name -JAC
+        - #1354: Do not notify death to a deceased user                    -JAC
+        - #1356: Indicates delivery issues on addresses                    -JAC
+        - #1360: Default profile publicity is now ax                       -JAC
+        - #1361: Allows secretaries to validate entreprises                -JAC
+        - #1363: Prevents deletion of private information by secretaries   -JAC
+        - #1364: Only admin can edit original corps                        -JAC
+        - #1367: Improves postal address formatting                        -JAC
+        - #1368: Allows admin profile edition even if birthdate is unknown -JAC
+        - #1369: Properly displays moderated jobs                          -JAC
+
+    * Register:
+        - #1374: Adapts registration for master and doctorate              -JAC
+
+    * Search:
+        - #1365: Outputs csv of postal addresses for advanced search       -JAC
+        - #1366: Adds 'by AX id' advanced search for admins                -Xel
+
+    * XnetEvent:
+        - #1373: Fixes acceptance of non member in xnet events.            -JAC
+
 ================================================================================
 VERSION 1.0.1                                                         26 10 2010
 
