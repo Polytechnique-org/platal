@@ -23,8 +23,6 @@
 {config_load file="mails.conf" section="inscription"}
 {if $mail_part eq 'head'}
 {from full=#from#}
-{to addr="$forlife@polytechnique.org"}
-{subject text="Bienvenue parmi les X sur le web !"}
 {elseif $mail_part eq 'text'}
 
 {$firstname}, félicitations pour ton inscription !

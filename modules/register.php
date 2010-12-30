@@ -52,7 +52,7 @@ class RegisterModule extends PLModule
             $nameTypes = DirEnum::getOptions(DirEnum::NAMETYPES);
             $nameTypes = array_flip($nameTypes);
             $res = XDB::query("SELECT  a.uid, pd.promo, pnl.name AS lastname, pnf.name AS firstname, p.xorg_id AS xorgid,
-                                       p.birthdate_ref AS birthdateRef, FIND_IN_SET('watch', a.flags) AS watch, m.hash
+                                       p.birthdate_ref AS birthdateRef, FIND_IN_SET('watch', a.flags) AS watch, m.hash, a.type as eduType
                                  FROM  register_marketing AS m
                            INNER JOIN  accounts           AS a   ON (m.uid = a.uid)
                            INNER JOIN  account_profiles   AS ap  ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
@@ -171,8 +171,13 @@ class RegisterModule extends PLModule
                     }
 
                     // Register the optional services requested by the user.
+                    if ($subState->v('eduType') == 'x') {
+                        $proposedServices = array('ax_letter', 'imap', 'ml_promo', 'nl');
+                    } else {
+                        $proposedServices = array('ax_letter', 'nl');
+                    }
                     $services = array();
-                    foreach (array('ax_letter', 'imap', 'ml_promo', 'nl') as $service) {
+                    foreach ($proposedServices as $service) {
                         if (Post::b($service)) {
                             $services[] = $service;
                         }
@@ -277,7 +282,7 @@ class RegisterModule extends PLModule
         $res = XDB::query("SELECT  r.uid, p.pid, r.forlife, r.bestalias, r.mailorg2,
                                    r.password, r.email, r.services, r.naissance,
                                    pnl.name AS lastname, pnf.name AS firstname,
-                                   pd.promo, p.sex, p.birthdate_ref
+                                   pd.promo, p.sex, p.birthdate_ref, a.type AS eduType
                              FROM  register_pending AS r
                        INNER JOIN  accounts         AS a   ON (r.uid = a.uid)
                        INNER JOIN  account_profiles AS ap  ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
@@ -303,7 +308,8 @@ class RegisterModule extends PLModule
         }
 
         list($uid, $pid, $forlife, $bestalias, $emailXorg2, $password, $email, $services,
-             $birthdate, $lastname, $firstname, $promo, $sex, $birthdate_ref) = $res->fetchOneRow();
+             $birthdate, $lastname, $firstname, $promo, $sex, $birthdate_ref, $eduType) = $res->fetchOneRow();
+        $isX = ($eduType == 'x');
         $yearpromo = substr($promo, 1, 4);
 
         // Prepare the template for display.
@@ -349,8 +355,14 @@ class RegisterModule extends PLModule
         // Add the registration email address as first and only redirection.
         require_once 'emails.inc.php';
         $user = User::getSilentWithUID($uid);
-        $redirect = new Redirect($user);
-        $redirect->add_email($email);
+        if ($isX) {
+            $redirect = new Redirect($user);
+            $redirect->add_email($email);
+        } else {
+            XDB::execute('UPDATE  accounts
+                             SET  email = {?}
+                           WHERE  uid = {?}', $email, $uid);
+        }
 
         // Try to start a session (so the user don't have to log in); we will use
         // the password available in Post:: to authenticate the user.
@@ -393,6 +405,13 @@ class RegisterModule extends PLModule
 
         // Congratulate our newly registered user by email.
         $mymail = new PlMailer('register/success.mail.tpl');
+        if ($isX) {
+            $mymail->addTo("\"{$user->fullName()}\" <{$user->forlifeEmail()}>");
+            $mymail->setSubject('Bienvenue parmi les X sur le web !');
+        } else {
+            $mymail->addTo($email);
+            $mymail->setSubject('Bienvenue sur Polytechnique.org !');
+        }
         $mymail->assign('forlife', $forlife);
         $mymail->assign('firstname', $firstname);
         $mymail->send();
