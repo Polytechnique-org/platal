@@ -52,7 +52,7 @@ class RegisterModule extends PLModule
             $nameTypes = DirEnum::getOptions(DirEnum::NAMETYPES);
             $nameTypes = array_flip($nameTypes);
             $res = XDB::query("SELECT  a.uid, pd.promo, pnl.name AS lastname, pnf.name AS firstname, p.xorg_id AS xorgid,
-                                       p.birthdate_ref AS birthdateRef, FIND_IN_SET('watch', a.flags) AS watch, m.hash, a.type as eduType
+                                       p.birthdate_ref AS birthdateRef, FIND_IN_SET('watch', a.flags) AS watch, m.hash
                                  FROM  register_marketing AS m
                            INNER JOIN  accounts           AS a   ON (m.uid = a.uid)
                            INNER JOIN  account_profiles   AS ap  ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
@@ -171,13 +171,8 @@ class RegisterModule extends PLModule
                     }
 
                     // Register the optional services requested by the user.
-                    if ($subState->v('eduType') == 'x') {
-                        $proposedServices = array('ax_letter', 'imap', 'ml_promo', 'nl');
-                    } else {
-                        $proposedServices = array('ax_letter', 'nl');
-                    }
                     $services = array();
-                    foreach ($proposedServices as $service) {
+                    foreach (array('ax_letter', 'imap', 'ml_promo', 'nl') as $service) {
                         if (Post::b($service)) {
                             $services[] = $service;
                         }
@@ -354,15 +349,8 @@ class RegisterModule extends PLModule
 
         // Add the registration email address as first and only redirection.
         require_once 'emails.inc.php';
-        $user = User::getSilentWithUID($uid);
-        if ($isX) {
-            $redirect = new Redirect($user);
-            $redirect->add_email($email);
-        } else {
-            XDB::execute('UPDATE  accounts
-                             SET  email = {?}
-                           WHERE  uid = {?}', $email, $uid);
-        }
+        $redirect = new Redirect($user);
+        $redirect->add_email($email);
 
         // Try to start a session (so the user don't have to log in); we will use
         // the password available in Post:: to authenticate the user.
@@ -405,11 +393,10 @@ class RegisterModule extends PLModule
 
         // Congratulate our newly registered user by email.
         $mymail = new PlMailer('register/success.mail.tpl');
+        $mymail->addTo("\"{$user->fullName()}\" <{$user->forlifeEmail()}>");
         if ($isX) {
-            $mymail->addTo("\"{$user->fullName()}\" <{$user->forlifeEmail()}>");
             $mymail->setSubject('Bienvenue parmi les X sur le web !');
         } else {
-            $mymail->addTo($email);
             $mymail->setSubject('Bienvenue sur Polytechnique.org !');
         }
         $mymail->assign('forlife', $forlife);
