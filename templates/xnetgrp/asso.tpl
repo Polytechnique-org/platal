@@ -82,7 +82,7 @@
   {if $asso->ax}
   <tr>
     <td class="titre center" colspan="2">
-      groupe agréé par l'AX
+      groupe agréé par l'AX {if $asso->axDate}le {$asso->axDate}{/if}
     </td>
   </tr>
   {/if}

@@ -37,6 +37,9 @@ class Group
         }
         $this->id = intval($this->data['id']);
         $this->shortname = $this->data['diminutif'];
+        if (!is_null($this->axDate)) {
+            $this->axDate = format_datetime($this->axDate, '%d/%m/%Y');
+        }
     }
 
     public function __get($name)

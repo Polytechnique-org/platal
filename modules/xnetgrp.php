@@ -184,11 +184,17 @@ class XnetGrpModule extends PLModule
                     $page->trigError('Ni le nom ni le diminutif du groupe ne peuvent être vide.');
                     return;
                 }
+                $axDate = make_datetime(Post::v('axDate'));
+                if (Post::t('axDate') != '') {
+                    $axDate = make_datetime(Post::v('axDate'))->format('Y-m-d');
+                } else {
+                    $axDate = null;
+                }
                 XDB::execute(
                     "UPDATE  groups
                         SET  nom={?}, diminutif={?}, cat={?}, dom={?},
                              descr={?}, site={?}, mail={?}, resp={?},
-                             forum={?}, mail_domain={?}, ax={?}, pub={?},
+                             forum={?}, mail_domain={?}, ax={?}, axDate = {?}, pub={?},
                              sub_url={?}, inscriptible={?}, unsub_url={?},
                              flags={?}
                       WHERE  id={?}",
@@ -197,7 +203,7 @@ class XnetGrpModule extends PLModule
                       Post::v('descr'), $site,
                       Post::v('mail'), Post::v('resp'),
                       Post::v('forum'), Post::v('mail_domain'),
-                      Post::has('ax'), Post::v('pub'),
+                      Post::has('ax'), $axDate, Post::v('pub'),
                       Post::v('sub_url'), Post::v('inscriptible'),
                       Post::v('unsub_url'), $flags, $globals->asso('id'));
                 if (Post::v('mail_domain')) {

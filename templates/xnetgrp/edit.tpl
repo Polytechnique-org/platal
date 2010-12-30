@@ -79,7 +79,8 @@
     <tr>
       <td class="titre center" colspan="2">
         <label><input type="checkbox" value="1" name="ax" {if $asso->ax}checked="checked"{/if} />
-        groupe agréé par l'AX</label>
+        groupe agréé par l'AX</label> le <input type="text" size="10" maxlength="10" value="{$asso->axDate}" name="axDate" />
+        <small>(ex: 01/01/1970)</small>
       </td>
     </tr>
   </table>
