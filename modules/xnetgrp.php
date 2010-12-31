@@ -919,11 +919,12 @@ class XnetGrpModule extends PLModule
             // Update group params for user
             $perms = Post::v('group_perms');
             $comm  = Post::t('comm');
-            if ($user->group_perms != $perms || $user->group_comm != $comm) {
+            $position = (Post::t('group_position') == '') ? null : Post::v('group_position');
+            if ($user->group_perms != $perms || $user->group_comm != $comm || $user->group_position != $position) {
                 XDB::query('UPDATE  group_members
-                               SET  perms = {?}, comm = {?}
+                               SET  perms = {?}, comm = {?}, position = {?}
                              WHERE  uid = {?} AND asso_id = {?}',
-                            ($perms == 'admin') ? 'admin' : 'membre', $comm,
+                            ($perms == 'admin') ? 'admin' : 'membre', $comm, $position,
                             $user->id(), $globals->asso('id'));
                 if (XDB::affectedRows()) {
                     if ($perms != $user->group_perms) {
@@ -992,9 +993,13 @@ class XnetGrpModule extends PLModule
             }
         }
 
+        $res = XDB::rawFetchAllAssoc('SHOW COLUMNS FROM group_members LIKE \'position\'');
+        $positions = str_replace(array('enum(', ')', '\''), '', $res[0]['Type']);
+
         $page->assign('user', $user);
         $page->assign('listes', $mmlist->get_lists($user->forlifeEmail()));
         $page->assign('alias', $user->emailAliases($globals->asso('mail_domain'), 'user', true));
+        $page->assign('positions', explode(',', $positions));
     }
 
     function handler_rss(&$page, $user = null, $hash = null)

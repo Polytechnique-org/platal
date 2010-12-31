@@ -76,6 +76,19 @@
         </select>
       </td>
     </tr>
+    <tr class="pair">
+      <td class="titre">
+        Poste&nbsp;:
+      </td>
+      <td>
+        <select name="group_position">
+          <option value=""{if $user->group_position eq ''} selected="selected"{/if}></option>
+          {foreach from=$positions item=position}
+          <option value="{$position}"{if $user->group_position eq $position} selected="selected"{/if}>{$position}</option>
+          {/foreach}
+        </select>
+      </td>
+    </tr>
     {if !$user->profile()}
     <tr class="impair">
       <td class="titre">

@@ -172,6 +172,7 @@ class User extends PlUser
             $joins .= XDB::format("LEFT JOIN group_members AS gpm ON (gpm.uid = a.uid AND gpm.asso_id = {?})\n", $globals->asso('id'));
             $fields[] = 'gpm.perms AS group_perms';
             $fields[] = 'gpm.comm AS group_comm';
+            $fields[] = 'gpm.position AS group_position';
         }
         if (count($fields) > 0) {
             $fields = ', ' . implode(', ', $fields);
