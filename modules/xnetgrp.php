@@ -933,6 +933,9 @@ class XnetGrpModule extends PLModule
                     if ($comm != $user->group_comm) {
                         $page->trigSuccess('Commentaire mis à jour.');
                     }
+                    if ($position != $user->group_position) {
+                        $page->trigSuccess('Poste mis à jour.');
+                    }
                 }
             }
 
