@@ -47,6 +47,19 @@
   </tr>
   {/if}
 
+  {if $asso->positions|count}
+  <tr>
+    <td class="titre">
+      Bureau&nbsp;:
+    </td>
+    <td>
+      {foreach from=$asso->positions item=position}
+      <em>&bull;&nbsp;{$position.position}&nbsp;:</em> {profile user=$position.uid promo=true}<br />
+      {/foreach}
+    </td>
+  </tr>
+  {/if}
+
   {if $asso->forum}
   <tr>
     <td class="titre">

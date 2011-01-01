@@ -126,7 +126,13 @@ class Group
             }
             return null;
         }
-        return new Group($res->fetchOneAssoc());
+        $data = $res->fetchOneAssoc();
+        $positions = XDB::fetchAllAssoc('SELECT  position, uid
+                                           FROM  group_members
+                                          WHERE  asso_id = {?} AND position IS NOT NULL
+                                       ORDER BY  position',
+                                        $data['id']);
+        return new Group(array_merge($data, array('positions' => $positions)));
     }
 }
 
