@@ -25,11 +25,11 @@ class EventsModule extends PLModule
     {
         return array(
             'events'         => $this->make_hook('ev',           AUTH_COOKIE),
-            'rss'            => $this->make_hook('rss',          AUTH_PUBLIC, 'user', NO_HTTPS),
             'events/preview' => $this->make_hook('preview',      AUTH_PUBLIC, 'user', NO_AUTH),
             'events/photo'   => $this->make_hook('photo',        AUTH_PUBLIC),
             'events/submit'  => $this->make_hook('ev_submit',    AUTH_MDP),
             'admin/events'   => $this->make_hook('admin_events', AUTH_MDP,    'admin'),
+            'rss'            => $this->make_token_hook('rss',    AUTH_COOKIE),
 
             'ajax/tips'      => $this->make_hook('tips',         AUTH_COOKIE, 'user', NO_AUTH),
             'admin/tips'     => $this->make_hook('admin_tips',   AUTH_MDP,    'admin'),
@@ -228,11 +228,11 @@ class EventsModule extends PLModule
         exit;
     }
 
-    function handler_rss(&$page, $user = null, $hash = null)
+    function handler_rss(PlPage& $page, PlPage& $user)
     {
         $this->load('feed.inc.php');
         $feed = new EventFeed();
-        return $feed->run($page, $user, $hash);
+        return $feed->run($page, $user);
     }
 
     function handler_preview(&$page)

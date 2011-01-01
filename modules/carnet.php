@@ -24,18 +24,18 @@ class CarnetModule extends PLModule
     function handlers()
     {
         return array(
-            'carnet'                => $this->make_hook('index',    AUTH_COOKIE, 'directory_private'),
-            'carnet/panel'          => $this->make_hook('panel',    AUTH_COOKIE, 'directory_private'),
-            'carnet/notifs'         => $this->make_hook('notifs',   AUTH_COOKIE, 'directory_private'),
+            'carnet'                => $this->make_hook('index',      AUTH_COOKIE, 'directory_private'),
+            'carnet/panel'          => $this->make_hook('panel',      AUTH_COOKIE, 'directory_private'),
+            'carnet/notifs'         => $this->make_hook('notifs',     AUTH_COOKIE, 'directory_private'),
 
-            'carnet/contacts'       => $this->make_hook('contacts', AUTH_COOKIE, 'directory_private'),
-            'carnet/contacts/pdf'   => $this->make_hook('pdf',      AUTH_COOKIE, 'directory_private'),
-            'carnet/contacts/vcard' => $this->make_hook('vcard',    AUTH_COOKIE, 'directory_private'),
-            'carnet/contacts/ical'  => $this->make_hook('ical',     AUTH_PUBLIC, 'directory_private', NO_HTTPS),
-            'carnet/contacts/csv'   => $this->make_hook('csv',     AUTH_PUBLIC,  'directory_private', NO_HTTPS),
-            'carnet/contacts/csv/birthday'  => $this->make_hook('csv_birthday',     AUTH_PUBLIC, 'directory_private', NO_HTTPS),
+            'carnet/contacts'       => $this->make_hook('contacts',   AUTH_COOKIE, 'directory_private'),
+            'carnet/contacts/pdf'   => $this->make_hook('pdf',        AUTH_COOKIE, 'directory_private'),
+            'carnet/contacts/vcard' => $this->make_hook('vcard',      AUTH_COOKIE, 'directory_private'),
+            'carnet/contacts/ical'  => $this->make_token_hook('ical', AUTH_COOKIE, 'directory_private'),
+            'carnet/contacts/csv'   => $this->make_token_hook('csv',  AUTH_COOKIE, 'directory_private'),
+            'carnet/contacts/csv/birthday' => $this->make_token_hook('csv_birthday', AUTH_COOKIE, 'directory_private'),
 
-            'carnet/rss'            => $this->make_hook('rss',      AUTH_PUBLIC, 'directory_private', NO_HTTPS),
+            'carnet/rss'            => $this->make_token_hook('rss',  AUTH_COOKIE, 'directory_private'),
         );
     }
 
@@ -358,11 +358,11 @@ class CarnetModule extends PLModule
         exit;
     }
 
-    function handler_rss(&$page, $user = null, $hash = null)
+    function handler_rss(PlPage& $page, PlUser& $user)
     {
         $this->load('feed.inc.php');
         $feed = new CarnetFeed();
-        return $feed->run($page, $user, $hash);
+        return $feed->run($page, $user);
     }
 
     function buildBirthRef(Profile $profile)
@@ -378,17 +378,8 @@ class CarnetModule extends PLModule
         );
     }
 
-    function handler_csv_birthday(&$page, $alias = null, $hash = null)
+    function handler_csv_birthday(PlPage& $page, PlUser& $user)
     {
-        $user = Platal::session()->tokenAuth($alias, $hash);
-        if (is_null($user)) {
-            if (S::logged()) {
-                $user = S::user();
-            } else {
-                return PL_FORBIDDEN;
-            }
-        }
-
         $page->changeTpl('carnet/calendar.outlook.tpl', NO_SKIN);
         $filter = new UserFilter(new UFC_Contact($user));
         $profiles = $filter->iterProfiles();
@@ -411,17 +402,8 @@ class CarnetModule extends PLModule
         pl_content_headers("text/comma-separated-values;charset=".$encoding);
     }
 
-    function handler_ical(&$page, $alias = null, $hash = null)
+    function handler_ical(PlPage& $page, PlUser& $user)
     {
-        $user = Platal::session()->tokenAuth($alias, $hash);
-        if (is_null($user)) {
-            if (S::logged()) {
-                $user = S::user();
-            } else {
-                return PL_FORBIDDEN;
-            }
-        }
-
         require_once 'ical.inc.php';
         $page->changeTpl('carnet/calendar.tpl', NO_SKIN);
         $page->register_function('display_ical', 'display_ical');
@@ -441,17 +423,8 @@ class CarnetModule extends PLModule
         $vcard->show();
     }
 
-    function handler_csv(&$page, $alias = null, $hash = null)
+    function handler_csv(PlPage& $page, PlUser& $user)
     {
-        $user = Platal::session()->tokenAuth($alias, $hash);
-        if (is_null($user)) {
-            if (S::logged()) {
-                $user = S::user();
-            } else {
-                return PL_FORBIDDEN;
-            }
-        }
-
         $page->changeTpl('carnet/mescontacts.outlook.tpl', NO_SKIN);
         $pf = new ProfileFilter(new UFC_Contact($user));
         require_once 'carnet/outlook.inc.php';

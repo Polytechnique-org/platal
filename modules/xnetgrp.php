@@ -48,7 +48,7 @@ class XnetGrpModule extends PLModule
             '%grp/member/new/ajax' => $this->make_hook('admin_member_new_ajax', AUTH_MDP,    'user', NO_AUTH),
             '%grp/member/del'      => $this->make_hook('admin_member_del',      AUTH_MDP,    'groupadmin'),
 
-            '%grp/rss'             => $this->make_hook('rss',                   AUTH_PUBLIC, 'user', NO_HTTPS),
+            '%grp/rss'             => $this->make_token_hook('rss',             AUTH_PUBLIC),
             '%grp/announce/new'    => $this->make_hook('edit_announce',         AUTH_MDP,    'groupadmin'),
             '%grp/announce/edit'   => $this->make_hook('edit_announce',         AUTH_MDP,    'groupadmin'),
             '%grp/announce/photo'  => $this->make_hook('photo_announce',        AUTH_PUBLIC),
@@ -1005,14 +1005,14 @@ class XnetGrpModule extends PLModule
         $page->assign('positions', explode(',', $positions));
     }
 
-    function handler_rss(&$page, $user = null, $hash = null)
+    function handler_rss(PlPage& $page, PlUser& $user)
     {
         global $globals;
         $page->assign('asso', $globals->asso());
 
         $this->load('feed.inc.php');
         $feed = new XnetGrpEventFeed();
-        return $feed->run($page, $user, $hash, false);
+        return $feed->run($page, $user, false);
     }
 
     private function upload_image(PlPage &$page, PlUpload &$upload)
