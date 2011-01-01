@@ -95,15 +95,10 @@ abstract class PlFeed implements PlIterator
         return $this->iterator->last();
     }
 
-    public function run(PlPage& $page, $login, $token, $require_auth = true, $type = 'rss2')
+    public function run(PlPage& $page, PlUser& $user, $require_auth = true, $type = 'rss2')
     {
-        $user = Platal::session()->tokenAuth($login, $token);
-        if (empty($user)) {
-            if ($require_auth) {
-                return PL_FORBIDDEN;
-            } else {
-                $user = null;
-            }
+        if (empty($user) && $require_auth) {
+            return PL_FORBIDDEN;
         }
 
         $page->assign('rss_hash', $token);

@@ -34,24 +34,48 @@ abstract class PLModule
     abstract public function handlers();
 
     /** Register a hook
-     * @param fun name of the handler (the exact name will be handler_$fun)
-     * @param auth authentification level of needed to run this handler
+     * @param fun name of the handler (the exact name will be handler_$fun); the
+     *   handler will be invoked with the PlPage object, and the unmatched path
+     *   components
+     * @param auth authentification level required to run this handler
      * @param perms permission required to run this handler
      * @param type additionnal flags
      *
      * Perms syntax is the following:
-     * perms = rights(,rights)*
-     * rights = right(:right)*
+     *   perms = rights(,rights)*
+     *   rights = right(:right)*
      * right is an atomic right permission (like 'admin', 'user', 'groupadmin', 'groupmember'...)
      *
-     * If type is set to NO_AUTH, the system will return 403 instead of asking auth data
-     * this is useful for Ajax handler
-     * If type is not set to NO_SKIN, the system will consider redirecting the user to https
+     * If type is set to NO_AUTH, the system will return 403 instead of asking
+     * auth data; this is useful for Ajax handler. If type is not set to
+     * NO_SKIN, the system will consider redirecting the user to https.
      */
     public function make_hook($fun, $auth, $perms = 'user', $type = DO_AUTH)
     {
-        return new PlStdHook(array($this, 'handler_' . $fun),
-                             $auth, $perms, $type);
+        return new PlStdHook(array($this, 'handler_' . $fun), $auth, $perms, $type);
+    }
+
+    /** Register a token-authentified hook (rss, csv, ical, ...)
+     * @param fun name of the handler (the exact name will be handler_$fun); the
+     *   handler will be invoked with the PlPage object, the PlUser of the
+     *   request, and the unmatched path components
+     * @param auth authentification level required, when not token-authentified
+     * @param perms permission required to run this handler
+     * @param type additionnal flags
+     *
+     * See {@link make_hook} above for details on permissions and additional
+     * flags. Note that DO_AUTH has no effect here, as the request will always
+     * be passively identified.
+     *
+     * This hook requires that the first two unmatched path components form a
+     * valid (user, token) pair; if not, a session-based authentification will
+     * be attempted, in which case $auth will be honored.
+     * Note that because token-based authentication is weak, it should only be
+     * used for readonly handlers normally served in AUTH_COOKIE.
+     */
+    public function make_token_hook($fun, $auth, $perms = 'user', $type = NO_HTTPS)
+    {
+        return new PlTokenHook(array($this, 'handler_' . $fun), $auth, $perms, $type);
     }
 
     /** Register a hook that points to a wiki page.

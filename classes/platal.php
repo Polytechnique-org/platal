@@ -38,18 +38,12 @@ abstract class PlHook
         $this->type  = $type;
     }
 
-    public function needAuth()
-    {
-        return $this->auth > S::i('auth', AUTH_PUBLIC);
-    }
-
     public function checkPerms()
     {
-        if (!$this->perms || $this->auth == AUTH_PUBLIC) { // No perms, no check
-            return true;
-        }
-        $s_perms = S::v('perms');
-        return $s_perms->hasFlagCombination($this->perms);
+        // Don't check permissions if there are no permission requirement
+        // (either no requested group membership, or public auth is allowed).
+        return !$this->perms || $this->auth == AUTH_PUBLIC ||
+            Platal::session()->checkPerms($this->perms);
     }
 
     public function hasType($type)
@@ -62,7 +56,7 @@ abstract class PlHook
     public function call(PlPage &$page, array $args)
     {
         global $globals, $session, $platal;
-        if ($this->needAuth()) {
+        if (!$session->checkAuth($this->auth)) {
             if ($this->hasType(DO_AUTH)) {
                 if (!$session->start($this->auth)) {
                     $platal->force_login($page);
@@ -81,14 +75,18 @@ abstract class PlHook
     }
 }
 
+/** The standard plat/al hook, for interactive requests.
+ * It optionally does active authentication (DO_AUTH). The handler is invoked
+ * with the PlPage object, and with each of the remaining path components.
+ */
 class PlStdHook extends PlHook
 {
-    private $hook;
+    private $callback;
 
     public function __construct($callback, $auth = AUTH_PUBLIC, $perms = 'user', $type = DO_AUTH)
     {
         parent::__construct($auth, $perms, $type);
-        $this->hook = $callback;
+        $this->callback = $callback;
     }
 
     protected function run(PlPage &$page, array $args)
@@ -96,17 +94,76 @@ class PlStdHook extends PlHook
         global $session, $platal;
 
         $args[0] = $page;
-        $val = call_user_func_array($this->hook, $args);
+        $val = call_user_func_array($this->callback, $args);
         if ($val == PL_DO_AUTH) {
             if (!$session->start($session->loggedLevel())) {
                 $platal->force_login($page);
             }
-            $val = call_user_func_array($this->hook, $args);
+            $val = call_user_func_array($this->callback, $args);
         }
         return $val;
     }
 }
 
+/** A specialized hook for token-based requests.
+ * It is intended for purely passive requests (typically for serving CSV or RSS
+ * content outside the browser), and can fallback to regular session-based
+ * authentication when the token is not valid/available.
+ *
+ * Note that $auth is only applied for session-backed authentication; it is
+ * assumed that token-based auth is always enough for the hook (otherwise, just
+ * use PlStdHook above).
+ *
+ * Also, this hook requires that the first two unmatched path components are the
+ * user and token (for instance /<matched path>/<user>/<token>/....). They will
+ * be popped before being passed to the handler, and replaced by the request's
+ * PlUser object.
+ */
+class PlTokenHook extends PlHook
+{
+    private $actualAuth;
+    private $callback;
+
+    public function __construct($callback, $auth = AUTH_PUBLIC, $perms = 'user', $type = NO_AUTH)
+    {
+        // As mentioned above, $auth is only applied for session-based auth
+        // (as opposed to token-based). PlHook is initialized to AUTH_PUBLIC to
+        // avoid it refusing to approve requests; this is important as the user
+        // is not yet authenticated at that point (see below for the actual
+        // permissions check).
+        parent::__construct(AUTH_PUBLIC, $perms, $type);
+        $this->actualAuth = $auth;
+        $this->callback = $callback;
+    }
+
+    protected function run(PlPage &$page, array $args)
+    {
+        // Retrieve the user, either from the session (less expensive, as it is
+        // already there), or from the in-path (user, token) pair.
+        if (S::logged() && Platal::session()->checkAuth($this->actualAuth)) {
+            $user = S::user();
+        } else {
+            $user = Platal::session()->tokenAuth(@$args[1], @$args[2]);
+        }
+
+        // Check the permissions, unless the handler is fully public.
+        if ($this->actualAuth > AUTH_PUBLIC) {
+            if (is_null($user) || !$user->checkPerms($this->perms)) {
+                return PL_FORBIDDEN;
+            }
+        }
+
+        // Replace the first three remaining elements of the path with the
+        // PlPage and PlUser objects.
+        array_shift($args);
+        $args[0] = $page;
+        $args[1] = $user;
+        return call_user_func_array($this->callback, $args);
+    }
+}
+
+/** A specialized plat/al hook for serving wiki pages.
+ */
 class PlWikiHook extends PlHook
 {
     public function __construct($auth = AUTH_PUBLIC, $perms = 'user', $type = DO_AUTH)

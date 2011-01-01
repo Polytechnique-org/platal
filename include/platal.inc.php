@@ -24,14 +24,24 @@ $TIME_BEGIN = microtime(true);
 require_once dirname(__FILE__) . '/version.inc.php';
 require_once dirname(__FILE__) . '/misc.inc.php';
 
-define('PERMS_EXT',   'ext');
+// Common basic permission flags.
 define('PERMS_USER',  'user');
 define('PERMS_ADMIN', 'admin');
 
-define('SKINNED', 0);
-define('SIMPLE',  1);
-define('NO_SKIN', 2);
+// Page style options, used when rendering pages. Options are exclusive.
+define('SKINNED', 0);  // Page is rendered with the normal skin.
+define('SIMPLE',  1);  // Page is rendered with a light skin (no leftnav).
+define('NO_SKIN', 2);  // Page content is passed as-is (use for csv, xml, ...).
 
+// Hook options bitmasks. Authentication options are mutually exclusive, but
+// others (NO_HTTPS at the moment) are not.
+//
+// With PlStdHook, NO_AUTH indicates that no session will be started, and that
+// the actual handler is responsible for doing authentication; DO_AUTH forces
+// the engine to try to authenticate the user, including redirecting to the
+// login page. Note that DO_AUTH is ignored if AUTH_PUBLIC is requested.
+//
+// Options NO_AUTH and DO_AUTH are ignored with PlTokenHook.
 define('NO_AUTH', 0);
 define('DO_AUTH', 1);
 define('NO_HTTPS', 2);
