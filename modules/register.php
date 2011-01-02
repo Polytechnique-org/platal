@@ -374,8 +374,13 @@ class RegisterModule extends PLModule
                         XDB::execute('INSERT IGNORE INTO  group_members (uid, asso_id)
                                                   VALUES  ({?}, {?})',
                                      $uid, $asso_id);
-                        $mmlist = new MMList($user);
-                        $mmlist->subscribe("promo" . $yearpromo);
+                        try {
+                            $mmlist = new MMList($user);
+                            $mmlist->subscribe("promo" . $yearpromo);
+                        } catch (Exception $e) {
+                            PlErrorReport::report($e);
+                            $page->trigError("L'inscription à la liste promo" . $yearpromo . " a échouée.");
+                        }
                     }
                     break;
                 case 'nl':
