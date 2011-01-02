@@ -416,7 +416,8 @@ def get_members(userdesc, perms, mlist):
     """
     infos = get_list_info(userdesc, perms, mlist)
     if infos is None:
-        return None
+        # Do not return None, this is not serializable
+        return 0
     details, members = infos
     members.sort()
     members = map(lambda member: (get_name(member), member), members)
