@@ -34,7 +34,8 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
                                LEFT(10, e.debut) AS start_day, LEFT(10, e.fin) AS last_day,
                                LEFT(NOW(), 10) AS now,
                                ei.titre, al.vid AS absent_list, pl.vid AS participant_list,
-                               pyl.vid AS payed_list, bl.vid AS booked_unpayed_list
+                               pyl.vid AS payed_list, bl.vid AS booked_unpayed_list,
+                               e.subscription_notification
                          FROM  group_events              AS e
                    INNER JOIN  group_event_items        AS ei ON (e.eid = ei.eid)
                     LEFT JOIN  group_event_participants AS ep ON(e.eid = ep.eid AND ei.item_id = ep.item_id)

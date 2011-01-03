@@ -123,6 +123,19 @@ function deadlineChange(box)
       </td>
     </tr>
     <tr>
+      <td class="titre">
+        Notifier lors d'une inscriptions&nbsp;:
+      </td>
+      <td>
+        <select name="subscription_notification">
+          <option value='creator' {if $evt.subscription_notification eq 'creator'}selected='selected'{/if}>le créateur de l'événement</option>
+          <option value='animator' {if $evt.subscription_notification eq 'animator'}selected='selected'{/if}>les animateurs du groupe</option>
+          <option value='both' {if $evt.subscription_notification eq 'both'}selected='selected'{/if}>le créateur de l'événement et les animateurs du groupe</option>
+          <option value='nobody' {if $evt.subscription_notification eq 'nobody'}selected='selected'{/if}>personne</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
       <td class='titre'>
         Options&nbsp;:
       </td>

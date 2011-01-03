@@ -268,18 +268,24 @@ class XnetEventsModule extends PLModule
             $page->trigSuccess('Ton inscription à l\'événement a été mise à jour avec succès.');
             subscribe_lists_event(S::i('uid'), $evt, ($total > 0 ? 1 : 0), 0);
 
-            $mailer = new PlMailer('xnetevents/subscription-notif.mail.tpl');
-            $admins = $globals->asso()->iterAdmins();
-            while ($admin = $admins->next()) {
-                $mailer->addTo($admin);
+            if ($evt['subscription_notification'] != 'nobody') {
+                $mailer = new PlMailer('xnetevents/subscription-notif.mail.tpl');
+                if ($evt['subscription_notification'] != 'creator') {
+                    $admins = $globals->asso()->iterAdmins();
+                    while ($admin = $admins->next()) {
+                        $mailer->addTo($admin);
+                    }
+                }
+                if ($evt['subscription_notification'] != 'animator') {
+                    $mailer->addTo($evt['organizer']);
+                }
+                $mailer->assign('group', $globals->asso('nom'));
+                $mailer->assign('event', $evt['intitule']);
+                $mailer->assign('subs', $subs);
+                $mailer->assign('moments', $evt['moments']);
+                $mailer->assign('name', S::user()->fullName('promo'));
+                $mailer->send();
             }
-            $mailer->addTo($evt['organizer']);
-            $mailer->assign('group', $globals->asso('nom'));
-            $mailer->assign('event', $evt['intitule']);
-            $mailer->assign('subs', $subs);
-            $mailer->assign('moments', $evt['moments']);
-            $mailer->assign('name', S::user()->fullName('promo'));
-            $mailer->send();
         }
         $page->assign('event', get_event_detail($eid));
     }
@@ -403,7 +409,7 @@ class XnetEventsModule extends PLModule
                 'short_name'       => $short_name,
             );
 
-            $trivial = array('intitule', 'descriptif', 'noinvite',
+            $trivial = array('intitule', 'descriptif', 'noinvite', 'subscription_notification',
                              'show_participants', 'accept_nonmembre', 'uid');
             foreach ($trivial as $k) {
                 $evt[$k] = Post::v($k);
@@ -424,18 +430,18 @@ class XnetEventsModule extends PLModule
             XDB::execute('INSERT INTO  group_events (eid, asso_id, uid, intitule, paiement_id,
                                                      descriptif, debut, fin, show_participants,
                                                      short_name, deadline_inscription, noinvite,
-                                                     accept_nonmembre)
-                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})
+                                                     accept_nonmembre, subscription_notification)
+                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})
               ON DUPLICATE KEY UPDATE  asso_id = VALUES(asso_id), uid = VALUES(uid), intitule = VALUES(intitule),
                                        paiement_id = VALUES(paiement_id), descriptif = VALUES(descriptif), debut = VALUES(debut),
                                        fin = VALUES(fin), show_participants = VALUES(show_participants), short_name = VALUES(short_name),
                                        deadline_inscription = VALUES(deadline_inscription), noinvite = VALUES(noinvite),
-                                       accept_nonmembre = VALUES(accept_nonmembre)',
+                                       accept_nonmembre = VALUES(accept_nonmembre), subscription_notification = VALUES(subscription_notification)',
                          $evt['eid'], $evt['asso_id'], $evt['uid'],
                          $evt['intitule'], $evt['paiement_id'], $evt['descriptif'],
                          $evt['debut'], $evt['fin'], $evt['show_participants'],
                          $evt['short_name'], $evt['deadline_inscription'],
-                         $evt['noinvite'], $evt['accept_nonmembre']);
+                         $evt['noinvite'], $evt['accept_nonmembre'], $evt['subscription_notification']);
 
             // if new event, get its id
             if (!$eid) {
@@ -498,7 +504,7 @@ class XnetEventsModule extends PLModule
             $res = XDB::query(
                     "SELECT  eid, intitule, descriptif, debut, fin, uid,
                              show_participants, paiement_id, short_name,
-                             deadline_inscription, noinvite, accept_nonmembre
+                             deadline_inscription, noinvite, accept_nonmembre, subscription_notification
                        FROM  group_events
                       WHERE eid = {?}", $eid);
             $evt = $res->fetchOneAssoc();
