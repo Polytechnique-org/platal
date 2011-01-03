@@ -267,6 +267,19 @@ class XnetEventsModule extends PLModule
         if ($updated !== false) {
             $page->trigSuccess('Ton inscription à l\'événement a été mise à jour avec succès.');
             subscribe_lists_event(S::i('uid'), $evt, ($total > 0 ? 1 : 0), 0);
+
+            $mailer = new PlMailer('xnetevents/subscription-notif.mail.tpl');
+            $admins = $globals->asso()->iterAdmins();
+            while ($admin = $admins->next()) {
+                $mailer->addTo($admin);
+            }
+            $mailer->addTo($evt['organizer']);
+            $mailer->assign('group', $globals->asso('nom'));
+            $mailer->assign('event', $evt['intitule']);
+            $mailer->assign('subs', $subs);
+            $mailer->assign('moments', $evt['moments']);
+            $mailer->assign('name', S::user()->fullName('promo'));
+            $mailer->send();
         }
         $page->assign('event', get_event_detail($eid));
     }
