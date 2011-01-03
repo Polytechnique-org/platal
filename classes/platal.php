@@ -19,11 +19,14 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-define('PL_DO_AUTH',   300);
-define('PL_FORBIDDEN', 403);
-define('PL_NOT_FOUND', 404);
-define('PL_WIKI',      500);
-define('PL_JSON',      501);
+// Return values for handlers and hooks. This defines the behavior of both the
+// plat/al engine, and the invidivual hooks.
+define('PL_DO_AUTH',     300);  // User should be redirected to the login page.
+define('PL_BAD_REQUEST', 400);  // Request is not valid, and could not be interpreted.
+define('PL_FORBIDDEN',   403);  // User is not allowed to view page (auth or permission error).
+define('PL_NOT_FOUND',   404);  // Page doesn't not exist. Engine will try to offer suggestions.
+define('PL_WIKI',        500);  // Page is a wiki page, plat/al engine should yield to the wiki engine.
+define('PL_JSON',        501);  // Page is valid, but result should be JSON-encoded, not HTML-encoded.
 
 abstract class PlHook
 {
@@ -421,6 +424,10 @@ abstract class Platal
             $page->assign('platal', $this);
             $res = $this->call_hook($page);
             switch ($res) {
+              case PL_BAD_REQUEST:
+                $this->mods['core']->handler_400($page);
+                break;
+
               case PL_FORBIDDEN:
                 $this->mods['core']->handler_403($page);
                 break;

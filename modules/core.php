@@ -24,6 +24,7 @@ class CoreModule extends PLModule
     function handlers()
     {
         return array(
+            '400'           => $this->make_hook('400',           AUTH_PUBLIC),
             '403'           => $this->make_hook('403',           AUTH_PUBLIC),
             '404'           => $this->make_hook('404',           AUTH_PUBLIC),
             'login'         => $this->make_hook('login',         AUTH_COOKIE),
@@ -51,17 +52,23 @@ class CoreModule extends PLModule
         exit;
     }
 
-    function handler_403($page)
+    function handler_400(PlPage& $page)
     {
-        global $globals;
-        header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
-        $page->trigError('Tu n\'as pas les permissions nécessaires pour accéder à cette page.');
-        $page->coreTpl('403.tpl');
+        header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
+        $page->coreTpl('40x.tpl');
+        $page->trigError('Ta requête est invalide.');
     }
 
-    function handler_404($page)
+    function handler_403(PlPage& $page)
     {
-        global $globals, $platal;
+        header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
+        $page->coreTpl('40x.tpl');
+        $page->trigError('Tu n\'as pas les permissions nécessaires pour accéder à cette page.');
+    }
+
+    function handler_404(PlPage& $page)
+    {
+        global $platal;
         header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
         $page->coreTpl('404.tpl');
         $page->assign('near', $platal->near_hook());
