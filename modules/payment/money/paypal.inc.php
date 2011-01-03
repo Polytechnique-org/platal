@@ -66,22 +66,26 @@ class PayPal
             'email'      => $user->bestEmail()
         );
 
-        $res = XDB::query("SELECT  pa.text, gl.name AS city, pa.postalCode AS zip, pa.countryId AS country,
-                                   IF(pp1.display_tel != '', pp1.display_tel, pp2.display_tel) AS night_phone_b
-                             FROM  profile_addresses AS pa
-                        LEFT JOIN  profile_phones    AS pp1 ON (pp1.pid = pa.pid AND pp1.link_type = 'address'
-                                                                AND pp1.link_id = pa.id)
-                        LEFT JOIN  profile_phones    AS pp2 ON (pp2.pid = pa.pid AND pp2.link_type = 'user'
-                                                                AND pp2.link_id = 0)
-                        LEFT JOIN  geoloc_localities AS gl  ON (gl.id = pa.localityId)
-                            WHERE  pa.pid = {?} AND FIND_IN_SET('current', pa.flags)
-                            LIMIT  1",
-                          $user->profile()->id());
-        $this->infos['client'] = array_map('replace_accent', array_merge($info_client, $res->fetchOneAssoc()));
-        list($this->infos['client']['address1'], $this->infos['client']['address2']) =
-            explode("\n", Geocoder::getFirstLines($this->infos['client']['text'],
-                                                  $this->infos['client']['zip'], 2));
-        unset($this->infos['client']['text']);
+        if ($user->hasProfile() {
+            $res = XDB::query("SELECT  pa.text, gl.name AS city, pa.postalCode AS zip, pa.countryId AS country,
+                                       IF(pp1.display_tel != '', pp1.display_tel, pp2.display_tel) AS night_phone_b
+                                 FROM  profile_addresses AS pa
+                            LEFT JOIN  profile_phones    AS pp1 ON (pp1.pid = pa.pid AND pp1.link_type = 'address'
+                                                                    AND pp1.link_id = pa.id)
+                            LEFT JOIN  profile_phones    AS pp2 ON (pp2.pid = pa.pid AND pp2.link_type = 'user'
+                                                                    AND pp2.link_id = 0)
+                            LEFT JOIN  geoloc_localities AS gl  ON (gl.id = pa.localityId)
+                                WHERE  pa.pid = {?} AND FIND_IN_SET('current', pa.flags)
+                                LIMIT  1",
+                              $user->profile()->id());
+            $this->infos['client'] = array_map('replace_accent', array_merge($info_client, $res->fetchOneAssoc()));
+            list($this->infos['client']['address1'], $this->infos['client']['address2']) =
+                explode("\n", Geocoder::getFirstLines($this->infos['client']['text'],
+                                                      $this->infos['client']['zip'], 2));
+            unset($this->infos['client']['text']);
+        } else {
+            $this->infos['client'] = replace_accent($info_client);
+        }
 
         // We build the transaction's reference
         $prefix = ($pay->flags->hasflag('unique')) ? str_pad("", 15, "0") : rand_url_id();
