@@ -83,14 +83,23 @@ abstract class Geocoder {
     // and the city name, within the limit of $limit number of lines.
     static public function getFirstLines($text, $postalCode, $limit)
     {
-        $textArray  = explode("\n", $text);
+        $text = str_replace("\r", '', $text);
+        $textArray = explode("\n", $text);
+        $linesNb = $limit;
+
         for ($i = 0; $i < count($textArray); ++$i) {
             if ($i > $limit || strpos($textArray[$i], $postalCode) !== false) {
-                $limit = $i;
+                $linesNb = $i;
                 break;
             }
         }
-        return implode("\n", array_slice($textArray, 0, $limit));
+        $firstLines = implode("\n", array_slice($textArray, 0, $linesNb));
+
+        // Adds empty lines to complete the $limit lines required.
+        for (; $i < $limit; ++$i) {
+            $firstLines .= "\n";
+        }
+        return $firstLines;
     }
 
     // Returns the number of non geocoded addresses for a user.
