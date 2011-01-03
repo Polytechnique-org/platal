@@ -150,7 +150,7 @@ class Company
 
     public function setPhone(Phone &$phone)
     {
-        if ($phone->linkType() == Phone::LINK_COMPANY && $phone->linkId() == $this->id) {
+        if ($phone->link_type == Phone::LINK_COMPANY && $phone->link_id == $this->id) {
             $this->phone = $phone;
         }
     }
@@ -223,7 +223,7 @@ class Job
 
     public function addPhone(Phone &$phone)
     {
-        if ($phone->linkType() == Phone::LINK_JOB && $phone->linkId() == $this->id && $phone->pid() == $this->pid) {
+        if ($phone->link_type == Phone::LINK_JOB && $phone->link_id == $this->id && $phone->pid == $this->pid) {
             $this->phones[$phone->uniqueId()] = $phone;
         }
     }
@@ -544,10 +544,10 @@ class ProfileAddresses extends ProfileField
         $p = $phones->get(Profile::PHONE_LINK_ADDRESS | Profile::PHONE_TYPE_ANY);
         foreach ($p as $phone) {
             /* We must iterate on the addresses because id is not uniq thus,
-             * $this->addresse[$phone->linkId()] is invalid.
+             * $this->addresse[$phone->link_id] is invalid.
              */
             foreach ($this->addresses as $address) {
-                if ($address->type == Address::LINK_PROFILE && $address->id == $phone->linkId()) {
+                if ($address->type == Address::LINK_PROFILE && $address->id == $phone->link_id) {
                     $address->addPhone($phone);
                 }
             }
@@ -634,8 +634,8 @@ class ProfileJobs extends ProfileField
     {
         $p = $phones->get(Profile::PHONE_LINK_JOB | Profile::PHONE_TYPE_ANY);
         foreach ($p as $phone) {
-            if ($phone->linkType() == Phone::LINK_JOB && array_key_exists($phone->linkId(), $this->jobs)) {
-                $this->jobs[$phone->linkId()]->addPhone($phone);
+            if ($phone->link_type == Phone::LINK_JOB && array_key_exists($phone->link_id, $this->jobs)) {
+                $this->jobs[$phone->link_id]->addPhone($phone);
             }
         }
     }
@@ -756,7 +756,7 @@ class CompanyList
         if (count($newcompanies)) {
             $it = Phone::iterate(array(), array(Phone::LINK_COMPANY), $newcompanies);
             while ($phone = $it->next()) {
-                self::$companies[$phone->linkId()]->setPhone($phone);
+                self::$companies[$phone->link_id]->setPhone($phone);
             }
         }
 

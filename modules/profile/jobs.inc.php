@@ -92,7 +92,7 @@ class ProfileSettingJob implements ProfileSetting
         }
         $it = Phone::iterate(array($page->pid()), array(Phone::LINK_JOB));
         while ($phone = $it->next()) {
-            $jobs[$phone->linkId()]['w_phone'][$phone->id()] = $phone->toFormArray();
+            $jobs[$phone->link_id]['w_phone'][$phone->id] = $phone->toFormArray();
         }
         $res = XDB::iterator("SELECT  e.jtid, e.full_name, j.jid
                                 FROM  profile_job_term_enum AS e

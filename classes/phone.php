@@ -59,17 +59,17 @@ class Phone
     /** The following fields, but $error, all correspond to the fields of the
      * database table profile_phones.
      */
-    private $id = 0;
-    private $pid = 0;
-    private $search = '';
-    private $link_type = 'user';
-    private $link_id = 0;
+    public $id = 0;
+    public $pid = 0;
+    public $search = '';
+    public $link_type = 'user';
+    public $link_id = 0;
     // The following fields are the fields of the form in the profile edition.
-    private $type = 'fixed';
+    public $type = 'fixed';
     public $display = '';
     public $pub = 'ax';
     public $comment = '';
-    private $error = false;
+    public $error = false;
 
     public function __construct(array $data = array())
     {
@@ -78,31 +78,6 @@ class Phone
                 $this->$key = $val;
             }
         }
-    }
-
-    public function linkType()
-    {
-        return $this->link_type;
-    }
-
-    public function linkId()
-    {
-        return $this->link_id;
-    }
-
-    public function id()
-    {
-        return $this->id;
-    }
-
-    public function pid()
-    {
-        return $this->pid;
-    }
-
-    public function search()
-    {
-        return $this->search;
     }
 
     public function setId($id)

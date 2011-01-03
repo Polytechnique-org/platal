@@ -366,7 +366,7 @@ class Address
 
     public function addPhone(Phone &$phone)
     {
-        if ($phone->linkType() == Phone::LINK_ADDRESS && $phone->pid() == $this->pid) {
+        if ($phone->link_type == Phone::LINK_ADDRESS && $phone->pid == $this->pid) {
             $this->phones[$phone->uniqueId()] = $phone;
         }
     }
@@ -897,7 +897,7 @@ class AddressIterator implements PlIterator
         // Adds phones to addresses.
         $it = Phone::iterate(array($data['pid']), array(Phone::LINK_ADDRESS), array($data['id']));
         while ($phone = $it->next()) {
-            $data['phones'][$phone->id()] = $phone->toFormArray();
+            $data['phones'][$phone->id] = $phone->toFormArray();
         }
         return new Address($data);
     }
