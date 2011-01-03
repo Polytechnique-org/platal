@@ -159,6 +159,23 @@ abstract class PlSession
      */
     abstract protected function startSessionAs($user, $level);
 
+    /** Authenticate the request for the given (method, payload) pair.
+     *
+     * Implementations are expected to provide strong authentication. It is
+     * suggested to use an HMAC-based scheme, where the signature validates the
+     * method, url, and payload (to avoid replay of the signature against other
+     * methods), and the timestamp (to avoid replay in time).
+     *
+     * @param method method of the request (GET, POST, PUT, DELETE)
+     * @param resource URL path of the resource (eg. "/api/user")
+     * @param payload binary payload sent with the request (before decoding)
+     * @return a valid PlUser object if authentication is successfull, or null.
+     */
+    public function apiAuth($method, $resource, $payload)
+    {
+        return null;  // Default implementation does nothing
+    }
+
     /** Check authentication with the given token.
      *
      * Token authentication is a light-weight authentication based on a user-specific token.

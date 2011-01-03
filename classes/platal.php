@@ -108,6 +108,86 @@ class PlStdHook extends PlHook
     }
 }
 
+/** A specialized hook for API requests.
+ * It is intended to be used for passive API requests, authenticated either by
+ * an existing session (with a valid XSRF token), or by an alternative single
+ * request auth mechanism implemented by PlSession::apiAuth.
+ *
+ * This hook is suitable for read-write requests against the website, provided
+ * $auth is set appropriately. Note that the auth level is only checked for
+ * session-authenticated users, as "apiAuth" users are assumed to always have
+ * the requested level (use another hook otherwise).
+ *
+ * The callback will be passed as arguments the PlPage, the authenticated
+ * PlUser, the JSON decoded payload, and the remaining path components, as with
+ * any other hook.
+ *
+ * If the callback intends to JSON-encode its returned value, it is advised to
+ * use PlPage::jsonAssign, and return PL_JSON to enable automatic encoding.
+ */
+class PlApiHook extends PlHook
+{
+    private $actualAuth;
+    private $callback;
+
+    public function __construct($callback, $auth = AUTH_PUBLIC, $perms = 'user', $type = NO_AUTH)
+    {
+        // As mentioned above, $auth is only applied for session-based auth
+        // (as opposed to token-based). PlHook is initialized to AUTH_PUBLIC to
+        // avoid it refusing to approve requests; this is important as the user
+        // is not yet authenticated at that point (see below for the actual
+        // permissions check).
+        parent::__construct(AUTH_PUBLIC, $perms, $type);
+        $this->actualAuth = $auth;
+        $this->callback = $callback;
+    }
+
+    private function getEncodedPayload($method)
+    {
+        return $method == "GET" ? "" : file_get_contents("php://input");
+    }
+
+    private function decodePayload($encodedPayload)
+    {
+        return empty($encodedPayload) ? array() : json_decode($encodedPayload, true);
+    }
+
+    protected function run(PlPage &$page, array $args)
+    {
+        $method = $_SERVER['REQUEST_METHOD'];
+        $encodedPayload = $this->getEncodedPayload($method);
+        $jsonPayload = $this->decodePayload($encodedPayload);
+        $resource = '/' . implode('/', $args);
+
+        // If the payload wasn't a valid JSON encoded object, bail out early.
+        if (is_null($jsonPayload)) {
+            $page->trigError("Could not decode the JSON-encoded payload sent with the request.");
+            return PL_BAD_REQUEST;
+        }
+
+        // Authenticate the request. Try first with the existing session (which
+        // is less expensive to check), by veryfing that the XSRF token is
+        // valid; otherwise fallbacks to API-type authentication from PlSession.
+        if (S::logged() && S::has_xsrf_token() && Platal::session()->checkAuth($this->actualAuth)) {
+            $user = S::user();
+        } else {
+            $user = Platal::session()->apiAuth($method, $resource, $encodedPayload);
+        }
+
+        // Check the permissions, unless the handler is fully public.
+        if ($this->actualAuth > AUTH_PUBLIC) {
+            if (is_null($user) || !$user->checkPerms($this->perms)) {
+                return PL_FORBIDDEN;
+            }
+        }
+
+        // Invoke the callback, whose signature is (PlPage, PlUser, jsonPayload).
+        array_shift($args);
+        array_unshift($args, $page, $user, $jsonPayload);
+        return call_user_func_array($this->callback, $args);
+    }
+}
+
 /** A specialized hook for token-based requests.
  * It is intended for purely passive requests (typically for serving CSV or RSS
  * content outside the browser), and can fallback to regular session-based
@@ -129,11 +209,7 @@ class PlTokenHook extends PlHook
 
     public function __construct($callback, $auth = AUTH_PUBLIC, $perms = 'user', $type = NO_AUTH)
     {
-        // As mentioned above, $auth is only applied for session-based auth
-        // (as opposed to token-based). PlHook is initialized to AUTH_PUBLIC to
-        // avoid it refusing to approve requests; this is important as the user
-        // is not yet authenticated at that point (see below for the actual
-        // permissions check).
+        // See PlApiHook::__construct.
         parent::__construct(AUTH_PUBLIC, $perms, $type);
         $this->actualAuth = $auth;
         $this->callback = $callback;

@@ -55,6 +55,29 @@ abstract class PLModule
         return new PlStdHook(array($this, 'handler_' . $fun), $auth, $perms, $type);
     }
 
+    /** Register an API hook.
+     * @param fun name of the handler (the exact name will be handler_$fun); the
+     *   handler will be invoked with a PlPage, the authenticated PlUser, the
+     *   JSON-decoded payload (if any), and the unmatched path components
+     * @param auth authentification level required, when not API-authenticated
+     * @param perms permission required to run this handler
+     * @param type additionnal flags (only NO_HTTPS is supported at the moment)
+     *
+     * See {@link make_hook} above for details on permissions.
+     *
+     * WARNING: It is expected that the API authentication mechanism will not be
+     * protected against short-term replay of requests (for instance replay of a
+     * given request within 5-10 seconds).
+     *
+     * You are explicitly advised to make any API request idempotent (eg. use
+     * "DELETE /api/email/foo@example.com" instead of "DELETE /api/email/0" to
+     * delete the first email in a list).
+     */
+    public function make_api_hook($fun, $auth, $perms = 'user', $type = NO_AUTH)
+    {
+        return new PlApiHook(array($this, 'handler_' . $fun), $auth, $perms, $type);
+    }
+
     /** Register a token-authentified hook (rss, csv, ical, ...)
      * @param fun name of the handler (the exact name will be handler_$fun); the
      *   handler will be invoked with the PlPage object, the PlUser of the
