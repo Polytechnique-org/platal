@@ -180,6 +180,7 @@ class PaymentModule extends PLModule
         $page->assign('meth', $meth);
         $page->assign('pay',  $pay);
         $page->assign('evtlink', $pay->event());
+        $page->assign('sex', S::user()->isFemale());
     }
 
     function handler_cyber_return(&$page, $uid = null)

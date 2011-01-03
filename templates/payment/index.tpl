@@ -39,7 +39,7 @@
   </tr>
 {if $comment}
   <tr>
-    <td><b>Commentaire</b>
+    <td><b>Commentaire</b></td>
     <td>{$comment}</td>
   </tr>
 {/if}
@@ -72,7 +72,7 @@
   </tr>
 </table>
 <p>
-En cliquant sur "Valider", tu seras redirigé{if $smarty.session.sexe}e{/if} vers le site de {$pay->api->nomsite}, où il te
+En cliquant sur "Valider", tu seras redirigé{if $sex}e{/if} vers le site de {$pay->api->nomsite}, où il te
 sera demandé de saisir ton numéro de carte bancaire.  Lorsque le paiement aura été effectué, tu
 recevras une confirmation par email.
 </p>
