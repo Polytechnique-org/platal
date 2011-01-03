@@ -19,38 +19,34 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class Xorg extends Platal
+class ApiModule extends PlModule
 {
-    public function __construct()
+    function handlers()
     {
-        parent::__construct('auth', 'carnet', 'email', 'events', 'forums',
-                            'lists', 'marketing', 'payment', 'platal',
-                            'profile', 'register', 'search', 'stats', 'admin',
-                            'newsletter', 'axletter', 'bandeau', 'survey',
-                            'fusionax', 'gadgets', 'googleapps', 'poison',
-                            'openid', 'reminder', 'api');
+        return array(
+            // TODO(vzanotti): Extend the plat/al engine to support placeholders
+            // in handler urls, for instance "api/1/user/%forlife/isRegistered".
+            'api/1/user' => $this->make_api_hook('user', AUTH_COOKIE, 'api_user_readonly'),
+        );
     }
 
-    public function find_hook()
+    // This handler supports the following URL patterns:
+    //   /api/1/user/{forlife}/isRegistered
+    function handler_user(PlPage& $page, PlUser& $authUser, $payload, $user = null, $selector = null)
     {
-        if ($this->path{0} >= 'A' && $this->path{0} <= 'Z') {
-            return self::wiki_hook();
+        // Retrieve the PlUser referenced in the request. Note that this is the
+        // target user, not the authenticated user.
+        $user = PlUser::getSilent($user);
+        if (empty($user)) {
+            return PL_NOT_FOUND;
         }
-        return parent::find_hook();
-    }
 
-    public function force_login(PlPage &$page)
-    {
-        header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
-        if (S::logged()) {
-            $page->changeTpl('core/password_prompt_logged.tpl');
-            $page->addJsLink('do_challenge_response_logged.js');
+        if ($selector == 'isRegistered') {
+            $page->jsonAssign('isRegistered', $user->isActive());
+            return PL_JSON;
         } else {
-            $page->changeTpl('core/password_prompt.tpl');
-            $page->addJsLink('do_challenge_response.js');
+            return PL_NOT_FOUND;
         }
-        $page->assign_by_ref('platal', $this);
-        $page->run();
     }
 }
 
