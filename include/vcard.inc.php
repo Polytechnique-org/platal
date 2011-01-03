@@ -159,8 +159,7 @@ class VCard extends PlVCard
             $entry->set('X-BINETS', join(', ', $bns));
         }
         if (!empty($pf->section)) {
-            $sections = DirEnum::getOptions(DirEnum::SECTIONS);
-            $entry->set('X-SECTION', $sections[$pf->section]);
+            $entry->set('X-SECTION', $pf->section);
         }
 
         // Photo
