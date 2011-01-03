@@ -170,6 +170,16 @@
     </tr>
 
     <tr>
+      <td class="titre">
+        Message de bienvenue&nbsp;:<br />
+        <em>envoyé à l'inscription</em>
+      </td>
+      <td>
+        <textarea cols='40' rows='8' name='welcome_msg'>{$asso->welcome_msg}</textarea>
+      </td>
+    </tr>
+
+    <tr>
       <td class="titre center" colspan="2">
         Diffusion de la liste des membres&nbsp;:
         <select name="pub">

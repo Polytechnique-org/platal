@@ -196,7 +196,7 @@ class XnetGrpModule extends PLModule
                              descr={?}, site={?}, mail={?}, resp={?},
                              forum={?}, mail_domain={?}, ax={?}, axDate = {?}, pub={?},
                              sub_url={?}, inscriptible={?}, unsub_url={?},
-                             flags={?}
+                             flags = {?}, welcome_msg = {?}
                       WHERE  id={?}",
                       Post::v('nom'), Post::v('diminutif'),
                       Post::v('cat'), (Post::i('dom') == 0) ? null : Post::i('dom'),
@@ -205,7 +205,8 @@ class XnetGrpModule extends PLModule
                       Post::v('forum'), Post::v('mail_domain'),
                       Post::has('ax'), $axDate, Post::v('pub'),
                       Post::v('sub_url'), Post::v('inscriptible'),
-                      Post::v('unsub_url'), $flags, $globals->asso('id'));
+                      Post::v('unsub_url'), $flags, Post::t('welcome_msg'),
+                      $globals->asso('id'));
                 if (Post::v('mail_domain')) {
                     XDB::execute('INSERT IGNORE INTO virtual_domains (domain) VALUES({?})',
                                            Post::v('mail_domain'));
@@ -215,13 +216,14 @@ class XnetGrpModule extends PLModule
                     "UPDATE  groups
                         SET  descr={?}, site={?}, mail={?}, resp={?},
                              forum={?}, pub= {?}, sub_url={?},
-                             unsub_url={?},flags={?}
+                             unsub_url = {?}, flags = {?}, welcome_msg = {?}
                       WHERE  id={?}",
                       Post::v('descr'), $site,
                       Post::v('mail'), Post::v('resp'),
                       Post::v('forum'), Post::v('pub'),
                       Post::v('sub_url'), Post::v('unsub_url'),
-                      $flags, $globals->asso('id'));
+                      $flags, Post::t('welcome_msg'),
+                      $globals->asso('id'));
             }
 
 
@@ -407,6 +409,7 @@ class XnetGrpModule extends PLModule
                      . "\n"
                      . "  Suite à ta demande d'adhésion à " . $globals->asso('nom')
                      . ", j'ai le plaisir de t'annoncer que ton inscription a été validée !\n"
+                     . (is_null($globals->asso('welcome_msg')) ? '' : "\n" . $globals->asso('welcome_msg') . "\n")
                      . "\n"
                      . "Bien cordialement,\n"
                      . "-- \n"
