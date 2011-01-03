@@ -258,6 +258,54 @@ class XorgSession extends PlSession
         }
     }
 
+    /**
+     * The authentication schema is based on three query parameters:
+     *   ?user=<hruid>&timestamp=<timestamp>&sig=<sig>
+     * where:
+     *   - hruid is the hruid of the querying user
+     *   - timestamp is the current UNIX timestamp, which has to be within a
+     *     given distance of the server-side UNIX timestamp
+     *   - sig is the HMAC of "<method>#<resource>#<payload>#<timestamp>" using
+     *     a known secret of the user as the key.
+     *
+     * At the moment, the shared secret of the user is the sha1 hash of its
+     * password. This is temporary, though, until better support for tokens is
+     * implemented in plat/al.
+     * TODO(vzanotti): Switch to dedicated secrets for authentication.
+     */
+    public function apiAuth($method, $resource, $payload)
+    {
+        // Verify that the timestamp is within acceptable bounds.
+        $timestamp = Env::i('timestamp', 0);
+        if (abs($timestamp - time()) > Platal::globals()->api->timestamp_tolerance) {
+            return null;
+        }
+
+        // Retrieve the user corresponding to the forlife. Note that at the
+        // moment, other aliases are also accepted.
+        $user = User::getSilent(Env::s('user', ''));
+        if (is_null($user) || !$user->isActive()) {
+            return null;
+        }
+
+        // Determine the list of tokens associated with the user. At the moment,
+        // this is just the sha1 of the password.
+        $tokens = array($user->password());
+
+        // For each token, try to validate the signature.
+        $message = implode('#', array($method, $resource, $payload, $timestamp));
+        $signature = Env::s('sig');
+        foreach ($tokens as $token) {
+            $expected_signature = hash_hmac(
+                Platal::globals()->api->hmac_algo, $message, $token);
+            if ($signature == $expected_signature) {
+                return $user;
+            }
+        }
+
+        return null;
+    }
+
     public function tokenAuth($login, $token)
     {
         $res = XDB::query('SELECT  a.uid, a.hruid
