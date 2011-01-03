@@ -137,7 +137,7 @@ class VCard extends PlVCard
 
         // Custom fields
         if (!is_null($user)) {
-            $groups = $user->groups();
+            $groups = $user->groups(true, true);
             if (count($groups)) {
                 $gn = DirEnum::getOptions(DirEnum::GROUPESX);
                 $gns = array();
