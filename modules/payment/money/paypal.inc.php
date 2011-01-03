@@ -44,29 +44,26 @@ class PayPal
 
         $this->urlform = 'https://' . $globals->money->paypal_site . '/cgi-bin/webscr';
         $user = S::user();
-        $name = $user->lastName();
 
         $roboturl = str_replace("https://","http://",$globals->baseurl)
                   . '/' . $platal->ns . "payment/paypal_return/" . S::v('uid')
                   . "?comment=" . urlencode(Env::v('comment'));
 
-        $this->infos = array();
-
-        $this->infos['commercant'] = array(
-            'business'    => $globals->money->paypal_compte,
-            'rm'          => 2,
-            'return'      => $roboturl,
-            'cn'          => 'Commentaires',
-            'no_shipping' => 1,
-            'cbt'         => empty($GLOBALS['IS_XNET_SITE']) ?
-            'Revenir sur polytechnique.org.' :
-            'Revenir sur polytechnique.net.'
+        $this->infos = array(
+            'commercant' => array(
+                'business'    => $globals->money->paypal_compte,
+                'rm'          => 2,
+                'return'      => $roboturl,
+                'cn'          => 'Commentaires',
+                'no_shipping' => 1,
+                'cbt'         => empty($GLOBALS['IS_XNET_SITE']) ?  'Revenir sur polytechnique.org.' : 'Revenir sur polytechnique.net.'
+            )
         );
 
         $info_client = array(
-            'first_name' => S::v('prenom'),
-            'last_name'  => $name,
-            'email'      => S::user()->bestEmail()
+            'first_name' => $user->firstName(),
+            'last_name'  => $user->lastName(),
+            'email'      => $user->bestEmail()
         );
 
         $res = XDB::query("SELECT  pa.text, gl.name AS city, pa.postalCode AS zip, pa.countryId AS country,
@@ -79,7 +76,7 @@ class PayPal
                         LEFT JOIN  geoloc_localities AS gl  ON (gl.id = pa.localityId)
                             WHERE  pa.pid = {?} AND FIND_IN_SET('current', pa.flags)
                             LIMIT  1",
-                          S::i('pid'));
+                          $user->profile()->id());
         $this->infos['client'] = array_map('replace_accent', array_merge($info_client, $res->fetchOneAssoc()));
         list($this->infos['client']['address1'], $this->infos['client']['address2']) =
             explode("\n", Geocoder::getFirstLines($this->infos['client']['text'],

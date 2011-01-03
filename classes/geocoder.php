@@ -42,7 +42,7 @@ abstract class Geocoder {
         static $extras = array(
             'subAdministrativeArea' => array(
                 'field' => 'administrativearea',
-                'name'  => 'administrativeAreaName')
+                'name'  => 'administrativeAreaName'
             )
         );
 
@@ -50,7 +50,7 @@ abstract class Geocoder {
         $areaNameLocal = $areaName . 'Local';
         $areaId = $area . 'Id';
         if (!is_null($address->$areaName) && isset($databases[$area])) {
-            $extra = (isset($extras[$area]) ? $extras[$area]['administrativeAreaName'] : false;
+            $extra = (isset($extras[$area]) ? $extras[$area]['administrativeAreaName'] : false);
 
             $res = XDB::query('SELECT  id, nameLocal
                                  FROM  ' . $databases[$area] . '
@@ -61,7 +61,7 @@ abstract class Geocoder {
                                            ($extra ? ', ' . $extras[$area]['field'] : '') . ')
                                    VALUES  ({?}, {?}, {?}' . ($extra ? ', {?}' : '') . ')',
                              $address->$areaName, $address->$areaNameLocal, $address->countryId,
-                             ($extra ? $address->$extra : null);
+                             ($extra ? $address->$extra : null));
                 $address->$areaId = XDB::insertId();
             } else {
                 // XXX: remove this once all areas have both nameLocal and name.
@@ -83,14 +83,23 @@ abstract class Geocoder {
     // and the city name, within the limit of $limit number of lines.
     static public function getFirstLines($text, $postalCode, $limit)
     {
-        $textArray  = explode("\n", $text);
+        $text = str_replace("\r", '', $text);
+        $textArray = explode("\n", $text);
+        $linesNb = $limit;
+
         for ($i = 0; $i < count($textArray); ++$i) {
-            if ($i > $limit || strpos($textLine, $postalCode) !== false) {
-                $limit = $i;
+            if ($i > $limit || strpos($textArray[$i], $postalCode) !== false) {
+                $linesNb = $i;
                 break;
             }
         }
-        return implode("\n", array_slice($textArray, 0, $limit));
+        $firstLines = implode("\n", array_slice($textArray, 0, $linesNb));
+
+        // Adds empty lines to complete the $limit lines required.
+        for (; $i < $limit; ++$i) {
+            $firstLines .= "\n";
+        }
+        return $firstLines;
     }
 
     // Returns the number of non geocoded addresses for a user.

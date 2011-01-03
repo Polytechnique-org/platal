@@ -12,6 +12,9 @@ Bug/Wish:
     * Core:
         - #1355: Mode with propagation of the skinning mode                -FRU
 
+    * Payments:
+        - #1318: Fixes PHP errors in PayPal payments                       -JAC
+
     * Profile:
         - #1340: Allows secretaries and admin to fully edit profiles' name -JAC
         - #1354: Do not notify death to a deceased user                    -JAC
