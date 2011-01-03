@@ -53,7 +53,7 @@ class BPLCCyberPlus
         $this->val = 100 * strtr(sprintf("%.02f", (float)$val), '.', ',');
     }
 
-	// }}}
+    // }}}
     // {{{ function form()
 
     function prepareform(&$pay)
@@ -65,9 +65,9 @@ class BPLCCyberPlus
         $prefix = ($pay->flags->hasflag('unique')) ? str_pad("",15,"0") : rand_url_id();
         $fullref = substr("$prefix-{$pay->id}",-12); // FIXME : check for duplicates
         $ts = time();
-		$trans_date = date("YmdHis", $ts);
-		$trans_id = date("His", $ts); // FIXME : check for duplicates
-               			   			
+        $trans_date = date("YmdHis", $ts);
+        $trans_id = date("His", $ts); // FIXME : check for duplicates
+
         // contenu du formulaire
         $this->urlform = "https://systempay.cyberpluspaiement.com/vads-payment/";
         $this->infos['commercant'] = Array(
@@ -81,8 +81,8 @@ class BPLCCyberPlus
         $this->infos['commande'] = Array(
             'vads_amount' => $this->val,
             'vads_currency' => '978', # Euro
-        	'vads_payment_config' => 'SINGLE',
-        	'vads_trans_date' => $trans_date,
+            'vads_payment_config' => 'SINGLE',
+            'vads_trans_date' => $trans_date,
             'vads_trans_id' => $trans_id,
             'vads_order_id' => $fullref,
             'vads_order_info' => Env::v('comment'));
