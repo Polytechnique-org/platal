@@ -48,7 +48,7 @@ query('ALTER TABLE  profile_education_field_enum
 query('ALTER TABLE  profile_job_enum
           ORDER BY  name');
 query('ALTER TABLE  profile_langskill_enum
-          ORDER BY  langue_fr');
+          ORDER BY  language');
 query('ALTER TABLE  profile_medal_enum
           ORDER BY  text');
 query('ALTER TABLE  profile_networking_enum

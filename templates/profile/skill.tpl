@@ -76,7 +76,7 @@
       <select name="langues_sel" onchange="updateElement('langues')">
         <option value="">&nbsp;</option>
         {iterate from=$lang_list item=lang}
-        <option value="{$lang.id}">{$lang.langue_fr}</option>
+        <option value="{$lang.iso_639_2b}">{$lang.language}</option>
         {/iterate}
       </select>
       <span id="langues_add" style="display: none">

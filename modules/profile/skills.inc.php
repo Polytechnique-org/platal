@@ -22,12 +22,14 @@
 class ProfileSettingSkill implements ProfileSetting
 {
     private $table;
+    private $id;
     private $skill_field;
     private $text_field;
 
-    public function __construct($table, $skill, $text)
+    public function __construct($table, $id, $skill, $text)
     {
         $this->table = $table;
+        $this->id = $id;
         $this->skill_field = $skill;
         $this->text_field = $text;
     }
@@ -36,9 +38,9 @@ class ProfileSettingSkill implements ProfileSetting
     {
         if (is_null($value)) {
             $value = array();
-            $res = XDB::iterRow("SELECT  s.id, s.{$this->text_field}, i.level
+            $res = XDB::iterRow("SELECT  s.{$this->id}, s.{$this->text_field}, i.level
                                    FROM  profile_{$this->table}_enum AS s
-                             INNER JOIN  profile_{$this->table}s AS i ON(s.id = i.{$this->skill_field})
+                             INNER JOIN  profile_{$this->table}s     AS i ON (s.{$this->id} = i.{$this->skill_field})
                                   WHERE  i.pid = {?}",
                                 $page->pid());
             while (list($sid, $text, $level) = $res->next()) {
@@ -52,7 +54,7 @@ class ProfileSettingSkill implements ProfileSetting
                 if (!isset($skill['text']) || empty($skill['text'])) {
                     $res = XDB::query("SELECT  {$this->text_field}
                                          FROM  profile_{$this->table}_enum
-                                        WHERE  id = {?}", $id);
+                                        WHERE  {$this->id} = {?}", $id);
                     $skill['text'] = $res->fetchOneCell();
                 }
             }
@@ -109,8 +111,8 @@ class ProfilePageSkills extends ProfilePage
     public function __construct(PlWizard &$wiz)
     {
         parent::__construct($wiz);
-        $this->settings['competences'] = new ProfileSettingSkill('skill', 'cid', 'text_fr');
-        $this->settings['langues'] = new ProfileSettingSkill('langskill', 'lid', 'langue_fr');
+        $this->settings['competences'] = new ProfileSettingSkill('skill', 'id', 'cid', 'text_fr');
+        $this->settings['langues'] = new ProfileSettingSkill('langskill', 'iso_639_2b', 'lid', 'language');
     }
 
     public function _prepare(PlPage &$page, $id)
@@ -120,9 +122,9 @@ class ProfilePageSkills extends ProfilePage
         $page->assign('comp_level', array('initié' => 'initié',
                                           'bonne connaissance' => 'bonne connaissance',
                                           'expert' => 'expert'));
-        $page->assign('lang_list', XDB::iterator("SELECT  id, langue_fr
+        $page->assign('lang_list', XDB::iterator('SELECT  iso_639_2b, language
                                                     FROM  profile_langskill_enum
-                                                ORDER BY  langue_fr"));
+                                                ORDER BY  language'));
         $page->assign('lang_level', array(1 => 'connaissance basique',
                                           2 => 'maîtrise des bases',
                                           3 => 'maîtrise limitée',
