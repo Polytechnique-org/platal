@@ -114,6 +114,14 @@
 
   <tr><th colspan="2">{icon name=user_gray} Champs</th></tr>
   <tr class="impair">
+    <td class="titre">Pays / Langues</td>
+    <td>
+      <a href="admin/geocoding/country">Pays</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/geocoding/language">Langues</a>
+    </td>
+  </tr>
+  <tr class="impair">
     <td class="titre">Formation</td>
     <td>
       <a href="admin/education">Formations</a>

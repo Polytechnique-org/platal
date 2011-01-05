@@ -47,6 +47,7 @@ class AdminModule extends PLModule
             'admin/wiki'                   => $this->make_hook('wiki',                   AUTH_MDP, 'admin'),
             'admin/ipwatch'                => $this->make_hook('ipwatch',                AUTH_MDP, 'admin'),
             'admin/icons'                  => $this->make_hook('icons',                  AUTH_MDP, 'admin'),
+            'admin/geocoding'              => $this->make_hook('geocoding',              AUTH_MDP, 'admin'),
             'admin/accounts'               => $this->make_hook('accounts',               AUTH_MDP, 'admin'),
             'admin/account/watch'          => $this->make_hook('account_watch',          AUTH_MDP, 'admin'),
             'admin/account/types'          => $this->make_hook('account_types',          AUTH_MDP, 'admin'),
@@ -1188,6 +1189,140 @@ class AdminModule extends PLModule
         $table_editor->describe('services','services affectés',true);
         $table_editor->describe('description','description',false);
         $table_editor->apply($page, $action, $id);
+    }
+
+    private static function isCountryIncomplete(array &$item)
+    {
+        $warning = false;
+        foreach (array('worldRegion', 'country', 'capital', 'phonePrefix', 'licensePlate', 'countryPlain') as $field) {
+            if ($item[$field] == '') {
+                $item[$field . '_warning'] = true;
+                $warning = true;
+            }
+        }
+        if (is_null($item['belongsTo'])) {
+            foreach (array('nationality', 'nationalityEn') as $field) {
+                if ($item[$field] == '') {
+                    $item[$field . '_warning'] = true;
+                    $warning = true;
+                }
+            }
+        }
+        return $warning;
+    }
+
+    private static function isLanguageIncomplete(array &$item)
+    {
+        if ($item['language'] == '') {
+            $item['language_warning'] = true;
+            return true;
+        }
+        return false;
+    }
+
+    function handler_geocoding(&$page, $action = null)
+    {
+        // Warning, this handler requires the following packages:
+        //  * pkg-isocodes
+        //  * isoquery
+
+        static $properties = array(
+            'country'  => array(
+                'name'         => 'pays',
+                'isocode'      => '3166',
+                'table'        => 'geoloc_countries',
+                'id'           => 'iso_3166_1_a2',
+                'main_fields'  => array('iso_3166_1_a3', 'iso_3166_1_num', 'countryEn'),
+                'other_fields' => array('worldRegion', 'country', 'capital', 'nationality', 'nationalityEn',
+                                        'phonePrefix', 'phoneFormat', 'licensePlate', 'belongsTo', 'countryPlain')
+            ),
+            'language' => array(
+                'name'         => 'langages',
+                'isocode'      => '639',
+                'table'        => 'profile_langskill_enum',
+                'id'           => 'iso_639_2b',
+                'main_fields'  => array('iso_639_2t', 'iso_639_1', 'language_en'),
+                'other_fields' => array('language')
+
+            )
+        );
+        //For  ISO  639,  the  first  three  columns are the ISO 639 2B code, the ISO 639 2T code and the ISO 639-1 code.  The third column may be
+
+        if (is_null($action) || !array_key_exists($action, $properties)) {
+            pl_redirect('admin');
+        }
+
+        $data = $properties[$action];
+
+        $page->changeTpl('admin/geocoding.tpl');
+        $page->setTitle('Administration - ' . ucfirst($data['name']));
+        $page->assign('name', $data['name']);
+        $page->assign('id', $data['id']);
+        $page->assign('main_fields', $data['main_fields']);
+        $page->assign('all_fields', array_merge($data['main_fields'], $data['other_fields']));
+
+        // First build the list provided by the iso codes.
+        $list = array();
+        exec('isoquery --iso=' . $data['isocode'], $list);
+
+        foreach ($list as $key => $item) {
+            $array = explode("\t", $item);
+            unset($list[$key]);
+            $list[$array[0]] = array();
+            foreach ($data['main_fields'] as $i => $field) {
+                $list[$array[0]][$field] = $array[$i + 1];
+            }
+        }
+        ksort($list);
+
+        // Retrieve all data from the database.
+        $db_list = XDB::rawFetchAllAssoc('SELECT  *
+                                            FROM  ' . $data['table'] . '
+                                        ORDER BY  ' . $data['id'],
+                                         $data['id']);
+
+        // Sort both iso and database data into 5 categories:
+        //  $missing: data from the iso list not in the database,
+        //  $non_existing: data from the database not in the iso list,
+        //  $erroneous: data that differ on main fields,
+        //  $incomplete: data with empty fields in the data base,
+        //  $remaining: remaining correct and complete data from the database.
+
+        $missing = $non_existing = $erroneous = $incomplete = $remaining = array();
+        foreach (array_keys($list) as $id) {
+            if (!array_key_exists($id, $db_list)) {
+                $missing[$id] = $list[$id];
+            }
+        }
+
+        foreach ($db_list as $id => $item) {
+            if (!array_key_exists($id, $list)) {
+                $non_existing[$id] = $item;
+            } else {
+                $error = false;
+                foreach ($data['main_fields'] as $field) {
+                    if ($item[$field] != $list[$id][$field]) {
+                        $item[$field . '_error'] = true;
+                        $error = true;
+                    }
+                }
+                if ($error == true) {
+                    $erroneous[$id] = $item;
+                } elseif (call_user_func_array(array('self', 'is' . ucfirst($action) . 'Incomplete'), array(&$item))) {
+                    $incomplete[$id] = $item;
+                } else {
+                    $remaining[$id] = $item;
+                }
+            }
+        }
+
+        $page->assign('lists', array(
+                'manquant'  => $missing,
+                'disparu'   => $non_existing,
+                'erroné'    => $erroneous,
+                'incomplet' => $incomplete,
+                'restant'   => $remaining
+        ));
     }
 
     function handler_accounts(PlPage $page)
