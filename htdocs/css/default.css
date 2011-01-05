@@ -212,6 +212,18 @@ table.tinybicol td, table.bicol td {
     background: inherit;
 }
 
+table.tinybicol td.error, table.bicol td.error {
+    background: #faa;
+}
+
+table.tinybicol td.warning, table.bicol td.warning {
+    background: #fda;
+}
+
+table.tinybicol td.valid, table.bicol td.valid {
+    background: #afa;
+}
+
 table.tinybicol td, table.bicol td, table.tinybicol tr, table.bicol tr { padding: 4px; }
 
 td.half { width: 50%; padding: 4px; }

@@ -201,6 +201,18 @@ table.tinybicol td, table.bicol td {
     padding: 0px 4px;
 }
 
+table.tinybicol td.error, table.bicol td.error {
+    background: #faa;
+}
+
+table.tinybicol td.warning, table.bicol td.warning {
+    background: #fda;
+}
+
+table.tinybicol td.valid, table.bicol td.valid {
+    background: #afa;
+}
+
 td.half { width: 50%; padding: 4px; }
 
 td.titre {
