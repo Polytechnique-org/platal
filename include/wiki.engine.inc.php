@@ -68,7 +68,6 @@ if (Env::v('action') || !$cache_exists) {
     require_once($globals->spoolroot . '/wiki/pmwiki.php');
 
     $wikiAll = ob_get_clean();
-    pl_clear_errors();
 
     // the pmwiki skin we are using (almost empty) has these keywords:
     $i = strpos($wikiAll, "<!--/HeaderText-->");
@@ -85,7 +84,6 @@ if ($feed) {
     $wikiAll = preg_replace('!<author>.*?\..*?\.(\d{4})\|(.*?)</author>!u', '<author>$2 (X$1)</author>', $wikiAll);
     $wikiAll = str_replace('<link>./', '<link>' . $globals->baseurl . '/' . $platal->ns, $wikiAll);
     echo $wikiAll;
-    pl_clear_errors();
     exit;
 } elseif (Env::v('action')) {
     $page->assign('pl_extra_header', substr($wikiAll, 0, $i));
