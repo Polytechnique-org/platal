@@ -638,6 +638,8 @@ function selectJobTerm(li)
  */
 function toggleJobTermsTree(jobid, textfilter)
 {
+    $('#term_tree_comment').toggle();
+
     var treepath;
     if (jobid < 0) {
         treepath = '';

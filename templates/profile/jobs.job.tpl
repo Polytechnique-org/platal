@@ -148,6 +148,9 @@
       <td colspan="2" class="term_tree">
       </td>
     </tr>
+    <tr class="pair" id="term_tree_comment" style="display: none">
+      <td colspan="2" class="center"><small>La catégorie « Emplois » donne une liste de métiers, « Secteurs d'activité » décrit des secteurs.</small></td>
+    </tr>
     <tr class="pair" {if $hiddenjob}style="display: none"{/if}>
       <td class="titre">Description</td>
       <td>
