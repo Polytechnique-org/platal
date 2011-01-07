@@ -90,8 +90,7 @@ class VCard extends PlVCard
                                 null, $adr->administrativeArea, null,
                                 $adr->hasFlag('current'), $adr->hasFlag('mail'), $adr->hasFlag('mail'));
             } else {
-                // TODO : find a way to fetch only the "street" part of the address
-                $group = $entry->addHome($adr->text, null, null, $adr->postalCode,
+                $group = $entry->addHome(trim(Geocoder::getFirstLines($adr->text, $adr->postalCode, 4)), null, null, $adr->postalCode,
                                 $adr->locality, $adr->administrativeArea, $adr->country,
                                 $adr->hasFlag('current'), $adr->hasFlag('mail'), $adr->hasFlag('mail'));
             }
@@ -115,7 +114,7 @@ class VCard extends PlVCard
             } else {
                 // TODO : link address to company
                 $group = $entry->addWork(null, null, null, null,
-                                         $adr->text, null, null, $adr->postalCode,
+                                         trim(Geocoder::getFirstLines($adr->text, $adr->postalCode, 4)), null, null, $adr->postalCode,
                                          $adr->locality, $adr->administrativeArea, $adr->country);
             }
             foreach ($adr->phones() as $phone) {
