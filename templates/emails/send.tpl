@@ -150,7 +150,7 @@
       saveMessage();
       return true;
     });
-  $(document).ready(
+  $(
     function() {
       // Remove empty options in select (they were added only for HTML
       // compatibility).
@@ -158,7 +158,7 @@
       $('#cc_contacts option[value=""]').remove();
     });
 
-    $(document).ready(function() {
+    $(function() {
       $("[name='to']").focus();
     });
   {/literal}

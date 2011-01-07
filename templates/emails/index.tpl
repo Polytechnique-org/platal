@@ -25,7 +25,7 @@
 {literal}
 <script type="text/javascript">
   //<![CDATA[
-  $(document).ready(function() {
+  $(function() {
       var url = '{/literal}{$globals->baseurl}/emails/best/{literal}';
       var tok = '{/literal}{xsrf_token}{literal}';
       var msg = "Le changement a bien été effectué.";

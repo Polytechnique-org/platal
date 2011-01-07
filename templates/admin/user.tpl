@@ -93,7 +93,7 @@ function ban_read()
     document.forms.bans.read_perm.value = "!xorg.*";
 }
 
-$(document).ready(function() {
+$(function() {
   $('#tabs').tabs();
   $('.ui-tabs-nav li').width('24%')
     .click(function() { $(this).children('a').click() });

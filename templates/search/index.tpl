@@ -47,7 +47,7 @@
   {if $search_results_nb eq 1}{literal}
     <script type="text/javascript">
       // popup automatically if only one result
-      $(document).ready(function() {
+      $(function() {
         $('#content a.popup2').click();
       });
     </script>

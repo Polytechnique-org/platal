@@ -24,7 +24,7 @@
 
 <script type="text/javascript">//<![CDATA[
   {literal}
-  $(document).ready(function() {
+  $(function() {
       var url = '{/literal}{$globals->baseurl}/emails/antispam/{literal}';
       var msg = "Le changement de réglage de l'antispam a bien été effectué.";
       $(':radio[name=statut_filtre]').change(function() {

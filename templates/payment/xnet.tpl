@@ -24,7 +24,7 @@
 {literal}
 <script type="text/javascript">
 //<![CDATA[
-$(document).ready(function() {
+$(function() {
 {/literal}
   location.hash = "#{$anchor}";
 {literal}

@@ -516,7 +516,7 @@ function sendTestEmail(token, hruid)
  * The real OnLoad
  */
 
-$(document).ready(function() {
+$(function() {
     auto_links();
     getNow();
     setInterval(getNow, 1000);

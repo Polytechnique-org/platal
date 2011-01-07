@@ -23,7 +23,7 @@
 <script type="text/javascript">
 {literal}
 //<!--
-    $(document).ready(function() {
+    $(function() {
         $('#fusionax_import input').click(function() {
             $('#fusionax input').hide();
             $('#fusionax').append('Lancement de l\'import.<br/>');

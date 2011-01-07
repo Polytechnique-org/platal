@@ -174,7 +174,7 @@
       }
     }
 
-  $(document).ready(function() {
+  $(function() {
       $(".autocompleteTarget").hide();
       $(".autocomplete").show().each(function() {
         targeted = $("../.autocompleteTarget",this)[0];
@@ -285,7 +285,7 @@ function cleanForm(f) {
               f.egal2.value = '>=';
             }
           }
-          $(document).ready(function() { updatepromofields($('select[name=egal1]')[0]); });
+          $(function() { updatepromofields($('select[name=egal1]')[0]); });
           {/literal}
         /*]]>*/</script>
         <select name="egal1" onchange="updatepromofields(this)" style="text-align:center">

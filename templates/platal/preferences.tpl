@@ -27,7 +27,7 @@
 <script type="text/javascript">
 {literal}
 /* <![CDATA[ */
-$(document).ready(function() {
+$(function() {
   $("form input:radio").change(function() {
     $("#form").submit();
   });
