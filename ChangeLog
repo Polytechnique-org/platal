@@ -10,6 +10,7 @@ Bug/Wish:
         - #1355: Mode with propagation of the skinning mode                -FRU
 
     * Payments:
+        - #1290: Fixes display of payments on xnet                         -JAC
         - #1318: Fixes PHP errors in PayPal payments                       -JAC
 
     * Profile:
