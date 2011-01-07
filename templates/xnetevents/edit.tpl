@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -123,6 +123,19 @@ function deadlineChange(box)
       </td>
     </tr>
     <tr>
+      <td class="titre">
+        Notifier lors d'une inscriptions&nbsp;:
+      </td>
+      <td>
+        <select name="subscription_notification">
+          <option value='creator' {if $evt.subscription_notification eq 'creator'}selected='selected'{/if}>le créateur de l'événement</option>
+          <option value='animator' {if $evt.subscription_notification eq 'animator'}selected='selected'{/if}>les animateurs du groupe</option>
+          <option value='both' {if $evt.subscription_notification eq 'both'}selected='selected'{/if}>le créateur de l'événement et les animateurs du groupe</option>
+          <option value='nobody' {if $evt.subscription_notification eq 'nobody'}selected='selected'{/if}>personne</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
       <td class='titre'>
         Options&nbsp;:
       </td>
@@ -167,7 +180,6 @@ function deadlineChange(box)
           <li>&lt;salutation&gt;, &lt;prenom&gt;, &lt;nom&gt;, &lt;montant&gt; et &lt;comment&gt; seront <strong>automatiquement</strong> remplacés par les informations adaptées.</li>
           <li><a href="wiki_help" class="popup3">{icon name=information} Tu peux utiliser une syntaxe wiki pour formatter ton texte.</a></li>
         </ul>
-        {javascript name=ajax}
         <div id="pay_preview" style="display: none">
           <strong>Aperçu du texte&nbsp;:</strong>
           <hr />
@@ -251,7 +263,7 @@ Ton inscription à [METS LE NOM DE L'ÉVÉNEMENT ICI] a bien été enregistrée 
   </table>
 
   <div class="center">
-    {if $evt.eid}<input type="hidden" name="organisateur_uid" value="{$evt.organisateur_uid}" />{/if}
+    {if $evt.eid}<input type="hidden" name="uid" value="{$evt.uid}" />{/if}
     <input type="submit" name="valid" value="Valider" />
     &nbsp;
     <input type="reset" value="Annuler" />

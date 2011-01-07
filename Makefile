@@ -40,6 +40,10 @@ q:
 %: %.in Makefile ChangeLog
 	sed -e 's,@VERSION@,$(VERSION),g' $< > $@
 
+up: update
+update:
+	@git fetch && git rebase `git symbolic-ref HEAD | sed -e 's~refs/heads/~origin/~'` && git submodule update
+
 ################################################################################
 # targets
 
@@ -55,9 +59,9 @@ core:
 ## conf
 ##
 
-conf: spool/templates_c spool/mails_c classes/platalglobals.php configs/platal.cron htdocs/.htaccess spool/conf spool/tmp
+conf: spool/templates_c spool/mails_c classes/platalglobals.php configs/platal.cron htdocs/.htaccess spool/conf spool/tmp spool/banana
 
-spool/templates_c spool/mails_c spool/uploads spool/conf spool/tmp spool/run:
+spool/templates_c spool/mails_c spool/uploads spool/conf spool/tmp spool/run spool/banana:
 	mkdir -p $@
 	chmod o+w $@
 
@@ -169,18 +173,24 @@ $(MEDAL_THUMBNAILS): $(subst /medals/thumb/,/medals/,$(@F))
 ##
 ## jquery
 ##
-JQUERY_VERSION=1.4.2
-JQUERY_PLUGINS=color
+JQUERY_VERSION=1.4.4
+JQUERY_PLUGINS=color form
 JQUERY_PLUGINS_PATHES=$(addprefix htdocs/javascript/jquery.,$(addsuffix .js,$(JQUERY_PLUGINS)))
 
-JQUERY_UI_VERSION=1.6
-JQUERY_UI=core tabs
+JQUERY_UI_VERSION=1.8.7
+JQUERY_UI=core tabs widget
 JQUERY_UI_PATHES=$(addprefix htdocs/javascript/jquery.ui.,$(addsuffix .js,$(JQUERY_UI)))
+
+JQUERY_TMPL_VERSION=vBeta1.0.0
+JQUERY_TMPL_PATH=htdocs/javascript/jquery.tmpl.js
+
+JSTREE_VERSION=1.0rc2
+JSTREE_PATH=htdocs/javascript/jquery.jstree.js
 
 # TODO: jquery.autocomplete.js should rather be downloaded from an official source. The issue
 # is that the version we use is not available anymore on the Internet, and the latest version
 # we could use is not backward compatible with our current code.
-jquery: htdocs/javascript/jquery.js $(JQUERY_PLUGINS_PATHES) $(JQUERY_UI_PATHES)
+jquery: htdocs/javascript/jquery.js $(JQUERY_PLUGINS_PATHES) $(JQUERY_UI_PATHES) $(JQUERY_TMPL_PATH) $(JSTREE_PATH)
 
 htdocs/javascript/jquery-$(JQUERY_VERSION).min.js: DOWNLOAD_SRC = http://jquery.com/src/$(@F)
 htdocs/javascript/jquery-$(JQUERY_VERSION).min.js:
@@ -190,17 +200,40 @@ htdocs/javascript/jquery-$(JQUERY_VERSION).min.js:
 htdocs/javascript/jquery.js: htdocs/javascript/jquery-$(JQUERY_VERSION).min.js
 	ln -snf $(<F) $@
 
-$(JQUERY_PLUGINS_PATHES): DOWNLOAD_SRC = http://plugins.jquery.com/files/$(@F).txt
+$(JQUERY_PLUGINS_PATHES): DOWNLOAD_SRC = http://plugins.jquery.com/files/$(@F)_0.txt
 $(JQUERY_PLUGINS_PATHES):
 	@-rm htdocs/javascript/jquery.ui*.$*.js
 	@$(download)
 
-htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js: DOWNLOAD_SRC = http://jquery-ui.googlecode.com/svn/tags/$(JQUERY_UI_VERSION)/ui/ui.$*.js
+htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js: DOWNLOAD_SRC = http://jquery-ui.googlecode.com/svn/tags/$(JQUERY_UI_VERSION)/ui/minified/jquery.ui.$*.min.js
 htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js:
 	@$(download)
 
 $(JQUERY_UI_PATHES): htdocs/javascript/jquery.ui.%.js: htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js
 	ln -snf $(<F) $@
+
+htdocs/javascript/jquery.tmpl-$(JQUERY_TMPL_VERSION).js: DOWNLOAD_SRC = https://github.com/jquery/jquery-tmpl/raw/$(JQUERY_TMPL_VERSION)/jquery.tmpl.min.js --no-check-certificate
+htdocs/javascript/jquery.tmpl-$(JQUERY_TMPL_VERSION).js:
+	@-rm htdocs/javascript/jquery.tmpl*.js
+	@$(download)
+
+$(JQUERY_TMPL_PATH): htdocs/javascript/jquery.tmpl-$(JQUERY_TMPL_VERSION).js
+	ln -snf $(<F) $@
+
+$(JSTREE_PATH):
+	rm -f htdocs/javascript/jquery.jstree-*.js
+	mkdir spool/tmp/jstree
+	wget http://jstree.googlecode.com/files/jsTree.v.$(JSTREE_VERSION).zip -O spool/tmp/jstree/jquery.jstree-$(JSTREE_VERSION).zip
+	unzip spool/tmp/jstree/jquery.jstree-$(JSTREE_VERSION).zip -d spool/tmp/jstree/
+	mv -f spool/tmp/jstree/themes/default/style.css htdocs/css/jstree.css
+	mv -f spool/tmp/jstree/themes/default/d.png htdocs/images/jstree.png
+	mv -f spool/tmp/jstree/jquery.jstree.js htdocs/javascript/jquery.jstree-$(JSTREE_VERSION).js
+	sed -i -e 's/"d\.png"/"..\/images\/jstree.png"/' htdocs/css/jstree.css
+	sed -i -e 's/"throbber\.gif"/"..\/images\/wait.gif"/' htdocs/css/jstree.css
+	sed -i -e 's/#ffffee/inherit/' htdocs/css/jstree.css
+	ln -snf jquery.jstree-$(JSTREE_VERSION).js htdocs/javascript/jquery.jstree.js
+	rm -Rf spool/tmp/jstree
+
 
 ##
 ## lists rpc
@@ -225,3 +258,4 @@ restart-listrpc: stop-listrpc start-listrpc
 .PHONY: wiki build-wiki
 .PHONY: banana banana-sub htdocs/images/banana htdocs/css/banana.css
 .PHONY: start-listrpc start-listrpc-fg stop-listrpc restart-listrpc
+.PHONY: up update

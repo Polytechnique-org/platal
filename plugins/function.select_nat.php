@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -21,10 +21,10 @@
 
 
 function select_nat($valeur, $pad=false) {
-    $res = XDB::iterRow("SELECT  iso_3166_1_a2 AS id, nationalityFR AS text
+    $res = XDB::iterRow("SELECT  iso_3166_1_a2 AS id, nationality AS text
                            FROM  geoloc_countries
-                          WHERE  nationalityFR IS NOT NULL
-                       ORDER BY  nationalityFR");
+                          WHERE  nationality IS NOT NULL
+                       ORDER BY  nationality");
     $sel = ' selected="selected"';
 
     // on ajoute une entree vide si $pad est vrai

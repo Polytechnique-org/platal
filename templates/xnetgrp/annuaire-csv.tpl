@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software, you can redistribute it and/or modify  *}
@@ -23,7 +23,7 @@ Nom,Prénom,Sexe,Promotion,Email,Commentaire
 {if $users|@count}
 {foreach from=$users item=user}
 
-{$user->firstName()},{$user->lastName()},{if $user->isFemale()}F{else}M{/if},{$user->promo()},{$user->forlifeEmail()},{$user->group_comm|replace:',':'\,'}
+{$user->lastName()},{$user->firstName()},{if $user->isFemale()}F{else}M{/if},{$user->promo()},{$user->forlifeEmail()},{$user->group_comm|replace:',':'\,'}
 
 {/foreach}
 {/if}

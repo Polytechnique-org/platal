@@ -1,7 +1,7 @@
 #!/usr/bin/php5 -q
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -25,6 +25,11 @@ ini_set('max_execution_time', '75');
 ini_set('memory_limit', '128M');
 $sent_mails = 0;
 $handler    = time();
+
+/* Cleanup dead locks */
+XDB::execute('UPDATE  email_list_moderate
+                 SET  handler = NULL
+               WHERE  handler < NOW() - 300');
 
 while ($sent_mails < $globals->lists->max_mail_per_min
        && time() - $handler < 60) {

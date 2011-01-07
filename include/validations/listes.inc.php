@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -139,7 +139,7 @@ class ListeReq extends Validate
             return 1;
         }
 
-        $list = new MMList(S::user()->id(), $this->domain);
+        $list = new MMList(S::user(), $this->domain);
         $ret = $list->create_list($this->liste, utf8_decode($this->desc), $this->advertise,
                                   $this->modlevel, $this->inslevel,
                                   $this->owners, $this->members);

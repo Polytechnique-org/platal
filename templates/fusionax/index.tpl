@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -21,17 +21,26 @@
 {**************************************************************************}
 
 <h2>Fusion des annuaires X.org - AX</h2>
+
+<p>
+  Aucune action n'est lancée depuis cette page. Il faut préalablement aller sur
+  les liens suivants pour effectuer les différentes taches.
+</p>
+
 <ul>
-<li>Voir la <a href="Fusion">documentation</a></li>
-<li><a href="fusionax/import">Import de la base AX</a> {if $lastimport} - (dernier import le {$lastimport}){/if}</li>
-<li>Mise en <a href="fusionax/ids">correspondance simple</a></li>
-<li>Création des <a href="fusionax/view">VIEW annexes nécessaires aux corrélations</a></li>
-<li>Corrélation des <a href="fusionax/deceased">dates de décès</a></li>
-<li>Corrélation des <a href="fusionax/promo">promotions</a></li>
-<li>Corrélation des <a href="fusionax/names">données d'identification</a></li>
-<li>Corrélation des <a href="fusionax/coords">coordonnées</a></li>
-<li>Corrélation des <a href="fusionax/pros">informations professionnelles</a></li>
-<li>Corrélation des <a href="fusionax/studies">informations de formations</a></li>
+  <li>Voir la <a href="Fusion">documentation</a></li>
+  <li><a href="fusionax/import">Import de la base AX</a></li>
+  <li>Mise en <a href="fusionax/ids">correspondance simple</a></li>
+  <li>Création des <a href="fusionax/view">VIEW annexes nécessaires aux corrélations</a></li>
+  <li>Corrélation des <a href="fusionax/deceased">dates de décès</a></li>
+  <li>Corrélation des <a href="fusionax/promo">promotions</a></li>
+  <li>Corrélation des <a href="fusionax/names">noms</a></li>
+  <li>Corrélation des <a href="fusionax/edu">formations</a></li>
+  <li>Corrélation des <a href="fusionax/corps">corps</a></li>
 </ul>
+
+<p>
+  Une fois ces vérifications faites, un root peut lancer le script merge.php dans le répertoire upgrade/1.0.1/
+</p>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

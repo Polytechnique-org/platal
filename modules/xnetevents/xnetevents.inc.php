@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -34,7 +34,8 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
                                LEFT(10, e.debut) AS start_day, LEFT(10, e.fin) AS last_day,
                                LEFT(NOW(), 10) AS now,
                                ei.titre, al.vid AS absent_list, pl.vid AS participant_list,
-                               pyl.vid AS payed_list, bl.vid AS booked_unpayed_list
+                               pyl.vid AS payed_list, bl.vid AS booked_unpayed_list,
+                               e.subscription_notification
                          FROM  group_events              AS e
                    INNER JOIN  group_event_items        AS ei ON (e.eid = ei.eid)
                     LEFT JOIN  group_event_participants AS ep ON(e.eid = ep.eid AND ei.item_id = ep.item_id)
@@ -100,6 +101,7 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
         $evt['paid'] += trim($p);
         $evt['telepaid'] += trim($p);
     }
+    $evt['organizer'] = User::getSilent($evt['uid']);
 
     make_event_date($evt);
 
@@ -109,7 +111,7 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
 // }}}
 
 // {{{ function get_event_participants()
-function get_event_participants(&$evt, $item_id, array $tri = array(), $count = null, $offset = null)
+function get_event_participants(&$evt, $item_id, array $tri = array(), $limit = null)
 {
     global $globals;
 
@@ -197,8 +199,8 @@ function subscribe_lists_event($uid, $evt, $participate, $paid, $payment = false
     function subscribe($list, $email)
     {
         if ($list && $email) {
-            XDB::execute('REPLACE INTO  virtual_redirect
-                                VALUES  ({?}, {?})',
+            XDB::execute('INSERT IGNORE INTO  virtual_redirect
+                                      VALUES  ({?}, {?})',
                          $list, $email);
         }
     }

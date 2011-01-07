@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -42,7 +42,7 @@ EMAIL;TYPE=internet:{$vcard.virtualalias}
 {/if}
 {if $vcard.tels}
 {foreach item=tel from=$vcard.tels}
-{if $tel.tel_type eq 'mobile'}TEL;TYPE=cell{else}{if $tel.tel_type eq 'fax'}FAX{else}TEL{/if};TYPE=home{/if}:{$tel.tel|vcard_enc}
+{if $tel.tel_type eq 'mobile'}TEL;TYPE=cell{else}{if $tel.tel_type eq 'fax'}FAX{else}TEL{/if};TYPE=home{/if}:{$tel.display|vcard_enc}
 {/foreach}
 {/if}
 {if $vcard.adr_pro}
@@ -57,7 +57,7 @@ ROLE:{$vcard.adr_pro[0].fonction|vcard_enc}
 {/if}
 {if $vcard.adr_pro[0].tels}
 {foreach item=tel from=$vcard.adr_pro[0].tels}
-{if $tel.tel_type eq 'mobile'}TEL;TYPE=cell,work{else}{if $tel.tel_type eq 'fax'}FAX{else}TEL{/if};TYPE=work{/if}:{$tel.tel|vcard_enc}
+{if $tel.tel_type eq 'mobile'}TEL;TYPE=cell,work{else}{if $tel.tel_type eq 'fax'}FAX{else}TEL{/if};TYPE=work{/if}:{$tel.display|vcard_enc}
 {/foreach}
 {/if}
 ADR;TYPE=work:{format_adr adr=$vcard.adr_pro[0]}
@@ -66,7 +66,7 @@ ADR;TYPE=work:{format_adr adr=$vcard.adr_pro[0]}
 ADR;TYPE=home{if $adr.courier},postal{/if}:{format_adr adr=$adr}
 {if $adr.tels}
 {foreach item=tel from=$adr.tels}
-{if $tel.tel_type eq 'mobile'}TEL;TYPE=cell,home{else}{if $tel.tel_type eq 'fax'}FAX{else}TEL{/if};TYPE=home{/if}:{$tel.tel|vcard_enc}
+{if $tel.tel_type eq 'mobile'}TEL;TYPE=cell,home{else}{if $tel.tel_type eq 'fax'}FAX{else}TEL{/if};TYPE=home{/if}:{$tel.display|vcard_enc}
 {/foreach}
 {/if}
 {/foreach}

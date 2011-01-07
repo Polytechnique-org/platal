@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -39,7 +39,7 @@
   </tr>
 {if $comment}
   <tr>
-    <td><b>Commentaire</b>
+    <td><b>Commentaire</b></td>
     <td>{$comment}</td>
   </tr>
 {/if}
@@ -72,7 +72,7 @@
   </tr>
 </table>
 <p>
-En cliquant sur "Valider", tu seras redirigé{if $smarty.session.sexe}e{/if} vers le site de {$pay->api->nomsite}, où il te
+En cliquant sur "Valider", tu seras redirigé{if $sex}e{/if} vers le site de {$pay->api->nomsite}, où il te
 sera demandé de saisir ton numéro de carte bancaire.  Lorsque le paiement aura été effectué, tu
 recevras une confirmation par email.
 </p>
@@ -109,12 +109,12 @@ function payment_submit(form)
     <tr>
       <td>Transaction</td>
       <td>
-        {if $asso}
+        {if t($asso)}
         <strong>{$pay->text}</strong><input type="hidden" name="ref" value="{$pay->id}" />
         {else}
         <select name="ref" onchange="payment_submit(this.form)">
           {select_db_table table="payments" valeur=$pay->id
-                           where="WHERE FIND_IN_SET(\'old\',t.flags)=0"
+                           where="WHERE FIND_IN_SET('old', t.flags) = 0"
                            join="LEFT JOIN groups AS g ON (t.asso_id = g.id)" group="g.nom"}
         </select>
         {/if}
@@ -150,7 +150,7 @@ function payment_submit(form)
   </table>
 </form>
 
-{if $transactions}
+{if t($transactions)}
 <p class="descr">Tu as déjà effectué des paiements pour cette transaction&nbsp;:</p>
 <table class="bicol">
 <tr><th>Date</th><th>Montant</th></tr>

@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -22,6 +22,12 @@
 
 {assign var=prefname value="addresses[$i]"}
 {assign var=prefid value="addresses_$i"}
+{if !hasPerm('directory_private') && ($address.pub eq 'private') && !$new}
+{assign var=hiddenaddr value=true}
+{else}
+{assign var=hiddenaddr value=false}
+{/if}
+
 <table class="bicol" style="display: none; margin-bottom: 1em" id="{$prefid}_grayed">
   <tr>
     <th class="grayed">
@@ -47,13 +53,13 @@
           {icon name=cross title="Supprimer l'adresse"}
         </a>
       </div>
-      Adresse n°{$i+1}
+      Adresse n°{$i+1}{if $hiddenaddr} (masquée){/if}
     </th>
   </tr>
-  <tr>
+  <tr {if $hiddenaddr}style="display: none"{/if}>
     <td>
       <div style="margin-bottom: 0.2em" class="flags">
-        {include file="include/flags.radio.tpl" name="`$prefname`[pub]" val=$address.pub}
+        {include file="include/flags.radio.tpl" name="`$prefname`[pub]" val=$address.pub mainField='addresses' mainId=$i subField='phones' subId=-1}
       </div>
       <div style="clear: both"></div>
       <div style="float: left">
@@ -87,9 +93,19 @@
         <div>
           <label>
             <input type="checkbox" name="{$prefname}[mail]" {if $address.mail}checked="checked"{/if} />
-            on peut m'y envoyer du courrier par la poste
+            on peut {if $isMe}m'{/if}y envoyer du courrier par la poste
           </label>
         </div>
+        {if !t($isMe)}
+        <div>
+          <label>
+            <input type="checkbox" name="{$prefname}[deliveryIssue]" {if $address.deliveryIssue}checked="checked"{/if} />
+            n'habite pas à l'adresse indiquée
+          </label>
+        </div>
+        {else}
+        <div style="display: none"><input type="hidden" name="deliveryIssue" value="{$address.deliveryIssue}" /></div>
+        {/if}
         <div>
           <label>
             Commentaire&nbsp;:
@@ -100,21 +116,22 @@
       </div>
     </td>
   </tr>
-  <tr class="pair">
+  <tr class="pair" {if $hiddenaddr}style="display: none"{/if}>
     <td>
-      {foreach from=$address.tel key=t item=tel}
-        <div id="{"`$prefid`_tel_`$t`"}" style="clear: both">
-          {include file="profile/phone.tpl" prefname="`$prefname`[tel]"
-                   prefid="`$prefid`_tel" telid=$t tel=$tel}
+      {foreach from=$address.phones key=t item=tel}
+        <div id="{"`$prefid`_phones_`$t`"}" style="clear: both">
+          {include file="profile/phone.tpl" prefname="`$prefname`[phones]" prefid="`$prefid`_phones" telid=$t tel=$tel
+                   subField='phones' mainField='addresses' mainId=$i}
         </div>
       {/foreach}
-      {if $address.tel|@count eq 0}
-        <div id="{"`$prefid`_tel_0"}" style="clear: both">
-          {include file="profile/phone.tpl" prefname="`$prefname`[tel]" prefid="`$prefid`_tel" telid=0 tel=0}
+      {if $address.phones|@count eq 0}
+        <div id="{"`$prefid`_phones_0"}" style="clear: both">
+          {include file="profile/phone.tpl" prefname="`$prefname`[phones]" prefid="`$prefid`_phones" telid=0 tel=0
+                   subField='phones' mainField='addresses' mainId=$i}
         </div>
       {/if}
-      <div id="{$prefid}_tel_add" class="center" style="clear: both; padding-top: 4px">
-        <a href="javascript:addTel('{$prefid}_tel','{$prefname}[tel]')">
+      <div id="{$prefid}_phones_add" class="center" style="clear: both; padding-top: 4px">
+        <a href="javascript:addTel('{$prefid}_phones','{$prefname}[phones]','phones','addresses','{$i}')">
           {icon name=add title="Ajouter un numéro de téléphone"} Ajouter un numéro de téléphone
         </a>
       </div>

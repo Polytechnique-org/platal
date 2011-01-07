@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -187,7 +187,7 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
                               $this->evt);
             list($nom, $diminutif, $evt) = $res->fetchOneRow();
             require_once dirname(__FILE__) . '/../../modules/xnetevents/xnetevents.inc.php';
-            $participants = get_event_participants(get_event_detail($this->evt, false, $this->asso_id), null, 'nom');
+            $participants = get_event_participants(get_event_detail($this->evt, false, $this->asso_id), null);
             foreach ($participants as &$u) {
                 if (!$u['notify_payment']) {
                     continue;

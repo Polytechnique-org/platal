@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -33,8 +33,9 @@ abstract class ProfileField
         Profile::FETCH_MEDALS         => 'ProfileMedals',
         Profile::FETCH_NETWORKING     => 'ProfileNetworking',
         Profile::FETCH_PHONES         => 'ProfilePhones',
-        Profile::FETCH_MENTOR_SECTOR  => 'ProfileMentoringSectors',
         Profile::FETCH_MENTOR_COUNTRY => 'ProfileMentoringCountries',
+        Profile::FETCH_JOB_TERMS      => 'ProfileJobTerms',
+        Profile::FETCH_MENTOR_TERMS   => 'ProfileMentoringTerms',
     );
 
     /** The profile to which this field belongs
@@ -92,6 +93,9 @@ class ProfileFieldIterator implements PlIterator
 
     public function __construct($cls, array $pids, ProfileVisibility $visibility)
     {
+        if (is_numeric($cls) && isset(ProfileField::$fields[$cls])) {
+            $cls = ProfileField::$fields[$cls];
+        }
         $this->data = call_user_func(array($cls, 'fetchData'), $pids, $visibility);
         $this->cls = $cls;
     }
@@ -124,99 +128,6 @@ class ProfileFieldIterator implements PlIterator
 }
 // }}}
 
-// {{{ class Phone
-class Phone
-{
-    const TYPE_FAX    = 'fax';
-    const TYPE_FIXED  = 'fixed';
-    const TYPE_MOBILE = 'mobile';
-    public $type;
-
-    public $search;
-    public $display;
-    public $comment = '';
-
-    const LINK_JOB     = 'pro';
-    const LINK_ADDRESS = 'address';
-    const LINK_PROFILE = 'user';
-    const LINK_COMPANY = 'hq';
-    public $link_type;
-    public $link_id;
-
-    public $id;
-
-    /** Fields are :
-     * $type, $search, $display, $link_type, $link_id, $comment, $pid, $id
-     */
-    public function __construct($data)
-    {
-        foreach ($data as $key => $val) {
-            $this->$key = $val;
-        }
-    }
-
-    /** Returns the unique ID of a phone
-     * This ID will allow to link it to an address, a user or a job
-     * The format is address_addressId_phoneId (where phoneId is the id
-     * of the phone in the list of those associated with the address)
-     */
-    public function uid() {
-        return $this->link_type . '_' . $this->link_id . '_' . $this->id;
-    }
-
-    public function hasFlags($flags) {
-        return $this->hasType($flags) && $this->hasLink($flags);
-    }
-
-    /** Returns true if this phone's type matches the flags
-     */
-    public function hasType($flags) {
-        $flags = $flags & Profile::PHONE_TYPE_ANY;
-        return (
-            ($flags == Profile::PHONE_TYPE_ANY)
-            ||
-            (($flags & Profile::PHONE_TYPE_FAX) && $this->type == self::TYPE_FAX)
-            ||
-            (($flags & Profile::PHONE_TYPE_FIXED) && $this->type == self::TYPE_FIXED)
-            ||
-            (($flags & Profile::PHONE_TYPE_MOBILE) && $this->type == self::TYPE_MOBILE)
-        );
-    }
-
-    /** User accessible version of the type
-     */
-    public function displayType($short = false)
-    {
-        switch ($this->type) {
-          case Phone::TYPE_FIXED:
-            return $short ? 'Tél' : 'Fixe';
-          case Phone::TYPE_FAX:
-            return 'Fax';
-          case Phone::TYPE_MOBILE:
-            return $short ? 'Mob' : 'Mobile';
-          default:
-            return $this->type;
-        }
-    }
-
-    /** Returns true if this phone's link matches the flags
-     */
-    public function hasLink($flags) {
-        $flags = $flags & Profile::PHONE_LINK_ANY;
-        return (
-            ($flags == Profile::PHONE_LINK_ANY)
-            ||
-            (($flags & Profile::PHONE_LINK_COMPANY) && $this->link_type == self::LINK_COMPANY)
-            ||
-            (($flags & Profile::PHONE_LINK_JOB) && $this->link_type == self::LINK_JOB)
-            ||
-            (($flags & Profile::PHONE_LINK_ADDRESS) && $this->link_type == self::LINK_ADDRESS)
-            ||
-            (($flags & Profile::PHONE_LINK_PROFILE) && $this->link_type == self::LINK_PROFILE)
-        );
-    }
-}
-// }}}
 // {{{ class Company
 class Company
 {
@@ -246,7 +157,7 @@ class Company
 
     public function setAddress(Address &$address)
     {
-        if ($address->link_type == Address::LINK_COMPANY && $address->link_id == $this->id) {
+        if ($address->type == Address::LINK_COMPANY && $address->jobid == $this->id) {
             $this->address = $address;
         }
     }
@@ -254,6 +165,17 @@ class Company
 }
 // }}}
 // {{{ class Job
+/** profile_job describes a Job, links to:
+ * - a Profile, through `pid`
+ * - a Company, through `jobid`
+ * The `id` field is the id of this job in the list of the jobs of its profile
+ *
+ * For the documentation of the phone table, please see classes/phone.php.
+ * For the documentation of the address table, please see classes/address.php.
+ *
+ * The possible relations are as follow:
+ * A Job is linked to a Company and a Profile
+ */
 class Job
 {
     public $pid;
@@ -262,16 +184,13 @@ class Job
     public $company = null;
     public $phones = array();
     public $address = null;
+    public $terms = array();
 
     public $jobid;
 
     public $description;
     public $user_site;
     public $user_email;
-
-    public $sector;
-    public $subsector;
-    public $subsubsector;
 
     /** Fields are:
      * pid, id, company_id, description, url, email
@@ -283,9 +202,12 @@ class Job
         }
         $this->company = CompanyList::get($this->jobid);
         if (is_null($this->company)) {
-            require_once 'validations.inc.php';
-            $entreprise = ProfileValidate::get_typed_requests($this->pid, 'entreprise');
-            $this->company = new Company(array('name' =>  $entreprise[$this->id]->name));
+            $entreprises = ProfileValidate::get_typed_requests($this->pid, 'entreprise');
+            foreach ($entreprises as $entreprise) {
+                if ($entreprise->id == $this->id) {
+                    $this->company = new Company(array('name' => $entreprise->name));
+                }
+            }
         }
     }
 
@@ -302,83 +224,39 @@ class Job
     public function addPhone(Phone &$phone)
     {
         if ($phone->link_type == Phone::LINK_JOB && $phone->link_id == $this->id && $phone->pid == $this->pid) {
-            $this->phones[$phone->uid()] = $phone;
+            $this->phones[$phone->uniqueId()] = $phone;
         }
     }
 
     public function setAddress(Address $address)
     {
-        if ($address->link_type == Address::LINK_JOB && $address->link_id == $this->id && $address->pid == $this->pid) {
+        if ($address->type == Address::LINK_JOB && $address->id == $this->id && $address->pid == $this->pid) {
             $this->address = $address;
         }
     }
+
+    public function addTerm(JobTerm &$term)
+    {
+        $this->terms[$term->jtid] = $term;
+    }
 }
 // }}}
-// {{{ class Address
-class Address
+// {{{ class JobTerm
+class JobTerm
 {
-    const LINK_JOB     = 'job';
-    const LINK_COMPANY = 'hq';
-    const LINK_PROFILE = 'home';
-
-    public $flags;
-    public $id; // The ID of the address among those associated with its link
-    public $link_id; // The ID of the object to which the address is linked (profile, job, company)
-    public $link_type;
-
-    public $text;
-    public $postalCode;
-    public $latitude;
-    public $longitude;
-
-    public $locality;
-    public $subAdministrativeArea;
-    public $administrativeArea;
-    public $country;
-
-    public $comment;
-
-    private $phones = array();
+    public $jtid;
+    public $full_name;
+    public $pid;
+    public $jid;
 
     /** Fields are:
-     * pîd, id, link_id, link_type, flags, text, postcode, country
+     * pid, jid, jtid, full_name
      */
     public function __construct($data)
     {
         foreach ($data as $key => $val) {
             $this->$key = $val;
         }
-        $this->flags = new PlFlagSet($this->flags);
-    }
-
-    public function uid() {
-        $uid = $this->link_type . '_';
-        if ($this->link_type != self::LINK_COMPANY) {
-            $uid .= $this->pid . '_';
-        }
-        $uid .= $this->link_id . '_' . $this->id;
-    }
-
-    public function addPhone(Phone &$phone)
-    {
-        if (
-            $phone->link_type == Phone::LINK_ADDRESS && $phone->link_id == $this->id &&
-            ($this->link_type == self::LINK_COMPANY || $phone->pid == $this->pid) ) {
-            $this->phones[$phone->uid()] = $phone;
-        }
-    }
-
-    public function phones()
-    {
-        return $this->phones;
-    }
-
-    public function hasFlag($flag)
-    {
-        if (!$this->flags instanceof PlFlagSet) {
-            $this->flags = new PlFlagSet($this->flags);
-        }
-        return $this->flags->hasFlag($flag);
     }
 }
 // }}}
@@ -460,7 +338,7 @@ class ProfileEducation extends ProfileField
         $data = XDB::iterator('SELECT  pe.id, pe.pid,
                                        pe.entry_year, pe.grad_year, pe.program, pe.flags,
                                        pee.name AS school, pee.abbreviation AS school_short,
-                                       pee.url AS school_url, gc.countryFR AS country,
+                                       pee.url AS school_url, gc.country,
                                        pede.degree, pede.abbreviation AS degree_short, pede.level AS degree_level,
                                        pefe.field
                                  FROM  profile_education AS pe
@@ -596,33 +474,6 @@ class ProfileCorps extends ProfileField
     }
 }
 // }}}
-// {{{ class ProfileMentoringSectors                  [ Field ]
-class ProfileMentoringSectors extends ProfileField
-{
-    public $sectors = array();
-
-    public function __construct(PlInnerSubIterator $it)
-    {
-        $this->pid = $it->value();
-        while ($sector = $it->next()) {
-            $this->sectors[] = $sector;
-        }
-    }
-
-    public static function fetchData(array $pids, ProfileVisibility $visibility)
-    {
-        $data = XDB::iterator('SELECT  pms.pid, pjse.name AS sector, pjsse.name AS subsector
-                                 FROM  profile_mentor_sector AS pms
-                            LEFT JOIN  profile_job_sector_enum AS pjse ON (pjse.id = pms.sectorid)
-                            LEFT JOIN  profile_job_subsector_enum AS pjsse ON (pjsse.id = pms.subsectorid)
-                                WHERE  pms.pid IN {?}
-                             ORDER BY  ' . XDB::formatCustomOrder('pms.pid', $pids),
-                                $pids);
-
-        return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
-    }
-}
-// }}}
 // {{{ class ProfileMentoringCountries                [ Field ]
 class ProfileMentoringCountries extends ProfileField
 {
@@ -638,7 +489,7 @@ class ProfileMentoringCountries extends ProfileField
 
     public static function fetchData(array $pids, ProfileVisibility $visibility)
     {
-        $data = XDB::iterator('SELECT  pmc.pid, pmc.country AS id, gc.countryFR AS name
+        $data = XDB::iterator('SELECT  pmc.pid, pmc.country AS id, gc.country AS name
                                  FROM  profile_mentor_country AS pmc
                             LEFT JOIN  geoloc_countries AS gc ON (gc.iso_3166_1_a2 = pmc.country)
                                 WHERE  pmc.pid IN {?}
@@ -649,136 +500,56 @@ class ProfileMentoringCountries extends ProfileField
     }
 }
 // }}}
-
-/** Loading of data for a Profile :
- * 1) load jobs, addresses, phones
- * 2) attach phones to addresses, jobs and profiles
- * 3) attach addresses to jobs and profiles
- */
-
-// {{{ Database schema (profile_address, profile_phones, profile_jobs)
-/** The database for this is very unclear, so here is a little schema :
- * profile_job describes a Job, links to:
- * - a Profile, through `pid`
- * - a Company, through `jobid`
- * The `id` field is the id of this job in the list of the jobs of its profile
- *
- * profile_addresses describes an Address, which
- * related to either a Profile, a Job or a Company:
- * - for a Profile:
- *   - `type` is set to 'home'
- *   - `pid` is set to the related profile pid
- *   - `id` is the id of the address in the list of those related to that profile
- *   - `jobid` is empty
- *
- * - for a Company:
- *   - `type` is set to 'hq'
- *   - `pid` is set to 0
- *   - `jobid` is set to the id of the company
- *   - `id` is set to 0 (only one address per Company)
- *
- * - for a Job:
- *   - `type` is set to 'job'
- *   - `pid` is set to the pid of the Profile of the related Job
- *   - `jobid` is set to the Company of the job (this information is redundant
- *              with that of the row of profile_job for the related job)
- *   - `id` is the id of the job to which we refer (i.e `profile_job.id`)
- *
- * profile_phone describes a Phone, which can be related to an Address,
- * a Job, a Profile or a Company:
- * - for a Profile:
- *   - `link_type` is set to 'user'
- *   - `link_id` is set to 0
- *   - `pid` is set to the id of the related Profile
- *
- * - for a Company:
- *   - `link_type` is set to 'hq'
- *   - `link_id` is set to the id of the related Company
- *   - `pid` is set to 0
- *
- * - for an Address (this is only possible for a *personal* address)
- *   - `link_type` is set to 'address'
- *   - `link_id` is set to the related Address `id`
- *   - `pid` is set to the related Address `pid`
- *
- * - for a Job:
- *   - `link_type` is set to 'pro'
- *   - `link_id` is set to the related Job `id` (not `jobid`)
- *   - `pid` is set to the related Job `pid`
- *
- *
- * The possible relations are as follow:
- * An Address can be linked to a Company, a Profile, a Job
- * A Job is linked to a Company and a Profile
- * A Phone can be linked to a Company, a Profile, a Job, or a Profile-related Address
- */
-// }}}
-
 // {{{ class ProfileAddresses                         [ Field ]
 class ProfileAddresses extends ProfileField
 {
     private $addresses = array();
 
-    public function __construct(PlIterator $it)
+    public function __construct(PlInnerSubIterator $it)
     {
-        if ($it instanceof PlInnerSubIterator) {
-            $this->pid = $it->value();
-        }
-
-        while ($addr = $it->next()) {
-            $this->addresses[] = new Address($addr);
+        $this->pid = $it->value();
+        while ($address = $it->next()) {
+            $this->addresses[] = new Address($address);
         }
     }
 
     public function get($flags, $limit = null)
     {
-        $res = array();
+        $addresses = array();
         $nb = 0;
-        foreach ($this->addresses as $addr) {
-            if (
-                (($flags & Profile::ADDRESS_MAIN) && $addr->hasFlag('current'))
-                ||
-                (($flags & Profile::ADDRESS_POSTAL) && $addr->hasFlag('mail'))
-                ||
-                (($flags & Profile::ADDRESS_PERSO) && $addr->link_type == Address::LINK_PROFILE)
-                ||
-                (($flags & Profile::ADDRESS_PRO) && $addr->link_type == Address::LINK_JOB)
+        foreach ($this->addresses as $address) {
+            if ((($flags & Profile::ADDRESS_MAIN) && $address->hasFlag('current'))
+                || (($flags & Profile::ADDRESS_POSTAL) && $address->hasFlag('mail'))
+                || (($flags & Profile::ADDRESS_PERSO) && $address->type == Address::LINK_PROFILE)
+                || (($flags & Profile::ADDRESS_PRO) && $address->type == Address::LINK_JOB)
             ) {
-                $res[] = $addr;
-                $nb++;
+                $addresses[] = $address;
+                ++$nb;
             }
             if ($limit != null && $nb == $limit) {
                 break;
             }
         }
-        return $res;
+        return $addresses;
     }
 
     public static function fetchData(array $pids, ProfileVisibility $visibility)
     {
-        $data = XDB::iterator('SELECT  pa.id, pa.pid, pa.flags, pa.type AS link_type,
-                                       IF(pa.type = \'home\', pid, IF(pa.type = \'job\', pa.id, jobid)) AS link_id,
-                                       pa.text, pa.postalCode, pa.latitude, pa.longitude, pa.comment,
-                                       gl.name AS locality, gas.name AS subAdministrativeArea,
-                                       ga.name AS administrativeArea, gc.countryFR AS country
-                                 FROM  profile_addresses AS pa
-                            LEFT JOIN  geoloc_localities AS gl ON (gl.id = pa.localityId)
-                            LEFT JOIN  geoloc_administrativeareas AS ga ON (ga.id = pa.administrativeAreaId)
-                            LEFT JOIN  geoloc_administrativeareas AS gas ON (gas.id = pa.subAdministrativeAreaId)
-                            LEFT JOIN  geoloc_countries AS gc ON (gc.iso_3166_1_a2 = pa.countryId)
-                                WHERE  pa.pid in {?} AND pa.pub IN {?}
-                             ORDER BY  ' . XDB::formatCustomOrder('pid', $pids),
-                               $pids, $visibility->levels());
-
-        return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
+        $it = Address::iterate($pids, array(), array(), $visibility->levels());
+        return PlIteratorUtils::subIterator($it->value(), PlIteratorUtils::arrayValueCallback('pid'));
     }
 
     public function addPhones(ProfilePhones $phones)
     {
         $p = $phones->get(Profile::PHONE_LINK_ADDRESS | Profile::PHONE_TYPE_ANY);
         foreach ($p as $phone) {
-            if ($phone->link_type == Phone::LINK_ADDRESS && array_key_exists($phone->link_id, $this->addresses)) {
-                $this->addresses[$phone->link_id]->addPhone($phone);
+            /* We must iterate on the addresses because id is not uniq thus,
+             * $this->addresse[$phone->link_id] is invalid.
+             */
+            foreach ($this->addresses as $address) {
+                if ($address->type == Address::LINK_PROFILE && $address->id == $phone->link_id) {
+                    $address->addPhone($phone);
+                }
             }
         }
     }
@@ -815,12 +586,8 @@ class ProfilePhones extends ProfileField
 
     public static function fetchData(array $pids, ProfileVisibility $visibility)
     {
-        $data = XDB::iterator('SELECT  tel_type AS type, search_tel AS search, display_tel AS display, link_type, comment, pid, link_id, tel_id AS id
-                                 FROM  profile_phones
-                                WHERE  pid IN {?} AND pub IN {?}
-                             ORDER BY  ' . XDB::formatCustomOrder('pid', $pids),
-                                 $pids, $visibility->levels());
-        return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
+        $it = Phone::iterate($pids, array(), array(), $visibility->levels());
+        return PlIteratorUtils::subIterator($it->value(), PlIteratorUtils::arrayValueCallback('pid'));
     }
 }
 // }}}
@@ -840,17 +607,11 @@ class ProfileJobs extends ProfileField
     public static function fetchData(array $pids, ProfileVisibility $visibility)
     {
         CompanyList::preload($pids);
-        $data = XDB::iterator('SELECT  pj.id, pj.pid, pj.description, pj.url as user_site,
-                                       IF(pj.email_pub IN {?}, pj.email, NULL) AS user_email,
-                                       pj.jobid, pjse.name AS sector, pjsse.name AS subsector,
-                                       pjssse.name AS subsubsector
-                                 FROM  profile_job AS pj
-                            LEFT JOIN  profile_job_sector_enum AS pjse ON (pjse.id = pj.sectorid)
-                            LEFT JOIN  profile_job_subsector_enum AS pjsse ON (pjsse.id = pj.subsectorid)
-                            LEFT JOIN  profile_job_subsubsector_enum AS pjssse ON (pjssse.id = pj.subsubsectorid)
-                                WHERE  pj.pid IN {?} AND pj.pub IN {?}
-                             ORDER BY  ' . XDB::formatCustomOrder('pid', $pids) . ',
-                                       pj.id',
+        $data = XDB::iterator('SELECT  id, pid, description, url as user_site, jobid,
+                                       IF(email_pub IN {?}, email, NULL) AS user_email
+                                 FROM  profile_job
+                                WHERE  pid IN {?} AND pub IN {?}
+                             ORDER BY  ' . XDB::formatCustomOrder('pid', $pids) . ', id',
                                  $visibility->levels(), $pids, $visibility->levels());
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
@@ -883,8 +644,8 @@ class ProfileJobs extends ProfileField
     {
         $a = $addresses->get(Profile::ADDRESS_PRO);
         foreach ($a as $address) {
-            if ($address->link_type == Address::LINK_JOB && array_key_exists($address->link_id, $this->jobs)) {
-                $this->jobs[$address->link_id]->setAddress($address);
+            if ($address->type == Address::LINK_JOB && array_key_exists($address->jobid, $this->jobs)) {
+                $this->jobs[$address->id]->setAddress($address);
             }
         }
     }
@@ -895,9 +656,64 @@ class ProfileJobs extends ProfileField
             $this->company = $companies[$job->jobid];
         }
     }
+
+    public function addJobTerms(ProfileJobTerms $jobterms)
+    {
+        $terms = $jobterms->get();
+        foreach ($terms as $term) {
+            if ($this->pid == $term->pid && array_key_exists($term->jid, $this->jobs)) {
+                $this->jobs[$term->jid]->addTerm(&$term);
+            }
+        }
+    }
 }
 // }}}
+// {{{ class ProfileJobTerms                          [ Field ]
+class ProfileJobTerms extends ProfileField
+{
+    private $jobterms = array();
 
+    public function __construct(PlInnerSubIterator $it)
+    {
+        $this->pid = $it->value();
+        while ($term = $it->next()) {
+            $this->jobterms[] = new JobTerm($term);
+        }
+    }
+
+    public function get()
+    {
+        return $this->jobterms;
+    }
+
+    public static function fetchData(array $pids, ProfileVisibility $visibility)
+    {
+        $data = XDB::iterator('SELECT  jt.jtid, jte.full_name, jt.pid, jt.jid
+                                 FROM  profile_job_term AS jt
+                           INNER JOIN  profile_job AS j ON (jt.pid = j.pid AND jt.jid = j.id)
+                            LEFT JOIN  profile_job_term_enum AS jte USING(jtid)
+                                WHERE  jt.pid IN {?} AND j.pub IN {?}
+                             ORDER BY  ' . XDB::formatCustomOrder('jt.pid', $pids),
+                                 $pids, $visibility->levels());
+        return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
+    }
+}
+// }}}
+// {{{ class ProfileMentoringTerms                    [ Field ]
+class ProfileMentoringTerms extends ProfileJobTerms
+{
+    public static function fetchData(array $pids, ProfileVisibility $visibility)
+    {
+        $data = XDB::iterator('SELECT  mt.jtid, jte.full_name, mt.pid
+                                 FROM  profile_mentor_term AS mt
+                            LEFT JOIN  profile_job_term_enum AS jte USING(jtid)
+                                WHERE  mt.pid IN {?}
+                             ORDER BY  ' . XDB::formatCustomOrder('mt.pid', $pids),
+                                $pids);
+        return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
+    }
+}
+// }}}
 // {{{ class CompanyList
 class CompanyList
 {
@@ -938,13 +754,9 @@ class CompanyList
 
         // Add phones to hq
         if (count($newcompanies)) {
-            $it = XDB::iterator('SELECT  search_tel AS search, display_tel AS display, comment, link_id, tel_type AS type, link_type, tel_id AS id
-                                   FROM  profile_phones
-                                  WHERE  link_id IN {?} AND link_type = \'hq\'',
-                                    $newcompanies);
-            while ($row = $it->next()) {
-                $p = new Phone($row);
-                self::$companies[$row['link_id']]->setPhone($p);
+            $it = Phone::iterate(array(), array(Phone::LINK_COMPANY), $newcompanies);
+            while ($phone = $it->next()) {
+                self::$companies[$phone->link_id]->setPhone($phone);
             }
         }
 
@@ -958,7 +770,10 @@ class CompanyList
         if (!array_key_exists($id, self::$companies)) {
             self::preload();
         }
-        return self::$companies[$id];
+        if (isset(self::$companies[$id])) {
+            return self::$companies[$id];
+        }
+        return null;
     }
 }
 

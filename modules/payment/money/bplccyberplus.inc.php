@@ -19,19 +19,18 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-/*
-    Numéros de cartes de test :
-    Commerçant non enrôlé 3D-Secure
-    4970 1000 0000 0003 Paiement accepté (autorisation accordée)
-    Commerçant enrôlé 3D-Secure
-    4970 1000 0000 0000 Paiement accepté avec authentification internaute
-    4970 1000 0000 0001 Paiement accepté sans authentification internaute (Internaute non enrôlé 3D-Secure)
-    4970 1000 0000 0002 contacter l'émetteur de carte (Transaction à forcer). Authentification réalisée avec succès.
-    4970 1000 0000 0006 Problème technique lors du calcul de la garantie de paiement
-    4970 1000 0000 0007 Problème technique lors de l’authentification porteur
-    4970 1000 0000 0097 Paiement refusé pour cause d’authentification 3D-Secure échouée (l'internaute n'est pas parvenu à s'authentifier)
-    4970 1000 0000 0098 Paiement refusé (autorisation refusée pour cause de plafond dépassé)
-    4970 1000 0000 0099 Paiement refusé (autorisation refusée suite à erreur dans le cryptogramme visuel saisi)
+/** Card numbers for tests.
+ * Non 3D-Secure shop:
+ *  4970 1000 0000 0003 Payment accepted (authorized)
+ * 3D-Secure shop:
+ *  4970 1000 0000 0000 Payment accepted, with user authentication.
+ *  4970 1000 0000 0001 Payment accepted, without user authentication (non 3D-Secure user).
+ *  4970 1000 0000 0002 Must contact card issuer (which must force transaction). Succesful authentication.
+ *  4970 1000 0000 0006 Technical issue while computing payment warranty.
+ *  4970 1000 0000 0007 Technical issue during user authentication.
+ *  4970 1000 0000 0097 Payment refused due to 3D-Secure authentication failure (user failed to authenticate).
+ *  4970 1000 0000 0098 Payment refused (user credit limit overrun).
+ *  4970 1000 0000 0099 Payment refused (invalid credit card visual cryptogramm).
 */
 
 class BPLCCyberPlus
@@ -49,11 +48,11 @@ class BPLCCyberPlus
 
     function BPLCCyberPlus($val)
     {
-        // SVA : nombre de chiffres apr�s la virgule d�pendant de currency ?
+        // Improvement: number of digits after the coma might depend from the currency.
         $this->val = 100 * strtr(sprintf("%.02f", (float)$val), '.', ',');
     }
 
-	// }}}
+    // }}}
     // {{{ function form()
 
     function prepareform(&$pay)
@@ -61,14 +60,14 @@ class BPLCCyberPlus
         global $globals, $platal;
         $log = S::v('log');
 
-        // on constuit la reference de la transaction
+        // Transaction's reference computation.
         $prefix = ($pay->flags->hasflag('unique')) ? str_pad("",15,"0") : rand_url_id();
         $fullref = substr("$prefix-{$pay->id}",-12); // FIXME : check for duplicates
         $ts = time();
-		$trans_date = date("YmdHis", $ts);
-		$trans_id = date("His", $ts); // FIXME : check for duplicates
-               			   			
-        // contenu du formulaire
+        $trans_date = date("YmdHis", $ts);
+        $trans_id = date("His", $ts); // FIXME : check for duplicates
+
+        // Form's content.
         $this->urlform = "https://systempay.cyberpluspaiement.com/vads-payment/";
         $this->infos['commercant'] = Array(
             'vads_site_id' => $globals->money->cyperplus_account,
@@ -81,8 +80,8 @@ class BPLCCyberPlus
         $this->infos['commande'] = Array(
             'vads_amount' => $this->val,
             'vads_currency' => '978', # Euro
-        	'vads_payment_config' => 'SINGLE',
-        	'vads_trans_date' => $trans_date,
+            'vads_payment_config' => 'SINGLE',
+            'vads_trans_date' => $trans_date,
             'vads_trans_id' => $trans_id,
             'vads_order_id' => $fullref,
             'vads_order_info' => Env::v('comment'));
@@ -92,7 +91,7 @@ class BPLCCyberPlus
             'vads_page_action' => 'PAYMENT',
             'vads_action_mode' => 'INTERACTIVE');
 
-        // calcul de la cl� d'acceptation en entr�e
+        // Entry key computation.
         $all_params = array_merge($this->infos['commercant'],$this->infos['client'],$this->infos['commande'],$this->infos['divers']);
         ksort($all_params);
         $this->infos['divers']['signature'] = sha1(join('+',$all_params).'+'.$globals->money->cyperplus_key);

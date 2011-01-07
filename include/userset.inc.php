@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -45,74 +45,51 @@ class ProfileSet extends PlSet
     }
 }
 
+require_once "ufbuilder.inc.php";
+
 class SearchSet extends ProfileSet
 {
-    public  $advanced = false;
-    private $score    = null;
-    private $quick    = false;
+    protected $score    = null;
+    protected $valid    = true;
 
-    public function __construct($quick = false, $no_search = false, PlFilterCondition $cond = null)
+    public function __construct(UserFilterBuilder &$ufb, PlFilterCondition $cond = null)
     {
-        if ($no_search) {
-            return;
-        }
-
-        $this->quick = $quick;
-
         if (is_null($cond)) {
-            $this->conds = new PFC_And();
+            $conds = new PFC_And();
         } else if ($cond instanceof PFC_And) {
-            $this->conds = $cond;
+            $conds = $cond;
         } else {
-            $this->conds = new PFC_And($cond);
+            $conds = new PFC_And($cond);
         }
-
-        if ($quick) {
-            $this->getQuick();
-        } else {
-            $this->getAdvanced();
-        }
-    }
-
-    private function getQuick()
-    {
-        if (!S::logged()) {
-            Env::kill('with_soundex');
-        }
-
-        require_once 'ufbuilder.inc.php';
-        $ufb = new UFB_QuickSearch();
 
         if (!$ufb->isValid()) {
+            $this->valid = false;
             return;
         }
 
         $ufc = $ufb->getUFC();
-        $this->conds->addChild($ufc);
+        $conds->addChild($ufc);
 
         $orders = $ufb->getOrders();
 
-        if (S::logged() && Env::has('nonins')) {
-            $this->conds = new PFC_And($this->conds,
-                new PFC_Not(new UFC_Dead()),
-                new PFC_Not(new UFC_Registered())
-            );
-        }
-
-        parent::__construct($this->conds, $orders);
+        parent::__construct($conds, $orders);
     }
 
-    private function getAdvanced()
+    public function isValid()
     {
-        $this->advanced = true;
-        require_once 'ufbuilder.inc.php';
-        $ufb = new UFB_AdvancedSearch();
+        return $this->valid;
+    }
 
-        if (!$ufb->isValid()) {
-            return;
+    /** Add a "rechercher=Chercher" field to the query to simulate the POST
+     * behaviour.
+     */
+    public function args()
+    {
+        $args = parent::args();
+        if (!isset($args['rechercher'])) {
+            $args['rechercher'] = 'Chercher';
         }
-
-        $this->conds->addChild($ufb->getUFC());
+        return $args;
     }
 
     protected function &getFilterResults(PlFilter &$pf, PlLimit $limit)
@@ -122,6 +99,32 @@ class SearchSet extends ProfileSet
     }
 }
 
+// Specialized SearchSet for quick search.
+class QuickSearchSet extends SearchSet
+{
+    public function __construct(PlFilterCondition $cond = null)
+    {
+        if (!S::logged()) {
+            Env::kill('with_soundex');
+        }
+
+        parent::__construct(new UFB_QuickSearch(), $cond);
+    }
+}
+
+// Specialized SearchSet for advanced search.
+class AdvancedSearchSet extends SearchSet
+{
+    public function __construct($xorg_admin_fields, $ax_admin_fields,
+                                PlFilterCondition $cond = null)
+    {
+        parent::__construct(new UFB_AdvancedSearch($xorg_admin_fields, $ax_admin_fields),
+                            $cond);
+    }
+}
+
+/** Simple set based on an array of User objects
+ */
 class ArraySet extends ProfileSet
 {
     public function __construct(array $users)
@@ -136,6 +139,9 @@ class ArraySet extends ProfileSet
     }
 }
 
+/** A multipage view for profiles
+ * Allows the display of bounds when sorting by name or promo.
+ */
 abstract class ProfileView extends MultipageView
 {
     protected function getBoundValue($obj)
@@ -172,11 +178,21 @@ abstract class ProfileView extends MultipageView
     }
 }
 
+/** An extended multipage view for profiles, as minifiches.
+ * Allows to sort by:
+ * - score (for a search query)
+ * - name
+ * - promo
+ * - latest modification
+ *
+ * Paramaters for this view are:
+ * - with_score: whether to allow ordering by score (set only for a quick search)
+ * - starts_with: show only names beginning with the given letter
+ */
 class MinificheView extends ProfileView
 {
-    public function __construct(PlSet &$set, $data, array $params)
+    public function __construct(PlSet &$set, array $params)
     {
-        require_once 'education.func.inc.php';
         global $globals;
         $this->entriesPerPage = $globals->search->per_page;
         if (@$params['with_score']) {
@@ -200,7 +216,21 @@ class MinificheView extends ProfileView
                     new UFO_Promo(UserFilter::DISPLAY, true),
                     new UFO_Name(Profile::DN_SORT),
                 ), 'dernière modification'));
-        parent::__construct($set, $data, $params);
+        parent::__construct($set, $params);
+    }
+
+    public function apply(PlPage &$page)
+    {
+        if (array_key_exists('starts_with', $this->params)
+            && $this->params['starts_with'] != ""
+            && $this->params['starts_with'] != null) {
+
+            $this->set->addCond(
+                new UFC_Name(Profile::LASTNAME,
+                    $this->params['starts_with'], UFC_Name::PREFIX)
+            );
+        }
+        return parent::apply($page);
     }
 
     public function templateName()
@@ -211,7 +241,7 @@ class MinificheView extends ProfileView
 
 class MentorView extends ProfileView
 {
-    public function __construct(PlSet &$set, $data, array $params)
+    public function __construct(PlSet &$set, array $params)
     {
         $this->entriesPerPage = 10;
         $this->addSort(new PlViewOrder('rand', array(new PFO_Random(S::i('uid'))), 'aléatoirement'));
@@ -225,7 +255,7 @@ class MentorView extends ProfileView
                     new UFO_Promo(UserFilter::DISPLAY, true),
                     new UFO_Name(Profile::DN_SORT),
                 ), 'dernière modification'));
-        parent::__construct($set, $data, $params);
+        parent::__construct($set, $params);
     }
 
     public function templateName()
@@ -236,7 +266,7 @@ class MentorView extends ProfileView
 
 class TrombiView extends ProfileView
 {
-    public function __construct(PlSet &$set, $data, array $params)
+    public function __construct(PlSet &$set, array $params)
     {
         $this->entriesPerPage = 24;
         $this->defaultkey = 'name';
@@ -254,7 +284,7 @@ class TrombiView extends ProfileView
                         new UFO_Promo(UserFilter::DISPLAY, true),
                         new UFO_Name(Profile::DN_SORT),
                     ), 'promotion'));
-        parent::__construct($set, $data, $params);
+        parent::__construct($set, $params);
     }
 
     public function templateName()
@@ -274,7 +304,7 @@ class TrombiView extends ProfileView
 
 class GadgetView implements PlView
 {
-    public function __construct(PlSet &$set, $data, array $params)
+    public function __construct(PlSet &$set, array $params)
     {
         $this->set =& $set;
     }
@@ -287,6 +317,41 @@ class GadgetView implements PlView
     public function args()
     {
         return null;
+    }
+}
+
+class AddressesView implements PlView
+{
+    private $set;
+
+    public function __construct(PlSet &$set, array $params)
+    {
+        $this->set =& $set;
+    }
+
+    public function apply(PlPage &$page)
+    {
+        $pids = $this->set->getIds(new PlLimit());
+        $visibility = new ProfileVisibility(ProfileVisibility::VIS_AX);
+        pl_content_headers('text/x-csv');
+
+        $csv = fopen('php://output', 'w');
+        fputcsv($csv, array('adresses'), ';');
+        $res = XDB::query('SELECT  pd.public_name, pa.postalText
+                             FROM  profile_addresses AS pa
+                       INNER JOIN  profile_display   AS pd ON (pd.pid = pa.pid)
+                            WHERE  pa.type = \'home\' AND pa.pub IN (\'public\', \'ax\') AND FIND_IN_SET(\'mail\', pa.flags) AND pa.pid IN {?}
+                         GROUP BY  pa.pid', $pids);
+        foreach ($res->fetchAllAssoc() as $item) {
+            fputcsv($csv, $item, ';');
+        }
+        fclose($csv);
+        exit();
+    }
+
+    public function args()
+    {
+        return $this->set->args();
     }
 }
 

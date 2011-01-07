@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -34,8 +34,9 @@ function __autoload($cls)
         } else if (substr($cls, 0, 3) == 'de_') {
             __autoload('direnum');
             return;
-        } else if (substr($cls, -3, 3) == 'req') {
-            include 'validations.inc.php';
+        } else if ($cls == 'validate' || substr($cls, -3, 3) == 'req'
+                   || substr($cls, -8, 8) == 'validate' || substr($cls, 0, 8) == 'validate') {
+            require_once 'validations.inc.php';
             return;
         } else if (substr($cls, 0, 6) == 'banana') {
             require_once 'banana/hooks.inc.php';
@@ -45,6 +46,7 @@ function __autoload($cls)
         include "$cls.inc.php";
     }
 }
+
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -21,23 +21,29 @@
 var is_IE       = $.browser.msie;
 
 // {{{ function getNow()
+var days   = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+var months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet',
+              'août', 'septembre', 'octobre', 'novembre', 'décembre']
 
 function getNow() {
-    dt = new Date();
-    dy = dt.getDay();
-    mh = dt.getMonth();
-    wd = dt.getDate();
-    yr = dt.getYear();
+    var dt = new Date();
+    var dy = dt.getDay();
+    var mh = dt.getMonth();
+    var wd = dt.getDate();
+    var yr = dt.getYear();
     if (yr<1000) yr += 1900;
-    hr = dt.getHours();
-    mi = dt.getMinutes();
+    var hr = dt.getHours();
+    var mi = dt.getMinutes();
+    if (mi < 10) {
+        mi = '0' + mi;
+    }
+    var se = dt.getSeconds();
+    if (se < 10) {
+        se = '0' + se;
+    }
 
-    time   = (mi < 10) ? hr +':0'+mi : hr+':'+mi;
-    days   = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
-    months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet',
-           'août', 'septembre', 'octobre', 'novembre', 'décembre']
-
-    return days[dy]+' '+wd+' '+months[mh]+' '+yr+'<br />'+time;
+    $(".date-heure").html(days[dy] + ' ' + wd + ' ' + months[mh] + ' ' + yr + '<br />'
+                        + hr + ':' + mi + ':' + se);
 }
 
 // }}}
@@ -123,15 +129,6 @@ RegExp.escape = function(text) {
  * POPUP THINGS
  */
 
-// {{{ function popWin()
-
-function popWin(theNode, w, h) {
-    window.open(theNode.href, '_blank',
-        'toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width='+w+',height='+h);
-    return false;
-}
-
-// }}}
 // {{{ function goodiesPopup()
 
 var __goodies_active = true;
@@ -205,53 +202,53 @@ function goodiesPopup(node, goodies) {
 // {{{ function auto_links()
 
 function auto_links() {
-    url  = document.URL;
-    fqdn = url.replace(/^https?:\/\/([^\/]*)\/.*$/,'$1');
-    light = (url.indexOf('display=light') > url.indexOf('?'));
-    resource_page = (url.indexOf('rss') > -1 || url.indexOf('ical') > -1);
+    var url  = document.URL;
+    var fqdn = url.replace(/^https?:\/\/([^\/]*)\/.*$/,'$1');
+    var light = (url.indexOf('display=light') > url.indexOf('?'));
+    var resource_page = (url.indexOf('rss') > -1 || url.indexOf('ical') > -1);
 
-    $("a,link").each(
-        function(i) {
-            node = $(this);
-            href =  this.href;
-            if(!href || node.hasClass('xdx')
-               || href.indexOf('mailto:') > -1 || href.indexOf('javascript:') > -1) {
-                return;
-            }
-            if ((href.indexOf(fqdn) < 0 && this.className.indexOf('popup') < 0) || node.hasClass('popup')) {
-                node.click(function () { window.open(this.href); return false; });
-            }
-            if (href.indexOf(fqdn) > -1 && light) {
-                href = href.replace(/([^\#\?]*)\??([^\#]*)(\#.*)?/, "$1?display=light&$2$3");
-                this.href = href;
-            }
-            rss  = href.indexOf('rss') > -1;
-            ical = href.indexOf('ical') > -1;
-            if (rss || ical) {
-                if (href.indexOf('http') < 0) {
-                    href = 'http://' + fqdn + '/' + href;
-                }
-            }
-            if (this.nodeName.toLowerCase() == 'a' && !resource_page) {
-                if (rss && href.indexOf('prefs/rss') < 0 &&  (href.indexOf('xml') > -1 || href.indexOf('hash'))) {
-                    goodiesPopup(this, __goodies_rss);
-                } else if (ical) {
-                    goodiesPopup(this, __goodies_ical);
-                }
-            }
-            if(matches = (/^popup_([0-9]*)x([0-9]*)$/).exec(this.className)) {
-                var w = matches[1], h = matches[2];
-                node.click(function() { return popWin(this, w, h); });
+    $("a,link").each(function(i) {
+        var node = $(this);
+        var href = this.href;
+        if(!href || node.hasClass('xdx')
+           || href.indexOf('mailto:') > -1 || href.indexOf('javascript:') > -1) {
+            return;
+        }
+        if ((href.indexOf(fqdn) < 0 && this.className.indexOf('popup') < 0) || node.hasClass('popup')) {
+            node.click(function () {
+                window.open(href);
+                return false;
+            });
+        }
+        if (href.indexOf(fqdn) > -1 && light) {
+            href = href.replace(/([^\#\?]*)\??([^\#]*)(\#.*)?/, "$1?display=light&$2$3");
+            this.href = href;
+        }
+        var rss  = href.indexOf('rss') > -1;
+        var ical = href.indexOf('ical') > -1;
+        if (rss || ical) {
+            if (href.indexOf('http') < 0) {
+                href = 'http://' + fqdn + '/' + href;
             }
         }
-    );
-    $('.popup2').click(function() { return popWin(this, 840, 600); });
-    $('.popup3').click(function() { return popWin(this, 640, 800); });
+        if (this.nodeName.toLowerCase() == 'a' && !resource_page) {
+            if (rss && href.indexOf('prefs/rss') < 0 &&  (href.indexOf('xml') > -1 || href.indexOf('hash'))) {
+                goodiesPopup(this, __goodies_rss);
+            } else if (ical) {
+                goodiesPopup(this, __goodies_ical);
+            }
+        }
+        if(matches = (/^popup_([0-9]*)x([0-9]*)$/).exec(this.className)) {
+            var w = matches[1], h = matches[2];
+            node.popWin(w, h);
+        }
+    });
+    $('.popup2').popWin(840, 600);
+    $('.popup3').popWin(640, 800);
 }
 
 
 // }}}
-
 
 /***************************************************************************
  * Password check
@@ -353,12 +350,193 @@ function checkPassword(box, okLabel) {
 }
 
 // }}}
+// {{{ jQuery object extension
+
+(function($) {
+    /* Add new functions to jQuery namesapce */
+    $.extend({
+        /* The goal of the following functions is to provide an AJAX API that
+         * take a different callback in case of HTTP success code (2XX) and in
+         * other cases.
+         */
+
+        xajax: function(source, method, data, onSuccess, onError, type) {
+            /* Shift argument */
+            if ($.isFunction(data)) {
+                type = type || onError;
+                onError = onSuccess;
+                onSuccess = data;
+                data = null;
+            }
+            if (onError != null && !$.isFunction(onError)) {
+                type = type || onError;
+                onError = null;
+            }
+
+            function ajaxHandler(data, textStatus, xhr) {
+                if (textStatus == 'success') {
+                    if (onSuccess) {
+                        onSuccess(data, textStatus, xhr);
+                    }
+                } else if (textStatus == 'error') {
+                    if (onError) {
+                        onError(data, textStatus, xhr);
+                    } else {
+                        alert("Une error s'est produite lors du traitement de la requête.\n"
+                            + "Ta session a peut-être expiré");
+                    }
+                }
+            }
+            return $.ajax({
+                url: source,
+                type: method,
+                success: ajaxHandler,
+                data : data,
+                dataType: type
+            });
+        },
+
+        xget: function(source, data, onSuccess, onError, type) {
+            return $.xajax(source, 'GET', data, onSuccess, onError, type);
+        },
+
+        xgetJSON: function(source, data, onSuccess, onError) {
+            return $.xget(source, data, onSuccess, onError, 'json');
+        },
+
+        xgetScript: function(source, onSuccess, onError) {
+            return $.xget(source, null, onSuccess, onError, 'script');
+        },
+
+        xgetText: function(source, data, onSuccess, onError) {
+            return $.xget(source, data, onSuccess, onError, 'text');
+        },
+
+        xpost: function(source, data, onSuccess, onError, type) {
+            return $.xajax(source, 'POST', data, onSuccess, onError, type);
+        }
+    });
+
+    /* Add new functions to jQuery objects */
+    $.fn.extend({
+        tmpMessage: function(message, success) {
+            if (success) {
+                this.html("<img src='images/icons/wand.gif' alt='' /> " + message)
+                    .css('color', 'green');
+            } else {
+                this.html("<img src='images/icons/error.gif' alt='' /> " + message)
+                    .css('color', 'red');
+            }
+            return this.css('fontWeight', 'bold')
+                       .show()
+                       .delay(1000)
+                       .fadeOut(500);
+        },
+
+        updateHtml: function(source, callback) {
+            var elements = this;
+            function handler(data) {
+                elements.html(data);
+                if (callback) {
+                    callback(data);
+                }
+            }
+            $.xget(source, handler, 'text');
+            return this;
+        },
+
+        successMessage: function(source, message) {
+            var elements = this;
+            $.xget(source, function() {
+                elements.tmpMessage(message, true);
+            });
+            return this;
+        },
+
+        wiki: function(text, withTitle) {
+            if (text == '') {
+                return this.html('');
+            }
+            var url = 'wiki_preview';
+            if (!withTitle) {
+                url += '/notitile';
+            }
+            var $this = this;
+            $.post(url, { text: text },
+                   function (data) {
+                       $this.html(data);
+                   }, 'text');
+            return this;
+        },
+
+        popWin: function(w, h) {
+            return this.click(function() {
+                window.open(this.href, '_blank',
+                            'toolbar=0,location=0,directories=0,status=0,'
+                           +'menubar=0,scrollbars=1,resizable=1,'
+                           +'width='+w+',height='+h);
+                return false;
+            });
+        }
+    });
+})(jQuery);
+
+// }}}
+// {{{ preview wiki
+
+function previewWiki(idFrom, idTo, withTitle, idShow)
+{
+    $('#' + idTo).wiki($('#' + idFrom).val(), withTitle);
+    if (idShow != null) {
+        $('#' + idShow).show();
+    }
+}
+
+// }}}
+// {{{ send test email
+
+function sendTestEmail(token, hruid)
+{
+    var url = 'emails/test';
+    var msg = "Un email a été envoyé avec succès";
+    if (hruid != null) {
+        url += '/' + hruid;
+        msg += " sur l'adresse de " + hruid + ".";
+    } else {
+        msg += " sur ton addresse.";
+    }
+    $('#mail_sent').successMessage($url + '?token=' + token, msg);
+    return false;
+}
+
+// }}}
 
 
 /***************************************************************************
  * The real OnLoad
  */
 
-$(document).ready(auto_links);
+$(document).ready(function() {
+    auto_links();
+    getNow();
+    setInterval(getNow, 1000);
+    $("#quick")
+        .focus(function() {
+            if ($(this).val() === 'Recherche dans l\'annuaire') {
+                $(this).val('');
+            }
+            $("#quick_button").show();
+        })
+        .blur(function() {
+            $("#quick_button").hide();
+        });
+    $("#quick_button").click(function() {
+        if ($("#quick").val() === 'Recherche dans l\'annuaire'
+            || $("#quick").val() === '') {
+            return false;
+        }
+        return true;
+    });
+});
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

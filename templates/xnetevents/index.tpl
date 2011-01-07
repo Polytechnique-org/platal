@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -97,7 +97,7 @@
 
   <tr>
     <td class="titre">Annonceur&nbsp;:</td>
-    <td>{profile user=$e.organisateur_uid promo=true groupperms=false}</td>
+    <td>{profile user=$e.uid promo=true groupperms=false}</td>
   </tr>
 
   {if $is_admin || $e.show_participants || ($e.deadline_inscription && $e.inscr_open)}

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -131,8 +131,8 @@ class AXLetter extends MassMailer
     static public function subscribe($uid = null)
     {
         $user = is_null($uid) ? S::v('uid') : $uid;
-        XDB::execute("REPLACE INTO  axletter_ins (uid,last)
-                            VALUES  ({?}, 0)", $user);
+        XDB::execute('INSERT IGNORE INTO  axletter_ins (uid, last)
+                                  VALUES  ({?}, 0)', $user);
     }
 
     static public function hasPerms()
@@ -178,10 +178,10 @@ class AXLetter extends MassMailer
         /* TODO: refines this filter on promotions by using userfilter. */
         $where = array();
         if ($this->_promo_min) {
-            $where[] = "((ni.uid = 0 AND ni.promo >= {$this->_promo_min}) OR (ni.uid != 0 AND u.promo >= {$this->_promo_min}))";
+            $where[] = "((ni.uid = 0 AND ni.promo >= {$this->_promo_min}) OR (ni.uid != 0 AND pd.promo >= 'X{$this->_promo_min}'))";
         }
         if ($this->_promo_max) {
-            $where[] = "((ni.uid = 0 AND ni.promo <= {$this->_promo_max}) OR (ni.uid != 0 AND u.promo <= {$this->_promo_max}))";
+            $where[] = "((ni.uid = 0 AND ni.promo <= {$this->_promo_max}) OR (ni.uid != 0 AND pd.promo <= 'X{$this->_promo_max}'))";
         }
         if ($this->_subset) {
             require_once("emails.inc.php");

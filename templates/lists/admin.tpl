@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -36,6 +36,7 @@ L'icône {icon name=cross title='retirer membre'} permet de désinscrire de la l
 qui y était abonné.
 </p>
 
+{if t($unregistered)}
 {if $unregistered|@count neq 0}
 <h1>Marketing d'utilisateurs non-inscrits</h1>
 
@@ -98,6 +99,7 @@ emails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la
 </p>
 
 {/if}
+{/if}
 
 <h1>
   modérateurs de la liste
@@ -106,29 +108,10 @@ emails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la
 <form method='post' action='{$smarty.server.REQUEST_URI}'>
   {xsrf_token_field}
   <table class='tinybicol' cellpadding='0' cellspacing='0'>
-    {foreach from=$owners item=xs key=promo}
-    <tr>
-      <td class='titre'>{if $promo}{$promo}{else}non-X{/if}</td>
-      <td>
-        {foreach from=$xs item=x}
-        {if $promo && strpos($x.l, '@') === false}
-        <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
-        {elseif $x.x}
-        <a href="{$platal->ns}member/{$x.x}">{if $x.n|trim}{$x.n}{else}{$x.l}{/if}</a>
-        {elseif $x.n}
-        {$x.n}
-        {else}
-        {$x.l}
-        {/if}
-        <a href='{$platal->pl_self(1)}?del_owner={$x.l}&amp;token={xsrf_token}'>{icon name=cross title='retirer modérateur'}</a>
-        <br />
-        {/foreach}
-      </td>
-    </tr>
-    {/foreach}
+    {include file='lists/display_list.tpl' list=$owners delete='del_owner' no_sort_key='' promo=true}
     <tr class="pair">
       <td class='titre'>Ajouter</td>
-      <td>
+      <td colspan="2">
         <input type='text' size='30' name='add_owner' />
         <input type='submit' value='ajouter' />
       </td>
@@ -144,43 +127,24 @@ emails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la
 <form method='post' action='{$smarty.server.REQUEST_URI}' enctype="multipart/form-data">
   {xsrf_token_field}
   <table class='bicol' cellpadding='0' cellspacing='0'>
-    {foreach from=$members item=xs key=promo}
+    {include file='lists/display_list.tpl' list=$members delete='del_member' no_sort_key='' promo=true}
     <tr>
-      <td class='titre'>{if $promo}{$promo}{else}non-X{/if}</td>
-      <td>
-        {foreach from=$xs item=x}
-        {if $promo && strpos($x.l, '@') === false}
-        <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
-        {elseif $x.x}
-        <a href="{$platal->ns}member/{$x.x}">{if $x.n|trim}{$x.n}{else}{$x.l}{/if}</a>
-        {elseif $x.n}
-        {$x.n}
-        {else}
-        {$x.l}
-        {/if}
-        <a href='{$platal->pl_self(1)}?del_member={$x.l}&amp;token={xsrf_token}'>{icon name=cross title='retirer membre'}</a>
-        <br />
-        {/foreach}
-      </td>
-    </tr>
-    {/foreach}
-    <tr>
-      <th colspan="2">Ajouter</th>
+      <th colspan="3">Ajouter</th>
     </tr>
     <tr class="pair">
       <td class="titre">Liste</td>
-      <td>
+      <td colspan="2">
         <input type='text' size='40' name='add_member' />
       </td>
     </tr>
     <tr class="pair">
       <td class="titre">ou fichier(*)</td>
-      <td>
+      <td colspan="2">
         <input type="file" name="add_member_file" />*
       </td>
     </tr>
     <tr class="pair">
-      <td colspan="2" class="center">
+      <td colspan="3" class="center">
         <input type='submit' value='ajouter' />
       </td>
     </tr>

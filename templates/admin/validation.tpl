@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -37,7 +37,7 @@ function toggleField(name, id, obj) {
 
 {iterate item=valid from=$vit}
 {assign var=type value=$valid->type}
-{if !$hide_requests[$type]}
+{if !t($hide_requests[$type]) && !($valid->requireAdmin && !$isAdmin)}
 <br />
 <table class="bicol">
   <tr>
@@ -192,7 +192,7 @@ function toggleField(name, id, obj) {
 
 <form action="admin/validate" method="post">
   {foreach from=$categories item=type}
-    <div style="float:left;width:33%"><input type="checkbox" name="{$type}" id="hide_{$type}"{if !$hide_requests[$type]} checked="checked"{/if}/>
+    <div style="float:left;width:33%"><input type="checkbox" name="{$type}" id="hide_{$type}"{if !t($hide_requests[$type])} checked="checked"{/if}/>
     <label for="hide_{$type}">{$type}</label></div>
   {/foreach}
   <div class="center" style="clear:left"><input type="submit" name="hide" value="Valider" /></div>

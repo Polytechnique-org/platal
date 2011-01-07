@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -28,7 +28,7 @@ class Xorg extends Platal
                             'profile', 'register', 'search', 'stats', 'admin',
                             'newsletter', 'axletter', 'bandeau', 'survey',
                             'fusionax', 'gadgets', 'googleapps', 'poison',
-                            'openid', 'reminder');
+                            'openid', 'reminder', 'api');
     }
 
     public function find_hook()

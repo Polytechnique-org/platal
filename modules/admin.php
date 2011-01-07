@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -25,7 +25,8 @@ class AdminModule extends PLModule
     {
         return array(
             'phpinfo'                      => $this->make_hook('phpinfo',                AUTH_MDP, 'admin'),
-            'get_rights'                   => $this->make_hook('get_rights',             AUTH_MDP, 'admin'),
+            'get_rights'                   => $this->make_hook('get_rights',             AUTH_COOKIE, 'admin'),
+            'set_skin'                     => $this->make_hook('set_skin',               AUTH_COOKIE, 'admin'),
             'admin'                        => $this->make_hook('default',                AUTH_MDP, 'admin'),
             'admin/dead-but-active'        => $this->make_hook('dead_but_active',        AUTH_MDP, 'admin'),
             'admin/deaths'                 => $this->make_hook('deaths',                 AUTH_MDP, 'admin'),
@@ -41,14 +42,17 @@ class AdminModule extends PLModule
             'admin/skins'                  => $this->make_hook('skins',                  AUTH_MDP, 'admin'),
             'admin/user'                   => $this->make_hook('user',                   AUTH_MDP, 'admin'),
             'admin/add_accounts'           => $this->make_hook('add_accounts',           AUTH_MDP, 'admin'),
-            'admin/validate'               => $this->make_hook('validate',               AUTH_MDP, 'admin'),
+            'admin/validate'               => $this->make_hook('validate',               AUTH_MDP, 'admin,edit_directory'),
             'admin/validate/answers'       => $this->make_hook('validate_answers',       AUTH_MDP, 'admin'),
             'admin/wiki'                   => $this->make_hook('wiki',                   AUTH_MDP, 'admin'),
             'admin/ipwatch'                => $this->make_hook('ipwatch',                AUTH_MDP, 'admin'),
             'admin/icons'                  => $this->make_hook('icons',                  AUTH_MDP, 'admin'),
+            'admin/geocoding'              => $this->make_hook('geocoding',              AUTH_MDP, 'admin'),
             'admin/accounts'               => $this->make_hook('accounts',               AUTH_MDP, 'admin'),
+            'admin/account/watch'          => $this->make_hook('account_watch',          AUTH_MDP, 'admin'),
             'admin/account/types'          => $this->make_hook('account_types',          AUTH_MDP, 'admin'),
-            'admin/jobs'                   => $this->make_hook('jobs',                   AUTH_MDP, 'admin'),
+            'admin/jobs'                   => $this->make_hook('jobs',                   AUTH_MDP, 'admin,edit_directory'),
+            'admin/profile'                => $this->make_hook('profile',                AUTH_MDP, 'admin,edit_directory')
         );
     }
 
@@ -58,15 +62,39 @@ class AdminModule extends PLModule
         exit;
     }
 
-    function handler_get_rights(&$page, $level)
+    function handler_get_rights(&$page)
     {
         if (S::suid()) {
             $page->kill('Déjà en SUID');
         }
-        $user =& S::user();
-        Platal::session()->startSUID($user, $level);
+        S::assert_xsrf_token();
+        $level = Post::s('account_type');
+        if ($level != 'admin') {
+            $user = User::getSilentWithUID(S::user()->id());
+            $user->is_admin = false;
+            $types = DirEnum::getOptions(DirEnum::ACCOUNTTYPES);
+            if (!empty($types[$level])) {
+                $user->setPerms($types[$level]);
+            }
+            S::set('suid_startpage', $_SERVER['HTTP_REFERER']);
+            Platal::session()->startSUID($user);
+        }
+        if (!empty($_SERVER['HTTP_REFERER'])) {
+            http_redirect($_SERVER['HTTP_REFERER']);
+        } else {
+            pl_redirect('/');
+        }
+    }
 
-        pl_redirect('/');
+    function handler_set_skin(&$page)
+    {
+        S::assert_xsrf_token();
+        S::set('skin', Post::s('change_skin'));
+        if (!empty($_SERVER['HTTP_REFERER'])) {
+            http_redirect($_SERVER['HTTP_REFERER']);
+        } else {
+            pl_redirect('/');
+        }
     }
 
     function handler_default(&$page)
@@ -99,23 +127,6 @@ class AdminModule extends PLModule
                ORDER BY  p.release != ''");
 
         $page->assign_by_ref('mails', $sql);
-    }
-
-    function handler_postfix_regexpsbounces(&$page, $new = null) {
-        $page->changeTpl('admin/emails_bounces_re.tpl');
-        $page->setTitle('Administration - Postfix : Regexps Bounces');
-        $page->assign('new', $new);
-
-        if (Post::has('submit')) {
-            foreach (Env::v('lvl') as $id=>$val) {
-                XDB::query(
-                        "REPLACE INTO emails_bounces_re (id,pos,lvl,re,text) VALUES ({?}, {?}, {?}, {?}, {?})",
-                        $id, $_POST['pos'][$id], $_POST['lvl'][$id], $_POST['re'][$id], $_POST['text'][$id]
-                );
-            }
-        }
-
-        $page->assign('bre', XDB::iterator("SELECT * FROM emails_bounces_re ORDER BY pos"));
     }
 
     // {{{ logger view
@@ -271,10 +282,10 @@ class AdminModule extends PLModule
         if ($action == 'session') {
 
             // we are viewing a session
-            $res = XDB::query("SELECT  ls.*, a.alias AS username, sa.alias AS suer
+            $res = XDB::query("SELECT  ls.*, a.hruid AS username, sa.hruid AS suer
                                  FROM  log_sessions AS ls
-                            LEFT JOIN  aliases   AS a  ON (a.uid = ls.uid AND a.type='a_vie')
-                            LEFT JOIN  aliases   AS sa ON (sa.uid = ls.suid AND sa.type='a_vie')
+                           INNER JOIN  accounts   AS a  ON (a.uid = ls.uid)
+                            LEFT JOIN  accounts   AS sa ON (sa.uid = ls.suid)
                                 WHERE  ls.id = {?}", $arg);
 
             $page->assign('session', $a = $res->fetchOneAssoc());
@@ -290,9 +301,12 @@ class AdminModule extends PLModule
         } else {
             $loguser = $action == 'user' ? $arg : Env::v('loguser');
 
-            $res = XDB::query('SELECT uid FROM aliases WHERE alias={?}',
-                              $loguser);
-            $loguid  = $res->fetchOneCell();
+            if ($loguser) {
+                $user = User::get($loguser);
+                $loguid = $user->id();
+            } else {
+                $loguid = null;
+            }
 
             if ($loguid) {
                 $year  = Env::i('year');
@@ -330,9 +344,9 @@ class AdminModule extends PLModule
                 // get the requested sessions
                 $where  = $this->_makeWhere($year, $month, $day, $loguid);
                 $select = "SELECT  s.id, s.start, s.uid,
-                                   a.alias as username
+                                   a.hruid as username
                              FROM  log_sessions AS s
-                        LEFT JOIN  aliases   AS a  ON (a.uid = s.uid AND a.type='a_vie')
+                       INNER JOIN  accounts   AS a  ON (a.uid = s.uid)
                     $where
                     ORDER BY start DESC";
                 $res = XDB::iterator($select);
@@ -357,7 +371,7 @@ class AdminModule extends PLModule
                 }
                 $page->assign_by_ref('sessions', $sessions);
             } else {
-                $page->assign('msg_nofilters', "Sélectionner une annuée et/ou un utilisateur");
+                $page->assign('msg_nofilters', "Sélectionner une année et/ou un utilisateur");
             }
         }
 
@@ -381,9 +395,10 @@ class AdminModule extends PLModule
             $user = User::get($login);
         }
         if (empty($user)) {
-            return;
+            pl_redirect('admin/accounts');
         }
 
+        $listClient = new MMList(S::user());
         $login = $user->login();
         $registered = ($user->state != 'pending');
 
@@ -405,6 +420,24 @@ class AdminModule extends PLModule
                 $page->trigError('Impossible d\'effectuer un SUID sur ' . $user->login());
             } else {
                 pl_redirect("");
+            }
+        }
+
+        // Handles account deletion.
+        if (Post::has('account_deletion_confirmation')) {
+            $uid = $user->id();
+            $name = $user->fullName();
+            $profile = $user->profile();
+            if ($profile && Post::b('clear_profile')) {
+                $user->profile()->clear();
+            }
+            $user->clear(true);
+            $page->trigSuccess("L'utilisateur $name ($uid) a bien été désinscrit.");
+            if (Post::b('erase_account')) {
+                XDB::execute('DELETE FROM  accounts
+                                    WHERE  uid = {?}',
+                             $uid);
+                $page->trigSuccess("L'utilisateur $name ($uid) a été supprimé de la base de données");
             }
         }
 
@@ -469,6 +502,10 @@ class AdminModule extends PLModule
             if (Post::t('comment') != $user->comment) {
                 $to_update['comment'] = Post::blank('comment') ? null : Post::t('comment');
             }
+            if (!$user->checkPerms(User::PERM_MAIL) && Post::t('email') != $user->forlifeEmail()) {
+                $to_update['email'] = Post::t('email');
+                $listClient->change_user_email($user->forlifeEmail(), Post::t('email'));
+            }
         }
         if (!empty($to_update)) {
             $res = XDB::query('SELECT  *
@@ -485,9 +522,9 @@ class AdminModule extends PLModule
                 $diff[$k] = array($oldValues[$k], trim($value, "'"));
                 unset($oldValues[$k]);
             }
-            XDB::execute('UPDATE  accounts
-                             SET  ' . implode(', ', $set) . '
-                           WHERE  uid = ' . XDB::format('{?}', $user->id()));
+            XDB::rawExecute('UPDATE  accounts
+                                SET  ' . implode(', ', $set) . '
+                              WHERE  uid = ' . XDB::format('{?}', $user->id()));
             $page->trigSuccess('Données du compte mise à jour avec succès');
             $user = User::getWithUID($user->id());
 
@@ -639,6 +676,7 @@ class AdminModule extends PLModule
 
 
         $page->addJsLink('jquery.ui.core.js');
+        $page->addJsLink('jquery.ui.widget.js');
         $page->addJsLink('jquery.ui.tabs.js');
         $page->addJsLink('password.js');
 
@@ -651,6 +689,9 @@ class AdminModule extends PLModule
         list($lastlogin,$host) = $res->fetchOneRow();
         $page->assign('lastlogin', $lastlogin);
         $page->assign('host', $host);
+
+        // Display mailing lists
+        $page->assign('mlists', $listClient->get_all_user_lists($user->forlifeEmail()));
 
         // Display active aliases.
         $page->assign('virtuals', $user->emailAliases());
@@ -701,7 +742,7 @@ class AdminModule extends PLModule
             return false;
         }
 
-        array_map('trim', $infos);
+        $infos = array_map('trim', $infos);
         $hrid = self::getHrid($infos[1], $infos[0], $promo);
         $res1 = XDB::query('SELECT  COUNT(*)
                               FROM  accounts
@@ -710,7 +751,7 @@ class AdminModule extends PLModule
                               FROM  profiles
                              WHERE  hrpid = {?}', $hrid);
         if (is_null($hrid) || $res1->fetchOneCell() > 0 || $res2->fetchOneCell() > 0) {
-            $page->trigError("La ligne $infosLine n'a pas été ajoutée.");
+            $page->trigError("La ligne $infosLine n'a pas été ajoutée: une entrée similaire existe déjà");
             return false;
         }
         $infos['hrid'] = $hrid;
@@ -732,7 +773,9 @@ class AdminModule extends PLModule
 
     private static function formatBirthDate($birthDate)
     {
-        return date("Y-m-d", strtotime($birthDate));
+        // strtotime believes dd/mm/yyyy to be an US date (i.e mm/dd/yyyy), and
+        // dd-mm-yyyy to be a normal date (i.e dd-mm-yyyy)...
+        return date("Y-m-d", strtotime(str_replace('/', '-', $birthDate)));
     }
 
     function handler_add_accounts(&$page, $action = null, $promo = null)
@@ -758,25 +801,31 @@ class AdminModule extends PLModule
                     $entry_year = $promotion;
                     $grad_year = $promotion + 3;
                     $promo = 'X' . $promotion;
+                    $hrpromo = $promotion;
                     break;
                   case 'M':
                     $degreeid = $eduDegrees[Profile::DEGREE_M];
                     $grad_year = $promotion;
                     $entry_year = $promotion - 2;
                     $promo = 'M' . $promotion;
+                    $hrpromo = $promo;
+                    $type = 'master';
                     break;
                   case 'D':
                     $degreeid = $eduDegrees[Profile::DEGREE_D];
                     $grad_year = $promotion;
                     $entry_year = $promotion - 3;
                     $promo = 'D' . $promotion;
+                    $hrpromo = $promo;
+                    $type = 'phd';
                     break;
                   default:
                     $page->killError("La formation n'est pas reconnue:" . Env::t('edu_type') . '.');
                 }
 
+                XDB::startTransaction();
                 foreach ($lines as $line) {
-                    if ($infos = self::formatNewUser($page, $line, $separator, $promotion, 6)) {
+                    if ($infos = self::formatNewUser($page, $line, $separator, $hrpromo, 6)) {
                         $sex = self::formatSex($page, $infos[3], $line);
                         if (!is_null($sex)) {
                             $fullName = $infos[1] . ' ' . $infos[0];
@@ -793,11 +842,14 @@ class AdminModule extends PLModule
                                          $infos['hrid'], $xorgId, $infos[5], $birthDate, $sex);
                             $pid = XDB::insertId();
                             XDB::execute('INSERT INTO  profile_name (pid, name, typeid)
-                                               VALUES  ({?}, {?}, {?})',
-                                         $pid, $infos[0], $nameTypes['name_ini']);
-                            XDB::execute('INSERT INTO  profile_name (pid, name, typeid)
-                                               VALUES  ({?}, {?}, {?})',
-                                         $pid, $infos[1], $nameTypes['firstname_ini']);
+                                               VALUES  ({?}, {?}, {?}),
+                                                       ({?}, {?}, {?}),
+                                                       ({?}, {?}, {?}),
+                                                       ({?}, {?}, {?})',
+                                         $pid, $infos[0], $nameTypes['name_ini'],
+                                         $pid, $infos[0], $nameTypes['lastname'],
+                                         $pid, $infos[1], $nameTypes['firstname_ini'],
+                                         $pid, $infos[1], $nameTypes['firstname']);
                             XDB::execute('INSERT INTO  profile_display (pid, yourself, public_name, private_name,
                                                                         directory_name, short_name, sort_name, promo)
                                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
@@ -806,15 +858,17 @@ class AdminModule extends PLModule
                                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?})',
                                          $pid, $eduSchools[Profile::EDU_X], $degreeid, $entry_year, $grad_year, 'primary');
                             XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, full_name, directory_name, display_name, sex)
-                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                                         $infos['hrid'], $type, 0, 'active', $fullName, $directoryName, $infos[1], $sex);
+                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                                         $infos['hrid'], $type, 0, 'pending', $fullName, $directoryName, $infos[1], $sex);
                             $uid = XDB::insertId();
                             XDB::execute('INSERT INTO  account_profiles (uid, pid, perms)
                                                VALUES  ({?}, {?}, {?})',
                                          $uid, $pid, 'owner');
+                            Profile::rebuildSearchTokens($pid, false);
                         }
                     }
                 }
+                XDB::commit();
             } else if (Env::t('add_type') == 'account') {
                 $type = Env::t('type');
                 $newAccounts = array();
@@ -824,9 +878,14 @@ class AdminModule extends PLModule
                         if (!is_null($sex)) {
                             $fullName = $infos[1] . ' ' . $infos[0];
                             $directoryName = $infos[0] . ' ' . $infos[1];
-                            XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, email, full_name, directory_name, display_name, sex)
-                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                                         $infos['hrid'], $type, 0, 'active', $infos[2], $fullName, $directoryName, $infos[1], $sex);
+                            XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state,
+                                                                 email, full_name, directory_name,
+                                                                 display_name, sex)
+                                               VALUES  ({?}, {?}, {?}, {?},
+                                                        {?}, {?}, {?}, {?}, {?})',
+                                         $infos['hrid'], $type, 0, 'pending',
+                                         $infos[2], $fullName, $directoryName, 
+                                         $infos[1], $sex);
                             $newAccounts[$infos['hrid']] = $infos[1] . ' ' . $infos[0];
                         }
                     }
@@ -900,8 +959,8 @@ class AdminModule extends PLModule
                     XDB::execute("UPDATE  aliases
                                      SET  type = 'homonyme', expire=NOW()
                                    WHERE  alias = {?}", $loginbis);
-                    XDB::execute("REPLACE INTO  homonyms (homonyme_id, uid)
-                                        VALUES  ({?}, {?})", $target, $target);
+                    XDB::execute('INSERT IGNORE INTO  homonyms (homonyme_id, uid)
+                                              VALUES  ({?}, {?})', $target, $target);
                     send_robot_homonyme($user, $loginbis);
                     $op = 'list';
                     $page->trigSuccess('Email envoyé à ' . $user->forlifeEmail() . ', alias supprimé.');
@@ -1000,13 +1059,12 @@ class AdminModule extends PLModule
     {
         $page->changeTpl('admin/validation.tpl');
         $page->setTitle('Administration - Valider une demande');
-                $page->addCssLink('nl.css');
-        $page->addJsLink('ajax.js');
-        require_once("validations.inc.php");
+        $page->addCssLink('nl.css');
 
-
-        if ($action == 'edit' and !is_null($id)) {
+        if ($action == 'edit' && !is_null($id)) {
             $page->assign('preview_id', $id);
+        } else {
+            $page->assign('preview_id', null);
         }
 
         if(Env::has('uid') && Env::has('type') && Env::has('stamp')) {
@@ -1037,8 +1095,9 @@ class AdminModule extends PLModule
                     $hide[] = $cat;
                 }
             $hide_requests = join(',', $hide);
-            XDB::query('REPLACE INTO  requests_hidden (uid, hidden_requests)
-                              VALUES  ({?}, {?})',
+            XDB::query('INSERT INTO  requests_hidden (uid, hidden_requests)
+                             VALUES  ({?}, {?})
+            ON DUPLICATE KEY UPDATE  hidden_requests = VALUES(hidden_requests)',
                        S::v('uid'), $hide_requests);
         } elseif ($hide_requests)  {
             foreach (explode(',', $hide_requests) as $hide_type)
@@ -1050,7 +1109,8 @@ class AdminModule extends PLModule
         // where several copies of the site use the same DB, but not the same "dynamic configuration"
         global $globals;
         $globals->updateNbValid();
-        $page->assign('vit', new ValidateIterator());
+        $page->assign('vit', Validate::iterate());
+        $page->assign('isAdmin', S::admin());
     }
 
     function handler_validate_answers(&$page, $action = 'list', $id = null)
@@ -1129,6 +1189,263 @@ class AdminModule extends PLModule
         $table_editor->describe('services','services affectés',true);
         $table_editor->describe('description','description',false);
         $table_editor->apply($page, $action, $id);
+    }
+
+    private static function isCountryIncomplete(array &$item)
+    {
+        $warning = false;
+        foreach (array('worldRegion', 'country', 'capital', 'phonePrefix', 'licensePlate', 'countryPlain') as $field) {
+            if ($item[$field] == '') {
+                $item[$field . '_warning'] = true;
+                $warning = true;
+            }
+        }
+        if (is_null($item['belongsTo'])) {
+            foreach (array('nationality', 'nationalityEn') as $field) {
+                if ($item[$field] == '') {
+                    $item[$field . '_warning'] = true;
+                    $warning = true;
+                }
+            }
+        }
+        return $warning;
+    }
+
+    private static function updateCountry(array $item)
+    {
+        XDB::execute('UPDATE  geoloc_countries
+                         SET  countryPlain = {?}
+                       WHERE  iso_3166_1_a2 = {?}',
+                     mb_strtoupper(replace_accent($item['country'])), $item['iso_3166_1_a2']);
+    }
+
+    private static function isLanguageIncomplete(array &$item)
+    {
+        if ($item['language'] == '') {
+            $item['language_warning'] = true;
+            return true;
+        }
+        return false;
+    }
+
+    private static function updateLanguage(array $item) {}
+
+    function handler_geocoding(&$page, $category = null, $action = null, $id = null)
+    {
+        // Warning, this handler requires the following packages:
+        //  * pkg-isocodes
+        //  * isoquery
+
+        static $properties = array(
+            'country'  => array(
+                'name'         => 'pays',
+                'isocode'      => '3166',
+                'table'        => 'geoloc_countries',
+                'id'           => 'iso_3166_1_a2',
+                'main_fields'  => array('iso_3166_1_a3', 'iso_3166_1_num', 'countryEn'),
+                'other_fields' => array('worldRegion', 'country', 'capital', 'nationality', 'nationalityEn',
+                                        'phonePrefix', 'phoneFormat', 'licensePlate', 'belongsTo')
+            ),
+            'language' => array(
+                'name'         => 'langages',
+                'isocode'      => '639',
+                'table'        => 'profile_langskill_enum',
+                'id'           => 'iso_639_2b',
+                'main_fields'  => array('iso_639_2t', 'iso_639_1', 'language_en'),
+                'other_fields' => array('language')
+
+            )
+        );
+
+        if (is_null($category) || !array_key_exists($category, $properties)) {
+            pl_redirect('admin');
+        }
+
+        $data = $properties[$category];
+
+        if ($action == 'edit' || $action == 'add') {
+            $main_fields = array_merge(array($data['id']), $data['main_fields']);
+            $all_fields = array_merge($main_fields, $data['other_fields']);
+
+            if (is_null($id)) {
+                if (Post::has('new_id')) {
+                    $id = Post::v('new_id');
+                } else {
+                    pl_redirect('admin/geocoding/' . $category);
+                }
+            }
+
+            $list = array();
+            exec('isoquery --iso=' . $data['isocode'] . ' ' . $id, $list);
+            if (count($list) == 1) {
+                $array = explode("\t", $list[0]);
+                foreach ($main_fields as $i => $field) {
+                    $iso[$field] = $array[$i];
+                }
+            } else {
+                $iso = array();
+            }
+
+            if ($action == 'add') {
+                if (Post::has('new_id')) {
+                    S::assert_xsrf_token();
+                }
+
+                if (count($iso)) {
+                    $item = $iso;
+                } else {
+                    $item = array($data['id'] => $id);
+                }
+                XDB::execute('INSERT INTO  ' . $data['table'] . '(' . implode(', ', array_keys($item)) . ')
+                                   VALUES  ' . XDB::formatArray($item));
+                $page->trigSuccess($id . ' a bien été ajouté à la base.');
+            } elseif ($action == 'edit') {
+                if (Post::has('edit')) {
+                    S::assert_xsrf_token();
+
+                    $item = array();
+                    $set  = array();
+                    foreach ($all_fields as $field) {
+                        $item[$field] = Post::t($field);
+                        $set[] = $field . XDB::format(' = {?}', ($item[$field] ? $item[$field] : null));
+                    }
+                    XDB::execute('UPDATE  ' . $data['table'] . '
+                                     SET  ' . implode(', ', $set) . '
+                                   WHERE  ' . $data['id'] . ' = {?}',
+                                 $id);
+                    call_user_func_array(array('self', 'update' . ucfirst($category)), array($item));
+                    $page->trigSuccess($id . ' a bien été mis à jour.');
+                } elseif (Post::has('del')) {
+                    S::assert_xsrf_token();
+
+                    XDB::execute('DELETE FROM  ' . $data['table'] . '
+                                        WHERE  ' . $data['id'] . ' = {?}',
+                                 $id);
+                    $page->trigSuccessRedirect($id . ' a bien été supprimé.', 'admin/geocoding/' . $category);
+                } else {
+                    $item = XDB::fetchOneAssoc('SELECT  *
+                                                  FROM  ' . $data['table'] . '
+                                                 WHERE  ' . $data['id'] . ' = {?}',
+                                               $id);
+                }
+            }
+
+            $page->changeTpl('admin/geocoding_edit.tpl');
+            $page->setTitle('Administration - ' . ucfirst($data['name']));
+            $page->assign('category', $category);
+            $page->assign('name', $data['name']);
+            $page->assign('all_fields', $all_fields);
+            $page->assign('id', $id);
+            $page->assign('iso', $iso);
+            $page->assign('item', $item);
+            return;
+        }
+
+        $page->changeTpl('admin/geocoding.tpl');
+        $page->setTitle('Administration - ' . ucfirst($data['name']));
+        $page->assign('category', $category);
+        $page->assign('name', $data['name']);
+        $page->assign('id', $data['id']);
+        $page->assign('main_fields', $data['main_fields']);
+        $page->assign('all_fields', array_merge($data['main_fields'], $data['other_fields']));
+
+        // First build the list provided by the iso codes.
+        $list = array();
+        exec('isoquery --iso=' . $data['isocode'], $list);
+
+        foreach ($list as $key => $item) {
+            $array = explode("\t", $item);
+            unset($list[$key]);
+            $list[$array[0]] = array();
+            foreach ($data['main_fields'] as $i => $field) {
+                $list[$array[0]][$field] = $array[$i + 1];
+            }
+        }
+        ksort($list);
+
+        // Retrieve all data from the database.
+        $db_list = XDB::rawFetchAllAssoc('SELECT  *
+                                            FROM  ' . $data['table'] . '
+                                        ORDER BY  ' . $data['id'],
+                                         $data['id']);
+
+        // Sort both iso and database data into 5 categories:
+        //  $missing: data from the iso list not in the database,
+        //  $non_existing: data from the database not in the iso list,
+        //  $erroneous: data that differ on main fields,
+        //  $incomplete: data with empty fields in the data base,
+        //  $remaining: remaining correct and complete data from the database.
+
+        $missing = $non_existing = $erroneous = $incomplete = $remaining = array();
+        foreach (array_keys($list) as $id) {
+            if (!array_key_exists($id, $db_list)) {
+                $missing[$id] = $list[$id];
+            }
+        }
+
+        foreach ($db_list as $id => $item) {
+            if (!array_key_exists($id, $list)) {
+                $non_existing[$id] = $item;
+            } else {
+                $error = false;
+                foreach ($data['main_fields'] as $field) {
+                    if ($item[$field] != $list[$id][$field]) {
+                        $item[$field . '_error'] = true;
+                        $error = true;
+                    }
+                }
+                if ($error == true) {
+                    $erroneous[$id] = $item;
+                } elseif (call_user_func_array(array('self', 'is' . ucfirst($category) . 'Incomplete'), array(&$item))) {
+                    $incomplete[$id] = $item;
+                } else {
+                    $remaining[$id] = $item;
+                }
+            }
+        }
+
+        $page->assign('lists', array(
+                'manquant'  => $missing,
+                'disparu'   => $non_existing,
+                'erroné'    => $erroneous,
+                'incomplet' => $incomplete,
+                'restant'   => $remaining
+        ));
+    }
+
+    function handler_accounts(PlPage $page)
+    {
+        $page->changeTpl('admin/accounts.tpl');
+        $page->setTitle('Administration - Comptes');
+        $page->addJsLink('password.js');
+
+        if (Post::has('create_account')) {
+            S::assert_xsrf_token();
+            $firstname = Post::t('firstname');
+            $lastname = strtoupper(Post::t('lastname'));
+            $sex = Post::s('sex');
+            $email = Post::t('email');
+            $type = Post::s('type');
+            $login = PlUser::makeHrid($firstname, $lastname, $type);
+            if (!isvalid_email($email)) {
+                $page->trigError("Invalid email address: $email");
+            } else if (strlen(Post::s('pwhash')) != 40) {
+                $page->trigError("Invalid password hash");
+            } else {
+                $full_name = $firstname . ' ' . $lastname;
+                $directory_name = $lastname . ' ' . $firstname;
+                XDB::execute("INSERT INTO  accounts (hruid, type, state, password,
+                                                     registration_date, email, full_name,
+                                                     display_name, sex, directory_name)
+                                   VALUES  ({?}, {?}, 'active', {?}, NOW(), {?}, {?}, {?}, {?}, {?})",
+                             $login, $type, Post::s('pwhash'), $email, $full_name, $full_name, $sex,
+                             $directory_name);
+            }
+        }
+
+        $uf = new UserFilter(new UFC_AccountType('ax', 'school', 'fx'));
+        $page->assign('users', $uf->iterUsers());
+
     }
 
     function handler_account_types(&$page, $action = 'list', $id = null)
@@ -1334,7 +1651,7 @@ class AdminModule extends PLModule
         $page->assign('icons', $icons);
     }
 
-    function handler_accounts(&$page)
+    function handler_account_watch(&$page)
     {
         $page->changeTpl('admin/accounts.tpl');
         $page->assign('disabled', XDB::iterator('SELECT  a.hruid, FIND_IN_SET(\'watch\', a.flags) AS watch,
@@ -1353,9 +1670,9 @@ class AdminModule extends PLModule
         $page->changeTpl('admin/jobs.tpl');
 
         if (Env::has('search')) {
-            $res = XDB::query("SELECT  e.id, e.name, e.acronym
-                                 FROM  profile_job_enum AS e
-                                WHERE  e.name LIKE CONCAT('% ', {?}, '%') OR e.acronym LIKE CONCAT('% ', {?}, '%')",
+            $res = XDB::query("SELECT  id, name, acronym
+                                 FROM  profile_job_enum
+                                WHERE  name LIKE CONCAT('%', {?}, '%') OR acronym LIKE CONCAT('%', {?}, '%')",
                               Env::t('job'), Env::t('job'));
 
             if ($res->numRows() <= 20) {
@@ -1369,68 +1686,43 @@ class AdminModule extends PLModule
         }
 
         if (Env::has('edit')) {
-            // TODO: use address and phone classes to update profile_job_enum and profile_phones once they are done.
-
             S::assert_xsrf_token();
             $selectedJob = Env::has('selectedJob');
 
-            XDB::execute("DELETE FROM  profile_phones
-                                WHERE  pid = {?} AND link_type = 'hq'",
-                         $id);
-            XDB::execute("DELETE FROM  profile_addresses
-                                WHERE  jobid = {?} AND type = 'hq'",
-                         $id);
-            XDB::execute('DELETE FROM  profile_job_enum
-                                WHERE  id = {?}',
-                         $id);
-
+            Phone::deletePhones(0, Phone::LINK_COMPANY, $id);
+            Address::deleteAddresses(null, Address::LINK_COMPANY, $id);
             if (Env::has('change')) {
-                XDB::execute('UPDATE  profile_job
-                                 SET  jobid = {?}
-                               WHERE  jobid = {?}',
-                             Env::i('newJobId'), $id);
+                if (Env::has('newJobId') && Env::i('newJobId') > 0) {
+                    XDB::execute('UPDATE  profile_job
+                                     SET  jobid = {?}
+                                   WHERE  jobid = {?}',
+                                 Env::i('newJobId'), $id);
+                    XDB::execute('DELETE FROM  profile_job_enum
+                                        WHERE  id = {?}',
+                                 $id);
 
-                $page->trigSuccess("L'entreprise a bien été remplacée.");
+                    $page->trigSuccess("L'entreprise a bien été remplacée.");
+                } else {
+                    $page->trigError("L'entreprise n'a pas été remplacée car l'identifiant fourni n'est pas valide.");
+                }
             } else {
-                require_once 'profil.func.inc.php';
-                require_once 'geocoding.inc.php';
-
-                $display_tel = format_display_number(Env::v('tel'), $error_tel);
-                $display_fax = format_display_number(Env::v('fax'), $error_fax);
-                $gmapsGeocoder = new GMapsGeocoder();
-                $address = array('text' => Env::t('address'));
-                $address = $gmapsGeocoder->getGeocodedAddress($address);
-                Geocoder::getAreaId($address, 'administrativeArea');
-                Geocoder::getAreaId($address, 'subAdministrativeArea');
-                Geocoder::getAreaId($address, 'locality');
-
                 XDB::execute('UPDATE  profile_job_enum
                                  SET  name = {?}, acronym = {?}, url = {?}, email = {?},
                                       NAF_code = {?}, AX_code = {?}, holdingid = {?}
                                WHERE  id = {?}',
                              Env::t('name'), Env::t('acronym'), Env::t('url'), Env::t('email'),
-                             Env::t('NAF_code'), Env::i('AX_code'), Env::i('holdingId'), $id);
+                             (Env::t('NAF_code') == 0 ? null : Env::t('NAF_code')),
+                             (Env::i('AX_code') == 0 ? null : Env::t('AX_code')),
+                             (Env::i('holdingId') == 0 ? null : Env::t('holdingId')), $id);
 
-                XDB::execute("INSERT INTO  profile_phones (pid, link_type, link_id, tel_id, tel_type,
-                                           search_tel, display_tel, pub)
-                                   VALUES  ({?}, 'hq', 0, 0, 'fixed', {?}, {?}, 'public'),
-                                           ({?}, 'hq', 0, 1, 'fax', {?}, {?}, 'public')",
-                             $id, format_phone_number(Env::v('tel')), $display_tel,
-                             $id, format_phone_number(Env::v('fax')), $display_fax);
-
-                XDB::execute("INSERT INTO  profile_addresses (jobid, type, id, accuracy,
-                                                              text, postalText, postalCode, localityId,
-                                                              subAdministrativeAreaId, administrativeAreaId,
-                                                              countryId, latitude, longitude, updateTime,
-                                                              north, south, east, west)
-                                   VALUES  ({?}, 'hq', 0, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
-                                            {?}, {?}, FROM_UNIXTIME({?}), {?}, {?}, {?}, {?})",
-                             $id, $address['accuracy'], $address['text'], $address['postalText'],
-                             $address['postalCode'], $address['localityId'],
-                             $address['subAdministrativeAreaId'], $address['administrativeAreaId'],
-                             $address['countryId'], $address['latitude'], $address['longitude'],
-                             $address['updateTime'], $address['north'], $address['south'],
-                             $address['east'], $address['west']);
+                $phone = new Phone(array('display' => Env::v('tel'), 'link_id' => $id, 'id' => 0, 'type' => 'fixed',
+                                         'link_type' => Phone::LINK_COMPANY, 'pub' => 'public'));
+                $fax = new Phone(array('display' => Env::v('fax'), 'link_id' => $id, 'id' => 1, 'type' => 'fax',
+                                         'link_type' => Phone::LINK_COMPANY, 'pub' => 'public'));
+                $address = new Address(array('jobid' => $id, 'type' => Address::LINK_COMPANY, 'text' => Env::t('address')));
+                $phone->save();
+                $fax->save();
+                $address->save();
 
                 $page->trigSuccess("L'entreprise a bien été mise à jour.");
             }
@@ -1454,6 +1746,37 @@ class AdminModule extends PLModule
                 $page->assign('selectedJob', $res->fetchOneAssoc());
             }
         }
+    }
+
+    function handler_profile(&$page)
+    {
+        $page->changeTpl('admin/profile.tpl');
+
+        if (Post::has('checked')) {
+            S::assert_xsrf_token();
+            $res = XDB::iterator('SELECT  DISTINCT(pm.pid), pd.public_name
+                                    FROM  profile_modifications AS pm
+                              INNER JOIN  profile_display       AS pd ON (pm.pid = pd.pid)
+                                   WHERE  pm.type = \'self\'');
+
+            while ($profile = $res->next()) {
+                if (Post::has('checked_' . $profile['pid'])) {
+                    XDB::execute('DELETE FROM  profile_modifications
+                                        WHERE  type = \'self\' AND pid = {?}', $profile['pid']);
+
+                    $page->trigSuccess('Profil de ' . $profile['public_name'] . ' vérifié.');
+                }
+            }
+        }
+
+        $res = XDB::iterator('SELECT  p.hrpid, pm.pid, pd.directory_name, GROUP_CONCAT(pm.field SEPARATOR \', \') AS field
+                                FROM  profile_modifications AS pm
+                          INNER JOIN  profiles              AS p  ON (pm.pid = p.pid)
+                          INNER JOIN  profile_display       AS pd ON (pm.pid = pd.pid)
+                               WHERE  pm.type = \'self\'
+                            GROUP BY  pd.directory_name
+                            ORDER BY  pd.directory_name');
+        $page->assign('updates', $res);
     }
 }
 

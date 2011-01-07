@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h2><a href="fusionax">Fusion des annuaires X.org - AX<a> / Décès</h2>
+<h2><a href="fusionax">Fusion des annuaires X.org - AX</a> / Décès</h2>
 
 {if $deceasedErrors}
 <p>Voici les {$deceasedErrors} différences entre les deux annuaires pour les renseignements de
@@ -46,9 +46,11 @@ décès.</p>
 
 <h3>Mettre en correspondance</h3>
 <form action="fusionax/deceased/update" method="post">
-  User ID X.org : <input type="text" name="user_id" value=""/><br/>
-  Date de décès : <input type="text" name="date" value""/><br/>
-  <input type="submit" value="Mettre à jour"/>
+<p>
+  PID X.org : <input type="text" name="pid" /><br />
+  Date de décès : <input type="text" name="date" /><br />
+  <input type="submit" value="Mettre à jour" />
+</p>
 </form>
 {/if}
 

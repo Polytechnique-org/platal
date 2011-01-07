@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -195,6 +195,8 @@ abstract class MassMailer
              INNER JOIN  accounts AS a ON (ni.uid = a.uid)
               LEFT JOIN  email_options AS eo ON (eo.uid = a.uid)
               LEFT JOIN  emails   AS e ON (e.uid = a.uid AND e.flags='active')
+              LEFT JOIN  account_profiles AS ap ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
+              LEFT JOIN  profile_display AS pd ON (ap.pid = pd.pid)
                   WHERE  ni.last < {?} AND ({$this->subscriptionWhere()}) AND
                          (e.email IS NOT NULL OR FIND_IN_SET('googleapps', eo.storage))
                GROUP BY  a.uid";
@@ -207,18 +209,19 @@ abstract class MassMailer
         $emailsCount = 0;
 
         while (true) {
+            $sent = array();
             $users = User::getBulkUsersWithUIDs(XDB::fetchColumn($query));
             if (count($users) == 0) {
                 return $emailsCount;
             }
             foreach ($users as $user) {
-                $sent[] = XDB::format('uid = {?}', $user->id());
+                $sent[] = $user->id();
                 $this->sendTo($user, $hash);
                 ++$emailsCount;
             }
             XDB::execute("UPDATE  {$this->_subscriptionTable}
                              SET  last = {?}
-                           WHERE " . implode(' OR ', $sent), $this->_id);
+                           WHERE  uid IN {?}", $this->_id, $sent);
 
             sleep(60);
         }

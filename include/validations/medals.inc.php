@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -100,8 +100,9 @@ class MedalReq extends ProfileValidate
 
     public function commit ()
     {
-        return XDB::execute('REPLACE INTO  profile_medals
-                                   VALUES  ({?}, {?}, {?})',
+        return XDB::execute('INSERT INTO  profile_medals (pid, mid, gid)
+                                  VALUES  ({?}, {?}, {?})
+                 ON DUPLICATE KEY UPDATE  gid = VALUES(gid)',
                             $this->profile->id(), $this->mid,
                             is_null($this->gid) ? 0 : $this->gid);
     }

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -96,10 +96,10 @@ class VCard extends PlVCard
                                 $adr->hasFlag('current'), $adr->hasFlag('mail'), $adr->hasFlag('mail'));
             }
             foreach ($adr->phones() as $phone) {
-                if ($phone->type == Phone::TYPE_FIXED) {
+                if ($phone->link_type == Phone::TYPE_FIXED) {
                     $entry->addTel($group, $phone->display, false, true, true, false, false,
                                    $adr->hasFlag('current') && empty($pf->mobile));
-                } else if ($phone->type == Phone::TYPE_FAX) {
+                } else if ($phone->link_type == Phone::TYPE_FAX) {
                     $entry->addTel($group, $phone->display, true, false, false, false, false, false);
                 }
             }
@@ -119,9 +119,9 @@ class VCard extends PlVCard
                                          $adr->locality, $adr->administrativeArea, $adr->country);
             }
             foreach ($adr->phones() as $phone) {
-                if ($phone->type == Phone::TYPE_FIXED) {
+                if ($phone->link_type == Phone::TYPE_FIXED) {
                     $entry->addTel($group, $phone->display);
-                } else if ($phone->type == Phone::TYPE_FAX) {
+                } else if ($phone->link_type == Phone::TYPE_FAX) {
                     $entry->addTel($group, $phone->display, true);
                 }
             }
@@ -137,7 +137,7 @@ class VCard extends PlVCard
 
         // Custom fields
         if (!is_null($user)) {
-            $groups = $user->groups();
+            $groups = $user->groups(true, true);
             if (count($groups)) {
                 $gn = DirEnum::getOptions(DirEnum::GROUPESX);
                 $gns = array();
@@ -159,8 +159,7 @@ class VCard extends PlVCard
             $entry->set('X-BINETS', join(', ', $bns));
         }
         if (!empty($pf->section)) {
-            $sections = DirEnum::getOptions(DirEnum::SECTIONS);
-            $entry->set('X-SECTION', $sections[$pf->section]);
+            $entry->set('X-SECTION', $pf->section);
         }
 
         // Photo

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -24,8 +24,8 @@ class ForumsModule extends PLModule
     function handlers()
     {
         return array(
-            'banana'         => $this->make_hook('banana',      AUTH_COOKIE),
-            'banana/rss'     => $this->make_hook('rss',         AUTH_PUBLIC, 'user', NO_HTTPS),
+            'banana'         => $this->make_hook('banana',      AUTH_COOKIE, 'forums'),
+            'banana/rss'     => $this->make_hook('rss',         AUTH_PUBLIC, 'forums', NO_HTTPS),
             'admin/forums'   => $this->make_hook('forums_bans', AUTH_MDP,    'admin'),
         );
     }

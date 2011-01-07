@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -44,7 +44,7 @@
 
 
 <div class="contact {if !$registered || $dead }grayed{/if}"
-     {if $registered}title="fiche mise à jour le {$profile->last_change|date_format}"{/if}>
+     {if $profile->last_change}title="fiche mise à jour le {$profile->last_change|date_format}"{/if}>
   <div class="identity">
     {if $withAuth}
     <div class="photo">
@@ -54,9 +54,9 @@
 
     <div class="nom">
       {if $profile->isFemale()}&bull;{/if}
-      {if !$dead && $registered}<a href="profile/{$profile->hrid()}" class="popup2">{/if}
+      {if !$dead && ($withAuth || $registered)}<a href="profile/{$profile->hrid()}" class="popup2">{/if}
       {$profile->directory_name}
-      {if !$dead && $registered}</a>{/if}
+      {if !$dead && ($withAuth || $registered)}</a>{/if}
     </div>
 
     <div class="edu">
@@ -64,7 +64,7 @@
       <img src='images/flags/{$code}.gif' alt='{$code}' height='11' title='{$country}' />&nbsp;
       {/foreach}
       {$profile->promo()}{*
-      *}{foreach from=$profile->getExtraEducations(4) item=edu}, {display_education edu=$edu profile=$profile}{/foreach}{*
+      *}{foreach from=$profile->getExtraEducations(4) item=edu}, {display_education edu=$edu profile=$profile full=false}{/foreach}{*
       *}{if $dead}, {"décédé"|sex:"décédée":$profile} le {$profile->deathdate|date_format}{/if}
     </div>
   </div>
@@ -74,12 +74,14 @@
     {if $registered || (!$dead && $hasowner)}
     <div>
       {if !$registered && !$dead && $hasowner}
+        {if hasPerm('directory_private')}
         {if !$smarty.session.user->isWatchedUser($profile)}
     <a href="carnet/notifs/add_nonins/{$user->login()}?token={xsrf_token}">{*
     *}{icon name=add title="Ajouter à la liste de mes surveillances"}</a>
         {else}
     <a href="carnet/notifs/del_nonins/{$user->login()}?token={xsrf_token}">{*
     *}{icon name=cross title="Retirer de la liste de mes surveillances"}</a>
+        {/if}
         {/if}
       {elseif $registered}
     <a href="profile/{$profile->hrid()}" class="popup2">{*
@@ -89,6 +91,7 @@
     *}{icon name=vcard title="Afficher la carte de visite"}</a>
     <a href="mailto:{$user->bestEmail()}">{*
     *}{icon name=email title="Envoyer un email"}</a>
+          {if hasPerm('directory_private')}
           {if !$smarty.session.user->isContact($profile)}
     <a href="carnet/contacts?action=ajouter&amp;user={$profile->hrid()}&amp;token={xsrf_token}">{*
     *}{icon name=add title="Ajouter à mes contacts"}</a>
@@ -96,21 +99,25 @@
     <a href="carnet/contacts?action=retirer&amp;user={$profile->hrid()}&amp;token={xsrf_token}">{*
     *}{icon name=cross title="Retirer de mes contacts"}</a>
           {/if}
+          {/if}
         {/if}
       {/if}
     </div>
     {/if}
 
-    {if hasPerm('admin') && $hasowner}
+    {if hasPerm('admin') || $smarty.session.user->canEdit($profile)}
     <div>
-      [{if $registered && !$dead}
+      [{if hasPerm('admin') && $hasowner}{if !$registered && !$dead}
       <a href="marketing/private/{$user->login()}">{*
         *}{icon name=email title="marketter user"}</a>
       {/if}
       <a href="admin/user/{$user->login()}">{*
-      *}{icon name=wrench title="administrer user"}</a>
-      <a href="profile/ax/{$user->login()}">{*
-      *}{icon name=user_gray title="fiche AX"}</a>]
+      *}{icon name=wrench title="administrer user"}</a>{/if}{*
+      *}{if hasPerm('admin') || $smarty.session.user->canEdit($profile)}{*
+      *}<a href="profile/edit/{$user->login()}">{*
+      *}{icon name=user_edit title="modifier la fiche"}</a>{*
+      *}<a href="profile/ax/{$user->login()}">{*
+      *}{icon name=user_gray title="fiche AX"}</a>{/if}]
     </div>
     {/if}
   </div>
@@ -146,7 +153,7 @@
         <td class="lt">Profession&nbsp;:</td>
         <td class="rt">
           {if $job->company->url|default:$job->user_site}<a href="{$job->company->url|default:$job->user_site}">{$job->company->name}</a>{else}{$job->company->name}{/if}
-          {if $job->subsubsector}&nbsp;({$job->subsubsector}){/if}{if $job->description}<br />{$job->description}{/if}
+          {if $job->description}<br />{$job->description}{/if}
         </td>
       </tr>
       {/if}

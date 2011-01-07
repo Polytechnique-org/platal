@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -123,7 +123,10 @@ function ids_from_mails(array $emails)
     }
     // Connect emails with uids
     foreach ($domain_mails as $email => $user) {
-        $uids[$email] = $domain_uids[$user];
+        // Some 'domain' emails might be invalid.
+        if (array_key_exists($user, $domain_uids)) {
+            $uids[$email] = $domain_uids[$user];
+        }
     }
 
     // Look up user ids for addresses in our alias domain
@@ -142,7 +145,9 @@ function ids_from_mails(array $emails)
     }
     // Connect emails with uids
     foreach ($alias_mails as $email => $user) {
-        $uids[$email] = $alias_uids[$user];
+        if (array_key_exists($user, $alias_uids)) {
+            $uids[$email] = $alias_uids[$user];
+        }
     }
 
     // Look up user ids for other addresses in the email redirection list
@@ -550,7 +555,10 @@ class Redirect
         if (!isvalid_email_redirection($email_stripped)) {
             return ERROR_LOOP_EMAIL;
         }
-        XDB::execute('REPLACE INTO emails (uid,email,flags) VALUES({?},{?},"active")', $this->user->id(), $email);
+        // If the email was already present for this user, we reset it to the default values, we thus use REPLACE INTO.
+        XDB::execute('REPLACE INTO  emails (uid, email, flags)
+                            VALUES  ({?}, {?}, \'active\')',
+                     $this->user->id(), $email);
         if ($logger = S::v('log', null)) { // may be absent --> step4.php
             S::logger()->log('email_add', $email . ($this->user->id() != S::v('uid') ? " (admin on {$this->user->login()})" : ""));
         }

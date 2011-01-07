@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -55,6 +55,17 @@
 <form method="post" action="{$platal->ns}member/{$platal->argv[1]}">
   {xsrf_token_field}
   <table cellpadding="0" cellspacing="0" class='tinybicol'>
+    {if hasPerm('admin')}
+    <tr class="pair">
+      <td class="titre">
+        Identifiant unique&nbsp;:
+      </td>
+      <td>
+        {$user->hruid}
+        <a href="https://www.polytechnique.org/admin/user/{$user->hruid}">{icon name="user_edit" title="Administer"}</a>
+      </td>
+    </tr>
+    {/if}
     <tr class="pair">
       <td class="titre">
         Permissions&nbsp;:
@@ -63,6 +74,19 @@
         <select name="group_perms">
           <option value="membre" {if $user->group_perms eq 'membre'}selected="selected"{/if}>Membre</option>
           <option value="admin" {if $user->group_perms eq 'admin'}selected="selected"{/if}>Animateur</option>
+        </select>
+      </td>
+    </tr>
+    <tr class="pair">
+      <td class="titre">
+        Poste&nbsp;:
+      </td>
+      <td>
+        <select name="group_position">
+          <option value=""{if $user->group_position eq ''} selected="selected"{/if}></option>
+          {foreach from=$positions item=position}
+          <option value="{$position}"{if $user->group_position eq $position} selected="selected"{/if}>{$position}</option>
+          {/foreach}
         </select>
       </td>
     </tr>

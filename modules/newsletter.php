@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -87,7 +87,6 @@ class NewsletterModule extends PLModule
             $art = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'));
             $page->assign('art', $art);
         } elseif (Post::has('valid')) {
-            require_once('validations.inc.php');
             $art = new NLReq(S::user(), Post::v('title'),
                              Post::v('body'), Post::v('append'));
             $art->submit();

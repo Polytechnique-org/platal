@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -38,23 +38,19 @@ class ProfileModule extends PLModule
             'profile/ajax/medal'         => $this->make_hook('ajax_medal',                 AUTH_COOKIE, 'user', NO_AUTH),
             'profile/networking'         => $this->make_hook('networking',                 AUTH_PUBLIC),
             'profile/ajax/job'           => $this->make_hook('ajax_job',                   AUTH_COOKIE, 'user', NO_AUTH),
-            'profile/ajax/sector'        => $this->make_hook('ajax_sector',                AUTH_COOKIE, 'user', NO_AUTH),
-            'profile/ajax/sub_sector'    => $this->make_hook('ajax_sub_sector',            AUTH_COOKIE, 'user', NO_AUTH),
-            'profile/ajax/alternates'    => $this->make_hook('ajax_alternates',            AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/skill'         => $this->make_hook('ajax_skill',                 AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/searchname'    => $this->make_hook('ajax_searchname',            AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/buildnames'    => $this->make_hook('ajax_buildnames',            AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/tree/jobterms' => $this->make_hook('ajax_tree_job_terms',        AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/jobterms'           => $this->make_hook('jobterms',                   AUTH_COOKIE, 'user', NO_AUTH),
             'javascript/education.js'    => $this->make_hook('education_js',               AUTH_COOKIE),
             'javascript/grades.js'       => $this->make_hook('grades_js',                  AUTH_COOKIE),
             'profile/medal'              => $this->make_hook('medal',                      AUTH_PUBLIC),
             'profile/name_info'          => $this->make_hook('name_info',                  AUTH_PUBLIC),
 
             'referent'                   => $this->make_hook('referent',                   AUTH_COOKIE),
-            'emploi'                     => $this->make_hook('ref_search',                 AUTH_COOKIE),
-            'jobs'                       => $this->make_hook('ref_search',                 AUTH_COOKIE),
-            'referent/search'            => $this->make_hook('ref_search',                 AUTH_COOKIE),
-            'referent/ssect'             => $this->make_hook('ref_sect',                   AUTH_COOKIE, 'user', NO_AUTH),
             'referent/country'           => $this->make_hook('ref_country',                AUTH_COOKIE, 'user', NO_AUTH),
+            'referent/autocomplete'      => $this->make_hook('ref_autocomplete',           AUTH_COOKIE, 'user', NO_AUTH),
 
             'groupes-x'                  => $this->make_hook('xnet',                       AUTH_COOKIE),
             'groupes-x/logo'             => $this->make_hook('xnetlogo',                   AUTH_PUBLIC),
@@ -69,7 +65,6 @@ class ProfileModule extends PLModule
             'admin/sections'             => $this->make_hook('admin_sections',             AUTH_MDP, 'admin'),
             'admin/networking'           => $this->make_hook('admin_networking',           AUTH_MDP, 'admin'),
             'admin/trombino'             => $this->make_hook('admin_trombino',             AUTH_MDP, 'admin'),
-            'admin/sectors'              => $this->make_hook('admin_sectors',              AUTH_MDP, 'admin'),
             'admin/corps_enum'           => $this->make_hook('admin_corps_enum',           AUTH_MDP, 'admin'),
             'admin/corps_rank'           => $this->make_hook('admin_corps_rank',           AUTH_MDP, 'admin'),
             'admin/names'                => $this->make_hook('admin_names',                AUTH_MDP, 'admin'),
@@ -92,7 +87,6 @@ class ProfileModule extends PLModule
 
         // Retrieve the photo and its mime type.
         if ($req && S::logged()) {
-            include 'validations.inc.php';
             $myphoto = PhotoReq::get_request($profile->id());
             $photo = PlImage::fromData($myphoto->data, $myphoto->mimetype);
         } else {
@@ -145,25 +139,25 @@ class ProfileModule extends PLModule
         exit;
     }
 
-    /** Tries to return the correct user from given hrpid
-     * Will redirect to $returnurl$hrpid if $hrpid was empty
+    /** Tries to return the correct profile from a given hrpid.
      */
-    private function findProfile($returnurl, $hrpid = null)
+    private function findProfile($hrpid = null)
     {
         if (is_null($hrpid)) {
             $user = S::user();
             if (!$user->hasProfile()) {
                 return PL_NOT_FOUND;
             } else {
-                pl_redirect($returnurl . $user->profile()->hrid());
+                $profile = $user->profile();
             }
         } else {
             $profile = Profile::get($hrpid);
-            if (!$profile) {
-                return PL_NOT_FOUND;
-            } else if (!S::user()->canEdit($profile) && Platal::notAllowed()) {
-                return PL_FORBIDDEN;
-            }
+        }
+
+        if (!$profile) {
+            return PL_NOT_FOUND;
+        } else if (!S::user()->canEdit($profile) && Platal::notAllowed()) {
+            return PL_FORBIDDEN;
         }
         return $profile;
     }
@@ -171,15 +165,16 @@ class ProfileModule extends PLModule
     function handler_photo_change(&$page, $hrpid = null)
     {
         global $globals;
-        $profile = $this->findProfile('photo/change/', $hrpid);
+        $profile = $this->findProfile($hrpid);
         if (! ($profile instanceof Profile) && ($profile == PL_NOT_FOUND || $profile == PL_FORBIDDEN)) {
             return $profile;
+        }
+        if (is_null($hrpid)) {
+            pl_redirect('photo/change/' . $profile->hrid());
         }
 
         $page->changeTpl('profile/trombino.tpl');
         $page->assign('hrpid', $profile->hrid());
-
-        require_once('validations.inc.php');
 
         $trombi_x = '/home/web/trombino/photos' . $profile->promo() . '/' . $profile->hrid() . '.jpg';
         if (Env::has('upload')) {
@@ -240,22 +235,11 @@ class ProfileModule extends PLModule
         if (is_null($id)) {
             return PL_NOT_FOUND;
         }
-        $pid = (!is_numeric($id) || S::admin()) ? Profile::getPID($id) : null;
-        if (is_null($pid)) {
-            if (S::logged()) {
-                $page->trigError($id . " inconnu dans l'annuaire.");
-            }
-            return PL_NOT_FOUND;
-        }
-
-        // Now that we know this is an existing profile, we can switch to the
-        // appropriate template.
-        $page->changeTpl('profile/profile.tpl', SIMPLE);
 
         // Determines the access level at which the profile will be displayed.
-        if (!S::logged() || Env::v('view') == 'public') {
+        if (!S::logged() || !S::user()->checkPerms('directory_ax') || Env::v('view') == 'public') {
             $view = 'public';
-        } else if (S::logged() && Env::v('view') == 'ax') {
+        } else if (!S::user()->checkPerms('directory_private') || Env::v('view') == 'ax') {
             $view = 'ax';
         } else {
             $view = 'private';
@@ -266,13 +250,30 @@ class ProfileModule extends PLModule
             $page->assign('with_pending_pic', true);
         }
 
-        // Fetches profile's and profile's owner information and redirects to
-        // marketing if the owner has not subscribed and the requirer has logged in.
-        $profile = Profile::get($pid, Profile::FETCH_ALL, $view);
-        $owner = $profile->owner();
-        if (S::logged() && !is_null($owner) && $owner->state == 'pending') {
-            pl_redirect('marketing/public/' . $profile->hrid());
+        $pid = (!is_numeric($id) || S::admin()) ? Profile::getPID($id) : null;
+        if (is_null($pid)) {
+            $owner = User::getSilent($id);
+            if ($owner) {
+                $profile = $owner->profile(true, Profile::FETCH_ALL, $view);
+                if ($profile) {
+                    $pid = $profile->id();
+                }
+            }
+        } else {
+            // Fetches profile's and profile's owner information and redirects to
+            // marketing if the owner has not subscribed and the requirer has logged in.
+            $profile = Profile::get($pid, Profile::FETCH_ALL, $view);
+            $owner = $profile->owner();
         }
+        if (is_null($pid)) {
+            if (S::logged()) {
+                $page->kill($id . " inconnu dans l'annuaire.");
+            }
+            return PL_NOT_FOUND;
+        }
+        // Now that we know this is an existing profile, we can switch to the
+        // appropriate template.
+        $page->changeTpl('profile/profile.tpl', SIMPLE);
 
         // Profile view are logged.
         if (S::logged()) {
@@ -312,13 +313,23 @@ class ProfileModule extends PLModule
     {
         global $globals;
 
-        $profile = $this->findProfile('profile/edit/', $hrpid);
+        if (in_array($hrpid, array('general', 'adresses', 'emploi', 'poly', 'deco', 'skill', 'mentor'))) {
+            $aux = $opened_tab;
+            $opened_tab = $hrpid;
+            $hrpid = $aux;
+            $url_error = true;
+        } else {
+            $url_error = false;
+        }
+        $profile = $this->findProfile($hrpid);
         if (! ($profile instanceof Profile) && ($profile == PL_NOT_FOUND || $profile == PL_FORBIDDEN)) {
             return $profile;
         }
+        if (is_null($hrpid) || $url_error) {
+            pl_redirect('profile/edit/' . $profile->hrid() . (is_null($opened_tab) ? '' : '/' . $opened_tab));
+        }
 
         // Build the page
-        $page->addJsLink('ajax.js');
         $page->addJsLink('education.js', false); /* dynamic content */
         $page->addJsLink('grades.js', false);    /* dynamic content */
         $page->addJsLink('profile.js');
@@ -327,13 +338,17 @@ class ProfileModule extends PLModule
         $wiz->addUserData('profile', $profile);
         $wiz->addUserData('owner', $profile->owner());
         $this->load('page.inc.php');
-        $wiz->addPage('ProfileSettingGeneral', 'Général', 'general');
-        $wiz->addPage('ProfileSettingAddresses', 'Adresses personnelles', 'adresses');
-        $wiz->addPage('ProfileSettingGroups', 'Groupes X - Binets', 'poly');
-        $wiz->addPage('ProfileSettingDecos', 'Décorations - Medailles', 'deco');
-        $wiz->addPage('ProfileSettingJobs', 'Informations professionnelles', 'emploi');
-        $wiz->addPage('ProfileSettingSkills', 'Compétences diverses', 'skill');
-        $wiz->addPage('ProfileSettingMentor', 'Mentoring', 'mentor');
+        $wiz->addPage('ProfilePageGeneral', 'Général', 'general');
+        $wiz->addPage('ProfilePageAddresses', 'Adresses personnelles', 'adresses');
+        $wiz->addPage('ProfilePageJobs', 'Informations professionnelles', 'emploi');
+        if (S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE)) {
+            $wiz->addPage('ProfilePageGroups', 'Groupes X - Binets', 'poly');
+        }
+        $wiz->addPage('ProfilePageDecos', 'Décorations - Medailles', 'deco');
+        if (S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE)) {
+            $wiz->addPage('ProfilePageSkills', 'Compétences diverses', 'skill');
+            $wiz->addPage('ProfilePageMentor', 'Mentoring', 'mentor');
+        }
         $wiz->apply($page, 'profile/edit/' . $profile->hrid(), $opened_tab, $mode);
 
         if (!$profile->birthdate) {
@@ -385,14 +400,20 @@ class ProfileModule extends PLModule
         $page->assign('address', array());
     }
 
-    function handler_ajax_tel(&$page, $prefid, $prefname, $telid)
+    function handler_ajax_tel(&$page, $prefid, $prefname, $telid, $subField, $mainField, $mainId)
     {
         pl_content_headers("text/html");
         $page->changeTpl('profile/phone.tpl', NO_SKIN);
         $page->assign('prefid', $prefid);
         $page->assign('prefname', $prefname);
         $page->assign('telid', $telid);
-        $page->assign('tel', array());
+        $phone = new Phone();
+        $page->assign('tel', $phone->toFormArray());
+        if ($mainField) {
+            $page->assign('subField', $subField);
+            $page->assign('mainField', $mainField);
+            $page->assign('mainId', $mainId);
+        }
     }
 
     function handler_ajax_edu(&$page, $eduid, $class)
@@ -423,60 +444,25 @@ class ProfileModule extends PLModule
         $page->assign('i', $id);
         $page->assign('job', array());
         $page->assign('new', true);
-        $res = XDB::query("SELECT  id, name AS label
-                             FROM  profile_job_sector_enum");
-        $page->assign('sectors', $res->fetchAllAssoc());
         require_once "emails.combobox.inc.php";
         fill_email_combobox($page);
     }
 
-    function handler_ajax_sector(&$page, $id, $jobid, $jobpref, $sect, $ssect = -1)
+    /**
+     * Page for url "profile/ajax/tree/jobterms". Display a JSon page containing
+     * the sub-branches of a branch in the job terms tree.
+     * @param $page the Platal page
+     * @param $filter filter helps to display only jobterms that are contained in jobs or in mentors
+     *
+     * @param Env::i('jtid') job term id of the parent branch, if none trunk will be used
+     * @param Env::v('attrfunc') the name of a javascript function that will be called when a branch
+     * is chosen
+     * @param Env::v('treeid') tree id that will be given as first argument of attrfunc function
+     * the second argument will be the chosen job term id and the third one the chosen job full name.
+     */
+    function handler_ajax_tree_job_terms(&$page, $filter = JobTerms::ALL)
     {
-        pl_content_headers("text/html");
-        $res = XDB::iterator("SELECT  id, name, FIND_IN_SET('optgroup', flags) AS optgroup
-                                FROM  profile_job_subsector_enum
-                               WHERE  sectorid = {?}", $sect);
-        $page->changeTpl('profile/jobs.sector.tpl', NO_SKIN);
-        $page->assign('id', $id);
-        $page->assign('subSectors', $res);
-        $page->assign('sel', $ssect);
-        if ($id != -1) {
-            $page->assign('change', 1);
-            $page->assign('jobid', $jobid);
-            $page->assign('jobpref', $jobpref);
-        }
-    }
-
-    function handler_ajax_sub_sector(&$page, $id, $ssect, $sssect = -1)
-    {
-        pl_content_headers("text/html");
-        $res = XDB::iterator("SELECT  id, name
-                                FROM  profile_job_subsubsector_enum
-                               WHERE  subsectorid = {?}", $ssect);
-        $page->changeTpl('profile/jobs.sub_sector.tpl', NO_SKIN);
-        $page->assign('id', $id);
-        $page->assign('subSubSectors', $res);
-        $page->assign('sel', $sssect);
-    }
-
-    function handler_ajax_alternates(&$page, $id, $sssect)
-    {
-        pl_content_headers("text/html");
-        $res = XDB::iterator('SELECT  name
-                                FROM  profile_job_alternates
-                               WHERE  subsubsectorid = {?}
-                            ORDER BY  id',
-                             $sssect);
-        $page->changeTpl('profile/jobs.alternates.tpl', NO_SKIN);
-        $alternates = '';
-        if ($res->total() > 0) {
-            $alternate  = $res->next();
-            $alternates = $alternate['name'];
-            while ($alternate  = $res->next()) {
-                $alternates .= ', ' . $alternate['name'];
-            }
-        }
-        $page->assign('alternates', $alternates);
+        JobTerms::ajaxGetBranch(&$page, $filter);
     }
 
     function handler_ajax_skill(&$page, $cat, $id)
@@ -531,26 +517,9 @@ class ProfileModule extends PLModule
 
         $page->assign_by_ref('profile', $pf);
 
-        /////  recuperations infos referent
-
-        // Sectors
-        $sectors = $subSectors = Array();
-        $res = XDB::iterRow(
-                "SELECT  s.name AS label, ss.name AS label
-                   FROM  profile_mentor_sector      AS m
-              LEFT JOIN  profile_job_sector_enum    AS s  ON(m.sectorid = s.id)
-              LEFT JOIN  profile_job_subsector_enum AS ss ON(m.sectorid = ss.sectorid AND m.subsectorid = ss.id)
-                  WHERE  pid = {?}", $pf->id());
-        while (list($sector, $subSector) = $res->next()) {
-            $sectors[]    = $sector;
-            $subSectors[] = $subSector;
-        }
-        $page->assign_by_ref('sectors', $sectors);
-        $page->assign_by_ref('subSectors', $subSectors);
-
-        // Countries.
+        // Retrieves referents' countries.
         $res = XDB::query(
-                "SELECT  gc.countryFR
+                "SELECT  gc.country
                    FROM  profile_mentor_country AS m
               LEFT JOIN  geoloc_countries       AS gc ON (m.country = gc.iso_3166_1_a2)
                   WHERE  pid = {?}", $pf->id());
@@ -559,72 +528,97 @@ class ProfileModule extends PLModule
         $page->addJsLink('close_on_esc.js');
     }
 
-    function handler_ref_search(&$page, $action = null, $subaction = null)
-    {
-        $wp = new PlWikiPage('Docs.Emploi');
-        $wp->buildCache();
-
-        $page->setTitle('Emploi et Carrières');
-
-        // Retrieval of sector names
-        $sectors = XDB::fetchAllAssoc('id', 'SELECT  pjse.id, pjse.name
-                                               FROM  profile_job_sector_enum AS pjse
-                                         INNER JOIN  profile_mentor_sector AS pms ON (pms.sectorid = pjse.id)
-                                           GROUP BY  pjse.id
-                                           ORDER BY  pjse.name');
-        $page->assign_by_ref('sectors', $sectors);
-
-        // nb de mentors
-        $res = XDB::query("SELECT count(*) FROM profile_mentor");
-        $page->assign('mentors_number', $res->fetchOneCell());
-
-        // On vient d'un formulaire
-        require_once 'ufbuilder.inc.php';
-        $ufb = new UFB_MentorSearch();
-        if (!$ufb->isEmpty()) {
-            require_once 'userset.inc.php';
-            $ufc = $ufb->getUFC();
-            $set = new ProfileSet($ufc);
-            $set->addMod('mentor', 'Référents');
-            $set->apply('referent/search', $page, $action, $subaction);
-            if ($set->count() > 100) {
-                $page->assign('recherche_trop_large', true);
-            }
-        }
-
-        $page->changeTpl('profile/referent.tpl');
-    }
-
-    function handler_ref_sect(&$page, $sect)
-    {
-        pl_content_headers("text/html");
-        $page->changeTpl('include/field.select.tpl', NO_SKIN);
-        $page->assign('onchange', 'setSSectors()');
-        $page->assign('id', 'ssect_field');
-        $page->assign('name', 'subSector');
-        $it = XDB::iterator("SELECT  pjsse.id, pjsse.name AS field
-                               FROM  profile_job_subsector_enum AS pjsse
-                         INNER JOIN  profile_mentor_sector AS pms ON (pms.sectorid = pjsse.sectorid AND pms.subsectorid = pjsse.id)
-                              WHERE  pjsse.sectorid = {?}
-                           GROUP BY  pjsse.id
-                           ORDER BY  pjsse.name", $sect);
-        $page->assign('list', $it);
-    }
-
-    function handler_ref_country(&$page, $sect, $ssect = '')
+    function handler_ref_country(&$page)
     {
         pl_content_headers("text/html");
         $page->changeTpl('include/field.select.tpl', NO_SKIN);
         $page->assign('name', 'pays_sel');
-        $where = ($ssect ? ' AND ms.subsectorid = {?}' : '');
-        $it = XDB::iterator("SELECT  gc.iso_3166_1_a2 AS id, gc.countryFR AS field
+        $it = XDB::iterator("SELECT  gc.iso_3166_1_a2 AS id, gc.country AS field
                                FROM  geoloc_countries       AS gc
                          INNER JOIN  profile_mentor_country AS mp ON (mp.country = gc.iso_3166_1_a2)
-                         INNER JOIN  profile_mentor_sector  AS ms ON (ms.pid = mp.pid)
-                              WHERE  ms.sectorid = {?} " . $where . "
                            GROUP BY  iso_3166_1_a2
-                           ORDER BY  countryFR", $sect, $ssect);
+                           ORDER BY  country");
         $page->assign('list', $it);
+    }
+
+    /**
+     * Page for url "referent/autocomplete". Display an "autocomplete" page (plain/text with values
+     * separated by "|" chars) for jobterms in referent (mentor) search.
+     * @see handler_jobterms
+     */
+    function handler_ref_autocomplete(&$page)
+    {
+        $this->handler_jobterms(&$page, 'mentor');
+    }
+
+    /**
+     * Page for url "profile/jobterms" (function also used for "referent/autocomplete" @see
+     * handler_ref_autocomplete). Displays an "autocomplete" page (plain text with values
+     * separated by "|" chars) for jobterms to add in profile.
+     * @param $page the Platal page
+     * @param $type set to 'mentor' to display the number of mentors for each term and order
+     *  by descending number of mentors.
+     *
+     * @param Env::v('q') the text that has been typed and to complete automatically
+     */
+    function handler_jobterms(&$page, $type = 'nomentor')
+    {
+        pl_content_headers("text/plain");
+
+        $q = Env::v('q').'%';
+        $tokens = JobTerms::tokenize($q);
+        if (count($tokens) == 0) {
+            exit;
+        }
+        sort($tokens);
+        $q_normalized = implode(' ', $tokens);
+
+        // try to look in cached results
+        $cache = XDB::query('SELECT  result
+                               FROM  search_autocomplete
+                              WHERE  name = {?} AND
+                                     query = {?} AND
+                                     generated > NOW() - INTERVAL 1 DAY',
+                            $type, $q_normalized);
+        if ($res = $cache->fetchOneCell()) {
+            echo $res;
+            die();
+        }
+
+        $joins = JobTerms::token_join_query($tokens, 'e');
+        if ($type == 'mentor') {
+            $count = ', COUNT(DISTINCT pid) AS nb';
+            $countjoin = ' INNER JOIN  profile_job_term_relation AS r ON(r.jtid_1 = e.jtid) INNER JOIN  profile_mentor_term AS m ON(r.jtid_2 = m.jtid)';
+            $countorder = 'nb DESC, ';
+        } else {
+            $count = $countjoin = $countorder = '';
+        }
+        $list = XDB::iterator('SELECT  e.jtid AS id, e.full_name AS field'.$count.'
+                                 FROM  profile_job_term_enum AS e '.$joins.$countjoin.'
+                             GROUP BY  e.jtid
+                             ORDER BY  '.$countorder.'field
+                                LIMIT  11');
+        $nbResults = 0;
+        $res = '';
+        while ($result = $list->next()) {
+            $nbResults++;
+            if ($nbResults == 11) {
+                $res .= $q."|-1\n";
+            } else {
+                $res .= $result['field'].'|';
+                if ($count) {
+                    $res .= $result['nb'].'|';
+                }
+                $res .= $result['id'];
+            }
+            $res .= "\n";
+        }
+        XDB::query('INSERT INTO  search_autocomplete (name, query, result, generated)
+                         VALUES  ({?}, {?}, {?}, NOW())
+        ON DUPLICATE KEY UPDATE  result = VALUES(result), generated = VALUES(generated)',
+                    $type, $q_normalized, $res);
+        echo $res;
+        exit();
     }
 
     function handler_xnet(&$page)
@@ -638,7 +632,7 @@ class ProfileModule extends PLModule
               FROM group_members AS m
         INNER JOIN groups AS a ON(m.asso_id = a.id)
          LEFT JOIN group_events AS e ON(e.asso_id = m.asso_id AND e.archive = 0)
-             WHERE uid = {?} GROUP BY m.asso_id ORDER BY a.nom', S::i('uid'));
+             WHERE m.uid = {?} GROUP BY m.asso_id ORDER BY a.nom', S::i('uid'));
         $page->assign('assos', $req->fetchAllAssoc());
     }
 
@@ -700,13 +694,14 @@ class ProfileModule extends PLModule
                 S::assert_xsrf_token();
 
                 $data = file_get_contents($_FILES['userfile']['tmp_name']);
-            	list($x, $y) = getimagesize($_FILES['userfile']['tmp_name']);
-            	$mimetype = substr($_FILES['userfile']['type'], 6);
-            	unlink($_FILES['userfile']['tmp_name']);
-                XDB::execute(
-                        "REPLACE INTO profile_photos SET pid={?}, attachmime = {?}, attach={?}, x={?}, y={?}",
-                        $user->profile()->id(), $mimetype, $data, $x, $y);
-            	break;
+                list($x, $y) = getimagesize($_FILES['userfile']['tmp_name']);
+                $mimetype = substr($_FILES['userfile']['type'], 6);
+                unlink($_FILES['userfile']['tmp_name']);
+                XDB::execute('INSERT INTO  profile_photos (pid, attachmime, attach, x, y)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?})
+                  ON DUPLICATE KEY UPDATE  attachmime = VALUES(attachmime), attach = VALUES(attach), x = VALUES(x), y = VALUES(y)',
+                             $user->profile()->id(), $mimetype, $data, $x, $y);
+                break;
 
             case "delete":
                 S::assert_xsrf_token();
@@ -761,10 +756,10 @@ class ProfileModule extends PLModule
         $table_editor->describe('degree', 'niveau', true);
         $table_editor->apply($page, $action, $id);
     }
-    function handler_admin_education_degree_set(&$page, $action = 'list', $id = null) {
+    function handler_admin_education_degree_set(&$page, $action = 'list', $id = null, $id2 = null) {
         $page->setTitle('Administration - Correspondances formations - niveau de formation');
         $page->assign('title', 'Gestion des correspondances formations - niveau de formation');
-        $table_editor = new PLTableEditor('admin/education_degree_set', 'profile_education_degree', 'eduid', true);
+        $table_editor = new PLTableEditor('admin/education_degree_set', 'profile_education_degree', 'eduid', true, 'degreeid');
         $table_editor->describe('eduid', 'id formation', true);
         $table_editor->describe('degreeid', 'id niveau', true);
 
@@ -775,23 +770,13 @@ class ProfileModule extends PLModule
         $table_editor->add_option_table('profile_education_degree_enum','profile_education_degree_enum.id = t.degreeid');
         $table_editor->add_option_field('profile_education_degree_enum.degree', 'degree_name', 'niveau');
 
-        $table_editor->apply($page, $action, $id);
+        $table_editor->apply($page, $action, $id, $id2);
     }
     function handler_admin_sections(&$page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Sections');
         $page->assign('title', 'Gestion des sections');
         $table_editor = new PLTableEditor('admin/sections','profile_section_enum','id');
         $table_editor->describe('text','intitulé',true);
-        $table_editor->apply($page, $action, $id);
-    }
-    function handler_admin_sectors(&$page, $action = 'list', $id = null) {
-        $page->setTitle('Administration - Secteurs');
-        $page->assign('title', 'Gestion des secteurs');
-        $table_editor = new PLTableEditor('admin/sectors', 'profile_job_subsubsector_enum', 'id', true);
-        $table_editor->describe('sectorid', 'id du secteur', false);
-        $table_editor->describe('subsectorid', 'id du sous-secteur', false);
-        $table_editor->describe('name', 'nom', true);
-        $table_editor->describe('flags', 'affichage', true);
         $table_editor->apply($page, $action, $id);
     }
     function handler_admin_networking(&$page, $action = 'list', $id = null) {

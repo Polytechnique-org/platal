@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MYSQL='mysql -u admin '
+MYSQL='mysql -u admin --default-character-set=utf8 '
 
 
 set -e
@@ -64,6 +64,25 @@ function mysql_run() {
         (cat "$1" | mysql_pipe) || die "ERROR"
     fi
     echo "OK"
+}
+
+function create_db() {
+    echo "* create database "
+    mysql_exec_nodb "CREATE DATABASE IF NOT EXISTS $DATABASE;"
+    mysql_exec_nodb "GRANT ALTER, CREATE, CREATE TEMPORARY TABLES, DELETE, DROP, EXECUTE, INDEX, INSERT, LOCK TABLES, SELECT, UPDATE ON $DATABASE.* TO 'web'@'localhost';"
+    mysql_exec_nodb "FLUSH PRIVILEGES;"
+    echo "OK"
+}
+
+function copy_db() {
+    if [[ -n "$SOURCE_DATABASE" ]]; then
+        confirm "* copying database from $SOURCE_DATABASE to $DATABASE"
+        create_db
+        echo -n "* build database from dump "
+        ( mysqldump --add-drop-table -Q $SOURCE_DATABASE | $MYSQL $DATABASE ) \
+            || die "ERROR"
+        echo "OK"
+    fi
 }
 
 function mysql_run_directory() {

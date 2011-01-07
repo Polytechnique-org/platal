@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -35,7 +35,7 @@
 <strong>Code AX&nbsp;:</strong>
 <input type="text" name="AX_code" size="25" maxlength="200" value="{$valid->AX_code}" /><br />
 <strong>Adresse&nbsp;:</strong>
-<textarea cols="30" rows="4" name="address">{$valid->address.text}</textarea><br />
+<textarea cols="30" rows="4" name="address">{$valid->address}</textarea><br />
 <strong>Téléphone&nbsp;:</strong>
 <input type="text" name="tel" size="25" maxlength="200" value="{$valid->tel}" /><br />
 <strong>Fax&nbsp;:</strong>

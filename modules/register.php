@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -56,21 +56,22 @@ class RegisterModule extends PLModule
                                  FROM  register_marketing AS m
                            INNER JOIN  accounts           AS a   ON (m.uid = a.uid)
                            INNER JOIN  account_profiles   AS ap  ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
-                           INNER JOIN  profiles           AS p   ON (p.pid = ap.uid)
+                           INNER JOIN  profiles           AS p   ON (p.pid = ap.pid)
                            INNER JOIN  profile_display    AS pd  ON (p.pid = pd.pid)
                            INNER JOIN  profile_name       AS pnl ON (p.pid = pnl.pid AND pnl.typeid = {?})
                            INNER JOIN  profile_name       AS pnf ON (p.pid = pnf.pid AND pnf.typeid = {?})
-                                WHERE  m.hash = {?}",
+                                WHERE  m.hash = {?} AND a.state = 'pending'",
                               $nameTypes['name_ini'], $nameTypes['firstname_ini'], $hash);
 
             if ($res->numRows() == 1) {
                 $subState->merge($res->fetchOneRow());
                 $subState->set('yearpromo', substr($subState->s('promo'), 1, 4));
 
-                XDB::execute('REPLACE INTO  register_mstats (uid,sender,success)
-                                    SELECT  m.uid, m.sender, 0
-                                      FROM  register_marketing AS m
-                                     WHERE  m.hash',
+                XDB::execute('INSERT INTO  register_mstats (uid, sender, success)
+                                   SELECT  m.uid, m.sender, 0
+                                     FROM  register_marketing AS m
+                                    WHERE  m.hash
+                  ON DUPLICATE KEY UPDATE  sender = VALUES(sender), success = VALUES(success)',
                              $subState->s('hash'));
             }
         }
@@ -276,15 +277,15 @@ class RegisterModule extends PLModule
         $res = XDB::query("SELECT  r.uid, p.pid, r.forlife, r.bestalias, r.mailorg2,
                                    r.password, r.email, r.services, r.naissance,
                                    pnl.name AS lastname, pnf.name AS firstname,
-                                   pd.promo, p.sex, p.birthdate_ref
+                                   pd.promo, p.sex, p.birthdate_ref, a.type AS eduType
                              FROM  register_pending AS r
                        INNER JOIN  accounts         AS a   ON (r.uid = a.uid)
                        INNER JOIN  account_profiles AS ap  ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
-                       INNER JOIN  profiles         AS p   ON (p.pid = ap.uid)
+                       INNER JOIN  profiles         AS p   ON (p.pid = ap.pid)
                        INNER JOIN  profile_name     AS pnl ON (p.pid = pnl.pid AND pnl.typeid = {?})
                        INNER JOIN  profile_name     AS pnf ON (p.pid = pnf.pid AND pnf.typeid = {?})
                        INNER JOIN  profile_display  AS pd  ON (p.pid = pd.pid)
-                            WHERE  hash = {?} AND hash != 'INSCRIT'",
+                            WHERE  hash = {?} AND hash != 'INSCRIT' AND a.state = 'pending'",
                           $nameTypes['name_ini'], $nameTypes['firstname_ini'], $hash);
         if (!$hash || $res->numRows() == 0) {
             $page->kill("<p>Cette adresse n'existe pas, ou plus, sur le serveur.</p>
@@ -302,7 +303,8 @@ class RegisterModule extends PLModule
         }
 
         list($uid, $pid, $forlife, $bestalias, $emailXorg2, $password, $email, $services,
-             $birthdate, $lastname, $firstname, $promo, $sex, $birthdate_ref) = $res->fetchOneRow();
+             $birthdate, $lastname, $firstname, $promo, $sex, $birthdate_ref, $eduType) = $res->fetchOneRow();
+        $isX = ($eduType == 'x');
         $yearpromo = substr($promo, 1, 4);
 
         // Prepare the template for display.
@@ -327,6 +329,7 @@ class RegisterModule extends PLModule
         //
         // Create the user account.
         //
+        XDB::startTransaction();
         XDB::execute("UPDATE  accounts
                          SET  password = {?}, state = 'active',
                               registration_date = NOW(), email = NULL
@@ -342,10 +345,10 @@ class RegisterModule extends PLModule
             XDB::execute("INSERT INTO  aliases (uid, alias, type)
                                VALUES  ({?}, {?}, 'alias')", $uid, $emailXorg2);
         }
+        XDB::commit();
 
         // Add the registration email address as first and only redirection.
         require_once 'emails.inc.php';
-        $user = User::getSilentWithUID($uid);
         $redirect = new Redirect($user);
         $redirect->add_email($email);
 
@@ -368,11 +371,16 @@ class RegisterModule extends PLModule
                     $r = XDB::query('SELECT id FROM groups WHERE diminutif = {?}', $yearpromo);
                     if ($r->numRows()) {
                         $asso_id = $r->fetchOneCell();
-                        XDB::execute('REPLACE INTO  group_members (uid, asso_id)
-                                            VALUES  ({?}, {?})',
+                        XDB::execute('INSERT IGNORE INTO  group_members (uid, asso_id)
+                                                  VALUES  ({?}, {?})',
                                      $uid, $asso_id);
-                        $mmlist = new MMList($uid, S::v('password'));
-                        $mmlist->subscribe("promo" . S::v('promo'));
+                        try {
+                            $mmlist = new MMList($user);
+                            $mmlist->subscribe("promo" . $yearpromo);
+                        } catch (Exception $e) {
+                            PlErrorReport::report($e);
+                            $page->trigError("L'inscription à la liste promo" . $yearpromo . " a échouée.");
+                        }
                     }
                     break;
                 case 'nl':
@@ -390,6 +398,12 @@ class RegisterModule extends PLModule
 
         // Congratulate our newly registered user by email.
         $mymail = new PlMailer('register/success.mail.tpl');
+        $mymail->addTo("\"{$user->fullName()}\" <{$user->forlifeEmail()}>");
+        if ($isX) {
+            $mymail->setSubject('Bienvenue parmi les X sur le web !');
+        } else {
+            $mymail->setSubject('Bienvenue sur Polytechnique.org !');
+        }
         $mymail->assign('forlife', $forlife);
         $mymail->assign('firstname', $firstname);
         $mymail->send();
@@ -398,10 +412,10 @@ class RegisterModule extends PLModule
         Profile::rebuildSearchTokens($pid);
 
         // Notify other users which were watching for her arrival.
-        XDB::execute('REPLACE INTO  contacts (uid, contact)
-                            SELECT  uid, ni_id
-                              FROM  watch_nonins
-                             WHERE  ni_id = {?}', $uid);
+        XDB::execute('INSERT INTO  contacts (uid, contact)
+                           SELECT  uid, ni_id
+                             FROM  watch_nonins
+                            WHERE  ni_id = {?}', $uid);
         XDB::execute('DELETE FROM  watch_nonins
                             WHERE  ni_id = {?}', $uid);
         Platal::session()->updateNbNotifs();
@@ -449,12 +463,13 @@ class RegisterModule extends PLModule
                          SET  success = NOW()
                        WHERE  uid = {?}", $uid);
 
+        $market = array();
         while (list($senderid, $maketingEmails, $lastDate) = $res->next()) {
             $sender = User::getWithUID($senderid);
-            $market[] = " - par $sender->fullName() sur $maketingEmails (le plus récemment le $lastDate)";
+            $market[] = " - par {$sender->fullName()} sur $maketingEmails (le plus récemment le $lastDate)";
             $mymail = new PlMailer('register/marketer.mail.tpl');
             $mymail->setSubject("$firstname $lastname s'est inscrit à Polytechnique.org !");
-            $mymail->addTo("\"$sender->fullName()\" <$sender->bestEmail()@{$globals->mail->domain}>");
+            $mymail->addTo($sender);
             $mymail->assign('sender', $sender);
             $mymail->assign('firstname', $firstname);
             $mymail->assign('lastname', $lastname);

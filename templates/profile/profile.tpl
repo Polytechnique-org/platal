@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -44,7 +44,7 @@ function chgMainWinLoc(strPage)
     {assign var=photo value=$profile->getPhoto(false)}
     {if $photo}<img alt="Photo de {$profile->fullName()}" src="photo/{$profile->hrid()}{if $with_pending_pic}/req{/if}" width="{$photo->width()}"/>{/if}
 
-    {if $logged && $view eq 'private' && ( $profile->section|smarty:nodefaults || $profile->getBinets()|smarty:nodefaults || ($owner && $owner->groups()|smarty:nodefaults))}
+    {if $logged && $view eq 'private' && ( $profile->section|smarty:nodefaults || $profile->getBinets()|smarty:nodefaults || ($owner && $owner->groups(true,true)|smarty:nodefaults))}
       <h2>À l'X&hellip;</h2>
       {if $profile->section}<div><em class="intitule">Section&nbsp;: </em><span>{$profile->section}</span></div>{/if}
 
@@ -53,10 +53,10 @@ function chgMainWinLoc(strPage)
       <span>{', '|implode:$profile->getBinetsNames()}</span></div>{/if}
 
       {if $owner && $view eq 'private'}
-        {assign var=groups value=$owner->groupNames(true)}
+        {assign var=groups value=$owner->groups(true,true)}
         {if $groups|@count}<div><em class="intitule">Groupe{if count($groups) > 1}s{/if} et institution{if count($groups) > 1}s{/if} X&nbsp;: </em>
         <span><br/>
-        {foreach from=$groups item=group key=gk}{if $gk != 0}, {/if}<span title="{$group.nom}"><a href="{$group.site}">{$group.nom}</a></span>{/foreach}
+        {foreach from=$groups item=group name=groups}{if !$smarty.foreach.groups.first}, {/if}<span title="{$group.nom}"><a href="{$group.site}">{$group.nom}</a></span>{/foreach}
         </span></div>{/if}
       {/if}
 
@@ -87,7 +87,7 @@ function chgMainWinLoc(strPage)
   <div id="fiche_identite" class="part">
     <div class="civilite">
       {if $profile->isFemale()}&bull;{/if}
-        {if $logged}{$profile->private_name}{else}{$profile->public_name}{/if}
+        {if $view eq 'private'}{$profile->private_name}{else}{$profile->public_name}{/if}
 
       {if $logged}
         &nbsp;{if !$profile->isDead()}<a href="vcard/{$owner->login()}.vcf">{*
@@ -106,10 +106,13 @@ function chgMainWinLoc(strPage)
           {icon name=wrench title="administrer user"}</a>
         {/if}
 
-        {if $owner->login() eq $smarty.session.hruid}
+        {if $smarty.session.user->isMyProfile($profile)}
         <a href="javascript:chgMainWinLoc('profile/edit')">{icon name="user_edit" title="Modifier ma fiche"}</a>
+        {elseif hasPerm('admin') || $smarty.session.user->canEdit($profile)}
+        <a href="javascript:chgMainWinLoc('profile/edit/{$profile->hrpid}')">
+          {icon name=user_edit title="modifier la fiche"}
+        </a>
         {/if}
-
       {/if}
     </div>
 
@@ -172,7 +175,7 @@ function chgMainWinLoc(strPage)
         &nbsp;-&nbsp;Formation&nbsp;:
         <ul>
         {foreach from=$educations item=edu}
-          <li>{display_education edu=$edu profile=$profile}</li>
+          <li>{display_education edu=$edu profile=$profile full=true}</li>
         {/foreach}
         </ul>
       {/if}

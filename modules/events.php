@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -25,11 +25,11 @@ class EventsModule extends PLModule
     {
         return array(
             'events'         => $this->make_hook('ev',           AUTH_COOKIE),
-            'rss'            => $this->make_hook('rss',          AUTH_PUBLIC, 'user', NO_HTTPS),
             'events/preview' => $this->make_hook('preview',      AUTH_PUBLIC, 'user', NO_AUTH),
             'events/photo'   => $this->make_hook('photo',        AUTH_PUBLIC),
             'events/submit'  => $this->make_hook('ev_submit',    AUTH_MDP),
             'admin/events'   => $this->make_hook('admin_events', AUTH_MDP,    'admin'),
+            'rss'            => $this->make_token_hook('rss',    AUTH_COOKIE),
 
             'ajax/tips'      => $this->make_hook('tips',         AUTH_COOKIE, 'user', NO_AUTH),
             'admin/tips'     => $this->make_hook('admin_tips',   AUTH_MDP,    'admin'),
@@ -103,11 +103,19 @@ class EventsModule extends PLModule
     function handler_ev(&$page, $action = 'list', $eid = null, $pound = null)
     {
         $page->changeTpl('events/index.tpl');
-        $page->addJsLink('ajax.js');
-        $page->assign('tips', $this->get_tips());
+
+        $user = S::user();
+
+        /** XXX: Tips and reminder only for user with 'email' permission.
+         * We can do better in the future by storing a userfilter
+         * with the tip/reminder.
+         */
+        if ($user->checkPerms(User::PERM_MAIL)) {
+            $page->assign('tips', $this->get_tips());
+
+        }
 
         // Adds a reminder onebox to the page.
-        $user = S::user();
         require_once 'reminder.inc.php';
         if (($reminder = Reminder::GetCandidateReminder($user))) {
             $reminder->Prepare($page);
@@ -135,8 +143,9 @@ class EventsModule extends PLModule
                             FROM announce_read AS ev
                       INNER JOIN announces AS e ON e.id = ev.evt_id
                            WHERE expiration < NOW()');
-            XDB::execute('REPLACE INTO announce_read VALUES({?},{?})',
-                $eid, S::v('uid'));
+            XDB::execute('INSERT IGNORE INTO  announce_read (evt_id, uid)
+                                      VALUES  ({?}, {?})',
+                         $eid, S::v('uid'));
             pl_redirect('events#'.$pound);
         }
 
@@ -199,7 +208,6 @@ class EventsModule extends PLModule
                 exit;
             }
         } elseif ($eid == 'valid') {
-            require_once 'validations.inc.php';
             $valid = Validate::get_request_by_id($valid);
             if ($valid && $valid->img) {
                 pl_cached_dynamic_content_headers("image/" . $valid->imgtype);
@@ -220,11 +228,11 @@ class EventsModule extends PLModule
         exit;
     }
 
-    function handler_rss(&$page, $user = null, $hash = null)
+    function handler_rss(PlPage& $page, PlPage& $user)
     {
         $this->load('feed.inc.php');
         $feed = new EventFeed();
-        return $feed->run($page, $user, $hash);
+        return $feed->run($page, $user);
     }
 
     function handler_preview(&$page)
@@ -246,7 +254,6 @@ class EventsModule extends PLModule
     function handler_ev_submit(&$page)
     {
         $page->changeTpl('events/submit.tpl');
-        $page->addJsLink('ajax.js');
 
         $wp = new PlWikiPage('Xorg.Annonce');
         $wp->buildCache();
@@ -286,7 +293,6 @@ class EventsModule extends PLModule
         } elseif ($action) {
             S::assert_xsrf_token();
 
-            require_once 'validations.inc.php';
             $evtreq = new EvtReq($titre, $texte, $promo_min, $promo_max,
                                  $expiration, $valid_mesg, S::user(), $upload);
             $evtreq->submit();
@@ -311,10 +317,10 @@ class EventsModule extends PLModule
         $table_editor->describe('expiration', 'date de péremption', true);
         $table_editor->describe('promo_min', 'promo. min (0 aucune)', false);
         $table_editor->describe('promo_max', 'promo. max (0 aucune)', false);
-        $table_editor->describe('titre', 'titre', true);
+        $table_editor->describe('title', 'titre', true);
         $table_editor->describe('state', 'actif', true);
         $table_editor->describe('text', 'texte (html) de l\'astuce', false);
-        $table_editor->describe('priorite', '0<=priorité<=255', true);
+        $table_editor->describe('priority', '0<=priorité<=255', true);
         $table_editor->list_on_edit(false);
         $table_editor->apply($page, $action, $id);
         if (($action == 'edit' && !is_null($id)) || $action == 'update') {
@@ -325,7 +331,6 @@ class EventsModule extends PLModule
     function handler_admin_events(&$page, $action = 'list', $eid = null)
     {
         $page->changeTpl('events/admin.tpl');
-        $page->addJsLink('ajax.js');
         $page->setTitle('Administration - Evenements');
         $page->register_modifier('hde', 'html_entity_decode');
 
@@ -375,9 +380,10 @@ class EventsModule extends PLModule
                               Post::v('promo_min'), Post::v('promo_max'),
                               $flags, $eid);
                 if ($upload->exists() && list($x, $y, $type) = $upload->imageInfo()) {
-                    XDB::execute('REPLACE INTO  announce_photos
-                                           SET  eid = {?}, attachmime = {?}, x = {?}, y = {?}, attach = {?}',
-                                 $eid, $type, $x, $y, $upload->getContents());
+                    XDB::execute('INSERT INTO  announce_photos (eid, attachmime, attach, x, y)
+                                       VALUES  ({?}, {?}, {?}, {?}, {?})
+                      ON DUPLICATE KEY UPDATE  attachmime = VALUES(attachmime), attach = VALUES(attach), x = VALUES(x), y = VALUES(y)',
+                                 $eid, $type, $upload->getContents(), $x, $y);
                     $upload->rm();
                 }
             }

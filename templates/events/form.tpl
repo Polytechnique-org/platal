@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -62,7 +62,7 @@
       page = "{$globals->baseurl}/" + page;
       {literal}
     }
-    Ajax.update_html('preview', page, null);
+    $('#preview').updateHtml(page);
     return false;
   }
   {/literal}

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -27,8 +27,8 @@ class ListsModule extends PLModule
     {
         return array(
             'lists'           => $this->make_hook('lists',     AUTH_MDP),
-            'lists/ajax'      => $this->make_hook('ajax',      AUTH_MDP,    'user', NO_AUTH),
-            'lists/create'    => $this->make_hook('create',    AUTH_MDP),
+            'lists/ajax'      => $this->make_hook('ajax',      AUTH_MDP, 'user', NO_AUTH),
+            'lists/create'    => $this->make_hook('create',    AUTH_MDP, 'lists'),
 
             'lists/members'   => $this->make_hook('members',   AUTH_COOKIE),
             'lists/csv'       => $this->make_hook('csv',       AUTH_COOKIE),
@@ -43,7 +43,7 @@ class ListsModule extends PLModule
 
             'lists/soptions'  => $this->make_hook('soptions',  AUTH_MDP),
             'lists/check'     => $this->make_hook('check',     AUTH_MDP),
-            'admin/lists'     => $this->make_hook('admin_all', AUTH_MDP,    'admin'),
+            'admin/lists'     => $this->make_hook('admin_all', AUTH_MDP, 'admin'),
         );
     }
 
@@ -91,7 +91,6 @@ class ListsModule extends PLModule
         $domain = $this->prepare_client($page);
 
         $page->changeTpl('lists/index.tpl');
-        $page->addJsLink('ajax.js');
         $page->setTitle('Listes de diffusion');
 
 
@@ -301,7 +300,6 @@ class ListsModule extends PLModule
         if (!$page->nb_errs()) {
             $page->trigSuccess('Demande de création envoyée&nbsp;!');
             $page->assign('created', true);
-            require_once 'validations.inc.php';
             $req = new ListeReq(S::user(), $asso, $liste, $domain,
                                 Post::v('desc'), Post::i('advertise'),
                                 Post::i('modlevel'), Post::i('inslevel'),
@@ -513,8 +511,7 @@ class ListsModule extends PLModule
                 $mailer->addTo("$liste-owner@{$domain}");
                 $mailer->addHeader('Reply-To', "$liste-owner@{$domain}");
                 $mailer->setSubject("L'inscription de {$sub['name']} a été $info");
-                $text = "L'inscription de {$sub['name']} à la liste $liste@{$domain} a été $info par " . S::v('prenom')  . ' '
-                      . S::v('nom') . '(' . S::v('promo') . ")\n";
+                $text = "L'inscription de {$sub['name']} à la liste $liste@{$domain} a été $info par " . S::user()->fullName(true) . ".\n";
                 if (trim(Post::v('reason'))) {
                     $text .= "\nLa raison invoquée est :\n" . Post::v('reason');
                 }

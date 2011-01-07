@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -23,8 +23,6 @@
 {config_load file="mails.conf" section="inscription"}
 {if $mail_part eq 'head'}
 {from full=#from#}
-{to addr="$forlife@polytechnique.org"}
-{subject text="Bienvenue parmi les X sur le web !"}
 {elseif $mail_part eq 'text'}
 
 {$firstname}, félicitations pour ton inscription !
@@ -32,6 +30,6 @@
 Tu as maintenant accès à l'annuaire en ligne, aux services de listes de
 diffusion, aux infos promo, etc. N'oublie pas de mettre ta fiche-annuaire
 à jour.
-{include file="signature.mail.tpl"}
+{include file="include/signature.mail.tpl"}
 {/if}
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

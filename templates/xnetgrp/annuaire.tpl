@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -84,7 +84,7 @@ Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
       {elseif $order eq '-directory_name'}
         <img src="{$platal->baseurl}images/up.png" alt="" title="Tri décroissant" />
       {/if}
-      Prénom NOM
+      NOM Prénom
       </a>
     </th>
     <th>
@@ -110,9 +110,9 @@ Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
       {profile user=$user promo=false}
     </td>
     <td>
-      {if $user->group_perms eq 'admin' && $user->promo()}<strong>{/if}
-      {$user->promo()}
-      {if $user->group_perms eq 'admin' && $user->promo()}</strong>{/if}
+      {if $user->group_perms eq 'admin' && $user->category()}<strong>{/if}
+      {$user->category()|default:"Extérieur"}
+      {if $user->group_perms eq 'admin' && $user->category()}</strong>{/if}
     </td>
     {if $user->group_comm}
     <td>{$user->group_comm}</td>

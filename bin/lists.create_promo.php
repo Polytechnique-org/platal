@@ -2,7 +2,6 @@
 <?php
 
 require_once dirname(__FILE__) . '/connect.db.inc.php';
-require_once 'validations.inc.php';
 
 global $globals;
 

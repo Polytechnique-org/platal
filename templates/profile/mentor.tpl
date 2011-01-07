@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,9 +20,11 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{javascript name=jobtermstree}
+
 <div>{icon name=information title="Afficher ma fiche référent"}Tu peux consulter ta <a class="popup2" href="referent/{$hrpid}">fiche référent</a> qui n'est accessible que par les X.
 </div>
-{if (!$expertise)||(!($sectors|@count))}
+{if !$expertise || !t($sectors) || !($sectors|@count)}
   <br /><div>
     <strong>{icon name=error title="Attention"} Attention&nbsp;: pour figurer dans la base de données des mentors, il faut remplir la
     dernière case en bas de cette page et avoir au moins un secteur d'activité de prédilection.</strong><br />
@@ -82,48 +84,51 @@
   </tr>
 </table>
 
+<script type="text/javascript" src="javascript/jquery.jstree.js"></script>
+
 <table class="bicol" style="margin-bottom: 1em" summary="Profil&nbsp;: Mentoring">
   <tr>
-    <th>
+    <th colspan="2">
       <div class="flags" style="float: left">
         <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
         {icon name="flag_red" value="privé"}
       </div>
-      Secteurs d'activité dans lesquels tu as beaucoup exercé
+      Mots clefs qui représentent le mieux ton expérience
     </th>
   </tr>
   <tr>
-    <td id="sectorSelection">
-      <div style="float: left; width: 30%" class="titre">Secteur</div>
-      <select name="sectorSelection" onchange="updateSector()">
-        <option value="">&nbsp;</option>
-        {iterate from=$sectorList item=sector}
-        <option value="{$sector.id}">{$sector.name}</option>
-        {/iterate}
-      </select>
+    <td colspan="2">
+      Il est préférable de mentionner des notions précises : <em>Pizzaïolo</em> plutôt que <em>Hôtellerie</em>.
+      En effet Les recherches sur le mot-clef <em>Hôtellerie</em> te trouveront dans les deux cas mais une
+      recherche sur <em>Production culinaire</em> ou <em>Pizzaïolo</em> non.
+    <td/>
+  </tr>
+  <tr>
+    <td class="titre" style="width:30%">Mots-clefs</td>
+    <td class="job_terms">
+      <input type="text" class="term_search" size="35"/>
+      <a href="javascript:toggleJobTermsTree(-1)">{icon name="table" title="Tous les mots-clefs"}</a>
+      <script type="text/javascript">
+      /* <![CDATA[ */
+      $(function() {ldelim}
+        {foreach from=$terms item=term}
+        addJobTerm(-1, "{$term.jtid}", "{$term.full_name|replace:'"':'\\"'}");
+        {/foreach}
+        $('.term_search').autocomplete(platal_baseurl + 'profile/jobterms',
+          {ldelim}
+            "formatItem" : displayJobTerm,
+            "extraParams" : {ldelim} "jobid" : "-1" {rdelim},
+            "width" : $('.term_search').width()*2,
+            "onItemSelect" : selectJobTerm,
+            "matchSubset" : false
+          {rdelim});
+      {rdelim});
+      /* ]]> */
+      </script>
     </td>
   </tr>
   <tr>
-    <td>
-      <div style="float: left; width: 30%" class="titre">Sous-secteur</div>
-      <span id="subSectorSelection"></span>
-    </td>
-  </tr>
-  <tr class="pair">
-    <td id="sectors">
-      {if $sectors|@count}
-      {foreach from=$sectors item=sector key=s}
-      {foreach from=$sector item=subSector key=ss}
-      <div id="sectors_{$s}_{$ss}" style="clear: both; margin-top: 0.5em" class="titre">
-        <a href="javascript:removeSector('{$s}','{$ss}')" style="display: block; float: right">
-          {icon name=cross title="Supprimer ce secteur"}
-        </a>
-        <input type="hidden" name="sectors[{$s}][{$ss}]" value="{$subSector}" />
-        {$subSector}
-      </div>
-      {/foreach}
-      {/foreach}
-      {/if}
+    <td colspan="2" class="term_tree">
     </td>
   </tr>
 </table>

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -74,8 +74,9 @@ class WatchProfileUpdate extends WatchOperation
 
     public static function register(Profile &$profile, $field)
     {
-        XDB::execute('REPLACE INTO  watch_profile (pid, ts, field)
-                            VALUES  ({?}, NOW(), {?})',
+        XDB::execute('INSERT INTO  watch_profile (pid, ts, field)
+                           VALUES  ({?}, NOW(), {?})
+          ON DUPLICATE KEY UPDATE  ts = NOW()',
                      $profile->id(), $field);
     }
 
@@ -99,23 +100,6 @@ class WatchProfileUpdate extends WatchOperation
         return $user->profile()->last_change;
     }
 
-    static private $descriptions = array('search_names' => 'L\'un de ses noms',
-                                         'freetext'     => 'Le texte libre',
-                                         'mobile'       => 'Son numéro de téléphone portable',
-                                         'nationalite'  => 'Sa nationalité',
-                                         'nationalite2' => 'Sa seconde nationalité',
-                                         'nationalite3' => 'Sa troisième nationalité',
-                                         'nick'         => 'Son surnom',
-                                         'networking'   => 'La liste de ses adresses de networking',
-                                         'edus'         => 'Ses formations',
-                                         'addresses'    => 'Ses adresses',
-                                         'section'      => 'Sa section sportive',
-                                         'binets'       => 'La liste de ses binets',
-                                         'medals'       => 'Ses décorations',
-                                         'cv'           => 'Son Curriculum Vitae',
-                                         'corps'        => 'Son Corps d\'État',
-                                         'jobs'         => 'Ses informations professionnelles',
-                                         'photo'        => 'Sa photographie');
     public function getData(PlUser &$user)
     {
         $data = XDB::fetchColumn("SELECT  field
@@ -128,7 +112,7 @@ class WatchProfileUpdate extends WatchOperation
         } else {
             $text = array();
             foreach ($data as $f) {
-                $text[] = self::$descriptions[$f];
+                $text[] = Profile::$descriptions[$f];
             }
             return $text;
         }

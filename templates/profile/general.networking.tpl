@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,12 +20,19 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{if !hasPerm('directory_private') && ($nw.pub eq 'private') && !empty($nw.address|smarty:nodefaults)}
+{assign var=hiddennw value=true}
+{else}
+{assign var=hiddennw value=false}
+{/if}
+
 <tr id="networking_{$i}">
   <td colspan="2">
     <div style="float: left; width: 200px;">
       <span class="flags">
         <label><input type="checkbox"
           {if $nw.pub neq 'private'} checked="checked"{/if}
+          {if $hiddennw} disabled="disabled"{/if}
           name="networking[{$i}][pub]"/>
         {icon name="flag_green" title="site public"}</label>
       </span>&nbsp;
@@ -35,9 +42,14 @@
       <span style="">{$nw.name}</span>
     </div>
     <div style="float: left">
+      {if $hiddennw}
+      <input type="hidden" name="networking[{$i}][address]" value="{$nw.address}" />
+      (masqué)
+      {else}
       <input type="text" name="networking[{$i}][address]" value="{$nw.address}"
         {if $nw.error} class="error" {/if}
         size="30"/>
+      {/if}
       <a href="javascript:removeNetworking({$i})">
         {icon name=cross title="Supprimer cet élément"}
       </a>

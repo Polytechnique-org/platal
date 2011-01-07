@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -94,7 +94,6 @@ class XnetEventsModule extends PLModule
                          $eid, $globals->asso('id'));
 
             // delete the requests for payments
-            require_once 'validations.inc.php';
             XDB::execute("DELETE FROM  requests
                                 WHERE  type = 'paiements' AND data LIKE {?}",
                          PayReq::same_event($eid, $globals->asso('id')));
@@ -225,9 +224,7 @@ class XnetEventsModule extends PLModule
 
             // retreive ohter field when more than one person
             if ($subs[$j] == 2) {
-                if (!isset($pers[$j]) || !is_numeric($pers[$j])
-                ||  $pers[$j] < 0)
-                {
+                if (!isset($pers[$j]) || !is_numeric($pers[$j]) || $pers[$j] < 0) {
                     $page->trigError("Tu dois choisir un nombre d'invités correct&nbsp;!");
                     return;
                 }
@@ -252,11 +249,11 @@ class XnetEventsModule extends PLModule
         $telepaid= $evt['telepaid'] ? $evt['telepaid'] : 0;
         foreach ($subs as $j => $nb) {
             if ($nb >= 0) {
-                XDB::execute(
-                    "REPLACE INTO  group_event_participants
-                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?})",
-                    $eid, S::v('uid'), $j, $nb, Env::has('notify_payment') ? 'notify_payment' : '',
-                    $j == 1 ? $paid - $telepaid : 0);
+                XDB::execute('INSERT INTO  group_event_participants (eid, uid, item_id, nb, flags, paid)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?})
+                  ON DUPLICATE KEY UPDATE  nb = VALUES(nb), flags = VALUES(flags), paid = VALUES(paid)',
+                             $eid, S::v('uid'), $j, $nb, (Env::has('notify_payment') ? 'notify_payment' : ''),
+                             ($j == 1 ? $paid - $telepaid : 0));
                 $updated = $eid;
             } else {
                 XDB::execute(
@@ -270,6 +267,25 @@ class XnetEventsModule extends PLModule
         if ($updated !== false) {
             $page->trigSuccess('Ton inscription à l\'événement a été mise à jour avec succès.');
             subscribe_lists_event(S::i('uid'), $evt, ($total > 0 ? 1 : 0), 0);
+
+            if ($evt['subscription_notification'] != 'nobody') {
+                $mailer = new PlMailer('xnetevents/subscription-notif.mail.tpl');
+                if ($evt['subscription_notification'] != 'creator') {
+                    $admins = $globals->asso()->iterAdmins();
+                    while ($admin = $admins->next()) {
+                        $mailer->addTo($admin);
+                    }
+                }
+                if ($evt['subscription_notification'] != 'animator') {
+                    $mailer->addTo($evt['organizer']);
+                }
+                $mailer->assign('group', $globals->asso('nom'));
+                $mailer->assign('event', $evt['intitule']);
+                $mailer->assign('subs', $subs);
+                $mailer->assign('moments', $evt['moments']);
+                $mailer->assign('name', S::user()->fullName('promo'));
+                $mailer->send();
+            }
         }
         $page->assign('event', get_event_detail($eid));
     }
@@ -393,13 +409,13 @@ class XnetEventsModule extends PLModule
                 'short_name'       => $short_name,
             );
 
-            $trivial = array('intitule', 'descriptif', 'noinvite',
-                             'show_participants', 'accept_nonmembre', 'organisateur_uid');
+            $trivial = array('intitule', 'descriptif', 'noinvite', 'subscription_notification',
+                             'show_participants', 'accept_nonmembre', 'uid');
             foreach ($trivial as $k) {
                 $evt[$k] = Post::v($k);
             }
             if (!$eid) {
-                $evt['organisateur_uid'] = S::v('uid');
+                $evt['uid'] = S::v('uid');
             }
 
             if (Post::v('deadline')) {
@@ -411,45 +427,44 @@ class XnetEventsModule extends PLModule
             }
 
             // Store the modifications in the database
-            XDB::execute('REPLACE INTO group_events
-                SET eid={?}, asso_id={?}, organisateur_uid={?}, intitule={?},
-                    paiement_id = {?}, descriptif = {?}, debut = {?},
-                    fin = {?}, show_participants = {?}, short_name = {?},
-                    deadline_inscription = {?}, noinvite = {?},
-                    accept_nonmembre = {?}',
-                    $evt['eid'], $evt['asso_id'], $evt['organisateur_uid'],
-                    $evt['intitule'], $evt['paiement_id'], $evt['descriptif'],
-                    $evt['debut'], $evt['fin'], $evt['show_participants'],
-                    $evt['short_name'], $evt['deadline_inscription'],
-                    $evt['noinvite'], $evt['accept_nonmembre']);
+            XDB::execute('INSERT INTO  group_events (eid, asso_id, uid, intitule, paiement_id,
+                                                     descriptif, debut, fin, show_participants,
+                                                     short_name, deadline_inscription, noinvite,
+                                                     accept_nonmembre, subscription_notification)
+                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})
+              ON DUPLICATE KEY UPDATE  asso_id = VALUES(asso_id), uid = VALUES(uid), intitule = VALUES(intitule),
+                                       paiement_id = VALUES(paiement_id), descriptif = VALUES(descriptif), debut = VALUES(debut),
+                                       fin = VALUES(fin), show_participants = VALUES(show_participants), short_name = VALUES(short_name),
+                                       deadline_inscription = VALUES(deadline_inscription), noinvite = VALUES(noinvite),
+                                       accept_nonmembre = VALUES(accept_nonmembre), subscription_notification = VALUES(subscription_notification)',
+                         $evt['eid'], $evt['asso_id'], $evt['uid'],
+                         $evt['intitule'], $evt['paiement_id'], $evt['descriptif'],
+                         $evt['debut'], $evt['fin'], $evt['show_participants'],
+                         $evt['short_name'], $evt['deadline_inscription'],
+                         $evt['noinvite'], $evt['accept_nonmembre'], $evt['subscription_notification']);
 
             // if new event, get its id
             if (!$eid) {
                 $eid = XDB::insertId();
             }
 
-            $nb_moments   = 0;
-            $money_defaut = 0;
-
             foreach ($moments as $i) {
-                if (Post::v('titre'.$i)) {
+                if (Post::v('titre' . $i)) {
                     $nb_moments++;
 
-                    $montant = strtr(Post::v('montant'.$i), ',', '.');
+                    $montant = strtr(Post::v('montant' . $i), ',', '.');
                     $money_defaut += (float)$montant;
-                    XDB::execute("
-                        REPLACE INTO group_event_items
-                        VALUES ({?}, {?}, {?}, {?}, {?})",
-                        $eid, $i, Post::v('titre'.$i),
-                        Post::v('details'.$i), $montant);
+                    XDB::execute('INSERT INTO  group_event_items (eid, item_id, titre, details, montant)
+                                       VALUES  ({?}, {?}, {?}, {?}, {?})
+                      ON DUPLICATE KEY UPDATE  titre = VALUES(titre), details = VALUES(details), montant = VALUES(montant)',
+                                 $eid, $i, Post::v('titre' . $i), Post::v('details' . $i), $montant);
                 } else {
-                    XDB::execute("DELETE FROM group_event_items
-                                            WHERE eid = {?} AND item_id = {?}", $eid, $i);
+                    XDB::execute('DELETE FROM  group_event_items
+                                        WHERE  eid = {?} AND item_id = {?}', $eid, $i);
                 }
             }
             // request for a new payment
             if (Post::v('paiement_id') == -1 && $money_defaut >= 0) {
-                require_once 'validations.inc.php';
                 $p = new PayReq(S::user(),
                                 Post::v('intitule')." - ".$globals->asso('nom'),
                                 Post::v('site'), $money_defaut,
@@ -487,14 +502,13 @@ class XnetEventsModule extends PLModule
         // when modifying an old event retreive the old datas
         if ($eid) {
             $res = XDB::query(
-                    "SELECT  eid, intitule, descriptif, debut, fin, organisateur_uid,
+                    "SELECT  eid, intitule, descriptif, debut, fin, uid,
                              show_participants, paiement_id, short_name,
-                             deadline_inscription, noinvite, accept_nonmembre
+                             deadline_inscription, noinvite, accept_nonmembre, subscription_notification
                        FROM  group_events
                       WHERE eid = {?}", $eid);
             $evt = $res->fetchOneAssoc();
             // find out if there is already a request for a payment for this event
-            require_once 'validations.inc.php';
             $res = XDB::query("SELECT  stamp
                                  FROM  requests
                                 WHERE  type = 'paiements' AND data LIKE {?}",
@@ -567,9 +581,10 @@ class XnetEventsModule extends PLModule
 
                 foreach ($nbs as $id => $nb) {
                     $nb = max(intval($nb), 0);
-                    XDB::execute('REPLACE INTO  group_event_participants
-                                        VALUES  ({?}, {?}, {?}, {?}, {?}, {?})',
-                                 $evt['eid'], $member->uid, $id, $nb, '', $id == 1 ? $paid : 0);
+                    XDB::execute('INSERT INTO  group_event_participants (eid, uid, item_id, nb, flags, paid)
+                                       VALUES  ({?}, {?}, {?}, {?}, {?}, {?})
+                      ON DUPLICATE KEY UPDATE  nb = VALUES(nb), flags = VALUES(flags), paid = VALUES(paid)',
+                                 $evt['eid'], $member->uid, $id, $nb, '', ($id == 1 ? $paid : 0));
                 }
 
                 $res = XDB::query('SELECT  COUNT(uid) AS cnt, SUM(nb) AS nb
@@ -585,7 +600,6 @@ class XnetEventsModule extends PLModule
                     $u = 0;
                     subscribe_lists_event($member->uid, $evt, -1, $paid);
                 } else {
-                    var_dump($u);
                     $u = $u['cnt'] ? $u['nb'] : null;
                     subscribe_lists_event($member->uid, $evt, ($u > 0 ? 1 : 0), $paid);
                 }

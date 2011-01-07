@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -34,6 +34,21 @@ class XorgPage extends PlPage
         $this->addJsLink('wiki.js');
         $this->addJsLink('xorg.js');
         $this->setTitle('le site des élèves et anciens élèves de l\'École polytechnique');
+        if (S::logged() && S::user()->checkPerms('admin')) {
+            $types = array(S::user()->type);
+            $perms = DirEnum::getOptions(DirEnum::ACCOUNTTYPES);
+            ksort($perms);
+            foreach ($perms as $type => $perm) {
+                if (!empty($perm) && $type != $types[0]) {
+                    $types[] = $type;
+                }
+            }
+            $this->assign('account_types_list', $types);
+
+            $skins = DirEnum::getOptions(DirEnum::SKINS);
+            asort($skins);
+            $this->assign('skin_list', $skins);
+        }
     }
 
     public function run()

@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,24 +20,38 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{if t($anchor)}
+{literal}
+<script type="text/javascript">
+//<![CDATA[
+$(document).ready(function() {
+{/literal}
+  location.hash = "#{$anchor}";
+{literal}
+});
+// ]]>
+</script>
+{/literal}
+{/if}
+
 <h1>{$asso->nom}&nbsp;: Gestion des télépaiements </h1>
 
 <p class="descr">
 Voici la liste des paiements en ligne possible pour le groupe {$asso->nom}&nbsp;:
 </p>
 
-{foreach from=$titres item=p}
+{foreach from=$titles item=p}
 
 <fieldset>
-<legend><a href="{$platal->ns}payment/{$p.id}">{icon name=money title="Télépaiement"}{$p.text}</a></legend>
+<legend id="legend_{$p.id}"><a href="{$platal->ns}payment/{$p.id}">{icon name=money title="Télépaiement"}{$p.text}</a></legend>
 
 {if $event[$p.id]}
 {assign var='ev' value=$event[$p.id]}
 <p>
-  {if $p.url}
+  {if t($p.url)}
   Plus d'informations sur ce télépaiement sont disponibles sur <a href="{$p.url}">cette page</a>.<br />
   {/if}
-  {if $ev.eid}
+  {if t($ev.eid)}
   Ce paiement est associé à l'événement <a href="{$platal->ns}events">{$ev.title}</a>.<br />
     {if $ev.ins}
     Tu es inscrit à cet événements.
@@ -68,51 +82,51 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso->nom}&nbsp;
 <table cellpadding="0" cellspacing="0" id="list_{$p.id}" class='bicol'>
   <tr>
     <th>
-      {if $order eq 'timestamp'}
-        <a href='{$platal->ns}payment?order={$order}&order_inv={$order_inv}'>
+      {if $order eq 'timestamp' && $order_id eq $p.id}
+        <a href='{$platal->ns}payment?order={$order}&amp;order_inv={$order_inv}&amp;order_id={$p.id}'>
           <img src="{$platal->baseurl}images/{if !$order_inv}dn{else}up{/if}.png" alt="" title="Tri {if $order_inv}dé{/if}croissant" />
       {else}
-        <a href='{$platal->ns}payment?order=timestamp'>
+        <a href='{$platal->ns}payment?order=timestamp&amp;order_id={$p.id}'>
       {/if}Date</a>
     </th>
     <th colspan="2">
-      {if $order eq 'nom'}
-        <a href='{$platal->ns}payment?order={$order}&order_inv={$order_inv}'>
+      {if $order eq 'directory_name' && $order_id eq $p.id}
+        <a href='{$platal->ns}payment?order={$order}&amp;order_inv={$order_inv}&amp;order_id={$p.id}'>
           <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}croissant" />
       {else}
-        <a href='{$platal->ns}payment?order=nom'>{/if}
+        <a href='{$platal->ns}payment?order=directory_name&amp;order_id={$p.id}'>{/if}
       NOM Prénom</a>
     </th>
     <th>
-      {if $order eq 'promo'}
-        <a href='{$platal->ns}payment?order={$order}&order_inv={$order_inv}'>
+      {if $order eq 'promo' && $order_id eq $p.id}
+        <a href='{$platal->ns}payment?order={$order}&amp;order_inv={$order_inv}&amp;order_id={$p.id}'>
           <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}croissant" />
       {else}
-        <a href='{$platal->ns}payment?order=promo'>
+        <a href='{$platal->ns}payment?order=promo&amp;order_id={$p.id}'>
       {/if}Promo</a>
     </th>
     <th>
-      {if $order eq 't.comment'}
-        <a href='{$platal->ns}payment?order=comment&order_inv={$order_inv}'>
+      {if $order eq 'comment' && $order_id eq $p.id}
+        <a href='{$platal->ns}payment?order=comment&amp;order_inv={$order_inv}&amp;order_id={$p.id}'>
           <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}   siant" />
       {else}
-        <a href='{$platal->ns}payment?order=comment'>
+        <a href='{$platal->ns}payment?order=comment&amp;order_id={$p.id}'>
       {/if}Commentaire</a>
     </th>
     <th>
-      {if $order eq 'amount'}
-        <a href='{$platal->ns}payment?order={$order}&order_inv={$order_inv}'>
+      {if $order eq 'amount' && $order_id eq $p.id}
+        <a href='{$platal->ns}payment?order={$order}&amp;order_inv={$order_inv}&amp;order_id={$p.id}'>
           <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}croissant" />
       {else}
-        <a href='{$platal->ns}payment?order=montant'>
+        <a href='{$platal->ns}payment?order=amount&amp;order_id={$p.id}'>
       {/if}Montant</a>
     </th>
   </tr>
   {assign var="somme" value=0}
   {foreach from=$trans[$p.id] item=p name=people}
-  {if $p.nom neq "somme totale"}
+  {if !t($p.limit)}
   <tr>
-    <td class="center">{$p.date|date_format:"%d/%m/%y"}</td>
+    <td class="center">{if $p.date eq 0}-{else}{$p.date|date_format:"%d/%m/%y"}{/if}</td>
     <td>
       {profile user=$p.user promo=false}
     </td>

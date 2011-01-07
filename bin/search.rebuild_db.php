@@ -1,7 +1,7 @@
 #!/usr/bin/php5 -q
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -22,16 +22,23 @@
 
 require './connect.db.inc.php';
 
-ini_set('memory_limit', '16M');
-$globals->debug = 0; // Do not store backtraces
-
 $res = XDB::iterRow('SELECT  pid
                        FROM  profiles');
 $i = 0;
 $n = $res->total();
+$pids = array();
 while ($pid = $res->next()) {
-    Profile::rebuildSearchTokens(intval($pid[0]));
-    printf("\r%u / %u",  ++$i, $n);
+    $pids[] = intval($pid[0]);
+    ++$i;
+    if (count($pids) == 100) {
+        Profile::rebuildSearchTokens($pids);
+        printf("\r%u / %u",  $i, $n);
+        $pids = array();
+    }
+}
+if (count($pids) > 0) {
+    Profile::rebuildSearchTokens($pids);
+    printf("\r%u / %u",  $i, $n);
 }
 
 print "done\n";

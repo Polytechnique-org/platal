@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -27,18 +27,21 @@ class EntrReq extends ProfileValidate
 
     public $id;
     public $name;
-    public $acronym;
-    public $url;
-    public $email;
-    public $holdingid;
-    public $NAF_code;
-    public $AX_code;
+    public $acronym = null;
+    public $url = null;
+    public $email = null;
+    public $holdingid = null;
+    public $NAF_code = null;
+    public $AX_code = null;
 
-    public $tel;
-    public $fax;
-    public $address;
+    public $tel = null;
+    public $fax = null;
+    public $address = null;
 
     public $suggestions;
+    public $rules = 'Si l\'entreprise est déjà présente sous un autre nom dans la liste des suggestions, remplacer son nom par celui-ci avant de valider. Laisser les autres champs tels quels.';
+
+    public $requireAdmin = false;
 
     // }}}
     // {{{ constructor
@@ -100,36 +103,13 @@ class EntrReq extends ProfileValidate
 
     protected function handle_editor()
     {
-        if (Env::has('name')) {
-            $this->name = Env::t('name');
+        foreach (array('name', 'acronym', 'url', 'email', 'NAF_code', 'tel', 'fax', 'address') as $field) {
+            $this->$field = (Env::t($field) == '' ? null : Env::t($field));
         }
-        if (Env::has('acronym')) {
-            $this->acronym = Env::t('acronym');
+        foreach (array('AX_code', 'holdingid') as $field) {
+            $this->$field = (Env::i($field) == 0 ? null : Env::i($field));
         }
-        if (Env::has('url')) {
-            $this->url = Env::t('url');
-        }
-        if (Env::has('email')) {
-            $this->email = Env::t('email');
-        }
-        if (Env::has('holdingid')) {
-            $this->holdingid = Env::i('holdingid');
-        }
-        if (Env::has('NAF_code')) {
-            $this->NAF_code = Env::t('NAF_code');
-        }
-        if (Env::has('AX_code')) {
-            $this->AX_code = Env::i('AX_code');
-        }
-        if (Env::has('address')) {
-            $this->address['text'] = Env::t('address');
-        }
-        if (Env::has('tel')) {
-            $this->tel = Env::t('tel');
-        }
-        if (Env::has('fax')) {
-            $this->fax = Env::t('fax');
-        }
+
         return true;
     }
 
@@ -138,7 +118,7 @@ class EntrReq extends ProfileValidate
 
     protected function _mail_subj()
     {
-        return "[Polytechnique.org/Entreprises] Demande d'ajout d'une entreprise : " . $this->name;
+        return '[Polytechnique.org/Entreprises] Demande d\'ajout d\'une entreprise';
     }
 
     // }}}
@@ -159,52 +139,29 @@ class EntrReq extends ProfileValidate
 
     public function commit()
     {
-        // TODO: use address and phone classes to update profile_job_enum and profile_phones once they are done.
-
         $res = XDB::query('SELECT  id
                              FROM  profile_job_enum
                             WHERE  name = {?}',
                           $this->name);
         if ($res->numRows() != 1) {
-            require_once 'profil.func.inc.php';
-            require_once 'geocoding.inc.php';
-
             XDB::execute('INSERT INTO  profile_job_enum (name, acronym, url, email, holdingid, NAF_code, AX_code)
                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
                          $this->name, $this->acronym, $this->url, $this->email,
                          $this->holdingid, $this->NAF_code, $this->AX_code);
 
             $jobid = XDB::insertId();
-            $display_tel = format_display_number($this->tel, $error_tel);
-            $display_fax = format_display_number($this->fax, $error_fax);
-            XDB::execute("INSERT INTO  profile_phones (pid, link_type, link_id, tel_id, tel_type,
-                                       search_tel, display_tel, pub)
-                               VALUES  ({?}, 'hq', 0, 0, 'fixed', {?}, {?}, 'public'),
-                                       ({?}, 'hq', 0, 1, 'fax', {?}, {?}, 'public')",
-                         $jobid, format_phone_number($this->tel), $display_tel,
-                         $jobid, format_phone_number($this->fax), $display_fax);
-
-            $gmapsGeocoder = new GMapsGeocoder();
-            $address = $gmapsGeocoder->getGeocodedAddress($this->address);
-            Geocoder::getAreaId($address, 'administrativeArea');
-            Geocoder::getAreaId($address, 'subAdministrativeArea');
-            Geocoder::getAreaId($address, 'locality');
-            XDB::execute("INSERT INTO  profile_addresses (jobid, type, id, accuracy,
-                                                          text, postalText, postalCode, localityId,
-                                                          subAdministrativeAreaId, administrativeAreaId,
-                                                          countryId, latitude, longitude, updateTime,
-                                                          north, south, east, west)
-                               VALUES  ({?}, 'hq', 0, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
-                                        {?}, {?}, FROM_UNIXTIME({?}), {?}, {?}, {?}, {?})",
-                         $jobid, $this->address['accuracy'], $this->address['text'], $this->address['postalText'],
-                         $this->address['postalCode'], $this->address['localityId'],
-                         $this->address['subAdministrativeAreaId'], $this->address['administrativeAreaId'],
-                         $this->address['countryId'], $this->address['latitude'], $this->address['longitude'],
-                         $this->address['updateTime'], $this->address['north'], $this->address['south'],
-                         $this->address['east'], $this->address['west']);
+            $phone = new Phone(array('link_type' => 'hq', 'link_id' => $jobid, 'id' => 0,
+                                     'type' => 'fixed', 'display' => $this->tel, 'pub' => 'public'));
+            $fax   = new Phone(array('link_type' => 'hq', 'link_id' => $jobid, 'id' => 1,
+                                     'type' => 'fax', 'display' => $this->fax, 'pub' => 'public'));
+            $address = new Address(array('jobid' => $jobid, 'type' => Address::LINK_COMPANY, 'text' => $this->address));
+            $phone->save();
+            $fax->save();
+            $address->save();
         } else {
             $jobid = $res->fetchOneCell();
         }
+
         XDB::execute('UPDATE  profile_job
                          SET  jobid = {?}
                        WHERE  pid = {?} AND id = {?}',

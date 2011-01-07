@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -56,7 +56,6 @@
     <a href="Xorg/SMTPSecurise">service d'envoi d'email SMTP sécurisé</a>.
   </p>
 
-  {javascript name=ajax}
   <script type="text/javascript">//<![CDATA[
     {literal}
     function activeEnable()
@@ -73,7 +72,7 @@
 
     function redirectUpdate()
     {
-        showTempMessage('redirect-msg', "Tes redirections ont été mises à jour.", true);
+        $('#redirect-msg').tmpMessage("Tes redirections ont été mises à jour.", true);
         activeEnable();
     }
 
@@ -102,7 +101,8 @@
     function updateRedirect(checked, email)
     {
         activeEnable();
-        Ajax.update_html(null, 'emails/redirect/' + (checked ? '' : 'in') + 'active/' + email, redirectUpdate);
+        $.xget('emails/redirect/' + (checked ? '' : 'in') + 'active/' + email,
+               redirectUpdate);
     }
 
     function rewriteUpdate(mail, allow, box)
@@ -148,7 +148,7 @@
                  onchange="updateRedirect(this.checked, '{$e->email}')" /></td>
         <td style="text-align: left">
           {if $e->has_rewrite()}
-          <select onchange="Ajax.update_html(null,'emails/redirect/rewrite/{$e->email}/'+this.value, rewriteUpdate('{$e->email}', {$e->allow_rewrite|default:"0"}, this))">
+          <select onchange="$.get('emails/redirect/rewrite/{$e->email}/'+this.value, 'text',  rewriteUpdate('{$e->email}', {$e->allow_rewrite|default:"0"}, this)); return false">
             <option value=''>--- aucune ---</option>
             {assign var=dom1 value=#globals.mail.domain#}
             {assign var=dom2 value=#globals.mail.domain2#}

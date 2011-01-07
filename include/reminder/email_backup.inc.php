@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -57,6 +57,10 @@ class ReminderEmailBackup extends Reminder
 
     public static function IsCandidate(User &$user, $candidate)
     {
+        if (!$user->checkPerms(User::PERM_MAIL)) {
+            return false;
+        }
+
         require_once 'emails.inc.php';
         $storage  = new EmailStorage($user, 'imap');
         if ($storage->active) {

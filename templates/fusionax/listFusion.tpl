@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -24,44 +24,44 @@
     <tr>
         <th>Ancien</th>
         <th>Fiches</th>
-        {if $field1}
+        {if t($field1)}
         <th>{$namefield1}</th>
         {/if}
-        {if $field2}
+        {if t($field2)}
         <th>{$namefield2}</th>
         {/if}
-        {if $field3}
+        {if t($field3)}
         <th>{$namefield3}</th>
         {/if}
-        {if $field4}
+        {if t($field4)}
         <th>{$namefield4}</th>
         {/if}
-        {if $fusionAction}
+        {if t($fusionAction)}
         <th>Action</th>
         {/if}
     </tr>
-{if $fusionList}
+{if t($fusionList)}
 {iterate from=$fusionList item=c}
     <tr class="{cycle values="pair,impair"}">
-        <td>{$c.display_name} (X {$c.promo})</td>
+        <td>{$c.private_name} ({$c.promo})</td>
         <td style="text-align:center">
-            {if $c.user_id}<a href="admin/user/{$c.user_id}" class="popup2">{icon name="user_suit" title="Administrer utilisateur"}</a>{/if}
-            {if $c.id_ancien}<a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$c.id_ancien}" class="popup2">{icon name="user_gray" title="fiche AX"}</a>{/if}
+            {if t($c.pid)}<a href="admin/user/{$c.pid}" class="popup2">{icon name="user_suit" title="Administrer utilisateur"}</a>{/if}
+            {if t($c.ax_id)}<a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$c.ax_id}" class="popup2">{icon name="user_gray" title="fiche AX"}</a>{/if}
         </td>
-        {if $field1}
+        {if t($field1)}
         <td>{$c.$field1}</td>
         {/if}
-        {if $field2}
+        {if t($field2)}
         <td>{$c.$field2}</td>
         {/if}
-        {if $field3}
+        {if t($field3)}
         <td>{$c.$field3}</td>
         {/if}
-        {if $field4}
+        {if t($field4)}
         <td>{$c.$field4}</td>
         {/if}
-        {if $fusionAction}
-        <td><a class="fusion-action" href="{$fusionAction}/{$c.user_id}/{$c.id_ancien}">{$name}</a></td>
+        {if t($fusionAction)}
+        <td><a class="fusion-action" href="{$fusionAction}/{$c.pid}/{$c.ax_id}">{$name}</a></td>
         {/if}
     </tr>
 {/iterate}

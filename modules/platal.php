@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -45,13 +45,13 @@ class PlatalModule extends PLModule
             // Preferences thingies
             'prefs'             => $this->make_hook('prefs',     AUTH_COOKIE),
             'prefs/rss'         => $this->make_hook('prefs_rss', AUTH_COOKIE),
-            'prefs/webredirect' => $this->make_hook('webredir',  AUTH_MDP),
+            'prefs/webredirect' => $this->make_hook('webredir',  AUTH_MDP, 'mail'),
             'prefs/skin'        => $this->make_hook('skin',      AUTH_COOKIE),
 
             // password related thingies
             'password'          => $this->make_hook('password',  AUTH_MDP),
             'tmpPWD'            => $this->make_hook('tmpPWD',    AUTH_PUBLIC),
-            'password/smtp'     => $this->make_hook('smtppass',  AUTH_MDP),
+            'password/smtp'     => $this->make_hook('smtppass',  AUTH_MDP, 'mail'),
             'recovery'          => $this->make_hook('recovery',  AUTH_PUBLIC),
             'exit'              => $this->make_hook('exit',      AUTH_PUBLIC),
             'review'            => $this->make_hook('review',    AUTH_PUBLIC),
@@ -113,12 +113,16 @@ class PlatalModule extends PLModule
     function __set_rss_state($state)
     {
         if ($state) {
-            S::user()->token = rand_url_id(16);
-            XDB::execute('UPDATE  accounts
-                             SET  token = {?}
-                           WHERE  uid = {?}', S::user()->token, S::i('uid'));
+            if (!S::user()->token) {
+                S::user()->token = rand_url_id(16);
+                S::set('token', S::user()->token);
+                XDB::execute('UPDATE  accounts
+                                 SET  token = {?}
+                               WHERE  uid = {?}', S::user()->token, S::i('uid'));
+            }
         } else {
             S::kill('token');
+            S::user()->token = null;
             XDB::execute('UPDATE  accounts
                              SET  token = NULL
                            WHERE  uid = {?}', S::i('uid'));
@@ -131,21 +135,15 @@ class PlatalModule extends PLModule
         $page->setTitle('Mes préférences');
 
         if (Post::has('email_format')) {
+            S::assert_xsrf_token();
             $fmt = Post::s('email_format');
             S::user()->setEmailFormat($fmt);
         }
 
         if (Post::has('rss')) {
-            $this->__set_rss_state(Post::b('rss'));
+            S::assert_xsrf_token();
+            $this->__set_rss_state(Post::s('rss') == 'on');
         }
-
-        # FIXME: this code is not multi-domain compatible. We should decide how
-        # carva will extend to users not in the main domain.
-        $res = XDB::query("SELECT  alias
-                             FROM  aliases
-                            WHERE  uid = {?} AND FIND_IN_SET('bestalias', flags)",
-                          S::user()->id());
-        $page->assign('bestalias', $res->fetchOneCell());
     }
 
     function handler_webredir(&$page)
@@ -158,8 +156,9 @@ class PlatalModule extends PLModule
                 $page->trigError('URL invalide');
             } else {
                 $url = Env::t('url');
-                XDB::execute('REPLACE INTO  carvas (uid, url)
-                                    VALUES  ({?}, {?})',
+                XDB::execute('INSERT INTO  carvas (uid, url)
+                                   VALUES  ({?}, {?})
+                  ON DUPLICATE KEY UPDATE  url = VALUES(url)',
                              S::i('uid'), $url);
                 S::logger()->log('carva_add', 'http://' . $url);
                 $page->trigSuccess("Redirection activée vers <a href='http://$url'>$url</a>");
@@ -424,9 +423,15 @@ Adresse de secours : " . Post::v('email') : ""));
     function handler_exit(&$page, $level = null)
     {
         if (S::suid()) {
-            S::logger()->log('suid_stop', S::user()->login() . " by " . S::suid('hruid'));
+            $old = S::user()->login();
+            S::logger()->log('suid_stop', $old . " by " . S::suid('hruid'));
             Platal::session()->stopSUID();
-            pl_redirect('admin/user/' . S::user()->login());
+            $target = S::s('suid_startpage');
+            S::kill('suid_startpage');
+            if (!empty($target)) {
+                http_redirect($target);
+            }
+            pl_redirect('admin/user/' . $old);
         }
 
         if ($level == 'forget' || $level == 'forgetall') {

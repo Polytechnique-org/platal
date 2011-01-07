@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -135,7 +135,6 @@ class Marketing
                     $this->type, $this->data, $this->personal_notes);
         $this->engine->process($this->user);
         if ($valid) {
-            require_once 'validations.inc.php';
             $sender = User::getSilent($this->sender);
             $valid = new MarkReq($sender, $this->user['user'], $this->user['mail'],
                                  $this->from == 'user', $this->type, $this->data, $this->personal_notes);
@@ -330,9 +329,9 @@ class ListMarketing extends AnnuaireMarketing
 
     public function process(array $user)
     {
-        return XDB::execute("REPLACE INTO  register_subs (uid, type, sub, domain)
-            VALUES  ({?}, 'list', {?}, {?})",
-                $user['id'], $this->name, $this->domain);
+        return XDB::execute("INSERT IGNORE INTO  register_subs (uid, type, sub, domain)
+                                         VALUES  ({?}, 'list', {?}, {?})",
+                            $user['id'], $this->name, $this->domain);
     }
 }
 
@@ -360,9 +359,9 @@ class GroupMarketing extends AnnuaireMarketing
 
     public function process(array $user)
     {
-        return XDB::execute("REPLACE INTO  register_subs (uid, type, sub, domain)
-            VALUES  ({?}, 'group', {?}, '')",
-                $user['id'], $this->group);
+        return XDB::execute("INSERT IGNORE INTO  register_subs (uid, type, sub, domain)
+                                         VALUES  ({?}, 'group', {?}, '')",
+                            $user['id'], $this->group);
     }
 }
 

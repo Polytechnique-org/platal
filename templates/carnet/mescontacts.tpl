@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -47,7 +47,7 @@
   Sur la page de résultats d'une recherche, tu peux ajouter un contact en cliquant sur {icon name=add}.
 </p>
 
-{if $plset_count || $smarty.request.quick}
+{if $plset_count || t($smarty.request.quick)}
 <p>
   Tu peux télécharger des informations sur tes contacts&nbsp;:
 </p>
@@ -84,10 +84,10 @@
 <form action="carnet/contacts/search#plset_content" method="get">
   <div style="float: right">
       <input type="text" size="30" name="quick" class="quick_search"
-             value="{$smarty.request.quick|default:'recherche dans tes contacts'}"
+             value="{t($smarty.request.quick)|default:'recherche dans tes contacts'}"
              onfocus="if (this.value == 'recherche dans tes contacts') this.value=''"
              onblur="if (this.value == '') this.value='recherche dans tes contacts'"/>
-      {if $smarty.request.quick}<a href="carnet/contacts">{icon name=arrow_undo title='Annuler la recherche'}</a>{/if}
+      {if t($smarty.request.quick)}<a href="carnet/contacts">{icon name=arrow_undo title='Annuler la recherche'}</a>{/if}
   </div>
 </form>
 <p>

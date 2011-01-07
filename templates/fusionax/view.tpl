@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,6 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h2><a href="fusionax">Fusion des annuaires X.org - AX<a> / Création des VIEW annexes nécessaires aux corrélations </h2>
+<h2><a href="fusionax">Fusion des annuaires X.org - AX</a> / Création des VIEW annexes nécessaires aux corrélations </h2>
 
 <p><a href="fusionax/view/create">Création des VIEW annexes nécessaires aux corrélations</a></p>

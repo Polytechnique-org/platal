@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -21,6 +21,11 @@
 
 class Group
 {
+    const CAT_GROUPESX     = "GroupesX";
+    const CAT_BINETS       = "Binets";
+    const CAT_PROMOTIONS   = "Promotions";
+    const CAT_INSTITUTIONS = "Institutions";
+
     public $id;
     public $shortname;
     private $data = array();
@@ -32,6 +37,9 @@ class Group
         }
         $this->id = intval($this->data['id']);
         $this->shortname = $this->data['diminutif'];
+        if (!is_null($this->axDate)) {
+            $this->axDate = format_datetime($this->axDate, '%d/%m/%Y');
+        }
     }
 
     public function __get($name)
@@ -54,9 +62,12 @@ class Group
 
     private function getUF($admin = false, $extra_cond = null, $sort = null)
     {
-        $cond = new UFC_Group($this->id, $admin);
+        $cond = new PFC_And(new UFC_Group($this->id, $admin), new PFC_Not(new UFC_Dead()));
         if (!is_null($extra_cond)) {
-            $cond = new PFC_And($cond, $extra_cond);
+            $cond->addChild($extra_cond);
+        }
+        if ($this->cat == self::CAT_PROMOTIONS) {
+            $cond->addChild(new UFC_Registered());
         }
         return new UserFilter($cond, $sort);
     }
@@ -115,7 +126,13 @@ class Group
             }
             return null;
         }
-        return new Group($res->fetchOneAssoc());
+        $data = $res->fetchOneAssoc();
+        $positions = XDB::fetchAllAssoc('SELECT  position, uid
+                                           FROM  group_members
+                                          WHERE  asso_id = {?} AND position IS NOT NULL
+                                       ORDER BY  position',
+                                        $data['id']);
+        return new Group(array_merge($data, array('positions' => $positions)));
     }
 }
 

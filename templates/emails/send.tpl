@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -157,6 +157,10 @@
       $('#to_contacts option[value=""]').remove();
       $('#cc_contacts option[value=""]').remove();
     });
+
+    $(document).ready(function() {
+      $("[name='to']").focus();
+    });
   {/literal}
 //]]>
 </script>
@@ -307,9 +311,9 @@
       {literal}
       function removeAttachments()
       {
-          Ajax.update_html(null, 'emails/send', null);
-          document.getElementById('att_already').style.display = 'none';
-          document.getElementById('att_form').style.display = '';
+          $.xget('email/send');
+          $('#att_already').hide();
+          $('#att_form').show();
       }
       {/literal}
     //]]></script>

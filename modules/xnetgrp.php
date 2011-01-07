@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -48,7 +48,7 @@ class XnetGrpModule extends PLModule
             '%grp/member/new/ajax' => $this->make_hook('admin_member_new_ajax', AUTH_MDP,    'user', NO_AUTH),
             '%grp/member/del'      => $this->make_hook('admin_member_del',      AUTH_MDP,    'groupadmin'),
 
-            '%grp/rss'             => $this->make_hook('rss',                   AUTH_PUBLIC, 'user', NO_HTTPS),
+            '%grp/rss'             => $this->make_token_hook('rss',             AUTH_PUBLIC),
             '%grp/announce/new'    => $this->make_hook('edit_announce',         AUTH_MDP,    'groupadmin'),
             '%grp/announce/edit'   => $this->make_hook('edit_announce',         AUTH_MDP,    'groupadmin'),
             '%grp/announce/photo'  => $this->make_hook('photo_announce',        AUTH_PUBLIC),
@@ -184,22 +184,29 @@ class XnetGrpModule extends PLModule
                     $page->trigError('Ni le nom ni le diminutif du groupe ne peuvent être vide.');
                     return;
                 }
+                $axDate = make_datetime(Post::v('axDate'));
+                if (Post::t('axDate') != '') {
+                    $axDate = make_datetime(Post::v('axDate'))->format('Y-m-d');
+                } else {
+                    $axDate = null;
+                }
                 XDB::execute(
                     "UPDATE  groups
                         SET  nom={?}, diminutif={?}, cat={?}, dom={?},
                              descr={?}, site={?}, mail={?}, resp={?},
-                             forum={?}, mail_domain={?}, ax={?}, pub={?},
+                             forum={?}, mail_domain={?}, ax={?}, axDate = {?}, pub={?},
                              sub_url={?}, inscriptible={?}, unsub_url={?},
-                             flags={?}
+                             flags = {?}, welcome_msg = {?}
                       WHERE  id={?}",
                       Post::v('nom'), Post::v('diminutif'),
-                      Post::v('cat'), Post::i('dom'),
+                      Post::v('cat'), (Post::i('dom') == 0) ? null : Post::i('dom'),
                       Post::v('descr'), $site,
                       Post::v('mail'), Post::v('resp'),
                       Post::v('forum'), Post::v('mail_domain'),
-                      Post::has('ax'), Post::v('pub'),
+                      Post::has('ax'), $axDate, Post::v('pub'),
                       Post::v('sub_url'), Post::v('inscriptible'),
-                      Post::v('unsub_url'), $flags, $globals->asso('id'));
+                      Post::v('unsub_url'), $flags, Post::t('welcome_msg'),
+                      $globals->asso('id'));
                 if (Post::v('mail_domain')) {
                     XDB::execute('INSERT IGNORE INTO virtual_domains (domain) VALUES({?})',
                                            Post::v('mail_domain'));
@@ -209,13 +216,14 @@ class XnetGrpModule extends PLModule
                     "UPDATE  groups
                         SET  descr={?}, site={?}, mail={?}, resp={?},
                              forum={?}, pub= {?}, sub_url={?},
-                             unsub_url={?},flags={?}
+                             unsub_url = {?}, flags = {?}, welcome_msg = {?}
                       WHERE  id={?}",
                       Post::v('descr'), $site,
                       Post::v('mail'), Post::v('resp'),
                       Post::v('forum'), Post::v('pub'),
                       Post::v('sub_url'), Post::v('unsub_url'),
-                      $flags, $globals->asso('id'));
+                      $flags, Post::t('welcome_msg'),
+                      $globals->asso('id'));
             }
 
 
@@ -249,11 +257,9 @@ class XnetGrpModule extends PLModule
         global $globals;
 
         $page->changeTpl('xnetgrp/mail.tpl');
-        $mmlist = new MMList(S::v('uid'), S::v('password'),
-                           $globals->asso('mail_domain'));
+        $mmlist = new MMList(S::user(), $globals->asso('mail_domain'));
         $page->assign('listes', $mmlist->get_lists());
         $page->assign('user', S::user());
-        $page->addJsLink('ajax.js');
 
         if (Post::has('send')) {
             S::assert_xsrf_token();
@@ -401,13 +407,14 @@ class XnetGrpModule extends PLModule
             $mailer->setSubject('[' . $globals->asso('nom') . '] Demande d\'inscription');
             $message = ($user->isFemale() ? 'Chère' : 'Cher') . " Camarade,\n"
                      . "\n"
-                     . "  Suite à ta demande d'adhésion à " . $globals->asso('nom') . ",\n"
-                     . "j'ai le plaisir de t'annoncer que ton inscription a été validée !\n"
+                     . "  Suite à ta demande d'adhésion à " . $globals->asso('nom')
+                     . ", j'ai le plaisir de t'annoncer que ton inscription a été validée !\n"
+                     . (is_null($globals->asso('welcome_msg')) ? '' : "\n" . $globals->asso('welcome_msg') . "\n")
                      . "\n"
                      . "Bien cordialement,\n"
                      . "-- \n"
                      . S::user()->fullName() . '.';
-            $mailer->setTxtBody($message);
+            $mailer->setTxtBody(wordwrap($message, 72));
             $mailer->send();
         }
     }
@@ -628,7 +635,6 @@ class XnetGrpModule extends PLModule
         global $globals;
 
         $page->changeTpl('xnetgrp/membres-add.tpl');
-        $page->addJsLink('ajax.js');
 
         if (is_null($email)) {
             return;
@@ -674,25 +680,34 @@ class XnetGrpModule extends PLModule
             }
         } else {
             // User is of type xnet.
-            list($firstname, $lastname) = explode('@', $email);
-            $hruid = User::makeHrid($firstname, $lastname, 'ext');
+            list($mbox, $domain) = explode('@', strtolower($email));
+            $hruid = User::makeHrid($mbox, $domain, 'ext');
             // User might already have an account (in another group for example).
             $user = User::get($hruid);
 
             // If the user has no account yet, creates new account: build names from email address.
             if (empty($user)) {
-                $display_name = ucwords(strtolower(substr($hruid, strpos('.', $hruid))));
-                $full_name = ucwords(strtolower(str_replace('.', ' ', substr($email, strpos('@', $email)))));
-                XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, email, type)
-                                   VALUES  ({?}, {?}, {?}, {?}, \'xnet\')',
-                             $hruid, $display_name, $full_name, $email);
+                $parts = explode('.', $mbox);
+                if (count($parts) == 1) {
+                    $display_name = $full_name = $directory_name = ucfirst($mbox);
+                } else {
+                    $firstname = ucfirst($parts[0]);
+                    $lastname = ucwords(implode(' ', array_slice($parts, 1)));
+                    $display_name = $firstname;
+                    $full_name = "$firstname $lastname";
+                    $directory_name = strtoupper($lastname) . " " . $firstname;
+                }
+                XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, directory_name,
+                                           email, type)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, \'xnet\')',
+                             $hruid, $display_name, $full_name, $directory_name, $email);
                 $user = User::get($hruid);
             }
         }
 
         if ($user) {
-            XDB::execute('REPLACE INTO  group_members (uid, asso_id)
-                                VALUES  ({?}, {?})',
+            XDB::execute('INSERT IGNORE INTO  group_members (uid, asso_id)
+                                      VALUES  ({?}, {?})',
                          $user->id(), $globals->asso('id'));
             $this->removeSubscriptionRequest($user->id());
             pl_redirect('member/' . $user->login());
@@ -756,7 +771,7 @@ class XnetGrpModule extends PLModule
             return true;
         }
 
-        $mmlist = new MMList($user, $domain);
+        $mmlist = new MMList(S::user(), $domain);
         $listes = $mmlist->get_lists($user->forlifeEmail());
 
         $may_update = may_update();
@@ -911,7 +926,7 @@ class XnetGrpModule extends PLModule
 
         $page->changeTpl('xnetgrp/membres-edit.tpl');
 
-        $mmlist = new MMList($user, $globals->asso('mail_domain'));
+        $mmlist = new MMList(S::user(), $globals->asso('mail_domain'));
 
         if (Post::has('change')) {
             S::assert_xsrf_token();
@@ -955,11 +970,12 @@ class XnetGrpModule extends PLModule
             // Update group params for user
             $perms = Post::v('group_perms');
             $comm  = Post::t('comm');
-            if ($user->group_perms != $perms || $user->group_comm != $comm) {
+            $position = (Post::t('group_position') == '') ? null : Post::v('group_position');
+            if ($user->group_perms != $perms || $user->group_comm != $comm || $user->group_position != $position) {
                 XDB::query('UPDATE  group_members
-                               SET  perms = {?}, comm = {?}
+                               SET  perms = {?}, comm = {?}, position = {?}
                              WHERE  uid = {?} AND asso_id = {?}',
-                            ($perms == 'admin') ? 'admin' : 'membre', $comm,
+                            ($perms == 'admin') ? 'admin' : 'membre', $comm, $position,
                             $user->id(), $globals->asso('id'));
                 if (XDB::affectedRows()) {
                     if ($perms != $user->group_perms) {
@@ -967,6 +983,9 @@ class XnetGrpModule extends PLModule
                     }
                     if ($comm != $user->group_comm) {
                         $page->trigSuccess('Commentaire mis à jour.');
+                    }
+                    if ($position != $user->group_position) {
+                        $page->trigSuccess('Poste mis à jour.');
                     }
                 }
             }
@@ -1028,21 +1047,25 @@ class XnetGrpModule extends PLModule
             }
         }
 
+        $res = XDB::rawFetchAllAssoc('SHOW COLUMNS FROM group_members LIKE \'position\'');
+        $positions = str_replace(array('enum(', ')', '\''), '', $res[0]['Type']);
+
         $page->addJsLink('password.js');
         $page->assign('onlyGroup', ($user->groupCount() == 1));
         $page->assign('user', $user);
         $page->assign('listes', $mmlist->get_lists($user->forlifeEmail()));
         $page->assign('alias', $user->emailAliases($globals->asso('mail_domain'), 'user', true));
+        $page->assign('positions', explode(',', $positions));
     }
 
-    function handler_rss(&$page, $user = null, $hash = null)
+    function handler_rss(PlPage& $page, PlUser& $user)
     {
         global $globals;
         $page->assign('asso', $globals->asso());
 
         $this->load('feed.inc.php');
         $feed = new XnetGrpEventFeed();
-        return $feed->run($page, $user, $hash, false);
+        return $feed->run($page, $user, false);
     }
 
     private function upload_image(PlPage &$page, PlUpload &$upload)
@@ -1189,7 +1212,6 @@ class XnetGrpModule extends PLModule
                                  $aid, $imgtype, $imgx, $imgy, $upload->getContents());
                 }
                 if ($art['xorg']) {
-                    require_once('validations.inc.php');
                     $article = new EvtReq("[{$globals->asso('nom')}] " . $art['titre'], $fulltext,
                                     $art['promo_min'], $art['promo_max'], $art['expiration'], "", S::user(),
                                     $upload);
@@ -1199,7 +1221,6 @@ class XnetGrpModule extends PLModule
                     $upload->rm();
                 }
                 if ($art['nl']) {
-                    require_once('validations.inc.php');
                     $article = new NLReq(S::user(), $globals->asso('nom') . " : " .$art['titre'],
                                          $art['texte'], $art['contact_html']);
                     $article->submit();
@@ -1215,9 +1236,10 @@ class XnetGrpModule extends PLModule
                            $art['id'], $globals->asso('id'));
                 if ($art['photo'] && $upload->exists()) {
                     list($imgx, $imgy, $imgtype) = $upload->imageInfo();
-                    XDB::execute("REPLACE INTO  group_announces_photo
-                                           SET  eid = {?}, attachmime = {?}, x = {?}, y = {?}, attach = {?}",
-                                 $aid, $imgtype, $imgx, $imgy, $upload->getContents());
+                    XDB::execute('INSERT INTO  group_announces_photo (eid, attachmime, attach, x, y)
+                                       VALUES  ({?}, {?}, {?}, {?}, {?})
+                      ON DUPLICATE KEY UPDATE  attachmime = VALUES(attachmime), attach = VALUES(attach), x = VALUES(x), y = VALUES(y)',
+                                 $aid, $imgtype, $upload->getContents(), $imgx, $imgy);
                     $upload->rm();
                 }
             }

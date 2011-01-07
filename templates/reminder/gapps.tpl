@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -30,10 +30,10 @@
   <a href="{$reminder->baseurl()}/yes" style="text-decoration: none">
     {icon name=add} M'inscrire
   </a> -
-  <a href="reminder/no" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/no'); return false" style="text-decoration: none">
+  <a href="reminder/no" onclick="$('#reminder').updateHtml('{$reminder->baseurl()}/no'); return false" style="text-decoration: none">
     {icon name=delete} Ne pas m'inscrire
   </a> -
-  <a href="reminder/later" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/dismiss'); return false" style="text-decoration: none">
+  <a href="reminder/later" onclick="$('#reminder').updateHtml('{$reminder->baseurl()}/dismiss'); return false" style="text-decoration: none">
     {icon name=cross} Décider plus tard
   </a> -
   <a class="popup2" style="text-decoration: none" href="Xorg/GoogleApps">{icon name=information} En savoir plus</a>

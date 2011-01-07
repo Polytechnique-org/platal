@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -74,7 +74,7 @@ class GadgetsModule extends PLModule
             global $globals;
             require_once 'userset.inc.php';
 
-            $view = new SearchSet(true);
+            $view = new QuickSearchSet();
             $view->addMod('gadget', 'Gadget', true);
             $view->apply(null, $page);
 

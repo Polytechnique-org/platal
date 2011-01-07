@@ -1,2 +1,4 @@
 # ignore banana stuff
 /banana.css
+# ignore jstree related stuff
+/jstree.css

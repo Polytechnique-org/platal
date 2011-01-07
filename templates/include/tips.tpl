@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,14 +20,16 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $tips}
-{if $full}
+{if t($tips)}
+{if t($full)}
 <fieldset id="tod">
 {/if}
-  <legend>{icon name=lightbulb} {if !$tips.special}
+  <legend>{icon name=lightbulb} {if !t($tips.special)}
     Astuce&nbsp;: {$tips.title}
-    {if hasPerm('admin') && !$tips.special && !$nochange}
+    {if hasPerm('admin') && !t($tips.special)}
+    {if !t($nochange)}
     <a href="admin/tips/edit/{$tips.id}">{icon name="page_edit" title="Editer"}</a>
+    {/if}
     {/if}
   {else}
     <span style="color: red; font-weight: bold;">{$tips.titre}</span>
@@ -36,14 +38,14 @@
   {tidy}
   {$tips.text|nl2br|smarty:nodefaults}
   {/tidy}
-  {if !$nochange}
+  {if !t($nochange)}
   <div class="right">
-    <a href="events" onclick="Ajax.update_html('tod', 'ajax/tips/{$tips.id}'); return false" style="text-decoration: none">
+    <a href="events" onclick="$('#tod').updateHtml('ajax/tips/{$tips.id}'); return false" style="text-decoration: none">
       Astuce suivante {icon name=resultset_next title="Astuce suivante"}
     </a>
   </div>
   {/if}
-{if $full}
+{if t($full)}
 </fieldset>
 {/if}
 {/if}

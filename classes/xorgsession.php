@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -79,11 +79,18 @@ class XorgSession extends PlSession
 
     private function checkPassword($uname, $login, $response, $login_type)
     {
-        $res = XDB::query('SELECT  a.uid, a.password
-                             FROM  accounts AS a
-                       INNER JOIN  aliases  AS l ON (l.uid = a.uid AND l.type != \'homonyme\')
-                            WHERE  l.' . $login_type . ' = {?} AND a.state = \'active\'',
-                          $login);
+        if ($login_type == 'alias') {
+            $res = XDB::query('SELECT  a.uid, a.password
+                                 FROM  accounts AS a
+                           INNER JOIN  aliases  AS l ON (l.uid = a.uid AND l.type != \'homonyme\')
+                                WHERE  l.alias = {?} AND a.state = \'active\'',
+                              $login);
+        } else {
+            $res = XDB::query('SELECT  uid, password
+                                 FROM  accounts
+                                WHERE  ' . $login_type . ' = {?}',
+                              $login);
+        }
         if (list($uid, $password) = $res->fetchOneRow()) {
             $expected_response = sha1("$uname:$password:" . S::v('challenge'));
             /* Deprecates len(password) > 10 conversion. */
@@ -132,10 +139,11 @@ class XorgSession extends PlSession
          */
         if (S::suid()) {
             $login = $uname = S::suid('uid');
+            $loginType = 'uid';
             $redirect = false;
         } else {
-            $uname = Env::v('username');
-            if (Env::v('domain') == "alias") {
+            $uname = Post::v('username');
+            if (Post::s('domain') == "alias") {
                 $res = XDB::query('SELECT  redirect
                                      FROM  virtual
                                INNER JOIN  virtual_redirect USING(vid)
@@ -147,13 +155,19 @@ class XorgSession extends PlSession
                 } else {
                     $login = '';
                 }
+                $loginType = 'alias';
+            } else if (Post::s('domain') == "ax") {
+                $login = $uname;
+                $redirect = false;
+                $loginType = 'hruid';
             } else {
                 $login = $uname;
                 $redirect = false;
+                $loginType = is_numeric($uname) ? 'uid' : 'alias';
             }
         }
 
-        $uid = $this->checkPassword($uname, $login, Post::v('response'), (!$redirect && is_numeric($uname)) ? 'uid' : 'alias');
+        $uid = $this->checkPassword($uname, $login, Post::v('response'), $loginType);
         if (!is_null($uid) && S::suid()) {
             if (S::suid('uid') == $uid) {
                 $uid = S::i('uid');
@@ -165,8 +179,11 @@ class XorgSession extends PlSession
             S::set('auth', AUTH_MDP);
             if (!S::suid()) {
                 if (Post::has('domain')) {
-                    if (($domain = Post::v('domain', 'login')) == 'alias') {
+                    $domain = Post::v('domain', 'login');
+                    if ($domain == 'alias') {
                         Cookie::set('domain', 'alias', 300);
+                    } else if ($domain == 'ax') {
+                        Cookie::set('domain', 'ax', 300);
                     } else {
                         Cookie::kill('domain');
                     }
@@ -191,7 +208,7 @@ class XorgSession extends PlSession
         }
 
         // Loads uid and hruid into the session for developement conveniance.
-        $_SESSION = array_merge($_SESSION, array('uid' => $user->id(), 'hruid' => $user->hruid));
+        $_SESSION = array_merge($_SESSION, array('uid' => $user->id(), 'hruid' => $user->hruid, 'token' => $user->token, 'user' => $user));
 
         // Starts the session's logger, and sets up the permanent cookie.
         if (S::suid()) {
@@ -241,13 +258,60 @@ class XorgSession extends PlSession
         }
     }
 
+    /**
+     * The authentication schema is based on three query parameters:
+     *   ?user=<hruid>&timestamp=<timestamp>&sig=<sig>
+     * where:
+     *   - hruid is the hruid of the querying user
+     *   - timestamp is the current UNIX timestamp, which has to be within a
+     *     given distance of the server-side UNIX timestamp
+     *   - sig is the HMAC of "<method>#<resource>#<payload>#<timestamp>" using
+     *     a known secret of the user as the key.
+     *
+     * At the moment, the shared secret of the user is the sha1 hash of its
+     * password. This is temporary, though, until better support for tokens is
+     * implemented in plat/al.
+     * TODO(vzanotti): Switch to dedicated secrets for authentication.
+     */
+    public function apiAuth($method, $resource, $payload)
+    {
+        // Verify that the timestamp is within acceptable bounds.
+        $timestamp = Env::i('timestamp', 0);
+        if (abs($timestamp - time()) > Platal::globals()->api->timestamp_tolerance) {
+            return null;
+        }
+
+        // Retrieve the user corresponding to the forlife. Note that at the
+        // moment, other aliases are also accepted.
+        $user = User::getSilent(Env::s('user', ''));
+        if (is_null($user) || !$user->isActive()) {
+            return null;
+        }
+
+        // Determine the list of tokens associated with the user. At the moment,
+        // this is just the sha1 of the password.
+        $tokens = array($user->password());
+
+        // For each token, try to validate the signature.
+        $message = implode('#', array($method, $resource, $payload, $timestamp));
+        $signature = Env::s('sig');
+        foreach ($tokens as $token) {
+            $expected_signature = hash_hmac(
+                Platal::globals()->api->hmac_algo, $message, $token);
+            if ($signature == $expected_signature) {
+                return $user;
+            }
+        }
+
+        return null;
+    }
+
     public function tokenAuth($login, $token)
     {
         $res = XDB::query('SELECT  a.uid, a.hruid
-                             FROM  aliases  AS l
-                       INNER JOIN  accounts AS a ON (l.uid = a.uid AND a.state = \'active\')
-                            WHERE  a.token = {?} AND l.alias = {?} AND l.type != \'homonyme\'',
-                           $token, $login);
+                             FROM  accounts AS a
+                            WHERE  a.token = {?} AND a.hruid = {?} AND a.state = \'active\'',
+                          $token, $login);
         if ($res->numRows() == 1) {
             return new User(null, $res->fetchOneAssoc());
         }

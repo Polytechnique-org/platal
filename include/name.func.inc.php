@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -252,17 +252,11 @@ function set_alias_names(&$sn_new, $sn_old, $pid, $uid, $update_new = false, $ne
     $has_new = false;
     foreach ($sn_new as $typeid => $sn) {
         if (isset($sn['pub'])) {
-            if (isset($sn_old[$typeid]) && ($sn_old[$typeid]['fullname'] == $sn['fullname'] && $update_new)) {
+            if (isset($sn_old[$typeid]) && $update_new) {
                 XDB::execute("UPDATE  profile_name
                                  SET  particle = {?}, name = {?}, typeid = {?}
                                WHERE  id = {?} AND pid = {?}",
                              $sn['particle'], $sn['name'], $typeid, $sn_old[$typeid]['id'], $pid);
-                unset($sn_old[$typeid]);
-            } elseif ($update_new
-                      || (isset($sn_old[$typeid]) && compare_basename($sn_old[$typeid]['fullname'], $sn['fullname']))) {
-                XDB::execute("INSERT INTO  profile_name (particle, name, typeid, pid)
-                                   VALUES  ({?}, {?}, {?}, {?})",
-                             $sn['particle'], $sn['name'], $typeid, $pid);
                 unset($sn_old[$typeid]);
             } else {
                 $has_new = true;
@@ -308,7 +302,7 @@ function set_alias_names(&$sn_new, $sn_old, $pid, $uid, $update_new = false, $ne
                            VALUES  ({?}, 'alias', 'usage', {?})",
                      $new_alias, $uid);
     }
-    Profile::rebuildSearchTokens($pid);
+    Profile::rebuildSearchTokens($pid, false);
     return $has_new;
 }
 

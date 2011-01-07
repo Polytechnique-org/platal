@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -50,8 +50,13 @@
       {foreach from=$medals item=medal key=id}
       {include file="profile/deco.medal.tpl" medal=$medal id=$id}
       {/foreach}
-      <p class="center"><small>Si ta décoration ou ta médaille ne figure pas dans la liste,
-      <a href="mailto:support@{#globals.mail.domain#}">contacte-nous</a>.</small></p>
+      <p class="center">
+        <small>
+          Si {if $isMe}ta{else}la{/if} décoration
+          ou {if $isMe}ta{else}la{/if} médaille ne figure pas dans la liste,
+          <a href="mailto:support@{#globals.mail.domain#}">contacte-nous</a>.
+        </small>
+      </p>
     </td>
   </tr>
 </table>

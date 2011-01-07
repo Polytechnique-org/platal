@@ -1,7 +1,7 @@
 #!/usr/bin/php5 -q
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -19,7 +19,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
-/* Checks inconsistances in tables ans joins. */
+/* Checks inconsistances in tables and joins. */
 
 require './connect.db.inc.php';
 require 'Console/Getopt.php';
@@ -31,7 +31,7 @@ function check($sql, $comment = '')
         echo $err;
     }
     if ($it->total() > 0) {
-        echo "Erreur pour la verification : $comment\n$sql\n\n";
+        echo "Erreur pour la vérification : $comment\n$sql\n\n";
         echo "|";
         while($col = $it->nextField()) {
             echo "\t" . $col->name . "\t|";
@@ -49,11 +49,42 @@ function check($sql, $comment = '')
     }
 }
 
-function info($sql, $comment = '') {
+function checkCount($sql, $comment = '')
+{
+    $count = XDB::rawFetchOneCell($sql);
+    if ($err = XDB::error()) {
+        echo $err;
+    }
+    if ($count > 0) {
+        echo "Erreur pour la vérification : $comment\n$sql\n\n";
+        echo "|\tTotal\t|\n|\t$count\t|\n\n";
+    }
+}
+
+function info($sql, $comment = '', $onlyCounts = false)
+{
     global $opt_verbose;
     if ($opt_verbose) {
-        check($sql, $comment);
+        if ($onlyCounts) {
+            checkCount($sql, $comment);
+        } else {
+            check($sql, $comment);
+        }
     }
+}
+
+function infoCountEmpty($table, $field, $nonEmpty = false)
+{
+    $sql = "SELECT COUNT(*) FROM $table";
+    if ($nonEmpty) {
+        $sql .= " WHERE $field IS NOT NULL OR $field != ''";
+        $negation = ' non';
+    } else {
+        $sql .= " WHERE $field IS NULL OR $field = ''";
+        $negation = '';
+    }
+    $comment = "Nombre de champs '$field'$negation vides dans la table '$table'.";
+    info($sql, $comment, true);
 }
 
 /* Parses options. */
@@ -111,6 +142,20 @@ check("SELECT  a.alias AS username, b.alias AS loginbis, b.expire
    INNER JOIN  aliases AS b ON (a.uid=b.uid AND b.type != 'homonyme' and b.expire < NOW())
         WHERE  a.type = 'a_vie'",
       "Donne la liste des homonymes qui ont un alias égal à leur loginbis depuis plus d'un mois, il est temps de supprimer leur alias.");
+
+// Counts empty profile fields that should never be empty.
+infoCountEmpty('profile_addresses', 'text');
+infoCountEmpty('profile_addresses', 'postalText');
+infoCountEmpty('profile_education', 'eduid');
+infoCountEmpty('profile_education', 'degreeid');
+infoCountEmpty('profile_job', 'jobid');
+infoCountEmpty('profile_mentor', 'expertise');
+infoCountEmpty('profile_networking', 'address');
+infoCountEmpty('profile_phones', 'search_tel');
+infoCountEmpty('profile_phones', 'display_tel');
+
+// XXX: counts the number of remaining issues due to the merge (to be removed once all merge related issues have been fixed)
+infoCountEmpty('profile_merge_issues', 'issues', true);
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -22,50 +22,83 @@
 
 <h1>Recherche dans l'annuaire</h1>
 
+{if hasPerm('edit_directory,admin') && t($suggestAddresses)}
+<p class="center"><strong>Voulez-vous télécharger le <a href="{$globals->baseurl}/search/adv/addresses{$plset_args}">tableau des adresses postales</a> pour la recette précédente&nbsp;?</strong></p>
+{/if}
+
+{javascript name=jquery.form}
+
 <script type="text/javascript">// <!--
   var baseurl = platal_baseurl + "search/";
   {literal}
+  String.prototype.htmlEntities = function () {
+    return this.replace(/&/g,'&amp;').replace(new RegExp('<','g'),'&lt;').replace(/>/g,'&gt;');
+  };
   // display an autocomplete row : blabla (nb of found matches)
   function make_format_autocomplete(block) {
     return function(row) {
         regexp = new RegExp('(' + RegExp.escape(block.value) + ')', 'i');
 
-        name = row[0].replace(regexp, '<strong>$1<\/strong>');
+        name = row[0].htmlEntities().replace(regexp, '<strong>$1<\/strong>');
 
         if (row[1] === "-1") {
           return '&hellip;';
         }
 
+        if (row[1] === "-2") {
+          return '<em>aucun camarade trouvé pour '+row[0].htmlEntities()+'<\/em>';
+        }
+
         camarades = (row[1] > 1) ? "camarades" : "camarade";
 
-        return name + '<em>&nbsp;&nbsp;-&nbsp;&nbsp;' + row[1] + '&nbsp;' + camarades + '<\/em>';
+        return name + '<em>&nbsp;&nbsp;-&nbsp;&nbsp;' + row[1].htmlEntities() + '&nbsp;' + camarades + '<\/em>';
       };
   }
 
-  // when changing country, open up region choice
+  // when changing country, open up administrativearea choice
   function changeCountry(a2) {
     $(".autocompleteTarget[name='country']").attr('value',a2);
 
     if (a2) {
       $(".autocomplete[name='countryTxt']").addClass('hidden_valid');
 
-      $("[name='region']").parent().load(baseurl + 'list/region/', { country:a2 }, function() {
-          if ($("select[name='region']").children("option").size() > 1) {
-            $("select[name='region']").attr('value', '{/literal}{$smarty.request.region}{literal}');
+      $("[name='administrativearea']").parent().load(baseurl + 'list/administrativearea/', { country:a2 }, function() {
+          if ($("select[name='administrativearea']").children("option").size() > 1) {
+            $("select[name='administrativearea']").attr('value', '{/literal}{$smarty.request.administrativearea}{literal}');
 
-            $("tr#region_ln").show();
+            $("tr#administrativearea_list").show();
           } else {
-            $("select[name='region']").attr('value', '');
+            $("select[name='administrativearea']").attr('value', '');
 
-            $("tr#region_ln").hide();
+            $("tr#administrativearea_list").hide();
           }
         });
     } else {
       $(".autocomplete[name='countryTxt']").removeClass('hidden_valid');
 
-      $("select[name='region']").attr('value', '');
+      $("select[name='administrativearea']").attr('value', '');
+      $("select[name='subadministrativearea']").attr('value', '');
 
-      $("tr#region_ln").hide();
+      $("tr#administrativearea_list").hide();
+      $("tr#subadministrativearea_list").hide();
+    }
+  }
+
+  // when changing administrativearea, open up subadministrativearea choice
+  function changeAdministrativeArea(id) {
+    if (id) {
+      $("[name='subadministrativearea']").parent().load(baseurl + 'list/subadministrativearea/', { administrativearea:id }, function() {
+          if ($("select[name='subadministrativearea']").children("option").size() > 1) {
+            $("select[name='subadministrativearea']").attr('value', '{/literal}{$smarty.request.subadministrativearea}{literal}');
+            $("tr#subadministrativearea_list").show();
+          } else {
+            $("select[name='subadministrativearea']").attr('value', '');
+            $("tr#subadministrativearea_list").hide();
+          }
+        });
+    } else {
+      $("select[name='subadministrativearea']").attr('value', '');
+      $("tr#subadministrativearea_list").hide();
     }
   }
 
@@ -84,6 +117,21 @@
       });
   }
 
+  // when choosing a job term in tree, hide tree and set job term field
+  function searchForJobTerm(treeid, jtid, full_name) {
+    $(".term_tree").remove();
+    $("input[name='jobtermTxt']").val(full_name).addClass("hidden_valid").show();
+    $("input[name='jobterm']").val(jtid);
+  }
+
+  function cancel_autocomplete(field, realfield) {
+    $(".autocomplete[name='"+field+"']").removeClass('hidden_valid').val('').focus();
+    if (typeof(realfield) != "undefined") {
+      $(".autocompleteTarget[name='"+realfield+"']").val('');
+    }
+    return;
+  }
+
   // when choosing autocomplete from list, must validate
   function select_autocomplete(name) {
       nameRealField = name.replace(/Txt$/, '');
@@ -92,20 +140,33 @@
       if (nameRealField == name)
         return null;
 
-      // if changing country, might want to open region choice
+      // if changing country, might want to open administrativearea choice
       if (nameRealField == 'country')
         return function(i) {
+            if (i.extra[0] < 0) {
+              cancel_autocomplete('countryTxt', 'country');
+              i.extra[1] = '';
+            }
             changeCountry(i.extra[1]);
           }
 
       if (nameRealField == 'school')
         return function(i) {
+            if (i.extra[0] < 0) {
+              cancel_autocomplete('schoolTxt', 'school');
+              i.extra[1] = '';
+            }
             changeSchool(i.extra[1]);
           }
 
       // change field in list and display text field as valid
       return function(i) {
         nameRealField = this.field.replace(/Txt$/, '');
+
+        if (i.extra[0] < 0) {
+          cancel_autocomplete(this.field, nameRealField);
+          return;
+        }
 
         $(".autocompleteTarget[name='"+nameRealField+"']").attr('value',i.extra[1]);
 
@@ -141,6 +202,7 @@
       $(".autocomplete[name='countryTxt']").change(function() { changeCountry(''); });
 
       changeCountry({/literal}'{$smarty.request.country}'{literal});
+      changeAdministrativeArea({/literal}'{$smarty.request.administrativearea}'{literal});
 
       $(".autocomplete[name='schoolTxt']").change(function() { changeSchool(''); });
 
@@ -167,10 +229,33 @@
           $(this).parent().find('.autocompleteTarget').val('');
         });
     });
+/** Regexps to wipe out from search queries */
+var default_form_values = [ /&woman=0(&|$)/, /&subscriber=0(&|$)/, /&alive=0(&|$)/, /&egal[12]=[^&]*&promo[12]=(&|$)/g, /&networking_type=0(&|$)/, /&[^&=]+=(&|$)/g ];
+/** Uses javascript to clean form from all empty fields */
+function cleanForm(f) {
+  var query = $(f).formSerialize();
+  var old_query;
+  for (var i in default_form_values) {
+    var reg = default_form_values[i];
+    if (typeof(reg) != "undefined") {
+      do {
+        old_query = query;
+        query = query.replace(reg, '$1');
+      } while (old_query != query);
+    }
+  }
+  query = query.replace(/^&*(.*)&*$/, '$1');
+  if (query == "rechercher=Chercher") {
+    alert("Aucun critère n'a été spécifié");
+    return false;
+  }
+  document.location = baseurl + 'adv?' + query;
+  return false;
+}
 -->
 {/literal}</script>
 <p class="center">[<a href="search">Revenir à la recherche simple</a>]</p>
-<form id="recherche" action="search/adv" method="get">
+<form id="recherche" action="search/adv" method="get" onsubmit="return cleanForm(this)">
   <table class="bicol" cellpadding="3" summary="Recherche">
     <tr>
       <th colspan="2">
@@ -188,18 +273,29 @@
     <tr>
       <td>Promotion</td>
       <td>
-        <select name="egal1">
+        <script type="text/javascript">/*<![CDATA[*/
+          {literal}
+          function updatepromofields(egal1) {
+            var f = egal1.form;
+            f.egal2.disabled = f.promo2.disabled = egal1.value == '=';
+            f.egal2.readOnly = true;
+            if (f.egal1.value == '>=') {
+              f.egal2.value = '<=';
+            } else {
+              f.egal2.value = '>=';
+            }
+          }
+          $(document).ready(function() { updatepromofields($('select[name=egal1]')[0]); });
+          {/literal}
+        /*]]>*/</script>
+        <select name="egal1" onchange="updatepromofields(this)" style="text-align:center">
           <option value="=" {if $smarty.request.egal1 eq "="}selected="selected"{/if}>&nbsp;=&nbsp;</option>
           <option value="&gt;=" {if $smarty.request.egal1 eq "&gt;="}selected="selected"{/if}>&nbsp;&gt;=&nbsp;</option>
           <option value="&lt;=" {if $smarty.request.egal1 eq "&lt;="}selected="selected"{/if}>&nbsp;&lt;=&nbsp;</option>
         </select>
         <input type="text" name="promo1" size="4" maxlength="4" value="{$smarty.request.promo1}" />
         &nbsp;et&nbsp;
-        <select name="egal2">
-          <option value="=" {if $smarty.request.egal2 eq "="}selected="selected"{/if}>&nbsp;=&nbsp;</option>
-          <option value="&gt;=" {if $smarty.request.egal2 eq "&gt;="}selected="selected"{/if}>&nbsp;&gt;=&nbsp;</option>
-          <option value="&lt;=" {if $smarty.request.egal2 neq "&gt;=" && $smarty.request.egal2 neq "="}selected="selected"{/if}>&nbsp;&lt;=&nbsp;</option>
-        </select>
+        <input type="text" name="egal2" size="1" style="text-align:center" value="{if t($smarty.request.egal2) eq '&lt;'}&lt;{else}&gt;{/if}" readonly="readonly" />
         <input type="text" name="promo2" size="4" maxlength="4" value="{$smarty.request.promo2}" />
       </td>
     </tr>
@@ -279,10 +375,16 @@
         <a href="country" class="autocompleteToSelect">{icon name="table" title="Tous les pays"}</a>
       </td>
     </tr>
-    <tr id="region_ln">
-      <td>Région ou département</td>
+    <tr id="administrativearea_list">
+      <td>Région, province, état&hellip;</td>
       <td>
-        <input name="region" type="hidden" size="32" value="{$smarty.request.region}"/>
+        <input name="administrativearea" type="hidden" size="32" value="{$smarty.request.administrativearea}" />
+      </td>
+    </tr>
+    <tr id="subadministrativearea_list">
+      <td>Département, comté&hellip;</td>
+      <td>
+        <input name="subadministrativearea" type="hidden" size="32" value="{$smarty.request.subadministrativearea}" />
       </td>
     </tr>
     <tr>
@@ -305,18 +407,20 @@
       <td><input type="text" class="autocomplete" name="description" size="32" value="{$smarty.request.description}" /></td>
     </tr>
     <tr>
-      <td>Secteur</td>
+      <td>Mots-clefs</td>
       <td>
-        <input name="secteurTxt" type="text" class="autocomplete" style="display:none" size="32"
-               value="{$smarty.request.secteurTxt}"/>
-        <input name="secteur" class="autocompleteTarget" type="hidden" value="{$smarty.request.secteur}"/>
-        <a href="secteur" class="autocompleteToSelect">{icon name="table" title="Tous les secteurs"}</a>
+        <input name="jobtermTxt" type="text" class="autocomplete{if $smarty.request.jobterm} hidden_valid{/if}" style="display:none" size="32"
+               value="{$smarty.request.jobtermTxt}"/>
+        <input name="jobterm" class="autocompleteTarget" type="hidden" value="{$smarty.request.jobterm}"/>
+        <a href="jobterm" class="autocompleteToSelect">{icon name="table" title="Tous les mots-clefs"}</a>
       </td>
     </tr>
+    {if hasPerm('directory_private')}
     <tr>
       <td>CV contient</td>
       <td><input type="text" name="cv" size="32" value="{$smarty.request.cv}" /></td>
     </tr>
+    {/if}
     <tr>
       <td colspan="2">
         <input type='checkbox' name='only_referent' {if $smarty.request.only_referent}checked='checked'{/if} id="only_referent"/>
@@ -335,6 +439,7 @@
         <a href="nationalite" class="autocompleteToSelect">{icon name="table" title="Toutes les nationalités"}</a>
       </td>
     </tr>
+    {if hasPerm('directory_private')}
     <tr>
       <td>Binet</td>
       <td>
@@ -344,6 +449,7 @@
         <a href="binet" class="autocompleteToSelect">{icon name="table" title="Tous les binets"}</a>
       </td>
     </tr>
+    {/if}
     <tr>
       <td>Groupe X</td>
       <td>
@@ -353,6 +459,7 @@
         <a href="groupex" class="autocompleteToSelect">{icon name="table" title="Tous les groupes X"}</a>
       </td>
     </tr>
+    {if hasPerm('directory_private')}
     <tr>
       <td>Section</td>
       <td>
@@ -362,6 +469,7 @@
         <a href="section" class="autocompleteToSelect">{icon name="table" title="Toutes les sections"}</a>
       </td>
     </tr>
+    {/if}
     <tr>
       <td>Formation</td>
       <td>
@@ -396,14 +504,25 @@
               <input type="text" name="networking_address" size="32" value="{$smarty.request.networking_address}" />
             </td>
             <td>
-              <input type="text" name="networking_typeTxt" class="autocomplete" size="10" value="{$smarty.request.networking_typeTxt}" />
-              <input name="networking_type" class="autocompleteTarget" type="hidden" value="{$smarty.request.networking_type}"/>
-              <a href="networking_type" class="autocompleteToSelect">{icon name="table" title="Tous les types d'adresse"}</a>
+              <select name="networking_type">
+              {foreach from=$networking_types key=id item=network}
+                <option value="{$id}" {if $smarty.request.networking_type eq $id}selected="selected"{/if}>{$network}</option>
+              {/foreach}
+              </select>
             </td>
           </tr>
         </table>
       </td>
     </tr>
+        {if hasPerm('admin,edit_directory')}
+    <tr>
+      <td>Matricule AX</td>
+      <td>
+        <textarea name="schoolid_ax" rows="10" cols="12">{$smarty.request.schoolid_ax}</textarea>
+        <br />
+        <i>Entrer une liste de matricules AX (un par ligne)</i>
+      </td>
+        {/if}
         {if $smarty.session.auth ge AUTH_COOKIE}
     <tr>
       <td colspan="2">
@@ -426,8 +545,5 @@
     </tr>
   </table>
 </form>
-<p>
-  <small><strong>N.B.&nbsp;:</strong> le caractère joker * peut remplacer une ou plusieurs lettres dans les recherches.</small>
-</p>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

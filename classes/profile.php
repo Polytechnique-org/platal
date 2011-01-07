@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -18,64 +18,6 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
-
-class ProfileVisibility
-{
-    static private $v_values = array(self::VIS_PUBLIC  => array(self::VIS_PUBLIC),
-                                     self::VIS_AX      => array(self::VIS_AX, self::VIS_PUBLIC),
-                                     self::VIS_PRIVATE => array(self::VIS_PRIVATE, self::VIS_AX, self::VIS_PUBLIC));
-
-    const VIS_PUBLIC  = 'public';
-    const VIS_AX      = 'ax';
-    const VIS_PRIVATE = 'private';
-
-    private $level;
-
-    public function __construct($level = null)
-    {
-        $this->setLevel($level);
-    }
-
-    public function setLevel($level = self::VIS_PUBLIC)
-    {
-        if ($level != null && $level != self::VIS_PRIVATE && $level != self::VIS_AX && $level != self::VIS_PUBLIC) {
-            Platal::page()->kill("Invalid visibility: " . $level);
-        }
-
-        if (!S::logged()) {
-            $level = self::VIS_PUBLIC;
-        } else if ($level == null) {
-            $level = self::VIS_PRIVATE;
-        }
-
-        if ($this->level == null || $this->level == self::VIS_PRIVATE) {
-            $this->level = $level;
-        } else if ($this->level == self::VIS_AX && $level == self::VIS_PRIVATE) {
-            return;
-        } else {
-            $this->level = self::VIS_PUBLIC;
-        }
-    }
-
-    public function level()
-    {
-        if ($this->level == null) {
-            return self::VIS_PUBLIC;
-        } else {
-            return $this->level;
-        }
-    }
-
-    public function levels()
-    {
-        return self::$v_values[$this->level()];
-    }
-
-    public function isVisible($visibility)
-    {
-        return in_array($visibility, $this->levels());
-    }
-}
 
 class Profile
 {
@@ -152,13 +94,46 @@ class Profile
     const FETCH_JOBS           = 0x000008;
     const FETCH_MEDALS         = 0x000010;
     const FETCH_NETWORKING     = 0x000020;
-    const FETCH_MENTOR_SECTOR  = 0x000040;
     const FETCH_MENTOR_COUNTRY = 0x000080;
     const FETCH_PHONES         = 0x000100;
+    const FETCH_JOB_TERMS      = 0x000200;
+    const FETCH_MENTOR_TERMS   = 0x000400;
 
     const FETCH_MINIFICHES   = 0x00012D; // FETCH_ADDRESSES | FETCH_EDU | FETCH_JOBS | FETCH_NETWORKING | FETCH_PHONES
 
-    const FETCH_ALL          = 0x0001FF; // OR of FETCH_*
+    const FETCH_ALL          = 0x0007FF; // OR of FETCH_*
+
+    static public $descriptions = array(
+        'search_names'    => 'Noms',
+        'nationality1'    => 'Nationalité',
+        'nationality2'    => '2e nationalité',
+        'nationality3'    => '3e nationalité',
+        'promo_display'   => 'Promotion affichée',
+        'email_directory' => 'Email annuaire papier',
+        'networking'      => 'Messageries…',
+        'tels'            => 'Téléphones',
+        'edus'            => 'Formations',
+        'promo'           => 'Promotion de sortie',
+        'birthdate'       => 'Date de naissance',
+        'yourself'        => 'Nom affiché',
+        'freetext'        => 'Commentaire',
+        'freetext_pub'    => 'Affichage du commentaire',
+        'photo'           => 'Photographie',
+        'photo_pub'       => 'Affichage de la photographie',
+        'addresses'       => 'Adresses',
+        'corps'           => 'Corps',
+        'cv'              => 'CV',
+        'jobs'            => 'Emplois',
+        'section'         => 'Section',
+        'binets'          => 'Binets',
+        'medals'          => 'Décorations',
+        'medals_pub'      => 'Affichage des décorations',
+        'competences'     => 'Compétences',
+        'langues'         => 'Langues',
+        'expertise'       => 'Expertises (mentoring)',
+        'terms'           => 'Compétences (mentoring)',
+        'countries'       => 'Pays (mentoring)'
+    );
 
     private $fetched_fields  = 0x000000;
 
@@ -479,6 +454,8 @@ class Profile
         $this->fetched_fields = $fields;
     }
 
+    /** Have we already fetched this field ?
+     */
     private function fetched($field)
     {
         if (!array_key_exists($field, ProfileField::$fields)) {
@@ -494,6 +471,9 @@ class Profile
      */
     private function getProfileField($field)
     {
+        if (!array_key_exists($field, ProfileField::$fields)) {
+            Platal::page()->kill("Invalid field: $field");
+        }
         if ($this->fetched($field)) {
             return null;
         } else {
@@ -509,6 +489,7 @@ class Profile
      */
     private function consolidateFields()
     {
+        // Link phones to addresses
         if ($this->phones != null) {
             if ($this->addresses != null) {
                 $this->addresses->addPhones($this->phones);
@@ -519,8 +500,14 @@ class Profile
             }
         }
 
+        // Link addresses to jobs
         if ($this->addresses != null && $this->jobs != null) {
             $this->jobs->addAddresses($this->addresses);
+        }
+
+        // Link jobterms to jobs
+        if ($this->jobs != null && $this->jobterms != null) {
+            $this->jobs->addJobTerms($this->jobterms);
         }
     }
 
@@ -531,10 +518,10 @@ class Profile
     {
         if ($this->has_photo) {
             if ($data && ($this->photo == null || $this->photo->mimeType == null)) {
-                $res = XDB::fetchOneAssoc('SELECT  attach, attachmime, x, y
+                $res = XDB::fetchOneAssoc('SELECT  attach, attachmime, x, y, last_update
                                              FROM  profile_photos
                                             WHERE  pid = {?}', $this->pid);
-                $this->photo = PlImage::fromData($res['attach'], $res['attachmime'], $res['x'], $res['y']);
+                $this->photo = PlImage::fromData($res['attach'], 'image/' .$res['attachmime'], $res['x'], $res['y'], $res['last_update']);
             } else if ($this->photo == null) {
                 $this->photo = PlImage::fromData(null, null, $this->photo_width, $this->photo_height);
             }
@@ -583,11 +570,15 @@ class Profile
 
     public function getMainAddress()
     {
-        $addr = $this->getAddresses(self::ADDRESS_PERSO | self::ADDRESS_MAIN);
-        if (count($addr) == 0) {
-            return null;
+        $main = $this->getAddresses(self::ADDRESS_MAIN);
+        $perso = $this->getAddresses(self::ADDRESS_PERSO);
+
+        if (count($main)) {
+            return array_pop($main);
+        } else if (count($perso)) {
+            return array_pop($perso);
         } else {
-            return array_pop($addr);
+            return null;
         }
     }
 
@@ -732,25 +723,13 @@ class Profile
         return array_pop($job);
     }
 
-    /* Mentoring
+    /** JobTerms
      */
-    private $mentor_sectors = null;
-    public function setMentoringSectors(ProfileMentoringSectors $sectors)
+    private $jobterms = null;
+    public function setJobTerms(ProfileJobTerms $jobterms)
     {
-        $this->mentor_sectors = $sectors;
-    }
-
-    public function getMentoringSectors()
-    {
-        if ($this->mentor_sectors == null && !$this->fetched(self::FETCH_MENTOR_SECTOR)) {
-            $this->setMentoringSectors($this->getProfileField(self::FETCH_MENTOR_SECTOR));
-        }
-
-        if ($this->mentor_sectors == null) {
-            return array();
-        } else {
-            return $this->mentor_sectors->sectors;
-        }
+        $this->jobterms = $jobterms;
+        $this->consolidateFields();
     }
 
     private $mentor_countries = null;
@@ -771,6 +750,34 @@ class Profile
             return $this->mentor_countries->countries;
         }
     }
+
+    /** List of job terms to specify mentoring */
+    private $mentor_terms = null;
+    /**
+     * set job terms to specify mentoring
+     * @param $terms a ProfileMentoringTerms object listing terms only for this profile
+     */
+    public function setMentoringTerms(ProfileMentoringTerms $terms)
+    {
+        $this->mentor_terms = $terms;
+    }
+    /**
+     * get all job terms that specify mentoring
+     * @return an array of JobTerms objects
+     */
+    public function getMentoringTerms()
+    {
+        if ($this->mentor_terms == null && !$this->fetched(self::FETCH_MENTOR_TERMS)) {
+            $this->setMentoringTerms($this->getProfileField(self::FETCH_MENTOR_TERMS));
+        }
+
+        if ($this->mentor_terms == null) {
+            return array();
+        } else {
+            return $this->mentor_terms->get();
+        }
+    }
+
 
     /* Binets
      */
@@ -1036,33 +1043,60 @@ class Profile
         }
     }
 
-    public static function rebuildSearchTokens($pid)
+    public static function rebuildSearchTokens($pids, $transaction = true)
     {
-        XDB::execute('DELETE FROM  search_name
-                            WHERE  pid = {?}',
-                     $pid);
-        $keys = XDB::iterator("SELECT  CONCAT(n.particle, n.name) AS name, e.score,
-                                       FIND_IN_SET('public', e.flags) AS public
-                                 FROM  profile_name      AS n
-                           INNER JOIN  profile_name_enum AS e ON (n.typeid = e.id)
-                                WHERE  n.pid = {?}",
-                              $pid);
-
+        if (!is_array($pids)) {
+            $pids = array($pids);
+        }
+        $keys = XDB::iterator("(SELECT  n.pid AS pid, n.name AS name, e.score AS score,
+                                        IF(FIND_IN_SET('public', e.flags), 'public', '') AS public
+                                  FROM  profile_name      AS n
+                            INNER JOIN  profile_name_enum AS e ON (n.typeid = e.id)
+                                 WHERE  n.pid IN {?} AND NOT FIND_IN_SET('not_displayed', e.flags))
+                                 UNION
+                                (SELECT  n.pid AS pid, n.particle AS name, 0 AS score,
+                                         IF(FIND_IN_SET('public', e.flags), 'public', '') AS public
+                                   FROM  profile_name      AS n
+                             INNER JOIN  profile_name_enum AS e ON (n.typeid = e.id)
+                                  WHERE  n.pid IN {?} AND NOT FIND_IN_SET('not_displayed', e.flags))
+                               ",
+                              $pids, $pids);
+        $names = array();
         while ($key = $keys->next()) {
             if ($key['name'] == '') {
                 continue;
             }
-            $toks  = preg_split('/[ \'\-]+/', $key['name']);
+            $pid   = $key['pid'];
+            $toks  = preg_split('/[ \'\-]+/', strtolower(replace_accent($key['name'])),
+                                -1, PREG_SPLIT_NO_EMPTY);
+            $toks = array_reverse($toks);
+
+            /* Split the score between the tokens to avoid the user to be over-rated.
+             * Let says my user name is "Machin-Truc Bidule" and I also have a user named
+             * 'Machin Truc'. Distributing the score force "Machin Truc" to be displayed
+             * before "Machin-Truc" for both "Machin Truc" and "Machin" searches.
+             */
+            $eltScore = ceil(((float)$key['score'])/((float)count($toks)));
             $token = '';
-            $first = 5;
-            while ($toks) {
-                $token = strtolower(replace_accent(array_pop($toks) . $token));
-                $score = ($toks ? 0 : 10 + $first) * ($key['score'] / 10);
-                XDB::execute('REPLACE INTO  search_name (token, pid, soundex, score, flags)
-                                    VALUES  ({?}, {?}, {?}, {?}, {?})',
-                             $token, $pid, soundex_fr($token), $score, $key['public']);
-                $first = 0;
+            foreach ($toks as $tok) {
+                $token = $tok . $token;
+                $names["$pid-$token"] = XDB::format('({?}, {?}, {?}, {?}, {?})',
+                                                    $token, $pid, soundex_fr($token),
+                                                    $eltScore, $key['public']);
             }
+        }
+        if ($transaction) {
+            XDB::startTransaction();
+        }
+        XDB::execute('DELETE FROM  search_name
+                            WHERE  pid IN {?}',
+                     $pids);
+        if (count($names) > 0) {
+            XDB::rawExecute('INSERT INTO  search_name (token, pid, soundex, score, flags)
+                                  VALUES  ' . implode(', ', $names));
+        }
+        if ($transaction) {
+            XDB::commit();
         }
     }
 
@@ -1124,6 +1158,8 @@ class ProfileIterator implements PlIterator
     private $fields;
     private $visibility;
 
+    const FETCH_ALL    = 0x000033F; // FETCH_ADDRESSES | FETCH_CORPS | FETCH_EDU | FETCH_JOBS | FETCH_MEDALS | FETCH_NETWORKING | FETCH_PHONES | FETCH_JOB_TERMS
+
     public function __construct(PlIterator $it, array $pids, $fields = 0x0000, ProfileVisibility $visibility = null)
     {
         require_once 'profilefields.inc.php';
@@ -1142,39 +1178,12 @@ class ProfileIterator implements PlIterator
         $callbacks[0] = PlIteratorUtils::arrayValueCallback('pid');
         $cb = PlIteratorUtils::objectPropertyCallback('pid');
 
-        if ($fields & Profile::FETCH_ADDRESSES) {
-            $callbacks[Profile::FETCH_ADDRESSES] = $cb;
-            $subits[Profile::FETCH_ADDRESSES] = new ProfileFieldIterator('ProfileAddresses', $pids, $visibility);
-        }
-
-        if ($fields & Profile::FETCH_CORPS) {
-            $callbacks[Profile::FETCH_CORPS] = $cb;
-            $subits[Profile::FETCH_CORPS] = new ProfileFieldIterator('ProfileCorps', $pids, $visibility);
-        }
-
-        if ($fields & Profile::FETCH_EDU) {
-            $callbacks[Profile::FETCH_EDU] = $cb;
-            $subits[Profile::FETCH_EDU] = new ProfileFieldIterator('ProfileEducation', $pids, $visibility);
-        }
-
-        if ($fields & Profile::FETCH_JOBS) {
-            $callbacks[Profile::FETCH_JOBS] = $cb;
-            $subits[Profile::FETCH_JOBS] = new ProfileFieldIterator('ProfileJobs', $pids, $visibility);
-        }
-
-        if ($fields & Profile::FETCH_MEDALS) {
-            $callbacks[Profile::FETCH_MEDALS] = $cb;
-            $subits[Profile::FETCH_MEDALS] = new ProfileFieldIterator('ProfileMedals', $pids, $visibility);
-        }
-
-        if ($fields & Profile::FETCH_NETWORKING) {
-            $callbacks[Profile::FETCH_NETWORKING] = $cb;
-            $subits[Profile::FETCH_NETWORKING] = new ProfileFieldIterator('ProfileNetworking', $pids, $visibility);
-        }
-
-        if ($fields & Profile::FETCH_PHONES) {
-            $callbacks[Profile::FETCH_PHONES] = $cb;
-            $subits[Profile::FETCH_PHONES] = new ProfileFieldIterator('ProfilePhones', $pids, $visibility);
+        $fields = $fields & self::FETCH_ALL;
+        for ($field = 1; $field < $fields; $field *= 2) {
+            if (($fields & $field) ) {
+                $callbacks[$field] = $cb;
+                $subits[$field] = new ProfileFieldIterator($field, $pids, $visibility);
+            }
         }
 
         $this->iterator = PlIteratorUtils::parallelIterator($subits, $callbacks, 0);
@@ -1199,6 +1208,9 @@ class ProfileIterator implements PlIterator
         }
         if ($this->hasData(Profile::FETCH_JOBS, $vals)) {
             $pf->setJobs($vals[Profile::FETCH_JOBS]);
+        }
+        if ($this->hasData(Profile::FETCH_JOB_TERMS, $vals)) {
+            $pf->setJobTerms($vals[Profile::FETCH_JOB_TERMS]);
         }
 
         if ($this->hasData(Profile::FETCH_CORPS, $vals)) {

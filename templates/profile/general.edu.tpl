@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -60,7 +60,7 @@
     <span class="titre">Année d'obtention du diplôme&nbsp;:</span>
   </td>
   <td>
-    <input type="text" {if $edu.warning}class="warning"{/if} name="{$eduname}[grad_year]"
+    <input type="text" {if t($edu.warning)}class="warning"{/if} name="{$eduname}[grad_year]"
     value="{$edu.grad_year}" size="4" maxlength="4" />
     <small>(par exemple&nbsp;: 2008)</small>
   </td>

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #***************************************************************************
-#*  Copyright (C) 2003-2010 Polytechnique.org                              *
+#*  Copyright (C) 2003-2011 Polytechnique.org                              *
 #*  http://opensource.polytechnique.org/                                   *
 #*                                                                         *
 #*  This program is free software; you can redistribute it and/or modify   *
@@ -72,6 +72,7 @@ MYSQL_DB       = get_config('Core', 'dbdb')
 PLATAL_DOMAIN  = get_config('Mail', 'domain')
 PLATAL_DOMAIN2 = get_config('Mail', 'domain2', '')
 sys.stderr.write('PLATAL_DOMAIN = %s\n' % PLATAL_DOMAIN )
+sys.stderr.write("MYSQL_DB = %s\n" % MYSQL_DB)
 
 VHOST_SEP      = get_config('Lists', 'vhost_sep', '_')
 ON_CREATE_CMD  = get_config('Lists', 'on_create', '')
@@ -126,25 +127,29 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
             self.end_headers()
 
     def getUser(self, uid, md5, vhost):
-        res = mysql_fetchone ("""SELECT  a.full_name, aa.alias, IF (a.is_admin, 'admin', NULL)
+        res = mysql_fetchone ("""SELECT  a.full_name, IF(aa.alias IS NULL, a.email, CONCAT(aa.alias, '@%s')),
+                                         IF (a.is_admin, 'admin',
+                                                         IF(FIND_IN_SET('lists', at.perms) OR FIND_IN_SET('lists', a.user_perms), 'lists', NULL))
                                    FROM  accounts AS a
-                             INNER JOIN  aliases  AS aa ON (a.uid = aa.uid AND aa.type = 'a_vie')
+                             INNER JOIN  account_types AS at ON (at.type = a.type)
+                              LEFT JOIN  aliases  AS aa ON (a.uid = aa.uid AND aa.type = 'a_vie')
                                   WHERE  a.uid = '%s' AND a.password = '%s' AND a.state = 'active'
                                   LIMIT  1""" \
-                              % (uid, md5))
+                              % (PLATAL_DOMAIN, uid, md5))
         if res:
             name, forlife, perms = res
-            if vhost != PLATAL_DOMAIN:
-                res = mysql_fetchone ("""SELECT  m.uid
+            if vhost != PLATAL_DOMAIN and perms != 'admin':
+                res = mysql_fetchone ("""SELECT  m.uid, IF(m.perms = 'admin', 'admin', 'lists')
                                            FROM  group_members AS m
                                      INNER JOIN  groups        AS g ON (m.asso_id = g.id)
-                                          WHERE  perms = 'admin' AND uid = '%s' AND mail_domain = '%s'""" \
+                                          WHERE  uid = '%s' AND mail_domain = '%s'""" \
                                       % (uid, vhost))
                 if res:
-                    perms= 'admin'
-            userdesc = UserDesc(forlife+'@'+PLATAL_DOMAIN, name, None, 0)
+                    _, perms = res
+            userdesc = UserDesc(forlife, name, None, 0)
             return (userdesc, perms, vhost)
         else:
+            print >> sys.stderr, "no user found for uid: %s, passwd: %s" % (uid, md5)
             return None
 
 ################################################################################
@@ -238,10 +243,11 @@ def list_call_dispatcher(method, userdesc, perms, vhost, *arg):
         @root:  the handler requires site admin rights
     """
     try:
+        print >> sys.stderr, "calling method: %s" % method
         if has_annotation(method, "root") and perms != "admin":
             return 0
         if has_annotation(method, "mlist"):
-            listname = arg[0]
+            listname = str(arg[0])
             arg = arg[1:]
             mlist = MailList.MailList(vhost + VHOST_SEP + listname.lower(), lock=0)
             if has_annotation(method, "admin") and not is_admin_on(userdesc, perms, mlist):
@@ -287,12 +293,12 @@ def get_list_info(userdesc, perms, mlist, front_page=0):
     members    = mlist.getRegularMemberKeys()
     is_member  = userdesc.address in members
     is_owner   = userdesc.address in mlist.owner
-    if mlist.advertised or is_member or is_owner or (not front_page and perms == 'admin'):
+    if (mlist.advertised and perms in ('lists', 'admin')) or is_member or is_owner or (not front_page and perms == 'admin'):
         is_pending = False
         if not is_member and (mlist.subscribe_policy > 1):
             is_pending = list_call_locked(is_subscription_pending, userdesc, perms, mlist, False)
             if is_pending is 0:
-                return 0
+                return None
 
         host = mlist.internal_name().split(VHOST_SEP)[0].lower()
         details = {
@@ -309,7 +315,7 @@ def get_list_info(userdesc, perms, mlist, front_page=0):
                 'nbsub': len(members)
                 }
         return (details, members)
-    return 0
+    return None
 
 def get_options(userdesc, perms, mlist, opts):
     """ Get the options of a list.
@@ -362,8 +368,9 @@ def get_lists(userdesc, perms, vhost, email=None):
         except:
             continue
         try:
-            details = get_list_info(udesc, perms, mlist, (email is None and vhost == PLATAL_DOMAIN))[0]
-            result.append(details)
+            details = get_list_info(udesc, perms, mlist, (email is None and vhost == PLATAL_DOMAIN))
+            if details is not None:
+                result.append(details[0])
         except Exception, e:
             sys.stderr.write('Can\'t get list %s: %s\n' % (name, str(e)))
             continue
@@ -407,7 +414,11 @@ def get_members(userdesc, perms, mlist):
     """ List the members of a list.
             @mlist
     """
-    details, members = get_list_info(userdesc, perms, mlist)
+    infos = get_list_info(userdesc, perms, mlist)
+    if infos is None:
+        # Do not return None, this is not serializable
+        return 0
+    details, members = infos
     members.sort()
     members = map(lambda member: (get_name(member), member), members)
     return (details, members, mlist.owner)
@@ -809,6 +820,7 @@ def check_options(userdesc, perms, vhost, listname, correct=False):
 
 def get_all_lists(userdesc, perms, vhost):
     """ Get all the list for the given vhost
+            @root
     """
     prefix = vhost.lower()+VHOST_SEP
     names = Utils.list_names()
@@ -819,6 +831,52 @@ def get_all_lists(userdesc, perms, vhost):
             continue
         result.append(name.replace(prefix, ''))
     return result
+
+def get_all_user_lists(userdesc, perms, vhost, email):
+    """ Get all the lists for the given user
+            @root
+    """
+    names = Utils.list_names()
+    names.sort()
+    result = []
+    for name in names:
+        try:
+            mlist = MailList.MailList(name, lock=0)
+            ismember = email in mlist.getRegularMemberKeys()
+            isowner  = email in mlist.owner
+            if not ismember and not isowner:
+                continue
+            host = mlist.internal_name().split(VHOST_SEP)[0].lower()
+            result.append({ 'list': mlist.real_name,
+                            'addr': mlist.real_name.lower() + '@' + host,
+                            'host': host,
+                            'own' : isowner,
+                            'sub' : ismember
+                          })
+        except Exception, e:
+            continue
+    return result
+
+def change_user_email(userdesc, perms, vhost, from_email, to_email):
+    """ Change the email of a user
+            @root
+    """
+    from_email = from_email.lower()
+    to_email = to_email.lower()
+    for list in Utils.list_names():
+        try:
+            mlist = MailList.MailList(list, lock=0)
+        except:
+            continue
+        try:
+            mlist.Lock()
+            mlist.ApprovedChangeMemberAddress(from_email, to_email, 0)
+            mlist.Save()
+            mlist.Unlock()
+        except:
+            mlist.Unlock()
+    return 1
+
 
 def create_list(userdesc, perms, vhost, listname, desc, advertise, modlevel, inslevel, owners, members):
     """ Create a new list.
@@ -1011,6 +1069,8 @@ server.register_function(set_admin_options)
 server.register_function(check_options)
 # create + del
 server.register_function(get_all_lists)
+server.register_function(get_all_user_lists)
+server.register_function(change_user_email)
 server.register_function(create_list)
 server.register_function(delete_list)
 # utilisateurs.php

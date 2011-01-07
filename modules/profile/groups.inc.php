@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -39,7 +39,7 @@ class ProfileSettingSection implements ProfileSetting
         XDB::execute("UPDATE  profiles
                          SET  section = {?}
                        WHERE  pid = {?}",
-                     $value, $page->pid());
+                     ($value == 0) ? null : $value, $page->pid());
     }
 
     public function getText($value) {
@@ -96,7 +96,7 @@ class ProfileSettingBinets implements ProfileSetting
     }
 }
 
-class ProfileSettingGroups extends ProfilePage
+class ProfilePageGroups extends ProfilePage
 {
     protected $pg_template = 'profile/groups.tpl';
 

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -26,14 +26,11 @@ class ReminderPromotionMl extends Reminder
         $user = S::user();
         switch ($action) {
           case 'yes':
-            $res = XDB::query('SELECT  id
-                                 FROM  groups
-                                WHERE  diminutif = {?}',
-                              $user->profile()->yearPromo());
-            $asso_id = $res->fetchOneCell();
-            XDB::execute('REPLACE INTO  group_members (uid, asso_id)
-                                VALUES  ({?}, {?})',
-                         $user->id(), $asso_id);
+            XDB::execute('INSERT IGNORE INTO  group_members (uid, asso_id)
+                                      SELECT  {?}, id
+                                        FROM  groups
+                                       WHERE  diminutif = {?}',
+                         $user->id(), $user->profile()->yearPromo());
             $mmlist = new MMList($user);
             $mmlist->subscribe('promo' . $user->profile()->yearPromo());
 
@@ -65,6 +62,11 @@ class ReminderPromotionMl extends Reminder
 
     public static function IsCandidate(User &$user, $candidate)
     {
+        $profile = $user->profile();
+        if (!$profile) {
+            return false;
+        }
+
         // We only test if the user is in her promotion group for it is too
         // expensive to check if she is in the corresponding ML as well.
         $res = XDB::query('SELECT  COUNT(*)

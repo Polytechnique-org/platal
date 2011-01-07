@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -22,39 +22,40 @@
 
 <h2><a href="fusionax">Fusion des annuaires X.org - AX</a> / Identifiants</h2>
 
-<p>Le préalable à toute fusion de renseignements pour une personne entre ce
+<p>
+Le préalable à toute fusion de renseignements pour une personne entre ce
 que contient la base AX et ce que contient ce site est bien évidemment de
-trouver une correspondance entre les personnes renseignés dans ces annuaires.</p>
+trouver une correspondance entre les personnes renseignés dans ces annuaires.<br /><br />
 
-{if $nbMissingInAX}
-<h3>Anciens manquants à l'AX</h3>
-
-<p><a href="fusionax/ids/missingInAX">{$nbMissingInAX} ancien{if $nbMissingInAX > 1}s{/if}</a>.</p>
+{if t($nbMissingInAX)}
+<strong>Anciens manquants à l'AX&nbsp;:</strong>
+<a href="fusionax/ids/missingInAX">{$nbMissingInAX} ancien{if $nbMissingInAX > 1}s{/if}</a>.<br />
 {/if}
 
-{if $nbMissingInXorg > 0}
-<h3>Anciens manquants à x.org</h3>
-
-<p><a href="fusionax/ids/missingInXorg">{$nbMissingInXorg} ancien{if $nbMissingInXorg > 1}s{/if}</a>.</p>
+{if t($nbMissingInXorg)}
+<strong>Anciens manquants à x.org&nbsp;:</strong>
+<a href="fusionax/ids/missingInXorg">{$nbMissingInXorg} ancien{if $nbMissingInXorg > 1}s{/if}</a>.<br />
 {/if}
 
-{if $wrongInXorg > 0}
-<h3>Anciens ayant un matricule_ax sur Xorg ne correspondant à rien dans la base de l'AX</h3>
-
-<p><a href="fusionax/ids/wrongInXorg">{$wrongInXorg} ancien{if $wrongInXorg > 1}s{/if}</a>.</p>
+{if t($wrongInXorg)}
+<strong>Anciens ayant un ax_id sur Xorg ne correspondant à rien dans la base de l'AX&nbsp;:</strong>
+<a href="fusionax/ids/wrongInXorg">{$wrongInXorg} ancien{if $wrongInXorg > 1}s{/if}</a>.
 {/if}
+</p>
 
 <h3>Mettre en correspondance</h3>
 <form action="fusionax/ids/lier" method="post">
-	Matricule AX : <input type="text" name="matricule_ax" value""/><br/>
-	User ID X.org : <input type="text" name="user_id" value=""/><br/>
-	<input type="submit" value="Lier"/>
+  <p>
+    Matricule AX : <input type="text" name="ax_id" /><br/>
+    User ID X.org : <input type="text" name="pid" /><br/>
+    <input type="submit" value="Lier" />
+  </p>
 </form>
 
 <p></p>
-<div id="autolink" name="autolink">
+<div id="autolink">
 <h3>Mise en correspondance automatique</h3>
-{if $easyToLink}
+{if t($easyToLink)}
 <p>
   Ces anciens sont probablement les mêmes (à peu près mêmes nom, prénom, promo)<br />
   {$nbMatch} correspondances trouvées.

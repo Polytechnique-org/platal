@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -47,13 +47,9 @@
   {if $search_results_nb eq 1}{literal}
     <script type="text/javascript">
       // popup automatically if only one result
-      var alinks = document.getElementById('content').getElementsByTagName('a');
-      for (i = 0; i < alinks.length; i++) {
-        if (alinks[i].className == 'popup2') {
-          popWin(alinks[i], 840, 600);
-          break;
-        }
-      }
+      $(document).ready(function() {
+        $('#content a.popup2').click();
+      });
     </script>
   {/literal}{/if}
 

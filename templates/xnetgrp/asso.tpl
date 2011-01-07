@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -47,6 +47,19 @@
   </tr>
   {/if}
 
+  {if $asso->positions|count}
+  <tr>
+    <td class="titre">
+      Bureau&nbsp;:
+    </td>
+    <td>
+      {foreach from=$asso->positions item=position}
+      <em>&bull;&nbsp;{$position.position}&nbsp;:</em> {profile user=$position.uid promo=true}<br />
+      {/foreach}
+    </td>
+  </tr>
+  {/if}
+
   {if $asso->forum}
   <tr>
     <td class="titre">
@@ -82,7 +95,7 @@
   {if $asso->ax}
   <tr>
     <td class="titre center" colspan="2">
-      groupe agréé par l'AX
+      groupe agréé par l'AX {if $asso->axDate}le {$asso->axDate}{/if}
     </td>
   </tr>
   {/if}

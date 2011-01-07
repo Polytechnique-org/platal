@@ -1,7 +1,7 @@
 #!/usr/bin/php5 -q
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -31,58 +31,62 @@ $res = XDB::iterator('SELECT  p.hrpid, pm.pid, a.full_name, pm.field, pm.oldText
                   INNER JOIN  profile_display       AS pd ON (pm.pid = pd.pid)
                   INNER JOIN  account_profiles      AS ap ON (pm.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
                   INNER JOIN  aliases               AS al ON (ap.uid = al.uid AND FIND_IN_SET(\'bestalias\', al.flags))
-                    ORDER BY  pm.pid, pm.field');
+                       WHERE  pm.type = \'third_party\' AND pm.field != \'deathdate\'
+                    ORDER BY  pm.pid, pm.field, pm.timestamp');
 
-$date = time();
-$values = $res->next();
+if ($res->total() > 0) {
+    $date = time();
+    $values = $res->next();
 
-$pid = $values['pid'];
-$sex = ($values['sex'] == 'female') ? 1 : 0;
-$yourself = $values['yourself'];
-$alias = $values['alias'];
-$hrpid = $values['hrpid'];
-$modifications = array();
-$modifications[] = array(
-    'full_name' => $values['full_name'],
-    'field'     => $values['field'],
-    'oldText'   => $values['oldText'],
-    'newText'   => $values['newText'],
-);
-
-while ($values = $res->next()) {
-    if ($values['pid'] != $pid) {
-        $mailer = new PlMailer('profile/notification.mail.tpl');
-        $mailer->addTo($alias . '@' . $globals->mail->domain);
-        $mailer->assign('modifications', $modifications);
-        $mailer->assign('yourself', $yourself);
-        $mailer->assign('hrpid', $hrpid);
-        $mailer->assign('sex', $sex);
-        $mailer->assign('date', $date);
-        $mailer->send();
-        $modifications = array();
-    }
     $pid = $values['pid'];
     $sex = ($values['sex'] == 'female') ? 1 : 0;
     $yourself = $values['yourself'];
     $alias = $values['alias'];
     $hrpid = $values['hrpid'];
+    $modifications = array();
     $modifications[] = array(
         'full_name' => $values['full_name'],
         'field'     => $values['field'],
         'oldText'   => $values['oldText'],
         'newText'   => $values['newText'],
     );
-}
-$mailer = new PlMailer('profile/notification.mail.tpl');
-$mailer->addTo($alias . '@' . $globals->mail->domain);
-$mailer->assign('modifications', $modifications);
-$mailer->assign('yourself', $yourself);
-$mailer->assign('hrpid', $hrpid);
-$mailer->assign('sex', $sex);
-$mailer->assign('date', $date);
-$mailer->send();
 
-XDB::execute('DELETE FROM  profile_modifications');
+    while ($values = $res->next()) {
+        if ($values['pid'] != $pid) {
+            $mailer = new PlMailer('profile/notification.mail.tpl');
+            $mailer->addTo($alias . '@' . $globals->mail->domain);
+            $mailer->assign('modifications', $modifications);
+            $mailer->assign('yourself', $yourself);
+            $mailer->assign('hrpid', $hrpid);
+            $mailer->assign('sex', $sex);
+            $mailer->assign('date', $date);
+            $mailer->send();
+            $modifications = array();
+        }
+        $pid = $values['pid'];
+        $sex = ($values['sex'] == 'female') ? 1 : 0;
+        $yourself = $values['yourself'];
+        $alias = $values['alias'];
+        $hrpid = $values['hrpid'];
+        $modifications[] = array(
+            'full_name' => $values['full_name'],
+            'field'     => $values['field'],
+            'oldText'   => $values['oldText'],
+            'newText'   => $values['newText'],
+        );
+    }
+    $mailer = new PlMailer('profile/notification.mail.tpl');
+    $mailer->addTo($alias . '@' . $globals->mail->domain);
+    $mailer->assign('modifications', $modifications);
+    $mailer->assign('yourself', $yourself);
+    $mailer->assign('hrpid', $hrpid);
+    $mailer->assign('sex', $sex);
+    $mailer->assign('date', $date);
+    $mailer->send();
+
+    XDB::execute('DELETE FROM  profile_modifications
+                        WHERE  type = \'third_party\'');
+}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

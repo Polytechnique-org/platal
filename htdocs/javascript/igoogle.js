@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -30,7 +30,7 @@ function markEventAsRead(event_id)
     _toggle(_gel("mark-read-" + event_id));
     _gel("evt-" + event_id).setAttribute("class", "read");
     _gel("link-" + event_id).setAttribute("href", "events/unread/" + event_id);
-    Ajax.update_html(null, "events/read/" + event_id);
+    $.xget("events/read/" + event_id);
     return false;
 }
 

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -35,7 +35,7 @@ class UserFilterTest extends PlTestCase
     private static function buildAccountQuery()
     {
         $args = func_get_args();
-        $joinsAndWhere = XDB::_prepare($args);
+        $joinsAndWhere = XDB::prepare($args);
         return array('SELECT  DISTINCT a.uid
                         FROM  accounts AS a
                           ' . $joinsAndWhere,
@@ -49,7 +49,7 @@ class UserFilterTest extends PlTestCase
     private static function buildProfileQuery()
     {
         $args = func_get_args();
-        $joinsAndWhere = XDB::_prepare($args);
+        $joinsAndWhere = XDB::prepare($args);
         return array('SELECT  DISTINCT a.uid
                         FROM  accounts AS a
                   INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET(\'owner\', perms))
@@ -424,16 +424,13 @@ class UserFilterTest extends PlTestCase
             // soundex, !exact
             array(self::buildProfileQuery('LEFT JOIN  search_name AS sn ON (p.pid = sn.pid)
                                                WHERE  sn.soundex = \'XLNO\''),
-                new UFC_NameTokens('XLNO', array(), true), -1),
+                new UFC_NameTokens('xelnor', array(), true), -1),
             array(self::buildProfileQuery('LEFT JOIN  search_name AS sn ON (p.pid = sn.pid)
                                                WHERE  sn.soundex IN (\'XLNO\', \'BROS\')'),
-                new UFC_NameTokens(array('XLNO', 'BROS'), array(), true), -1),
-            array(self::buildProfileQuery('LEFT JOIN  search_name AS sn ON (p.pid = sn.pid)
-                                               WHERE  sn.soundex = \'ZZZZZZ\''),
-                new UFC_NameTokens('ZZZZZZ', array(), true), 0),
+                new UFC_NameTokens(array('xelnor', 'barrois'), array(), true), -1),
             array(self::buildProfileQuery('LEFT JOIN  search_name AS sn ON (p.pid = sn.pid)
                                                WHERE  sn.soundex = \'BROS\' AND FIND_IN_SET(\'public\', sn.flags)'),
-                new UFC_NameTokens('BROS', UFC_NameTokens::FLAG_PUBLIC, true), -1),
+                new UFC_NameTokens('barrois', UFC_NameTokens::FLAG_PUBLIC, true), -1),
         );
 
         /* UFC_Nationality

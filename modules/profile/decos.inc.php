@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -38,7 +38,6 @@ class ProfileSettingDeco implements ProfileSetting
             }
 
             // Fetch not yet validated medals
-            require_once 'validations.inc.php';
             $medals = ProfileValidate::get_typed_requests($page->pid(), 'medal');
             foreach ($medals as &$medal) {
                 $value[$medal->mid] = array('grade' => $medal->gid,
@@ -53,8 +52,6 @@ class ProfileSettingDeco implements ProfileSetting
 
     public function save(ProfilePage &$page, $field, $value)
     {
-        require_once 'validations.inc.php';
-
         $orig =& $page->orig[$field];
 
         // Remove old ones
@@ -93,7 +90,7 @@ class ProfileSettingDeco implements ProfileSetting
     }
 }
 
-class ProfileSettingDecos extends ProfilePage
+class ProfilePageDecos extends ProfilePage
 {
     protected $pg_template = 'profile/deco.tpl';
 

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -64,7 +64,7 @@ class ModerationBanana extends Banana
         ModerationBanana::$listname = $params['listname'];
         ModerationBanana::$domain = isset($params['domain']) ? $params['domain'] : $globals->mail->domain;
         $params['group'] = ModerationBanana::$listname . '@' . ModerationBanana::$domain;
-        Banana::$spool_root = $globals->banana->spool_root;
+        Banana::$spool_root = $globals->spoolroot . '/spool/banana/';
         Banana::$spool_boxlist = false;
         Banana::$msgshow_withthread = false;
         Banana::$withtabs      = false;

@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,16 +20,18 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $with_text_value}
+{if t($with_text_value)}
 <div>
 {/if}
-<select name="{$name}"{if $onchange} onchange="{$onchange}"{/if}{if $id} id="{$id}"{/if}>
+<select name="{$name}"{if t($onchange)} onchange="{$onchange}"{/if}{if t($id)} id="{$id}"{/if}>
     <option value=""> - </option>
+  {if $list}
   {iterate from=$list item='option'}
     <option value="{$option.id}">{$option.field|htmlspecialchars}</option>
   {/iterate}
+  {/if}
 </select>
-{if $with_text_value}
+{if t($with_text_value)}
 <input type="hidden" value="" name="{$name}Txt" />
 </div>
 {/if}

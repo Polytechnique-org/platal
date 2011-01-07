@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -79,7 +79,8 @@
     <tr>
       <td class="titre center" colspan="2">
         <label><input type="checkbox" value="1" name="ax" {if $asso->ax}checked="checked"{/if} />
-        groupe agréé par l'AX</label>
+        groupe agréé par l'AX</label> le <input type="text" size="10" maxlength="10" value="{$asso->axDate}" name="axDate" />
+        <small>(ex: 01/01/1970)</small>
       </td>
     </tr>
   </table>
@@ -169,6 +170,16 @@
     </tr>
 
     <tr>
+      <td class="titre">
+        Message de bienvenue&nbsp;:<br />
+        <em>envoyé à l'inscription</em>
+      </td>
+      <td>
+        <textarea cols='40' rows='8' name='welcome_msg'>{$asso->welcome_msg}</textarea>
+      </td>
+    </tr>
+
+    <tr>
       <td class="titre center" colspan="2">
         Diffusion de la liste des membres&nbsp;:
         <select name="pub">
@@ -191,7 +202,6 @@
   </div>
 
   <div class="center">
-    {javascript name=ajax}
     <div id="preview_descr" style="display: none; text-align: justify"></div>
     <br />
     <a href="wiki_help" class="popup3">

@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,14 +20,14 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $ask_naissance}
+{if t($ask_naissance)}
 
 {include file='include/form_naissance.tpl'}
 
 {else}
 
 <h1 id='pagetop'>
-Bienvenue {$smarty.session.user->displayName()}{if $birthday}
+Bienvenue {$smarty.session.user->displayName()}{if t($birthday)}
   &nbsp;et joyeux anniversaire de la part de toute l'équipe&nbsp;!
 {else},
 {/if}
@@ -35,13 +35,13 @@ Bienvenue {$smarty.session.user->displayName()}{if $birthday}
 
 {if $smarty.session.user->host}
 <div class="smaller">
-  {if $birthday}T{else}t{/if}a connexion précédente date du
+  {if t($birthday)}T{else}t{/if}a connexion précédente date du
   <strong>{$smarty.session.user->lastlogin|date_format:"%x, %X"}</strong>
   depuis la machine <strong>{$smarty.session.user->host}</strong>.
 </div>
 {/if}
 
-{if $reminder}
+{if t($reminder)}
 {include file="reminder/base.tpl"}
 {else}
 {include file="include/tips.tpl" full=true}
@@ -118,7 +118,7 @@ Bienvenue {$smarty.session.user->displayName()}{if $birthday}
   	if (link.childNodes[i].nodeName == 'STRONG') {
   		link.replaceChild(link.childNodes[i].firstChild,link.childNodes[i]);
   	}
-  	Ajax.update_html(null, 'events/read/'+id);
+    $.xget('events/read/'+id);
   	return false;
   }
   -->
@@ -149,7 +149,7 @@ Bienvenue {$smarty.session.user->displayName()}{if $birthday}
           {if hasPerm('admin')}
           <a href="admin/events/edit/{$ev.id}">{icon name=page_edit title="Editer cet article"}</a>
           {/if}
-          <a href="events/read/{$ev.id}{if $previd}/newsid{$previd}{/if}" onclick="return readEvent('{$ev.id}')">{icon name=cross title="Cacher cet article"}</a>
+          <a href="events/read/{$ev.id}{if t($previd)}/newsid{$previd}{/if}" onclick="return readEvent('{$ev.id}')">{icon name=cross title="Cacher cet article"}</a>
         </div>
         {assign var="previd" value=$ev.id}
         <a id="newsid{$ev.id}"></a>

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -19,7 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once 'validations.inc.php';
 // {{{ class HomonymeReq
 
 class HomonymeReq extends Validate
@@ -125,7 +124,9 @@ est ambigu pour des raisons d'homonymie et signalera ton email exact.";
         switch_bestalias($this->user, $this->loginbis);
         if (!$this->warning) {
             XDB::execute("UPDATE aliases SET type = 'homonyme', expire = NOW() WHERE alias = {?}", $this->loginbis);
-            XDB::execute("REPLACE INTO homonyms (homonyme_id, uid) VALUES({?}, {?})", $this->user->id(), $this->user->id());
+            XDB::execute('INSERT IGNORE INTO  homonyms (homonyme_id, uid)
+                                      VALUES  ({?}, {?})',
+                         $this->user->id(), $this->user->id());
         }
 
         return true;

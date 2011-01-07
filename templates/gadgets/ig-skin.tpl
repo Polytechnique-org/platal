@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -26,7 +26,6 @@
     <link rel="stylesheet" type="text/css" href="css/igoogle.css" media="all"/>
     <script type="text/javascript">var platal_baseurl = "{$globals->baseurl}/";</script>
     {javascript name=jquery}
-    {javascript name=ajax}
     {javascript name=xorg}
     {javascript name=igoogle}
   </head>

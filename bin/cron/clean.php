@@ -1,7 +1,7 @@
 #!/usr/bin/php5 -q
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -47,14 +47,8 @@ query('ALTER TABLE  profile_education_field_enum
           ORDER BY  field');
 query('ALTER TABLE  profile_job_enum
           ORDER BY  name');
-query('ALTER TABLE  profile_job_sector_enum
-          ORDER BY  name');
-query('ALTER TABLE  profile_job_subsector_enum
-          ORDER BY  name');
-query('ALTER TABLE  profile_job_subsubsector_enum
-          ORDER BY  name');
 query('ALTER TABLE  profile_langskill_enum
-          ORDER BY  langue_fr');
+          ORDER BY  language');
 query('ALTER TABLE  profile_medal_enum
           ORDER BY  text');
 query('ALTER TABLE  profile_networking_enum
@@ -67,6 +61,10 @@ query('ALTER TABLE  profile_skill_enum
 // Prunes older autocomplete queries.
 query('DELETE FROM  search_autocomplete
              WHERE  generated < DATE_SUB(NOW(), INTERVAL 1 DAY)');
+
+// XXX: cleans profile_merge_issues (to be removed once all merge related issues have been fixed)
+query('DELETE FROM  profile_merge_issues
+             WHERE  issues IS NULL OR issues = \'\'');
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -30,13 +30,14 @@ function checkId(&$subState)
 
     $uf = new UserFilter(new PFC_And(
             new UFC_SchoolId('xorg', $subState->i('xorgid')),
-            new PFC_Not(new UFC_Dead())
+            new PFC_Not(new UFC_Dead()),
+            new PFC_Not(new UFC_Registered(true))
     ));
     $profile = $uf->getProfile();
-
-    if ($profile->__get('state') == 'active') {
+    if (is_null($profile)) {
         return "Tu es déjà inscrit ou ton matricule est incorrect !";
     }
+
     if ($profile->promo() != $subState->s('promo')) {
         return 'Le matricule est incorrect.';
     }
@@ -131,15 +132,24 @@ function createAliases(&$subState)
     $emailXorg  = PlUser::makeUserName($subState->t('firstname'), $subState->t('lastname'));
     $emailXorg2 = $emailXorg . sprintf(".%02u", ($subState->i('yearpromo') % 100));
 
-    $res = XDB::query("SELECT  hruid
+    $res = XDB::query("SELECT  hruid, state
                          FROM  accounts
-                        WHERE  uid = {?} AND hruid != ''", $subState->i('uid'));
+                        WHERE  uid = {?} AND hruid != ''",
+                      $subState->i('uid'));
     if ($res->numRows() == 0) {
         return "Tu n'as pas d'adresse à vie pré-attribuée.<br />"
-            . "Envoie un mail à <a href=\"mailto:support@{$globals->mail->domain}</a>\">"
+            . "Envoie un mail à <a href=\"mailto:support@{$globals->mail->domain}\">"
             . "support@{$globals->mail->domain}</a> en expliquant ta situation.";
     } else {
-        $forlife = $res->fetchOneCell();
+        list($forlife, $state) = $res->fetchOneRow();
+    }
+    if ($state == 'active') {
+        return "Tu es déjà inscrit, si tu ne te souviens plus de ton mot de passe d'accès au site, "
+             . "tu peux suivre <a href=\"recovery\">la procédure de récupération de mot de passe</a>.";
+    } else if ($state == 'disabled') {
+        return "Ton compte a été désactivé par les administrateurs du site suite à des abus. "
+             . "Pour plus d'information ou pour demander la réactivation du compte, tu peux t'adresser à "
+             . "<a href=\"mailto:support@{$globals->mail->domain}\">support@{$globals->mail->domain}</a>.";
     }
 
     $res = XDB::query('SELECT  uid, type, expire
@@ -151,10 +161,9 @@ function createAliases(&$subState)
             XDB::execute('UPDATE  aliases
                              SET  expire = ADDDATE(NOW(), INTERVAL 1 MONTH)
                            WHERE  alias = {?}', $emailXorg);
-            XDB::execute('REPLACE INTO  homonyms (homonyme_id, uid)
-                                VALUES  ({?}, {?})', $subState->i('uid'), $h_id);
-            XDB::execute('REPLACE INTO  homonyms (homonyme_id, uid)
-                                VALUES  ({?}, {?})', $h_id, $subState->i('uid'));
+            XDB::execute('INSERT IGNORE INTO  homonyms (homonyme_id, uid)
+                                      VALUES  ({?}, {?}), ({?}, {?})',
+                         $subState->i('uid'), $h_id, $h_id, $subState->i('uid'));
             $res = XDB::query('SELECT  alias
                                  FROM  aliases
                                 WHERE  uid = {?} AND expire IS NULL', $h_id);
@@ -189,9 +198,9 @@ function finishRegistration($subState)
     global $globals;
 
     $hash = rand_url_id(12);
-    XDB::execute('REPLACE INTO  register_pending (uid, forlife, bestalias, mailorg2, password,
-                                                  email, date, relance, naissance, hash, services)
-                        VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, NOW(), 0, {?}, {?}, {?})',
+    XDB::execute('INSERT IGNORE INTO  register_pending (uid, forlife, bestalias, mailorg2, password,
+                                                        email, date, relance, naissance, hash, services)
+                              VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, NOW(), 0, {?}, {?}, {?})',
                  $subState->i('uid'), $subState->s('forlife'), $subState->s('bestalias'),
                  $subState->s('emailXorg2'), $subState->s('password'), $subState->s('email'),
                  $subState->s('birthdate'), $hash, implode(',', $subState->v('services')));

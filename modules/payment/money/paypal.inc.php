@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -44,47 +44,48 @@ class PayPal
 
         $this->urlform = 'https://' . $globals->money->paypal_site . '/cgi-bin/webscr';
         $user = S::user();
-        $name = $user->lastName();
 
         $roboturl = str_replace("https://","http://",$globals->baseurl)
                   . '/' . $platal->ns . "payment/paypal_return/" . S::v('uid')
                   . "?comment=" . urlencode(Env::v('comment'));
 
-        $this->infos = array();
-
-        $this->infos['commercant'] = array(
-            'business'    => $globals->money->paypal_compte,
-            'rm'          => 2,
-            'return'      => $roboturl,
-            'cn'          => 'Commentaires',
-            'no_shipping' => 1,
-            'cbt'         => empty($GLOBALS['IS_XNET_SITE']) ?
-            'Revenir sur polytechnique.org.' :
-            'Revenir sur polytechnique.net.'
+        $this->infos = array(
+            'commercant' => array(
+                'business'    => $globals->money->paypal_compte,
+                'rm'          => 2,
+                'return'      => $roboturl,
+                'cn'          => 'Commentaires',
+                'no_shipping' => 1,
+                'cbt'         => empty($GLOBALS['IS_XNET_SITE']) ?  'Revenir sur polytechnique.org.' : 'Revenir sur polytechnique.net.'
+            )
         );
 
         $info_client = array(
-            'first_name' => S::v('prenom'),
-            'last_name'  => $name,
-            'email'      => S::user()->bestEmail()
+            'first_name' => $user->firstName(),
+            'last_name'  => $user->lastName(),
+            'email'      => $user->bestEmail()
         );
 
-        $res = XDB::query("SELECT  pa.text, gl.name AS city, pa.postalCode AS zip, pa.countryId AS country,
-                                   IF(pp1.display_tel != '', pp1.display_tel, pp2.display_tel) AS night_phone_b
-                             FROM  profile_addresses AS pa
-                        LEFT JOIN  profile_phones    AS pp1 ON (pp1.pid = pa.pid AND pp1.link_type = 'address'
-                                                                AND pp1.link_id = pa.adrid)
-                        LEFT JOIN  profile_phones    AS pp2 ON (pp2.pid = pa.pid AND pp2.link_type = 'user'
-                                                                AND pp2.link_id = 0)
-                        LEFT JOIN  geoloc_localities AS gl  ON (gl.id = pa.localityId)
-                            WHERE  pa.pid = {?} AND FIND_IN_SET('current', pa.flags)
-                            LIMIT  1",
-                          S::i('pid'));
-        $this->infos['client'] = array_map('replace_accent', array_merge($info_client, $res->fetchOneAssoc()));
-        list($this->infos['client']['address1'], $this->infos['client']['address2']) =
-            explode("\n", Geocoder::getFirstLines($this->infos['client']['text'],
-                                                  $this->infos['client']['zip'], 2));
-        unset($this->infos['client']['text']);
+        if ($user->hasProfile() {
+            $res = XDB::query("SELECT  pa.text, gl.name AS city, pa.postalCode AS zip, pa.countryId AS country,
+                                       IF(pp1.display_tel != '', pp1.display_tel, pp2.display_tel) AS night_phone_b
+                                 FROM  profile_addresses AS pa
+                            LEFT JOIN  profile_phones    AS pp1 ON (pp1.pid = pa.pid AND pp1.link_type = 'address'
+                                                                    AND pp1.link_id = pa.id)
+                            LEFT JOIN  profile_phones    AS pp2 ON (pp2.pid = pa.pid AND pp2.link_type = 'user'
+                                                                    AND pp2.link_id = 0)
+                            LEFT JOIN  geoloc_localities AS gl  ON (gl.id = pa.localityId)
+                                WHERE  pa.pid = {?} AND FIND_IN_SET('current', pa.flags)
+                                LIMIT  1",
+                              $user->profile()->id());
+            $this->infos['client'] = array_map('replace_accent', array_merge($info_client, $res->fetchOneAssoc()));
+            list($this->infos['client']['address1'], $this->infos['client']['address2']) =
+                explode("\n", Geocoder::getFirstLines($this->infos['client']['text'],
+                                                      $this->infos['client']['zip'], 2));
+            unset($this->infos['client']['text']);
+        } else {
+            $this->infos['client'] = replace_accent($info_client);
+        }
 
         // We build the transaction's reference
         $prefix = ($pay->flags->hasflag('unique')) ? str_pad("", 15, "0") : rand_url_id();

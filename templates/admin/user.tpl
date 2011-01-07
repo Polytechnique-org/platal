@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -21,16 +21,34 @@
 {**************************************************************************}
 
 
-{if $smarty.post.u_kill_conf}
-<form method="post" action="admin/user">
+{if t($smarty.post.delete_account)}
+<form method="post" action="admin/user/{$user->login()}">
   {xsrf_token_field}
-  <div class="center">
-    <input type="hidden" name="uid" value="{$smarty.request.uid}" />
-    Confirmer la suppression de l'utilisateur {$smarty.request.uid} ({$user->fullName()})&nbsp;&nbsp;
-    <input type="submit" name="u_kill" value="continuer" />
-  </div>
+  <fieldset>
+    <legend>Confirmer la suppression de l'utilisateur {$user->hruid}</legend>
+
+    {if $user->hasProfile()}
+    <p>
+      <input type="checkbox" name="clear_profile" /> Vider la fiche de
+      l'utilisateur.
+    </p>
+    {else}
+    <p>
+      <input type="checkbox" name="erase_account" {if $user->state eq 'pending'}checked="checked"{/if} /> Supprimer le compte définitivement.
+    </p>
+    {/if}
+    <p>
+      <input type="hidden" name="uid" value="{$user->uid}" />
+      <input type="submit" name="account_deletion_cancel" value="Annuler" />
+      <input type="submit" name="account_deletion_confirmation" value="Confirmer" />
+    </p>
+  </fieldset>
 </form>
-{elseif $user}
+{elseif t($smarty.post.erase_account)}
+<p>
+  <a href="admin/accounts">Retourner à la gestion des comptes</a>
+</p>
+{else}
 {literal}
 
 <script type="text/javascript">
@@ -76,7 +94,7 @@ function ban_read()
 }
 
 $(document).ready(function() {
-  $('#tabs > ul').tabs();
+  $('#tabs').tabs();
   $('.ui-tabs-nav li').width('24%')
     .click(function() { $(this).children('a').click() });
 });
@@ -87,10 +105,10 @@ $(document).ready(function() {
 
 <div id="tabs">
   <ul style="margin-top: 0">
-    <li><a href="{$platal->pl_self()}#account"><span >Compte de {$user->login()}</span></a></li>
-    <li><a href="{$platal->pl_self()}#emails"><span>Emails</span></a></li>
-    <li><a href="{$platal->pl_self()}#authext"><span>OpenID</span></a></li>
-    <li><a href="{$platal->pl_self()}#forums"><span>Forums</span></a></li>
+    <li><a href="#account"><span>Compte de {$user->login()}</span></a></li>
+    <li><a href="#emails"><span>Emails</span></a></li>
+    <li><a href="#authext"><span>OpenID</span></a></li>
+    <li><a href="#forums"><span>Forums</span></a></li>
   </ul>
 </div>
 
@@ -120,11 +138,15 @@ $(document).ready(function() {
       </th>
     </tr>
     <tr>
-      <td class="titre">Nom complet</td>
+      <td class="titre">Nom complet<br />
+        <span class="smaller">Prénom NOM</span>
+      </br></td>
       <td>{if $hasProfile}{$user->fullName()}{else}<input type="text" name="full_name" maxlength="255" value="{$user->fullName()}" />{/if}</td>
     </tr>
     <tr>
-      <td class="titre">Nom annuaire</td>
+      <td class="titre">Nom annuaire<br />
+        <span class="smaller">NOM Prénom</span>
+      </td>
       <td>{if $hasProfile}{$user->directoryName()}{else}<input type="text" name="directory_name" maxlength="255" value="{$user->directoryName()}" />{/if}</td>
     </tr>
     <tr>
@@ -137,6 +159,10 @@ $(document).ready(function() {
         <label>femme <input type="radio" name="sex" value="female" {if $user->isFemale()}checked="checked"{/if} /></label>
         <label><input type="radio" name="sex" value="male" {if !$user->isFemale()}checked="checked"{/if} /> homme</label>
       </td>
+    </tr>
+    <tr>
+      <td class="titre">Email</td>
+      <td>{if $user->checkPerms('mail')}{$user->forlifeEmail()}{else}<input type="text" name="email" size="40" maxlength="255" value="{$user->forlifeEmail()}" />{/if}</td>
     </tr>
     <tr class="impair">
       <td class="titre">Mot de passe</td>
@@ -230,6 +256,11 @@ $(document).ready(function() {
         <input type="submit" name="update_account" value="Mettre à jour" onclick="return hashResponse('new_plain_password', false, false);" />
         <input type="submit" name="su_account" value="Prendre l'identité" />
         <input type="submit" name="log_account" value="Consulter les logs" />
+        {if $user->state neq 'pending'}
+        <input type="submit" name="delete_account" value="Désinscrire" />
+        {elseif !$user->hasProfile()}
+        <input type="submit" name="delete_account" value="Supprimer le compte" />
+        {/if}
       </td>
     </tr>
   </table>
@@ -257,6 +288,7 @@ $(document).ready(function() {
       </td>
     </tr>
     {/iterate}
+    {if $profiles->total() > 0}
     <tr>
       <td>
         <input type="radio" name="owner" value="0" onclick="this.form.submit()" />
@@ -264,6 +296,7 @@ $(document).ready(function() {
       <td>None</td>
       <td></td>
     </tr>
+    {/if}
     <tr class="pair">
       <td colspan="3">
         <input type="hidden" name="del_profile" value="" />
@@ -273,6 +306,26 @@ $(document).ready(function() {
     </tr>
   </table>
 </form>
+
+<h1>Groupes dont l'utilisateur est membre</h1>
+
+<table class="bicol">
+  <tr>
+    <th>Nom du groupe</th>
+    <th>Permissions</th>
+  </tr>
+  {foreach from=$user->groups() item=group}
+  <tr class="impair">
+    <td>{$group.nom}</td>
+    <td style="text-align: right">
+      {$group.perms}
+      <a href="http://www.polytechnique.net/{$group.diminutif}/member/{$user->hruid}">
+      {icon name="user_edit" title="Modifier l'inscription"}
+      </a>
+    </td>
+  </tr>
+  {/foreach}
+</table>
 
 </div>
 
@@ -411,11 +464,32 @@ $(document).ready(function() {
   </table>
 </form>
 
-{javascript name="ajax"}
 {test_email hruid=$user->login()}
 
 <h1>Autres adresses de l'utilisateur</h1>
 
+<table class="bicol">
+  <tr>
+    <th colspan="3">Mailing lists auquelles l'utilisateur appartient</th>
+  </tr>
+  {foreach from=$mlists item=mlist}
+  <tr>
+    <td>
+      <a href="http://listes.polytechnique.org/members/{$mlist.addr|replace:"@":"_"}">
+      {$mlist.addr}
+      </a>
+    </td>
+    <td>
+      <input type="checkbox" disabled="disabled" {if $mlist.sub}checked="checked"{/if} /> Membre
+    </td>
+    <td>
+      <input type="checkbox" disabled="disabled" {if $mlist.own}checked="checked"{/if} /> Modérateur
+    </td>
+  </tr>
+  {/foreach}
+</table>
+
+<br />
 <table class="bicol">
   <tr>
     <th>Virtual aliases auquel l'utilisateur appartient</th>
@@ -498,45 +572,6 @@ $(document).ready(function() {
   </table>
 </form>
 </div>
-
-{else}
-
-{literal}
-<script type="text/javascript">
-/* <![CDATA[ */
-  function add_user_to_url(f) {
-    f.action += '/' + f.login.value;
-  }
-/* ]]> */
-</script>
-{/literal}
-<form method="post" action="admin/user" onsubmit="add_user_to_url(this); return true">
-  {xsrf_token_field}
-  <table class="tinybicol" cellspacing="0" cellpadding="2">
-    <tr>
-      <th>
-        Administrer
-      </th>
-    </tr>
-    <tr class="pair">
-      <td class="center">
-        Il est possible d'entrer ici n'importe quelle adresse mail&nbsp;: redirection, melix, ou alias.
-      </td>
-    </tr>
-    <tr>
-      <td class="center">
-        <input type="text" name="login" size="40" maxlength="255" value="{$smarty.request.login|default:$user->hruid}" />
-      </td>
-    </tr>
-    <tr>
-      <td class="center">
-        <input type="submit" name="select" value=" edit " /> &nbsp;&nbsp;
-        <input type="submit" name="su_account" value=" su " />  &nbsp;&nbsp;
-        <input type="submit" name="log_account" value=" logs " />
-      </td>
-    </tr>
-  </table>
-</form>
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

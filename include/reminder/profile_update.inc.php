@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -30,7 +30,7 @@ class ReminderProfileUpdate extends Reminder
 
           case 'profile':
             $this->UpdateOnDismiss();
-            pl_redirect('profile/edit');
+            pl_redirect('profile/edit/' . $this->user->profile()->hrpid);
             break;
 
           case 'photo':
@@ -40,7 +40,19 @@ class ReminderProfileUpdate extends Reminder
 
           case 'geoloc':
             $this->UpdateOnDismiss();
-            pl_redirect('profile/edit/adresses');
+            pl_redirect('profile/edit/' . $this->user->profile()->hrpid . '/adresses');
+            break;
+
+          case 'merge':
+            $this->UpdateOnDismiss();
+            $flags = self::ListMergeIssues($this->user->profile());
+            if ($flags->hasFlag('job')) {
+                pl_redirect('profile/edit/' . $this->user->profile()->hrpid . '/emploi');
+            } else if ($flags->hasFlag('address')) {
+                pl_redirect('profile/edit/' . $this->user->profile()->hrpid . '/adresses');
+            } else {
+                pl_redirect('profile/edit/' . $this->user->profile()->hrpid);
+            }
             break;
         }
     }
@@ -50,15 +62,11 @@ class ReminderProfileUpdate extends Reminder
         parent::Prepare($page);
         $profile = $this->user->profile();
 
+        $page->assign('profile_merge', self::ListMergeIssues($profile));
         $page->assign('profile_incitation', $profile->is_old);
         $page->assign('profile_last_update', $profile->last_change);
         $page->assign('photo_incitation', !$profile->has_photo);
-
-        $res = XDB::query('SELECT  COUNT(*)
-                             FROM  profile_addresses
-                            WHERE  pid = {?} AND accuracy = 0',
-                          $profile->id());
-        $page->assign('geocoding_incitation', $res->fetchOneCell());
+        $page->assign('geocoding_incitation', Geocoder::countNonGeocoded($profile->id()));
     }
 
     public function template()
@@ -74,13 +82,28 @@ class ReminderProfileUpdate extends Reminder
         return true;
     }
 
+    private static function ListMergeIssues(Profile $profile)
+    {
+        if (Platal::globals()->merge->state != 'done') {
+            return null;
+        }
+        $flags = XDB::fetchOneCell('SELECT  issues
+                                      FROM  profile_merge_issues
+                                     WHERE  pid = {?}', $profile->id());
+        if (!$flags) {
+            return null;
+        }
+        return new PlFlagSet($flags);
+    }
+
     public static function IsCandidate(User &$user, $candidate)
     {
         $profile = $user->profile();
         if (!$profile) {
             return false;
         }
-        return !$profile->has_photo || $profile->is_old;
+        return !$profile->has_photo || $profile->is_old
+            || !is_null(self::ListMergeIssues($profile));
     }
 }
 

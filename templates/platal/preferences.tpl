@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -24,104 +24,94 @@
   Préférences
 </h1>
 
-<table class="bicol" summary="Préférences: services" cellpadding="0" cellspacing="0">
-  <tr>
-    <th colspan="2">
-    Configuration des différents services du site
-    </th>
-  </tr>
-  <tr class="impair">
-    <td class="half">
-      <h3><a href="emails">Mes adresses de redirection</a></h3>
-      <div class='explication'>
-        Tu peux configurer tes différentes redirections d'emails ici.
-      </div>
-    </td>
-    <td class="half">
-      <h3><a href="emails/alias">Mon alias mail @{#globals.mail.alias_dom#}</a></h3>
-      <div class='explication'>
-        Pour choisir un alias @{#globals.mail.alias_dom#}/{#globals.mail.alias_dom2#} (en choisir un nouveau annule l'ancien).
-      </div>
-    </td>
-  </tr>
-  <tr class="pair">
-    <td class="half">
-      <h3><a href="prefs/webredirect">Ma redirection de page WEB</a></h3>
-      <div class='explication'>
-        Tu peux configurer tes redirections WEB
-        http://www.carva.org/{$bestalias}.
-      </div>
-    </td>
-    <td class="half">
-      <h3><a href="prefs/skin">Apparence du site (skins)</a></h3>
-      <div class='explication'>
-        Tu peux changer les couleurs et les images du site.
-      </div>
-    </td>
-  </tr>
-  <tr class="impair">
-    <td class="half">
-      {if $smarty.session.user->email_format eq 'html'}
-      <h3>
-        <a href="javascript:dynpostkv('prefs','email_format','text')">Recevoir les emails en format texte</a>
-      </h3>
-      <div class='explication'>
-        Tu recois tous les emails envoyés par le site
-        (lettre mensuelle, carnet&hellip;) de préférence
-        <strong>sous forme de html</strong>
-      </div>
-      {else}
-      <h3>
-        <a href="javascript:dynpostkv('prefs','email_format','html')">Recevoir les emails en HTML</a>
-      </h3>
-      <div class='explication'>
-        Tu recois tous les emails envoyés par le site
-        (lettre mensuelle, carnet&hellip;) de préférence
-        <strong>sous forme de texte</strong>
-      </div>
-      {/if}
-    </td>
-    <td class="half">
-      <h3>
-        {if $smarty.session.user->token}
-        <a href="javascript:dynpostkv('prefs','rss',0)">Désactiver les fils rss</a>
-        {else}
-        <a href="javascript:dynpostkv('prefs','rss',1)">Activer les fils rss</a>
-        {/if}
-      </h3>
-      <div class='explication'>
-        Ceci te permet d'utiliser les fils rss du site.
-        Attention, désactiver puis réactiver les fils en change les URL&nbsp;!
-      </div>
-    </td>
-  </tr>
-</table>
+<script type="text/javascript">
+{literal}
+/* <![CDATA[ */
+$(document).ready(function() {
+  $("form input:radio").change(function() {
+    $("#form").submit();
+  });
+}
+);
+/* ]]> */
+{/literal}
+</script>
 
-<br />
+<fieldset>
+  <legend>{icon name="wrench"} Paramètres du site</legend>
 
-<table class="bicol" summary="Préférences: mdp" cellpadding="3">
-  <tr>
-    <th>Mots de passe et accès au site</th>
-  </tr>
-  <tr class="impair">
-    <td>
-      <h3><a href="password">Changer mon mot de passe pour le site</a></h3>
-      <div class='explication'>
-        permet de changer ton mot de passe pour accéder au site {#globals.core.sitename#}
-      </div>
-    </td>
-  </tr>
-  <tr class="pair">
-    <td>
-      <h3><a href="password/smtp">Gérer l'accès SMTP et NNTP</a></h3>
-      <div class='explication'>
-        Pour activer ton compte sur le serveur SMTP et NNTP de {#globals.core.sitename#},
-        ou changer le mot de passe correspondant si tu as déjà activé l'accès.
-        Cela te permet d'envoyer tes emails plus souplement (SMTP), et de consulter
-        les forums directement depuis ton logiciel habituel de courrier électronique.
-      </div>
-    </td>
-  </tr>
-</table>
+  <form action="prefs" method="post" id="form">
+  {xsrf_token_field}
+  <p>
+    <dt>Apparence du site</dt>
+    <dd>
+      Tu peux changer l'apparence du site en choisissant une autre skin.<br />
+      <a href="prefs/skin">Changer de skin</a>
+    </dd>
+  </p>
+  <p>
+    <dt>Format des emails envoyés par le site</dt>
+    <dd>
+      Lorsque le site t'envoie des emails (lettre mensuelle, carnet, ...) ceux-ci peuvent
+      être soit sous forme de texte brut, soit formattés à l'aide de html.<br />
+      texte brut <input type="radio" name="email_format" value="text" {if $smarty.session.user->email_format neq 'html'}checked="checked"{/if} />
+      <input type="radio" name="email_format" value="html" {if $smarty.session.user->email_format eq 'html'}checked="checked"{/if} /> HTML
+    </dd>
+  </p>
+  <p>
+    <dt>Fils RSS</dt>
+    <dd>
+      Le site de propose plusieurs fils RSS qui te permettent d'être averti lors, par exemple, de la publication
+      de nouvelles annonces, de l'anniversaires de tes contacts ou dès qu'il y a de l'activité sur le forum
+      de ta promotion.<br />
+      Attention, désactiver puis réactiver les fils RSS en change les URL&nbsp;!<br />
+      désactivés <input type="radio" name="rss" value="off" {if !$smarty.session.user->token}checked="checked"{/if} />
+      <input type="radio" name="rss" value="on" {if $smarty.session.user->token}checked="checked"{/if} /> activés
+    </dd>
+  </p>
+  <p>
+    <dt>Mot de passe</dt>
+    <dd>
+      Tu peux changer ton mot de passe d'accès au site quand tu le souhaites.<br />
+      <a href="password">Changer de mot de passe</a>
+    </dd>
+  </p>
+  </form>
+</fieldset>
+
+{if $smarty.session.user->checkPerms('mail')}
+<fieldset>
+  <legend>{icon name="email"} Paramètres du service de Polytechnique.org</legend>
+
+  <p>
+    <dt>Tes adresses de redirection</dt>
+    <dd>
+      Tu peux à tout moment changer les boîtes mails vers lesquelles les mails adressés
+      à tes adresses polytechniciennes sont redirigés.<br />
+      <a href="emails">Gérer tes redirections mail</a>
+    </dd>
+  </p>
+
+  <p>
+    <dt>Ton accès SMTP et NNTP</dt>
+    <dd>
+      Polytechnique.org te permet d'envoyer des emails et de consulter les forums
+      directement depuis ton logiciel habituel de courrier électronique. Pour ceci il
+      te faut configurer ton mot de passe SMTP et NNTP.<br />
+      <a href="password/smtp">Gérer ton accès au SMTP et NNTP sécurisé</a>
+    </dd>
+  </p>
+
+  <p>
+    <dt>Ta redirection Web</dt>
+    <dd>
+      Polytechnique.org te propose, en plus de ta redirection mail, un service de
+      redirection web. Ce service te permet de rediriger l'adresse
+      http://www.carva.org/{$smarty.session.user->hruid} vers la page de ton choix.<br />
+      <a href="prefs/webredirect">Gérer ta redirection Web</a>
+    </dd>
+  </p>
+</fieldset>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

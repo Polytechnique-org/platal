@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -38,7 +38,7 @@ Tu peux voir ta fiche là :
 Tu peux aussi l'éditer toi-même là :
 *{$globals->baseurl}/profile/edit/{$hrpid}
 
-{include file="signature.mail.tpl"}
+{include file="include/signature.mail.tpl"}
 
 {/if}
 

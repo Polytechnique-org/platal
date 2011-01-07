@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -38,7 +38,6 @@ function display_address_isIdentity($idt, $value, $test_reverse = true)
 
 function smarty_function_display_address($param, &$smarty)
 {
-    require_once('geocoding.inc.php');
     $adr = $param['adr'];
     $txtad = $adr->text;
     if (!$txtad) {

@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -29,8 +29,8 @@ function xStateChange(box)
     document.getElementById('xprenom').style.display = state;
     document.getElementById('xpromo').style.display = state;
     document.getElementById('xsearch').style.display = state;
-    Ajax.update_html('search_result',
-      '{/literal}{$platal->ns}{literal}member/new/ajax?login=' + document.getElementById('email').value);
+    $('#search_result').updateHtml('{/literal}{$platal->ns}{literal}member/new/ajax?login='
+                                  + $('#email').val());
 }
 
 var nom;
@@ -46,8 +46,7 @@ function searchX()
     var nom = document.getElementById('nom').value;
     var prenom = document.getElementById('prenom').value;
     var promo = document.getElementById('promo').value;
-    Ajax.update_html('search_result',
-      '{/literal}{$platal->ns}{literal}member/new/ajax?prenom=' + prenom + '&nom=' + nom + '&promo=' + promo);
+    $('#search_result').updateHtml('{/literal}{$platal->ns}{literal}member/new/ajax?prenom=' + prenom + '&nom=' + nom + '&promo=' + promo);
 }
 {/literal}
 //]]></script>

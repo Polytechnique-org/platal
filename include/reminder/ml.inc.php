@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -39,7 +39,7 @@ class ReminderMl extends Reminder
                     if ($domain != $current_domain) {
                         $current_domain = $domain;
                     }
-                    $client = new MMList(S::v('uid'), S::v('password'), $domain);
+                    $client = new MMList(S::user(), $domain);
                     $client->subscribe($sub);
                 }
             }
@@ -72,7 +72,7 @@ class ReminderMl extends Reminder
         while (list($sub, $domain) = $res->next()) {
             if ($current_domain != $domain) {
                 $current_domain = $domain;
-                $client = new MMList(S::v('uid'), S::v('password'), $domain);
+                $client = new MMList(S::user(), $domain);
             }
             list($details, ) = $client->get_members($sub);
             $lists["$sub@$domain"] = $details;

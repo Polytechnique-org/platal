@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,6 +20,8 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{javascript name=jquery.jstree}
+{javascript name=jobtermstree}
 {foreach from=$jobs item=job key=i}
 {include file="profile/jobs.job.tpl" i=$i job=$job new=false}
 {/foreach}
@@ -46,11 +48,18 @@
   <tr>
     <td class="titre">Corps d'origine</td>
     <td>
+    {if $isMe}
+      {$corps.originalText}
+      <input type="hidden" name="corps[original]" value="{$corps.original}" />
+      <input type="hidden" name="corps[originalText]" value="{$corps.originalText}" />
+    {else}
       <select name="corps[original]">
         {foreach from=$original_corps item=o_corps}
         <option value="{$o_corps.id}" {if $o_corps.id eq $corps.original}selected="selected"{/if}>{$o_corps.name}</option>
         {/foreach}
       </select>
+      <input type="hidden" name="corps[originalText]" value="{$corps.originalText}" />
+    {/if}
     </td>
   </tr>
   <tr>
@@ -75,6 +84,7 @@
   </tr>
 </table>
 
+{if $smarty.session.user->checkPerms('directory_private')}
 <table class="bicol" summary="CV" style="margin-top: 1.5em">
   <tr>
     <th>
@@ -108,5 +118,6 @@
     </td>
   </tr>
 </table>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

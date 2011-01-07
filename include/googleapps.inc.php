@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -193,7 +193,6 @@ class GoogleAppsAccount
     // validation queue.
     private function load_pending_validations()
     {
-        require_once('validations.inc.php');
         $this->pending_validation_unsuspend =
             Validate::get_typed_requests_count($this->user->id(), 'gapps-unsuspend');
     }
@@ -341,7 +340,6 @@ class GoogleAppsAccount
         }
 
         if (!$this->pending_update_suspension && !$this->pending_validation_unsuspend) {
-            require_once('validations.inc.php');
             $unsuspend = new GoogleAppsUnsuspendReq($this->user);
             $unsuspend->submit();
             $this->pending_validation_unsuspend = true;

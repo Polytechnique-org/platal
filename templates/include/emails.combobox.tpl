@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -22,7 +22,7 @@
 
 {assign var=new value="new"|cat:$i}
 {assign var=combobox value="combobox"|cat:$i}
-<tr {if $class}class="{$class}"{/if}>
+<tr{if $class} class="{$class}"{/if}{if t($divId)} id="{$divId}"{/if}>
   <td class="titre">
   {if $name eq "email_directory"}
     Email&nbsp;annuaire&nbsp;AX
@@ -78,8 +78,8 @@
       </optgroup>
       {/if}
       <optgroup label="Autres choix">
-        <option value="new@example.org" {if ((($val eq '') && (!$error) && ($name eq "email")) || $error)}selected="selected"{/if}>Nouvelle adresse email</option>
-        <option value="" {if (($val eq '') && (!$error) && ($name neq "email"))}selected="selected"{/if}>{if $name neq "email"}Ne pas mettre d'adresse email{else}&nbsp;{/if}</option>
+        <option value="new@example.org" {if ($val eq '' && !$error && $name eq 'email') || $error}selected="selected"{/if}>Nouvelle adresse email</option>
+        <option value="" {if $val eq '' && !$error && $name neq 'email'}selected="selected"{/if}>{if $name neq "email"}Ne pas mettre d'adresse email{else}&nbsp;{/if}</option>
       </optgroup>
     </select>
     {if $name neq "email"}
@@ -89,7 +89,12 @@
       <input type="checkbox" disabled="disabled" checked="checked"/>
       {icon name="flag_orange" title="Visible sur l'annuaire"}
     {elseif $name neq "email"}
+    {if t($mainField)}
+    {include file="include/flags.radio.tpl" name="`$jobpref`[`$prefix`email_pub]" val=$pub
+             mainField=$mainField mainId=$mainId subField=$subField subId=$subId}
+    {else}
     {include file="include/flags.radio.tpl" name="`$jobpref`[`$prefix`email_pub]" val=$pub}
+    {/if}
     {/if}
     </div>
     {/if}
@@ -101,7 +106,7 @@
   {if $name eq "email"}<td></td>{/if}
   <td>
     <span class="{$new}" style="display: none">
-      <input type="text" maxlength="60" {if $error}class="error" value="{$val}"{/if} name="{if (($name neq "email_directory")
+      <input type="text" maxlength="255" {if $error}class="error" value="{$val}"{/if} name="{if (($name neq "email_directory")
       && ($name neq "email"))}jobs[{$i}][{$prefix}email_new]{else}{$name}_new{/if}"/>
     </span>
     <script type="text/javascript">//<![CDATA[

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -217,9 +217,6 @@ class XnetListsModule extends ListsModule
         list(,$members) = $this->client->get_members($liste);
         $mails = array_map(create_function('$arr', 'return $arr[1];'), $members);
         $subscribers = array_unique($mails);
-
-        $not_in_group_x = array();
-        $not_in_group_ext = array();
 
         $ann = XDB::fetchColumn('SELECT  uid
                                    FROM  group_members

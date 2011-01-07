@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -44,7 +44,7 @@ Tu trouveras sur le site divers outils pour gérer ton adresse email :
 N'hésite pas à venir découvrir ou redécouvrir les services du site grâce au [[https://www.polytechnique.org/review|tour d'horizon]].
 
 Merci encore de la confiance que tu portes à nos services.
-{include file="signature.mail.tpl"}
+{include file="include/signature.mail.tpl"}
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

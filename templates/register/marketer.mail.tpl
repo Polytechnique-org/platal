@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -26,9 +26,9 @@
 {elseif $mail_part eq 'text'}
 {if $sender->isFemale()}Chère{else}Cher{/if} {$sender->firstName()},
 
-Nous t'écrivons pour t'informer que {$firstname} {$lastname} ({$promo}), que tu avais incité{if $sex eq PlUser::GENDER_FEMALE}e{/if} à s'inscrire à Polytechnique.org, vient à l'instant de terminer son inscription.
+Nous t'écrivons pour t'informer que {$firstname} {$lastname} ({$promo}), que tu avais incité{if $sex eq 'female'}e{/if} à s'inscrire à Polytechnique.org, vient à l'instant de terminer son inscription.
 
 Merci de ta participation active à la reconnaissance de ce site !!!
-{include file="signature.mail.tpl"}
+{include file="include/signature.mail.tpl"}
 {/if}
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

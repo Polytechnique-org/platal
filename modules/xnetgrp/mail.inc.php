@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -34,10 +34,13 @@ function get_all_redirects($membres, $mls, &$client)
     }
 
     foreach ($mls as $ml) {
-        if (list(,$members) = $client->get_members($ml)) {
-            foreach ($members as $mem) {
-                $uf = new UserFilter(new UFC_Mail($mem[1]));
-                $user = $uf->getUsers();
+        // $list_members is a (list_details, members, list_owners) array, where
+        // members is an array of (0 => name, 1 => email) arrays.
+        $list_members = $client->get_members($ml);
+        if ($list_members) {
+            foreach ($list_members[1] as $mem) {
+                $uf = new UserFilter(new UFC_Email($mem[1]));
+                $user = $uf->getUser();
                 if ($user) {
                     $tos[] = $user;
                 } else {
@@ -95,7 +98,7 @@ function send_xnet_mails($from, $sujet, $body, $wiki, $tos, $replyto = null, $up
     }
 
     foreach ($tos as $user) {
-        if ($user instanceof $user) {
+        if ($user instanceof User) {
             $email = $user->bestEmail();
         } else {
             $email = $user;

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -126,7 +126,6 @@ class ProfileSettingSearchNames implements ProfileSetting
                     $value[] = $sn;
                 } while ($sn = $sn_all->next());
             }
-            require_once 'validations.inc.php';
             $namesRequest = ProfileValidate::get_typed_requests($page->pid(), 'usage');
             if (count($namesRequest) > 0) {
                 Platal::page()->assign('validation', true);
@@ -150,7 +149,7 @@ class ProfileSettingSearchNames implements ProfileSetting
             $this->search_names = array();
             foreach ($value as &$sn) {
                 $sn['name'] = trim($sn['name']);
-                if ($sn['type'] == 'firstname' || $sn['type'] == 'lastname') {
+                if (S::user()->isMe($this->owner) && ($sn['type'] == 'firstname' || $sn['type'] == 'lastname')) {
                     $sn['name'] = $this->prepare($page, $sn['type'], $sn['name'],
                                                  $initial[$sn['type']], $success_tmp);
                     $success = $success && $success_tmp;
@@ -211,7 +210,6 @@ class ProfileSettingSearchNames implements ProfileSetting
     public function save(ProfilePage &$page, $field, $value)
     {
         require_once 'name.func.inc.php';
-        require_once 'validations.inc.php';
 
         $sn_old = build_sn_pub($page->pid());
         XDB::execute("DELETE FROM  s
@@ -239,7 +237,7 @@ class ProfileSettingSearchNames implements ProfileSetting
         $names = array();
         foreach ($value as $name) {
             if ($name['name'] != '') {
-                $names[] = $name['type_name'] . ' : ' . $name['name'];
+                $names[] = mb_strtolower($name['type_name']) . ' : ' . $name['name'];
             }
         }
         return implode(', ' , $names);
@@ -275,6 +273,10 @@ class ProfileSettingEdu implements ProfileSetting
         } else {
             $i = 0;
             foreach ($value as $key=>&$edu) {
+                if ($edu['eduid'] < 1 || !isset($edu['degreeid']) || $edu['degreeid'] < 1) {
+                    Platal::page()->trigError('L\'université ou le diplôme d\'une formation manque.');
+                    $success = false;
+                }
                 if (($edu['grad_year'] < 1921) || ($edu['grad_year'] > (date('Y') + 4))) {
                     Platal::page()->trigWarning('L\'année d\'obtention du diplôme est mal ou non renseignée, elle doit être du type : 2004.');
                     $edu['grad_year'] = null;
@@ -298,11 +300,12 @@ class ProfileSettingEdu implements ProfileSetting
                      $page->pid());
         foreach ($value as $eduid=>&$edu) {
             if ($edu['eduid'] != '') {
+                $fieldId = ($edu['fieldid'] == 0) ? null : $edu['fieldid'];
                 XDB::execute("INSERT INTO  profile_education
                                       SET  id = {?}, pid = {?}, eduid = {?}, degreeid = {?},
                                            fieldid = {?}, grad_year = {?}, program = {?}",
                              $eduid, $page->pid(), $edu['eduid'], $edu['degreeid'],
-                             $edu['fieldid'], $edu['grad_year'], $edu['program']);
+                             $fieldId, $edu['grad_year'], $edu['program']);
             }
         }
     }
@@ -312,12 +315,32 @@ class ProfileSettingEdu implements ProfileSetting
         $degreesList = DirEnum::getOptions(DirEnum::EDUDEGREES);
         $fieldsList = DirEnum::getOptions(DirEnum::EDUFIELDS);
         $educations = array();
-        foreach ($value as $education) {
-            $educations[] = 'Université : ' . $schoolsList[$education['eduid']]
-                          . ', diplôme : ' . $degreesList[$education['degreeid']]
-                          . ', domaine : ' . $fieldsList[$education['fieldid']]
-                          . ', année d\'obtention : ' . $education['grad_year']
-                          . ', intitulé : ' . $education['program'];
+        foreach ($value as $id => $education) {
+            // XXX: the following condition should be removed once there are no more incomplete educations.
+            if (is_null($education['eduid']) || is_null($education['degreeid'])) {
+                if (is_null($education['eduid']) && is_null($education['degreeid'])) {
+                    $educations[$id] = 'formation manquante';
+                } else {
+                    $educations[$id] = (is_null($education['eduid']) ? 'université manquante' : $schoolsList[$education['eduid']]) . ', '
+                                     . (is_null($education['degreeid']) ? 'diplôme manquant' : $degreesList[$education['degreeid']]);
+                }
+            } else {
+                $educations[$id] = $schoolsList[$education['eduid']] . ', ' . $degreesList[$education['degreeid']];
+            }
+
+            $details = array();
+            if ($education['grad_year']) {
+                $details[] = $education['grad_year'];
+            }
+            if ($education['program']) {
+                $details[] = '« ' . $education['program'] . ' »';
+            }
+            if ($education['fieldid']) {
+                $details[] = $fieldsList[$education['fieldid']];
+            }
+            if (count($details)) {
+                $educations[$id] .= ' (' . implode(', ', $details) . ')';
+            }
         }
         return implode(', ', $educations);
     }
@@ -425,12 +448,12 @@ class ProfileSettingNetworking implements ProfileSetting
     }
 
     public function getText($value) {
+        static $pubs = array('public' => 'publique', 'ax' => 'annuaire AX', 'private' => 'privé');
         $networkings = array();
         foreach ($value as $network) {
-            $networkings[] = 'nom : ' . $network['name'] . ', adresse : ' . $network['address']
-                           . ', affichage : ' . $network['pub'];
+            $networkings[] = $network['name'] . ' : ' . $network['address'] . ' (affichage ' . $pubs[$network['pub']] . ')';
         }
-        return implode(' ; ' , $networkings);
+        return implode(', ' , $networkings);
     }
 }
 
@@ -457,8 +480,6 @@ class ProfileSettingPromo implements ProfileSetting
                          $gradYearNew, $page->profile->id());
             Platal::page()->trigSuccess('Ton statut « orange » a été supprimé.');
         } else {
-            require_once 'validations.inc.php';
-
             $myorange = new OrangeReq(S::user(), $page->profile, $gradYearNew);
             $myorange->submit();
             Platal::page()->trigSuccess('Tu pourras changer l\'affichage de ta promotion dès que ta nouvelle promotion aura été validée.');
@@ -512,7 +533,7 @@ class ProfileSettingPromo implements ProfileSetting
 }
 
 
-class ProfileSettingGeneral extends ProfilePage
+class ProfilePageGeneral extends ProfilePage
 {
     protected $pg_template = 'profile/general.tpl';
 
@@ -521,15 +542,9 @@ class ProfileSettingGeneral extends ProfilePage
         parent::__construct($wiz);
         $this->settings['search_names']
                                   = new ProfileSettingSearchNames();
-        $this->settings['birthdate'] = new ProfileSettingDate();
-        $this->settings['freetext_pub']
-                                  = $this->settings['photo_pub']
-                                  = new ProfileSettingPub();
-        $this->settings['freetext']
-                                  = $this->settings['nationality1']
+        $this->settings['nationality1']
                                   = $this->settings['nationality2']
                                   = $this->settings['nationality3']
-                                  = $this->settings['yourself']
                                   = $this->settings['promo_display']
                                   = null;
         $this->settings['email_directory']
@@ -537,25 +552,42 @@ class ProfileSettingGeneral extends ProfilePage
         $this->settings['email_directory_new']
                                   = new ProfileSettingEmailDirectory();
         $this->settings['networking'] = new ProfileSettingNetworking();
-        $this->settings['tels']   = new ProfileSettingPhones('user', 0);
+        $this->settings['tels']   = new ProfileSettingPhones();
         $this->settings['edus']   = new ProfileSettingEdu();
         $this->settings['promo']  = new ProfileSettingPromo();
-        $this->watched= array('freetext' => true, 'tels' => true,
+        $this->watched= array('tels' => true,
                               'networking' => true, 'edus' => true,
                               'nationality1' => true, 'nationality2' => true,
                               'nationality3' => true, 'search_names' => true);
+
+        /* Some fields editable under condition */
+        if (!S::user()->isMe($this->owner)) {
+            $this->settings['deathdate'] = new ProfileSettingDate(true);
+            $this->settings['birthdate'] = new ProfileSettingDate(true);
+        } else {
+            $this->settings['yourself'] = null;
+            $this->settings['birthdate'] = new ProfileSettingDate();
+        }
+        if (S::user()->checkPerms('directory_private')
+            || S::user()->isMyProfile($this->owner)) {
+            $this->settings['freetext'] = null;
+            $this->settings['freetext_pub']
+                                      = $this->settings['photo_pub']
+                                      = new ProfileSettingPub();
+            $this->watched['freetext'] = true;
+        }
+
     }
 
     protected function _fetchData()
     {
         // Checkout all data...
-        $res = XDB::query("SELECT  p.nationality1, p.nationality2, p.nationality3, p.birthdate,
-                                   pp.display_tel as mobile, pp.pub as mobile_pub,
+        $res = XDB::query("SELECT  p.nationality1, p.nationality2, p.nationality3, IF(p.birthdate = 0, '', p.birthdate) AS birthdate,
                                    p.email_directory as email_directory, pd.promo AS promo_display,
-                                   p.freetext, p.freetext_pub, p.ax_id AS matricule_ax, pd.yourself
+                                   p.freetext, p.freetext_pub, p.ax_id AS matricule_ax, pd.yourself,
+                                   p.deathdate
                              FROM  profiles              AS p
                        INNER JOIN  profile_display       AS pd ON (pd.pid = p.pid)
-                        LEFT JOIN  profile_phones        AS pp ON (pp.pid = p.pid AND link_type = 'user')
                             WHERE  p.pid = {?}", $this->pid());
         $this->values = $res->fetchOneAssoc();
 
@@ -563,7 +595,11 @@ class ProfileSettingGeneral extends ProfilePage
         $res = XDB::query("SELECT  pub
                              FROM  profile_photos
                             WHERE  pid = {?}", $this->pid());
-        $this->values['photo_pub'] = $res->fetchOneCell();
+        if ($res->numRows() == 0) {
+            $this->values['photo_pub'] = 'private';
+        } else {
+            $this->values['photo_pub'] = $res->fetchOneCell();
+        }
 
         if ($this->owner) {
             $res = XDB::query("SELECT  COUNT(*)
@@ -616,7 +652,7 @@ class ProfileSettingGeneral extends ProfilePage
                                   freetext = {?}, freetext_pub = {?}, email_directory = {?}
                            WHERE  pid = {?}",
                           $this->values['nationality1'], $this->values['nationality2'], $this->values['nationality3'],
-                          preg_replace('@(\d{2})/(\d{2})/(\d{4})@', '\3-\2-\1', $this->values['birthdate']),
+                          ProfileSettingDate::toSQLDate($this->values['birthdate']),
                           $this->values['freetext'], $this->values['freetext_pub'], $new_email, $this->pid());
         }
         if ($this->changed['photo_pub']) {
@@ -625,7 +661,7 @@ class ProfileSettingGeneral extends ProfilePage
                            WHERE  pid = {?}",
                          $this->values['photo_pub'], $this->pid());
         }
-        if ($this->changed['yourself']) {
+        if (S::user()->isMe($this->owner) && $this->changed['yourself']) {
             if ($this->owner) {
                 XDB::execute('UPDATE  accounts
                                  SET  display_name = {?}
@@ -648,6 +684,25 @@ class ProfileSettingGeneral extends ProfilePage
                                    WHERE  pid = {?}',
                                  $this->values['promo_display'], $this->pid());
                 }
+            }
+        }
+        if (!S::user()->isMe($this->owner) && $this->changed['deathdate']) {
+            XDB::execute('UPDATE  profiles
+                             SET  deathdate = {?}, deathdate_rec = NOW()
+                           WHERE  pid = {?} AND deathdate_rec IS NULL',
+                         ProfileSettingDate::toSQLDate($this->values['deathdate']), $this->pid());
+            if (XDB::affectedRows() > 0) {
+                $this->profile->clear();
+                if ($this->owner) {
+                    $this->owner->clear(true);
+                }
+            } else {
+                /* deathdate_rec was not NULL, this is just an update of the death date
+                 */
+                XDB::execute('UPDATE  profiles
+                                 SET  deathdate = {?}
+                               WHERE  pid = {?}',
+                             ProfileSettingDate::toSQLDate($this->values['deathdate']), $this->pid());
             }
         }
     }

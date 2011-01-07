@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -26,7 +26,7 @@
   {if $evt.titre || count($moments) eq 1}
   {$evt.nb_tot} personne{if $evt.nb_tot > 1}s ont réalisé leur {else} a réalisé son {/if}
   {else}
-  {$evt.nb} personne{if $evt.nb > 1}s ont réalisé leur{else} a réalisé son {/if}
+  {$evt.nb} personne{if $evt.nb > 1}s ont réalisé leur {else} a réalisé son {/if}
   {/if}
   inscription à l'événement {$evt.intitule} {if $evt.titre}- {$evt.titre} {/if}
   qui aura lieu {$evt.date}.
@@ -84,7 +84,7 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
     <th>Infos</th>
     <th>Montant</th>
   </tr>
-  {iterate from=$oubliinscription item=m}
+  {foreach from=$oubliinscription item=m}
   <tr class="pair">
     <td>
       {if $is_admin}<a href="javascript:remplitAuto('{$m.user->login()}')">{/if}
@@ -97,9 +97,9 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
       <a href="https://www.polytechnique.org/vcard/{$m.user->login()}.vcf">{icon name=vcard title="vcard"}</a>
       <a href="mailto:{$m.user->bestEmail()}">{icon name=email title="email"}</a>
     </td>
-    <td>{$m.montant}</td>
+    <td>{$m.amount}</td>
   </tr>
-  {/iterate}
+  {/foreach}
 </table>
 
 <hr />

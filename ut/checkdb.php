@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -67,7 +67,7 @@ class CheckDB extends PlTestCase
                 array('SELECT  pa.pid, pa.countryId
                          FROM  profile_addresses AS pa
                     LEFT JOIN  geoloc_countries  AS gc ON (pa.countryId = gc.iso_3166_1_a2)
-                        WHERE  gc.countryFR IS NULL OR gc.countryFR = \'\''),
+                        WHERE  gc.country IS NULL OR gc.country = \'\''),
 
             'missing nationalities' =>
                 array('SELECT  p.pid, p.nationality1, p.nationality2, p.nationality3
@@ -75,9 +75,9 @@ class CheckDB extends PlTestCase
                     LEFT JOIN  geoloc_countries AS g1 ON (p.nationality1 = g1.iso_3166_1_a2)
                     LEFT JOIN  geoloc_countries AS g2 ON (p.nationality2 = g2.iso_3166_1_a2)
                     LEFT JOIN  geoloc_countries AS g3 ON (p.nationality3 = g3.iso_3166_1_a2)
-                        WHERE  (p.nationality1 IS NOT NULL AND (g1.nationalityFR IS NULL OR g1.nationalityFR = \'\'))
-                               OR (p.nationality2 IS NOT NULL AND (g2.nationalityFR IS NULL OR g2.nationalityFR = \'\'))
-                               OR (p.nationality3 IS NOT NULL AND (g3.nationalityFR IS NULL OR g3.nationalityFR = \'\'))'),
+                        WHERE  (p.nationality1 IS NOT NULL AND (g1.nationality IS NULL OR g1.nationality = \'\'))
+                               OR (p.nationality2 IS NOT NULL AND (g2.nationality IS NULL OR g2.nationality = \'\'))
+                               OR (p.nationality3 IS NOT NULL AND (g3.nationality IS NULL OR g3.nationality = \'\'))'),
 
             'ax_id' =>
                 array('SELECT  pid, hrpid, ax_id, COUNT(ax_id) AS c
@@ -102,9 +102,6 @@ class CheckDB extends PlTestCase
             'profile_education_enum'        => 'name',
             'profile_education_field_enum'  => 'field',
             'profile_job_enum'              => 'name',
-            'profile_job_sector_enum'       => 'name',
-            'profile_job_subsector_enum'    => 'name',
-            'profile_job_subsubsector_enum' => 'name',
             'profile_langskill_enum'        => 'langue_fr',
             'profile_medal_enum'            => 'text',
             'profile_name_enum'             => 'name',

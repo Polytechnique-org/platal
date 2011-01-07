@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -44,40 +44,41 @@
       <td>Nom</td>
       <td><input type="text" name="name" value="{$selectedJob.name}" /></td>
     </tr>
+    <tr>
       <td>Acronyme</td>
       <td><input type="text" name="acronym" value="{$selectedJob.acronym}" /></td>
     </tr>
-    </tr>
+    <tr>
       <td>Page web</td>
       <td><input type="text" name="url" value="{$selectedJob.url}" /></td>
     </tr>
-    </tr>
+    <tr>
       <td>Adresse email</td>
       <td><input type="text" name="email" value="{$selectedJob.email}" /></td>
     </tr>
-    </tr>
+    <tr>
       <td>Code NAF</td>
       <td><input type="text" name="NAF_code" value="{$selectedJob.NAF_code}" /></td>
     </tr>
-    </tr>
+    <tr>
       <td>Code AX</td>
       <td><input type="text" name="AX_code" value="{$selectedJob.AX_code}" /></td>
     </tr>
-    </tr>
+    <tr>
       <td>Identifiant de la holding</td>
       <td><input type="text" name="holdingId" value="{$selectedJob.holdingId}" /></td>
     </tr>
-    </tr>
+    <tr>
       <td>Nom de la holding</td>
       <td>{$selectedJob.holdingName}</td>
     </tr>
-    </tr>
+    <tr>
       <td>Acronyme de la holding</td>
       <td>{$selectedJob.holdingAcronym}</td>
     </tr>
     <tr>
       <td>Adresse</td>
-      <td<textarea cols="30" rows="4" name="address">{$selectedJob.address}</textarea></td>
+      <td><textarea cols="30" rows="4" name="address">{$selectedJob.address}</textarea></td>
     </tr>
     <tr>
       <td>Téléphone</td>

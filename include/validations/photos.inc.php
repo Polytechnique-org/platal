@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -137,8 +137,10 @@ class PhotoReq extends ProfileValidate
 
     public function commit()
     {
-        XDB::execute('REPLACE INTO  profile_photos (pid, attachmime, attach, x, y)
-                            VALUES  ({?},{?},{?},{?},{?})',
+        XDB::execute('INSERT INTO  profile_photos (pid, attachmime, attach, x, y)
+                           VALUES  ({?}, {?}, {?}, {?}, {?})
+          ON DUPLICATE KEY UPDATE  attachmime = VALUES(attachmime), attach = VALUES(attach),
+                                   x = VALUES(x), y = VALUES(y)',
                      $this->profile->id(), $this->mimetype, $this->data, $this->x, $this->y);
 
         return true;

@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -46,7 +46,7 @@ et ton mot de passe est celui que tu as choisi lors de ta demande de compte.
 {/if}
 
 Tu trouveras plus d'informations dans la [[https://www.polytechnique.org/Xorg/GoogleApps|documentation]] sur Polytechnique.org.
-{include file="signature.mail.tpl"}
+{include file="include/signature.mail.tpl"}
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

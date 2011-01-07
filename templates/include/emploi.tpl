@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -30,10 +30,14 @@
           {if $job->user_site} [<a href='{$job->user_site}'>Page perso</a>]{/if}</strong></td>
         </tr>
         {/if}
-        {if $job->sector}
+        {if count($job->terms)}
         <tr>
-          <td><em>Secteur&nbsp;: </em></td>
-          <td><strong>{$job->sector}{if $job->subsector} ({$job->subsector}){/if}</strong></td>
+          <td><em>Mots-clefs&nbsp;: </em></td>
+          <td><ul>
+            {foreach from=$job->terms item=term}
+            <li><strong>{$term->full_name}</strong></li>
+            {/foreach}
+          </ul></td>
         </tr>
         {/if}
 

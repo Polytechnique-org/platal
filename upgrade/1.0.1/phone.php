@@ -54,5 +54,19 @@ foreach ($phones as $country => $phone) {
                  $phone, $country);
 }
 
+$res = XDB::iterator('SELECT  pid, link_type, link_id, tel_id AS id, search_tel AS search, search_tel AS display
+                        FROM  profile_phones
+                       WHERE  search_tel LIKE \'33%\'');
+while ($item = $res->next()) {
+    $phone = new Phone($item);
+    $phone->format();
+    XDB::execute('UPDATE  profile_phones
+                     SET  display_tel = {?}
+                   WHERE  pid = {?} AND link_type = {?}
+                          AND link_id = {?} AND tel_id = {?}',
+                 $phone->display, $phone->pid(), $phone->linkType(),
+                 $phone->linkId(), $phone->id());
+}
+
 /* vim:set et sw=4 sts=4 ts=4: */
 ?>

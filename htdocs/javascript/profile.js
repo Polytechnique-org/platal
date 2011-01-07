@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -45,10 +45,8 @@ function wizPage_onLoad(id)
         }
         break;
       case 'emploi':
-        for (var i = 0 ; $('#job_' + i).length != 0; ++i) {
-            updateJobSector(i, $('#job_' + i).find("[name='jobs[" + i + "][subSector]']").val());
-            updateJobSubSector(i, $('#job_' + i).find("[name='jobs[" + i + "][subSubSector]']").val());
-            updateJobAlternates(i);
+        if ($('#jobs_0').find("[name='jobs[0][name]']").val() == '') {
+            registerEnterpriseAutocomplete(0);
         }
         break;
     }
@@ -59,6 +57,12 @@ var educationDegreeAll;
 var educationDegreeName;
 var subgrades;
 var names;
+
+// Publicity follows the following ordering: private < ax < public.
+var publicity = [];
+publicity['private'] = 0;
+publicity['ax']      = 1;
+publicity['public']  = 2;
 
 // Names {{{1
 
@@ -73,10 +77,12 @@ function addSearchName(isFemale)
     while ($('#search_name_' + i).length != 0) {
         i++;
     }
-    Ajax.update_html('search_name_' + i, 'profile/ajax/searchname/' + i + '/' + isFemale, function(data){
-        $('#searchname').before(data);
-        changeNameFlag(i);
-    });
+    $('#search_name_' + i)
+        .updateHtml('profile/ajax/searchname/' + i + '/' + isFemale,
+                    function(data) {
+                        $('#searchname').before(data);
+                        changeNameFlag(i);
+                    });
 }
 
 function removeSearchName(i, isFemale)
@@ -113,11 +119,12 @@ function updateNameDisplay(isFemale)
             searchnames += $('#search_name_' + i).find(':text').val() + ';;';
         }
     }
-    Ajax.update_html(null, 'profile/ajax/buildnames/' + searchnames + '/' + isFemale, function(data){
-        var name = data.split(';');
-        $('#public_name').html(name[0]);
-        $('#private_name').html(name[0] + name[1]);
-    });
+    $.xget('profile/ajax/buildnames/' + searchnames + '/' + isFemale,
+           function(data){
+               var name = data.split(';');
+               $('#public_name').html(name[0]);
+               $('#private_name').html(name[0] + name[1]);
+           });
 }
 
 function toggleParticle(id)
@@ -163,13 +170,21 @@ function prepareType(id)
     var edu    = $('.edu_' + id).find("[name='edus[" + id + "][eduid]']").val() - 1;
     var sel    = $('.edu_' + id).find('[name=edu_' + id + '_tmp]').val();
     var html   = '';
-    var length = educationDegree[edu].length;
+    if (educationDegree[edu]) {
+        var length = educationDegree[edu].length;
+    } else {
+        var length = 0;
+    }
     for (i = 0; i < length; ++i) {
         html += '<option value="' + educationDegree[edu][i] + '"';
         if (sel == educationDegree[edu][i]) {
             html += ' selected="selected"';
         }
         html += '>' + educationDegreeName[educationDegree[edu][i] - 1] + '</option>';
+    }
+    // XXX: to be removed once SQL table profile_merge_issues is.
+    if (sel != '' && html == '') {
+        html += '<option value="' + sel + '" selected="selected">' + educationDegreeName[sel - 1] + '</option>';
     }
     $('.edu_' + id).find("[name='edus[" + id + "][degreeid]']").html(html);
 }
@@ -309,7 +324,8 @@ function addAddress()
         i++;
     }
     $('#add_address').before('<div id="addresses_' + i + '_cont"></div>');
-    Ajax.update_html('addresses_' + i + '_cont', 'profile/ajax/address/' + i, checkCurrentAddress());
+    $('#addresses_' + i + '_cont').updateHtml('profile/ajax/address/' + i,
+                                              checkCurrentAddress());
 }
 
 function addressChanged(prefid)
@@ -320,20 +336,20 @@ function addressChanged(prefid)
 function validGeoloc(prefid, id, geoloc)
 {
     if (geoloc == 1) {
-        $('#' + prefid + '_cont').find('[name*=text]').val($('#' + prefid + '_cont').find('[name*=geoloc]').val());
-        $('#' + prefid + '_cont').find('[name*=postalText]').val($('#' + prefid + '_cont').find('[name*=geocodedPostalText]').val());
+        $('#' + prefid + '_cont').find('[name*=text]').val($('#' + prefid + '_cont').find('[name*=geocodedText]').val());
+        $('#' + prefid + '_cont').find('[name*=postalText]').val('');
     }
     if (geoloc > 0) {
-        $('#' + prefid + '_cont').find("[name*='[geoloc]']").remove();
+        $('#' + prefid + '_cont').find("[name*='[geocodedText]']").remove();
     }
     $('#' + prefid + '_cont').find('[name*=text]').removeClass('error');
-    $('#' + prefid + '_cont').find('[name*=geoloc_choice]').val(geoloc);
+    $('#' + prefid + '_cont').find('[name*=geocodeChosen]').val(geoloc);
     $('.' + prefid + '_geoloc').remove();
 }
 
 // {{{1 Phones
 
-function addTel(prefid, prefname)
+function addTel(prefid, prefname, subField, mainField, mainId)
 {
     var i = 0;
     var prefix  = prefid + '_';
@@ -341,7 +357,7 @@ function addTel(prefid, prefname)
         i++;
     }
     $('#' + prefix + 'add').before('<div id="' + prefix + i + '" style="clear: both; padding-top: 4px; padding-bottom: 4px"></div>');
-    Ajax.update_html(prefix + i, 'profile/ajax/tel/' + prefid + '/' + prefname + '/' + i);
+    $('#' + prefix + i).updateHtml('profile/ajax/tel/' + prefid + '/' + prefname + '/' + i + '/' + subField + '/' + mainField + '/' + mainId);
 }
 
 function removeTel(prefname, prefid, id)
@@ -381,7 +397,7 @@ function renumberPhone(prefname, prefid, i)
     $('#' + id).find('div.titre').html('N°' + i);
     $('#' + id).find('a.removeTel').attr('href', 'javascript:removeTel(\'' + prefname + '\',\'' + prefid + '\',' + telid + ')');
     $('#' + id).find('select').attr('name', telpref + '[type]');
-    $('#' + id).find("[name='" + telprefOld + "[tel]']").attr('name', telpref + '[tel]');
+    $('#' + id).find("[name='" + telprefOld + "[display]']").attr('name', telpref + '[display]');
     $('#' + id).find("[name='" + telprefOld + "[comment]']").attr('name', telpref + '[comment]');
     $('#' + id).find('a.removePhoneComment').attr('href', 'javascript:removePhoneComment(' + id + ',' + telpref + ')');
     $('#' + id).find('#' + idOld + '_addComment').attr('id', id + '_addComment');
@@ -501,48 +517,6 @@ function restoreJob(id, pref)
     $('#' + id).find("[name='" + pref + "[removed]']").val('0');
 }
 
-function updateJobSector(id, sel)
-{
-    var sector = $('#job_' + id).find("[name='jobs[" + id + "][sector]']").val();
-    if (sector == '') {
-        sector = '-1';
-    }
-    Ajax.update_html('job_' + id + '_subSector', 'profile/ajax/sector/' + id + '/job_' + id + '/jobs[' + id + ']/' + sector + '/' + sel);
-}
-
-function updateJobSubSector(id, sel)
-{
-    var subSector = $('#job_' + id).find("[name='jobs[" + id + "][subSector]']").val();
-    if (subSector == '') {
-        subSector = '-1';
-    }
-    Ajax.update_html('job_' + id + '_subSubSector', 'profile/ajax/sub_sector/' + id + '/' + subSector + '/' + sel);
-}
-
-function updateJobAlternates(id)
-{
-    var subSubSector = $('#job_' + id).find("[name='jobs[" + id + "][subSubSector]']").val();
-    if (subSubSector != '') {
-        Ajax.update_html('job_' + id + '_alternates', 'profile/ajax/alternates/' + id + '/' + subSubSector);
-    }
-}
-
-function emptyJobSubSector(id)
-{
-    Ajax.update_html('job_' + id + '_subSubSector', 'profile/ajax/sub_sector/' + id + '/-1/-1');
-}
-
-function emptyJobAlternates(id)
-{
-    Ajax.update_html('job_' + id + '_alternates', 'profile/ajax/alternates/' + id + '/-1');
-}
-
-function displayAllSector(id)
-{
-    $('.sector_text_' + id).remove();
-    $('.sector_' + id).show();
-}
-
 function makeAddJob(id)
 {
     return function(data)
@@ -555,7 +529,7 @@ function makeAddJob(id)
 function addJob()
 {
     var i = 0;
-    while ($('#job_' + i).length != 0) {
+    while ($('#jobs_' + i).length != 0) {
         ++i;
     }
     $.get(platal_baseurl + 'profile/ajax/job/' + i, makeAddJob(i));
@@ -564,6 +538,131 @@ function addJob()
 function addEntreprise(id)
 {
     $('.entreprise_' + id).toggle();
+}
+
+/**
+ * Adds a job term in job profile page
+ * @param jobid id of profile's job among his different jobs
+ * @param jtid id of job term to add
+ * @param full_name full text of job term
+ * @return false if the term already exist for this job, true otherwise
+ */
+function addJobTerm(jobid, jtid, full_name)
+{
+    var termid = 0;
+    var parentpath;
+    var formvarname;
+    if (jobid < 0) {
+        parentpath = '';
+        jobid = '';
+        formvarname = 'terms';
+    } else {
+        parentpath = '#jobs_'+jobid+' ';
+        formvarname = 'jobs['+jobid+'][terms]';
+    }
+    var lastJobTerm = $(parentpath + '.jobs_term:last');
+    if (lastJobTerm.length != 0) {
+        termid = parseInt(lastJobTerm.children('input').attr('name').replace(/^(jobs\[[0-9]+\]\[terms\]|terms)\[([0-9]+)\]\[jtid\]/, '$2')) + 1;
+        if ($('#job'+jobid+'_term'+jtid).length > 0) {
+            return false;
+        }
+    }
+    var newdiv = '<div class="jobs_term" id="job'+jobid+'_term'+jtid+'">'+
+        '<span>'+full_name+'</span>'+
+        '<input type="hidden" name="'+formvarname+'['+termid+'][jtid]" value="'+jtid+'" />'+
+        '<img title="Retirer ce mot-clef" alt="retirer" src="images/icons/cross.gif" />'+
+        '</div>';
+    if (lastJobTerm.length == 0) {
+        $(parentpath + '.jobs_terms').prepend(newdiv);
+    } else {
+        lastJobTerm.after(newdiv);
+    }
+    $('#job'+jobid+'_term'+jtid+' img').css('cursor','pointer').click(removeJobTerm);
+    return true;
+}
+
+/**
+ * Remove a job term in job profile page.
+ * Must be called from a button in a div containing the term
+ */
+function removeJobTerm()
+{
+    $(this).parent().remove();
+}
+
+/**
+ * Prepare display for autocomplete suggestions in job terms
+ * @param row an array of (title of term, id of term)
+ * @return text to display
+ * If id is negative, it is because there are too much terms to
+ * be displayed.
+ */
+function displayJobTerm(row)
+{
+    if (row[1] < 0) {
+        return '... <em>parcourir les résultats dans un arbre</em> ...';
+    }
+    return row[0];
+}
+
+/**
+ * Function called when a job term has been selected from autocompletion
+ * in search
+ * @param li is the list item (<li>) that has been clicked
+ * The context is the jsquery autocomplete object.
+ */
+function selectJobTerm(li)
+{
+    var jobid = this.extraParams.jobid;
+    if (li.extra[0] >= 0) {
+        addJobTerm(jobid,li.extra[0],$(li).text());
+    }
+    var search_input;
+    if (jobid < 0) {
+        search_input = $('.term_search')[0];
+    } else {
+        search_input = $('#jobs_'+jobid+' .term_search')[0];
+    }
+    if (li.extra[0] >= 0) {
+        search_input.value = '';
+        search_input.focus();
+    } else {
+        search_input.value = li.selectValue.replace(/%$/,'');
+        toggleJobTermsTree(jobid, li.selectValue);
+    }
+}
+
+/**
+ * Function to show or hide a terms tree in job edition
+ * @param jobid is the id of the job currently edited
+ */
+function toggleJobTermsTree(jobid, textfilter)
+{
+    var treepath;
+    if (jobid < 0) {
+        treepath = '';
+    } else {
+        treepath = '#jobs_'+jobid+' ';
+    }
+    treepath += '.term_tree';
+    if ($(treepath + ' ul').length > 0) {
+        $(treepath).empty().removeClass().addClass('term_tree');
+        if (!textfilter) {
+            return;
+        }
+    }
+    createJobTermsTree(treepath, 'profile/ajax/tree/jobterms/all', 'job' + jobid, 'chooseJobTerm', textfilter);
+}
+
+/**
+ * Function called when a job term is chosen from terms tree
+ * @param treeid is the full id of the tree (must look like job3)
+ * @param jtid is the id of the job term chosen
+ * @param fullname is the complete name (understandable without context) of the term
+ */
+function chooseJobTerm(treeid, jtid, fullname)
+{
+    addJobTerm(treeid.replace(/^job(.*)$/, '$1'), jtid, fullname);
 }
 
 // {{{1 Skills
@@ -595,58 +694,6 @@ function addCountry()
         + '</div>';
     $('#countries').append(html);
     updateElement('countries');
-}
-
-function updateSubSector()
-{
-    var s  = $('#sectorSelection').find('[name=sectorSelection]').val();
-    var ss = $('#subSectorSelection').find("[name='jobs[-1][subSector]']").val();
-    if ((s == '' || ss == '') || $('#sectors_' + s + '_' + ss).length != 0) {
-        $('#addSector').hide();
-    } else {
-        $('#addSector').show();
-    }
-}
-
-function removeSector(s, ss)
-{
-    $('#sectors_' + s + '_' + ss).remove();
-    updateSubSector();
-}
-
-function updateSector()
-{
-    var sector = $('#sectorSelection').find('[name=sectorSelection]').val();
-    if (sector == '') {
-        sector = '-1';
-        $('#subSectorSelection').html('');
-        return;
-    }
-    $.get(platal_baseurl + 'profile/ajax/sector/-1/0/0/' + sector,
-          function(data) {
-              data = '<a href="javascript:addSector()" style="display: none; float: right" id="addSector">'
-                   + '  <img src="images/icons/add.gif" alt="Ajouter ce secteur" title="Ajouter ce secteur" />'
-                   + '</a>' + data;
-              $('#subSectorSelection').html(data);
-              $('#subSectorSelection').find("[name='jobs[-1][subSector]']").change(updateSubSector);
-          });
-}
-
-function addSector()
-{
-    var s   = $('#sectorSelection').find('[name=sectorSelection]').val();
-    var ss  = $('#subSectorSelection').find("[name='jobs[-1][subSector]']").val();
-    var sst = $('#subSectorSelection').find("[name='jobs[-1][subSector]'] :selected").text();
-
-    var html = '<div id="sectors_' + s + '_' + ss + '" style="clear: both; margin-top: 0.5em" class="titre">'
-             + '  <a href="javascript:removeSector(\'' + s + '\',\'' + ss + '\')" style="display: block; float: right">'
-             + '    <img src="images/icons/cross.gif" alt="" title="Supprimer ce secteur" />'
-             + '  </a>'
-             + '  <input type="hidden" name="sectors[' + s + '][' + ss + ']" value="' + sst + '" />'
-             + '  ' + sst
-             + '</div>';
-    $('#sectors').append(html);
-    updateSubSector();
 }
 
 function registerEnterpriseAutocomplete(id)
@@ -694,6 +741,44 @@ function removeElement(cat, id)
 {
     $('#' + cat + '_' + id).remove();
     updateElement(cat);
+}
+
+function updateSubPublicity(subFieldId, name, mainPub)
+{
+    var subPub = $(subFieldId).find("[name='" + name + "']:checked").val();
+    if (publicity[subPub] > publicity[mainPub]) {
+        $(subFieldId).find("[name='" + name + "']:checked").removeAttr('checked');
+        $(subFieldId).find('[value=' + mainPub + ']').attr('checked', 'checked');
+    }
+}
+
+function updatePublicity(mainField, mainId, subField, subId)
+{
+    var mainFieldId = '#' + mainField + '_' + mainId;
+    var mainPub = $(mainFieldId).find("[name='" + mainField + "[" + mainId + "][pub]']:checked").val();
+    if (subId == -1) {
+        var subFields = subField.split(',');
+        for (var i =0; i < subFields.length; ++i) {
+            var subFieldBaseId = mainFieldId + '_' + subFields[i];
+            var name = mainField + '[' + mainId + '][' + subFields[i] + ']';
+            if ($(subFieldBaseId).length != 0) {
+                updateSubPublicity(subFieldBaseId, name + '[pub]', mainPub);
+                updateSubPublicity(subFieldBaseId, mainField + '[' + mainId + '][' + subFields[i] + '_pub]', mainPub);
+            }
+            subId = 0;
+            while ($(subFieldBaseId + '_' + subId).length != 0) {
+                updateSubPublicity(subFieldBaseId + '_' + subId, name + '[' + subId + '][pub]', mainPub);
+                ++subId;
+            }
+        }
+    } else {
+        if (subId == '') {
+            updateSubPublicity(mainFieldId + '_' + subField, mainField + '[' + mainId + '][' + subField + '_pub]', mainPub);
+            updateSubPublicity(mainFieldId + '_' + subField, mainField + '[' + mainId + '][' + subField + '][pub]', mainPub);
+        } else {
+            updateSubPublicity(mainFieldId + '_' + subField + '_' + subId, mainField + '[' + mainId + '][' + subField + '][' + subId + '][pub]', mainPub);
+        }
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

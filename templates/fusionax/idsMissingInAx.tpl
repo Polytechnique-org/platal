@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,10 +20,10 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h2><a href="fusionax">Fusion des annuaires X.org - AX<a> / <a href="fusionax/ids">Identifiants<a> /  Manquants dans l'annuaire de l'AX</h2>
+<h2><a href="fusionax">Fusion des annuaires X.org - AX</a> / <a href="fusionax/ids">Identifiants</a> /  Manquants dans l'annuaire de l'AX</h2>
 
 <p></p>
 
-{if $missingInAX}
-{include file='fusionax/listFusion.tpl' fusionList=$missingInAX field1='user_id' namefield1='ID X.org'}
+{if t($missingInAX)}
+{include file='fusionax/listFusion.tpl' fusionList=$missingInAX field1='pid' namefield1='ID X.org'}
 {/if}

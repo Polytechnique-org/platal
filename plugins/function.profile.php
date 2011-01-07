@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -22,21 +22,26 @@
 function smarty_function_profile($params, &$smarty)
 {
     $params = new PlDict($params);
-    $with_promo = $params->b('promo', false);
+    $with_promo = $params->b('promo', false) || $params->b('cat', false);
     $with_sex   = $params->b('sex', true);
     $with_link  = $params->b('link', true);
+    $with_dir   = $params->b('directory', true);
     $with_groupperms = $params->b('groupperms', true);
     $user = $params->v('user');
     if (is_int($user) || ctype_digit($user)) {
         $user = User::getWithUID($user);
     }
 
-    $name = pl_entities($user->directoryName());
+    if ($with_dir) {
+        $name = pl_entities($user->directoryName());
+    } else {
+        $name = pl_entities($user->fullName());
+    }
     if ($with_sex && $user->isFemale()) {
         $name = '&bull;' . $name;
     }
     if ($with_promo) {
-        $promo = $user->promo();
+        $promo = $user->category();
         if ($promo) {
             $name .= ' (' . pl_entities($promo) . ')';
         }

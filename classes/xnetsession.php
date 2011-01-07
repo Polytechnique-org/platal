@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -94,20 +94,28 @@ class XnetSession extends XorgSession
 
     protected function startSessionAs($user, $level)
     {
+        // The user must have 'groups' permission to access X.net
+        if (!$user->checkPerms('groups')) {
+            return false;
+        }
         if ($level == AUTH_SUID) {
             S::set('auth', AUTH_MDP);
         }
-        $res  = XDB::query("SELECT  a.uid, a.hruid, a.display_name, a.full_name,
-                                    a.sex = 'female' AS femme,
-                                    a.email_format, a.token,
-                                    at.perms, a.is_admin
-                              FROM  accounts AS a
-                        INNER JOIN  account_types AS at ON (at.type = a.type)
-                             WHERE  a.uid = {?} AND a.state = 'active'
-                             LIMIT  1", $user->id());
-        $sess = $res->fetchOneAssoc();
-        $_SESSION = array_merge($_SESSION, $sess);
-        $this->makePerms(S::s('perms'), S::user()->is_admin);
+
+        S::set('uid', $user->uid);
+        S::set('hruid', $user->hruid);
+
+        // XXX: Transition code, should not be in session anymore
+        S::set('display_name', $user->display_name);
+        S::set('full_name', $user->full_name);
+        S::set('femme', $user->isFemale());
+        S::set('email_format', $user->email_format);
+        S::set('token', $user->token);
+        S::set('perms', $user->perms);
+        S::set('is_admin', $user->is_admin);
+
+
+        $this->makePerms($user->perms, $user->is_admin);
         S::kill('challenge');
         S::kill('loginX');
         S::kill('may_update');
@@ -128,7 +136,7 @@ class XnetSession extends XorgSession
         if (!$this->startSUID($user)) {
             return false;
         }
-        S::set('perms', User::makePerms('user'));
+        S::set('perms', User::makePerms(PERMS_USER));
         return true;
     }
 

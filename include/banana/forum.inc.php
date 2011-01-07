@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -36,7 +36,7 @@ class ForumsBanana extends Banana
 
         global $globals;
         Banana::$msgedit_canattach = false;
-        Banana::$spool_root = $globals->banana->spool_root;
+        Banana::$spool_root = $globals->spoolroot . '/spool/banana/';
         array_push(Banana::$msgparse_headers, 'x-org-id', 'x-org-mail');
         Banana::$nntp_host = self::buildURL($user->login());
         if (S::admin()) {
@@ -59,9 +59,12 @@ class ForumsBanana extends Banana
         $user = $globals->banana->web_user;
         if ($login != null) {
             $user .= '_' . $login;
+            $pass = $globals->banana->password;
+        } else {
+            $pass = $globals->banana->web_pass;
         }
         return $scheme . '://' . $user
-                       . ":{$globals->banana->password}@{$globals->banana->server}:{$globals->banana->port}/";
+                       . ":{$pass}@{$globals->banana->server}:{$globals->banana->port}/";
 
     }
 
@@ -101,7 +104,7 @@ class ForumsBanana extends Banana
         $time = null;
         if (!is_null($this->params) && isset($this->params['updateall'])) {
             $time = intval($this->params['updateall']);
-            S::user()->banana_last = $time;
+            $this->user->banana_last = $time;
         }
 
         $infos = $this->fetchProfile();
@@ -119,7 +122,7 @@ class ForumsBanana extends Banana
         Banana::$profile['signature']               = $infos['sig'];
         Banana::$profile['display']                 = $infos['threads'];
         Banana::$profile['autoup']                  = $infos['maj'];
-        Banana::$profile['lastnews']                = S::user()->banana_last;
+        Banana::$profile['lastnews']                = $this->user->banana_last;
         Banana::$profile['subscribe']               = $req->fetchColumn();
         Banana::$tree_unread = $infos['tree_unread'];
         Banana::$tree_read = $infos['tree_read'];
@@ -235,8 +238,10 @@ class ForumsBanana extends Banana
                 } else {
                     $last_seen = '0000-00-00';
                 }
-                XDB::execute('REPLACE INTO  forum_profiles (uid, sig, mail, name, flags, tree_unread, tree_read, last_seen)
-                                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                XDB::execute('INSERT INTO  forum_profiles (uid, sig, mail, name, flags, tree_unread, tree_read, last_seen)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})
+                  ON DUPLICATE KEY UPDATE  sig = VALUES(sig), mail = VALUES(mail), name = VALUES(name), flags = VALUES(flags),
+                                           tree_unread = VALUES(tree_unread), tree_read = VALUES(tree_read), last_seen = VALUES(last_seen)',
                              $this->user->id(), Post::v('bananasig'),
                              Post::v('bananamail'), Post::v('banananame'),
                              $flags, $unread, $read, $last_seen);

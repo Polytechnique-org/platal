@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -45,28 +45,46 @@
 {/if}
 
 <div class="menu_title">Personnaliser</div>
+{if hasPerm('mail')}
 <div class="menu_item"><a href="emails">Mes emails</a></div>
+{/if}
+{if $smarty.session.user->hasProfile()}
 <div class="menu_item"><a href="profile/edit">Mon profil</a></div>
+{/if}
+{if hasPerm('directory_private')}
 <div class="menu_item"><a href="carnet/contacts">Mes contacts</a></div>
 <div class="menu_item"><a href="carnet">Mon carnet</a></div>
+{/if}
 <div class="menu_item"><a href="password">Mon mot de passe</a></div>
 <div class="menu_item"><a href="prefs">Mes préférences</a></div>
 
 <div class="menu_title">Services</div>
+{if hasPerm('mail')}
 <div class="menu_item"><a href="emails/send">Envoyer un email</a></div>
+{/if}
+{if hasPerm('forums')}
 <div class="menu_item"><a href="banana/">Forums &amp; PA</a></div>
+{/if}
 {if $smarty.session.user->googleapps}
 <div class="menu_item"><a href="http://gmail.polytechnique.org/">Emails Google Apps</a></div>
 {/if}
 <div class="menu_item"><a href="lists">Listes de diffusion</a></div>
+{if hasPerm('payment')}
 <div class="menu_item"><a href="payment">Télépaiements</a></div>
+{/if}
+{if hasPerm('mail')}
 <div class="menu_item"><a href="emails/antispam/submit">Soumettre un spam</a></div>
+{/if}
 <div class="menu_item"><a href="emails/broken">Patte cassée</a></div>
 
 <div class="menu_title">Communauté X</div>
 <div class="menu_item"><a href="search">Annuaire</a></div>
+{if hasPerm('directory_private')}
 <div class="menu_item"><a href="jobs">Emploi &amp; Carrières</a></div>
+{/if}
+{if hasPerm('groups')}
 <div class="menu_item"><a href="groupes-x">Mes groupes X</a></div>
+{/if}
 <div class="menu_item"><a href="survey">Sondages</a></div>
 
 <div class="menu_title">Informations</div>
@@ -81,9 +99,33 @@
 <div class="menu_item"><a href="marketing">Marketing</a></div>
 <div class="menu_item"><a href="admin/">Administration</a></div>
 <div class="menu_item"><a href="purge_cache?token={xsrf_token}">Clear cache</a></div>
-<div class="menu_item"><a href="get_rights/user">Devenir utilisateur</a></div>
 <div class="menu_item"><a href="http://trackers.polytechnique.org">Trackers</a></div>
 <div class="menu_item"><a href="http://support.polytechnique.org">Support</a></div>
+<form method="post" action="set_skin">
+  {xsrf_token_field}
+  <div class="menu_item" style="clear: both">
+    Skin
+    <select name="change_skin" onchange="this.form.submit()" style="margin: 0; padding: 0; float:
+    right">
+      {foreach from=$skin_list item=name key=tpl}
+      <option value="{$tpl}" {if $smarty.session.skin eq $tpl}selected="selected"{/if}>{$name}</option>
+      {/foreach}
+    </select>
+  </div>
+</form>
+<form method="post" action="get_rights">
+  {xsrf_token_field}
+  <div class="menu_item" style="clear: both">
+    Droits
+    <select name="account_type" onchange="this.form.submit()" style="margin: 0; padding: 0; float:
+    right">
+      <option value="admin">Admin</option>
+      {foreach from=$account_types_list item=type}
+      <option value="{$type}">{$type}</option>
+      {/foreach}
+    </select>
+  </div>
+</form>
 
 <table class="bicol" style="font-weight:normal;text-align:center; border-left:0px; border-right:0px; margin-top:0.5em; width:100%; margin-left: 0; font-size: smaller;">
   <tr><th>Validations</th></tr>
@@ -95,6 +137,13 @@
     </td>
   </tr>
 </table>
+{/if}
+
+{if hasPerm('edit_directory')}
+<div class="menu_title">Administration</div>
+<div class="menu_item"><a href="admin/profile">Modifications</a></div>
+<div class="menu_item"><a href="admin/jobs">Entreprises</a></div>
+<div class="menu_item"><a href="admin/validate">Validations</a></div>
 {/if}
 
 {/if}

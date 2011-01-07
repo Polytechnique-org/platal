@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -83,7 +83,7 @@ masculin ou féminin, par son prénom, ou son nom.
         <label><input type="checkbox" name="membres[ext]" value="1"  {if $smarty.request.membres.ext}checked="checked"{/if} />
         <em>écrire à tous les extérieurs de l'annuaire du groupe</em></label><br />
         <label><input type="checkbox" name="membres[groupe]" value="1"  {if $smarty.request.membres.groupe}checked="checked"{/if} />
-        <em>écrire à toutes les personnes morales de l'annuaire du groupe</label></em>
+        <em>écrire à toutes les personnes morales de l'annuaire du groupe</em></label>
         <a href="{$platal->ns}annuaire" class='popup'>(voir annuaire)</a><br />
       </td>
     </tr>
@@ -108,19 +108,19 @@ masculin ou féminin, par son prénom, ou son nom.
       <td class="titre">
         Sujet&nbsp;:
       </td>
-      <td><input type="text" name="sujet" value="{$smarty.request.sujet}" size=55 maxlength=70></td>
+      <td><input type="text" name="sujet" value="{$smarty.request.sujet}" size="55" maxlength="70" /></td>
     </tr>
     <tr>
       <td colspan="2" class="smaller">
-        <input type="checkbox" name="wiki" value="1" checked="1" onchange="updateWikiView(this);" id="wiki_syntaxe"/>
+        <input type="checkbox" name="wiki" value="1" checked="checked" onchange="updateWikiView(this);" id="wiki_syntaxe"/>
         <label for="wiki_syntaxe">activer </label><a href="wiki_help" class="popup3">la syntaxe wiki</a>
         <label for="wiki_syntaxe">pour le formattage du message</label>
       </td>
     </tr>
     <tr id="preview" class="pair" style="display: none">
-      <td colspan="2" id="mail_preview">
+      <td colspan="2">
         <div id="mail_preview"></div>
-        <div class="center"><input type="submit" name="send" value="Envoyer le message"></div>
+        <div class="center"><input type="submit" name="send" value="Envoyer le message" /></div>
       </td>
     </tr>
     <tr>

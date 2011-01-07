@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -25,12 +25,12 @@
 <ul class="noprint">
   {if $with_soundex && ($smarty.request.firstname || $smarty.request.name)}
   <li>Étendre ta recherche par <strong>
-    <a  href="search/adv{$plset_search}with_soundex=1">proximité sonore</a>
+    <a  href="search/adv{$plset_args}with_soundex=1">proximité sonore</a>
   </strong>
   </li>
   {/if}
 
-  <li><strong><a href="search/adv{$plset_search|regex_replace:"/rechercher=[^&]*/":""}">Modifier</a>
+  <li><strong><a href="search/adv{$plset_args|regex_replace:"/rechercher=[^&]*/":""}">Modifier</a>
   </strong> ta recherche
   </li>
 

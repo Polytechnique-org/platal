@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -21,6 +21,16 @@
 
 class User extends PlUser
 {
+    const PERM_API_USER_READONLY = 'api_user_readonly';
+    const PERM_DIRECTORY_AX      = 'directory_ax';
+    const PERM_DIRECTORY_PRIVATE = 'directory_private';
+    const PERM_EDIT_DIRECTORY    = 'edit_directory';
+    const PERM_FORUMS            = 'forums';
+    const PERM_GROUPS            = 'groups';
+    const PERM_LISTS             = 'lists';
+    const PERM_MAIL              = 'mail';
+    const PERM_PAYMENT           = 'payment';
+
     private $_profile_fetched = false;
     private $_profile = null;
 
@@ -37,7 +47,7 @@ class User extends PlUser
         }
 
         if ($login instanceof User) {
-            $machin->id();
+            return $login->id();
         }
 
         if ($login instanceof Profile) {
@@ -163,6 +173,7 @@ class User extends PlUser
             $joins .= XDB::format("LEFT JOIN group_members AS gpm ON (gpm.uid = a.uid AND gpm.asso_id = {?})\n", $globals->asso('id'));
             $fields[] = 'gpm.perms AS group_perms';
             $fields[] = 'gpm.comm AS group_comm';
+            $fields[] = 'gpm.position AS group_position';
         }
         if (count($fields) > 0) {
             $fields = ', ' . implode(', ', $fields);
@@ -184,8 +195,8 @@ class User extends PlUser
                                       IF (ab.alias IS NULL, NULL, CONCAT(ab.alias, \'@' . $globals->mail->domain . '\')) AS bestalias,
                                       IF (ab.alias IS NULL, NULL, CONCAT(ab.alias, \'@' . $globals->mail->domain2 . '\')) AS bestalias_alternate,
                                       a.email, a.full_name, a.directory_name, a.display_name, a.sex = \'female\' AS gender,
-                                      IF(a.state = \'active\', at.perms, \'\') AS perms,
-                                      a.email_format, a.is_admin, a.state, a.type, a.skin,
+                                      IF(a.state = \'active\', CONCAT(at.perms, \',\', IF(a.user_perms IS NULL, \'\', a.user_perms)), \'\') AS perms,
+                                      a.user_perms, a.email_format, a.is_admin, a.state, a.type, at.description AS type_description, a.skin,
                                       FIND_IN_SET(\'watch\', a.flags) AS watch, a.comment,
                                       a.weak_password IS NOT NULL AS weak_access, g.g_account_name IS NOT NULL AS googleapps,
                                       a.token IS NOT NULL AS token_access, a.token, a.last_version,
@@ -235,6 +246,12 @@ class User extends PlUser
         $this->perm_flags = self::makePerms($this->perms, $this->is_admin);
     }
 
+    public function setPerms($perms)
+    {
+        $this->perms = $perms;
+        $this->perm_flags = null;
+    }
+
     // We do not want to store the password in the object.
     // So, fetch it 'on demand'
     public function password()
@@ -258,6 +275,16 @@ class User extends PlUser
             return '';
         }
         return $this->profile()->promo();
+    }
+
+    public function category()
+    {
+        $promo = $this->promo();
+        if (!empty($promo)) {
+            return $promo;
+        } else {
+            return $this->type_description;
+        }
     }
 
     public function firstName()
@@ -302,11 +329,11 @@ class User extends PlUser
 
     /** Return the main profile attached with this account if any.
      */
-    public function profile($forceFetch = false)
+    public function profile($forceFetch = false, $fields = 0x0000, $visibility = null)
     {
         if (!$this->_profile_fetched || $forceFetch) {
             $this->_profile_fetched = true;
-            $this->_profile = Profile::get($this);
+            $this->_profile = Profile::get($this, $fields, $visibility);
         }
         return $this->_profile;
     }
@@ -318,12 +345,26 @@ class User extends PlUser
         return !is_null($this->profile());
     }
 
+    /** Return true if given a reference to the profile of this user.
+     */
+    public function isMyProfile($other)
+    {
+        if (!$other) {
+            return false;
+        } else if ($other instanceof Profile) {
+            $profile = $this->profile();
+            return $profile && $profile->id() == $other->id();
+        }
+        return false;
+    }
+
     /** Check if the user can edit to given profile.
      */
     public function canEdit(Profile $profile)
     {
-        // XXX: Check permissions (e.g. secretary permission)
-        //      and flags from the profile
+        if ($this->checkPerms(User::PERM_EDIT_DIRECTORY)) {
+            return true;
+        }
         return XDB::fetchOneCell('SELECT  pid
                                     FROM  account_profiles
                                    WHERE  uid = {?} AND pid = {?}',
@@ -561,29 +602,36 @@ class User extends PlUser
 
     // Groupes X
     private $groups = null;
-    public function groups()
+    public function groups($institutions = false, $onlyPublic = false)
     {
         if (is_null($this->groups)) {
-            $this->groups = XDB::fetchAllAssoc('asso_id', 'SELECT  asso_id, perms, comm
-                                                             FROM  group_members
+            $this->groups = XDB::fetchAllAssoc('asso_id', 'SELECT  gm.asso_id, gm.perms, gm.comm,
+                                                                   g.diminutif, g.nom, g.site, g.cat,
+                                                                   g.pub
+                                                             FROM  group_members AS gm
+                                                       INNER JOIN  groups AS g ON (g.id = gm.asso_id)
                                                             WHERE  uid = {?}',
                                                 $this->id());
         }
-        return $this->groups;
-    }
-
-    public function groupNames($institutions = false)
-    {
-        if ($institutions) {
-            $where = ' AND (g.cat = \'GroupesX\' OR g.cat = \'Institutions\')';
+        if (!$institutions && !$onlyPublic) {
+            return $this->groups;
         } else {
-            $where = '';
+            $result = array();
+            foreach ($this->groups as $id=>$data) {
+                if ($institutions) {
+                    if ($data['cat'] != Group::CAT_GROUPESX && $data['cat'] != Group::CAT_INSTITUTIONS) {
+                        continue;
+                    }
+                }
+                if ($onlyPublic) {
+                    if ($data['pub'] != 'public') {
+                        continue;
+                    }
+                }
+                $result[$id] = $data;
+            }
+            return $result;
         }
-        return XDB::fetchAllAssoc('SELECT  g.diminutif, g.nom, g.site
-                                     FROM  group_members AS gm
-                                LEFT JOIN  groups AS g ON (g.id = gm.asso_id)
-                                    WHERE  gm.uid = {?}' . $where,
-                                  $this->id());
     }
 
     public function groupCount()
@@ -635,13 +683,15 @@ class User extends PlUser
         }
 
         if ($clearAll) {
+            global $globals;
+
             $groupIds = XDB::iterator('SELECT  asso_id
                                          FROM  group_members
                                         WHERE  uid = {?}',
                                       $this->id());
             while ($groupId = $groupIds->next()) {
                 $group = Group::get($groupId);
-                if ($group->notif_unsub) {
+                if (!empty($group) && $group->notif_unsub) {
                     $mailer = new PlMailer('xnetgrp/unsubscription-notif.mail.tpl');
                     $admins = $group->iterAdmins();
                     while ($admin = $admins->next()) {
@@ -654,17 +704,22 @@ class User extends PlUser
                 }
             }
 
-            $tables = array('account_auth_openid', 'gannounce_read', 'contacts',
-                            'email_options', 'gemail_send_save', 'emails',
-                            'forum_innd', 'gforum_profiles', 'forum_subs',
-                            'gapps_accounts', 'ggapps_nicknames', 'group_announces_read',
-                            'group_members', 'ggroup_member_sub_requests', 'reminder', 'requests',
-                            'requests_hidden');
-
+            $tables = array('account_auth_openid', 'announce_read', 'contacts',
+                            'email_options', 'email_send_save', 'emails',
+                            'forum_innd', 'forum_profiles', 'forum_subs',
+                            'group_announces_read', 'group_members',
+                            'group_member_sub_requests', 'reminder', 'requests',
+                            'requests_hidden', 'aliases');
             foreach ($tables as $t) {
                 XDB::execute('DELETE FROM  ' . $t . '
                                     WHERE  uid = {?}',
-                    $this->id());
+                             $this->id());
+            }
+
+            foreach (array('gapps_accounts', 'gapps_nicknames') as $t) {
+                XDB::execute('DELETE FROM  ' . $t . '
+                                    WHERE  l_userid = {?}',
+                             $this->id());
             }
 
             XDB::execute("UPDATE  accounts
@@ -685,14 +740,14 @@ class User extends PlUser
             if ($globals->mailstorage->googleapps_domain) {
                 require_once 'googleapps.inc.php';
 
-                if (GoogleAppsAccount::account_status($uid)) {
-                    $account = new GoogleAppsAccount($user);
+                if (GoogleAppsAccount::account_status($this->id())) {
+                    $account = new GoogleAppsAccount($this);
                     $account->suspend();
                 }
             }
         }
 
-        $mmlist = new MMList($this);
+        $mmlist = new MMList(S::user());
         $mmlist->kill($this->hruid, $clearAll);
     }
 
@@ -749,16 +804,12 @@ class User extends PlUser
         }
 
         // Updates user in following tables.
-        foreach (array('group_announces', 'payment_transactions', 'log_sessions') as $table) {
+        foreach (array('group_announces', 'payment_transactions', 'log_sessions', 'group_events') as $table) {
             XDB::execute('UPDATE  ' . $table . '
                              SET  uid = {?}
                            WHERE  uid = {?}',
                          $newuser->id(), $this->id());
         }
-        XDB::execute('UPDATE  group_events
-                         SET  organisateur_uid = {?}
-                       WHERE  organisateur_uid = {?}',
-                     $newuser->id(), $this->id());
 
         // Merges user in following tables, ie updates when possible, then deletes remaining occurences of the old user.
         foreach (array('group_announces_read', 'group_event_participants', 'group_member_sub_requests', 'group_members') as $table) {
@@ -781,7 +832,7 @@ class User extends PlUser
         XDB::execute('UPDATE  log_last_sessions
                          SET  id = {?}
                        WHERE  uid = {?}',
-                     $newuser->id());
+                     $lastSession, $newuser->id());
         XDB::execute('DELETE FROM  accounts
                             WHERE  uid = {?}',
                      $this->id());
@@ -796,6 +847,11 @@ class User extends PlUser
         $flags->addFlag(PERMS_USER);
         if ($is_admin) {
             $flags->addFlag(PERMS_ADMIN);
+        }
+
+        // Access to private directory implies access to 'less'-private version.
+        if ($flags->hasFlag('directory_private')) {
+            $flags->addFlag('directory_ax');
         }
         return $flags;
     }

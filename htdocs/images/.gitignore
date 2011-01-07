@@ -1,2 +1,4 @@
 # Hide banana stuff
 /banana
+# ignore jstree related stuff
+/jstree.png

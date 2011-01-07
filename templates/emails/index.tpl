@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -22,12 +22,18 @@
 
 <h1>Gestion de mes emails</h1>
 
-{javascript name=ajax}
 {literal}
 <script type="text/javascript">
-  function bestaliasUpdated() {
-    showTempMessage('bestalias-msg', "Le changement a bien été effectué.", true);
-  }
+  //<![CDATA[
+  $(document).ready(function() {
+      var url = '{/literal}{$globals->baseurl}/emails/best/{literal}';
+      var tok = '{/literal}{xsrf_token}{literal}';
+      var msg = "Le changement a bien été effectué.";
+      $(':radio[name=best]').change(function() {
+          $("#bestalias-msg").successMessage(url + $(this).val() + '?token=' + tok, msg);
+      });
+  });
+  //]]>
 </script>
 {/literal}
 
@@ -38,7 +44,7 @@
     Tes adresses polytechniciennes sont&nbsp;:<br />
     <div>
       {iterate from=$aliases item=a}
-      <label><input type='radio' {if $a.best}checked="checked"{/if} name='best' value='{$a.alias}' onclick='Ajax.update_html(null,"{$globals->baseurl}/emails/best/{$a.alias}?token={xsrf_token}",bestaliasUpdated)' />
+      <label><input type='radio' {if $a.best}checked="checked"{/if} name='best' value='{$a.alias}' />
       {if $a.a_vie}(**){/if}{if $a.cent_ans}(*){/if} <strong>{$a.alias}</strong>@{#globals.mail.domain#} et
       @{#globals.mail.domain2#}</label>
       {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}

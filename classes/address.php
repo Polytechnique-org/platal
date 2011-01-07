@@ -1,0 +1,927 @@
+<?php
+/***************************************************************************
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
+ *  http://opensource.polytechnique.org/                                   *
+ *                                                                         *
+ *  This program is free software; you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation; either version 2 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program; if not, write to the Free Software            *
+ *  Foundation, Inc.,                                                      *
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
+ ***************************************************************************/
+
+/** Class Address is meant to perform most of the access to the table profile_addresses.
+ *
+ * profile_addresses describes an Address, which can be related to either a
+ * Profile, a Job or a Company:
+ * - for a Profile:
+ *   - `type` is set to 'home'
+ *   - `pid` is set to the related profile pid (in profiles)
+ *   - `id` is the id of the address in the list of those related to that profile
+ *   - `jobid` is set to 0
+ *
+ * - for a Company:
+ *   - `type` is set to 'hq'
+ *   - `pid` is set to 0
+ *   - `jobid` is set to the id of the company (in profile_job_enum)
+ *   - `id` is set to 0 (only one address per Company)
+ *
+ * - for a Job:
+ *   - `type` is set to 'job'
+ *   - `pid` is set to the pid of the Profile of the related Job (in both profiles and profile_job)
+ *   - `id` is the id of the job to which we refer (in profile_job)
+ *   - `jobid` is set to 0
+ *
+ * Thus an Address can be linked to a Company, a Profile, or a Job.
+ */
+class Address
+{
+    const LINK_JOB     = 'job';
+    const LINK_COMPANY = 'hq';
+    const LINK_PROFILE = 'home';
+
+    // List of all available postal formattings.
+    private static $formattings = array('FRANCE' => 'FR');
+
+    // Abbreviations to be used to format French postal addresses.
+    private static $streetAbbreviations = array(
+        'ALLEE'                        => 'ALL',
+        'AVENUE'                       => 'AV',
+        'BOULEVARD'                    => 'BD',
+        'CENTRE'                       => 'CTRE',
+        'CENTRE COMMERCIAL'            => 'CCAL',
+        'IMMEUBLE'                     => 'IMM',
+        'IMMEUBLES'                    => 'IMM',
+        'IMPASSE'                      => 'IMP',
+        'LIEU-DIT'                     => 'LD',
+        'LOTISSEMENT'                  => 'LOT',
+        'PASSAGE'                      => 'PAS',
+        'PLACE'                        => 'PL',
+        'RESIDENCE'                    => 'RES',
+        'ROND-POINT'                   => 'RPT',
+        'ROUTE'                        => 'RTE',
+        'SQUARE'                       => 'SQ',
+        'VILLAGE'                      => 'VLGE',
+        'ZONE D\'ACTIVITE'             => 'ZA',
+        'ZONE D\'AMENAGEMENT CONCERTE' => 'ZAC',
+        'ZONE D\'AMENAGEMENT DIFFERE'  => 'ZAD',
+        'ZONE INDUSTRIELLE'            => 'ZI'
+    );
+    private static $otherAbbreviations = array(
+        'ADJUDANT'               => 'ADJ',
+        'AERODROME'              => 'AERD',
+        'AEROGARE'               => 'AERG',
+        'AERONAUTIQUE'           => 'AERN',
+        'AEROPORT'               => 'AERP',
+        'AGENCE'                 => 'AGCE',
+        'AGRICOLE'               => 'AGRIC',
+        'ANCIEN'                 => 'ANC',
+        'ANCIENNEMENT'           => 'ANC',
+        'APPARTEMENT'            => 'APP',
+        'APPARTEMENTS'           => 'APP',
+        'ARMEMENT'               => 'ARMT',
+        'ARRONDISSEMENT'         => 'ARR',
+        'ASPIRANT'               => 'ASP',
+        'ASSOCIATION'            => 'ASSOC',
+        'ASSURANCE'              => 'ASSUR',
+        'ATELIER'                => 'AT',
+        'BARAQUEMENT'            => 'BRQ',
+        'BAS'                    => 'BAS',
+        'BASSE'                  => 'BAS',
+        'BASSES'                 => 'BAS',
+        'BATAILLON'              => 'BTN',
+        'BATAILLONS'             => 'BTN',
+        'BATIMENT'               => 'BAT',
+        'BATIMENTS'              => 'BAT',
+        'BIS'                    => 'B',
+        'BOITE POSTALE'          => 'BP',
+        'CABINET'                => 'CAB',
+        'CANTON'                 => 'CANT',
+        'CARDINAL'               => 'CDL',
+        'CASE POSTALE'           => 'CP',
+        'CHAMBRE'                => 'CHBR',
+        'CITADELLE'              => 'CTD',
+        'COLLEGE'                => 'COLL',
+        'COLONEL'                => 'CNL',
+        'COLONIE'                => 'COLO',
+        'COMITE'                 => 'CTE',
+        'COMMANDANT'             => 'CDT',
+        'COMMERCIAL'             => 'CIAL',
+        'COMMUNE'                => 'COM',
+        'COMMUNAL'               => 'COM',
+        'COMMUNAUX'              => 'COM',
+        'COMPAGNIE'              => 'CIE',
+        'COMPAGNON'              => 'COMP',
+        'COMPAGNONS'             => 'COMP',
+        'COOPERATIVE'            => 'COOP',
+        'COURSE SPECIALE'        => 'CS',
+        'CROIX'                  => 'CRX',
+        'DELEGATION'             => 'DELEG',
+        'DEPARTEMENTAL'          => 'DEP',
+        'DEPARTEMENTAUX'         => 'DEP',
+        'DIRECTEUR'              => 'DIR',
+        'DIRECTECTION'           => 'DIR',
+        'DIVISION'               => 'DIV',
+        'DOCTEUR'                => 'DR',
+        'ECONOMIE'               => 'ECO',
+        'ECONOMIQUE'             => 'ECO',
+        'ECRIVAIN'               => 'ECRIV',
+        'ECRIVAINS'              => 'ECRIV',
+        'ENSEIGNEMENT'           => 'ENST',
+        'ENSEMBLE'               => 'ENS',
+        'ENTREE'                 => 'ENT',
+        'ENTREES'                => 'ENT',
+        'ENTREPRISE'             => 'ENTR',
+        'EPOUX'                  => 'EP',
+        'EPOUSE'                 => 'EP',
+        'ETABLISSEMENT'          => 'ETS',
+        'ETAGE'                  => 'ETG',
+        'ETAT MAJOR'             => 'EM',
+        'EVEQUE'                 => 'EVQ',
+        'FACULTE'                => 'FAC',
+        'FORET'                  => 'FOR',
+        'FORESTIER'              => 'FOR',
+        'FRANCAIS'               => 'FR',
+        'FRANCAISE'              => 'FR',
+        'FUSILIER'               => 'FUS',
+        'GENDARMERIE'            => 'GEND',
+        'GENERAL'                => 'GAL',
+        'GOUVERNEMENTAL'         => 'GOUV',
+        'GOUVERNEUR'             => 'GOU',
+        'GRAND'                  => 'GD',
+        'GRANDE'                 => 'GDE',
+        'GRANDES'                => 'GDES',
+        'GRANDS'                 => 'GDS',
+        'HAUT'                   => 'HT',
+        'HAUTE'                  => 'HTE',
+        'HAUTES'                 => 'HTES',
+        'HAUTS'                  => 'HTS',
+        'HOPITAL'                => 'HOP',
+        'HOPITAUX'               => 'HOP',
+        'HOSPICE'                => 'HOSP',
+        'HOSPITALIER'            => 'HOSP',
+        'HOTEL'                  => 'HOT',
+        'INFANTERIE'             => 'INFANT',
+        'INFERIEUR'              => 'INF',
+        'INFERIEUR'              => 'INF',
+        'INGENIEUR'              => 'ING',
+        'INSPECTEUR'             => 'INSP',
+        'INSTITUT'               => 'INST',
+        'INTERNATIONAL'          => 'INTERN',
+        'INTERNATIONALE'         => 'INTERN',
+        'LABORATOIRE'            => 'LABO',
+        'LIEUTENANT'             => 'LT',
+        'LIEUTENANT DE VAISSEAU' => 'LTDV',
+        'MADAME'                 => 'MME',
+        'MADEMOISELLE'           => 'MLLE',
+        'MAGASIN'                => 'MAG',
+        'MAISON'                 => 'MAIS',
+        'MAITRE'                 => 'ME',
+        'MARECHAL'               => 'MAL',
+        'MARITIME'               => 'MAR',
+        'MEDECIN'                => 'MED',
+        'MEDICAL'                => 'MED',
+        'MESDAMES'               => 'MMES',
+        'MESDEMOISELLES'         => 'MLLES',
+        'MESSIEURS'              => 'MM',
+        'MILITAIRE'              => 'MIL',
+        'MINISTERE'              => 'MIN',
+        'MONSEIGNEUR'            => 'MGR',
+        'MONSIEUR'               => 'M',
+        'MUNICIPAL'              => 'MUN',
+        'MUTUEL'                 => 'MUT',
+        'NATIONAL'               => 'NAL',
+        'NOTRE DAME'             => 'ND',
+        'NOUVEAU'                => 'NOUV',
+        'NOUVEL'                 => 'NOUV',
+        'NOUVELLE'               => 'NOUV',
+        'OBSERVATOIRE'           => 'OBS',
+        'PASTEUR'                => 'PAST',
+        'PETIT'                  => 'PT',
+        'PETITE'                 => 'PTE',
+        'PETITES'                => 'PTES',
+        'PETITS'                 => 'PTS',
+        'POLICE'                 => 'POL',
+        'PREFET'                 => 'PREF',
+        'PREFECTURE'             => 'PREF',
+        'PRESIDENT'              => 'PDT',
+        'PROFESSEUR'             => 'PR',
+        'PROFESSIONNEL'          => 'PROF',
+        'PROFESSIONNELE'         => 'PROF',
+        'PROLONGE'               => 'PROL',
+        'PROLONGEE'              => 'PROL',
+        'PROPRIETE'              => 'PROP',
+        'QUATER'                 => 'Q',
+        'QUINQUIES'              => 'C',
+        'RECTEUR'                => 'RECT',
+        'REGIMENT'               => 'RGT',
+        'REGION'                 => 'REG',
+        'REGIONAL'               => 'REG',
+        'REGIONALE'              => 'REG',
+        'REPUBLIQUE'             => 'REP',
+        'RESTAURANT'             => 'REST',
+        'SAINT'                  => 'ST',
+        'SAINTE'                 => 'STE',
+        'SAINTES'                => 'STES',
+        'SAINTS'                 => 'STS',
+        'SANATORIUM'             => 'SANA',
+        'SERGENT'                => 'SGT',
+        'SERVICE'                => 'SCE',
+        'SOCIETE'                => 'SOC',
+        'SOUS COUVERT'           => 'SC',
+        'SOUS-PREFET'            => 'SPREF',
+        'SUPERIEUR'              => 'SUP',
+        'SUPERIEURE'             => 'SUP',
+        'SYNDICAT'               => 'SYND',
+        'TECHNICIEN'             => 'TECH',
+        'TECHNICIENNE'           => 'TECH',
+        'TECHNICIQUE'            => 'TECH',
+        'TER'                    => 'T',
+        'TRI SERVICE ARRIVEE'    => 'TSA',
+        'TUNNEL'                 => 'TUN',
+        'UNIVERSITAIRE'          => 'UNVT',
+        'UNIVERSITE'             => 'UNIV',
+        'VELODROME'              => 'VELOD',
+        'VEUVE'                  => 'VVE',
+        'VIEILLE'                => 'VIEL',
+        'VIEILLES'               => 'VIEL',
+        'VIEUX'                  => 'VX'
+    );
+    private static $entrepriseAbbreviations = array(
+        'COOPERATIVE D\'UTILISATION DE MATERIEL AGRICOLE EN COMMUN' => 'CUMA',
+        'ETABLISSEMENT PUBLIC A CARACTERE INDUSTRIEL ET COMMERCIAL' => 'EPIC',
+        'ETABLISSEMENT PUBLIC ADMINISTRATIF'                        => 'EPA',
+        'GROUPEMENT AGRICOLE D\'EXPLOITATION EN COMMUN'             => 'GAEC',
+        'GROUPEMENT D\'INTERET ECONOMIQUE'                          => 'GIE',
+        'GROUPEMENT D\'INTERET PUBLIC'                              => 'GIP',
+        'GROUPEMENT EUROPEEN D\'INTERET ECONOMIQUE'                 => 'GEIE',
+        'OFFICE PUBLIC D\'HABITATION A LOYER MODERE'                => 'OPHLM',
+        'SOCIETE A RESPONSABILITE LIMITEE'                          => 'SARL',
+        'SOCIETE ANONYME'                                           => 'SA',
+        'SOCIETE CIVILE DE PLACEMENT COLLECTIF IMMOBILIER'          => 'SCPI',
+        'SOCIETE CIVILE PROFESSIONNELLE'                            => 'SCP',
+        'SOCIETE COOPERATIVE OUVRIERE DE PRODUCTION ET DE CREDIT'   => 'SCOP',
+        'SOCIETE D\'AMENAGEMENT FONCIER ET D\'EQUIPEMENT RURAL'     => 'SAFER',
+        'SOCIETE D\'ECONOMIE MIXTE'                                 => 'SEM',
+        'SOCIETE D\'INTERET COLLECTIF AGRICOLE'                     => 'SICA',
+        'SOCIETE D\'INVESTISSEMENT A CAPITAL VARIABLE'              => 'SICAV',
+        'SOCIETE EN NOM COLLECTIF'                                  => 'SNC',
+        'SOCIETE IMMOBILIERE POUR LE COMMERCE ET L\'INDUSTRIE'      => 'SICOMI',
+        'SOCIETE MIXTE D\'INTERET AGRICOLE'                         => 'SMIA',
+        'SYNDICAT INTERCOMMUNAL A VOCATION MULTIPLE'                => 'SIVOM',
+        'SYNDICAT INTERCOMMUNAL A VOCATION UNIQUE'                  => 'SIVU'
+    );
+
+    // Primary key fields: the quadruplet ($pid, $jobid, $type, $id) defines a unique address.
+    public $pid = 0;
+    public $jobid = 0;
+    public $type = Address::LINK_PROFILE;
+    public $id = 0;
+
+    // Geocoding fields.
+    public $accuracy = 0;
+    public $text = '';
+    public $postalText = '';
+    public $postalCode = null;
+    public $localityId = null;
+    public $subAdministrativeAreaId = null;
+    public $administrativeAreaId = null;
+    public $localityName = null;
+    public $subAdministrativeAreaName = null;
+    public $administrativeAreaName = null;
+    public $localityNameLocal = null;
+    public $subAdministrativeAreaNameLocal = null;
+    public $administrativeAreaNameLocal = null;
+    public $countryId = null;
+    public $latitude = null;
+    public $longitude = null;
+    public $north = null;
+    public $south = null;
+    public $east = null;
+    public $west = null;
+    public $geocodedText = null;
+    public $geocodeChosen = null;
+
+    // Database's field required for both 'home' and 'job' addresses.
+    public $pub = 'ax';
+
+    // Database's fields required for 'home' addresses.
+    public $flags = null; // 'current', 'temporary', 'secondary', 'mail', 'cedex', 'deliveryIssue'
+    public $comment = null;
+    public $current = null;
+    public $temporary = null;
+    public $secondary = null;
+    public $mail = null;
+    public $deliveryIssue = null;
+
+    // Remaining fields that do not belong to profile_addresses.
+    public $phones = array();
+    public $error = false;
+    public $changed = 0;
+    public $removed = 0;
+
+    public function __construct(array $data = array())
+    {
+        if (count($data) > 0) {
+            foreach ($data as $key => $val) {
+                $this->$key = $val;
+            }
+        }
+
+        if (!is_null($this->flags)) {
+            $this->flags = new PlFlagSet($this->flags);
+        } else {
+            static $flags = array('current', 'temporary', 'secondary', 'mail', 'deliveryIssue');
+
+            $this->flags = new PlFlagSet();
+            foreach ($flags as $flag) {
+                if (!is_null($this->$flag) && ($this->$flag == 1 || $this->$flag == 'on')) {
+                    $this->flags->addFlag($flag, 1);
+                    $this->$flag = null;
+                }
+                $this->flags->addFlag('cedex', (strpos(strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"),
+                                                                               array('', "\n"), $this->text)), 'CEDEX')) !== false);
+            }
+        }
+    }
+
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    public function phones()
+    {
+        return $this->phones;
+    }
+
+    public function addPhone(Phone &$phone)
+    {
+        if ($phone->link_type == Phone::LINK_ADDRESS && $phone->pid == $this->pid) {
+            $this->phones[$phone->uniqueId()] = $phone;
+        }
+    }
+
+    public function hasFlag($flag)
+    {
+        return ($this->flags != null && $this->flags->hasFlag($flag));
+    }
+
+    public function addFlag($flag)
+    {
+        $this->flags->addFlag($flag);
+    }
+
+    /** Auxilary function for formatting postal addresses.
+     * If the needle is found in the haystack, it notifies the substitution's
+     * success, modifies the length accordingly and returns either the matching
+     * substitution or the needle.
+     */
+    private function substitute($needle, $haystack, &$length, &$success, $trim = false)
+    {
+        if (array_key_exists($needle, $haystack)) {
+            $success = true;
+            $length -= (strlen($needle) - strlen($haystack[$needle]));
+            return $haystack[$needle];
+        } elseif ($trim) {
+            $success = true;
+            if (strlen($needle) > 4) {
+                $length -= (strlen($needle) - 4);
+                $needle = $needle{4};
+            }
+        }
+        return $needle;
+    }
+
+    /** Checks if the line corresponds to a French street line.
+     * A line is considered a French street line if it starts by between 1 and 4 numbers.
+     */
+    private function isStreetFR($line)
+    {
+        return preg_match('/^\d{1,4}\D/', $line);
+    }
+
+    /** Retrieves a French street number and slit the rest of the line into an array.
+     * @param $words: array containing the rest of the line (a word per cell).
+     * @param $line: line to consider.
+     * Returns the street number.
+     */
+    private function getStreetNumberFR(&$line)
+    {
+        // First we define numbers and separators.
+        $numberReq = '(\d{1,4})\s*(BIS|TER|QUATER|[A-Z])?';
+        $separatorReq = '\s*(?:\\|-|&|A|ET)?\s*';
+
+        // Then we retrieve the number(s) and the rest of the line.
+        // $matches contains:
+        //  -0: the full patern, here the given line,
+        //  -1: the number,
+        //  -2: its optionnal quantifier,
+        //  -3: an optionnal second number,
+        //  -4: the second number's optionnal quantifier,
+        //  -5: the rest of the line.
+        preg_match('/^' . $numberReq . '(?:' . $separatorReq . $numberReq . ')?\s+(.*)/', $line, $matches);
+        $number = $matches[1];
+        $line = $matches[5];
+
+        // If there is a precision on the address, we concatenate it to the number.
+        if ($matches[2] != '') {
+            $number .= $matches[2]{0};
+        } elseif ($matches[4] != '') {
+            $number .= $matches[4]{0};
+        }
+
+        return $number;
+    }
+
+    /** Checks if the line corresponds to a French locality line.
+     * A line is considered a French locality line if it starts by exactly a
+     * postal code of exactly 5 numbers.
+     */
+    private function isLocalityFR($line)
+    {
+        return preg_match('/^\d{5}\D/', $line);
+    }
+
+    /** Retrieves a French postal code and slit the rest of the line into an array.
+     * @param $words: array containing the rest of the line (a word per cell).
+     * @param $line: line to consider.
+     * Returns the postal code, and cuts it out from the line.
+     */
+    private function getPostalCodeFR(&$line)
+    {
+        $number = substr($line, 0, 5);
+        $line = trim(substr($line, 5));
+        return $number;
+    }
+
+    /** Returns the address formated for French postal use (cf AFNOR XPZ 10-011).
+     * A postal addresse containts at most 6 lines of at most 38 characters each:
+     *  - addressee's identification ("MONSIEUR JEAN DURAND", "DURAND SA"…),
+     *  - delivery point identification ("CHEZ TOTO APPARTEMENT 2", "SERVICE ACHAT"…),
+     *  - building localisation complement ("ENTREE A BATIMENT DES JONQUILLES", "ZONE INDUSTRIELLE OUEST"…),
+     *  - N° and street name ("25 RUE DES FLEURS", "LES VIGNES"…),
+     *  - delivery service, street localisation complement ("BP 40122", "BP 40112 AREYRES"…),
+     *  - postal code and locality or cedex code and cedex ("33500 LIBOURNE", "33506 LIBOURNE CEDEX"…).
+     * Punctuation must be removed, all leters must be uppercased.
+     * Both locality and street name must not take more than 32 characters.
+     *
+     * @param $arrayText: array containing the address to be formated, one
+     * address line per array line.
+     * @param $count: array size.
+     */
+    private function formatPostalAddressFR($arrayText)
+    {
+        // First removes country if any.
+        $count = count($arrayText);
+        if ($arrayText[$count - 1] == 'FRANCE') {
+            unset($arrayText[$count - 1]);
+            --$count;
+        }
+
+        // All the lines must have less than 38 characters but street and
+        // locality lines whose limit is 32 characters.
+        foreach ($arrayText as $lineNumber => $line) {
+            if ($isStreetLine = $this->isStreetFR($line)) {
+                $formattedLine = $this->getStreetNumberFR($line) . ' ';
+                $limit = 32;
+            } elseif ($this->isLocalityFR($line)) {
+                $formattedLine = $this->getPostalCodeFR($line) . ' ';
+                $limit = 32;
+            } else {
+                $formattedLine = '';
+                $limit = 38;
+            }
+
+            $words = explode(' ', $line);
+            $count = count($words);
+            $length = $count - 1;
+            foreach ($words as $word) {
+                $length += strlen($word);
+            }
+
+            // Checks is length is ok. Otherwise, we try to shorten words and
+            // update the length of the current line accordingly.
+            for ($i = 0; $i < $count && $length > $limit; ++$i) {
+                $success = false;
+                if ($isStreetLine) {
+                    $sub = $this->substitute($words[$i], Address::$streetAbbreviations, $length, $success, ($i == 0));
+                }
+                // Entreprises' substitution are only suitable for the first two lines.
+                if ($lineNumber <= 2 && !$success) {
+                    $sub = $this->substitute($words[$i], Address::$entrepriseAbbreviations, $length, $success);
+                }
+                if (!$success) {
+                    $sub = $this->substitute($words[$i], Address::$otherAbbreviations, $length, $success);
+                }
+
+                $formattedLine .= $sub . ' ';
+            }
+            for (; $i < $count; ++$i) {
+                $formattedLine .= $words[$i] . ' ';
+            }
+            $arrayText[$lineNumber] = trim($formattedLine);
+        }
+
+        return implode("\n", $arrayText);
+    }
+
+    // Formats postal addresses.
+    // First erases punctuation, accents… Then uppercase the address and finally
+    // calls the country's dedicated formatting function.
+    public function formatPostalAddress()
+    {
+        // Performs rough formatting.
+        $text = mb_strtoupper(replace_accent($this->text));
+        $text = str_replace(array(',', ';', '.', ':', '!', '?', '"', '«', '»'), '', $text);
+        $text = preg_replace('/( |\t)+/', ' ', $text);
+        $arrayText = explode("\n", $text);
+        $arrayText = array_map('trim', $arrayText);
+
+        // Formats according to country rules. Thus we first identify the
+        // country, then apply corresponding formatting or translate country
+        // into default language.
+        $count = count($arrayText);
+        if (in_array(strtoupper($this->countryId), Address::$formattings)) {
+            $text = call_user_func(array($this, 'formatPostalAddress' . strtoupper($this->countryId)), $arrayText);
+        } else {
+            list($countryId, $country) = XDB::fetchOneRow('SELECT  gc.iso_3166_1_a2, gc.country
+                                                             FROM  geoloc_countries AS gc
+                                                       INNER JOIN  geoloc_languages AS gl ON (gc.iso_3166_1_a2 = gl.iso_3166_1_a2)
+                                                            WHERE  gc.iso_3166_1_a2 = {?} OR gl.countryPlain = {?} OR gc.countryPlain = {?}',
+                                                          $this->countryId, $arrayText[$count - 1], $arrayText[$count - 1]);
+            if (is_null($countryId)) {
+                $text = $this->formatPostalAddressFR($arrayText);
+            } elseif (in_array(strtoupper($countryId), Address::$formattings)) {
+                $text = call_user_func(array($this, 'formatPostalAddress' . strtoupper($countryId)), $arrayText);
+            } else {
+                $arrayText[$count - 1] = mb_strtoupper(replace_accent($country));
+                $text = implode("\n", $arrayText);
+            }
+        }
+
+        $this->postalText = $text;
+    }
+
+    public function format(array $format = array())
+    {
+        if (empty($format)) {
+            $format['requireGeocoding'] = false;
+            $format['stripGeocoding'] = false;
+            $format['postalText'] = false;
+        } else {
+            foreach (array('requireGeocoding', 'stripGeocoding', 'postalText') as $type) {
+                $format[$type] = (isset($format[$type])) ? $format[$type] : false;
+            }
+        }
+        $this->text = trim($this->text);
+        if ($this->removed == 1) {
+            $this->text = '';
+            return true;
+        }
+
+        if ($format['requireGeocoding'] || $this->changed == 1) {
+            $gmapsGeocoder = new GMapsGeocoder();
+            $gmapsGeocoder->getGeocodedAddress($this);
+            $this->changed = 0;
+            $this->error = !empty($this->geocodedText);
+        }
+        if ($format['stripGeocoding'] || ($this->type == self::LINK_COMPANY && $this->error) || $this->geocodeChosen === '0') {
+            $gmapsGeocoder = new GMapsGeocoder();
+            $gmapsGeocoder->stripGeocodingFromAddress($this);
+            if ($this->geocodeChosen === '0') {
+                $mailer = new PlMailer('profile/geocoding.mail.tpl');
+                $mailer->assign('text', $this->text);
+                $mailer->assign('geoloc', $this->geocodedText);
+                $mailer->send();
+            }
+        }
+        if ($this->countryId == '') {
+            $this->countryId = null;
+        }
+        $this->geocodeChosen = null;
+        $this->phones = Phone::formatFormArray($this->phones, $this->error, new ProfileVisibility($this->pub));
+        if ($format['postalText']) {
+            $this->formatPostalAddress();
+        }
+        return !$this->error;
+    }
+
+    public function toFormArray()
+    {
+        $address = array(
+            'accuracy'                       => $this->accuracy,
+            'text'                           => $this->text,
+            'postalText'                     => $this->postalText,
+            'postalCode'                     => $this->postalCode,
+            'localityId'                     => $this->localityId,
+            'subAdministrativeAreaId'        => $this->subAdministrativeAreaId,
+            'administrativeAreaId'           => $this->administrativeAreaId,
+            'countryId'                      => $this->countryId,
+            'localityName'                   => $this->localityName,
+            'subAdministrativeAreaName'      => $this->subAdministrativeAreaName,
+            'administrativeAreaName'         => $this->administrativeAreaName,
+            'localityNameLocal'              => $this->localityNameLocal,
+            'subAdministrativeAreaNameLocal' => $this->subAdministrativeAreaNameLocal,
+            'administrativeAreaNameLocal'    => $this->administrativeAreaNameLocal,
+            'latitude'                       => $this->latitude,
+            'longitude'                      => $this->longitude,
+            'north'                          => $this->north,
+            'south'                          => $this->south,
+            'east'                           => $this->east,
+            'west'                           => $this->west,
+            'error'                          => $this->error,
+            'changed'                        => $this->changed,
+            'removed'                        => $this->removed,
+        );
+        if (!is_null($this->geocodedText)) {
+            $address['geocodedText'] = $this->geocodedText;
+            $address['geocodeChosen'] = $this->geocodeChosen;
+        }
+
+        if ($this->type == self::LINK_PROFILE || $this->type == self::LINK_JOB) {
+            $address['pub'] = $this->pub;
+        }
+        if ($this->type == self::LINK_PROFILE) {
+            static $flags = array('current', 'temporary', 'secondary', 'mail', 'cedex', 'deliveryIssue');
+
+            foreach ($flags as $flag) {
+                $address[$flag] = $this->flags->hasFlag($flag);
+            }
+            $address['comment'] = $this->comment;
+            $address['phones']  = Phone::formatFormArray($this->phones);
+        }
+
+        return $address;
+    }
+
+    private function toString()
+    {
+        $address = $this->text;
+        if ($this->type == self::LINK_PROFILE || $this->type == self::LINK_JOB) {
+            static $pubs = array('public' => 'publique', 'ax' => 'annuaire AX', 'private' => 'privé');
+            $address .= ' (affichage ' . $pubs[$this->pub];
+        }
+        if ($this->type == self::LINK_PROFILE) {
+            static $flags = array(
+                'current'       => 'actuelle',
+                'temporary'     => 'temporaire',
+                'secondary'     => 'secondaire',
+                'mail'          => 'conctactable par courier',
+                'deliveryIssue' => 'n\'habite pas à l\'adresse indiquée',
+                'cedex'         => 'type cédex',
+            );
+
+            if (!$this->flags->hasFlag('temporary')) {
+                $address .= ', permanente';
+            }
+            if (!$this->flags->hasFlag('secondary')) {
+                $address .= ', principale';
+            }
+            foreach ($flags as $flag => $flagName) {
+                if ($this->flags->hasFlag($flag)) {
+                    $address .= ', ' . $flagName;
+                }
+            }
+            if ($this->comment) {
+                $address .= ', commentaire : ' . $this->comment;
+            }
+            if ($phones = Phone::formArrayToString($this->phones)) {
+                $address .= ', ' . $phones;
+            }
+        } elseif ($this->type == self::LINK_JOB) {
+            $address .= ')';
+        }
+        return $address;
+    }
+
+    private function isEmpty()
+    {
+        return (!$this->text || $this->text == '');
+    }
+
+    public function save()
+    {
+        static $areas = array('administrativeArea', 'subAdministrativeArea', 'locality');
+
+        $this->format(array('postalText' => true));
+        if (!$this->isEmpty()) {
+            foreach ($areas as $area) {
+                Geocoder::getAreaId($this, $area);
+            }
+
+            XDB::execute('INSERT INTO  profile_addresses (pid, jobid, type, id, flags, accuracy,
+                                                          text, postalText, postalCode, localityId,
+                                                          subAdministrativeAreaId, administrativeAreaId,
+                                                          countryId, latitude, longitude, pub, comment,
+                                                          north, south, east, west)
+                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
+                                        {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                         $this->pid, $this->jobid, $this->type, $this->id, $this->flags, $this->accuracy,
+                         $this->text, $this->postalText, $this->postalCode, $this->localityId,
+                         $this->subAdministrativeAreaId, $this->administrativeAreaId,
+                         $this->countryId, $this->latitude, $this->longitude,
+                         $this->pub, $this->comment,
+                         $this->north, $this->south, $this->east, $this->west);
+
+            if ($this->type == self::LINK_PROFILE) {
+                Phone::savePhones($this->phones, $this->pid, Phone::LINK_ADDRESS, $this->id);
+            }
+        }
+    }
+
+    public function delete()
+    {
+        XDB::execute('DELETE FROM  profile_addresses
+                            WHERE  pid = {?} AND jobid = {?} AND type = {?} AND id = {?}',
+                     $this->pid, $this->jobid, $this->type, $this->id);
+    }
+
+    static public function deleteAddresses($pid, $type, $jobid = null, $deletePrivate = true)
+    {
+        $where = '';
+        if (!is_null($pid)) {
+            $where = XDB::format(' AND pid = {?}', $pid);
+        }
+        if (!is_null($jobid)) {
+            $where = XDB::format(' AND jobid = {?}', $jobid);
+        }
+        XDB::execute('DELETE FROM  profile_addresses
+                            WHERE  type = {?}' . $where . (($deletePrivate) ? '' : ' AND pub IN (\'public\', \'ax\')'),
+                     $type);
+        if ($type == self::LINK_PROFILE) {
+            Phone::deletePhones($pid, Phone::LINK_ADDRESS, null, $deletePrivate);
+        }
+    }
+
+    /** Saves addresses into the database.
+     * @param $data: an array of form formatted addresses.
+     * @param $pid, $type, $linkid: pid, type and id concerned by the update.
+     */
+    static public function saveFromArray(array $data, $pid, $type = self::LINK_PROFILE, $linkid = null)
+    {
+        foreach ($data as $id => $value) {
+            if (!is_null($linkid)) {
+                $value['id'] = $linkid;
+            } else {
+                $value['id'] = $id;
+            }
+            if (!is_null($pid)) {
+                $value['pid'] = $pid;
+            }
+            if (!is_null($type)) {
+                $value['type'] = $type;
+            }
+            $address = new Address($value);
+            $address->save();
+        }
+    }
+
+    static private function formArrayWalk(array $data, $function, &$success = true, $requiresEmptyAddress = false)
+    {
+        $addresses = array();
+        foreach ($data as $item) {
+            $address = new Address($item);
+            $success = ($address->format() && $success);
+            if (!$address->isEmpty()) {
+                $addresses[] = call_user_func(array($address, $function));
+            }
+        }
+        if (count($address) == 0 && $requiresEmptyAddress) {
+            $address = new Address();
+            $addresses[] = call_user_func(array($address, $function));
+        }
+        return $addresses;
+    }
+
+    // Formats an array of form addresses into an array of form formatted addresses.
+    static public function formatFormArray(array $data, &$success = true)
+    {
+        // Only a single address can be the profile's current address and she must have one.
+        $hasCurrent = false;
+        foreach ($data as $key => &$address) {
+            if (isset($address['current']) && $address['current']) {
+                if ($hasCurrent) {
+                    $address['current'] = false;
+                } else {
+                    $hasCurrent = true;
+                }
+            }
+        }
+        if (!$hasCurrent && count($value) > 0) {
+            foreach ($value as &$address) {
+                $address['current'] = true;
+                break;
+            }
+        }
+
+        return self::formArrayWalk($data, 'toFormArray', $success, true);
+    }
+
+    static public function formArrayToString(array $data)
+    {
+        return implode(', ', self::formArrayWalk($data, 'toString'));
+    }
+
+    static public function iterate(array $pids = array(), array $types = array(),
+                                   array $jobids = array(), array $pubs = array())
+    {
+        return new AddressIterator($pids, $types, $jobids, $pubs);
+    }
+}
+
+/** Iterator over a set of Phones
+ *
+ * @param $pid, $type, $jobid, $pub
+ *
+ * The iterator contains the phones that correspond to the value stored in the
+ * parameters' arrays.
+ */
+class AddressIterator implements PlIterator
+{
+    private $dbiter;
+
+    public function __construct(array $pids, array $types, array $jobids, array $pubs)
+    {
+        $where = array();
+        if (count($pids) != 0) {
+            $where[] = XDB::format('(pa.pid IN {?})', $pids);
+        }
+        if (count($types) != 0) {
+            $where[] = XDB::format('(pa.type IN {?})', $types);
+        }
+        if (count($jobids) != 0) {
+            $where[] = XDB::format('(pa.jobid IN {?})', $jobids);
+        }
+        if (count($pubs) != 0) {
+            $where[] = XDB::format('(pa.pub IN {?})', $pubs);
+        }
+        $sql = 'SELECT  pa.pid, pa.jobid, pa.type, pa.id, pa.flags,
+                        pa.accuracy, pa.text, pa.postalText, pa.postalCode,
+                        pa.localityId, pa.subAdministrativeAreaId,
+                        pa.administrativeAreaId, pa.countryId,
+                        pa.latitude, pa.longitude, pa.north, pa.south, pa.east, pa.west,
+                        pa.pub, pa.comment,
+                        gl.name AS locality, gl.nameLocal AS localityLocal,
+                        gs.name AS subAdministrativeArea, gs.nameLocal AS subAdministrativeAreaLocal,
+                        ga.name AS administrativeArea, ga.nameLocal AS administrativeAreaLocal,
+                        gc.country, gc.countryLocal
+                  FROM  profile_addresses             AS pa
+             LEFT JOIN  geoloc_localities             AS gl ON (gl.id = pa.localityId)
+             LEFT JOIN  geoloc_administrativeareas    AS ga ON (ga.id = pa.administrativeAreaId)
+             LEFT JOIN  geoloc_subadministrativeareas AS gs ON (gs.id = pa.subAdministrativeAreaId)
+             LEFT JOIN  geoloc_countries              AS gc ON (gc.iso_3166_1_a2 = pa.countryId)
+                 ' . ((count($where) > 0) ? 'WHERE  ' . implode(' AND ', $where) : '') . '
+              ORDER BY  pa.pid, pa.jobid, pa.id';
+        $this->dbiter = XDB::iterator($sql);
+    }
+
+    public function next()
+    {
+        if (is_null($this->dbiter)) {
+            return null;
+        }
+        $data = $this->dbiter->next();
+        if (is_null($data)) {
+            return null;
+        }
+        // Adds phones to addresses.
+        $it = Phone::iterate(array($data['pid']), array(Phone::LINK_ADDRESS), array($data['id']));
+        while ($phone = $it->next()) {
+            $data['phones'][$phone->id] = $phone->toFormArray();
+        }
+        return new Address($data);
+    }
+
+    public function total()
+    {
+        return $this->dbiter->total();
+    }
+
+    public function first()
+    {
+        return $this->dbiter->first();
+    }
+
+    public function last()
+    {
+        return $this->dbiter->last();
+    }
+
+    public function value()
+    {
+        return $this->dbiter;
+    }
+}
+
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+?>

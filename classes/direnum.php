@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -46,27 +46,32 @@ class DirEnum
     const NATIONALITIES  = 'nationalities';
     const COUNTRIES      = 'countries';
     const ADMINAREAS     = 'adminareas';
+    const SUBADMINAREAS  = 'subadminareas';
     const LOCALITIES     = 'localities';
 
     const COMPANIES      = 'companies';
-    const SECTORS        = 'sectors';
     const JOBDESCRIPTION = 'jobdescription';
+    const JOBTERMS       = 'jobterms';
 
     const NETWORKS       = 'networking';
 
     const MEDALS         = 'medals';
 
+    const ACCOUNTTYPES   = 'accounttypes';
+    const SKINS          = 'skins';
+
     static private $enumerations = array();
 
     static private function init($type)
     {
-        if (S::has('__DE_' . $type)) {
+        if (Platal::globals()->cacheEnabled() && S::has('__DE_' . $type)) {
             self::$enumerations[$type] = S::v('__DE_' . $type);
         } else {
             $cls = "DE_" . ucfirst($type);
             $obj = new $cls();
             self::$enumerations[$type] = $obj;
-            if ($obj->capabilities & DirEnumeration::SAVE_IN_SESSION) {
+            if (Platal::globals()->cacheEnabled()
+                 && $obj->capabilities & DirEnumeration::SAVE_IN_SESSION) {
                 S::set('__DE_' . $type, $obj);
             }
         }
@@ -531,26 +536,26 @@ class DE_EducationFields extends DirEnumeration
 // {{{ class DE_Corps
 class DE_Corps extends DirEnumeration
 {
-    protected $idfield   = 'corps_enum.id';
-    protected $valfield  = 'corps_enum.name';
-    protected $valfield2 = 'corps_enum.abbrev';
-    protected $from      = 'corps_enum';
+    protected $idfield   = 'profile_corps_enum.id';
+    protected $valfield  = 'profile_corps_enum.name';
+    protected $valfield2 = 'profile_corps_enum.abbrev';
+    protected $from      = 'profile_corps_enum';
 
-    protected $ac_unique = 'corps.pid';
-    protected $ac_join   = 'INNER JOIN corps ON (corps.current_corpsid = corps_enum.id)';
+    protected $ac_unique = 'profile_corps.pid';
+    protected $ac_join   = 'INNER JOIN profile_corps ON (profile_corps.current_corpsid = profile_corps_enum.id)';
 }
 // }}}
 
 // {{{ class DE_CorpsRanks
 class DE_CorpsRanks extends DirEnumeration
 {
-    protected $idfield   = 'corps_rank_enum.id';
-    protected $valfield  = 'corps_rank_enum.name';
-    protected $valfield2 = 'corps_rank_enum.abbrev';
-    protected $from      = 'corps_rank_enum';
+    protected $idfield   = 'profile_corps_rank_enum.id';
+    protected $valfield  = 'profile_corps_rank_enum.name';
+    protected $valfield2 = 'profile_corps_rank_enum.abbrev';
+    protected $from      = 'profile_corps_rank_enum';
 
-    protected $ac_unique = 'corps.pid';
-    protected $ac_join   = 'INNER JOIN corps ON (corps.rankid = corps_rank_enum.id)';
+    protected $ac_unique = 'profile_corps.pid';
+    protected $ac_join   = 'INNER JOIN profile_corps ON (profile_corps.rankid = profile_corps_rank_enum.id)';
 }
 // }}}
 
@@ -574,8 +579,8 @@ class DE_Nationalities extends DirEnumeration
 class DE_Countries extends DirEnumeration
 {
     protected $idfield   = 'geoloc_countries.iso_3166_1_a2';
-    protected $valfield  = 'geoloc_countries.countryFR';
-    protected $valfield2 = 'geoloc_countries.country';
+    protected $valfield  = 'geoloc_countries.country';
+    protected $valfield2 = 'geoloc_countries.countryEn';
     protected $from      = 'geoloc_countries';
 
     protected $ac_join   = 'INNER JOIN profile_addresses ON (geoloc_countries.iso_3166_1_a2 = profile_addresses.countryId)';
@@ -592,6 +597,19 @@ class DE_AdminAreas extends DE_WithSuboption
     protected $from      = 'geoloc_administrativeareas';
 
     protected $ac_join   = 'INNER JOIN profile_addresses ON (profile_addresses.administrativeAreaId = geoloc_administrativeareas.id)';
+    protected $ac_unique = 'profile_addresses.pid';
+}
+// }}}
+
+// {{{ class DE_SubAdminAreas
+class DE_SubAdminAreas extends DE_WithSuboption
+{
+    protected $idfield   = 'geoloc_subadministrativeareas.id';
+    protected $optfield  = 'geoloc_subadministrativeareas.administrativearea';
+    protected $valfield  = 'geoloc_subadministrativeareas.name';
+    protected $from      = 'geoloc_subadministrativeareas';
+
+    protected $ac_join   = 'INNER JOIN profile_addresses ON (profile_addresses.subadministrativeAreaId = geoloc_subadministrativeareas.id)';
     protected $ac_unique = 'profile_addresses.pid';
 }
 // }}}
@@ -623,18 +641,6 @@ class DE_Companies extends DirEnumeration
 }
 // }}}
 
-// {{{ class DE_Sectors
-class DE_Sectors extends DirEnumeration
-{
-    protected $idfield   = 'profile_job_sector_enum.id';
-    protected $valfield  = 'profile_job_sector_enum.name';
-    protected $from      = 'profile_job_sector_enum';
-
-    protected $ac_join   = 'INNER JOIN profile_job ON (profile_job_sector_enum.id = profile_job.sectorid)';
-    protected $ac_unique = 'profile_job.pid';
-}
-// }}}
-
 // {{{ class DE_JobDescription
 class DE_JobDescription extends DirEnumeration
 {
@@ -643,6 +649,30 @@ class DE_JobDescription extends DirEnumeration
     protected $idfield  = 'profile_job.pid';
 
     protected $ac_unique = 'profile_job.pid';
+}
+// }}}
+
+// {{{ class DE_JobTerms
+class DE_JobTerms extends DirEnumeration
+{
+    // {{{ function getAutoComplete
+    public function getAutoComplete($text)
+    {
+        $tokens = JobTerms::tokenize($text.'%');
+        if (count($tokens) == 0) {
+            return PlIteratorUtils::fromArray(array());
+        }
+        $token_join = JobTerms::token_join_query($tokens, 'e');
+        return XDB::iterator('SELECT  e.jtid AS id, e.full_name AS field, COUNT(DISTINCT p.pid) AS nb
+                                 FROM  profile_job_term_enum AS e
+                           INNER JOIN  profile_job_term_relation AS r ON (r.jtid_1 = e.jtid)
+                           INNER JOIN  profile_job_term AS p ON (r.jtid_2 = p.jtid)
+                           '.$token_join.'
+                             GROUP BY  e.jtid
+                             ORDER BY  nb DESC, field
+                                LIMIT ' . self::AUTOCOMPLETE_LIMIT);
+    }
+    // }}}
 }
 // }}}
 
@@ -670,6 +700,30 @@ class DE_Medals extends DirEnumeration
 
     protected $ac_join = 'INNER JOIN profile_medals ON (profile_medals.mid = profile_medal_enum.id)';
     protected $ac_unique = 'profile_medals.pid';
+}
+// }}}
+
+/** ACCOUNTS
+ */
+// {{{ class DE_AccountTypes
+class DE_AccountTypes extends DirEnumeration
+{
+    public $capabilities = 0x005; // self::HAS_OPTIONS | self::SAVE_IN_SESSION;
+
+    protected $from     = 'account_types';
+    protected $valfield = 'perms';
+    protected $idfield  = 'type';
+}
+// }}}
+
+// {{{ class DE_Skins
+class DE_Skins extends DirEnumeration
+{
+    public $capabilities = 0x005; // self::HAS_OPTIONS | self::SAVE_IN_SESSION;
+
+    protected $from      = 'skins';
+    protected $valfield  = 'name';
+    protected $idfield   = 'skin_tpl';
 }
 // }}}
 

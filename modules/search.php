@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -25,10 +25,14 @@ class SearchModule extends PLModule
     {
         return array(
             'search'              => $this->make_hook('quick',          AUTH_PUBLIC),
-            'search/adv'          => $this->make_hook('advanced',       AUTH_COOKIE),
+            'search/adv'          => $this->make_hook('advanced',       AUTH_COOKIE, 'directory_ax'),
             'advanced_search.php' => $this->make_hook('redir_advanced', AUTH_PUBLIC),
-            'search/autocomplete' => $this->make_hook('autocomplete',   AUTH_COOKIE, 'user', NO_AUTH),
-            'search/list'         => $this->make_hook('list',           AUTH_COOKIE, 'user', NO_AUTH),
+            'search/autocomplete' => $this->make_hook('autocomplete',   AUTH_COOKIE, 'directory_ax', NO_AUTH),
+            'search/list'         => $this->make_hook('list',           AUTH_COOKIE, 'directory_ax', NO_AUTH),
+            'jobs'                => $this->make_hook('referent',       AUTH_COOKIE),
+            'emploi'              => $this->make_hook('referent',       AUTH_COOKIE),
+            'referent/search'     => $this->make_hook('referent',       AUTH_COOKIE),
+            'search/referent/countries' => $this->make_hook('referent_countries',     AUTH_COOKIE),
         );
     }
 
@@ -43,11 +47,15 @@ class SearchModule extends PLModule
         Platal::page()->assign('formulaire',1);
     }
 
-    function handler_quick(&$page, $action = null, $subaction = null)
+    /** 
+     * $model: The way of presenting the results: minifiche, trombi, geoloc.
+     * $byletter: Show only names beginning with this letter
+     */
+    function handler_quick(&$page, $model = null, $byletter = null)
     {
         global $globals;
 
-        if (Env::has('quick') || $action == 'geoloc') {
+        if (Env::has('quick') || $model == 'geoloc') {
             $quick = Env::t('quick');
             if (S::logged() && !Env::has('page')) {
                 S::logger()->log('search', 'quick=' . $quick);
@@ -58,7 +66,6 @@ class SearchModule extends PLModule
                 $page->changeTpl('search/index.tpl');
                 $page->setTitle('Annuaire');
                 $page->assign('formulaire', 1);
-                $page->addJsLink('ajax.js');
                 return;
             }
 
@@ -66,7 +73,9 @@ class SearchModule extends PLModule
             if (S::admin()) {
                 $list .= '|admin|adm|ax';
             }
-            if (preg_match('/^(' . $list . '):([-a-z]+(\.[-a-z]+(\.\d{2,4})?)?)$/', replace_accent($quick), $matches)) {
+            $suffixes = array_keys(DirEnum::getOptions(DirEnum::ACCOUNTTYPES));
+            $suffixes = implode('|', $suffixes);
+            if (preg_match('/^(' . $list . '):([-a-z]+(\.[-a-z]+(\.(?:[md]?\d{2,4}|' . $suffixes . '))?)?)$/', replace_accent($quick), $matches)) {
                 $login = $matches[2];
                 switch($matches[1]) {
                   case 'admin': case 'adm':
@@ -110,20 +119,17 @@ class SearchModule extends PLModule
             $page->assign('formulaire', 0);
 
             require_once 'userset.inc.php';
-            $view = new SearchSet(true, $action == 'geoloc' && substr($subaction, -3) == 'swf');
-            $view->addMod('minifiche', 'Mini-fiches', true, array('with_score' => true));
+            $view = new QuickSearchSet();
+            $view->addMod('minifiche', 'Mini-fiches', true, array('with_score' => true, 'starts_with' => $byletter));
             if (S::logged() && !Env::i('nonins')) {
                 $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true, 'with_score' => true));
                 // TODO: Reactivate when the new map is completed.
                 // $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
             }
-            $view->apply('search', $page, $action, $subaction);
+            $view->apply('search', $page, $model);
 
             $nb_tot = $view->count();
             $page->assign('search_results_nb', $nb_tot);
-            if ($subaction) {
-                return;
-            }
             if (!S::logged() && $nb_tot > $globals->search->public_max) {
                 $page->trigError('Votre recherche a généré trop de résultats pour un affichage public.');
             } elseif ($nb_tot > $globals->search->private_max) {
@@ -133,21 +139,27 @@ class SearchModule extends PLModule
             }
         } else {
             $page->assign('formulaire',1);
-            $page->addJsLink('ajax.js');
         }
 
         $page->changeTpl('search/index.tpl');
         $page->setTitle('Annuaire');
     }
 
-    function handler_advanced(&$page, $action = null, $subaction = null)
+    /** $model is the way of presenting the results: minifiche, trombi, geoloc.
+     */
+    function handler_advanced(&$page, $model = null, $byletter = null)
     {
         global $globals;
-        require_once 'geocoding.inc.php';
         $page->assign('advanced',1);
         $page->addJsLink('jquery.autocomplete.js');
 
-        if (!Env::has('rechercher') && $action != 'geoloc') {
+        $networks = DirEnum::getOptions(DirEnum::NETWORKS);
+        $networks[-1] = 'Tous types';
+        $networks[0] = '-';
+        ksort($networks);
+        $page->assign('networking_types', $networks);
+
+        if (!Env::has('rechercher') && $model != 'geoloc') {
             $this->form_prepare();
         } else {
             if (!Env::has('page')) {
@@ -155,28 +167,38 @@ class SearchModule extends PLModule
             }
 
             require_once 'userset.inc.php';
-            $view = new SearchSet(false, $action == 'geoloc' && substr($subaction, -3) == 'swf');
-            $view->addMod('minifiche', 'Mini-fiches', true);
-            $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true));
-            // TODO: Reactivate when the new map is completed.
-            // $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
-            $view->apply('search/adv', $page, $action, $subaction);
+            // Enable X.org fields for X.org admins, and AX fields for AX secretaries.
+            $view = new AdvancedSearchSet(S::admin(),
+                                          S::user()->checkPerms(User::PERM_EDIT_DIRECTORY));
 
-            if ($subaction) {
-                return;
-            }
-            $nb_tot = $view->count();
-            if ($nb_tot > $globals->search->private_max) {
+            if (!$view->isValid()) {
                 $this->form_prepare();
-                $page->trigError('Recherche trop générale.');
-            } else if ($nb_tot == 0) {
-                $this->form_prepare();
-                $page->trigError('Il n\'existe personne correspondant à ces critères dans la base !');
+                $page->trigError('Recherche invalide.');
+            } else {
+                $view->addMod('minifiche', 'Mini-fiches', true, array('starts_with' => $byletter));
+                $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true));
+                // TODO: Reactivate when the new map is completed.
+                // $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
+                if (S::user()->checkPerms(User::PERM_EDIT_DIRECTORY) || S::admin()) {
+                    $view->addMod('addresses', 'Adresses postales', false);
+                }
+                $view->apply('search/adv', $page, $model);
+
+                $nb_tot = $view->count();
+                if ($nb_tot > $globals->search->private_max) {
+                    $this->form_prepare();
+                    if ($model != 'addresses' && (S::user()->checkPerms(User::PERM_EDIT_DIRECTORY) || S::admin())) {
+                        $page->assign('suggestAddresses', true);
+                    }
+                    $page->trigError('Recherche trop générale.');
+                } else if ($nb_tot == 0) {
+                    $this->form_prepare();
+                    $page->trigError('Il n\'existe personne correspondant à ces critères dans la base !');
+                }
             }
         }
 
-        $page->changeTpl('search/index.tpl', $action == 'mini' ? SIMPLE : SKINNED);
-        $page->addJsLink('ajax.js');
+        $page->changeTpl('search/index.tpl', $model == 'mini' ? SIMPLE : SKINNED);
         $page->assign('public_directory',0);
     }
 
@@ -218,7 +240,7 @@ class SearchModule extends PLModule
             'city'               => DirEnum::LOCALITIES,
             'countryTxt'         => DirEnum::COUNTRIES,
             'entreprise'         => DirEnum::COMPANIES,
-            'secteurTxt'         => DirEnum::SECTORS,
+            'jobtermTxt'         => DirEnum::JOBTERMS,
             'description'        => DirEnum::JOBDESCRIPTION,
             'nationaliteTxt'     => DirEnum::NATIONALITIES,
             'schoolTxt'          => DirEnum::EDUSCHOOLS,
@@ -247,9 +269,13 @@ class SearchModule extends PLModule
                 $res .= "\n";
             }
         }
-        XDB::query('REPLACE INTO  search_autocomplete
-                          VALUES  ({?}, {?}, {?}, NOW())',
-                    $type, $q, $res);
+        if ($nbResults == 0) {
+            $res = $q."|-2\n";
+        }
+        XDB::query('INSERT INTO  search_autocomplete (name, query, result, generated)
+                         VALUES  ({?}, {?}, {?}, NOW())
+        ON DUPLICATE KEY UPDATE  result = VALUES(result), generated = VALUES(generated)',
+                   $type, $q, $res);
         echo $res;
         exit();
     }
@@ -287,11 +313,19 @@ class SearchModule extends PLModule
           case 'nationalite':
             $ids = DirEnum::getOptionsIter(DirEnum::NATIONALITIES);
             break;
-          case 'region':
+          case 'administrativearea':
             if (Env::has('country')) {
                 $ids = DirEnum::getOptionsIter(DirEnum::ADMINAREAS, Env::v('country'));
             } else {
                 $ids = DirEnum::getOptionsIter(DirEnum::ADMINAREAS);
+            }
+            $page->assign('onchange', 'changeAdministrativeArea(this.value)');
+            break;
+          case 'subadministrativearea':
+            if (Env::has('administrativearea')) {
+                $ids = DirEnum::getOptionsIter(DirEnum::SUBADMINAREAS, Env::v('administrativearea'));
+            } else {
+                $ids = DirEnum::getOptionsIter(DirEnum::SUBADMINAREAS);
             }
             break;
           case 'school':
@@ -301,9 +335,22 @@ class SearchModule extends PLModule
           case 'section':
             $ids = DirEnum::getOptionsIter(DirEnum::SECTIONS);
             break;
-          case 'secteur':
-            $ids = DirEnum::getOptionsIter(DirEnum::SECTORS);
-            break;
+          case 'jobterm':
+            if (Env::has('jtid')) {
+                JobTerms::ajaxGetBranch(&$page, JobTerms::ONLY_JOBS);
+                return;
+            } else {
+                pl_content_headers('text/xml');
+                echo '<div>'; // global container so that response is valid xml
+                echo '<input name="jobtermTxt" type="text" style="display:none" size="32" />';
+                echo '<input name="jobterm" type="hidden"/>';
+                echo '<div class="term_tree"></div>'; // container where to create the tree
+                echo '<script type="text/javascript" src="javascript/jquery.jstree.js"></script>';
+                echo '<script type="text/javascript" src="javascript/jobtermstree.js"></script>';
+                echo '<script type="text/javascript">createJobTermsTree(".term_tree", "search/list/jobterm", "search", "searchForJobTerm");</script>';
+                echo '</div>';
+                exit();
+            }
           default: exit();
         }
         if (isset($idVal)) {
@@ -314,6 +361,65 @@ class SearchModule extends PLModule
         pl_content_headers("text/xml");
         $page->changeTpl('include/field.select.tpl', NO_SKIN);
         $page->assign('list', $ids);
+    }
+
+    function handler_referent(&$page, $action = null, $subaction = null)
+    {
+        global $globals;
+
+        $wp = new PlWikiPage('Docs.Emploi');
+        $wp->buildCache();
+
+        $page->setTitle('Emploi et Carrières');
+
+        // Count mentors
+        $res = XDB::query("SELECT count(distinct pid) FROM profile_mentor_term");
+        $page->assign('mentors_number', $res->fetchOneCell());
+
+        $page->addJsLink('jquery.autocomplete.js');
+
+        // Search for mentors matching filters
+        require_once 'ufbuilder.inc.php';
+        $ufb = new UFB_MentorSearch();
+        if (!$ufb->isEmpty()) {
+            require_once 'userset.inc.php';
+            $ufc = $ufb->getUFC();
+            $set = new ProfileSet($ufc);
+            $set->addMod('mentor', 'Référents');
+            $set->apply('referent/search', $page, $action, $subaction);
+            $nb_tot = $set->count();
+            if ($nb_tot > $globals->search->private_max) {
+                $this->form_prepare();
+                $page->trigError('Recherche trop générale.');
+                $page->assign('plset_count', 0);
+            } else if ($nb_tot == 0) {
+                $this->form_prepare();
+                $page->trigError('Il n\'existe personne correspondant à ces critères dans la base.');
+            }
+        }
+
+        $page->changeTpl('search/referent.tpl');
+    }
+
+    /**
+     * Builds a select field to choose among countries that referents
+     * know about. Only referents linked to term (jtid) are displayed.
+     * @param $jtid id of job term to restrict referents
+     */
+    function handler_referent_countries(&$page, $jtid = null)
+    {
+        pl_content_headers("text/xml");
+        $page->changeTpl('include/field.select.tpl', NO_SKIN);
+        $page->assign('name', 'country');
+        $it = XDB::iterator("SELECT  gc.iso_3166_1_a2 AS id, gc.country AS field
+                               FROM  geoloc_countries       AS gc
+                         INNER JOIN  profile_mentor_country AS mp ON (mp.country = gc.iso_3166_1_a2)
+                         INNER JOIN  profile_mentor_term    AS mt ON (mt.pid = mp.pid)
+                         INNER JOIN  profile_job_term_relation AS jtr ON (jtr.jtid_2 = mt.jtid)
+                              WHERE  jtr.jtid_1 = {?}
+                           GROUP BY  iso_3166_1_a2
+                           ORDER BY  country", $jtid);
+        $page->assign('list', $it);
     }
 }
 

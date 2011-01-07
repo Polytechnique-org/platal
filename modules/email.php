@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2010 Polytechnique.org                              *
+ *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -24,14 +24,14 @@ class EmailModule extends PLModule
     function handlers()
     {
         return array(
-            'emails'                  => $this->make_hook('emails',      AUTH_COOKIE),
-            'emails/alias'            => $this->make_hook('alias',       AUTH_MDP),
-            'emails/antispam'         => $this->make_hook('antispam',    AUTH_MDP),
+            'emails'                  => $this->make_hook('emails',      AUTH_COOKIE, 'mail'),
+            'emails/alias'            => $this->make_hook('alias',       AUTH_MDP,    'mail'),
+            'emails/antispam'         => $this->make_hook('antispam',    AUTH_MDP,    'mail'),
             'emails/broken'           => $this->make_hook('broken',      AUTH_COOKIE),
-            'emails/redirect'         => $this->make_hook('redirect',    AUTH_MDP),
-            'emails/send'             => $this->make_hook('send',        AUTH_MDP),
+            'emails/redirect'         => $this->make_hook('redirect',    AUTH_MDP,    'mail'),
+            'emails/send'             => $this->make_hook('send',        AUTH_MDP,    'mail'),
             'emails/antispam/submit'  => $this->make_hook('submit',      AUTH_COOKIE),
-            'emails/test'             => $this->make_hook('test',        AUTH_COOKIE, 'user', NO_AUTH),
+            'emails/test'             => $this->make_hook('test',        AUTH_COOKIE, 'mail', NO_AUTH),
 
             'emails/rewrite/in'       => $this->make_hook('rewrite_in',  AUTH_PUBLIC),
             'emails/rewrite/out'      => $this->make_hook('rewrite_out', AUTH_PUBLIC),
@@ -106,8 +106,6 @@ class EmailModule extends PLModule
 
     function handler_alias(&$page, $action = null, $value = null)
     {
-        require_once 'validations.inc.php';
-
         global $globals;
 
         $page->changeTpl('emails/alias.tpl');
@@ -171,9 +169,9 @@ class EmailModule extends PLModule
                 }
 
                 //vérifier que l'alias n'est pas déja en demande
-                $it = new ValidateIterator();
+                $it = Validate::iterate('alias');
                 while($req = $it->next()) {
-                    if ($req->type == 'alias' and $req->alias == $alias_mail) {
+                    if ($req->alias == $alias_mail) {
                         $page->trigError("L'alias $alias_mail a déja été demandé.
                                     Tu ne peux donc pas l'obtenir pour l'instant.");
                         return ;
@@ -372,7 +370,6 @@ class EmailModule extends PLModule
     function handler_send(&$page)
     {
         $page->changeTpl('emails/send.tpl');
-        $page->addJsLink('ajax.js');
 
         $page->setTitle('Envoyer un email');
 
@@ -387,8 +384,9 @@ class EmailModule extends PLModule
                 $_POST['to_contacts'] = explode(';', @$_POST['to_contacts']);
                 $_POST['cc_contacts'] = explode(';', @$_POST['cc_contacts']);
                 $data = serialize($_POST);
-                XDB::execute("REPLACE INTO  email_send_save
-                                    VALUES  ({?}, {?})",
+                XDB::execute('INSERT INTO  email_send_save (uid, data)
+                                   VALUES  ({?}, {?})
+                  ON DUPLICATE KEY UPDATE  data = VALUES(data)',
                              S::user()->id('uid'), $data);
             }
             exit;
@@ -853,8 +851,6 @@ class EmailModule extends PLModule
             if ($list == '') {
                 $page->trigError('La liste est vide.');
             } else {
-                global $platal;
-
                 $broken_user_list = array();
                 $broken_list = explode("\n", $list);
                 sort($broken_list);
@@ -892,7 +888,7 @@ class EmailModule extends PLModule
                         if (!empty($x['nb_mails'])) {
                             $mail = new PlMailer('emails/broken.mail.tpl');
                             $mail->addTo("\"{$x['full_name']}\" <{$x['alias']}@"
-                                         . $globals->mail->domain . '>');
+                                         . Platal::globals()->mail->domain . '>');
                             $mail->assign('x', $x);
                             $mail->assign('email', $email);
                             $mail->send();
@@ -921,18 +917,24 @@ class EmailModule extends PLModule
                 pl_content_headers("text/x-csv");
 
                 $csv = fopen('php://output', 'w');
-                fputcsv($csv, array('nom', 'promo', 'alias', 'bounce', 'nbmails', 'url'), ';');
+                fputcsv($csv, array('nom', 'promo', 'alias', 'bounce', 'nbmails', 'url', 'corps', 'job', 'networking'), ';');
                 foreach ($broken_user_list as $alias => $mails) {
                     $sel = Xdb::query(
-                        "SELECT  acc.uid, count(e.email) AS nb_mails,
+                        "SELECT  acc.uid, count(DISTINCT(e.email)) AS nb_mails,
                                  IFNULL(pd.public_name, acc.full_name) AS fullname,
-                                 IFNULL(pd.promo, 0) AS promo
-                           FROM  aliases          AS a
-                     INNER JOIN  accounts         AS acc ON (a.uid = acc.uid)
-                      LEFT JOIN  emails           AS e   ON (e.uid = acc.uid
-                                                             AND FIND_IN_SET('active', e.flags) AND e.panne = 0)
-                      LEFT JOIN  account_profiles AS ap  ON (acc.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
-                      LEFT JOIN  profile_display  AS pd  ON (pd.pid = ap.pid)
+                                 IFNULL(pd.promo, 0) AS promo, IFNULL(pce.name, 'Aucun') AS corps,
+                                 IFNULL(pje.name, 'Aucun') AS job, GROUP_CONCAT(pn.address SEPARATOR ', ') AS networking
+                           FROM  aliases            AS a
+                     INNER JOIN  accounts           AS acc ON (a.uid = acc.uid)
+                      LEFT JOIN  emails             AS e   ON (e.uid = acc.uid
+                                                               AND FIND_IN_SET('active', e.flags) AND e.panne = 0)
+                      LEFT JOIN  account_profiles   AS ap  ON (acc.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
+                      LEFT JOIN  profile_display    AS pd  ON (pd.pid = ap.pid)
+                      LEFT JOIN  profile_corps      AS pc  ON (pc.pid = ap.pid)
+                      LEFT JOIN  profile_corps_enum AS pce ON (pc.current_corpsid = pce.id)
+                      LEFT JOIN  profile_job        AS pj  ON (pj.pid = ap.pid)
+                      LEFT JOIN  profile_job_enum   AS pje ON (pj.jobid = pje.id)
+                      LEFT JOIN  profile_networking AS pn  ON (pn.pid = ap.pid)
                           WHERE  a.alias = {?}
                        GROUP BY  acc.uid", $alias);
 
@@ -944,7 +946,8 @@ class EmailModule extends PLModule
                         }
                         fputcsv($csv, array($x['fullname'], $x['promo'], $alias,
                                             join(',', $mails), $x['nb_mails'],
-                                            'https://www.polytechnique.org/marketing/broken/' . $alias), ';');
+                                            'https://www.polytechnique.org/marketing/broken/' . $alias,
+                                            $x['corps'], $x['job'], $x['networking']), ';');
                     }
                 }
                 fclose($csv);

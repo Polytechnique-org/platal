@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -32,8 +32,6 @@
       <a href="admin/postfix/whitelist">Whitelist</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/postfix/delayed">Retardés</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/postfix/regexp_bounces">Regexps Bounces</a>
     </td>
   </tr>
   <tr class="pair">
@@ -96,27 +94,33 @@
     <td>
       <a href="admin/account/types">Types de comptes</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/add_accounts">Ajout de comptes</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/user">Édition</a>
+      <a href="admin/accounts">Gestion des comptes</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/homonyms">Homonymes</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/deaths">Décès</a>
     </td>
   </tr>
-  <tr class="impair">
+  <tr class="pair">
     <td class="titre">Administration</td>
     <td>
       <a href="admin/dead-but-active">Décédés actifs</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/accounts">Administrateurs/Désactivations</a>
+      <a href="admin/account/watch">Administrateurs/Désactivations</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/googleapps">Google Apps</a>
     </td>
   </tr>
 
   <tr><th colspan="2">{icon name=user_gray} Champs</th></tr>
+  <tr class="impair">
+    <td class="titre">Pays / Langues</td>
+    <td>
+      <a href="admin/geocoding/country">Pays</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/geocoding/language">Langues</a>
+    </td>
+  </tr>
   <tr class="impair">
     <td class="titre">Formation</td>
     <td>
@@ -129,11 +133,9 @@
       <a href="admin/education_degree_set">Niveau par formation</a>
     </td>
   </tr>
-  <tr class="impair">
+  <tr class="pair">
     <td class="titre">Emploi</td>
     <td>
-      <a href="admin/sectors">Secteurs</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/jobs">Entreprises</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/corps_enum">Corps</a>
@@ -141,7 +143,7 @@
       <a href="admin/corps_rank">Grade</a>
     </td>
   </tr>
-  <tr class="pair">
+  <tr class="impair">
     <td class="titre">Profil</td>
     <td>
       <a href="admin/binets">Binets</a>
@@ -153,9 +155,11 @@
       <a href="admin/names">Noms</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/networking">Networking</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/profile">Modifications récentes</a>
     </td>
   </tr>
-  <tr class="impair">
+  <tr class="pair">
     <td class="titre">Compte</td>
     <td>
       <a href="admin/skins">Skins</a>
