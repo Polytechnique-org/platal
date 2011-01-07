@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2011 Polytechnique.org                              *
+ *  Copyright (C) 2003-2010 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -1211,6 +1211,14 @@ class AdminModule extends PLModule
         return $warning;
     }
 
+    private static function updateCountry(array $item)
+    {
+        XDB::execute('UPDATE  geoloc_countries
+                         SET  countryPlain = {?}
+                       WHERE  iso_3166_1_a2 = {?}',
+                     mb_strtoupper(replace_accent($item['country'])), $item['iso_3166_1_a2']);
+    }
+
     private static function isLanguageIncomplete(array &$item)
     {
         if ($item['language'] == '') {
@@ -1220,7 +1228,9 @@ class AdminModule extends PLModule
         return false;
     }
 
-    function handler_geocoding(&$page, $action = null)
+    private static function updateLanguage(array $item) {}
+
+    function handler_geocoding(&$page, $category = null, $action = null, $id = null)
     {
         // Warning, this handler requires the following packages:
         //  * pkg-isocodes
@@ -1234,7 +1244,7 @@ class AdminModule extends PLModule
                 'id'           => 'iso_3166_1_a2',
                 'main_fields'  => array('iso_3166_1_a3', 'iso_3166_1_num', 'countryEn'),
                 'other_fields' => array('worldRegion', 'country', 'capital', 'nationality', 'nationalityEn',
-                                        'phonePrefix', 'phoneFormat', 'licensePlate', 'belongsTo', 'countryPlain')
+                                        'phonePrefix', 'phoneFormat', 'licensePlate', 'belongsTo')
             ),
             'language' => array(
                 'name'         => 'langages',
@@ -1246,16 +1256,94 @@ class AdminModule extends PLModule
 
             )
         );
-        //For  ISO  639,  the  first  three  columns are the ISO 639 2B code, the ISO 639 2T code and the ISO 639-1 code.  The third column may be
 
-        if (is_null($action) || !array_key_exists($action, $properties)) {
+        if (is_null($category) || !array_key_exists($category, $properties)) {
             pl_redirect('admin');
         }
 
-        $data = $properties[$action];
+        $data = $properties[$category];
+
+        if ($action == 'edit' || $action == 'add') {
+            $main_fields = array_merge(array($data['id']), $data['main_fields']);
+            $all_fields = array_merge($main_fields, $data['other_fields']);
+
+            if (is_null($id)) {
+                if (Post::has('new_id')) {
+                    $id = Post::v('new_id');
+                } else {
+                    pl_redirect('admin/geocoding/' . $category);
+                }
+            }
+
+            $list = array();
+            exec('isoquery --iso=' . $data['isocode'] . ' ' . $id, $list);
+            if (count($list) == 1) {
+                $array = explode("\t", $list[0]);
+                foreach ($main_fields as $i => $field) {
+                    $iso[$field] = $array[$i];
+                }
+            } else {
+                $iso = array();
+            }
+
+            if ($action == 'add') {
+                if (Post::has('new_id')) {
+                    S::assert_xsrf_token();
+                }
+
+                if (count($iso)) {
+                    $item = $iso;
+                } else {
+                    $item = array($data['id'] => $id);
+                }
+                XDB::execute('INSERT INTO  ' . $data['table'] . '(' . implode(', ', array_keys($item)) . ')
+                                   VALUES  ' . XDB::formatArray($item));
+                $page->trigSuccess($id . ' a bien été ajouté à la base.');
+            } elseif ($action == 'edit') {
+                if (Post::has('edit')) {
+                    S::assert_xsrf_token();
+
+                    $item = array();
+                    $set  = array();
+                    foreach ($all_fields as $field) {
+                        $item[$field] = Post::t($field);
+                        $set[] = $field . XDB::format(' = {?}', ($item[$field] ? $item[$field] : null));
+                    }
+                    XDB::execute('UPDATE  ' . $data['table'] . '
+                                     SET  ' . implode(', ', $set) . '
+                                   WHERE  ' . $data['id'] . ' = {?}',
+                                 $id);
+                    call_user_func_array(array('self', 'update' . ucfirst($category)), array($item));
+                    $page->trigSuccess($id . ' a bien été mis à jour.');
+                } elseif (Post::has('del')) {
+                    S::assert_xsrf_token();
+
+                    XDB::execute('DELETE FROM  ' . $data['table'] . '
+                                        WHERE  ' . $data['id'] . ' = {?}',
+                                 $id);
+                    $page->trigSuccessRedirect($id . ' a bien été supprimé.', 'admin/geocoding/' . $category);
+                } else {
+                    $item = XDB::fetchOneAssoc('SELECT  *
+                                                  FROM  ' . $data['table'] . '
+                                                 WHERE  ' . $data['id'] . ' = {?}',
+                                               $id);
+                }
+            }
+
+            $page->changeTpl('admin/geocoding_edit.tpl');
+            $page->setTitle('Administration - ' . ucfirst($data['name']));
+            $page->assign('category', $category);
+            $page->assign('name', $data['name']);
+            $page->assign('all_fields', $all_fields);
+            $page->assign('id', $id);
+            $page->assign('iso', $iso);
+            $page->assign('item', $item);
+            return;
+        }
 
         $page->changeTpl('admin/geocoding.tpl');
         $page->setTitle('Administration - ' . ucfirst($data['name']));
+        $page->assign('category', $category);
         $page->assign('name', $data['name']);
         $page->assign('id', $data['id']);
         $page->assign('main_fields', $data['main_fields']);
@@ -1308,7 +1396,7 @@ class AdminModule extends PLModule
                 }
                 if ($error == true) {
                     $erroneous[$id] = $item;
-                } elseif (call_user_func_array(array('self', 'is' . ucfirst($action) . 'Incomplete'), array(&$item))) {
+                } elseif (call_user_func_array(array('self', 'is' . ucfirst($category) . 'Incomplete'), array(&$item))) {
                     $incomplete[$id] = $item;
                 } else {
                     $remaining[$id] = $item;

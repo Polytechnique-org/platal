@@ -20,55 +20,35 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$name|ucfirst}</h1>
+<h1><a href="admin/geocoding/{$category}">{$name|ucfirst}&nbsp;: édition</a></h1>
 
-{foreach from=$lists item=list key=list_description}
-{if $list_description eq "manquant"}
-{assign var="fields" value=$main_fields}
-{assign var="action" value="add"}
-{else}
-{assign var="fields" value=$all_fields}
-{assign var="action" value="edit"}
-{/if}
-
-<h2>{$list|@count} {$name} {$list_description}{if $list|@count > 1}s{/if}.</h2>
-{if $list|@count}
-<table class="bicol">
-  <tr>
-    <th>{$id}</th>
-    {foreach from=$fields item=field}
-    <th>{$field}</th>
-    {/foreach}
-    <th>{$action}</th>
-  </tr>
-{foreach from=$list item=item key=key}
-  <tr>
-    <td>{$key}</td>
-    {foreach from=$fields item=field}
-    {assign var="error" value=$field|cat:'_error'}
-    {assign var="warning" value=$field|cat:'_warning'}
-    <td{if t($item.$error)} class="error"{elseif t($item.$warning)} class="warning"{/if}>{$item.$field}</td>
-    {/foreach}
-    <td><a href="admin/geocoding/{$category}/{$action}/{$key}">{icon name="page_edit"}</a></td>
-  </tr>
-{/foreach}
-  <tr>
-    <th>{$id}</th>
-    {foreach from=$fields item=field}
-    <th>{$field}</th>
-    {/foreach}
-    <th>{$action}</th>
-  </tr>
-</table>
-{/if}
-{/foreach}
-
-<form method="post" action="admin/geocoding/{$category}/add">
+<form method="post" action="admin/geocoding/{$category}/edit/{$id}">
   {xsrf_token_field}
-  <p>
-    Ajouter un champ (n'indiquer que l'indentifiant principal)&nbsp;:
-    <input type="text" name="new_id" size="3" maxlength="3" />
-    <input type="submit" value="Ajouter" />
+
+  {if $iso|@count eq 0}
+  <p class="error">Cet élément ne figure pas dans la liste ISO.</p>
+  {/if}
+  <table class="tinybicol">
+    <tr>
+      <th>Champs</th>
+      <th>Élément</th>
+      <th>Données ISO</th>
+    </tr>
+    {foreach from=$all_fields item=field}
+    <tr>
+      <th>{$field}</th>
+      <td>
+        <input type="text" name="{$field}" value="{$item.$field}"
+               {if t($iso.$field)}{if !$item.$field} class="warning"{elseif $iso.$field neq $item.$field} class="error"{/if}{/if} />
+      </td>
+      <td>{if t($iso.$field)}{$iso.$field}{/if}</td>
+    </tr>
+    {/foreach}
+  </table>
+
+  <p class="center">
+    <input type="submit" name="edit" value="Éditer" />&nbsp;&nbsp;&nbsp;
+    <input type="submit" name="del" value="Supprimer" onclick="return confirm('Es-tu sûr de vouloir supprimer cet élément&nbsp;?')" />
   </p>
 </form>
 
