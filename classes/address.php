@@ -874,7 +874,7 @@ class AddressIterator implements PlIterator
                         gl.name AS locality, gl.nameLocal AS localityLocal,
                         gs.name AS subAdministrativeArea, gs.nameLocal AS subAdministrativeAreaLocal,
                         ga.name AS administrativeArea, ga.nameLocal AS administrativeAreaLocal,
-                        gc.country, gc.countryLocal
+                        gc.country
                   FROM  profile_addresses             AS pa
              LEFT JOIN  geoloc_localities             AS gl ON (gl.id = pa.localityId)
              LEFT JOIN  geoloc_administrativeareas    AS ga ON (ga.id = pa.administrativeAreaId)
