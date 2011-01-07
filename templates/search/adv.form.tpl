@@ -524,6 +524,7 @@ function cleanForm(f) {
       </td>
         {/if}
         {if $smarty.session.auth ge AUTH_COOKIE}
+    </tr>
     <tr>
       <td colspan="2">
           <input type='checkbox' name='order' value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} id="order"/>
