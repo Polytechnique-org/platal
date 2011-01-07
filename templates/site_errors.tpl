@@ -23,7 +23,7 @@
 <script type="text/javascript">
 {literal}
 // <![CDATA[
-$(document).ready(function() {
+$(function() {
   $(".error_state").click(function() {
     $(this).children(".error_state_content").toggle();
   });

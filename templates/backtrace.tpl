@@ -23,7 +23,7 @@
 <script type="text/javascript">
 {literal}
 // <![CDATA[
-$(document).ready(function() {
+$(function() {
   $(".backtrace").click(function() {
     $(this).children(".bt_details").toggle();
   });

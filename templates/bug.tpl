@@ -48,7 +48,7 @@
   </form>
   <script type="text/javascript">
     {literal}
-    $(document).ready(function() {
+    $(function() {
       var edited=false;
       $('#flyspray_detail')
         .focus(function() {
