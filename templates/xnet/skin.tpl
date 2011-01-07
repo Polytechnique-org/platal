@@ -120,9 +120,9 @@
             <div>
               <select name="right" onchange="this.form.submit()" style="margin: 0; padding: 0">
                 {if hasPerm('admin') || ($suid && $smarty.session.suid.perms->hasFlag('admin'))}
-                <option value="admin" {if hasPerm('admin')}selected="selected"{/if}>Administrateur</option>
+                <option value="admin" {if hasPerm('admin') && !($suid && $smarty.session.suid.perms->hasFlag('admin'))}selected="selected"{/if}>Administrateur</option>
                 {/if}
-                <option value="anim" {if $is_admin && !hasPerm('admin')}selected="selected"{/if}>Animateur</option>
+                <option value="anim" {if $is_admin && !( hasPerm('admin') && !($suid && $smarty.session.suid.perms->hasFlag('admin')))}selected="selected"{/if}>Animateur</option>
                 <option value="member" {if !$is_admin && $is_member}selected="selected"{/if}>Membre</option>
                 <option value="logged" {if !$is_admin && !$is_member}selected="selected"{/if}>Non-membre</option>
               </select>
