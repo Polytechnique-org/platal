@@ -147,7 +147,7 @@ class ForumsBanana extends Banana
         } else {
             // Register custom Banana links and tabs
             if (!Banana::$profile['autoup']) {
-                Banana::$page->registerAction('<a href=\'javascript:dynpostkv("'
+                Banana::$page->registerAction('<a href=\'javascript:$.dynPost("'
                                     . $platal->path . '", "updateall", ' . time() . ')\'>'
                                     . 'Marquer tous les messages comme lus'
                                     . '</a>', array('forums', 'thread', 'message'));

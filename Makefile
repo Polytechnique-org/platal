@@ -73,7 +73,10 @@ htdocs/.htaccess: htdocs/.htaccess.in Makefile
 ##
 ## static content
 ##
-static: htdocs/javascript@VERSION
+static: htdocs/javascript/core.js htdocs/javascript@VERSION
+
+htdocs/javascript/core.js:
+	cd htdocs/javascript/ && ln -s ../../core/htdocs/javascript/core.js
 
 %@VERSION: % Makefile ChangeLog
 	cd $< && rm -f $(VERSION) && ln -sf . $(VERSION)
