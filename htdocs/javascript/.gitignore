@@ -1,9 +1,7 @@
 # Versioning links
-/0.10.*
-/0.f.*
 /1.*
 
 # jQuery and its plugins are downloaded by the Makefile
 /jquery*.*js
-/ui.*js
+/core.js
 !/jquery.autocomplete.js
