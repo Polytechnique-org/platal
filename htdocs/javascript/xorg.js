@@ -414,6 +414,14 @@ function checkPassword(box, okLabel) {
 
         xpost: function(source, data, onSuccess, onError, type) {
             return $.xajax(source, 'POST', data, onSuccess, onError, type);
+        },
+
+        closeOnEsc: function() {
+            return $(window).keydown(function (e) {
+                if (e.keyCode == 27) {
+                    window.close();
+                }
+            });
         }
     });
 

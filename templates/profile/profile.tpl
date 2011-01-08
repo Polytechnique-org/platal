@@ -36,6 +36,9 @@ function chgMainWinLoc(strPage)
     document.location = strPage;
   }
 }
+
+$($.closeOnEsc);
+
 //]]></script>
 {/literal}
 

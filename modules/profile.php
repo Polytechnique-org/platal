@@ -293,7 +293,6 @@ class ProfileModule extends PLModule
         $page->assign('view', $view);
         $page->assign('logged', S::logged());
 
-        $page->addJsLink('close_on_esc.js');
         header('Last-Modified: ' . date('r', strtotime($profile->last_change)));
     }
 
@@ -524,8 +523,6 @@ class ProfileModule extends PLModule
               LEFT JOIN  geoloc_countries       AS gc ON (m.country = gc.iso_3166_1_a2)
                   WHERE  pid = {?}", $pf->id());
         $page->assign('pays', $res->fetchColumn());
-
-        $page->addJsLink('close_on_esc.js');
     }
 
     function handler_ref_country(&$page)
