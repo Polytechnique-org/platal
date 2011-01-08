@@ -22,11 +22,7 @@
 
 {literal}
 <script id="question_base" type="text/x-jquery-tmpl">
-  {{if type == 'text'}}
-    {{tmpl "#question_text"}}
-  {{else type == 'section'}}
-    {{tmpl "#question_section"}}
-  {{/if}}
+  {{tmpl "#question_" + type}}
 </script>
 
 <script id="question_section" type="text/x-jquery-tmpl">
