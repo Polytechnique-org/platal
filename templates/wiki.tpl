@@ -41,12 +41,12 @@
   </tr>
   <tr>
     <td>
-      <select onchange="dynpostkv('{$wikipage}', 'setrperms', this.value)">
+      <select onchange="$.dynPost('{$wikipage}', 'setrperms', this.value)">
       {html_options options=$perms_opts selected=$perms[0]}
       </select>
     </td>
     <td>
-      <select onchange="dynpostkv('{$wikipage}', 'setwperms', this.value)">
+      <select onchange="$.dynPost('{$wikipage}', 'setwperms', this.value)">
       {html_options options=$perms_opts selected=$perms[1]}
       </select>
     </td>
