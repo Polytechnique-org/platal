@@ -1,4 +1,2 @@
-/wiki
-/spool
 .*.sw?
 /include/version.inc.php
