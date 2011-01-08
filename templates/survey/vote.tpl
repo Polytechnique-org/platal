@@ -24,17 +24,28 @@
 
 <p>{$survey->description|miniwiki}</p>
 
-<div>
 <form action="survey/vote/{$survey->shortname}" method="post">
-  {foreach from=$survey->questions item=question}
-    {include file=$question->voteTemplate() question=$question}
-  {/foreach}
+  <div id="questions">
+  </div>
 
   <div class="center">
     {xsrf_token_field}
     <input type="submit" name="vote" value="Enregister mon vote" />
   </div>
 </form>
-</div>
+
+{include file="survey/questions.tpl"}
+
+<script type="text/javascript">
+  //<![CDATA[
+  var questions = {$survey->exportQuestionsToJSON()|smarty:nodefaults};
+
+  {literal}
+  $(function() {
+    $("#question_base").tmpl(questions).appendTo("#questions");
+  });
+  {/literal}
+  //]]>
+</script>
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

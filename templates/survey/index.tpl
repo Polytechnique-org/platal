@@ -23,7 +23,7 @@
 <h1>Sondages</h1>
 
 {if $active->total() > 0}
-<table class="bicol">
+<table class="bicol" id="surveyList">
   <tr>
     <th>
       Sondages en cours

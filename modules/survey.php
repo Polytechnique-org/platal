@@ -77,6 +77,7 @@ class SurveyModule extends PLModule
     function handler_vote(PlPage $page, $name)
     {
         $this->load('survey.inc.php');
+        $page->addJsLink('jquery.tmpl.js');
         $page->changeTpl('survey/vote.tpl');
         $survey = Survey::get($name);
         if (is_null($survey)) {

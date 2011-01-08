@@ -20,9 +20,29 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<div>
-  <div>{$question->label}</div>
-  <input type="text" name="qid[{$question->qid}]" value="" />
-</div>
+{literal}
+<script id="question_base" type="text/x-jquery-tmpl">
+  {{if type == 'text'}}
+    {{tmpl "#question_text"}}
+  {{else type == 'section'}}
+    {{tmpl "#question_section"}}
+  {{/if}}
+</script>
+
+<script id="question_section" type="text/x-jquery-tmpl">
+  <fieldset>
+    <legend>${label}</legend>
+
+    {{tmpl(children) "#question_base"}}
+  </fieldset>
+</script>
+
+<script id="question_text" type="text/x-jquery-tmpl">
+  <div>
+    <div>${label}</div>
+    <input type="text" name="qid[${qid}]" value="" />
+  </div>
+</script>
+{/literal}
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

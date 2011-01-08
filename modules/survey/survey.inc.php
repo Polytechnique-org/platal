@@ -156,11 +156,22 @@ class Survey extends PlDBTableEntry implements SurveyQuestionContainer
     public function export()
     {
         $export = parent::export();
-        $export['questions'] = array();
+        $export['questions'] = $this->exportQuestions();
+        return $export;
+    }
+
+    public function exportQuestions()
+    {
+        $export = array();
         foreach ($this->questions as $question) {
-            $export['questions'][] = $question->export();
+            $export[] = $question->export();
         }
         return $export;
+    }
+
+    public function exportQuestionsToJSON()
+    {
+        return json_encode($this->exportQuestions());
     }
 
     /* Return an indicator of the progression of the survey:
