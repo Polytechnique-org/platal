@@ -69,4 +69,71 @@
 
 .ui-tabs-hide { display: none; }
 
+.ui-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.ui-datepicker {
+    background: #ffffff;
+    color: #000000;
+    position: absolute;
+}
+
+.ui-datepicker a {
+    color: black;
+    text-decoration: none;
+    text-align: center;
+}
+
+.ui-datepicker-header {
+    padding: 2px;
+    margin: 1px;
+    background: #777;
+    border: 1px solid;
+    border-color: #333;
+}
+
+.ui-datepicker-title {
+    text-align: center;
+    height: 19px;
+}
+
+.ui-datepicker-prev {
+    background: #777 url('/images/icons/resultset_previous.gif');
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 4px;
+    left: 4px;
+    outline: none;
+    display: block;
+}
+
+.ui-datepicker-next {
+    background: #777 url('/images/icons/resultset_next.gif');
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 4px;
+    right: 4px;
+    outline: none;
+    display: block;
+}
+
+.ui-datepicker-next span, .ui-datepicker-prev span {
+    display: block;
+    position: absolute;
+    text-indent: -99999px;
+    overflow: hidden;
+}
+
+.ui-datepicker-week-end {
+    background-color: #eee;
+}
+
+.ui-datepicker-unselectable {
+    color: #777;
+}
+
 /* vim: set et ts=4 sts=4 sw=4: */

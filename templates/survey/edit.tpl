@@ -20,28 +20,31 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$survey->title}</h1>
+<h1>Edition de sondage</h1>
 
-<p>{$survey->description|miniwiki}</p>
+<form action="survey/edit/{$survey->shortname}" method="post">
+  <fieldset>
+    <legend>Description du sondage</legend>
 
-<form action="survey/vote/{$survey->shortname}" method="post">
-  <div id="questions">
-  </div>
+    Titre&nbsp;: <input type="text" name="title" /><br />
+    Nom&nbsp;: <input type="text" name="shortname" /><br />
 
-  <div class="center">
-    {xsrf_token_field}
-    <input type="submit" name="vote" value="Enregister mon vote" />
-  </div>
+    Premier jour&nbsp;: <input type="text" class="datepicker" name="begin" /><br />
+    Dernier jour&nbsp;: <input type="text" class="datepicker" name="end" /><br />
+  </fieldset>
 </form>
 
-{include file="survey/questions.tpl"}
-
+{literal}
 <script type="text/javascript">
   //<![CDATA[
-  var questions = {$survey->exportQuestionsToJSON()|smarty:nodefaults};
-
-  $($("#questions").surveyQuestions(questions));
+  $($(".datepicker").datepicker({
+    dateFormat: 'dd/mm/yyyy',
+    firstDay: 1,
+    hideIfNoPrevNext: true,
+    minDate: new Date()
+  }));
   //]]>
 </script>
+{/literal}
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

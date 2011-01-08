@@ -26,8 +26,9 @@ class SurveyModule extends PLModule
         return array(
             'survey'              => $this->make_hook('index',         AUTH_COOKIE),
             'survey/vote'         => $this->make_hook('vote',          AUTH_COOKIE),
-    /*        'survey/result'       => $this->make_hook('result',        AUTH_COOKIE),
             'survey/edit'         => $this->make_hook('edit',          AUTH_COOKIE),
+            /*
+            'survey/result'       => $this->make_hook('result',        AUTH_COOKIE),
             'survey/ajax'         => $this->make_hook('ajax',          AUTH_COOKIE),
             'survey/admin'        => $this->make_hook('admin',         AUTH_MDP, 'admin'),
             'survey/admin/edit'   => $this->make_hook('adminEdit',     AUTH_MDP, 'admin'),
@@ -78,6 +79,7 @@ class SurveyModule extends PLModule
     {
         $this->load('survey.inc.php');
         $page->addJsLink('jquery.tmpl.js');
+        $page->addJsLink('survey.js');
         $page->changeTpl('survey/vote.tpl');
         $survey = Survey::get($name);
         if (is_null($survey)) {
@@ -97,6 +99,28 @@ class SurveyModule extends PLModule
                 $vote->insert(true);
                 $page->trigSuccess("Ton vote a été enregistré");
             }
+        }
+        $page->assign('survey', $survey);
+    }
+
+    function handler_edit(PlPage $page, $name = null)
+    {
+        $this->load('survey.inc.php');
+        $page->addJsLink('jquery.ui.core.js');
+        $page->addJsLink('jquery.ui.widget.js');
+        $page->addJsLink('jquery.ui.datepicker.js');
+        $page->addJsLink('jquery.tmpl.js');
+        $page->addJsLink('survey.js');
+        $page->changeTpl('survey/edit.tpl');
+
+        if (!is_null($name)) {
+            $survey = Survey::get($name);
+        } else {
+            $survey = new Survey();
+            $survey->id = null;
+            $survey->uid = S::user()->id();
+        }
+        if (Post::has('save')) {
         }
         $page->assign('survey', $survey);
     }

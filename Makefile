@@ -181,7 +181,7 @@ JQUERY_PLUGINS=color form
 JQUERY_PLUGINS_PATHES=$(addprefix htdocs/javascript/jquery.,$(addsuffix .js,$(JQUERY_PLUGINS)))
 
 JQUERY_UI_VERSION=1.8.7
-JQUERY_UI=core tabs widget
+JQUERY_UI=core tabs datepicker widget
 JQUERY_UI_PATHES=$(addprefix htdocs/javascript/jquery.ui.,$(addsuffix .js,$(JQUERY_UI)))
 
 JQUERY_TMPL_VERSION=vBeta1.0.0
