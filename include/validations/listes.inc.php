@@ -82,13 +82,13 @@ class ListeReq extends Validate
         global $globals;
 
         if (Env::has('listname')) {
-            $this->liste = trim(Env::v('listname'));
+            $this->liste = Post::t('listname');
         }
         if (Env::has('domainname')) {
-            $this->domain = trim(Env::v('domainname'));
+            $this->domain = Post::t('domainname');
         }
         if (Env::has('assotype')) {
-            $this->asso = trim(Env::v('assotype'));
+            $this->asso = Post::t('assotype');
         }
         if (!$this->asso) {
             $this->domain = $globals->mail->domain;
