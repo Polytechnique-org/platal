@@ -41,36 +41,6 @@ class SurveyModule extends PLModule
     {
         $this->load('survey.inc.php');
 
-        XDB::execute("DELETE FROM surveys");
-
-        $survey = new Survey();
-        $survey->id = null;
-        $survey->shortname = "blah";
-        $survey->title = "Blah";
-        $survey->description = "Blih blih blih blih";
-        $survey->uid = S::user()->id();
-        $survey->begin = "09/09/2010";
-        $survey->end   = "30/12/2011";
-
-        $qpage = $survey->newQuestion("section");
-        $qpage->parameters = array('type' => 'page');
-        $qpage->label = 'Première page';
-
-        $question = $qpage->newQuestion("text");
-        $question->label = "Super question";
-        $question->flags = "mandatory";
-        $question->parameters = array("type" => "text", "limit" => 256);
-
-        $question = $qpage->newQuestion("text");
-        $question->label = "Super question 2";
-
-        $qpage = $survey->newQuestion("section");
-        $qpage->parameters = array('type' => 'page');
-        $qpage->label = 'Deuxième page';
-
-        $survey->flags = 'validated';
-        $survey->insert(true);
-
         $page->changeTpl('survey/index.tpl');
         $page->assign('active', Survey::iterActive());
     }
@@ -121,7 +91,34 @@ class SurveyModule extends PLModule
             $survey->id = null;
             $survey->uid = S::user()->id();
         }
-        if (Post::has('save')) {
+        if (Post::has('valid')) {
+            $survey->title = Post::t('title');
+            $survey->shortname = Post::t('shortname');
+            $survey->description = Post::t('description');
+            $survey->begin     = Post::t('begin');
+            $survey->end       = Post::t('end');
+            $survey->flags     = 'validated';
+            if (Post::b('anonymous')) {
+                $survey->flags->addFlag('anonymous');
+            }
+
+            $q_edit = Post::v('q_edit');
+            $qs = array();
+            foreach ($q_edit as $qid => $q_desc) {
+                if (isset($q_desc['parent'])) {
+                    $parent = $qs[$q_desc['parent']];
+                } else {
+                    $parent = $survey;
+                }
+                $question = $parent->newQuestion($q_desc['type']);
+                $question->label = $q_desc['label'];
+                unset($q_desc['type']);
+                unset($q_desc['parent']);
+                unset($q_desc['label']);
+                $question->parameters = $q_desc;
+                $qs[$qid] = $question;
+            }
+            $survey->insert('true');
         }
         $page->assign('survey', $survey);
     }

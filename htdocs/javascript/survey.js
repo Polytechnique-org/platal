@@ -70,12 +70,18 @@
     $.fn.extend({
         showQuestions: function(questions) {
             var data = $('#question_base').tmpl(questions);
-            this.children().remove();
+            this.empty();
             data.appendTo(this);
             return this;
         },
 
         /* Edition form */
+        prepareQuestions: function(questions) {
+            var data = $('#q_edit_new').tmpl(questions);
+            data.prependTo(this);
+            return this;
+        },
+
         isQuestion: function() {
             return this.hasClass('q_edit');
         },
@@ -105,7 +111,7 @@
         },
 
         parentQuestion: function() {
-            return this.closest('.q_edit');
+            return this.parent().closest('.q_edit');
         },
 
         childrenContainer: function() {
@@ -157,6 +163,21 @@
             $.renumberQuestions();
             return res;
         },
+
+        buildParentsQuestions: function() {
+            var $this = $(this);
+            $.questions().each(function() {
+                var parent = $(this).parentQuestion();
+                if (!parent.isRootSection()) {
+                    $('<input>', {
+                        type: 'hidden',
+                        name: 'q_edit[' + $(this).qid() + '][parent]',
+                        value: parent.qid()
+                    }).appendTo($this);
+                }
+            });
+            return $this;
+        }
     });
 })(jQuery);
 

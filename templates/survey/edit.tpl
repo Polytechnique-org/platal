@@ -22,19 +22,19 @@
 
 <h1>Edition de sondage</h1>
 
-<form action="survey/edit/{$survey->shortname}" method="post">
+<form action="survey/edit/{$survey->shortname}" method="post" id="form">
   <fieldset>
     <legend>Description du sondage</legend>
 
-    Titre&nbsp;: <input type="text" name="title" /><br />
-    Nom&nbsp;: <input type="text" name="shortname" /><br />
-    Description&nbsp;:<br /><textarea name="description" style="width: 100%"></textarea>
+    Titre&nbsp;: <input type="text" name="title" value="{$survey->title}" /><br />
+    Nom&nbsp;: <input type="text" name="shortname" value="{$survey->shortname}" /><br />
+    Description&nbsp;:<br /><textarea name="description" style="width: 100%">{$survey->description}</textarea>
   </fieldset>
 
   <fieldset>
     <legend>Paramètre du sondage</legend>
-    Premier jour&nbsp;: <input type="text" class="datepicker" name="begin" /><br />
-    Dernier jour&nbsp;: <input type="text" class="datepicker" name="end" /><br />
+    Premier jour&nbsp;: <input type="text" class="datepicker" name="begin" value="{$survey->begin}" /><br />
+    Dernier jour&nbsp;: <input type="text" class="datepicker" name="end" value="{$survey->end}" /><br />
     Sondage anonyme&nbsp;: <label>Oui&nbsp;<input type="radio" name="anonymous" value="1" checked="checked" /></label>
     <label><input type="radio" name="anonymous" value="0" />&nbsp;Non</label>
   </fieldset>
@@ -56,5 +56,21 @@
 
 {include file="survey/vote.questions.tpl"}
 {include file="survey/edit.questions.tpl"}
+
+{literal}
+<script type="text/javascript">
+  //<![CDATA[
+  var questions = {/literal}{$survey->exportQuestionsToJSON()|smarty:nodefaults}{literal};
+
+  $(function() {
+    $('#form').submit(function() {
+      $(this).buildParentsQuestions();
+      return true;
+    });
+    $('#questions').prepareQuestions(questions);
+  });
+  //]]>
+</script>
+{/literal}
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

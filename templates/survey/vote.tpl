@@ -40,7 +40,7 @@
   //<![CDATA[
   var questions = {$survey->exportQuestionsToJSON()|smarty:nodefaults};
 
-  $($("#questions").surveyQuestions(questions));
+  $($("#questions").showQuestions(questions));
   //]]>
 </script>
 
