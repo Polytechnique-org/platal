@@ -93,6 +93,12 @@ class ListeReq extends Validate
         if (!$this->asso) {
             $this->domain = $globals->mail->domain;
         }
+        foreach ($this->owners as $key => &$email) {
+            $email = Post::t('owners_' . $key);
+        }
+        foreach ($this->members as $key => &$email) {
+            $email = Post::t('members_' . $key);
+        }
         return true;
     }
 
