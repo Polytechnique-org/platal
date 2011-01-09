@@ -35,8 +35,8 @@
     <legend>Paramètre du sondage</legend>
     Premier jour&nbsp;: <input type="text" class="datepicker" name="begin" /><br />
     Dernier jour&nbsp;: <input type="text" class="datepicker" name="end" /><br />
-    Sondage anonyme&nbsp;: Oui&nbsp;<input type="radio" name="anonymous" value="1" checked="checked" />
-    <input type="radio" name="anonymous" value="0" />&nbsp;Non
+    Sondage anonyme&nbsp;: <label>Oui&nbsp;<input type="radio" name="anonymous" value="1" checked="checked" /></label>
+    <label><input type="radio" name="anonymous" value="0" />&nbsp;Non</label>
   </fieldset>
 
   <h2>Questions</h2>
