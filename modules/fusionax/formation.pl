@@ -1632,3 +1632,33 @@ while (<FILE>)
 
 close(FILE);
 close(OUT);
+
+$path = $0;
+$path =~ s/modules\/fusionax\/formation\.pl//;
+$path .= "spool/fusionax/";
+$in = $path . "Formations_MD.txt";
+$out = $path . "Formations_MD_out.txt";
+open(FILE, "<:encoding(UTF-8)", $in) || die ("Formations_MD.txt failed to open.");
+open(OUT, ">:encoding(UTF-8)", $out) || die ("Formations_MD_out.txt failed to open.");
+
+while (<FILE>)
+{
+  # Dates removal.
+  s/\r$//;
+  s/^(FO\t\w{8}\t(\w|\.|'|&| )+)\t.*$/\1/;
+  # Trailing tab, spaces and dot removal.
+  s/(\t| )*$//;
+  s/( \t|\t )/\t/g;
+  s/ +/ /g;
+
+  # Removes diploma
+  s/Doct. de l'Ec. polytechnique//;
+  s/Doct. de l'Ec. Polytechnique//;
+  s/Etudiante en Master de l'Ec. polytechnique//;
+  s/Etudiant en Master de l'Ec. polytechnique//;
+
+  print OUT $_;
+}
+
+close(FILE);
+close(OUT);

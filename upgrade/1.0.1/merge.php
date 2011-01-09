@@ -12,7 +12,7 @@ XDB::rawExecute('DROP VIEW IF EXISTS fusionax_promo');
 XDB::rawExecute('DROP TABLE IF EXISTS fusionax_import');
 
 // Fills pid fields in all table, to avoid to many joins.
-foreach (array('fusionax_activites', 'fusionax_adresses', 'fusionax_anciens', 'fusionax_formations') as $table) {
+foreach (array('fusionax_activites', 'fusionax_adresses', 'fusionax_anciens', 'fusionax_formations', 'fusionax_formations_md') as $table) {
     XDB::rawExecute("UPDATE  $table   AS f
                  INNER JOIN  profiles AS p ON (f.ax_id = p.ax_id)
                         SET  f.pid = p.pid");
@@ -289,6 +289,12 @@ echo "Addresses inclusions finished.\n";
 
 // Retrieves education from AX database. This is the hardest part since AX only kept education as an unformated string.
 echo "Starts educations inclusions.\n";
+// Updates master and doctorate educational fields.
+XDB::rawExecute("UPDATE  profile_education      AS e
+             INNER JOIN  fusionax_formations_md AS f ON (f.pid = e.pid AND FIND_IN_SET('primary', e.flags))
+                    SET  e.program = f.field, e.fieldid = f.fieldid");
+XDB::rawExecute('DROP TABLE IF EXISTS fusionax_formations_md');
+
 // Deletes empty educations.
 XDB::rawExecute("DELETE FROM  fusionax_formations
                        WHERE  Intitule_formation = '' AND Intitule_diplome = '' AND Descr_formation = ''");

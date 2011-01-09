@@ -111,17 +111,17 @@ class FusionAxModule extends PLModule
             } else {
                 // séparation de l'archive en fichiers par tables
                 $file = $spoolpath . $file;
-                // Removes master and doctorate students
-                exec('grep -v "^[A-Z]\{2\}.[0-9]\{4\}[MD][0-9]\{3\}" ' . $file . ' > ' . $file . '.tmp');
-                exec('mv -f ' . $file . '.tmp ' . $file);
                 // Split export into specialised files
                 exec('grep "^AD" ' . $file . ' > ' . $spoolpath . 'Adresses.txt');
                 exec('grep "^AN" ' . $file . ' > ' . $spoolpath . 'Anciens.txt');
+                exec('grep "^FO.[0-9]\{4\}[MD][0-9]\{3\}.Etudiant" ' . $file . ' > ' . $spoolpath . 'Formations_MD.txt');
+                exec('grep "^FO.[0-9]\{4\}[MD][0-9]\{3\}.Doct. de" ' . $file . ' >> ' . $spoolpath . 'Formations_MD.txt');
                 exec('grep "^FO" ' . $file . ' > ' . $spoolpath . 'Formations.txt');
                 exec('grep "^AC" ' . $file . ' > ' . $spoolpath . 'Activites.txt');
                 exec('grep "^EN" ' . $file . ' > ' . $spoolpath . 'Entreprises.txt');
                 exec($modulepath . 'formation.pl');
                 exec('mv -f ' . $spoolpath . 'Formations_out.txt ' . $spoolpath . 'Formations.txt');
+                exec('mv -f ' . $spoolpath . 'Formations_MD_out.txt ' . $spoolpath . 'Formations_MD.txt');
                 $report[] = 'Fichier parsé.';
                 $report[] = 'Import dans la base en cours...';
                 $next = 'integrateSQL';
@@ -134,7 +134,8 @@ class FusionAxModule extends PLModule
                 1 => 'Adresses.sql',
                 2 => 'Anciens.sql',
                 3 => 'Formations.sql',
-                4 => 'Entreprises.sql'
+                4 => 'Entreprises.sql',
+                5 => 'Formations_MD.sql'
             );
             if ($file != '') {
                 // récupère le contenu du fichier sql
@@ -157,7 +158,7 @@ class FusionAxModule extends PLModule
             } else {
                 $nextfile = 0;
             }
-            if ($nextfile > 4) {
+            if ($nextfile > 5) {
                 // tous les fichiers ont été exécutés, on passe à l'étape suivante
                 $next = 'adds1920';
             } else {
@@ -236,7 +237,7 @@ class FusionAxModule extends PLModule
             $next = 'clean';
         } elseif ($action == 'clean') {
             // nettoyage du fichier temporaire
-            exec('rm -Rf ' . $spoolpath);
+            //exec('rm -Rf ' . $spoolpath);
             $report[] = 'Import finit.';
         }
         foreach($report as $t) {
