@@ -34,7 +34,7 @@
   </div>
 </form>
 
-{include file="survey/questions.tpl"}
+{include file="survey/vote.questions.tpl"}
 
 <script type="text/javascript">
   //<![CDATA[

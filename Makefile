@@ -193,7 +193,7 @@ JSTREE_PATH=htdocs/javascript/jquery.jstree.js
 # TODO: jquery.autocomplete.js should rather be downloaded from an official source. The issue
 # is that the version we use is not available anymore on the Internet, and the latest version
 # we could use is not backward compatible with our current code.
-jquery: htdocs/javascript/jquery.js $(JQUERY_PLUGINS_PATHES) $(JQUERY_UI_PATHES) $(JQUERY_TMPL_PATH) $(JSTREE_PATH)
+jquery: htdocs/javascript/jquery.js $(JQUERY_PLUGINS_PATHES) $(JQUERY_UI_PATHES) $(JQUERY_TMPL_PATH) $(JSTREE_PATH) htdocs/javascript/jquery.ui.datepicker-fr.js
 
 htdocs/javascript/jquery-$(JQUERY_VERSION).min.js: DOWNLOAD_SRC = http://jquery.com/src/$(@F)
 htdocs/javascript/jquery-$(JQUERY_VERSION).min.js:
@@ -212,7 +212,11 @@ htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js: DOWNLOAD_SRC = http://jqu
 htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js:
 	@$(download)
 
-$(JQUERY_UI_PATHES): htdocs/javascript/jquery.ui.%.js: htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js
+htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).datepicker-fr.js: DOWNLOAD_SRC = http://jquery-ui.googlecode.com/svn/tags/$(JQUERY_UI_VERSION)/ui/minified/i18n/jquery.ui.datepicker-fr.min.js
+htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).datepicker-fr.js:
+	@$(download)
+
+$(JQUERY_UI_PATHES) htdocs/javascript/jquery.ui.datepicker-fr.js: htdocs/javascript/jquery.ui.%.js: htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js
 	ln -snf $(<F) $@
 
 htdocs/javascript/jquery.tmpl-$(JQUERY_TMPL_VERSION).js: DOWNLOAD_SRC = https://github.com/jquery/jquery-tmpl/raw/$(JQUERY_TMPL_VERSION)/jquery.tmpl.min.js --no-check-certificate

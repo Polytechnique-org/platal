@@ -28,23 +28,14 @@
 
     Titre&nbsp;: <input type="text" name="title" /><br />
     Nom&nbsp;: <input type="text" name="shortname" /><br />
+    Description&nbsp;:<br /><textarea name="description" style="width: 100%"></textarea>
+  </fieldset>
 
+  <fieldset>
+    <legend>Déroulement du sondage</legend>
     Premier jour&nbsp;: <input type="text" class="datepicker" name="begin" /><br />
     Dernier jour&nbsp;: <input type="text" class="datepicker" name="end" /><br />
   </fieldset>
 </form>
-
-{literal}
-<script type="text/javascript">
-  //<![CDATA[
-  $($(".datepicker").datepicker({
-    dateFormat: 'dd/mm/yyyy',
-    firstDay: 1,
-    hideIfNoPrevNext: true,
-    minDate: new Date()
-  }));
-  //]]>
-</script>
-{/literal}
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

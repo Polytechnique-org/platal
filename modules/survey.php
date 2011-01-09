@@ -109,6 +109,7 @@ class SurveyModule extends PLModule
         $page->addJsLink('jquery.ui.core.js');
         $page->addJsLink('jquery.ui.widget.js');
         $page->addJsLink('jquery.ui.datepicker.js');
+        $page->addJsLink('jquery.ui.datepicker-fr.js');
         $page->addJsLink('jquery.tmpl.js');
         $page->addJsLink('survey.js');
         $page->changeTpl('survey/edit.tpl');

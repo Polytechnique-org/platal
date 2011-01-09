@@ -30,4 +30,12 @@
 })(jQuery);
 
 
+$(function() {
+    $(".datepicker").datepicker({
+        hideIfNoPrevNext: true,
+        minDate: new Date()
+    });
+});
+
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
