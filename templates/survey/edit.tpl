@@ -41,9 +41,9 @@
 
   <h2>Questions</h2>
 
-  <div id="questions">
-    <div class="center">
-      <a href="javascript:$('#questions').addQuestion(next_qid++)">
+  <div id="questions" class="q_edit">
+    <div class="add_question">
+      <a onclick="$(this).addQuestion()" style="text-decoration: none">
         {icon name="add"} Ajouter une question
       </a>
     </div>
@@ -53,12 +53,6 @@
     <input type="submit" name="valid" value="Soumettre" />
   </div>
 </form>
-
-<script type="text/javascript">
-  //<![CDATA[
-  var next_qid = 0;
-  //]]>
-</script>
 
 {include file="survey/vote.questions.tpl"}
 {include file="survey/edit.questions.tpl"}

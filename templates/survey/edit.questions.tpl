@@ -22,14 +22,21 @@
 
 {literal}
 <script id="q_edit_new" type="text/x-jquery-tmpl">
-  <div>
-    <div><strong>Question ${qid + 1}</strong></div>
+  <div style="clear: both" class="q_edit" id="q_edit[${qid}]">
+    <div>
+      <span class="q_edit_label" style="font-weight: bold">Question ${qid + 1}</span> 
+      (<a onclick="$(this).removeQuestion()" style="text-decoration: none">
+        {/literal}{icon name="delete"}{literal} Supprimer
+      </a>)
+    </div>
     Type de question&nbsp;: <select name="q_edit[${qid}][type]">
       <option value=""></option>
-      <option value="text">Texte</option>
-      <option value="section">Section</option>
+      <option value="text" {{if type}}{{if type == 'text'}}selected="selected"{{/if}}{{/if}}>Texte</option>
+      <option value="section" {{if type}}{{if type == 'section'}}selected="selected"{{/if}}{{/if}}>Section</option>
     </select>
-    <div class="q_edit_form"></div>
+    <div class="q_edit_form">
+      {{tmpl "#q_edit_base"}}
+    </div>
   </div>
 </script>
 
@@ -45,8 +52,8 @@
 
 <script id="q_edit_section" type="text/x-jquery-tmpl">
   <div id="section_${qid}" style="padding-left: 4ex; border-left: 1px solid white">
-    <div class="center">
-      <a href="javascript:$('#section_${qid}').addQuestion(next_qid++)">
+    <div class="add_question">
+      <a onclick="$(this).addQuestion()" style="text-decoration: none">
         {/literal}{icon name="add"}{literal} Ajouter une question
       </a>
     </div>
