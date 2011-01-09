@@ -20,47 +20,38 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Edition de sondage</h1>
-
-<form action="survey/edit/{$survey->shortname}" method="post">
-  <fieldset>
-    <legend>Description du sondage</legend>
-
-    Titre&nbsp;: <input type="text" name="title" /><br />
-    Nom&nbsp;: <input type="text" name="shortname" /><br />
-    Description&nbsp;:<br /><textarea name="description" style="width: 100%"></textarea>
-  </fieldset>
-
-  <fieldset>
-    <legend>Paramètre du sondage</legend>
-    Premier jour&nbsp;: <input type="text" class="datepicker" name="begin" /><br />
-    Dernier jour&nbsp;: <input type="text" class="datepicker" name="end" /><br />
-    Sondage anonyme&nbsp;: Oui&nbsp;<input type="radio" name="anonymous" value="1" checked="checked" />
-    <input type="radio" name="anonymous" value="0" />&nbsp;Non
-  </fieldset>
-
-  <h2>Questions</h2>
-
-  <div id="questions">
-    <div class="center">
-      <a href="javascript:$('#questions').addQuestion(next_qid++)">
-        {icon name="add"} Ajouter une question
-      </a>
-    </div>
+{literal}
+<script id="q_edit_new" type="text/x-jquery-tmpl">
+  <div>
+    <div><strong>Question ${qid + 1}</strong></div>
+    Type de question&nbsp;: <select name="q_edit[${qid}][type]">
+      <option value=""></option>
+      <option value="text">Texte</option>
+      <option value="section">Section</option>
+    </select>
+    <div class="q_edit_form"></div>
   </div>
-
-  <div class="center">
-    <input type="submit" name="valid" value="Soumettre" />
-  </div>
-</form>
-
-<script type="text/javascript">
-  //<![CDATA[
-  var next_qid = 0;
-  //]]>
 </script>
 
-{include file="survey/vote.questions.tpl"}
-{include file="survey/edit.questions.tpl"}
+<script id="q_edit_base" type="text/x-jquery-tmpl">
+  {{if type}}
+    {{tmpl "#q_edit_" + type}}
+  {{/if}}
+</script>
+
+<script id="q_edit_text" type="text/x-jquery-tmpl">
+  Question&nbsp;: <input type="text" name="q_edit[${qid}][label]" /><br />
+</script>
+
+<script id="q_edit_section" type="text/x-jquery-tmpl">
+  <div id="section_${qid}" style="padding-left: 4ex; border-left: 1px solid white">
+    <div class="center">
+      <a href="javascript:$('#section_${qid}').addQuestion(next_qid++)">
+        {/literal}{icon name="add"}{literal} Ajouter une question
+      </a>
+    </div>
+  <div>
+</script>
+{/literal}
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

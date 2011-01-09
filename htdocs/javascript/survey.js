@@ -20,10 +20,25 @@
 
 (function($) {
     $.fn.extend({
-        surveyQuestions: function(questions) {
+        showQuestions: function(questions) {
             var data = $('#question_base').tmpl(questions);
             this.children().remove();
             data.appendTo(this);
+            return this;
+        },
+
+        addQuestion: function(id) {
+            var question = $("#q_edit_new").tmpl([{ qid: id } ]);
+            question
+                .children('select')
+                .change(function () {
+                    var type = $(this).val();
+                    var form = question.children('.q_edit_form');
+                    form.empty();
+                    $("#q_edit_base").tmpl([ { qid: id, type: type } ]).appendTo(form);
+                    return true;
+                });
+            question.appendTo(this);
             return this;
         }
     });
