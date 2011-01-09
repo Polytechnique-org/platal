@@ -356,7 +356,7 @@ class ListsModule extends PLModule
         $this->prepare_client($page);
         $members = $this->client->get_members($liste);
         $list = list_fetch_basic_info(list_extract_members($members[1]));
-        pl_content_headers("text/x-csv");
+        pl_cached_content_headers('text/x-csv', 1);
 
         echo "email,nom,promo\n";
         echo implode("\n", $list);

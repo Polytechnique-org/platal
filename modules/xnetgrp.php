@@ -373,7 +373,7 @@ class XnetGrpModule extends PLModule
             $filename = $globals->asso('diminutif') . '.csv';
         }
         $users = $globals->asso()->getMembersFilter(null, new UFO_Name('directory_name'))->getUsers();
-        pl_content_headers("text/x-csv");
+        pl_cached_content_headers('text/x-csv', 1);
         $page->changeTpl('xnetgrp/annuaire-csv.tpl', NO_SKIN);
         $page->assign('users', $users);
     }
