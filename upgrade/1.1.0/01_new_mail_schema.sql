@@ -14,7 +14,7 @@ CREATE TABLE email_source_account (
 	expire DATE DEFAULT NULL,
 	KEY (uid),
 	KEY (type),
-    FOREIGN KEY (uid) REFERENCES accounts (uid) ON UPDATE CASCADE ON DELETE CASCADE
+  FOREIGN KEY (uid) REFERENCES accounts (uid) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB,  CHARSET=utf8 ;
 
 CREATE TABLE email_source_other (
@@ -27,7 +27,8 @@ CREATE TABLE email_source_other (
 CREATE TABLE homonyms_list (
 	hrmid VARCHAR(255) NOT NULL,
 	uid   INT(11) UNSIGNED NOT NULL,
-	KEY(hrmid)
+  PRIMARY KEY (hrmid, uid),
+  FOREIGN KEY (uid) REFERENCES accounts (uid) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB,  CHARSET=utf8 ;
 
 CREATE TABLE email_redirect_account (
@@ -43,14 +44,16 @@ CREATE TABLE email_redirect_account (
 	                   'imap_and_bounce',
 	                   'homonym')
 		NOT NULL DEFAULT 'default',
-	broken        DATE NOT NULL DEFAULT '0000-00-00',
+	broken_date   DATE NOT NULL DEFAULT '0000-00-00',
 	broken_level  TINYINT(1) NOT NULL DEFAULT 0,
 	last          DATE NOT NULL DEFAULT '0000-00-00',
 	flags         ENUM('active','inactive','broken','disabled') NOT NULL,
 	hash          VARCHAR(32) DEFAULT NULL,
 	allow_rewrite TINYINT(1) DEFAULT 0,
+  PRIMARY KEY (uid, redirect),
 	KEY (uid),
-	KEY (redirect)
+	KEY (redirect),
+  FOREIGN KEY (uid) REFERENCES accounts (uid) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB,  CHARSET=utf8 ;
 
 CREATE TABLE email_redirect_other (
@@ -65,6 +68,7 @@ CREATE TABLE email_redirect_other (
 	                   'imap_and_bounce',
 	                   'homonym')
 		NOT NULL DEFAULT 'default',
+  PRIMARY KEY (hrmid, redirect),
 	KEY (hrmid),
 	KEY (redirect)
 ) ENGINE=InnoDB,  CHARSET=utf8 ;
@@ -74,6 +78,7 @@ CREATE TABLE email_virtual (
 	redirect VARCHAR(255) NOT NULL,
 	type     ENUM('user','list','domain','event','admin','partner'),
 	expire   DATE NOT NULL DEFAULT '0000-00-00',
+  PRIMARY KEY (email, redirect),
 	KEY (email)
 ) ENGINE=InnoDB,  CHARSET=utf8 ;
 
