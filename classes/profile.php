@@ -527,8 +527,10 @@ class Profile
             }
             return $this->photo;
         } else if ($fallback) {
-            return PlImage::fromFile(dirname(__FILE__).'/../htdocs/images/none.png',
-                                     'image/png');
+            if ($this->mainEducation() == 'X') {
+                return PlImage::fromFile(dirname(__FILE__) . '/../htdocs/images/none_x.png', 'image/png');
+            }
+            return PlImage::fromFile(dirname(__FILE__) . '/../htdocs/images/none_md.png', 'image/png');
         }
         return null;
     }

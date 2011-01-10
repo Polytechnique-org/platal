@@ -15,6 +15,7 @@ Bug/Wish:
         - #1318: Fixes PHP errors in PayPal payments                       -JAC
 
     * Profile:
+        - #1270: Adapts default picture to main education                  -JAC
         - #1340: Allows secretaries and admin to fully edit profiles' name -JAC
         - #1354: Do not notify death to a deceased user                    -JAC
         - #1356: Indicates delivery issues on addresses                    -JAC
