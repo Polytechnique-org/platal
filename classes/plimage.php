@@ -49,7 +49,7 @@ class PlImage {
     public function path()
     {
         if (empty($this->data)) {
-            return $file;
+            return $this->file;
         } else {
             $name = md5($this->data);
             $GLOBALS['img' . $name] = $this->data;
