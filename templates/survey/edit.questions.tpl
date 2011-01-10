@@ -61,7 +61,7 @@
         {/literal}{icon name="add"}{literal} Ajouter une question
       </a>
     </div>
-  <div>
+  </div>
 </script>
 {/literal}
 
