@@ -221,7 +221,7 @@ val3_1{$smarty.session.csv_separator|default:";"}val3_2{$smarty.session.csv_sepa
     {/foreach}
   </table>
   {else}
-  Les données ont été ajoutées.
+  <p>Les données ont été ajoutées.</p>
   {/if}
   {/if}
 
