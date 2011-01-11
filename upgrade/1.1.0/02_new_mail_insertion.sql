@@ -145,7 +145,7 @@ INSERT INTO email_virtual (email,redirect,type)
 	FROM aliases AS a
 	WHERE type='liste';
 INSERT INTO email_virtual (email,redirect,type)
-	SELECT vr.redirect,v.alias,'user'
+	SELECT v.alias,vr.redirect,'user'
 	FROM virtual AS v
 	LEFT JOIN virtual_redirect AS vr ON (v.vid=vr.vid)
 	LEFT JOIN accounts AS a ON ( a.hruid=LEFT(vr.redirect,LOCATE('@',vr.redirect)-1) )
@@ -154,7 +154,7 @@ INSERT INTO email_virtual (email,redirect,type)
 	 AND vr.vid IS NOT NULL
 	 AND a.uid IS NULL;
 INSERT INTO email_virtual (email,redirect,type)
-	SELECT vr.redirect,REPLACE(v.alias,'@melix.net','@melix.org'),'user'
+	SELECT REPLACE(v.alias,'@melix.net','@melix.org'),vr.redirect,'user'
 	FROM virtual AS v
 	LEFT JOIN virtual_redirect AS vr ON (v.vid=vr.vid)
 	LEFT JOIN accounts AS a ON ( a.hruid=LEFT(vr.redirect,LOCATE('@',vr.redirect)-1) )
