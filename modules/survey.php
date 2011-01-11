@@ -106,6 +106,7 @@ class SurveyModule extends PLModule
 
             $q_edit = Post::v('q_edit');
             $qs = array();
+            $survey->clearQuestions();
             foreach ($q_edit as $qid => $q_desc) {
                 if (isset($q_desc['parent'])) {
                     $parent = $qs[$q_desc['parent']];

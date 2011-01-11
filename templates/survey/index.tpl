@@ -46,7 +46,7 @@
   {/iterate}
 </table>
 {/if}
-
+<br />
 <div class="center">
   <a href="survey/edit">{icon name=page_edit} Proposer un nouveau sondage</a>
 </div>

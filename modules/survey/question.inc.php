@@ -47,7 +47,11 @@ class SurveyQuestion extends PlDBTableEntry
 
     public static function instanceForType(Survey $survey, $type)
     {
-        require_once dirname(__FILE__) . '/' . $type . '.inc.php';
+        $file = dirname(__FILE__) . '/' . $type . '.inc.php';
+        if (!file_exists($file)) {
+            throw new Exception("Unknown question type \"$type\"");
+        }
+        require_once $file;
         $class = 'SurveyQuestion' . $type;
         return new $class($survey);
     }

@@ -33,8 +33,15 @@
                         value="{{if label}}${label}{{/if}}" /><br />
     Type de question&nbsp;: <select name="q_edit[${qid}][type]">
       <option value=""></option>
-      <option value="text" {{if type}}{{if type == 'text'}}selected="selected"{{/if}}{{/if}}>Texte</option>
-      <option value="section"{{if type}}{{if type == 'section'}}selected="selected"{{/if}}{{/if}}>Section</option>
+      <option value="section" {{if type}}{{if type == 'section'}}selected="selected"{{/if}}{{/if}}>
+        Section
+      </option>
+      <option value="text" {{if type}}{{if type == 'text'}}selected="selected"{{/if}}{{/if}}>
+        Texte
+      </option>
+      <option value="multiple" {{if type}}{{if type == 'multiple'}}selection="selected"{{/if}}{{/if}}>
+        Question à choix multiples
+      </option>
     </select>
     <div class="q_edit_form">
       {{tmpl "#q_edit_base"}}
@@ -60,6 +67,23 @@
       <a onclick="$(this).addQuestion()" style="text-decoration: none">
         {/literal}{icon name="add"}{literal} Ajouter une question
       </a>
+    </div>
+  </div>
+</script>
+
+<script id="q_edit_multiple" typex="text/x-jquery-tmpl">
+  <div id="q_edit[${qid}][answers]">
+    <div class="add_answer">
+      <a onclick="$(this).multipleAddAnswer()">
+        {/literal}{icon name="add"}{literal} Ajouter une réponse
+      </a>
+    </div>
+    <div>
+      Ajouter une case Autre ?
+      <select name="q_edit[${qid}][allow_other]">
+        <option name="1">Oui</option>
+        <option name="" selected="selected">Non</option>
+      </select>
     </div>
   </div>
 </script>

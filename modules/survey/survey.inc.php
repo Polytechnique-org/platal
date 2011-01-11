@@ -104,6 +104,12 @@ class Survey extends PlDBTableEntry implements SurveyQuestionContainer
         }
     }
 
+    public function clearQuestions()
+    {
+        $this->fetchQuestions = true;
+        $this->questions = array();
+    }
+
     public function addQuestion(SurveyQuestion $question, $pos = null)
     {
         $question->parent = null;
