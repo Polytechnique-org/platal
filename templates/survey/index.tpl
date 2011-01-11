@@ -28,15 +28,27 @@
     <th>
       Sondages en cours
     </th>
+    {if hasPerm('admin')}
+    <th></th>
+    {/if}
   </tr>
   {iterate from=$active item=survey}
-  <tr>
+  <tr class="{cycle values="impair,pair"}">
     <td>
       <a href="survey/vote/{$survey->shortname}">{$survey->title}</a>
     </td>
+    {if hasPerm('admin')}
+    <td style="text-align: right">
+      <a href="survey/edit/{$survey->shortname}">{icon name=page_edit}</a>
+    </td>
+    {/if}
   </tr>
   {/iterate}
 </table>
 {/if}
+
+<div class="center">
+  <a href="survey/edit">{icon name=page_edit} Proposer un nouveau sondage</a>
+</div>
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

@@ -37,9 +37,20 @@ class SurveyModule extends PLModule
       */  );
     }
 
-    function handler_index(&$page, $action = null)
+    private function setup_page(PlPage $page)
     {
         $this->load('survey.inc.php');
+        $page->addJsLink('jquery.ui.core.js');
+        $page->addJsLink('jquery.ui.widget.js');
+        $page->addJsLink('jquery.ui.datepicker.js');
+        $page->addJsLink('jquery.ui.datepicker-fr.js');
+        $page->addJsLink('jquery.tmpl.js');
+        $page->addJsLink('survey.js');
+    }
+
+    function handler_index(&$page, $action = null)
+    {
+        $this->setup_page($page);
 
         $page->changeTpl('survey/index.tpl');
         $page->assign('active', Survey::iterActive());
@@ -47,10 +58,9 @@ class SurveyModule extends PLModule
 
     function handler_vote(PlPage $page, $name)
     {
-        $this->load('survey.inc.php');
-        $page->addJsLink('jquery.tmpl.js');
-        $page->addJsLink('survey.js');
+        $this->setup_page($page);
         $page->changeTpl('survey/vote.tpl');
+
         $survey = Survey::get($name);
         if (is_null($survey)) {
             return PL_NOT_FOUND;
@@ -75,13 +85,7 @@ class SurveyModule extends PLModule
 
     function handler_edit(PlPage $page, $name = null)
     {
-        $this->load('survey.inc.php');
-        $page->addJsLink('jquery.ui.core.js');
-        $page->addJsLink('jquery.ui.widget.js');
-        $page->addJsLink('jquery.ui.datepicker.js');
-        $page->addJsLink('jquery.ui.datepicker-fr.js');
-        $page->addJsLink('jquery.tmpl.js');
-        $page->addJsLink('survey.js');
+        $this->setup_page($page);
         $page->changeTpl('survey/edit.tpl');
 
         if (!is_null($name)) {
@@ -98,9 +102,7 @@ class SurveyModule extends PLModule
             $survey->begin     = Post::t('begin');
             $survey->end       = Post::t('end');
             $survey->flags     = 'validated';
-            if (Post::b('anonymous')) {
-                $survey->flags->addFlag('anonymous');
-            }
+            $survey->flags->addFlag('anonymous', Post::b('anonymous'));
 
             $q_edit = Post::v('q_edit');
             $qs = array();
