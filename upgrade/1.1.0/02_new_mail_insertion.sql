@@ -58,7 +58,7 @@ INSERT INTO homonyms_list (hrmid,uid)
 INSERT INTO email_redirect_account (uid,redirect,rewrite,type,action,
 	                    broken,broken_level,last,flags,hash,allow_rewrite)
 	SELECT a.uid,e.email,e.rewrite,'smtp',ef.email,
-	       e.panne,e.panne_level,e.last,IF(e.flags='','disabled',IF(e.flags='disable','disabled',IF(e.flags='panne','broken',e.flags))),e.hash,e.allow_rewrite
+	       e.panne,e.panne_level,e.last,IF(e.flags='','inactive',IF(e.flags='disable','disabled',IF(e.flags='panne','broken',e.flags))),e.hash,e.allow_rewrite
 	FROM emails AS e
 	LEFT JOIN emails AS ef ON (e.uid=ef.uid)
 	LEFT JOIN accounts AS a ON (e.uid=a.uid)

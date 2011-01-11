@@ -46,7 +46,7 @@ CREATE TABLE email_redirect_account (
 	broken        DATE NOT NULL DEFAULT '0000-00-00',
 	broken_level  TINYINT(1) NOT NULL DEFAULT 0,
 	last          DATE NOT NULL DEFAULT '0000-00-00',
-	flags         ENUM('active','broken','disabled') NOT NULL,
+	flags         ENUM('active','inactive','broken','disabled') NOT NULL,
 	hash          VARCHAR(32) DEFAULT NULL,
 	allow_rewrite TINYINT(1) DEFAULT 0,
 	KEY (uid),
