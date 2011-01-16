@@ -884,14 +884,18 @@ def create_list(userdesc, perms, vhost, listname, desc, advertise, modlevel, ins
     """
     name = vhost.lower() + VHOST_SEP + listname.lower();
     if Utils.list_exists(name):
+        print >> sys.stderr, "List ", name, " already exists"
         return 0
 
     owner = []
     for o in owners:
-        email = to_forlife(o)[0]
+        email = to_forlife(o)
+        print >> sys.stderr, "owner in list", o, email
+        email = email[0]
         if email is not None:
             owner.append(email)
     if len(owner) is 0:
+        print >> sys.stderr, "No owner found in ", owners
         return 0
 
     mlist = MailList.MailList()
