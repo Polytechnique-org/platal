@@ -303,7 +303,7 @@ class XnetEventsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        pl_content_headers("text/x-csv");
+        pl_cached_content_headers('text/x-csv', 1);
         $page->changeTpl('xnetevents/csv.tpl', NO_SKIN);
 
         $admin = may_update();

@@ -914,7 +914,7 @@ class EmailModule extends PLModule
                 // Output the list of users with recently broken addresses,
                 // along with the count of valid redirections.
                 require_once 'notifs.inc.php';
-                pl_content_headers("text/x-csv");
+                pl_cached_content_headers('text/x-csv', 1);
 
                 $csv = fopen('php://output', 'w');
                 fputcsv($csv, array('nom', 'promo', 'alias', 'bounce', 'nbmails', 'url', 'corps', 'job', 'networking'), ';');

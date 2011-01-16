@@ -333,7 +333,7 @@ class AddressesView implements PlView
     {
         $pids = $this->set->getIds(new PlLimit());
         $visibility = new ProfileVisibility(ProfileVisibility::VIS_AX);
-        pl_content_headers('text/x-csv');
+        pl_cached_content_headers('text/x-csv', 1);
 
         $csv = fopen('php://output', 'w');
         fputcsv($csv, array('adresses'), ';');

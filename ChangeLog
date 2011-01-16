@@ -49,12 +49,15 @@ Bug/Wish:
         - #1362: List last profile modifications for secretary             -JAC
 
     * Core:
+        - #1352: Fixes csv downloading with IE8.                           -JAC
         - #1355: Mode with propagation of the skinning mode                -FRU
 
     * Payments:
+        - #1290: Fixes display of payments on xnet                         -JAC
         - #1318: Fixes PHP errors in PayPal payments                       -JAC
 
     * Profile:
+        - #1270: Adapts default picture to main education                  -JAC
         - #1340: Allows secretaries and admin to fully edit profiles' name -JAC
         - #1354: Do not notify death to a deceased user                    -JAC
         - #1356: Indicates delivery issues on addresses                    -JAC
