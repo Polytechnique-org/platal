@@ -167,6 +167,7 @@ def connectDB():
             passwd=MYSQL_PASS,
             unix_socket='/var/run/mysqld/mysqld.sock')
     db.ping()
+    db.autocommit(True)
     return db.cursor()
 
 def mysql_fetchone(query):
