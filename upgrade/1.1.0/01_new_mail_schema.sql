@@ -6,28 +6,46 @@ DROP TABLE IF EXISTS email_redirect_other;
 DROP TABLE IF EXISTS email_virtual;
 DROP TABLE IF EXISTS email_virtual_domains;
 
+CREATE TABLE email_virtual_domains (
+  id SMALLINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL DEFAULT '',
+  aliasing SMALLINT(3) UNSIGNED NOT NULL DEFAULT 1,
+  PRIMARY KEY (id),
+  KEY (name),
+  FOREIGN KEY (aliasing) REFERENCES email_virtual_domains (id) ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE=InnoDB, CHARSET=utf8;
+
 CREATE TABLE email_source_account (
-  email VARCHAR(255) NOT NULL PRIMARY KEY,
+  email VARCHAR(255) NOT NULL,
+  domain SMALLINT(3) UNSIGNED NOT NULL DEFAULT 1,
   uid INT(11) UNSIGNED NOT NULL,
   type ENUM('forlife', 'alias') NOT NULL DEFAULT 'forlife',
   flags SET('bestalias', 'usage', 'marital') NOT NULL DEFAULT '',
   expire DATE DEFAULT NULL,
+  PRIMARY KEY (email, domain),
+  KEY (domain),
   KEY (uid),
   KEY (type),
-  FOREIGN KEY (uid) REFERENCES accounts (uid) ON UPDATE CASCADE ON DELETE CASCADE
+  FOREIGN KEY (uid) REFERENCES accounts (uid) ON UPDATE CASCADE ON DELETE CASCADE,
+  FOREIGN KEY (domain) REFERENCES email_virtual_domains (id) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB, CHARSET=utf8;
 
 CREATE TABLE email_source_other (
-  email VARCHAR(255) NOT NULL PRIMARY KEY,
+  email VARCHAR(255) NOT NULL,
+  domain SMALLINT(3) UNSIGNED NOT NULL DEFAULT 1,
   hrmid VARCHAR(255) NOT NULL,
   type ENUM('homonym', 'ax', 'honeypot'),
-  expire DATE NOT NULL DEFAULT '0000-00-00'
+  expire DATE NOT NULL DEFAULT '0000-00-00',
+  PRIMARY KEY (email, domain),
+  KEY (domain),
+  FOREIGN KEY (domain) REFERENCES email_virtual_domains (id) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB, CHARSET=utf8;
 
 CREATE TABLE homonyms_list (
   hrmid VARCHAR(255) NOT NULL,
   uid INT(11) UNSIGNED NOT NULL,
   PRIMARY KEY (hrmid, uid),
+  key (uid),
   FOREIGN KEY (uid) REFERENCES accounts (uid) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB, CHARSET=utf8;
 
@@ -61,15 +79,14 @@ CREATE TABLE email_redirect_other (
 
 CREATE TABLE email_virtual (
   email VARCHAR(255) NOT NULL,
+  domain SMALLINT(3) UNSIGNED NOT NULL DEFAULT 1,
   redirect VARCHAR(255) NOT NULL,
   type ENUM('user', 'list', 'domain', 'event', 'admin', 'partner'),
   expire DATE NOT NULL DEFAULT '0000-00-00',
   PRIMARY KEY (email, domain, redirect),
-  KEY (email)
-) ENGINE=InnoDB, CHARSET=utf8;
-
-CREATE TABLE email_virtual_domains (
-  domain VARCHAR(255) NOT NULL PRIMARY KEY
+  KEY (domain),
+  KEY (redirect),
+  FOREIGN KEY (domain) REFERENCES email_virtual_domains (id) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB, CHARSET=utf8;
 
 -- vim:set syntax=mysql:
