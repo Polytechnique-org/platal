@@ -1,108 +1,108 @@
 INSERT INTO  email_source_account (uid, email, type, flags, expire)
-	   SELECT  uid, CONCAT(alias, '@polytechnique.org'), IF(type = 'a_vie', 'forlife', 'alias'), REPLACE(flags, 'epouse', 'marital'), expire
-	     FROM  aliases
-	    WHERE  type = 'a_vie' OR type = 'alias';
+     SELECT  uid, CONCAT(alias, '@polytechnique.org'), IF(type = 'a_vie', 'forlife', 'alias'), REPLACE(flags, 'epouse', 'marital'), expire
+       FROM  aliases
+      WHERE  type = 'a_vie' OR type = 'alias';
 INSERT INTO  email_source_account (uid, email, type, flags, expire)
-	   SELECT  uid, CONCAT(alias, '@m4x.org'), IF(type = 'a_vie', 'forlife', 'alias'), REPLACE(flags, 'epouse', 'marital'), expire
-	     FROM  aliases
-	    WHERE  type = 'a_vie' OR type = 'alias';
+     SELECT  uid, CONCAT(alias, '@m4x.org'), IF(type = 'a_vie', 'forlife', 'alias'), REPLACE(flags, 'epouse', 'marital'), expire
+       FROM  aliases
+      WHERE  type = 'a_vie' OR type = 'alias';
 INSERT INTO  email_source_account (uid, email, type)
-	   SELECT  a.uid, v.alias, 'alias'
-	     FROM  virtual          AS v
-	LEFT JOIN  virtual_redirect AS vr ON (v.vid = vr.vid)
-	LEFT JOIN  accounts         AS a  ON (a.hruid = LEFT(vr.redirect, LOCATE('@', vr.redirect)-1))
-	    WHERE  v.type = 'user' AND v.alias LIKE '%@melix.net' AND a.uid IS NOT NULL;
+     SELECT  a.uid, v.alias, 'alias'
+       FROM  virtual          AS v
+  LEFT JOIN  virtual_redirect AS vr ON (v.vid = vr.vid)
+  LEFT JOIN  accounts         AS a  ON (a.hruid = LEFT(vr.redirect, LOCATE('@', vr.redirect)-1))
+      WHERE  v.type = 'user' AND v.alias LIKE '%@melix.net' AND a.uid IS NOT NULL;
 INSERT INTO  email_source_account (uid, email, type)
-	   SELECT  a.uid, REPLACE(v.alias, '@melix.net', '@melix.org'), 'alias'
-	     FROM  virtual          AS v
-	LEFT JOIN  virtual_redirect AS vr ON (v.vid = vr.vid)
-	LEFT JOIN  accounts         AS a  ON (a.hruid = LEFT(vr.redirect, LOCATE('@', vr.redirect)-1))
-	    WHERE  v.type = 'user' AND v.alias LIKE '%@melix.net' AND a.uid IS NOT NULL;
+     SELECT  a.uid, REPLACE(v.alias, '@melix.net', '@melix.org'), 'alias'
+       FROM  virtual          AS v
+  LEFT JOIN  virtual_redirect AS vr ON (v.vid = vr.vid)
+  LEFT JOIN  accounts         AS a  ON (a.hruid = LEFT(vr.redirect, LOCATE('@', vr.redirect)-1))
+      WHERE  v.type = 'user' AND v.alias LIKE '%@melix.net' AND a.uid IS NOT NULL;
 
 INSERT INTO  email_source_other (hrmid, email, type)
-	   SELECT  CONCAT(CONCAT('h.', alias), '.polytechnique.org'), CONCAT(alias, '@polytechnique.org'), 'homonym'
-	     FROM  aliases
-	    WHERE  type = 'homonyme'
-	 GROUP BY  (alias);
+     SELECT  CONCAT(CONCAT('h.', alias), '.polytechnique.org'), CONCAT(alias, '@polytechnique.org'), 'homonym'
+       FROM  aliases
+      WHERE  type = 'homonyme'
+   GROUP BY  (alias);
 INSERT INTO  email_source_other (hrmid, email, type)
-	   SELECT  CONCAT(CONCAT('h.', alias), '.polytechnique.org'), CONCAT(alias, '@m4x.org'), 'homonym'
-	     FROM  aliases
-	    WHERE  type = 'homonyme'
-	 GROUP BY  (alias);
+     SELECT  CONCAT(CONCAT('h.', alias), '.polytechnique.org'), CONCAT(alias, '@m4x.org'), 'homonym'
+       FROM  aliases
+      WHERE  type = 'homonyme'
+   GROUP BY  (alias);
 
 INSERT INTO  homonyms_list (hrmid, uid)
-	   SELECT  CONCAT(CONCAT('h.', a.alias), '.polytechnique.org'), h.uid
-	     FROM  homonyms AS h
+     SELECT  CONCAT(CONCAT('h.', a.alias), '.polytechnique.org'), h.uid
+       FROM  homonyms AS h
  INNER JOIN  aliases  AS a ON (a.uid = h.homonyme_id)
-	    WHERE  a.type = 'homonyme';
+      WHERE  a.type = 'homonyme';
 
 INSERT INTO  email_redirect_account (uid, redirect, rewrite, type, action, broken_date, broken_level, last, flags, hash, allow_rewrite)
-	   SELECT  a.uid, e.email, e.rewrite, 'smtp', ef.email, e.panne, e.panne_level, e.last,
+     SELECT  a.uid, e.email, e.rewrite, 'smtp', ef.email, e.panne, e.panne_level, e.last,
              IF(e.flags = '', 'inactive', IF(e.flags = 'disable', 'disabled', IF(e.flags = 'panne', 'broken', e.flags))), e.hash, e.allow_rewrite
-	     FROM  emails   AS e
-	LEFT JOIN  emails   AS ef ON (e.uid = ef.uid)
-	LEFT JOIN  accounts AS a  ON (e.uid = a.uid)
-	    WHERE  e.flags != 'filter' AND ef.flags = 'filter';
+       FROM  emails   AS e
+  LEFT JOIN  emails   AS ef ON (e.uid = ef.uid)
+  LEFT JOIN  accounts AS a  ON (e.uid = a.uid)
+      WHERE  e.flags != 'filter' AND ef.flags = 'filter';
 INSERT INTO  email_redirect_account (uid, redirect, type, action, flags)
-	   SELECT  a.uid, CONCAT(a.hruid, '@g.polytechnique.org'), 'googleapps', ef.email, 'active'
-	     FROM  email_options AS eo
-	LEFT JOIN  accounts      AS a  ON (a.uid = eo.uid)
-	LEFT JOIN  emails        AS ef ON (eo.uid = ef.uid)
-	    WHERE  FIND_IN_SET('googleapps', eo.storage) AND ef.flags = 'filter';
+     SELECT  a.uid, CONCAT(a.hruid, '@g.polytechnique.org'), 'googleapps', ef.email, 'active'
+       FROM  email_options AS eo
+  LEFT JOIN  accounts      AS a  ON (a.uid = eo.uid)
+  LEFT JOIN  emails        AS ef ON (eo.uid = ef.uid)
+      WHERE  FIND_IN_SET('googleapps', eo.storage) AND ef.flags = 'filter';
 INSERT INTO  email_redirect_account (uid, redirect, type, action, flags)
-	   SELECT  a.uid, CONCAT(a.hruid, '@imap.polytechnique.org'), 'imap', 'let_spams', 'active'
-	     FROM  email_options AS eo
-	LEFT JOIN  accounts      AS a ON (a.uid = eo.uid)
-	    WHERE  FIND_IN_SET('imap', eo.storage);
+     SELECT  a.uid, CONCAT(a.hruid, '@imap.polytechnique.org'), 'imap', 'let_spams', 'active'
+       FROM  email_options AS eo
+  LEFT JOIN  accounts      AS a ON (a.uid = eo.uid)
+      WHERE  FIND_IN_SET('imap', eo.storage);
 
 INSERT INTO  email_redirect_other (hrmid, type, action)
-	   SELECT  hrmid, 'homonym', 'homonym'
-	     FROM  email_source_other
-	    WHERE  type = 'homonym'
-	 GROUP BY  (hrmid);
+     SELECT  hrmid, 'homonym', 'homonym'
+       FROM  email_source_other
+      WHERE  type = 'homonym'
+   GROUP BY  (hrmid);
 
 INSERT INTO  email_virtual (email, redirect, type)
-	   SELECT  v.alias, vr.redirect, IF(v.type = 'dom', 'domain', IF(v.type = 'evt', 'event', v.type))
-	     FROM  virtual          AS v
-	LEFT JOIN  virtual_redirect AS vr ON (vr.vid = v.vid)
-	    WHERE  v.alias NOT LIKE '%@melix.net' AND vr.vid IS NOT NULL AND v.alias != '@melix.org';
+     SELECT  v.alias, vr.redirect, IF(v.type = 'dom', 'domain', IF(v.type = 'evt', 'event', v.type))
+       FROM  virtual          AS v
+  LEFT JOIN  virtual_redirect AS vr ON (vr.vid = v.vid)
+      WHERE  v.alias NOT LIKE '%@melix.net' AND vr.vid IS NOT NULL AND v.alias != '@melix.org';
 INSERT INTO  email_virtual (email, type, redirect)
-	   SELECT  CONCAT(alias, '@polytechnique.org'), 'list',
-	           CONCAT('polytechnique.org_', REPLACE(REPLACE(REPLACE(CONCAT(alias, '+post@listes.polytechnique.org'),
+     SELECT  CONCAT(alias, '@polytechnique.org'), 'list',
+             CONCAT('polytechnique.org_', REPLACE(REPLACE(REPLACE(CONCAT(alias, '+post@listes.polytechnique.org'),
                                                                   '-admin+post', '+admin'),
                                                           '-owner+post', '+owner'),
                                                   '-bounces+post', '+bounces'))
-	     FROM  aliases
-	    WHERE  type = 'liste';
+       FROM  aliases
+      WHERE  type = 'liste';
 INSERT INTO  email_virtual (email, type, redirect)
-	   SELECT  CONCAT(alias, '@m4x.org'), 'list',
-	           CONCAT('polytechnique.org_', REPLACE(REPLACE(REPLACE(CONCAT(alias, '+post@listes.polytechnique.org'),
+     SELECT  CONCAT(alias, '@m4x.org'), 'list',
+             CONCAT('polytechnique.org_', REPLACE(REPLACE(REPLACE(CONCAT(alias, '+post@listes.polytechnique.org'),
                                                                   '-admin+post', '+admin'),
                                                           '-owner+post', '+owner'),
                                                   '-bounces+post', '+bounces'))
-	     FROM  aliases
-	    WHERE  type = 'liste';
+       FROM  aliases
+      WHERE  type = 'liste';
 INSERT INTO  email_virtual (email, redirect, type)
-	   SELECT  v.alias, vr.redirect, 'user'
-	     FROM  virtual          AS v
-	LEFT JOIN  virtual_redirect AS vr ON (v.vid = vr.vid)
-	LEFT JOIN  accounts         AS a  ON (a.hruid = LEFT(vr.redirect, LOCATE('@', vr.redirect)-1))
-	    WHERE  v.type = 'user' AND v.alias LIKE '%@melix.net' AND vr.vid IS NOT NULL AND a.uid IS NULL;
+     SELECT  v.alias, vr.redirect, 'user'
+       FROM  virtual          AS v
+  LEFT JOIN  virtual_redirect AS vr ON (v.vid = vr.vid)
+  LEFT JOIN  accounts         AS a  ON (a.hruid = LEFT(vr.redirect, LOCATE('@', vr.redirect)-1))
+      WHERE  v.type = 'user' AND v.alias LIKE '%@melix.net' AND vr.vid IS NOT NULL AND a.uid IS NULL;
 INSERT INTO  email_virtual (email, redirect, type)
-	   SELECT  REPLACE(v.alias, '@melix.net', '@melix.org'), vr.redirect, 'user'
-	     FROM  virtual          AS v
-	LEFT JOIN  virtual_redirect AS vr ON (v.vid = vr.vid)
-	LEFT JOIN  accounts         AS a ON  (a.hruid = LEFT(vr.redirect, LOCATE('@', vr.redirect)-1))
-	    WHERE  v.type = 'user' AND v.alias LIKE '%@melix.net' AND vr.vid IS NOT NULL AND a.uid IS NULL;
+     SELECT  REPLACE(v.alias, '@melix.net', '@melix.org'), vr.redirect, 'user'
+       FROM  virtual          AS v
+  LEFT JOIN  virtual_redirect AS vr ON (v.vid = vr.vid)
+  LEFT JOIN  accounts         AS a ON  (a.hruid = LEFT(vr.redirect, LOCATE('@', vr.redirect)-1))
+      WHERE  v.type = 'user' AND v.alias LIKE '%@melix.net' AND vr.vid IS NOT NULL AND a.uid IS NULL;
 
 -- Note: There are some adresses on virtual that have no match on the virtual_redirect.
 --       The adresses in this situation are dropped.
 
 INSERT INTO  email_virtual_domains (domain)
-	   VALUES  ('polytechnique.org'), ('m4x.org');
+     VALUES  ('polytechnique.org'), ('m4x.org');
 INSERT INTO  email_virtual_domains (domain)
-	   SELECT  domain
-	     FROM  virtual_domains;
+     SELECT  domain
+       FROM  virtual_domains;
 
 -- From aliases file
 INSERT INTO  email_virtual (email, redirect, type)
