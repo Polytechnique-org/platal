@@ -77,8 +77,14 @@
 
         /* Edition form */
         prepareQuestions: function(questions) {
-            var data = $('#q_edit_new').tmpl(questions);
-            data.prependTo(this);
+            for (var q in questions) {
+                var q = questions[q];
+                var child = this.addQuestion(q);
+                console.log("New question added in " + child.get(0).id);
+                if ($.isArray(q.children)) {
+                    child.prepareQuestions(q.children);
+                }
+            }
             return this;
         },
 
@@ -123,14 +129,17 @@
             return this.childrenContainer().children('.q_edit');
         },
 
-        addQuestion: function() {
+        addQuestion: function(q) {
             var id = $.lastQuestion().qid();
             if (id == undefined) {
                 id = 0;
             } else {
                 id++;
             }
-            var question = $("#q_edit_new").tmpl([{ qid: id } ]);
+            if (q == null) {
+                q = { qid: id }
+            }
+            var question = $("#q_edit_new").tmpl(q);
             question
                 .children('select')
                 .change(function () {
@@ -143,7 +152,7 @@
             var dest = this.question();
             var res = this.childrenContainer().children('.add_question').before(question);
             $.renumberQuestions();
-            return res;
+            return question;
         },
 
         removeQuestion: function(force) {

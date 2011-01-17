@@ -60,9 +60,6 @@
 
 <script id="q_edit_section" type="text/x-jquery-tmpl">
   <div id="section_${qid}" style="padding-left: 4ex; border-left: 1px solid white">
-    {{if children}}
-      {{tmpl(children) "#q_edit_new"}}
-    {{/if}}
     <div class="add_question">
       <a onclick="$(this).addQuestion()" style="text-decoration: none">
         {/literal}{icon name="add"}{literal} Ajouter une question
@@ -71,7 +68,7 @@
   </div>
 </script>
 
-<script id="q_edit_multiple" typex="text/x-jquery-tmpl">
+<script id="q_edit_multiple" type="text/x-jquery-tmpl">
   <div id="q_edit[${qid}][answers]">
     <div class="add_answer">
       <a onclick="$(this).multipleAddAnswer()">
