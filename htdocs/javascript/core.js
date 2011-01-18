@@ -18,9 +18,27 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+// {{{ Assertion
+
+// }}}
 // {{{ jQuery object extension
 
 (function($) {
+    function assert(condition, text) {
+        if ($.isFunction(condition)) {
+            condition = condition();
+        }
+        if (condition) {
+            return this;
+        }
+        if (!text) {
+            throw "Assertion failed";
+        } else {
+            throw "Assertion failed: " + text;
+        }
+    }
+
+
     /* Add new functions to jQuery namesapce */
     $.extend({
         /* The goal of the following functions is to provide an AJAX API that
@@ -113,7 +131,9 @@
             }
             $('body').appendTo(form);
             form.submit();
-        }
+        },
+
+        assert: assert
     });
 
     /* Add new functions to jQuery objects */
@@ -175,6 +195,26 @@
                            +'menubar=0,scrollbars=1,resizable=1,'
                            +'width='+w+',height='+h);
                 return false;
+            });
+        },
+
+        assert: assert,
+
+        assertLength: function(len) {
+            return this.assert(function() {
+                return $(this).length == len;
+            });
+        },
+
+        assertId: function(id) {
+            return this.assert(function() {
+                return $(this).attr('id') == id;
+            });
+        },
+
+        assertClass: function(clazz) {
+            return this.assert(function() {
+                return $(this).hasClass(clazz);
             });
         }
     });
