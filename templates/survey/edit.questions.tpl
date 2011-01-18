@@ -59,7 +59,7 @@
 </script>
 
 <script id="q_edit_section" type="text/x-jquery-tmpl">
-  <div id="section_${qid}" style="padding-left: 4ex; border-left: 1px solid white">
+  <div id="q_edit[${qid}][section]" style="padding-left: 4ex; border-left: 1px solid white">
     <div class="add_question">
       <a onclick="$(this).addQuestion()" style="text-decoration: none">
         {/literal}{icon name="add"}{literal} Ajouter une question
@@ -71,7 +71,7 @@
 <script id="q_edit_multiple" type="text/x-jquery-tmpl">
   <div id="q_edit[${qid}][answers]">
     <div class="add_answer">
-      <a onclick="$(this).multipleAddAnswer()">
+      <a onclick="$(this).multiple_addAnswer()">
         {/literal}{icon name="add"}{literal} Ajouter une réponse
       </a>
     </div>
@@ -84,6 +84,11 @@
     </div>
   </div>
 </script>
+
+<script id="q_edit_multiple_answer" type="text/x-jquery-tmpl">
+  <div><input type="text" name="q_edit[${qid}][answer][]" /></div>
+</script>
+
 {/literal}
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

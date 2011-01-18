@@ -80,7 +80,6 @@
             for (var q in questions) {
                 var q = questions[q];
                 var child = this.addQuestion(q);
-                console.log("New question added in " + child.get(0).id);
                 if ($.isArray(q.children)) {
                     child.prepareQuestions(q.children);
                 }
@@ -98,6 +97,10 @@
 
         question: function() {
             return this.isQuestion() ? this : this.parentQuestion();
+        },
+
+        questionForm: function() {
+            return this.question().children('.q_edit_form');
         },
 
         qid: function() {
@@ -122,7 +125,7 @@
 
         childrenContainer: function() {
             var question = this.question();
-            return question.isRootSection() ? question : question.children('.q_edit_form').children();
+            return question.isRootSection() ? question : question.questionForm().children();
         },
 
         childrenQuestion: function() {
@@ -146,13 +149,25 @@
                     var type = $(this).val();
                     var form = question.children('.q_edit_form');
                     form.empty();
-                    $("#q_edit_base").tmpl([ { qid: id, type: type } ]).appendTo(form);
+                    if (type != '') {
+                        $("#q_edit_base").tmpl({ qid: id, type: type })
+                            .bindQuestion(type)
+                            .appendTo(form);
+                    }
                     return true;
                 });
             var dest = this.question();
             var res = this.childrenContainer().children('.add_question').before(question);
             $.renumberQuestions();
             return question;
+        },
+
+        bindQuestion: function(type) {
+            var name = type + '_bindQuestion';
+            if ($.isFunction(this[name])) {
+                this[name]();
+            }
+            return this;
         },
 
         removeQuestion: function(force) {
@@ -186,6 +201,17 @@
                 }
             });
             return $this;
+        },
+
+        /* Multiple choices questions */
+        multiple_bindQuestion: function() {
+            return this;
+        },
+
+        multiple_addAnswer: function() {
+            var answer = $("#q_edit_multiple_answer").tmpl({ qid: this.qid() });
+            this.childrenContainer().children('.add_answer').before(answer);
+            return answer;
         }
     });
 })(jQuery);
