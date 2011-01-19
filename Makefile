@@ -122,10 +122,10 @@ wiki/pub/skins/empty:
 
 get-wiki:
 	@if ! test -d wiki; then                                          \
-	    wget http://www.pmwiki.org/pub/pmwiki/pmwiki-latest.tgz;      \
-	    tar -xzvf pmwiki-latest.tgz;                                  \
-	    rm pmwiki-latest.tgz;                                         \
-	    mv pmwiki-* wiki;                                             \
+		wget http://www.pmwiki.org/pub/pmwiki/pmwiki-latest.tgz;      \
+		tar -xzvf pmwiki-latest.tgz;                                  \
+		rm pmwiki-latest.tgz;                                         \
+		mv pmwiki-* wiki;                                             \
 	fi
 
 ##
@@ -135,14 +135,17 @@ get-wiki:
 openid: get-openid spool/openid/store
 
 # There is no obvious way to automatically use the latest version
-OPENID_VERSION = 2.1.3
+OPENID_VERSION = 2.2.2
+OPENID_COMMIT  = 782224d
 get-openid:
 	@if ! test -d include/Auth; then                                  \
-	    wget http://openidenabled.com/files/php-openid/packages/php-openid-$(OPENID_VERSION).tar.bz2; \
-	    tar -xjf php-openid-$(OPENID_VERSION).tar.bz2;                \
-	    mv php-openid-$(OPENID_VERSION)/Auth include/;                \
-	    rm php-openid-$(OPENID_VERSION).tar.bz2;                      \
-	    rm -r php-openid-$(OPENID_VERSION);                           \
+		wget --no-check-certificate                                   \
+			https://github.com/openid/php-openid/tarball/$(OPENID_VERSION) \
+			-O php-openid-$(OPENID_VERSION).tar.gz; \
+		tar -xzf php-openid-$(OPENID_VERSION).tar.gz;                \
+		mv openid-php-openid-$(OPENID_COMMIT)/Auth include/;                \
+		rm php-openid-$(OPENID_VERSION).tar.gz;                      \
+		rm -r openid-php-openid-$(OPENID_COMMIT);                           \
 	fi
 
 spool/openid/store:
