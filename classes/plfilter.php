@@ -185,7 +185,7 @@ abstract class PFC_OneChild implements PlFilterCondition
 
     public function export()
     {
-        return array('child' => $child->export());
+        return array('child' => $this->child->export());
     }
 }
 // }}}
