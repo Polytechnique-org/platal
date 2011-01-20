@@ -26,8 +26,6 @@
 <p class="center"><strong>Voulez-vous télécharger le <a href="{$globals->baseurl}/search/adv/addresses{$plset_args}">tableau des adresses postales</a> pour la recette précédente&nbsp;?</strong></p>
 {/if}
 
-{javascript name=jquery.form}
-
 <script type="text/javascript">// <!--
   var baseurl = platal_baseurl + "search/";
   {literal}

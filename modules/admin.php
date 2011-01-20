@@ -675,9 +675,7 @@ class AdminModule extends PLModule
         // }}}
 
 
-        $page->addJsLink('jquery.ui.core.js');
-        $page->addJsLink('jquery.ui.widget.js');
-        $page->addJsLink('jquery.ui.tabs.js');
+        $page->addJsLink('jquery.ui.xorg.js');
         $page->addJsLink('password.js');
 
         // Displays last login and last host information.

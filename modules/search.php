@@ -151,7 +151,6 @@ class SearchModule extends PLModule
     {
         global $globals;
         $page->assign('advanced',1);
-        $page->addJsLink('jquery.autocomplete.js');
 
         $networks = DirEnum::getOptions(DirEnum::NETWORKS);
         $networks[-1] = 'Tous types';
@@ -375,8 +374,6 @@ class SearchModule extends PLModule
         // Count mentors
         $res = XDB::query("SELECT count(distinct pid) FROM profile_mentor_term");
         $page->assign('mentors_number', $res->fetchOneCell());
-
-        $page->addJsLink('jquery.autocomplete.js');
 
         // Search for mentors matching filters
         require_once 'ufbuilder.inc.php';

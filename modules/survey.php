@@ -40,11 +40,7 @@ class SurveyModule extends PLModule
     private function setup_page(PlPage $page)
     {
         $this->load('survey.inc.php');
-        $page->addJsLink('jquery.ui.core.js');
-        $page->addJsLink('jquery.ui.widget.js');
-        $page->addJsLink('jquery.ui.datepicker.js');
-        $page->addJsLink('jquery.ui.datepicker-fr.js');
-        $page->addJsLink('jquery.tmpl.js');
+        $page->addJsLink('jquery.ui.xorg.js');
         $page->addJsLink('survey.js');
     }
 

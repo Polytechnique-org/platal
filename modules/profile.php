@@ -332,7 +332,6 @@ class ProfileModule extends PLModule
         $page->addJsLink('education.js', false); /* dynamic content */
         $page->addJsLink('grades.js', false);    /* dynamic content */
         $page->addJsLink('profile.js');
-        $page->addJsLink('jquery.autocomplete.js');
         $wiz = new PlWizard('Profil', PlPage::getCoreTpl('plwizard.tpl'), true, true, false);
         $wiz->addUserData('profile', $profile);
         $wiz->addUserData('owner', $profile->owner());
