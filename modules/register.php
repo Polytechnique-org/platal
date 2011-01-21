@@ -365,8 +365,7 @@ class RegisterModule extends PLModule
                     NewsLetter::forGroup(NewsLetter::GROUP_XORG)->subscribe($user);
                     break;
                 case 'imap':
-                    $storage = new EmailStorage($user, 'imap');
-                    $storage->activate();
+                    Email::activate_storage($user, 'imap');
                     break;
                 case 'ml_promo':
                     $r = XDB::query('SELECT id FROM groups WHERE diminutif = {?}', $yearpromo);

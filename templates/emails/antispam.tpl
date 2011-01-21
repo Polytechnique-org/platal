@@ -27,7 +27,7 @@
   $(function() {
       var url = '{/literal}{$globals->baseurl}/emails/antispam/{literal}';
       var msg = "Le changement de réglage de l'antispam a bien été effectué.";
-      $(':radio[name=statut_filtre]').change(function() {
+      $(':radio[name=filter_status]').change(function() {
           $("#bogo-msg").successMessage(url + $(this).val(), msg);
       });
   });
@@ -35,16 +35,16 @@
 //]]></script>
   <fieldset>
     <legend><strong>Choisis ton propre réglage&nbsp;:</strong></legend>
-    <input id='s0' type='radio' name='statut_filtre' value='0' {if $filtre eq 0}checked="checked"{/if} />
+    <input id='s0' type='radio' name='filter_status' value='0' {if $filter eq 0}checked="checked"{/if} />
     <label for='s0'>(1) le filtre anti-spam n'agit pas sur tes emails</label>
     <br />
-    <input id='s1' type='radio' name='statut_filtre' value='1' {if $filtre eq 1}checked="checked"{/if} />
+    <input id='s1' type='radio' name='filter_status' value='1' {if $filter eq 1}checked="checked"{/if} />
     <label for='s1'>(2) le filtre anti-spam marque les emails</label>
     <br />
-    <input id='s2' type='radio' name='statut_filtre' value='2' {if $filtre eq 2}checked="checked"{/if} />
+    <input id='s2' type='radio' name='filter_status' value='2' {if $filter eq 2}checked="checked"{/if} />
     <label for='s2'>(3) le filtre anti-spam marque les emails, et élimine les spams avec des notes les plus hautes</label>
     <br />
-    <input id='s3' type='radio' name='statut_filtre' value='3' {if $filtre eq 3}checked="checked"{/if} />
+    <input id='s3' type='radio' name='filter_status' value='3' {if $filter eq 3}checked="checked"{/if} />
     <label for='s3'>(4) le filtre anti-spam élimine les emails détectés comme spams</label>
   </fieldset>
 

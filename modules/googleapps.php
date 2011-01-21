@@ -38,8 +38,8 @@ class GoogleAppsModule extends PLModule
 
     function handler_index($page, $action = null)
     {
-        require_once("emails.inc.php");
-        require_once("googleapps.inc.php");
+        require_once 'emails.inc.php';
+        require_once 'googleapps.inc.php';
         $page->changeTpl('googleapps/index.tpl');
         $page->setTitle('Compte Google Apps');
 
@@ -47,16 +47,20 @@ class GoogleAppsModule extends PLModule
         $account = new GoogleAppsAccount($user);
 
         // Fills up the 'is Google Apps redirection active' variable.
-        $page->assign('redirect_active', false);
-        $page->assign('redirect_unique', true);
+        $redirect_active = false;
+        $redirect_unique = true;
 
         if ($account->active()) {
             $redirect = new Redirect($user);
-            $page->assign('redirect_unique', !$redirect->other_active('googleapps'));
-
-            $storage = new EmailStorage($user, 'googleapps');
-            $page->assign('redirect_active', $storage->active);
+            foreach ($redirect->emails as $email) {
+                if ($email->type == 'googleapps') {
+                    $redirect_active = $email->active;
+                    $redirect_unique = !$redirect->other_active($email->email);
+                }
+            }
         }
+        $page->assign('redirect_active', $redirect_active);
+        $page->assign('redirect_unique', $redirect_unique);
 
         // Updates the Google Apps account as required.
         if ($action) {
@@ -115,7 +119,7 @@ class GoogleAppsModule extends PLModule
     }
 
     function handler_admin($page, $action = null) {
-        require_once("googleapps.inc.php");
+        require_once 'googleapps.inc.php';
         $page->changeTpl('googleapps/admin.tpl');
         $page->setTitle('Administration Google Apps');
         $page->assign('googleapps_admin', GoogleAppsAccount::is_administrator(S::v('uid')));
@@ -132,10 +136,10 @@ class GoogleAppsModule extends PLModule
 
         // Retrieves latest pending administrative requests from the gappsd queue.
         $res = XDB::iterator(
-            "SELECT  q_id, q_recipient_id, a.alias, j_type, j_parameters,
+            "SELECT  q_id, q_recipient_id, s.email AS alias, j_type, j_parameters,
                      UNIX_TIMESTAMP(q.p_entry_date) AS p_entry_date
                FROM  gapps_queue AS q
-          LEFT JOIN  aliases AS a ON (a.uid = q_recipient_id AND a.type = 'a_vie')
+          LEFT JOIN  email_source_account AS s ON (s.uid = q.q_recipient_id AND s.type = 'forlife')
               WHERE  p_status IN ('idle', 'active', 'softfail') AND
                      p_admin_request IS TRUE
            ORDER BY  p_entry_date");
@@ -150,10 +154,10 @@ class GoogleAppsModule extends PLModule
 
         // Retrieves latest failed requests from the gappsd queue.
         $res = XDB::iterator(
-            "SELECT  q.q_id, q.q_recipient_id, a.alias, q.j_type, q.r_result,
+            "SELECT  q.q_id, q.q_recipient_id, s.email AS alias, q.j_type, q.r_result,
                      UNIX_TIMESTAMP(q.p_entry_date) AS p_entry_date
                FROM  gapps_queue AS q
-          LEFT JOIN  aliases AS a ON (a.uid = q.q_recipient_id AND a.type = 'a_vie')
+          LEFT JOIN  email_source_account AS s ON (s.uid = q.q_recipient_id AND s.type = 'forlife')
               WHERE  q.p_status = 'hardfail'
            ORDER BY  p_entry_date DESC
               LIMIT  20");
@@ -161,17 +165,17 @@ class GoogleAppsModule extends PLModule
     }
 
     function handler_admin_job($page, $job = null) {
-        require_once("googleapps.inc.php");
+        require_once 'googleapps.inc.php';
         $page->changeTpl('googleapps/admin.job.tpl');
         $page->setTitle('Administration Google Apps');
         $page->assign('googleapps_admin', GoogleAppsAccount::is_administrator(S::v('uid')));
 
         if ($job) {
             $res = XDB::query(
-                "SELECT  q.*, ao.alias AS q_owner, ar.alias AS q_recipient
+                "SELECT  q.*, so.email AS q_owner, sr.email AS q_recipient
                    FROM  gapps_queue AS q
-              LEFT JOIN  aliases AS ao ON (ao.uid = q.q_owner_id AND ao.type = 'a_vie')
-              LEFT JOIN  aliases AS ar ON (ar.uid = q.q_recipient_id AND ar.type = 'a_vie')
+              LEFT JOIN  email_source_account AS so ON (so.uid = q.q_owner_id AND so.type = 'forlife')
+              LEFT JOIN  email_source_account AS sr ON (sr.uid = q.q_recipient_id AND sr.type = 'forlife')
                   WHERE  q_id = {?}", $job);
             $sql_job = $res->fetchOneAssoc();
             $sql_job['decoded_parameters'] = var_export(json_decode($sql_job['j_parameters'], true), true);
@@ -180,8 +184,8 @@ class GoogleAppsModule extends PLModule
     }
 
     function handler_admin_user($page, $user = null) {
-        require_once("emails.inc.php");
-        require_once("googleapps.inc.php");
+        require_once 'emails.inc.php';
+        require_once 'googleapps.inc.php';
         $page->changeTpl('googleapps/admin.user.tpl');
         $page->setTitle('Administration Google Apps');
         $page->assign('googleapps_admin', GoogleAppsAccount::is_administrator(S::v('uid')));
@@ -193,7 +197,6 @@ class GoogleAppsModule extends PLModule
 
         if ($user) {
             $account = new GoogleAppsAccount($user);
-            $storage = new EmailStorage($user, 'googleapps');
 
             // Apply requested actions.
             if (Post::has('suspend') && $account->active() && !$account->pending_update_suspension) {
@@ -217,7 +220,7 @@ class GoogleAppsModule extends PLModule
             // Displays basic account information.
             $page->assign('account', $account);
             $page->assign('admin_account', GoogleAppsAccount::is_administrator($user->id()));
-            $page->assign('googleapps_storage', $storage->active);
+            $page->assign('googleapps_storage', Email::is_active_storage($user, 'googleapps'));
             $page->assign('user', $user->id());
 
             // Retrieves user's pending requests.
