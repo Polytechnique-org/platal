@@ -23,7 +23,6 @@
 {include file=skin/common.doctype.tpl}
     <link rel="stylesheet" type="text/css" href="css/openweb.css" media="all" />
     {include file=skin/common.header.tpl}
-    {include file=skin/common.bandeau.head.tpl}
   </head>
   <body>
     {include core=plpage.devel.tpl}

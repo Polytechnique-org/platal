@@ -30,7 +30,8 @@
     <link rel="apple-touch-icon" href="images/logo-xnet.png" type="image/png" />
 
     <link rel="stylesheet" type="text/css" href="css/xnet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="css/base.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/base.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="css/bandeau.css" />
 
     <link rel="bookmark" href="http://www.polytechnique.fr/"        title="| École polytechnique" />
     <link rel="bookmark" href="http://www.polytechnique.edu/"       title="| Institutionnal site" />
@@ -40,7 +41,6 @@
     <link rel="bookmark" href="http://www.polytechnique.fr/eleves/" title="| Site d'élèves" />
 
     {include core=plpage.header.tpl}
-    {include file=skin/common.bandeau.head.tpl}
   </head>
   <body>
     {include core=plpage.devel.tpl}

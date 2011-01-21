@@ -24,7 +24,6 @@
     <link rel="stylesheet" type="text/css" href="css/default.css" media="all" />
     <link rel="stylesheet" type="text/css" href="css/trapped.css" media="all" />
     {include file=skin/common.header.tpl}
-    {include file=skin/common.bandeau.head.tpl}
   </head>
   <body>
     {include core=plpage.devel.tpl}
