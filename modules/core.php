@@ -40,6 +40,7 @@ class CoreModule extends PLModule
             'wiki_help'     => $this->make_hook('wiki_help',     AUTH_PUBLIC),
             'wiki_preview'  => $this->make_hook('wiki_preview',  AUTH_COOKIE, 'user', NO_AUTH),
 
+            'validator'     => $this->make_hook('validator',     AUTH_PUBLIC),
             'valid.html'    => $this->make_hook('valid',         AUTH_PUBLIC),
             'favicon.ico'   => $this->make_hook('favicon',       AUTH_PUBLIC),
             'robots.txt'    => $this->make_hook('robotstxt',     AUTH_PUBLIC, 'user', NO_HTTPS),
@@ -49,6 +50,24 @@ class CoreModule extends PLModule
     function handler_valid($page)
     {
         readfile($page->compile_dir.'/valid.html');
+        exit;
+    }
+
+    function handler_validator($page)
+    {
+        global $globals;
+        exec($globals->spoolroot."/bin/devel/xhtml.validate.pl ".$page->compile_dir."/valid.html", $val);
+        $url   = "<a href='http://validator.w3.org/check?uri={$globals->baseurl}/valid.html&amp;ss=1#result'>";
+        $replc = '<span style="color: #080;">HTML OK</span>';
+        foreach ($val as $h) {
+            if (preg_match("/^X-W3C-Validator-Errors: (\d+)$/", $h, $m)) {
+                if ($m[1]) {
+                    $replc = "<span class='erreur'>$url{$m[1]} ERREUR(S) !!!</a></span>";
+                }
+                break;
+            }
+        }
+        echo $replc;
         exit;
     }
 
