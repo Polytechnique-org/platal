@@ -249,7 +249,6 @@ class RegisterModule extends PLModule
         }
 
         $page->changeTpl('register/step' . $subState->i('step') . '.tpl');
-        $page->addJsLink('password.js');
         if (isset($error)) {
             $page->trigError($error);
         }
@@ -309,7 +308,6 @@ class RegisterModule extends PLModule
 
         // Prepare the template for display.
         $page->changeTpl('register/end.tpl');
-        $page->addJsLink('do_challenge_response_logged.js');
         $page->assign('forlife', $forlife);
         $page->assign('firstname', $firstname);
 

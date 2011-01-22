@@ -676,7 +676,6 @@ class AdminModule extends PLModule
 
 
         $page->addJsLink('jquery.ui.xorg.js');
-        $page->addJsLink('password.js');
 
         // Displays last login and last host information.
         $res = XDB::query("SELECT  start, host
@@ -1415,7 +1414,6 @@ class AdminModule extends PLModule
     {
         $page->changeTpl('admin/accounts.tpl');
         $page->setTitle('Administration - Comptes');
-        $page->addJsLink('password.js');
 
         if (Post::has('create_account')) {
             S::assert_xsrf_token();

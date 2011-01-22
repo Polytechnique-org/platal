@@ -44,10 +44,8 @@ class Xorg extends Platal
         header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
         if (S::logged()) {
             $page->changeTpl('core/password_prompt_logged.tpl');
-            $page->addJsLink('do_challenge_response_logged.js');
         } else {
             $page->changeTpl('core/password_prompt.tpl');
-            $page->addJsLink('do_challenge_response.js');
         }
         $page->assign_by_ref('platal', $this);
         $page->run();

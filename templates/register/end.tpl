@@ -28,7 +28,7 @@
 il te suffit de taper ton mot de passe ci-dessous. Tu pourras ensuite librement
 accéder au site, et à notre annuaire en ligne&nbsp;!</p>
 
-<form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit='doChallengeResponse(); return false;'>
+<form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit='doChallengeResponseLogged(); return false;'>
   <table class="bicol">
     <tr>
       <td class="titre">Nom d'utilisateur&nbsp;:</td>

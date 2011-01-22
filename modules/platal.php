@@ -228,7 +228,6 @@ class PlatalModule extends PLModule
         }
 
         $page->changeTpl('platal/password.tpl');
-        $page->addJsLink('password.js');
         $page->setTitle('Mon mot de passe');
     }
 
@@ -387,7 +386,6 @@ Adresse de secours : " . Post::v('email') : ""));
             $page->changeTpl('platal/tmpPWD.success.tpl');
         } else {
             $page->changeTpl('platal/password.tpl');
-            $page->addJsLink('password.js');
         }
     }
 
