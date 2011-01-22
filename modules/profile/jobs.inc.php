@@ -224,7 +224,7 @@ class ProfileSettingJob implements ProfileSetting
             }
 
             if (isset($job['removed']) && $job['removed']) {
-                if ($job['name'] == '' && $entreprise) {
+                if ($job['name'] == '' && $entreprise && isset($entreprise[$entr_val - 1])) {
                     $entreprise[$entr_val - 1]->clean();
                 }
                 unset($value[$key]);
