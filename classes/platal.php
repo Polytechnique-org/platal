@@ -262,51 +262,51 @@ class PlHookTree
     public $aliased  = null;
     public $children = array();
 
-    public function addChild(array $path, PlHook $hook)
+    public function addChildren(array $hooks)
     {
         global $platal;
-        $next = array_shift($path);
-        $alias = null;
-        if ($next && $next{0} == '%') {
-            $alias = $next;
-            $next = $platal->hook_map(substr($next, 1));
-        }
-        if (!$next) {
-            return;
-        }
-        @$child =& $this->children[$next];
-        if (!$child) {
-            $child = new PlHookTree();
-            $this->children[$next] =& $child;
-            $child->aliased = $alias;
-        }
-        if (empty($path)) {
-            $child->hook = $hook;
-        } else {
-            $child->addChild($path, $hook);
-        }
-    }
-
-    private function findChildAux(array $remain, array $matched, array $aliased)
-    {
-        $next = @$remain[0];
-        if ($this->aliased) {
-            $aliased = $matched;
-        }
-        if (!empty($next)) {
-            $child = @$this->children[$next];
-            if ($child) {
-                array_shift($remain);
-                $matched[] = $next;
-                return $child->findChildAux($remain, $matched, $aliased);
+        foreach ($hooks as $path=>$hook) {
+            $path = explode('/', $path);
+            $element  = $this;
+            foreach ($path as $next) {
+                $alias = null;
+                if ($next{0} == '%') {
+                    $alias = $next;
+                    $next = $platal->hook_map(substr($next, 1));
+                }
+                if (!isset($element->children[$next])) {
+                    $child = new PlHookTree();
+                    $child->aliased = $alias;
+                    $element->children[$next] = $child;
+                } else {
+                    $child = $element->children[$next];
+                }
+                $element = $child;
             }
+            $element->hook = $hook;
         }
-        return array($this->hook, $matched, $remain, $aliased);
     }
 
     public function findChild(array $path)
     {
-        return $this->findChildAux($path, array(), array());
+        $remain  = $path;
+        $matched = array();
+        $aliased = array();
+        $element = $this;
+        while (true)
+        {
+            $next = @$remain[0];
+            if ($element->aliased) {
+                $aliased = $matched;
+            }
+            if (empty($next) || !isset($element->children[$next])) {
+                break;
+            }
+            $element = $element->children[$next];
+            array_shift($remain);
+            $matched[] = $next;
+        }
+        return array($element->hook, $matched, $remain, $aliased);
     }
 
     private function findNearestChildAux(array $remain, array $matched, array $aliased)
@@ -401,10 +401,7 @@ abstract class Platal
         foreach ($modules as $module) {
             $module = strtolower($module);
             $this->mods[$module] = $m = PLModule::factory($module);
-            $hooks = $m->handlers();
-            foreach ($hooks as $path=>$hook) {
-                $this->hooks->addChild(explode('/', $path), $hook);
-            }
+            $this->hooks->addChildren($m->handlers());
         }
 
         if ($globals->mode == '') {
