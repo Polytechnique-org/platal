@@ -39,7 +39,7 @@
       <option value="text" {{if type}}{{if type == 'text'}}selected="selected"{{/if}}{{/if}}>
         Texte
       </option>
-      <option value="multiple" {{if type}}{{if type == 'multiple'}}selection="selected"{{/if}}{{/if}}>
+      <option value="multiple" {{if type}}{{if type == 'multiple'}}selected="selected"{{/if}}{{/if}}>
         Question à choix multiples
       </option>
     </select>
@@ -75,18 +75,32 @@
         {/literal}{icon name="add"}{literal} Ajouter une réponse
       </a>
     </div>
+    {{if parameters}}{{if parameters.answer}}
+      {{tmpl(parameters.answer) "#q_edit_multiple_answer"}}
+    {{/if}}{{/if}}
+    <div>
+      Permettre la sélection de plusieurs réponses ?
+      <select name="q_edit[${qid}][subtype]">
+        <option value="checkbox">Oui</option>
+        <option value="radio" selected="selected">Non</option>
+      </select>
+    </div>
     <div>
       Ajouter une case Autre ?
       <select name="q_edit[${qid}][allow_other]">
-        <option name="1">Oui</option>
-        <option name="" selected="selected">Non</option>
+        <option value="1">Oui</option>
+        <option value="" selected="selected">Non</option>
       </select>
     </div>
   </div>
 </script>
 
 <script id="q_edit_multiple_answer" type="text/x-jquery-tmpl">
-  <div><input type="text" name="q_edit[${qid}][answer][]" /></div>
+  <div>
+    <span class="q_edit_answer_box">
+    </span>
+    Réponse&nbsp;: <input type="text" name="q_edit[${qid}][answer][][value]" value="${value}" />
+  </div>
 </script>
 
 {/literal}

@@ -19,11 +19,11 @@
  ***************************************************************************/
 
 (function($) {
-    var dispatchType(method) {
-        return function(type) {
+    var dispatchType = function(method) {
+        return function(type, id) {
             var name = type + '_' + method;
             if ($.isFunction(this[name])) {
-                return this[name]();
+                return this[name](id);
             }
             return this;
         };
@@ -153,14 +153,15 @@
             }
             var question = $("#q_edit_new").tmpl(q);
             question
-                .children('select')
+                .children('select[name$="[type]"]')
                 .change(function () {
                     var type = $(this).val();
                     var form = question.children('.q_edit_form');
+                    var qid = $(this).qid();
                     form.empty();
                     if (type) {
-                        $("#q_edit_base").tmpl({ qid: id, type: type })
-                            .bindQuestion(type)
+                        $("#q_edit_base").tmpl({ qid: qid, type: type })
+                            .bindQuestion(type, qid)
                             .appendTo(form);
                     }
                     return true;
@@ -206,13 +207,28 @@
         },
 
         /* Multiple choices questions */
-        multiple_bindQuestion: function() {
+        multiple_selectSubtype: function() {
+            return this.find('select[name$="[subtype]"]');
+        },
+
+        multiple_bindQuestion: function(id) {
+            var $question = this;
+            this.multiple_selectSubtype()
+                .change(function() {
+                    $question.find('.q_edit_answer_box')
+                        .empty()
+                        .append($('<input>', {
+                            type: $(this).val(),
+                            disabled: "disabled"
+                        }));
+                });
             return this;
         },
 
         multiple_addAnswer: function() {
-            var answer = $("#q_edit_multiple_answer").tmpl({ qid: this.qid() });
-            this.childrenContainer().children('.add_answer').before(answer);
+            var question = this.question();
+            var answer = $("#q_edit_multiple_answer").tmpl({ qid: question.qid() });
+            question.childrenContainer().children('.add_answer').after(answer);
             return answer;
         }
     });
