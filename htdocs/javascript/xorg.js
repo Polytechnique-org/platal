@@ -23,7 +23,7 @@ var is_IE       = $.browser.msie;
 // {{{ function getNow()
 var days   = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
 var months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet',
-              'août', 'septembre', 'octobre', 'novembre', 'décembre']
+              'août', 'septembre', 'octobre', 'novembre', 'décembre'];
 
 function getNow() {
     var dt = new Date();
@@ -31,13 +31,16 @@ function getNow() {
     var mh = dt.getMonth();
     var wd = dt.getDate();
     var yr = dt.getYear();
-    if (yr<1000) yr += 1900;
     var hr = dt.getHours();
     var mi = dt.getMinutes();
+    var se = dt.getSeconds();
+
+    if (yr<1000) {
+        yr += 1900;
+    }
     if (mi < 10) {
         mi = '0' + mi;
     }
-    var se = dt.getSeconds();
     if (se < 10) {
         se = '0' + se;
     }
@@ -51,8 +54,8 @@ function getNow() {
 
 function canAddSearchEngine()
 {
-    if (((typeof window.sidebar == "object") && $.isFunction(window.sidebar.addSearchEngine))
-        || ((typeof window.external == "object") && $.isFunction(window.external.AddSearchProvider))) {
+    if (((typeof window.sidebar === "object") && $.isFunction(window.sidebar.addSearchEngine))
+        || ((typeof window.external === "object") && $.isFunction(window.external.AddSearchProvider))) {
         return true;
     }
     return false;
@@ -61,7 +64,7 @@ function canAddSearchEngine()
 function addSearchEngine()
 {
     var searchURI = "http://www.polytechnique.org/xorg.opensearch.xml";
-    if ((typeof window.sidebar == "object") && $.isFunction(window.sidebar.addSearchEngine)) {
+    if ((typeof window.sidebar === "object") && $.isFunction(window.sidebar.addSearchEngine)) {
         window.sidebar.addSearchEngine(
             searchURI,
             "http://www.polytechnique.org/images/xorg.png",
@@ -125,22 +128,27 @@ function addSearchEngine()
     $.fn.extend({
         goodiesPopup: function goodiesPopup(type) {
             var text = '<div style="text-align: center; line-height: 2.2">';
-            for (var site in goodies[type].sites) {
-                var entry = goodies[type].sites[site];
-                var s_alt   = entry.alt || "";
-                var s_img   = entry.img;
-                var s_title = entry.title || "";
-                var s_url   = entry.url_prefix.length > 0 ? entry.url_prefix + escape(this.href) : this.href;
+            var site;
+            var entry;
+            var s_alt;
+            var s_img;
+            var s_title;
+            var s_url;
+
+            for (site in goodies[type].sites) {
+                entry = goodies[type].sites[site];
+                s_alt   = entry.alt || "";
+                s_img   = entry.img;
+                s_title = entry.title || "";
+                s_url   = entry.url_prefix.length > 0 ? entry.url_prefix + escape(this.href) : this.href;
 
                 text += '<a href="' + s_url + '"><img src="' + s_img + '" title="' + s_title + '" alt="' + s_alt + '"></a><br />';
                 }
             text += '<a href="https://www.polytechnique.org/Xorg/Goodies">Plus de bonus</a> ...</div>';
 
-            var title = this.attr('title') || goodies.default_title;
-
             return this.overlib({
                 text: text,
-                caption: title,
+                caption: this.attr('title') || goodies.default_title,
                 close_text: 'Fermer',
                 delay: 800,
                 sticky: true,
@@ -187,16 +195,16 @@ function auto_links() {
                 href = 'http://' + fqdn + '/' + href;
             }
         }
-        if (this.nodeName.toLowerCase() == 'a' && !resource_page) {
+        if (this.nodeName.toLowerCase() === 'a' && !resource_page) {
             if (rss && !href.contains('prefs/rss') && (href.contains('xml') || href.contains('hash'))) {
                 node.goodiesPopup('rss');
             } else if (ical) {
                 node.goodiesPopup('ical');
             }
         }
-        if(matches = (/^popup_([0-9]*)x([0-9]*)$/).exec(this.className)) {
-            var w = matches[1], h = matches[2];
-            node.popWin(w, h);
+        matches = /^popup_([0-9]*)x([0-9]*)$/.exec(this.className);
+        if (matches) {
+            node.popWin(matches[1], matches[2]);
         }
     });
     $('.popup2').popWin(840, 600);
@@ -247,7 +255,7 @@ function str_hmac_sha1(key, data){ return binb2str(core_hmac_sha1(key, data));}
  */
 function sha1_vm_test()
 {
-  return hex_sha1("abc") == "a9993e364706816aba3e25717850c26c9cd0d89d";
+  return hex_sha1("abc") === "a9993e364706816aba3e25717850c26c9cd0d89d";
 }
 
 /*
@@ -255,30 +263,34 @@ function sha1_vm_test()
  */
 function core_sha1(x, len)
 {
+  var w, a, b, c, d, e;
+  var olda, oldb, oldc, oldd, olde;
+  var i, j, t;
+
   /* append padding */
   x[len >> 5] |= 0x80 << (24 - len % 32);
   x[((len + 64 >> 9) << 4) + 15] = len;
 
-  var w = Array(80);
-  var a =  1732584193;
-  var b = -271733879;
-  var c = -1732584194;
-  var d =  271733878;
-  var e = -1009589776;
+  w = Array(80);
+  a =  1732584193;
+  b = -271733879;
+  c = -1732584194;
+  d =  271733878;
+  e = -1009589776;
 
-  for(var i = 0; i < x.length; i += 16)
+  for(i = 0; i < x.length; i += 16)
   {
-    var olda = a;
-    var oldb = b;
-    var oldc = c;
-    var oldd = d;
-    var olde = e;
+    olda = a;
+    oldb = b;
+    oldc = c;
+    oldd = d;
+    olde = e;
 
-    for(var j = 0; j < 80; j++)
+    for(j = 0; j < 80; j++)
     {
       if(j < 16) w[j] = x[i + j];
       else w[j] = rol(w[j-3] ^ w[j-8] ^ w[j-14] ^ w[j-16], 1);
-      var t = safe_add(safe_add(rol(a, 5), sha1_ft(j, b, c, d)),
+      t = safe_add(safe_add(rol(a, 5), sha1_ft(j, b, c, d)),
                        safe_add(safe_add(e, w[j]), sha1_kt(j)));
       e = d;
       d = c;
@@ -324,16 +336,20 @@ function sha1_kt(t)
 function core_hmac_sha1(key, data)
 {
   var bkey = str2binb(key);
+  var i, ipad, opad;
+  var hash;
+
   if(bkey.length > 16) bkey = core_sha1(bkey, key.length * chrsz);
 
-  var ipad = Array(16), opad = Array(16);
-  for(var i = 0; i < 16; i++)
+  ipad = Array(16);
+  opad = Array(16);
+  for(i = 0; i < 16; i++)
   {
     ipad[i] = bkey[i] ^ 0x36363636;
     opad[i] = bkey[i] ^ 0x5C5C5C5C;
   }
 
-  var hash = core_sha1(ipad.concat(str2binb(data)), 512 + data.length * chrsz);
+  hash = core_sha1(ipad.concat(str2binb(data)), 512 + data.length * chrsz);
   return core_sha1(opad.concat(hash), 512 + 160);
 }
 
@@ -364,7 +380,8 @@ function str2binb(str)
 {
   var bin = Array();
   var mask = (1 << chrsz) - 1;
-  for(var i = 0; i < str.length * chrsz; i += chrsz)
+  var i;
+  for(i = 0; i < str.length * chrsz; i += chrsz)
     bin[i>>5] |= (str.charCodeAt(i / chrsz) & mask) << (32 - chrsz - i%32);
   return bin;
 }
@@ -376,7 +393,8 @@ function binb2str(bin)
 {
   var str = "";
   var mask = (1 << chrsz) - 1;
-  for(var i = 0; i < bin.length * 32; i += chrsz)
+  var i;
+  for(i = 0; i < bin.length * 32; i += chrsz)
     str += String.fromCharCode((bin[i>>5] >>> (32 - chrsz - i%32)) & mask);
   return str;
 }
@@ -388,7 +406,8 @@ function binb2hex(binarray)
 {
   var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
   var str = "";
-  for(var i = 0; i < binarray.length * 4; i++)
+  var i;
+  for(i = 0; i < binarray.length * 4; i++)
   {
     str += hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8+4)) & 0xF) +
            hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8  )) & 0xF);
@@ -403,12 +422,13 @@ function binb2b64(binarray)
 {
   var tab = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
   var str = "";
-  for(var i = 0; i < binarray.length * 4; i += 3)
+  var i, j, triplet;
+  for(i = 0; i < binarray.length * 4; i += 3)
   {
-    var triplet = (((binarray[i   >> 2] >> 8 * (3 -  i   %4)) & 0xFF) << 16)
+    triplet = (((binarray[i   >> 2] >> 8 * (3 -  i   %4)) & 0xFF) << 16)
                 | (((binarray[i+1 >> 2] >> 8 * (3 - (i+1)%4)) & 0xFF) << 8 )
                 |  ((binarray[i+2 >> 2] >> 8 * (3 - (i+2)%4)) & 0xFF);
-    for(var j = 0; j < 4; j++)
+    for(j = 0; j < 4; j++)
     {
       if(i * 8 + j * 6 > binarray.length * 32) str += b64pad;
       else str += tab.charAt((triplet >> 6*(3-j)) & 0x3F);
@@ -434,19 +454,20 @@ function hexdec(a) {
 }
 
 function hash_xor(a, b) {
-    var c,i,j,k;
+    var c,i,j,k,d;
     c = "";
     i = a.length;
     j = b.length;
     if (i < j) {
-        var d;
         d = a; a = b; b = d;
         k = i; i = j; j = k;
     }
-    for (k = 0; k < j; k++)
+    for (k = 0; k < j; k++) {
         c += dechex(hexdec(a.charAt(k)) ^ hexdec(b.charAt(k)));
-    for (; k < i; k++)
+    }
+    for (; k < i; k++) {
         c += a.charAt(k);
+    }
     return c;
 }
 
@@ -465,10 +486,11 @@ function getType(c) {
 
 function differentTypes(password) {
     var prev = 0;
+    var type;
 
     for (i = 0 ; i < password.length ; ++i) {
-        var type = getType(password.charAt(i));
-        if (prev != 0 && prev != type) {
+        type = getType(password.charAt(i));
+        if (prev !== 0 && prev !== type) {
             return true;
         }
         prev = type;
@@ -481,15 +503,16 @@ function passwordStrength(password) {
     var prev = 0;
     var firstType = true;
     var types = Array(0, 0, 0, 0, 0);
+    var type;
 
     for (i = 0 ; i < password.length ; ++i) {
-        var type = getType(password.charAt(i));
-        if (prev != 0 && prev != type) {
+        type = getType(password.charAt(i));
+        if (prev !== 0 && prev !== type) {
             prop += 5;
             firstType = false;
         }
         prop += i;
-        if (types[type] == 0 && !firstType) {
+        if (types[type] === 0 && !firstType) {
             prop += 15;
         }
         types[type]++;
@@ -513,6 +536,7 @@ function passwordStrength(password) {
 function checkPassword(box, okLabel) {
     var password = box.value;
     var prop = passwordStrength(password);
+    var submitButton;
 
     if (prop >= 60) {
         color = "#4f4";
@@ -534,7 +558,7 @@ function checkPassword(box, okLabel) {
                     }, 750)
            .parent().stop()
                     .animate({ backgroundColor: bgcolor }, 750);
-    var submitButton = $(":submit[name='" + passwordprompt_submit + "']");
+    submitButton = $(":submit[name='" + passwordprompt_submit + "']");
     if (ok && password.length >= 6 && differentTypes(password)) {
         submitButton.attr("value", okLabel);
         submitButton.removeAttr("disabled");
@@ -545,16 +569,17 @@ function checkPassword(box, okLabel) {
 }
 
 function hashResponse(password1, password2, hasConfirmation) {
-    pw1 = $('[name=' + password1 + ']').val();
+    var pw1 = $('[name=' + password1 + ']').val();
+    var pw2;
 
     if (hasConfirmation) {
         pw2 = $('[name=' + password2 + ']').val();
-        if (pw1 != pw2) {
+        if (pw1 !== pw2) {
             alert("\nErreur : les deux champs ne sont pas identiques !");
             return false;
         }
         $('[name=' + password2 + ']').val('');
-    } else if (pw1 == '********') {
+    } else if (pw1 === '********') {
         return true;
     }
 
@@ -575,19 +600,38 @@ function hashResponse(password1, password2, hasConfirmation) {
 
 function correctUserName() {
     var u = document.forms.login.username;
+    var mots;
+
     // login with no space
-    if (u.value.indexOf(' ') < 0) return true;
-    var mots = u.value.split(' ');
+    if (u.value.contains(' ')) {
+        return true;
+    }
+    mots = u.value.split(' ');
     // jean paul.du pont -> jean-paul.du-pont
-    if (u.value.indexOf('.') > 0) { u.value = mots.join('-'); return true; }
+    if (u.value.indexOf('.') > 0) {
+        u.value = mots.join('-');
+        return true;
+    }
     // jean dupont  -> jean.dupont
-    if (mots.length == 2) { u.value = mots[0]+"."+mots[1]; return true; }
+    if (mots.length === 2) {
+        u.value = mots[0] + "." + mots[1];
+        return true;
+    }
     // jean dupont 2001 -> jean.dupont.2001
-    if (mots.length == 3 && mots[2] > 1920 && mots[2] < 3000) { u.value = mots.join('.'); return true; }
+    if (mots.length === 3 && mots[2] > 1920 && mots[2] < 3000) {
+        u.value = mots.join('.');
+        return true;
+    }
     // jean de la vallee -> jean.de-la-vallee
-    if (mots[1].toUpperCase() == 'DE') { u.value = mots[0]+"."+mots.join('-').substr(mots[0].length+1); return true; }
+    if (mots[1].toUpperCase() === 'DE') {
+        u.value = mots[0] + "." + mots.join('-').substr(mots[0].length+1);
+        return true;
+    }
     // jean paul dupont -> jean-paul.dupont
-    if (mots.length == 3 && mots[0].toUpperCase() == 'JEAN') { u.value = mots[0]+"-"+mots[1]+"."+mots[2]; return true; }
+    if (mots.length === 3 && mots[0].toUpperCase() === 'JEAN') {
+        u.value = mots[0] + "-" + mots[1] + "." + mots[2];
+        return true;
+    }
 
     alert('Ton email ne doit pas contenir de blanc.\nLe format standard est\n\nprenom.nom.promotion\n\nSi ton nom ou ton prenom est composé,\nsépare les mots par des -');
 
@@ -595,18 +639,21 @@ function correctUserName() {
 }
 
 function doChallengeResponse() {
+    var new_pass, old_pass, str;
 
-    if (!correctUserName()) return false;
+    if (!correctUserName()) {
+        return false;
+    }
 
-    var new_pass = hash_encrypt(document.forms.login.password.value);
-    var old_pass = hash_encrypt(document.forms.login.password.value.substr(0, 10));
+    new_pass = hash_encrypt(document.forms.login.password.value);
+    old_pass = hash_encrypt(document.forms.login.password.value.substr(0, 10));
 
     str = document.forms.login.username.value + ":" +
         new_pass + ":" +
         document.forms.loginsub.challenge.value;
 
     document.forms.loginsub.response.value = hash_encrypt(str);
-    if (new_pass != old_pass) {
+    if (new_pass !== old_pass) {
         document.forms.loginsub.xorpass.value = hash_xor(new_pass, old_pass);
     }
     document.forms.loginsub.username.value = document.forms.login.username.value;
@@ -617,9 +664,7 @@ function doChallengeResponse() {
 }
 
 function doChallengeResponseLogged() {
-    var new_pass = hash_encrypt(document.forms.login.password.value);
-
-    str = document.forms.loginsub.username.value + ":" +
+    var str = document.forms.loginsub.username.value + ":" +
         hash_encrypt(document.forms.login.password.value) + ":" +
         document.forms.loginsub.challenge.value;
 
@@ -636,7 +681,7 @@ function sendTestEmail(token, hruid)
 {
     var url = 'emails/test';
     var msg = "Un email a été envoyé avec succès";
-    if (hruid != null) {
+    if (hruid) {
         url += '/' + hruid;
         msg += " sur l'adresse de " + hruid + ".";
     } else {
@@ -657,12 +702,18 @@ function sendTestEmail(token, hruid)
     $.fn.extend({
         overlib: function(text, width, height) {
             var args = [ ];
-            if (typeof text == 'string') {
+            var key;
+
+            if (typeof text === 'string') {
                 args.push(text);
-                width  && args.push(width);
-                height && args.push(height);
+                if (width) {
+                    args.push(width);
+                }
+                if (height) {
+                    args.push(height);
+                }
             } else {
-                for (var key in text) {
+                for (key in text) {
                     switch (key) {
                       case 'text':
                         args.unshift(text[key]);
