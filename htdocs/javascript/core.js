@@ -24,7 +24,7 @@
 // {{{ jQuery object extension
 
 (function($) {
-    function assert(condition, text) {
+    var assert = function(condition, text) {
         if ($.isFunction(condition)) {
             condition = condition();
         }
@@ -36,7 +36,7 @@
         } else {
             throw "Assertion failed: " + text;
         }
-    }
+    };
 
 
     /* Add new functions to jQuery namesapce */
@@ -47,7 +47,7 @@
                 if (url.startsWith('http', true)) {
                     return url;
                 }
-                if (typeof base == 'undefined') {
+                if (typeof base === 'undefined') {
                     base = $('head base');
                     if (base.length > 0) {
                         base = base.attr('href');
@@ -59,7 +59,7 @@
                     }
                 }
                 return base + url;
-            }
+            };
         }()),
 
         /* The goal of the following functions is to provide an AJAX API that
@@ -75,17 +75,17 @@
                 onSuccess = data;
                 data = null;
             }
-            if (onError != null && !$.isFunction(onError)) {
+            if (onError && !$.isFunction(onError)) {
                 type = type || onError;
                 onError = null;
             }
 
             function ajaxHandler(data, textStatus, xhr) {
-                if (textStatus == 'success') {
+                if (textStatus === 'success') {
                     if (onSuccess) {
                         onSuccess(data, textStatus, xhr);
                     }
-                } else if (textStatus == 'error') {
+                } else if (textStatus === 'error') {
                     if (onError) {
                         onError(data, textStatus, xhr);
                     } else {
@@ -125,7 +125,7 @@
 
         closeOnEsc: function() {
             return $(window).keydown(function (e) {
-                if (e.keyCode == 27) {
+                if (e.keyCode === 27) {
                     window.close();
                 }
             });
@@ -133,22 +133,27 @@
 
         dynPost: function(action, key, value) {
             var values;
+            var k;
+            var form;
+
             if (!$.isArray(key)) {
                 values = { };
                 values[key] = value;
             } else {
                 values = key;
             }
-            var form = $('<form>', {
+            form = $('<form>', {
                 action: action,
                 method: 'post'
             });
-            for (var k in values) {
-                $('<input>', {
-                    type: 'hidden',
-                    name: k,
-                    value: values[k]
-                }).appendTo(form);
+            for (k in values) {
+                if (values.hasOwnProperty(k)) {
+                    $('<input>', {
+                        type: 'hidden',
+                        name: k,
+                        value: values[k]
+                    }).appendTo(form);
+                }
             }
             $('body').appendTo(form);
             form.submit();
@@ -194,7 +199,7 @@
         },
 
         wiki: function(text, withTitle) {
-            if (text == '') {
+            if (!text) {
                 return this.html('');
             }
             var url = 'wiki_preview';
@@ -223,13 +228,13 @@
 
         assertLength: function(len) {
             return this.assert(function() {
-                return $(this).length == len;
+                return $(this).length === len;
             });
         },
 
         assertId: function(id) {
             return this.assert(function() {
-                return $(this).attr('id') == id;
+                return $(this).attr('id') === id;
             });
         },
 
@@ -239,7 +244,7 @@
             });
         }
     });
-})(jQuery);
+}(jQuery));
 
 // }}}
 // {{{ function RegExp.escape()
@@ -256,7 +261,7 @@ RegExp.escape = function(text) {
         );
     }
     return text.replace(arguments.callee.sRE, '\\$1');
-}
+};
 
 // }}}
 // {{{ String extension
@@ -271,8 +276,8 @@ String.prototype.startsWith = function(str, caseInsensitive) {
         str = str.toLowerCase();
         cmp = cmp.toLowerCase();
     }
-    return cmp.substr(0, str.length) == str;
-}
+    return cmp.substr(0, str.length) === str;
+};
 
 String.prototype.endsWith = function(str, caseInsensitive) {
     var cmp = this;
@@ -284,14 +289,14 @@ String.prototype.endsWith = function(str, caseInsensitive) {
         str = str.toLowerCase();
         cmp = cmp.toLowerCase();
     }
-    return cmp.substr(cmp.length - str.length, str.length) == str;
-}
+    return cmp.substr(cmp.length - str.length, str.length) === str;
+};
 
 String.prototype.htmlEntities = function() {
     return this.replace(/&/g,'&amp;')
                .replace(new RegExp('<','g'),'&lt;')
                .replace(/>/g,'&gt;');
-}
+};
 
 String.prototype.contains = function(str, caseInsensitive) {
     var cmp = this;
@@ -303,36 +308,46 @@ String.prototype.contains = function(str, caseInsensitive) {
         cmp = cmp.toLowerCase();
     }
     return cmp.indexOf(str) >= 0;
-}
+};
 
 // }}}
 // {{{ PmWiki decoding
 
 Nix = {
     map: null,
+
     convert: function(a) {
-        Nix.init();
         var s = '';
+        Nix.init();
         for (i = 0; i < a.length ; i++) {
             var b = a.charAt(i);
             s += ((b >= 'A' && b <= 'Z') || (b >= 'a' && b <= 'z') ? Nix.map[b] : b);
         }
         return s;
     },
+
     init: function() {
-        if (Nix.map != null)
+        var map;
+        var s;
+
+        if (Nix.map !== null) {
             return;
-        var map = new Array();
-        var s='abcdefghijklmnopqrstuvwxyz';
-        for (i = 0; i < s.length; i++)
-            map[s.charAt(i)] = s.charAt((i+13)%26);
-        for (i=0; i<s.length; i++)map[s.charAt(i).toUpperCase()] = s.charAt((i+13)%26).toUpperCase();
-            Nix.map = map;
+        }
+        map = [ ];
+        s   = 'abcdefghijklmnopqrstuvwxyz';
+        for (i = 0; i < s.length; i++) {
+            map[s.charAt(i)] = s.charAt((i+13) % 26);
+        }
+        for (i=0; i< s.length; i++) {
+            map[s.charAt(i).toUpperCase()] = s.charAt((i+13) % 26).toUpperCase();
+        }
+        Nix.map = map;
     },
+
     decode: function(a) {
         document.write(Nix.convert(a));
     }
-}
+};
 
 // }}}
 // {{{ preview wiki
@@ -340,7 +355,7 @@ Nix = {
 function previewWiki(idFrom, idTo, withTitle, idShow)
 {
     $('#' + idTo).wiki($('#' + idFrom).val(), withTitle);
-    if (idShow != null) {
+    if (idShow) {
         $('#' + idShow).show();
     }
 }
