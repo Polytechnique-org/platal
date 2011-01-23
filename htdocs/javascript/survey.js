@@ -19,6 +19,16 @@
  ***************************************************************************/
 
 (function($) {
+    var dispatchType(method) {
+        return function(type) {
+            var name = type + '_' + method;
+            if ($.isFunction(this[name])) {
+                return this[name]();
+            }
+            return this;
+        };
+    };
+
     $.extend({
         questions: function() {
             return $('.q_edit:not(#questions)');
@@ -34,25 +44,23 @@
                 var elt = $(this);
                 var old_id = elt.attr('id');
                 var new_id = 'q_edit[' + idx + ']';
-                if (old_id == new_id) {
+                var fixAttrs;
+
+                if (old_id === new_id) {
                     return;
                 }
 
-                var children = elt.children(':not(.q_edit)');
-                while (children.length > 0) {
-                    children.filter('.q_edit_label').text('Question ' + (idx + 1));
-                    children.children('[name*="' + old_id + '"]').each(function() {
-                        function replace(attr) {
-                            var cid = $(this).attr(attr);
-                            if (cid.substr(0, id.length) == old_id) {
-                               $(this).attr(attr, new_id + cid.substring(old_id.length, cid.length));
-                            }
+                fixAttrs = function(attr) {
+                    elt.find('[' + attr + '^="' + old_id + '"]').each(function() {
+                        var cid = $(this).attr(attr);
+                        if (cid.startsWith(old_id)) {
+                            $(this).attr(attr, new_id + cid.substring(old_id.length, cid.length));
                         }
-                        replace('id');
-                        replace('name');
                     });
-                    children = children.children(':not(.q_edit)');
-                }
+                };
+                fixAttrs('id');
+                fixAttrs('name');
+                elt.children().children('.q_edit_label').text('Question ' + (idx + 1));
                 elt.attr('id', new_id);
             });
         },
@@ -77,9 +85,10 @@
 
         /* Edition form */
         prepareQuestions: function(questions) {
-            for (var q in questions) {
-                var q = questions[q];
-                var child = this.addQuestion(q);
+            var q, child;
+            for (q in questions) {
+                q = questions[q];
+                child = this.addQuestion(q);
                 if ($.isArray(q.children)) {
                     child.prepareQuestions(q.children);
                 }
@@ -92,7 +101,7 @@
         },
 
         isRootSection: function() {
-            return this.attr('id') == 'questions';
+            return this.attr('id') === 'questions';
         },
 
         question: function() {
@@ -105,18 +114,18 @@
 
         qid: function() {
             var question = this.question();
-            if (question.get(0) == undefined) {
-                return undefined;
+            if (typeof question.get(0) === 'undefined') {
+                return;
             }
             var id = question.attr('id');
-            if (id.substr(0, 7) != 'q_edit[') {
-                return undefined;
+            if (id.substr(0, 7) !== 'q_edit[') {
+                return;
             }
-            if (id.charAt(id.length - 1) != ']') {
-                return undefined;
+            if (id.charAt(id.length - 1) !== ']') {
+                return;
             }
             id = id.substr(7, id.length - 8);
-            return parseInt(id);
+            return parseInt(id, 10);
         },
 
         parentQuestion: function() {
@@ -134,13 +143,13 @@
 
         addQuestion: function(q) {
             var id = $.lastQuestion().qid();
-            if (id == undefined) {
+            if (!id) {
                 id = 0;
-            } else {
+            } else {
                 id++;
             }
-            if (q == null) {
-                q = { qid: id }
+            if (!q) {
+                q = { qid: id };
             }
             var question = $("#q_edit_new").tmpl(q);
             question
@@ -149,26 +158,19 @@
                     var type = $(this).val();
                     var form = question.children('.q_edit_form');
                     form.empty();
-                    if (type != '') {
+                    if (type) {
                         $("#q_edit_base").tmpl({ qid: id, type: type })
                             .bindQuestion(type)
                             .appendTo(form);
                     }
                     return true;
                 });
-            var dest = this.question();
-            var res = this.childrenContainer().children('.add_question').before(question);
+            this.childrenContainer().children('.add_question').before(question);
             $.renumberQuestions();
             return question;
         },
 
-        bindQuestion: function(type) {
-            var name = type + '_bindQuestion';
-            if ($.isFunction(this[name])) {
-                this[name]();
-            }
-            return this;
-        },
+        bindQuestion: dispatchType('bindQuestion'),
 
         removeQuestion: function(force) {
             var question = this.parentQuestion();
@@ -214,7 +216,7 @@
             return answer;
         }
     });
-})(jQuery);
+}(jQuery));
 
 
 $(function() {
