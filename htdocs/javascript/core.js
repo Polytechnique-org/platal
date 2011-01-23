@@ -41,6 +41,27 @@
 
     /* Add new functions to jQuery namesapce */
     $.extend({
+        plURL: (function() {
+            var base;
+            return function(url) {
+                if (url.startsWith('http', true)) {
+                    return url;
+                }
+                if (typeof base == 'undefined') {
+                    base = $('head base');
+                    if (base.length > 0) {
+                        base = base.attr('href');
+                        if (!base.endsWith('/')) {
+                            base += '/';
+                        }
+                    } else {
+                        base = '';
+                    }
+                }
+                return base + url;
+            }
+        }()),
+
         /* The goal of the following functions is to provide an AJAX API that
          * take a different callback in case of HTTP success code (2XX) and in
          * other cases.
@@ -74,7 +95,7 @@
                 }
             }
             return $.ajax({
-                url: source,
+                url: $.plURL(source),
                 type: method,
                 success: ajaxHandler,
                 data : data,
@@ -235,6 +256,53 @@ RegExp.escape = function(text) {
         );
     }
     return text.replace(arguments.callee.sRE, '\\$1');
+}
+
+// }}}
+// {{{ String extension
+
+String.prototype.startsWith = function(str, caseInsensitive) {
+    var cmp = this;
+
+    if (str.length > this.length) {
+        return false;
+    }
+    if (caseInsensitive) {
+        str = str.toLowerCase();
+        cmp = cmp.toLowerCase();
+    }
+    return cmp.substr(0, str.length) == str;
+}
+
+String.prototype.endsWith = function(str, caseInsensitive) {
+    var cmp = this;
+
+    if (str.length > this.length) {
+        return false;
+    }
+    if (caseInsensitive) {
+        str = str.toLowerCase();
+        cmp = cmp.toLowerCase();
+    }
+    return cmp.substr(cmp.length - str.length, str.length) == str;
+}
+
+String.prototype.htmlEntities = function() {
+    return this.replace(/&/g,'&amp;')
+               .replace(new RegExp('<','g'),'&lt;')
+               .replace(/>/g,'&gt;');
+}
+
+String.prototype.contains = function(str, caseInsensitive) {
+    var cmp = this;
+    if (str.length > this.length) {
+        return false;
+    }
+    if (caseInsensitive) {
+        str = str.toLowerCase();
+        cmp = cmp.toLowerCase();
+    }
+    return cmp.indexOf(str) >= 0;
 }
 
 // }}}

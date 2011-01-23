@@ -37,9 +37,6 @@
 <link rel="{$link.rel}" href="{$link.href}" />
 {/foreach}
 {/if}
-<script type="text/javascript">
-  var platal_baseurl = "{$globals->baseurl}/";
-</script>
 {if t($pl_js)}
 {foreach from=$pl_js item=js}
 <script type="text/javascript" src="{$js}"></script>
