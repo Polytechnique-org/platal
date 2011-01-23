@@ -84,72 +84,71 @@ function addSearchEngine()
 
 // {{{ function goodiesPopup()
 
-var __goodies_active = true;
+(function($) {
+    var goodies = {
+        ical: {
+            default_title: 'Calendrier iCal',
+            sites: [
+                {url_prefix: '',
+                 img: 'images/icons/calendar_view_day.gif',
+                 title: 'Calendrier iCal'},
+                {url_prefix: 'http://www.google.com/calendar/render?cid=',
+                 img: 'images/goodies/add-google-calendar.gif',
+                 title: 'Ajouter à Google Calendar'},
+                {url_prefix: 'https://www.google.com/calendar/hosted/polytechnique.org/render?cid=',
+                 img: 'images/goodies/add-google-calendar.gif',
+                 title: 'Ajouter à Google Apps / Calendar'}
+            ]
+        },
 
-var __goodies_ical = {
-    default_title: 'Calendrier iCal',
-    sites: [
-        {'url_prefix': '',
-         'img': 'images/icons/calendar_view_day.gif',
-         'title': 'Calendrier iCal'},
-        {'url_prefix': 'http://www.google.com/calendar/render?cid=',
-         'img': 'images/goodies/add-google-calendar.gif',
-         'title': 'Ajouter à Google Calendar'},
-        {'url_prefix': 'https://www.google.com/calendar/hosted/polytechnique.org/render?cid=',
-         'img': 'images/goodies/add-google-calendar.gif',
-         'title': 'Ajouter à Google Apps / Calendar'}
-    ]
-};
+        rss: {
+            default_title: 'Fils RSS',
+            sites: [
+                {url_prefix: '',
+                 img: 'images/icons/feed.gif',
+                 title: 'Fil rss'},
+                {url_prefix: 'http://fusion.google.com/add?feedurl=',
+                 img: 'images/goodies/add-google.gif',
+                 alt: 'Add to Google',
+                 title: 'Ajouter à iGoogle/Google Reader'},
+                {url_prefix: 'http://www.netvibes.com/subscribe.php?url=',
+                 img: 'images/goodies/add-netvibes.gif',
+                 title: 'Ajouter à Netvibes'},
+                {url_prefix: 'http://add.my.yahoo.com/content?.intl=fr&url=',
+                 img: 'images/goodies/add-yahoo.gif',
+                 alt: 'Add to My Yahoo!',
+                 title: 'Ajouter à My Yahoo!'}
+            ]
+        }
+    };
 
-var __goodies_rss = {
-    default_title: 'Fils RSS',
-    sites: [
-        {'url_prefix': '',
-         'img': 'images/icons/feed.gif',
-         'title': 'Fil rss'},
-        {'url_prefix': 'http://fusion.google.com/add?feedurl=',
-         'img': 'images/goodies/add-google.gif',
-         'alt': 'Add to Google',
-         'title': 'Ajouter à iGoogle/Google Reader'},
-        {'url_prefix': 'http://www.netvibes.com/subscribe.php?url=',
-         'img': 'images/goodies/add-netvibes.gif',
-         'title': 'Ajouter à Netvibes'},
-        {'url_prefix': 'http://add.my.yahoo.com/content?.intl=fr&url=',
-         'img': 'images/goodies/add-yahoo.gif',
-         'alt': 'Add to My Yahoo!',
-         'title': 'Ajouter à My Yahoo!'}
-    ]
-};
+    $.fn.extend({
+        goodiesPopup: function goodiesPopup(type) {
+            var text = '<div style="text-align: center; line-height: 2.2">';
+            for (var site in goodies[type].sites) {
+                var entry = goodies[type].sites[site];
+                var s_alt   = entry.alt || "";
+                var s_img   = entry.img;
+                var s_title = entry.title || "";
+                var s_url   = entry.url_prefix.length > 0 ? entry.url_prefix + escape(this.href) : this.href;
 
-function disableGoodiesPopups() {
-    __goodies_active = false;
-}
-
-function goodiesPopup(node, goodies) {
-    var text = '<div style="text-align: center; line-height: 2.2">';
-    for (var site in goodies.sites) {
-        var entry = goodies.sites[site];
-        var s_alt   = entry["alt"] ? entry["alt"] : "";
-        var s_img   = entry["img"];
-        var s_title = entry["title"] ? entry["title"] : "";
-        var s_url   = entry["url_prefix"].length > 0 ? entry["url_prefix"] + escape(this.href) : this.href;
-
-        text += '<a href="' + s_url + '"><img src="' + s_img + '" title="' + s_title + '" alt="' + s_alt + '"></a><br />';
-    }
-    text += '<a href="https://www.polytechnique.org/Xorg/Goodies">Plus de bonus</a> ...</div>';
-
-    var title = node.title ? node.title : goodies.default_title;
-
-    $(node)
-        .mouseover(
-            function() {
-                if (__goodies_active) {
-                    return overlib(text, CAPTION, title, CLOSETEXT, 'Fermer', DELAY, 800, STICKY, WIDTH, 150);
+                text += '<a href="' + s_url + '"><img src="' + s_img + '" title="' + s_title + '" alt="' + s_alt + '"></a><br />';
                 }
-            }
-        )
-        .mouseout(nd);
-}
+            text += '<a href="https://www.polytechnique.org/Xorg/Goodies">Plus de bonus</a> ...</div>';
+
+            var title = this.attr('title') || goodies.default_title;
+
+            return this.overlib({
+                text: text,
+                caption: title,
+                close_text: 'Fermer',
+                delay: 800,
+                sticky: true,
+                width: 150
+            });
+        }
+    });
+}(jQuery));
 
 // }}}
 // {{{ function auto_links()
@@ -190,9 +189,9 @@ function auto_links() {
         }
         if (this.nodeName.toLowerCase() == 'a' && !resource_page) {
             if (rss && !href.contains('prefs/rss') && (href.contains('xml') || href.contains('hash'))) {
-                goodiesPopup(this, __goodies_rss);
+                node.goodiesPopup('rss');
             } else if (ical) {
-                goodiesPopup(this, __goodies_ical);
+                node.goodiesPopup('ical');
             }
         }
         if(matches = (/^popup_([0-9]*)x([0-9]*)$/).exec(this.className)) {
@@ -648,6 +647,57 @@ function sendTestEmail(token, hruid)
 }
 
 // }}}
+
+
+/***************************************************************************
+ * Overlib made simple
+ */
+
+(function($) {
+    $.fn.extend({
+        overlib: function(text, width, height) {
+            var args = [ ];
+            if (typeof text == 'string') {
+                args.push(text);
+                width  && args.push(width);
+                height && args.push(height);
+            } else {
+                for (var key in text) {
+                    switch (key) {
+                      case 'text':
+                        args.unshift(text[key]);
+                        break;
+                      case 'caption':
+                        args.push(CAPTION, text[key]);
+                        break;
+                      case 'close_text':
+                        args.push(CLOSETEXT, text[key]);
+                        break;
+                      case 'delay':
+                        args.push(DELAY, text[key]);
+                        break;
+                      case 'sticky':
+                        if (text[key]) {
+                            args.push(STICKY);
+                        }
+                        break;
+                      case 'width':
+                        args.push(WIDTH, text[key]);
+                        break;
+                      case 'height':
+                        args.push(HEIGHT, text[key]);
+                        break;
+                    }
+                }
+            }
+            return this
+                .mouseover(function () {
+                    return overlib.apply(null, args);
+                })
+                .mouseout(nd);
+        }
+    });
+}(jQuery));
 
 
 /***************************************************************************
