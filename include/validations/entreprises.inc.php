@@ -129,8 +129,7 @@ class EntrReq extends ProfileValidate
         if ($isok) {
             return "  L'entreprise " . $this->name . " vient d'être ajoutée à ta fiche.";
         } else {
-            return "  La demande que tu avais faite pour l'entreprise " . $this->name .
-                   " a été refusée, car elle figure déjà dans notre base.";
+            return '  La demande que tu avais faite pour l\'entreprise ' . $this->name . ' a été refusée.';
         }
     }
 
