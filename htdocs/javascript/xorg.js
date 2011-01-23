@@ -157,35 +157,39 @@ function goodiesPopup(node, goodies) {
 function auto_links() {
     var url  = document.URL;
     var fqdn = url.replace(/^https?:\/\/([^\/]*)\/.*$/,'$1');
-    var light = (url.indexOf('display=light') > url.indexOf('?'));
-    var resource_page = (url.indexOf('rss') > -1 || url.indexOf('ical') > -1);
+    var light = url.indexOf('display=light') > url.indexOf('?');
+    var resource_page = url.contains('rss') || url.contains('ical');
 
     $("a,link").each(function(i) {
         var node = $(this);
         var href = this.href;
+        var matches;
+        var rss;
+        var ical;
+
         if(!href || node.hasClass('xdx')
-           || href.indexOf('mailto:') > -1 || href.indexOf('javascript:') > -1) {
+           || href.startsWith('mailto:') || href.startsWith('javascript:')) {
             return;
         }
-        if ((href.indexOf(fqdn) < 0 && this.className.indexOf('popup') < 0) || node.hasClass('popup')) {
+        if ((!href.contains(fqdn) && !this.className.contains('popup')) || node.hasClass('popup')) {
             node.click(function () {
                 window.open(href);
                 return false;
             });
         }
-        if (href.indexOf(fqdn) > -1 && light) {
+        if (href.contains(fqdn) && light) {
             href = href.replace(/([^\#\?]*)\??([^\#]*)(\#.*)?/, "$1?display=light&$2$3");
             this.href = href;
         }
-        var rss  = href.indexOf('rss') > -1;
-        var ical = href.indexOf('ical') > -1;
+        rss  = href.contains('rss');
+        ical = href.contains('ical');
         if (rss || ical) {
-            if (href.indexOf('http') < 0) {
+            if (!href.startsWith('http')) {
                 href = 'http://' + fqdn + '/' + href;
             }
         }
         if (this.nodeName.toLowerCase() == 'a' && !resource_page) {
-            if (rss && href.indexOf('prefs/rss') < 0 &&  (href.indexOf('xml') > -1 || href.indexOf('hash'))) {
+            if (rss && !href.contains('prefs/rss') && (href.contains('xml') || href.contains('hash'))) {
                 goodiesPopup(this, __goodies_rss);
             } else if (ical) {
                 goodiesPopup(this, __goodies_ical);

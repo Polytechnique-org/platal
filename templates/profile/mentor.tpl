@@ -114,7 +114,7 @@
         {foreach from=$terms item=term}
         addJobTerm(-1, "{$term.jtid}", "{$term.full_name|replace:'"':'\\"'}");
         {/foreach}
-        $('.term_search').autocomplete(platal_baseurl + 'profile/jobterms',
+        $('.term_search').autocomplete($.plURL('profile/jobterms'),
           {ldelim}
             "formatItem" : displayJobTerm,
             "extraParams" : {ldelim} "jobid" : "-1" {rdelim},

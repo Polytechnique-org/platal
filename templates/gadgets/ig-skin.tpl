@@ -24,8 +24,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" href="css/base.css" media="all"/>
     <link rel="stylesheet" type="text/css" href="css/igoogle.css" media="all"/>
-    <script type="text/javascript">var platal_baseurl = "{$globals->baseurl}/";</script>
-    {javascript name=jquery}
+    {javascript name=jquery.xorg}
+    {javascript name=core}
     {javascript name=xorg}
     {javascript name=igoogle}
   </head>

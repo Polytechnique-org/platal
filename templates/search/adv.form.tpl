@@ -27,11 +27,9 @@
 {/if}
 
 <script type="text/javascript">// <!--
-  var baseurl = platal_baseurl + "search/";
+  var baseurl = $.plURL("search/");
   {literal}
-  String.prototype.htmlEntities = function () {
-    return this.replace(/&/g,'&amp;').replace(new RegExp('<','g'),'&lt;').replace(/>/g,'&gt;');
-  };
+
   // display an autocomplete row : blabla (nb of found matches)
   function make_format_autocomplete(block) {
     return function(row) {

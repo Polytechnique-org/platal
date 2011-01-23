@@ -211,7 +211,7 @@ function addEdu()
     i++;
     $('#edu_add').addClass(prefix + i);
     i--;
-    $.get(platal_baseurl + 'profile/ajax/edu/' + i + '/' + class_parity,
+    $.xget('profile/ajax/edu/' + i + '/' + class_parity,
           function(data) {
               $('#edu_add').before(data);
               prepareType(i);
@@ -489,7 +489,7 @@ function makeAddProcess(id)
 function addMedal()
 {
     var id = $('#medals').find('[name=medal_sel]').val();
-    $.get(platal_baseurl + 'profile/ajax/medal/' + id, makeAddProcess(id));
+    $.xget('profile/ajax/medal/' + id, makeAddProcess(id));
 }
 
 function removeMedal(id)
@@ -532,7 +532,7 @@ function addJob()
     while ($('#jobs_' + i).length != 0) {
         ++i;
     }
-    $.get(platal_baseurl + 'profile/ajax/job/' + i, makeAddJob(i));
+    $.xget('profile/ajax/job/' + i, makeAddJob(i));
 }
 
 function addEntreprise(id)
@@ -673,7 +673,7 @@ function addSkill(cat)
 {
     var val  = $('#' + cat + '_table').find('[name=' + cat + '_sel]').val();
     var text = $('#' + cat + '_table').find('[name=' + cat + '_sel] :selected').text();
-    $.get(platal_baseurl + 'profile/ajax/skill/' + cat + '/' + val,
+    $.xget('profile/ajax/skill/' + cat + '/' + val,
           function(data) {
               $('#' + cat).append(data);
               $('#' + cat + '_' + val + '_title').text(text);
@@ -703,7 +703,7 @@ function registerEnterpriseAutocomplete(id)
     $(".enterpriseName").each(
       function() {
         if (id == -1 || this.name == "jobs[" + id + "][name]") {
-            $(this).autocomplete(platal_baseurl + "search/autocomplete/entreprise",
+            $(this).autocomplete($.plURL("search/autocomplete/entreprise"),
                                  {
                                      selectOnly:1,
                                      field:this.name,
@@ -716,7 +716,7 @@ function registerEnterpriseAutocomplete(id)
     $(".sectorName").each(
       function() {
         if (id == -1 || this.name == "jobs[" + id + "][subSubSectorName]") {
-            $(this).autocomplete(platal_baseurl + "search/autocomplete/subSubSector",
+            $(this).autocomplete($.plURL("search/autocomplete/subSubSector"),
                                  {
                                      selectOnly:1,
                                      field:this.name,

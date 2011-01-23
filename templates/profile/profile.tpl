@@ -24,7 +24,7 @@
 <script type="text/javascript">//<![CDATA[
 function chgMainWinLoc(strPage)
 {
-  strPage = platal_baseurl + strPage;
+  strPage = $.plURL(strPage);
   if (parent.opener) {
     try {
       parent.opener.document.location = strPage;
