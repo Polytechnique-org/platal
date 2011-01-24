@@ -418,6 +418,7 @@ class UFC_Promo extends UserFilterCondition
 
     public function export()
     {
+        $export = $this->buildExport('promo');
         $export['comparison'] = $this->comparison;
         if ($this->grade != UserFilter::DISPLAY) {
             $export['grade'] = $this->grade;
