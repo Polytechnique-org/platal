@@ -20,6 +20,8 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<p class="center"><small>Seules les adresses principales permanentes avec un drapeau vert ou orange figureront dans l'annuaire papier de l'AX.</small></p>
+
 {foreach key=i item=address from=$addresses}
 <div id="{"addresses_`$i`_cont"}">
 {include file="profile/adresses.address.tpl" i=$i address=$address}
