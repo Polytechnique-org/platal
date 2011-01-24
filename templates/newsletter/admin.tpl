@@ -22,22 +22,24 @@
 
 
 <h1>
-  Lettre de Polytechnique.org
+  {$nl->name}
 </h1>
 
 <table class="bicol" cellpadding="3" cellspacing="0" summary="liste des NL">
   <tr>
-    <th>date</th>
-    <th>titre</th>
+    <th>Date</th>
+    <th>État</th>
+    <th>Titre</th>
   </tr>
   <tr>
-    <td colspan='2'><a href='admin/newsletter/new'>Créer une nouvelle lettre</a></td>
+    <td colspan='3'><a href='{$nl->adminPrefix()}/new'>Créer une nouvelle lettre</a></td>
   </tr>
-  {foreach item=nl from=$nl_list}
+  {foreach item=nli from=$nl_list}
   <tr class="{cycle values="pair,impair"}">
-    <td>{$nl.date|date_format}</td>
+    <td>{$nli->date|date_format}</td>
+    <td>{$nli->state}</td>
     <td>
-      <a href="admin/newsletter/edit/{$nl.id}">{$nl.titre|default:"[no title]"}</a>
+      <a href="{$nl->adminPrefix()}/edit/{$nli->id()}">{$nli->title()|default:"[Sans titre]"}</a>
     </td>
   </tr>
   {/foreach}

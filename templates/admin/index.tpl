@@ -174,11 +174,11 @@
     </td>
   </tr>
   <tr class="pair">
-    <td class="titre">Newsletter</td>
+    <td class="titre">Newsletters</td>
     <td>
-      <a href="admin/newsletter">Liste</a>
+      <a href="admin/nls">Liste des NLs groupes</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/newsletter/categories">Catégories</a>
+      <a href="admin/newsletter/">NL de X.org</a>
     </td>
   </tr>
   <tr class="impair">

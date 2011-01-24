@@ -22,28 +22,28 @@
 
 <table style="float: right; text-align: center" id="letter_nav">
   <tr>
-    {if $mm->prev() neq null}
+    {if $issue->prev() neq null}
     <td rowspan="2" style="vertical-align: middle">
-      <a href="{$base}/show/{$mm->prev()}">
+      <a href="{$nl->prefix()}/show/{$issue->prev()}">
       {icon name=resultset_previous title="Lettre précédente"}Lettre précédente
       </a>
     </td>
     {/if}
     <td>
-      [<a href="{$base}">Liste des lettres</a>]
+      [<a href="{$nl->prefix()}">Liste des lettres</a>]
     </td>
-    {if $mm->next() neq null}
+    {if $issue->next() neq null}
     <td rowspan="2" style="vertical-align: middle">
-      <a href="{$base}/show/{$mm->next()}">
+      <a href="{$nl->prefix()}/show/{$issue->next()}">
       Lettre suivante{icon name=resultset_next title="Lettre suivante"}
       </a>
     </td>
     {/if}
   </tr>
-  {if $mm->last() neq null}
+  {if $issue->last() neq null}
   <tr>
     <td>
-      <a href="{$base}/show/{$mm->last()}">
+      <a href="{$nl->prefix()}/show/{$issue->last()}">
         <img src="images/up.png" alt="" title="Liste des lettres" />Dernière lettre<img src="images/up.png" alt="" title="Liste des lettres" />
       </a>
     </td>

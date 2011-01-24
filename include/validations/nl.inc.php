@@ -60,9 +60,9 @@ class NLReq extends Validate
 
     protected function handle_editor()
     {
-        $this->art->_body   = Env::v('nl_body');
-        $this->art->_title  = Env::v('nl_title');
-        $this->art->_append = Env::v('nl_append');
+        $this->art->body   = Env::v('nl_body');
+        $this->art->title  = Env::v('nl_title');
+        $this->art->append = Env::v('nl_append');
         return true;
     }
 
@@ -106,7 +106,7 @@ class NLReq extends Validate
 
     public function commit()
     {
-        $nl  = new NewsLetter();
+        $nl = NewsLetter::forGroup(NewsLetter::GROUP_XORG)->getPendingIssue();
         $nl->saveArticle($this->art);
         return true;
     }

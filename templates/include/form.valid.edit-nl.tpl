@@ -20,11 +20,11 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<input type="text" name="nl_title" size="50" maxlength="200" value="{$valid->art->_title}" />
+<input type="text" name="nl_title" size="50" maxlength="200" value="{$valid->art->title}" />
 <br />
-<textarea rows="10" cols="60" name="nl_body">{$valid->art->_body}</textarea>
+<textarea rows="10" cols="60" name="nl_body">{$valid->art->body}</textarea>
 <br />
-<textarea rows="3" cols="60" name="nl_append">{$valid->art->_append}</textarea>
+<textarea rows="3" cols="60" name="nl_append">{$valid->art->append}</textarea>
 
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

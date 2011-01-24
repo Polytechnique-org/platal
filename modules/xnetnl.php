@@ -1,4 +1,3 @@
-#!/usr/bin/php5 -q
 <?php
 /***************************************************************************
  *  Copyright (C) 2003-2011 Polytechnique.org                              *
@@ -20,17 +19,29 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once './connect.db.inc.php';
-require_once '../../modules/axletter/axletter.inc.php';
-ini_set('memory_limit', '128M');
+Platal::load('newsletter');
 
-$al = AXLetter::toSend();
-if ($al) {
-    echo "Envoi de la lettre \"{$al->title()}\"\n\n";
-    echo ' ' . date("H:i:s") . " -> début de l'envoi\n";
-    $emailsCount = $al->sendToAll();
-    echo ' ' . date("H:i:s") . " -> fin de l'envoi\n\n";
-    echo $emailsCount . " emails ont été envoyés lors de cet envoi.\n";
+class XnetNlModule extends NewsletterModule
+{
+    function handlers()
+    {
+        return array(
+            '%grp/nl'                   => $this->make_hook('nl',                    AUTH_MDP),
+            '%grp/nl/show'              => $this->make_hook('nl_show',               AUTH_MDP),
+            '%grp/admin/nl'             => $this->make_hook('admin_nl',              AUTH_MDP,    'groupadmin'),
+            '%grp/admin/nl/edit'        => $this->make_hook('admin_nl_edit',         AUTH_MDP,    'groupadmin'),
+            '%grp/admin/nl/edit/cancel' => $this->make_hook('admin_nl_cancel',       AUTH_MDP,    'groupadmin'),
+            '%grp/admin/nl/edit/valid'  => $this->make_hook('admin_nl_valid',        AUTH_MDP,    'groupadmin'),
+            '%grp/admin/nl/categories'  => $this->make_hook('admin_nl_cat',          AUTH_MDP,    'groupadmin'),
+        );
+    }
+
+    protected function getNl()
+    {
+       global $globals;
+       $group = $globals->asso('shortname');
+       return NewsLetter::forGroup($group);
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
