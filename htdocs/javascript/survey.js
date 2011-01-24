@@ -152,7 +152,7 @@
                 q = { qid: id };
             }
             var question = $("#q_edit_new").tmpl(q);
-            question
+            var type = question
                 .children('select[name$="[type]"]')
                 .change(function () {
                     var type = $(this).val();
@@ -166,6 +166,10 @@
                     }
                     return true;
                 });
+            if (type.val()) {
+                question.children('.q_edit_form')
+                        .bindQuestion(type.val(), q.qid);
+            }
             this.childrenContainer().children('.add_question').before(question);
             $.renumberQuestions();
             return question;
@@ -221,7 +225,8 @@
                             type: $(this).val(),
                             disabled: "disabled"
                         }));
-                });
+                })
+                .change();
             return this;
         },
 
@@ -229,6 +234,7 @@
             var question = this.question();
             var answer = $("#q_edit_multiple_answer").tmpl({ qid: question.qid() });
             question.childrenContainer().children('.add_answer').after(answer);
+            question.multiple_selectSubtype().change();
             return answer;
         }
     });

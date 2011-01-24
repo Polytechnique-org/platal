@@ -97,8 +97,7 @@
 
 <script id="q_edit_multiple_answer" type="text/x-jquery-tmpl">
   <div>
-    <span class="q_edit_answer_box">
-    </span>
+    <span class="q_edit_answer_box"></span>
     Réponse&nbsp;: <input type="text" name="q_edit[${qid}][answer][][value]" value="${value}" />
   </div>
 </script>
