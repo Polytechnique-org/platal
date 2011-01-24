@@ -603,12 +603,12 @@ function correctUserName() {
     var mots;
 
     // login with no space
-    if (u.value.contains(' ')) {
+    if (!u.value.contains(' ')) {
         return true;
     }
     mots = u.value.split(' ');
     // jean paul.du pont -> jean-paul.du-pont
-    if (u.value.indexOf('.') > 0) {
+    if (u.value.contains('.')) {
         u.value = mots.join('-');
         return true;
     }
