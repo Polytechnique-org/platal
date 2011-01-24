@@ -228,7 +228,7 @@ htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).datepicker-fr.js:
 $(JQUERY_UI_PATHES) htdocs/javascript/jquery.ui.datepicker-fr.js: htdocs/javascript/jquery.ui.%.js: htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js
 	ln -snf $(<F) $@
 
-htdocs/javascript/jquery.tmpl-$(JQUERY_TMPL_VERSION).js: DOWNLOAD_SRC = https://github.com/jquery/jquery-tmpl/raw/$(JQUERY_TMPL_VERSION)/jquery.tmpl.min.js --no-check-certificate
+htdocs/javascript/jquery.tmpl-$(JQUERY_TMPL_VERSION).js: DOWNLOAD_SRC = https://github.com/jquery/jquery-tmpl/raw/$(JQUERY_TMPL_VERSION)/jquery.tmpl.js --no-check-certificate
 htdocs/javascript/jquery.tmpl-$(JQUERY_TMPL_VERSION).js:
 	@-rm htdocs/javascript/jquery.tmpl*.js
 	@$(download)
