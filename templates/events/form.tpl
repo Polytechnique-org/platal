@@ -57,11 +57,6 @@
       document.getElementById('info').style.display = 'none';
     }
     var page  = 'events/preview?titre=' + encodeURIComponent(titre) + '&texte=' + encodeURIComponent(texte);
-    if (is_IE) {
-      {/literal}
-      page = "{$globals->baseurl}/" + page;
-      {literal}
-    }
     $('#preview').updateHtml(page);
     return false;
   }

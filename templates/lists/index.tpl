@@ -25,7 +25,7 @@
   {literal}
   function updateHtml(id, url)
   {
-      if (is_IE) {
+      if ($.browser.msie) {
           return true;
       } else {
           $('#' + id).updateHtml(url);

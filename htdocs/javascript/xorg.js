@@ -18,8 +18,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-var is_IE       = $.browser.msie;
-
 // {{{ function getNow()
 var days   = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
 var months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet',
