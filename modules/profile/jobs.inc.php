@@ -296,6 +296,9 @@ class ProfileSettingJob implements ProfileSetting
                                   VALUES  ' . implode(', ', $terms_values) . '
                  ON DUPLICATE KEY UPDATE  computed = VALUES(computed)');
         }
+        if (S::user()->isMe($page->owner) && count($value) > 1) {
+            Platal::page()->trigWarning('Attention, tu as plusieurs emplois sur ton profil. Pense à supprimer ceux qui sont obsolètes.');
+        }
     }
 
     public function getText($value)
