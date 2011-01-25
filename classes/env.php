@@ -75,6 +75,18 @@ class Env
     {
         return array_map(array('Env', 'v'), $keys);
     }
+
+    public static function set($key, $value)
+    {
+        $_REQUEST[$key] =& $value;
+    }
+
+    public static function bootstrap($key, $value)
+    {
+        if (!Env::has($key)) {
+            Env::set($key, $value);
+        }
+    }
 }
 
 class Post
@@ -133,6 +145,18 @@ class Post
     {
         return array_map(array('Post', 'v'), $keys);
     }
+
+    public static function set($key, $value)
+    {
+        $_POST[$key] =& $value;
+    }
+
+    public static function bootstrap($key, $value)
+    {
+        if (!Post::has($key)) {
+            Post::set($key, $value);
+        }
+    }
 }
 
 class Get
@@ -190,6 +214,18 @@ class Get
     public static function l(array $keys)
     {
         return array_map(array('Get', 'v'), $keys);
+    }
+
+    public static function set($key, $value)
+    {
+        $_GET[$key] =& $value;
+    }
+
+    public static function bootstrap($key, $value)
+    {
+        if (!Get::has($key)) {
+            Get::set($key, $value);
+        }
     }
 }
 
