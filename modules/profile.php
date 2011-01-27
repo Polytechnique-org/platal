@@ -30,7 +30,7 @@ class ProfileModule extends PLModule
             'fiche.php'                  => $this->make_hook('fiche',                      AUTH_PUBLIC),
             'profile'                    => $this->make_hook('profile',                    AUTH_PUBLIC),
             'profile/private'            => $this->make_hook('profile',                    AUTH_COOKIE),
-            'profile/ax'                 => $this->make_hook('ax',                         AUTH_COOKIE, 'admin'),
+            'profile/ax'                 => $this->make_hook('ax',                         AUTH_COOKIE, 'admin,edit_directory'),
             'profile/edit'               => $this->make_hook('p_edit',                     AUTH_MDP),
             'profile/ajax/address'       => $this->make_hook('ajax_address',               AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/tel'           => $this->make_hook('ajax_tel',                   AUTH_COOKIE, 'user', NO_AUTH),
