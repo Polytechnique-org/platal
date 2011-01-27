@@ -19,38 +19,38 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class Xorg extends Platal
+Platal::load('newsletter');
+
+class EPLetterModule extends NewsletterModule
 {
-    public function __construct()
+    function handlers()
     {
-        parent::__construct('auth', 'carnet', 'email', 'events', 'forums',
-                            'lists', 'marketing', 'payment', 'platal',
-                            'profile', 'register', 'search', 'stats', 'admin',
-                            'newsletter', 'axletter', 'epletter', 'bandeau', 'survey',
-                            'fusionax', 'gadgets', 'googleapps', 'poison',
-                            'openid', 'reminder');
+        return array(
+            'epletter'                   => $this->make_hook('nl',  AUTH_COOKIE),
+            'epletter/out'               => $this->make_hook('out',    AUTH_PUBLIC),
+            'epletter/show'              => $this->make_hook('nl_show',   AUTH_COOKIE),
+            'epletter/admin'             => $this->make_hook('admin_nl', AUTH_MDP),
+            'epletter/admin/edit'        => $this->make_hook('admin_nl_edit', AUTH_MDP),
+            'epletter/admin/edit/valid'  => $this->make_hook('admin_nl_valid', AUTH_MDP),
+            'epletter/admin/edit/cancel' => $this->make_hook('admin_nl_cancel', AUTH_MDP),
+            'epletter/admin/edit/delete' => $this->make_hook('admin_nl_delete', AUTH_MDP),
+        );
     }
 
-    public function find_hook()
+    protected function getNl()
     {
-        if ($this->path{0} >= 'A' && $this->path{0} <= 'Z') {
-            return self::wiki_hook();
-        }
-        return parent::find_hook();
+        require_once 'newsletter.inc.php';
+        return NewsLetter::forGroup(NewsLetter::GROUP_EP);
     }
 
-    public function force_login(PlPage &$page)
+    function handler_out(&$page, $hash = null)
     {
-        header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
-        if (S::logged()) {
-            $page->changeTpl('core/password_prompt_logged.tpl');
-            $page->addJsLink('do_challenge_response_logged.js');
-        } else {
-            $page->changeTpl('core/password_prompt.tpl');
-            $page->addJsLink('do_challenge_response.js');
+        if (!$hash) {
+            if (!S::logged()) {
+                return PL_DO_AUTH;
+            }
         }
-        $page->assign_by_ref('platal', $this);
-        $page->run();
+        return $this->handler_nl($page, 'out', $hash);
     }
 }
 
