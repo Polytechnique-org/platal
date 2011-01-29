@@ -19,6 +19,89 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+// {{{ class StoredUserFilterBuilder
+class StoredUserFilterBuilder
+{
+    // Possible stored types (currently only 'ufb' exists)
+    const TYPE_UFB = 'ufb';
+
+    protected $ufb;
+    protected $env;
+    protected $ufc;
+
+    public function __construct(UserFilterBuilder &$ufb, PlFilterCondition &$ufc = null, array $env = array())
+    {
+        $this->ufb = $ufb;
+        $this->ufc = $ufc;
+        $this->env = $env;
+    }
+
+    public function export()
+    {
+        $export = new PlDict();
+        $export->set('type', self::TYPE_UFB);
+        $export->set('condition', $this->ufc->export());
+        $export->set('env', $this->env);
+        return $export;
+    }
+
+    public function getEnv()
+    {
+        return $this->env;
+    }
+
+    public function fillFromExport($export)
+    {
+        $export = new PlDict($export);
+        if (!$export->has('type')) {
+            throw new Exception("Missing 'type' field in export.");
+        }
+        if ($export->s('type') != self::TYPE_UFB) {
+            throw new Exception("Unknown type '$type' in export.");
+        }
+        $this->ufc = UserFilterCondition::fromExport($export->v('condition'));
+        $this->env = $export->v('env', array());
+    }
+
+    public function updateFromEnv($env)
+    {
+        $this->ufb->setFakeEnv($env);
+        if ($this->ufb->isValid()) {
+            $this->env = $env;
+            $this->ufc = $this->ufb->getUFC();
+            return true;
+        } else {
+            $this->ufb->clearFakeEnv();
+            return false;
+        }
+    }
+
+    public function refresh()
+    {
+        if ($this->isValid()) {
+            $this->ufc = $this->ufb->getUFC();
+        }
+    }
+
+    public function getUFC()
+    {
+        return $this->ufc;
+    }
+
+    public function isValid()
+    {
+        $this->ufb->setFakeEnv($this->env);
+        return $this->ufb->isValid();
+    }
+
+    public function isEmpty()
+    {
+        $this->ufb->setFakeEnv($this->env);
+        return $this->ufb->isEmpty();
+    }
+}
+// }}}
+
 // {{{ class UserFilterBuilder
 class UserFilterBuilder
 {
@@ -27,6 +110,7 @@ class UserFilterBuilder
     private $valid = true;
     private $ufc = null;
     private $orders = array();
+    private $fake_env = null;
 
     /** Constructor
      * @param $fields An array of UFB_Field objects
@@ -36,6 +120,16 @@ class UserFilterBuilder
     {
         $this->fields = $fields;
         $this->envprefix   = $envprefix;
+    }
+
+    public function setFakeEnv($env)
+    {
+        $this->fake_env = new PlDict($env);
+    }
+
+    public function clearFakeEnv()
+    {
+        $this->fake_env = null;
     }
 
     /** Builds the UFC; returns as soon as a field says it is invalid
@@ -103,41 +197,98 @@ class UserFilterBuilder
         return $this->orders;
     }
 
+    public function getEnvFieldNames()
+    {
+        $fields = array();
+        foreach ($this->fields as $ufbf) {
+            $fields = array_merge($fields, $ufbf->getEnvFieldNames());
+        }
+        return array_unique($fields);
+    }
+
+    public function getEnv()
+    {
+        $values = array();
+        foreach ($this->getEnvFieldNames() as $field) {
+            if ($this->has($field)) {
+                $values[$field] = $this->v($field);
+            }
+        }
+        return $values;
+    }
+
+    public function setEnv($values)
+    {
+        foreach ($this->getEnvFieldNames() as $field) {
+            if (array_key_exists($field, $values)) {
+                Env::set($this->envprefix . $field, $values[$field]);
+            }
+        }
+    }
+
     /** Wrappers around Env::i/s/..., to add envprefix
      */
     public function s($key, $def = '')
     {
-        return Env::s($this->envprefix . $key, $def);
+        if ($this->fake_env) {
+            return $this->fake_env->s($key, $def);
+        } else {
+            return Env::s($this->envprefix . $key, $def);
+        }
     }
 
     public function t($key, $def = '')
     {
-        return Env::t($this->envprefix . $key, $def);
+        if ($this->fake_env) {
+            return $this->fake_env->t($key, $def);
+        } else {
+            return Env::t($this->envprefix . $key, $def);
+        }
     }
 
     public function i($key, $def = 0)
     {
-        return Env::i($this->envprefix . $key, $def);
+        if ($this->fake_env) {
+            return $this->fake_env->i($key, $def);
+        } else {
+            return Env::i($this->envprefix . $key, $def);
+        }
     }
 
     public function v($key, $def = null)
     {
-        return Env::v($this->envprefix . $key, $def);
+        if ($this->fake_env) {
+            return $this->fake_env->v($key, $def);
+        } else {
+            return Env::v($this->envprefix . $key, $def);
+        }
     }
 
     public function b($key, $def = false)
     {
-        return Env::b($this->envprefix . $key, $def);
+        if ($this->fake_env) {
+            return $this->fake_env->b($key, $def);
+        } else {
+            return Env::b($this->envprefix . $key, $def);
+        }
     }
 
     public function has($key)
     {
-        return Env::has($this->envprefix . $key);
+        if ($this->fake_env) {
+            return $this->fake_env->has($key);
+        } else {
+            return Env::has($this->envprefix . $key);
+        }
     }
 
     public function blank($key, $strict = false)
     {
-        return Env::blank($key, $strict);
+        if ($this->fake_env) {
+            return $this->fake_env->blank($key, $strict);
+        } else {
+            return Env::blank($key, $strict);
+        }
     }
 
     public function hasAlnum($key)
@@ -241,6 +392,28 @@ class UFB_MentorSearch extends UserFilterBuilder
 }
 // }}}
 
+// {{{ class UFB_NewsLetter
+class UFB_NewsLetter extends UserFilterBuilder
+{
+    const FIELDS_PROMO = 'promo';
+    const FIELDS_AXID = 'axid';
+    const FIELDS_GEO = 'geo';
+
+    public function __construct($flags, $envprefix = '')
+    {
+        $fields = array();
+        if ($flags->hasFlag(self::FIELDS_PROMO)) {
+            $fields[] = new UFBF_Promo('promo1', 'Promotion', 'egal1');
+            $fields[] = new UFBF_Promo('promo2', 'Promotion', 'egal2');
+        }
+        if ($flags->hasFlag(self::FIELDS_AXID)) {
+            $fields[] = new UFBF_SchoolIds('axid', 'Matricule AX', UFC_SchoolId::AX);
+        }
+        parent::__construct($fields, $envprefix);
+    }
+}
+// }}}
+
 // {{{ class UFB_Field
 abstract class UFB_Field
 {
@@ -305,6 +478,17 @@ abstract class UFB_Field
      * @return boolean Whether the input is valid
      */
     abstract protected function check(UserFilterBuilder &$ufb);
+
+    // Simple form interface
+
+    /** Retrieve a list of env field names used by that field
+     * their values will be recorded when saving the 'search' and used to prefill the form
+     * when needed.
+     */
+    public function getEnvFieldNames()
+    {
+        return array($this->envfield);
+    }
 }
 // }}}
 
@@ -484,6 +668,11 @@ abstract class UFBF_Mixed extends UFB_Field
         }
         return true;
     }
+
+    public function getEnvFieldNames()
+    {
+        return array($this->envfieldindex, $this->envfield);
+    }
 }
 // }}}
 
@@ -580,11 +769,17 @@ class UFBF_SchoolIds extends UFB_Field
 {
     // One of UFC_SchoolId types
     protected $type;
+    protected $reversed_envfield;
+    protected $reversed = false;
 
-    public function __construct($envfield, $formtext, $type = UFC_SchoolId::AX)
+    public function __construct($envfield, $formtext, $type = UFC_SchoolId::AX, $reversed_envfield = '')
     {
         parent::__construct($envfield, $formtext);
         $this->type = $type;
+        if ($reversed_envfield == '') {
+            $reversed_envfield = $envfield . '_reversed';
+        }
+        $this->reversed_envfield = $reversed_envfield;
     }
 
     protected function check(UserFilterBuilder &$ufb)
@@ -606,13 +801,19 @@ class UFBF_SchoolIds extends UFB_Field
             return $this->raise("Le champ %s ne contient aucune valeur valide.");
         }
 
+        $this->reversed = $ufb->b($this->reversed_envfield);
         $this->val = $ids;
         return true;
     }
 
     protected function buildUFC(UserFilterBuilder &$ufb)
     {
-        return new UFC_SchoolId($this->type, $this->val);
+        $ufc = new UFC_SchoolId($this->type, $this->val);
+        if ($this->reversed) {
+            return new PFC_Not($ufc);
+        } else {
+            return $ufc;
+        }
     }
 }
 // }}}
@@ -647,9 +848,9 @@ class UFBF_Promo extends UFB_Field
     private $comp;
     private $envfieldcomp;
 
-    public function __construct($envfield, $fromtext = '', $envfieldcomp)
+    public function __construct($envfield, $formtext = '', $envfieldcomp)
     {
-        parent::__construct($envfield, $fromtext);
+        parent::__construct($envfield, $formtext);
         $this->envfieldcomp = $envfieldcomp;
     }
 
@@ -678,6 +879,11 @@ class UFBF_Promo extends UFB_Field
 
     protected function buildUFC(UserFilterBuilder &$ufb) {
         return new UFC_Promo($this->comp, UserFilter::GRADE_ING, $this->val);
+    }
+
+    public function getEnvFieldNames()
+    {
+        return array($this->envfield, $this->envfieldcomp);
     }
 }
 // }}}
@@ -808,6 +1014,11 @@ class UFBF_Town extends UFBF_Text
             }
         }
     }
+
+    public function getEnvFieldNames()
+    {
+        return array($this->envfield, $this->onlycurrentfield);
+    }
 }
 // }}}
 
@@ -832,6 +1043,11 @@ class UFBF_Country extends UFBF_Mixed
         }
 
         return new UFC_AddressField($this->val, UFC_AddressField::FIELD_COUNTRY, UFC_Address::TYPE_ANY, $flags);
+    }
+
+    public function getEnvFieldNames()
+    {
+        return array($this->envfield, $this->envfieldindex, $this->onlycurrentfield);
     }
 }
 // }}}
@@ -859,6 +1075,11 @@ class UFBF_AdminArea extends UFBF_Index
 
         return new UFC_AddressField($this->val, UFC_AddressField::FIELD_ADMAREA, UFC_Address::TYPE_ANY, $flags);
     }
+
+    public function getEnvFieldNames()
+    {
+        return array($this->envfield, $this->onlycurrentfield);
+    }
 }
 // }}}
 
@@ -884,6 +1105,11 @@ class UFBF_SubAdminArea extends UFBF_Index
         }
 
         return new UFC_AddressField($this->val, UFC_AddressField::FIELD_SUBADMAREA, UFC_Address::TYPE_ANY, $flags);
+    }
+
+    public function getEnvFieldNames()
+    {
+        return array($this->envfield, $this->onlycurrentfield);
     }
 }
 // }}}
@@ -914,6 +1140,11 @@ class UFBF_JobCompany extends UFBF_Text
     protected function buildUFC(UserFilterBuilder &$ufb)
     {
         return new UFC_Job_Company(UFC_Job_Company::JOBNAME, $this->val);
+    }
+
+    public function getEnvFieldNames()
+    {
+        return array($this->envfield, $this->onlymentorfield);
     }
 }
 // }}}
@@ -947,6 +1178,11 @@ class UFBF_JobDescription extends UFBF_Text
             return new UFC_Job_Description($this->val, UserFilter::JOB_USERDEFINED);
         }
     }
+
+    public function getEnvFieldNames()
+    {
+        return array($this->envfield, $this->onlymentorfield);
+    }
 }
 // }}}
 
@@ -968,6 +1204,11 @@ class UFBF_JobCv extends UFBF_Text
         } else {
             return new UFC_Job_Description($this->val, UserFilter::JOB_CV);
         }
+    }
+
+    public function getEnvFieldNames()
+    {
+        return array($this->envfield, $this->onlymentorfield);
     }
 }
 // }}}
@@ -1114,6 +1355,11 @@ class UFBF_Networking extends UFBF_Text
     public function buildUFC(UserFilterBuilder &$ufb)
     {
         return new UFC_Networking($this->nwtype, $this->val);
+    }
+
+    public function getEnvFieldNames()
+    {
+        return array($this->envfield, $this->networktypefield);
     }
 }
 // }}}
