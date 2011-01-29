@@ -20,58 +20,21 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-<h1>
-  {$nl->name}
-{if $nl->mayEdit() && $nl->adminLinksEnabled()}
-  [<a href="{$nl->adminPrefix()}">Administrer</a>]
-{/if}
-</h1>
-
-{if $nl->maySubmit()}
-<p class="center">
-  <a href="{$nl->prefix()}/submit">{icon name=page_edit value="Proposer un article"} Proposer un article pour la {$nl->name}</a>
-</p>
-{/if}
-
-<h2>Ton statut</h2>
-
-{if $nl->subscriptionState()}
-<p>
-Tu es actuellement inscrit à la {$nl->name} (pour choisir le format HTML ou texte, rends toi sur la page <a href='prefs'>des préférences</a>).
-</p>
-<div class='center'>
-  [<a href='{$nl->prefix()}/out'>{icon name=delete} me désinscrire de la {$nl->name}</a>]
-</div>
-{else}
-<p>
-Tu n'es actuellement pas inscrit à la {$nl->name}.
-</p>
-<div class='center'>
-  [<a href='{$nl->prefix()}/in'>{icon name=add} m'inscrire à la {$nl->name}</a>]
-</div>
-{/if}
-
-<h2>Les archives</h2>
-
-<table class="bicol" cellpadding="3" cellspacing="0" summary="liste des NL">
+<table class="bicol" cellpadding="3" cellspacing="0" summary="Liste des Newsletter actives">
   <tr>
-    <th>date</th>
-    <th>titre</th>
+    <th>Id</th>
+    <th>Groupe</th>
+    <th>Titre</th>
+    <th>CSS spécifique</th>
+    <th>Critères actifs</th>
   </tr>
-  {foreach item=nli from=$nl_list}
-  <tr class="{cycle values="impair,pair"}">
-    <td>{$nli->date|date_format}</td>
-    <td>
-      <a href="{$nl->prefix()}/show/{$nli->id()}">{$nli->title()|default:"[Sans titre]"}</a>
-    </td>
+  {foreach from=$nls item=nl}
+  <tr class="{cycle values="pair,impair"}">
+    <td class="titre">{$nl->id}</td>
+    <td>{$nl->group}</td>
+    <td>{$nl->name}</td>
+    <td>{if $nl->hasCustomCss()}Oui{else}Non{/if}</td>
+    <td>{$nl->criteria->flags()}</td>
   </tr>
   {/foreach}
 </table>
-
-{if $nl->mayEdit()}
-<p>Il y a actuellement {$nl->subscriberCount()} inscrits aux envois.</p>
-{/if}
-
-
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
