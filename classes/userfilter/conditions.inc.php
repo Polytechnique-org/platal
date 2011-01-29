@@ -31,7 +31,7 @@
  */
 abstract class UserFilterCondition implements PlFilterCondition
 {
-    const OP_EQUALS     = '==';
+    const OP_EQUALS     = '=';
     const OP_GREATER    = '>';
     const OP_NOTGREATER = '<=';
     const OP_LESSER     = '<';
@@ -321,6 +321,19 @@ class UFC_Hrpid extends UserFilterCondition
         $export = $this->buildExport('hrpid');
         $export['values'] = $this->hrpids;
         return $export;
+    }
+}
+// }}}
+// {{{ class UFC_HasEmailRedirect
+/** Filters users, keeping only those with a valid email redirection.
+ */
+class UFC_HasEmailRedirect extends UserFilterCondition
+{
+    public function buildCondition(PlFilter $uf)
+    {
+        $sub_redirect = $uf->addEmailRedirectFilter();
+        $sub_options = $uf->addEmailOptionsFilter();
+        return 'e' . $sub_redirect . '.flags = \'active\' OR FIND_IN_SET(\'googleapps\', ' . $sub_options . '.storage)';
     }
 }
 // }}}
@@ -799,6 +812,28 @@ class UFC_Sex extends UserFilterCondition
             $uf->requireProfiles();
             return XDB::format('p.sex = {?}', $this->sex == User::GENDER_FEMALE ? 'female' : 'male');
         }
+    }
+}
+// }}}
+// {{{ class UFC_NLSubscribed
+/** Filters users based on NL subscription
+ * @param $nlid NL whose subscribers we are selecting
+ * @param $issue Select only subscribers who have not yet received that issue
+ */
+class UFC_NLSubscribed extends UserFilterCondition
+{
+    private $nlid;
+    private $issue_id;
+    public function __construct($nlid, $issue_id)
+    {
+        $this->nlid = $nlid;
+        $this->issue_id = $issue_id;
+    }
+
+    public function buildCondition(PlFilter $uf)
+    {
+        $sub = $uf->addNewsLetterFilter($this->nlid);
+        return XDB::format($sub . '.last < {?}', $this->issue_id);
     }
 }
 // }}}
