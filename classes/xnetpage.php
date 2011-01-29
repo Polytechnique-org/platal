@@ -100,6 +100,9 @@ class XnetPage extends PlPage
                 if ($globals->asso('mail_domain')) {
                     $sub['listes de diffusion'] = "$dim/lists";
                 }
+                if ($globals->asso('has_nl')) {
+                    $sub['newsletter'] = "$dim/nl";
+                }
             }
             $sub['événement'] = "$dim/events";
             if ($perms->hasFlag('groupmember')) {
