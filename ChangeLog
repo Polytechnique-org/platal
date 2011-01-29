@@ -10,6 +10,10 @@ Bug/Wish:
         - #1352: Fixes csv downloading with IE8.                           -JAC
         - #1355: Mode with propagation of the skinning mode                -FRU
 
+    * Newsletter:
+        - #774:  Enable custom newsletters for groups                      -XEL
+        - #1047: Filter the list of previous AXletters                     -XEL
+
     * Payments:
         - #1290: Fixes display of payments on xnet                         -JAC
         - #1318: Fixes PHP errors in PayPal payments                       -JAC
@@ -32,7 +36,7 @@ Bug/Wish:
 
     * Search:
         - #1365: Outputs csv of postal addresses for advanced search       -JAC
-        - #1366: Adds 'by AX id' advanced search for admins                -Xel
+        - #1366: Adds 'by AX id' advanced search for admins                -XEL
 
     * XnetEvent:
         - #1373: Fixes acceptance of non member in xnet events.            -JAC
@@ -74,7 +78,7 @@ Bug/Wish:
 
     * Search:
         - #1177: Clean url in advanced search                              -Car
-        - #1251: More intuitive networking search                          -Xel
+        - #1251: More intuitive networking search                          -XEL
         - #1283: Restrict second operation on promo search                 -Car
 
     * Survey:
@@ -105,7 +109,7 @@ From 1.0.0 branch:
         - Fix promotion_ml reminder                                        -FRU
 
     * Forums:
-        - #1247: Fix RSS feed                                              -Xel
+        - #1247: Fix RSS feed                                              -XEL
 
     * Lists:
         - Fix inclusion of banana for achives and moderation preview       -FRU
