@@ -20,10 +20,11 @@
 
 (function($) {
     var dispatchType = function(method) {
-        return function(type, id) {
+        return function(type) {
             var name = type + '_' + method;
+            var args = Array.prototype.slice.call(arguments, 1);
             if ($.isFunction(this[name])) {
-                return this[name](id);
+                return this[name].apply(this, args);
             }
             return this;
         };
@@ -153,7 +154,7 @@
             }
             var question = $("#q_edit_new").tmpl(q);
             var type = question
-                .children('select[name$="[type]"]')
+                .find('select[name$="[type]"]')
                 .change(function () {
                     var type = $(this).val();
                     var form = question.children('.q_edit_form');
@@ -168,7 +169,7 @@
                 });
             if (type.val()) {
                 question.children('.q_edit_form')
-                        .bindQuestion(type.val(), q.qid);
+                        .bindQuestion(type.val(), q.qid, q.parameters)
             }
             this.childrenContainer().children('.add_question').before(question);
             $.renumberQuestions();
@@ -215,9 +216,12 @@
             return this.find('select[name$="[subtype]"]');
         },
 
-        multiple_bindQuestion: function(id) {
+        multiple_bindQuestion: function(id, parameters) {
             var $question = this;
+            var answer;
+            var value;
             this.multiple_selectSubtype()
+                .assertLength(1)
                 .change(function() {
                     $question.find('.q_edit_answer_box')
                         .empty()
@@ -225,17 +229,25 @@
                             type: $(this).val(),
                             disabled: "disabled"
                         }));
-                })
-                .change();
+                });
+            if (parameters) {
+                for (answer = 0; answer < parameters.answers.length; answer++) {
+                    this.multiple_addAnswer(parameters.answers[answer]);
+                }
+            }
             return this;
         },
 
-        multiple_addAnswer: function() {
+        multiple_addAnswer: function(value) {
             var question = this.question();
-            var answer = $("#q_edit_multiple_answer").tmpl({ qid: question.qid() });
-            question.childrenContainer().children('.add_answer').after(answer);
+            var answer = $("#q_edit_multiple_answer").tmpl({ qid: question.qid(), value: value });
+            question.childrenContainer().children('.add_answer').before(answer);
             question.multiple_selectSubtype().change();
             return answer;
+        },
+
+        multiple_removeAnswer: function() {
+            return this.parent().remove();
         }
     });
 }(jQuery));

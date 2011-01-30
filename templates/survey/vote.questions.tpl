@@ -35,9 +35,20 @@
 
 <script id="question_text" type="text/x-jquery-tmpl">
   <div>
-    <div>${label}</div>
+    <div><strong>${label}</strong></div>
     <input type="text" name="qid[${qid}]" value="" />
   </div>
+</script>
+
+<script id="question_multiple" type="text/x-jquery-tmpl">
+  <div>
+    <div><strong>${label}</strong></div>
+    {{tmpl(parameters.answers) "#question_multiple_answer"}}
+  </div>
+</script>
+
+<script id="question_multiple_answer" type="text/x-jquery-tmpl">
+  <input type="checkbox" name="qid[${qid}][]" value="${$data}" /> ${$data} <br />
 </script>
 {/literal}
 
