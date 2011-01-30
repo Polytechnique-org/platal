@@ -54,11 +54,11 @@
   <div>
     <div><strong>${label}</strong></div>
     {{each answers}}
-      <input type="${subtype}" name="qid[${qid}][]" value="${$index}" /> ${$value}<br />
+      <input type="${subtype}" name="qid[${qid}][answers][${$index}]" value="${$value}" /> ${$value}<br />
     {{/each}}
     {{if allow_other}}
-      <input type="${subtype}" name="qid[${qid}][other][checked]" value="1" /> Autre, préciser&nbsp;:
-      <input type="text" name="qid[${qid}][other][text]" />
+      <input type="${subtype}" name="qid[${qid}][answers][other]" value="other" /> Autre, préciser&nbsp;:
+      <input type="text" name="qid[${qid}][other]" />
     {{/if}}
   </div>
 </script>

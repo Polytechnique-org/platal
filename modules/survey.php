@@ -57,6 +57,8 @@ class SurveyModule extends PLModule
         $this->setup_page($page);
         $page->changeTpl('survey/vote.tpl');
 
+        XDB::execute('delete from survey_votes');
+        XDB::execute('delete from survey_voters');
         $survey = Survey::get($name);
         if (is_null($survey)) {
             return PL_NOT_FOUND;

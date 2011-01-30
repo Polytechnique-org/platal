@@ -30,26 +30,40 @@ class SurveyQuestionMultiple extends SurveyQuestion
     protected function buildAnswer(SurveyAnswer $answer, PlDict $data)
     {
         $content = $data->v($this->qid);
-        $value   = $content['answer'];
+        $value   = $content['answers'];
         if (empty($value)) {
             $answer->answer = null;
             return true;
         }
-        $id = to_integer($value);
-        if ($id === false) {
-            if ($value != 'other') {
-                $answer->answers = null;
-                return false;
+        if ($this->parameters['subtype'] == 'radio') {
+            if (count($value) > 1) {
+                throw new Exception("You cannot select more than one answer");
             }
-            if (@$this->parameters['allow_other']) {
-                $answer->answer = array('other' => $content['text']);
+        }
+        $answers = array();
+        $answers['answers'] = array();
+        foreach ($value as $key=>$text) {
+            if (can_convert_to_integer($key)) {
+                $key = to_integer($key);
+                if ($text != $this->parameters['answers'][$key]) {
+                    throw new Exception("Answer text does not match");
+                }
+                $answers['answers'][] = $key;
+            } else if ($key != 'other') {
+                throw new Exception("Unsupported answer id $key");
+            } else if (!$this->parameters['allow_other']) {
+                throw new Exception("Got 'Other' answer while not supported");
+            } else if (!isset($content['other'])) {
+                $answers['other'] = '';
+            } else {
+                $answers['other'] = $content['other'];
             }
+        }
+        if (empty($value)) {
+            $answer->answer = null;
+            return false;
         } else {
-            if ($id >= count($this->parameters['answers'])) {
-                $answer->answers = null;
-                return false;
-            }
-            $answer->answer = array('answer' => $id);
+            $answer->answer = $answers;
         }
         return true;
     }

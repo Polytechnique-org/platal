@@ -82,8 +82,12 @@
     <div>
       Permettre la sélection de plusieurs réponses ?
       <select name="q_edit[${qid}][subtype]">
-        <option value="checkbox">Oui</option>
-        <option value="radio" selected="selected">Non</option>
+        <option value="checkbox" {{if subtype}}{{if subtype == 'checkbox'}}selected="selected"{{/if}}{{/if}}>
+          Oui
+        </option>
+        <option value="radio" {{if subtype}}{{if subtype == 'radio'}}selected="selected"{{/if}}{{/if}}>
+          Non
+        </option>
       </select>
     </div>
     <div class="add_answer">
