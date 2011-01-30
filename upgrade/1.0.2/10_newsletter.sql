@@ -10,7 +10,7 @@ CREATE TABLE newsletters (
   group_id smallint(5) UNSIGNED NOT NULL,
   name varchar(255) NOT NULL,
   custom_css BOOL NOT NULL DEFAULT FALSE,
-  criteria SET('axid', 'promo', 'geo') DEFAUL NULL,
+  criteria SET('axid', 'promo', 'geo') DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY  (group_id),
   FOREIGN KEY (group_id) REFERENCES groups (id)
@@ -113,7 +113,7 @@ LEFT JOIN  newsletter_issues AS ni ON (ni.nlid = @idnl_xorg AND ni.short_name = 
 
 ALTER TABLE newsletter_art ADD FOREIGN KEY (id) REFERENCES newsletter_issues (id)
                                                 ON UPDATE CASCADE
-                                                ON DELETE CASCADE
+                                                ON DELETE CASCADE;
 
 --------------------
 -- newsletter_ins --
