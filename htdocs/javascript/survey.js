@@ -170,7 +170,7 @@
                 });
             if (type.val()) {
                 question.children('.q_edit_form')
-                        .bindQuestion(type.val(), q.qid, q.parameters)
+                        .bindQuestion(type.val(), q.qid, q)
             }
             this.childrenContainer().children('.add_question').before(question);
             $.renumberQuestions();

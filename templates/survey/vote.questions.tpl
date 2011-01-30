@@ -53,12 +53,14 @@
 <script id="question_multiple" type="text/x-jquery-tmpl">
   <div>
     <div><strong>${label}</strong></div>
-    {{tmpl(answers) "#question_multiple_answer"}}
+    {{each answers}}
+      <input type="${subtype}" name="qid[${qid}][]" value="${$index}" /> ${$value}<br />
+    {{/each}}
+    {{if allow_other}}
+      <input type="${subtype}" name="qid[${qid}][other][checked]" value="1" /> Autre, préciser&nbsp;:
+      <input type="text" name="qid[${qid}][other][text]" />
+    {{/if}}
   </div>
-</script>
-
-<script id="question_multiple_answer" type="text/x-jquery-tmpl">
-  <input type="checkbox" name="qid[${qid}][]" value="${$data}" /> ${$data} <br />
 </script>
 {/literal}
 
