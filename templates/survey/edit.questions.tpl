@@ -68,6 +68,17 @@
 </script>
 
 <script id="q_edit_section" type="text/x-jquery-tmpl">
+  <div>
+    Type de section&nbsp;:
+    <select name="q_edit[${qid}][subtype]">
+      <option value="group" {{if subtype}}{{if subtype == 'group'}}selected="selected"{{/if}}{{/if}}>
+        Groupe de questions
+      </option>
+      <option value="page" {{if subtype}}{{if subtype == 'page'}}selected="selected"{{/if}}{{/if}}>
+        Nouvelle page
+      </option>
+    </select>
+  </div>
   <div id="q_edit[${qid}][section]">
     <div class="add_question">
       <a onclick="$(this).addQuestion()" style="text-decoration: none">
@@ -112,7 +123,6 @@
     <a onclick="$(this).multiple_removeAnswer()">{/literal}{icon name="delete"}{literal}</a>
   </div>
 </script>
-
 {/literal}
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}
