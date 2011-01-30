@@ -36,7 +36,7 @@
           Section
         </option>
         <option value="text" {{if type}}{{if type == 'text'}}selected="selected"{{/if}}{{/if}}>
-          Texte
+          Champ libre
         </option>
         <option value="multiple" {{if type}}{{if type == 'multiple'}}selected="selected"{{/if}}{{/if}}>
           Question à choix multiples
@@ -56,6 +56,15 @@
 </script>
 
 <script id="q_edit_text" type="text/x-jquery-tmpl">
+  Type de texte&nbsp;:
+  <select name="q_edit[${qid}][subtype]">
+    <option value="monoline" {{if subtype}}{{if subtype == 'monoline'}}selected="selected"{{/if}}{{/if}}>
+      Une seule ligne
+    </option>
+    <option value="multiline" {{if subtype}}{{if subtype == 'multiline'}}selected="selected"{{/if}}{{/if}}>
+      Plusieurs lignes
+    </option>
+  </select>
 </script>
 
 <script id="q_edit_section" type="text/x-jquery-tmpl">

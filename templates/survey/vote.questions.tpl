@@ -35,15 +35,25 @@
 
 <script id="question_text" type="text/x-jquery-tmpl">
   <div>
-    <div><strong>${label}</strong></div>
-    <input type="text" name="qid[${qid}]" value="" />
+    {{if subtype}}
+      {{if subtype == 'monoline'}}
+        <strong>${label}</strong>&nbsp;:
+        <input type="text" name="qid[${qid}]" value="" />
+      {{else}}
+        <div><strong>${label}</strong></div>
+        <textarea name="qid[${qid}]" rows="4" cols="80"></textarea>
+      {{/if}}
+    {{else}}
+      <strong>${label}</strong>&nbsp;:
+      <input type="text" name="qid[${qid}]" value="" />
+    {{/if}}
   </div>
 </script>
 
 <script id="question_multiple" type="text/x-jquery-tmpl">
   <div>
     <div><strong>${label}</strong></div>
-    {{tmpl(parameters.answers) "#question_multiple_answer"}}
+    {{tmpl(answers) "#question_multiple_answer"}}
   </div>
 </script>
 

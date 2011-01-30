@@ -91,6 +91,19 @@ class SurveyQuestion extends PlDBTableEntry
         }
         return $answer;
     }
+
+    public function export()
+    {
+        $export = parent::export();
+        if (isset($export['parameters'])) {
+            foreach ($export['parameters'] as $key=>$value) {
+                $export[$key] = $value;
+            }
+            unset($export['parameters']);
+        }
+        return $export;
+    }
+
 }
 
 class SurveyQuestionGroup extends SurveyQuestion implements SurveyQuestionContainer

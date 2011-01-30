@@ -152,6 +152,7 @@
             if (!q) {
                 q = { qid: id };
             }
+            console.log(q);
             var question = $("#q_edit_new").tmpl(q);
             var type = question
                 .find('select[name$="[type]"]')
