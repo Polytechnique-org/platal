@@ -1,44 +1,6 @@
 ================================================================================
 VERSION 1.1.0                                                         XX XX XXXX
 
-Bug/Wish:
-
-    * Admin:
-      - #1320: Add administrations pages for country and language edition  -JAC
-      - #1371: Allows email edition before mailing list validation         -JAC
-
-    * Carnet:
-      - #1139: Fixes contact pdf export with pictures                      -JAC
-
-    * Core:
-      - #1040: Adapts login page for non-X users                           -FRU
-      - #1325: Fixes csv downloading with IE8                              -JAC
-
-    * Emails:
-      - #1201: Increases allowed email size                                -JAC
-
-    * Payments:
-      - #1314,1295: Finally fix "has paid" lists                           -Xel
-
-    * Profile:
-      - #1288: Adds explaination about job keywords in profile edition     -JAC
-      - #1294: Fixes email in job information                              -JAC
-      - #1322: Removes duplicated city and postal code in vcard addresses  -JAC
-      - #1323: Displays email aliases in vcards when public                -JAC
-
-    * Search:
-      - #1283: Restricts second operation on promo search                  -Car
-      - #1312: Adds search on subadministrativearea                        -JAC
-      - #1313: Fixes advanced form js in IE7                               -Car
-
-    * Xnet:
-      - #1347: Fixes menu when changing rights in Xnet                     -JAC
-
-    * XnetEvent:
-      - #1233: Enables event subscribtion notification                     -JAC
-
-    * XnetGrp:
-      - #1230: Adds custom welcome message for group subscription          -JAC
 
 ================================================================================
 VERSION 1.0.2                                                         31 01 2011
