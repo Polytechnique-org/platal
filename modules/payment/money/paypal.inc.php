@@ -66,7 +66,7 @@ class PayPal
             'email'      => $user->bestEmail()
         );
 
-        if ($user->hasProfile() {
+        if ($user->hasProfile()) {
             $res = XDB::query("SELECT  pa.text, gl.name AS city, pa.postalCode AS zip, pa.countryId AS country,
                                        IF(pp1.display_tel != '', pp1.display_tel, pp2.display_tel) AS night_phone_b
                                  FROM  profile_addresses AS pa
