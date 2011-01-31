@@ -52,7 +52,7 @@ abstract class PlSession
 
     /** Build the session structure with system fields.
      */
-    private function fillSession()
+    protected function fillSession()
     {
         S::bootstrap('user', null);
         S::bootstrap('auth', AUTH_PUBLIC);
