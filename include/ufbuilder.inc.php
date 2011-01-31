@@ -1114,32 +1114,6 @@ class UFBF_SubAdminArea extends UFBF_Index
 }
 // }}}
 
-// {{{ class UFBF_SubAdminArea
-class UFBF_SubAdminArea extends UFBF_Index
-{
-    protected $direnum = DirEnum::SUBADMINAREAS;
-    protected $onlycurrentfield;
-
-    public function __construct($envfield, $formtext = '', $onlycurrentfield = 'only_current')
-    {
-        parent::__construct($envfield, $formtext);
-        $this->onlycurrentfield = $onlycurrentfield;
-    }
-
-
-    protected function buildUFC(UserFilterBuilder &$ufb)
-    {
-        if ($ufb->isOn($this->onlycurrentfield)) {
-            $flags = UFC_Address::FLAG_CURRENT;
-        } else {
-            $flags = UFC_Address::FLAG_ANY;
-        }
-
-        return new UFC_AddressField($this->val, UFC_AddressField::FIELD_SUBADMAREA, UFC_Address::TYPE_ANY, $flags);
-    }
-}
-// }}}
-
 // {{{ class UFBF_JobCompany
 class UFBF_JobCompany extends UFBF_Text
 {
