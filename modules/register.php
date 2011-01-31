@@ -370,10 +370,13 @@ class RegisterModule extends PLModule
 
         // Subscribe the user to the services she did request at registration time.
         foreach (explode(',', $services) as $service) {
+            require_once 'newsletter.inc.php';
             switch ($service) {
                 case 'ax_letter':
-                    Platal::load('axletter', 'axletter.inc.php');
-                    AXLetter::subscribe($uid);
+                    NewsLetter::forGroup(NewsLetter::GROUP_AX)->subscribe($user);
+                    break;
+                case 'nl':
+                    NewsLetter::forGroup(NewsLetter::GROUP_XORG)->subscribe($user);
                     break;
                 case 'imap':
                     $storage = new EmailStorage($user, 'imap');
@@ -394,10 +397,6 @@ class RegisterModule extends PLModule
                             $page->trigError("L'inscription à la liste promo" . $yearpromo . " a échouée.");
                         }
                     }
-                    break;
-                case 'nl':
-                    require_once 'newsletter.inc.php';
-                    NewsLetter::subscribe($uid);
                     break;
             }
         }
