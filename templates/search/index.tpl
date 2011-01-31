@@ -48,7 +48,7 @@
     <script type="text/javascript">
       // popup automatically if only one result
       $(document).ready(function() {
-        $('#content a.popup2').click();
+        $('#content a.popup2').first().click();
       });
     </script>
   {/literal}{/if}
