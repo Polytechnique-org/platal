@@ -19,34 +19,30 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function __autoload($cls)
+Platal::load('newsletter');
+
+class XnetNlModule extends NewsletterModule
 {
-    if (!pl_autoload($cls)) {
-        $cls = strtolower($cls);
-        if (substr($cls, 0, 4) == 'ufc_' || substr($cls, 0, 4) == 'ufo_' || $cls == 'profilefilter' || $cls == 'userfiltercondition' || $cls == 'userfilterorder') {
-            __autoload('userfilter');
-            return;
-        } else if (substr($cls, 0, 4) == 'pfc_'
-                || substr($cls, 0, 4) == 'pfo_'
-                || substr($cls, 0, 8) == 'plfilter') {
-            __autoload('plfilter');
-            return;
-        } else if (substr($cls, 0, 3) == 'de_') {
-            __autoload('direnum');
-            return;
-        } else if ($cls == 'validate' || substr($cls, -3, 3) == 'req'
-                   || substr($cls, -8, 8) == 'validate' || substr($cls, 0, 8) == 'validate') {
-            require_once 'validations.inc.php';
-            return;
-        } else if (substr($cls, 0, 6) == 'banana') {
-            require_once 'banana/hooks.inc.php';
-            Banana::load(substr($cls, 6));
-            return;
-        }
-        include "$cls.inc.php";
+    function handlers()
+    {
+        return array(
+            '%grp/nl'                   => $this->make_hook('nl',                    AUTH_MDP),
+            '%grp/nl/show'              => $this->make_hook('nl_show',               AUTH_MDP),
+            '%grp/admin/nl'             => $this->make_hook('admin_nl',              AUTH_MDP,    'groupadmin'),
+            '%grp/admin/nl/edit'        => $this->make_hook('admin_nl_edit',         AUTH_MDP,    'groupadmin'),
+            '%grp/admin/nl/edit/cancel' => $this->make_hook('admin_nl_cancel',       AUTH_MDP,    'groupadmin'),
+            '%grp/admin/nl/edit/valid'  => $this->make_hook('admin_nl_valid',        AUTH_MDP,    'groupadmin'),
+            '%grp/admin/nl/categories'  => $this->make_hook('admin_nl_cat',          AUTH_MDP,    'groupadmin'),
+        );
+    }
+
+    protected function getNl()
+    {
+       global $globals;
+       $group = $globals->asso('shortname');
+       return NewsLetter::forGroup($group);
     }
 }
-
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

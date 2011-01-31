@@ -236,6 +236,14 @@ htdocs/javascript/jquery.tmpl-$(JQUERY_TMPL_VERSION).js:
 $(JQUERY_TMPL_PATH): htdocs/javascript/jquery.tmpl-$(JQUERY_TMPL_VERSION).js
 	ln -snf $(<F) $@
 
+htdocs/javascript/jquery.tmpl-$(JQUERY_TMPL_VERSION).js: DOWNLOAD_SRC = https://github.com/jquery/jquery-tmpl/raw/$(JQUERY_TMPL_VERSION)/jquery.tmpl.min.js --no-check-certificate
+htdocs/javascript/jquery.tmpl-$(JQUERY_TMPL_VERSION).js:
+	@-rm htdocs/javascript/jquery.tmpl*.js
+	@$(download)
+
+$(JQUERY_TMPL_PATH): htdocs/javascript/jquery.tmpl-$(JQUERY_TMPL_VERSION).js
+	ln -snf $(<F) $@
+
 $(JSTREE_PATH):
 	rm -f htdocs/javascript/jquery.jstree-*.js
 	mkdir spool/tmp/jstree

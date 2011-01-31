@@ -23,7 +23,7 @@
 {config_load file="mails.conf" section="newsletter"}
 {if $mail_part eq 'head'}
 {from full=#from#}
-{subject text=$nl->title(true)}
+{subject text=$issue->title(true)}
 {if isset(#replyto#)}{add_header name='Reply-To' value=#replyto#}{/if}
 {if isset(#retpath#)}{add_header name='Return-Path' value=#retpath#}{/if}
 {elseif $mail_part eq 'text'}
@@ -31,23 +31,23 @@
 <pre style="width : 72ex; margin: auto">
 {/if}
 ====================================================================
-{$nl->title()}
+{$issue->title()}
 ====================================================================
 
-{$nl->head($user, 'text')}
+{$issue->head($user, 'text')}
 
 
-{foreach from=$nl->_arts key=cid item=arts name=cats}
-{$smarty.foreach.cats.iteration} *{$nl->_cats[$cid]}*
+{foreach from=$issue->arts key=cid item=arts name=cats}
+{$smarty.foreach.cats.iteration} *{$issue->category($cid)}*
 {foreach from=$arts item=art}
 - {$art->title()}
 {/foreach}
 
 {/foreach}
 
-{foreach from=$nl->_arts key=cid item=arts}
+{foreach from=$issue->arts key=cid item=arts}
 --------------------------------------------------------------------
-*{$nl->_cats[$cid]}*
+*{$issue->category($cid)}*
 --------------------------------------------------------------------
 
 {foreach from=$arts item=art}
@@ -84,7 +84,7 @@ ne plus recevoir : &lt;https://www.polytechnique.org/nl/out&gt;
       body      { background-color: #ddd; color: #000; }
       {/literal}
     <!--
-      {$nl->css()}
+      {$issue->css()}
     -->
     </style>
   </head>
@@ -92,21 +92,21 @@ ne plus recevoir : &lt;https://www.polytechnique.org/nl/out&gt;
     <div class='nl_background'>
 {/if}
     <div class='nl'>
-      <div class="title"><a href="{$globals->baseurl}">{$nl->title()}</a></div>
-      <div class="intro">{$nl->head($user, 'html')|smarty:nodefaults}</div>
+      <div class="title"><a href="{$globals->baseurl}">{$issue->title()}</a></div>
+      <div class="intro">{$issue->head($user, 'html')|smarty:nodefaults}</div>
       <a id="top_lnk"></a>
-      {foreach from=$nl->_arts key=cid item=arts name=cats}
+      {foreach from=$issue->arts key=cid item=arts name=cats}
       <div class="lnk">
-        <a href="{$prefix}#cat{$cid}"><strong>{$smarty.foreach.cats.iteration}. {$nl->_cats[$cid]}</strong></a><br />
+        <a href="{$prefix}#cat{$cid}"><strong>{$smarty.foreach.cats.iteration}. {$issue->category($cid)}</strong></a><br />
         {foreach from=$arts item=art}
-        <a href="{$prefix}#art{$art->_aid}">&nbsp;&nbsp;- {$art->title()}</a><br />
+        <a href="{$prefix}#art{$art->aid}">&nbsp;&nbsp;- {$art->title()}</a><br />
         {/foreach}
       </div>
       {/foreach}
 
-      {foreach from=$nl->_arts key=cid item=arts name=cats}
+      {foreach from=$issue->arts key=cid item=arts name=cats}
       <h1 class="xorg_nl"><a id="cat{$cid}"></a>
-        {$nl->_cats[$cid]}
+        {$issue->category($cid)}
       </h1>
       {foreach from=$arts item=art}
         {$art->toHtml($hash, $user->login())|smarty:nodefaults}

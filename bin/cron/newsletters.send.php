@@ -1,3 +1,4 @@
+#!/usr/bin/php5 -q
 <?php
 /***************************************************************************
  *  Copyright (C) 2003-2011 Polytechnique.org                              *
@@ -19,34 +20,18 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function __autoload($cls)
-{
-    if (!pl_autoload($cls)) {
-        $cls = strtolower($cls);
-        if (substr($cls, 0, 4) == 'ufc_' || substr($cls, 0, 4) == 'ufo_' || $cls == 'profilefilter' || $cls == 'userfiltercondition' || $cls == 'userfilterorder') {
-            __autoload('userfilter');
-            return;
-        } else if (substr($cls, 0, 4) == 'pfc_'
-                || substr($cls, 0, 4) == 'pfo_'
-                || substr($cls, 0, 8) == 'plfilter') {
-            __autoload('plfilter');
-            return;
-        } else if (substr($cls, 0, 3) == 'de_') {
-            __autoload('direnum');
-            return;
-        } else if ($cls == 'validate' || substr($cls, -3, 3) == 'req'
-                   || substr($cls, -8, 8) == 'validate' || substr($cls, 0, 8) == 'validate') {
-            require_once 'validations.inc.php';
-            return;
-        } else if (substr($cls, 0, 6) == 'banana') {
-            require_once 'banana/hooks.inc.php';
-            Banana::load(substr($cls, 6));
-            return;
-        }
-        include "$cls.inc.php";
-    }
-}
+require_once './connect.db.inc.php';
+require_once 'newsletter.inc.php';
+ini_set('memory_limit', '128M');
 
+$nls = NewsLetter::getIssuesToSend();
+foreach ($nls as $nl) {
+    echo "Envoi de la lettre \"{$nl->title()}\" (Groupe {$nl->group})\n\n";
+    echo ' ' . date("H:i:s") . " -> début de l'envoi\n";
+    $emailsCount = $nl->sendToAll();
+    echo ' ' . date("H:i:s") . " -> fin de l'envoi\n\n";
+    echo $emailsCount . " emails ont été envoyés lors de cet envoi.\n\n";
+}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

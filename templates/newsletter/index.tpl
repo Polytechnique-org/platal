@@ -22,29 +22,33 @@
 
 
 <h1>
-  Lettre de Polytechnique.org
+  {$nl->name}
+{if $nl->mayEdit() && $nl->adminLinksEnabled()}
+  [<a href="{$nl->adminPrefix()}">Administrer</a>]
+{/if}
 </h1>
 
-
+{if $nl->maySubmit()}
 <p class="center">
-  <a href="nl/submit">{icon name=page_edit value="Proposer un article"} Proposer un article pour la lettre mensuelle</a>
+  <a href="{$nl->prefix()}/submit">{icon name=page_edit value="Proposer un article"} Proposer un article pour la {$nl->name}</a>
 </p>
+{/if}
 
 <h2>Ton statut</h2>
 
-{if $nls}
+{if $nl->subscriptionState()}
 <p>
-Tu es actuellement inscrit à la lettre mensuelle de Polytechnique.org (pour choisir le format HTML ou texte, rends toi sur la page <a href='prefs'>des préférences</a>).
+Tu es actuellement inscrit à la {$nl->name} (pour choisir le format HTML ou texte, rends toi sur la page <a href='prefs'>des préférences</a>).
 </p>
 <div class='center'>
-  [<a href='nl/out'>{icon name=delete} me désinscrire de la lettre mensuelle</a>]
+  [<a href='{$nl->prefix()}/out'>{icon name=delete} me désinscrire de la {$nl->name}</a>]
 </div>
 {else}
 <p>
-Tu n'es actuellement pas inscrit à la lettre mensuelle de Polytechnique.org.
+Tu n'es actuellement pas inscrit à la {$nl->name}.
 </p>
 <div class='center'>
-  [<a href='nl/in'>{icon name=add} m'inscrire à la lettre mensuelle</a>]
+  [<a href='{$nl->prefix()}/in'>{icon name=add} m'inscrire à la {$nl->name}</a>]
 </div>
 {/if}
 
@@ -55,15 +59,19 @@ Tu n'es actuellement pas inscrit à la lettre mensuelle de Polytechnique.org.
     <th>date</th>
     <th>titre</th>
   </tr>
-  {foreach item=nl from=$nl_list}
+  {foreach item=nli from=$nl_list}
   <tr class="{cycle values="impair,pair"}">
-    <td>{$nl.date|date_format}</td>
+    <td>{$nli->date|date_format}</td>
     <td>
-      <a href="nl/show/{$nl.id}">{$nl.titre}</a>
+      <a href="{$nl->prefix()}/show/{$nli->id()}">{$nli->title()|default:"[Sans titre]"}</a>
     </td>
   </tr>
   {/foreach}
 </table>
+
+{if $nl->mayEdit()}
+<p>Il y a actuellement {$nl->subscriberCount()} inscrits aux envois.</p>
+{/if}
 
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

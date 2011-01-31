@@ -26,7 +26,7 @@ class Xorg extends Platal
         parent::__construct('auth', 'carnet', 'email', 'events', 'forums',
                             'lists', 'marketing', 'payment', 'platal',
                             'profile', 'register', 'search', 'stats', 'admin',
-                            'newsletter', 'axletter', 'bandeau', 'survey',
+                            'newsletter', 'axletter', 'epletter', 'bandeau', 'survey',
                             'fusionax', 'gadgets', 'googleapps', 'poison',
                             'openid', 'reminder', 'api');
     }

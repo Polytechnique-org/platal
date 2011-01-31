@@ -638,7 +638,7 @@ class User extends PlUser
      * Clears a user.
      *  *always deletes in: account_lost_passwords, register_marketing,
      *      register_pending, register_subs, watch_nonins, watch, watch_promo
-     *  *always keeps in: account_types, accounts, aliases, axletter_ins, carvas,
+     *  *always keeps in: account_types, accounts, aliases, carvas,
      *      group_members, homonyms, newsletter_ins, register_mstats,
      *  *deletes if $clearAll: account_auth_openid, announce_read, contacts,
      *      email_options, email_send_save, emails, forum_innd, forum_profiles,

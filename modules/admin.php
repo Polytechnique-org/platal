@@ -1056,7 +1056,7 @@ class AdminModule extends PLModule
     {
         $page->changeTpl('admin/validation.tpl');
         $page->setTitle('Administration - Valider une demande');
-        $page->addCssLink('nl.css');
+        $page->addCssLink('nl.Polytechnique.org.css');
 
         if ($action == 'edit' && !is_null($id)) {
             $page->assign('preview_id', $id);

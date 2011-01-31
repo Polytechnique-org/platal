@@ -469,7 +469,6 @@ function hash_xor(a, b) {
     return c;
 }
 
-
 function getType(c) {
     if (c >= 'a' && c <= 'z') {
         return 1;
@@ -680,6 +679,166 @@ function sendTestEmail(token, hruid)
     var url = 'emails/test';
     var msg = "Un email a été envoyé avec succès";
     if (hruid) {
+        url += '/' + hruid;
+        msg += " sur l'adresse de " + hruid + ".";
+    } else {
+        msg += " sur ton addresse.";
+    }
+    $('#mail_sent').successMessage($url + '?token=' + token, msg);
+    return false;
+}
+
+// }}}
+// {{{ jQuery object extension
+
+(function($) {
+    /* Add new functions to jQuery namesapce */
+    $.extend({
+        /* The goal of the following functions is to provide an AJAX API that
+         * take a different callback in case of HTTP success code (2XX) and in
+         * other cases.
+         */
+
+        xajax: function(source, method, data, onSuccess, onError, type) {
+            /* Shift argument */
+            if ($.isFunction(data)) {
+                type = type || onError;
+                onError = onSuccess;
+                onSuccess = data;
+                data = null;
+            }
+            if (onError != null && !$.isFunction(onError)) {
+                type = type || onError;
+                onError = null;
+            }
+
+            function ajaxHandler(data, textStatus, xhr) {
+                if (textStatus == 'success') {
+                    if (onSuccess) {
+                        onSuccess(data, textStatus, xhr);
+                    }
+                } else if (textStatus == 'error') {
+                    if (onError) {
+                        onError(data, textStatus, xhr);
+                    } else {
+                        alert("Une error s'est produite lors du traitement de la requête.\n"
+                            + "Ta session a peut-être expiré");
+                    }
+                }
+            }
+            return $.ajax({
+                url: source,
+                type: method,
+                success: ajaxHandler,
+                data : data,
+                dataType: type
+            });
+        },
+
+        xget: function(source, data, onSuccess, onError, type) {
+            return $.xajax(source, 'GET', data, onSuccess, onError, type);
+        },
+
+        xgetJSON: function(source, data, onSuccess, onError) {
+            return $.xget(source, data, onSuccess, onError, 'json');
+        },
+
+        xgetScript: function(source, onSuccess, onError) {
+            return $.xget(source, null, onSuccess, onError, 'script');
+        },
+
+        xgetText: function(source, data, onSuccess, onError) {
+            return $.xget(source, data, onSuccess, onError, 'text');
+        },
+
+        xpost: function(source, data, onSuccess, onError, type) {
+            return $.xajax(source, 'POST', data, onSuccess, onError, type);
+        }
+    });
+
+    /* Add new functions to jQuery objects */
+    $.fn.extend({
+        tmpMessage: function(message, success) {
+            if (success) {
+                this.html("<img src='images/icons/wand.gif' alt='' /> " + message)
+                    .css('color', 'green');
+            } else {
+                this.html("<img src='images/icons/error.gif' alt='' /> " + message)
+                    .css('color', 'red');
+            }
+            return this.css('fontWeight', 'bold')
+                       .show()
+                       .delay(1000)
+                       .fadeOut(500);
+        },
+
+        updateHtml: function(source, callback) {
+            var elements = this;
+            function handler(data) {
+                elements.html(data);
+                if (callback) {
+                    callback(data);
+                }
+            }
+            $.xget(source, handler, 'text');
+            return this;
+        },
+
+        successMessage: function(source, message) {
+            var elements = this;
+            $.xget(source, function() {
+                elements.tmpMessage(message, true);
+            });
+            return this;
+        },
+
+        wiki: function(text, withTitle) {
+            if (text == '') {
+                return this.html('');
+            }
+            var url = 'wiki_preview';
+            if (!withTitle) {
+                url += '/notitile';
+            }
+            var $this = this;
+            $.post(url, { text: text },
+                   function (data) {
+                       $this.html(data);
+                   }, 'text');
+            return this;
+        },
+
+        popWin: function(w, h) {
+            return this.click(function() {
+                window.open(this.href, '_blank',
+                            'toolbar=0,location=0,directories=0,status=0,'
+                           +'menubar=0,scrollbars=1,resizable=1,'
+                           +'width='+w+',height='+h);
+                return false;
+            });
+        }
+    });
+})(jQuery);
+
+// }}}
+// {{{ preview wiki
+
+function previewWiki(idFrom, idTo, withTitle, idShow)
+{
+    $('#' + idTo).wiki($('#' + idFrom).val(), withTitle);
+    if (idShow != null) {
+        $('#' + idShow).show();
+    }
+}
+
+// }}}
+// {{{ send test email
+
+function sendTestEmail(token, hruid)
+{
+    var url = 'emails/test';
+    var msg = "Un email a été envoyé avec succès";
+    if (hruid != null) {
         url += '/' + hruid;
         msg += " sur l'adresse de " + hruid + ".";
     } else {

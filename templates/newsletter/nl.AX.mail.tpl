@@ -23,7 +23,7 @@
 {config_load file="mails.conf" section="mails_ax"}
 {if $mail_part eq 'head'}
 {from full=#from#}
-{subject text=$am->title(true)}
+{subject text=$issue->title(true)}
 {if isset(#replyto#)}{add_header name='Reply-To' value=#replyto#}{/if}
 {if isset(#retpath#)}{add_header name='Return-Path' value=#retpath#}{/if}
 {elseif $mail_part eq 'text'}
@@ -31,14 +31,12 @@
 <pre style="width : 72ex; margin: auto">
 {/if}
 ====================================================================
-{$am->title()}
+{$issue->title()}
 ====================================================================
 
-{$am->head($user, 'text')}
+{$issue->head($user, 'text')}
 
-{$am->body('text')}
-
-{$am->signature('text')}
+{$issue->signature('text')}
 
 --------------------------------------------------------------------
 Cette lettre est envoyée par l'AX grâce aux outils de Polytechnique.org.
@@ -66,7 +64,7 @@ ne plus recevoir : &lt;https://www.polytechnique.org/ax/out{if $hash}/{$hash}{/i
       body      { background-color: #ddd; color: #000; }
       {/literal}
     <!--
-      {$am->css()}
+      {$issue->css()}
     -->
     </style>
   </head>
@@ -74,10 +72,9 @@ ne plus recevoir : &lt;https://www.polytechnique.org/ax/out{if $hash}/{$hash}{/i
     <div class="ax_background">
 {/if}
     <div class='ax_mail'>
-      <div class="title">{$am->title()}</div>
-      <div class="intro">{$am->head($user, 'html')|smarty:nodefaults}</div>
-      <div class="body">{$am->body('html')|smarty:nodefaults}</div>
-      <div class="signature">{$am->signature('html')|smarty:nodefaults}</div>
+      <div class="title">{$issue->title()}</div>
+      <div class="intro">{$issue->head($user, 'html')|smarty:nodefaults}</div>
+      <div class="signature">{$issue->signature('html')|smarty:nodefaults}</div>
       <div class="foot1">
         Cette lettre est envoyée par l'AX grâce aux outils de Polytechnique.org.
       </div>

@@ -863,6 +863,26 @@ class UserFilter extends PlFilter
         return $joins;
     }
 
+    /** NLS
+     */
+    private $nls = array();
+    public function addNewsLetterFilter($nlid)
+    {
+        $this->requireAccounts();
+        $sub = 'nl_' . $nlid;
+        $this->nls[$nlid] = $sub;
+        return $sub;
+    }
+
+    protected function newsLetterJoins()
+    {
+        $joins = array();
+        foreach ($this->nls as $key => $sub) {
+            $joins[$sub] = PlSqlJoin::left('newsletter_ins', '$ME.nlid = {?} AND $ME.uid = $UID', $key);
+        }
+        return $joins;
+    }
+
     /** BINETS
      */
 
@@ -899,6 +919,14 @@ class UserFilter extends PlFilter
     {
         $this->requireAccounts();
         return $this->register_optional($this->e, $email);
+    }
+
+    private $with_eo = false;
+    public function addEmailOptionsFilter()
+    {
+        $this->requireAccounts();
+        $this->with_eo = true;
+        return 'eo';
     }
 
     private $ve = array();
@@ -962,6 +990,9 @@ class UserFilter extends PlFilter
                                                                          CONCAT(al_forlife.alias, \'@\', {?}),
                                                                          a.email))',
                                                   $globals->mail->domain, $globals->mail->domain2);
+        }
+        if ($this->with_eo) {
+            $joins['eo'] = PlSqlJoin::left('email_options', '$ME.uid = $UID');
         }
         return $joins;
     }

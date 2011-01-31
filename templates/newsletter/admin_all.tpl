@@ -20,64 +20,21 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-<h1>
-  Envoi exceptionnel de l'AX
-</h1>
-
-<h2>Ton statut</h2>
-
-{if $axs}
-<p>
-Tu es actuellement inscrit aux envois exceptionnels de l'AX (pour choisir le format HTML ou texte, rends toi sur la page <a href='prefs'>des préférences</a>).
-</p>
-<div class='center'>
-  [<a href='ax/out'>{icon name=delete} me désinscrire des envois exceptionnels</a>]
-</div>
-{else}
-<p>
-Tu n'es actuellement pas inscrit aux envois exceptionnels de l'AX.
-</p>
-<div class='center'>
-  [<a href='ax/in'>{icon name=add} m'inscrire</a>]
-</div>
-{/if}
-
-<h2>Les archives</h2>
-
-<table class="bicol" cellpadding="3" cellspacing="0" summary="liste des NL">
+<table class="bicol" cellpadding="3" cellspacing="0" summary="Liste des Newsletter actives">
   <tr>
-    <th>date</th>
-    <th>titre</th>
+    <th>Id</th>
+    <th>Groupe</th>
+    <th>Titre</th>
+    <th>CSS spécifique</th>
+    <th>Critères actifs</th>
   </tr>
-  {if $ax_rights && !$new}
-  <tr class="pair">
-    <td colspan="2" class="center">
-      <a href="ax/edit">{icon name=page_edit} Proposer un nouvel email</a>
-    </td>
-  </tr>
-  {elseif $ax_rights && $new}
-  <tr class="pair">
-    <td><a href="ax/edit">{icon name=page_edit} Éditer la demande</a></td>
-    <td>
-      {if $new->title()}
-      <a href="ax/show/{$new->id()}"><strong>{$new->title(true)}</strong></a>
-      {/if}
-    </td>
-  </tr>
-  {/if}
-  {foreach item=al from=$ax_list}
-  <tr class="{cycle values="impair,pair"}">
-    <td>{$al.date|date_format}</td>
-    <td>
-      <a href="ax/show/{$al.id}">{$al.titre}</a>
-    </td>
+  {foreach from=$nls item=nl}
+  <tr class="{cycle values="pair,impair"}">
+    <td class="titre">{$nl->id}</td>
+    <td>{$nl->group}</td>
+    <td>{$nl->name}</td>
+    <td>{if $nl->hasCustomCss()}Oui{else}Non{/if}</td>
+    <td>{$nl->criteria->flags()}</td>
   </tr>
   {/foreach}
 </table>
-
-{if $ax_rights}
-<p>Il y a actuellement {$count} inscrits aux envois.</p>
-{/if}
-
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

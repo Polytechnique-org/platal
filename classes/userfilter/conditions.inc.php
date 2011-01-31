@@ -31,7 +31,7 @@
  */
 abstract class UserFilterCondition implements PlFilterCondition
 {
-    const OP_EQUALS     = '==';
+    const OP_EQUALS     = '=';
     const OP_GREATER    = '>';
     const OP_NOTGREATER = '<=';
     const OP_LESSER     = '<';
@@ -324,6 +324,19 @@ class UFC_Hrpid extends UserFilterCondition
     }
 }
 // }}}
+// {{{ class UFC_HasEmailRedirect
+/** Filters users, keeping only those with a valid email redirection.
+ */
+class UFC_HasEmailRedirect extends UserFilterCondition
+{
+    public function buildCondition(PlFilter $uf)
+    {
+        $sub_redirect = $uf->addEmailRedirectFilter();
+        $sub_options = $uf->addEmailOptionsFilter();
+        return 'e' . $sub_redirect . '.flags = \'active\' OR FIND_IN_SET(\'googleapps\', ' . $sub_options . '.storage)';
+    }
+}
+// }}}
 // {{{ class UFC_Ip
 /** Filters users based on one of their last IPs
  * @param $ip IP from which connection are checked
@@ -418,6 +431,7 @@ class UFC_Promo extends UserFilterCondition
 
     public function export()
     {
+        $export = $this->buildExport('promo');
         $export['comparison'] = $this->comparison;
         if ($this->grade != UserFilter::DISPLAY) {
             $export['grade'] = $this->grade;
@@ -798,6 +812,28 @@ class UFC_Sex extends UserFilterCondition
             $uf->requireProfiles();
             return XDB::format('p.sex = {?}', $this->sex == User::GENDER_FEMALE ? 'female' : 'male');
         }
+    }
+}
+// }}}
+// {{{ class UFC_NLSubscribed
+/** Filters users based on NL subscription
+ * @param $nlid NL whose subscribers we are selecting
+ * @param $issue Select only subscribers who have not yet received that issue
+ */
+class UFC_NLSubscribed extends UserFilterCondition
+{
+    private $nlid;
+    private $issue_id;
+    public function __construct($nlid, $issue_id)
+    {
+        $this->nlid = $nlid;
+        $this->issue_id = $issue_id;
+    }
+
+    public function buildCondition(PlFilter $uf)
+    {
+        $sub = $uf->addNewsLetterFilter($this->nlid);
+        return XDB::format($sub . '.last < {?}', $this->issue_id);
     }
 }
 // }}}
@@ -1344,7 +1380,7 @@ class UFC_Phone extends UserFilterCondition
     {
         $phone = new Phone(array('display' => $number));
         $phone->format();
-        $this->number = $phone->search;
+        $this->number = $phone->search();
         $this->num_type = $num_type;
         $this->phone_type = $phone_type;
     }
