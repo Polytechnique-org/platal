@@ -109,8 +109,8 @@
     <div>
       Ajouter une case Autre ?
       <select name="q_edit[${qid}][allow_other]">
-        <option value="1" {{if allow_other}}selected="selected"{{/if}}>Oui</option>
-        <option value="" {{if !allow_other}}selected="selected"{{/if}}>Non</option>
+        <option value="1" {{if $item.allow_other}}selected="selected"{{/if}}>Oui</option>
+        <option value="" {{if !$item.allow_other}}selected="selected"{{/if}}>Non</option>
       </select>
     </div>
   </div>
