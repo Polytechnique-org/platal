@@ -198,9 +198,12 @@ function finishRegistration($subState)
     global $globals;
 
     $hash = rand_url_id(12);
-    XDB::execute('INSERT IGNORE INTO  register_pending (uid, forlife, bestalias, mailorg2, password,
-                                                        email, date, relance, naissance, hash, services)
-                              VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, NOW(), 0, {?}, {?}, {?})',
+    XDB::execute('INSERT INTO  register_pending (uid, forlife, bestalias, mailorg2, password,
+                                                 email, date, relance, naissance, hash, services)
+                              VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, NOW(), 0, {?}, {?}, {?})
+                              ON DUPLICATE KEY UPDATE password=VALUES(password), email=VALUES(email),
+                                                      date=VALUES(date), naissance=VALUES(naissance),
+                                                      hash=VALUES(hash), services=VALUES(services)',
                  $subState->i('uid'), $subState->s('forlife'), $subState->s('bestalias'),
                  $subState->s('emailXorg2'), $subState->s('password'), $subState->s('email'),
                  $subState->s('birthdate'), $hash, implode(',', $subState->v('services')));
