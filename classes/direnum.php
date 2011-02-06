@@ -565,8 +565,8 @@ class DE_CorpsRanks extends DirEnumeration
 class DE_Nationalities extends DirEnumeration
 {
     protected $idfield   = 'geoloc_countries.iso_3166_1_a2';
-    protected $valfield  = 'geoloc_countries.nationalityFR';
-    protected $valfield2 = 'geoloc_countries.nationality';
+    protected $valfield  = 'geoloc_countries.nationality';
+    protected $valfield2 = 'geoloc_countries.nationalityEn';
     protected $from      = 'geoloc_countries';
     protected $join      = 'INNER JOIN profiles ON (geoloc_countries.iso_3166_1_a2 IN (profiles.nationality1, profiles.nationality2, profiles.nationality3))';
 
