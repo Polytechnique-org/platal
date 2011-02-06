@@ -1075,11 +1075,12 @@ class NLIssue
 
         $ufc = new PFC_And($this->getRecipientsUFC(), new UFC_NLSubscribed($this->nl->id, $this->id), new UFC_HasEmailRedirect());
         $emailsCount = 0;
-        $uf = new UserFilter($ufc, new PlLimit(self::BATCH_SIZE));
+        $uf = new UserFilter($ufc);
+        $limit = new PlLimit(self::BATCH_SIZE);
 
         while (true) {
             $sent = array();
-            $users = $uf->getUsers();
+            $users = $uf->getUsers($limit);
             if (count($users) == 0) {
                 return $emailsCount;
             }

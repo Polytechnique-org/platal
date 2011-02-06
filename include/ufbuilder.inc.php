@@ -183,7 +183,11 @@ class UserFilterBuilder
     {
         $this->buildUFC();
         if ($this->valid) {
-            return $this->ufc;
+            if ($this->isEmpty()) {
+                return new PFC_True();
+            } else {
+                return $this->ufc;
+            }
         } else {
             return new PFC_False();
         }

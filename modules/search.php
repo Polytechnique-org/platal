@@ -414,8 +414,8 @@ class SearchModule extends PLModule
                          INNER JOIN  profile_mentor_term    AS mt ON (mt.pid = mp.pid)
                          INNER JOIN  profile_job_term_relation AS jtr ON (jtr.jtid_2 = mt.jtid)
                               WHERE  jtr.jtid_1 = {?}
-                           GROUP BY  iso_3166_1_a2
-                           ORDER BY  country", $jtid);
+                           GROUP BY  gc.iso_3166_1_a2
+                           ORDER BY  gc.country", $jtid);
         $page->assign('list', $it);
     }
 }

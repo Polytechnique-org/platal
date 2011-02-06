@@ -110,7 +110,6 @@ $(function() {
     <li><a href="#authext"><span>OpenID</span></a></li>
     <li><a href="#forums"><span>Forums</span></a></li>
   </ul>
-</div>
 
 <div id="account">
 <form id="auth" method="post" action="admin/user/{$user->login()}#account">
@@ -571,6 +570,7 @@ $(function() {
     </tr>
   </table>
 </form>
+</div>
 </div>
 {/if}
 
