@@ -691,7 +691,7 @@ class AdminModule extends PLModule
         $page->assign('mlists', $listClient->get_all_user_lists($user->forlifeEmail()));
 
         // Display active aliases.
-        $page->assign('virtuals', $user->emailAliases());
+        $page->assign('virtuals', $user->emailGroupAliases());
         $page->assign('aliases', XDB::iterator("SELECT  alias, type='a_vie' AS for_life,
                                                         FIND_IN_SET('bestalias',flags) AS best, expire
                                                   FROM  aliases

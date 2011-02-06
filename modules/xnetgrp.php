@@ -1004,7 +1004,7 @@ class XnetGrpModule extends PLModule
 
         $page->assign('user', $user);
         $page->assign('listes', $mmlist->get_lists($user->forlifeEmail()));
-        $page->assign('alias', $user->emailAliases($globals->asso('mail_domain'), 'user', true));
+        $page->assign('alias', $user->emailGroupAliases($globals->asso('mail_domain')));
         $page->assign('positions', explode(',', $positions));
     }
 

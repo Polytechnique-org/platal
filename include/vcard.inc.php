@@ -128,7 +128,7 @@ class VCard extends PlVCard
 
         // Melix
         if (!is_null($user)) {
-            $alias = $user->emailAlias();
+            $alias = $user->emailAliases();
             if (!is_null($alias) && $pf->alias_pub == 'public') {
                 $entry->addMail(null, $alias);
             }

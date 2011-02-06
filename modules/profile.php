@@ -285,7 +285,7 @@ class ProfileModule extends PLModule
 
         // Determines and displays the virtual alias.
         if (!is_null($owner) && $profile->alias_pub == 'public') {
-            $page->assign('virtualalias', $owner->emailAlias());
+            $page->assign('virtualalias', $owner->emailAliases());
         }
 
         $page->assign_by_ref('profile', $profile);
