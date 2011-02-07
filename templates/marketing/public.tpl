@@ -81,7 +81,7 @@ peut sans aucun doute l'aider à se décider&nbsp;!
     <tr class="pair">
       <td>Adresse email&nbsp;:</td>
       <td>
-        <input type="text" name="mail" size="30" maxlength="50" />
+        <input type="text" name="mail" size="30" maxlength="255" />
       </td>
     </tr>
     <tr class="impair">

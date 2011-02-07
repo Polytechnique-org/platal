@@ -359,7 +359,7 @@ $(document).ready(function() {
     {/iterate}
     <tr class="{cycle values="impair,pair"}">
       <td colspan="2" class="detail">
-        <input type="text" name="email" size="29" maxlength="60" value="" />
+        <input type="text" name="email" size="29" maxlength="255" value="" />
       </td>
       <td class="action">
         <input type="hidden" name="uid" value="{$user->id()}" />
@@ -439,7 +439,7 @@ $(document).ready(function() {
         Ajouter une adresse
       </td>
       <td>
-        <input type="text" name="email" size="29" maxlength="60" value="" />
+        <input type="text" name="email" size="29" maxlength="255" value="" />
       </td>
       <td class="action">
         <input type="hidden" name="uid" value="{$user->id()}" />

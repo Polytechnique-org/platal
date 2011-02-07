@@ -71,7 +71,7 @@
         <span class="smaller">(adresse de ton choix pour reçevoir tes emails)</span>
       </td>
       <td>
-        <input type="text" size="35" maxlength="50" name="email" value="{$smarty.post.email}" />
+        <input type="text" size="35" maxlength="255" name="email" value="{$smarty.post.email}" />
       </td>
     </tr>
     <tr class="pair">

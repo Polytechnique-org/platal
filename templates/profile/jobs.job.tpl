@@ -94,7 +94,7 @@
     <tr class="{$entreprise}" style="display: none">
       <td class="titre">Email de contact</td>
       <td>
-        <input type="text" maxlength="60" name="{$jobpref}[hq_email]" />
+        <input type="text" maxlength="255" name="{$jobpref}[hq_email]" />
       </td>
     </tr>
     <tr class="{$entreprise}" style="display: none">

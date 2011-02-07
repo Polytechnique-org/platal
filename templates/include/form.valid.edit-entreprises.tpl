@@ -27,7 +27,7 @@
 <strong>Site web&nbsp;:</strong>
 <input type="text" name="url" size="25" maxlength="200" value="{$valid->url}" /><br />
 <strong>Email&nbsp;:</strong>
-<input type="text" name="email" size="25" maxlength="200" value="{$valid->email}" /><br />
+<input type="text" name="email" size="25" maxlength="255" value="{$valid->email}" /><br />
 <strong>Holding&nbsp;:</strong>
 <input type="text" name="holdingid" size="25" maxlength="200" value="{$valid->holdingid}" /><br />
 <strong>Code NAF&nbsp;:</strong>

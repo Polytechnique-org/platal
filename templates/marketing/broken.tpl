@@ -74,7 +74,7 @@
     <tr class="pair">
       <td>Adresse email&nbsp;:</td>
       <td>
-        <input type="text" name="mail" size="30" maxlength="50" value="{$smarty.post.mail}" />
+        <input type="text" name="mail" size="30" maxlength="255" value="{$smarty.post.mail}" />
       </td>
     </tr>
     {if $user->email}
