@@ -4,6 +4,7 @@
 
 DROP TABLE IF EXISTS survey_vote_answers;
 DROP TABLE IF EXISTS survey_voters;
+DROP TABLE IF EXISTS survey_answers;
 DROP TABLE IF EXISTS survey_votes;
 DROP TABLE IF EXISTS survey_questions;
 DROP TABLE IF EXISTS surveys;
