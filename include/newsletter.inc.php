@@ -240,8 +240,8 @@ class NewsLetter
                              FROM  newsletter_issues
                             WHERE  nlid = {?} AND state = \'new\'',
                             $this->id);
-        if ($res->numRows()) {
-            $id = $res->fetchOneCell();
+        $id = $res->fetchOneCell();
+        if ($id != null) {
             return new NLIssue($id, $this);
         } else if ($create) {
             $id = $this->createPending();
