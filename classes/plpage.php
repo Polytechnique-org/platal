@@ -132,7 +132,7 @@ abstract class PlPage extends Smarty
         } elseif ($display == 'raw') {
             $this->_page_type = NO_SKIN;
         } elseif ($display == 'full') {
-            $this->_page_typ = SKINNED;
+            $this->_page_type = SKINNED;
         }
 
         if ($this->_page_type == SIMPLE) {
