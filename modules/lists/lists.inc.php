@@ -41,13 +41,13 @@ function list_sort_owners($members, $tri_promo = true)
             if (!$category) {
                 $category = 'extérieurs';
             }
-            $membres[$key][$name . $member] = array('name' => $name, 'email' => $member, 'category' => $category,
-                                                    'uid' => $uid, 'lost' => $user->lost, 'hasProfile' => $hasProfile);
+            $membres[$key][$name] = array('name' => $name, 'email' => $member, 'category' => $category,
+                                          'uid' => $uid, 'lost' => $user->lost, 'hasProfile' => $hasProfile);
         }
     }
 
     ksort($membres);
-    foreach($membres as $membre)  {
+    foreach($membres as &$membre)  {
         ksort($membre);
     }
     return $membres;
