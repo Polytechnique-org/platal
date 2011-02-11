@@ -584,9 +584,14 @@ class Address
             }
         }
         $this->text = trim($this->text);
+        $this->phones = Phone::formatFormArray($this->phones, $this->error, new ProfileVisibility($this->pub));
         if ($this->removed == 1) {
-            $this->text = '';
-            return true;
+            if (S::user()->checkPerms('directory_ax') && Phone::hasPrivate($this->phones)) {
+                Platal::page()->trigWarning("L'adresse ne peut être supprimée car elle contient des informations pour lesquelles vous n'avez le droit d'édition.");
+            } else  {
+                $this->text = '';
+                return true;
+            }
         }
 
         if ($format['requireGeocoding'] || $this->changed == 1) {
@@ -609,7 +614,6 @@ class Address
             $this->countryId = null;
         }
         $this->geocodeChosen = null;
-        $this->phones = Phone::formatFormArray($this->phones, $this->error, new ProfileVisibility($this->pub));
         if ($format['postalText']) {
             $this->formatPostalAddress();
         }
@@ -719,13 +723,13 @@ class Address
                 Geocoder::getAreaId($this, $area);
             }
 
-            XDB::execute('INSERT INTO  profile_addresses (pid, jobid, type, id, flags, accuracy,
-                                                          text, postalText, postalCode, localityId,
-                                                          subAdministrativeAreaId, administrativeAreaId,
-                                                          countryId, latitude, longitude, pub, comment,
-                                                          north, south, east, west)
-                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
-                                        {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+            XDB::execute('INSERT IGNORE INTO  profile_addresses (pid, jobid, type, id, flags, accuracy,
+                                                                 text, postalText, postalCode, localityId,
+                                                                 subAdministrativeAreaId, administrativeAreaId,
+                                                                 countryId, latitude, longitude, pub, comment,
+                                                                 north, south, east, west)
+                                      VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
+                                               {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
                          $this->pid, $this->jobid, $this->type, $this->id, $this->flags, $this->accuracy,
                          $this->text, $this->postalText, $this->postalCode, $this->localityId,
                          $this->subAdministrativeAreaId, $this->administrativeAreaId,
@@ -834,6 +838,16 @@ class Address
     static public function formArrayToString(array $data)
     {
         return implode(', ', self::formArrayWalk($data, 'toString'));
+    }
+
+    static public function hasPrivate(array $addresses)
+    {
+        foreach ($addresses as $address) {
+            if ($address['pub'] == 'private') {
+                return true;
+            }
+        }
+        return false;
     }
 
     static public function iterate(array $pids = array(), array $types = array(),
