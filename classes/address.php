@@ -826,7 +826,9 @@ class Address
             }
         }
 
-        return self::formArrayWalk($data, 'toFormArray', $success, true);
+        $addresses = self::formArrayWalk($data, 'toFormArray', $success, true);
+        usort($addresses, 'ProfileVisibility::comparePublicity');
+        return $addresses;
     }
 
     static public function formArrayToString(array $data)

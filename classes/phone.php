@@ -375,7 +375,9 @@ class Phone
     // Formats an array of form phones into an array of form formatted phones.
     static public function formatFormArray(array $data, &$success = true, $maxPublicity = null)
     {
-        return self::formArrayWalk($data, 'toFormArray', $success, true, $maxPublicity);
+        $phones = self::formArrayWalk($data, 'toFormArray', $success, true, $maxPublicity);
+        usort($phones, 'ProfileVisibility::comparePublicity');
+        return $phones;
     }
 
     static public function formArrayToString(array $data)

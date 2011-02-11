@@ -248,6 +248,7 @@ class ProfileSettingJob implements ProfileSetting
                 $success = ($success && $s);
             }
         }
+        usort($value, 'ProfileVisibility::comparePublicity');
         return $value;
     }
 
