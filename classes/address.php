@@ -767,22 +767,24 @@ class Address
      * @param $data: an array of form formatted addresses.
      * @param $pid, $type, $linkid: pid, type and id concerned by the update.
      */
-    static public function saveFromArray(array $data, $pid, $type = self::LINK_PROFILE, $linkid = null)
+    static public function saveFromArray(array $data, $pid, $type = self::LINK_PROFILE, $linkid = null, $savePrivate = true)
     {
         foreach ($data as $id => $value) {
-            if (!is_null($linkid)) {
-                $value['id'] = $linkid;
-            } else {
-                $value['id'] = $id;
+            if ($value['pub'] != 'private' || $savePrivate) {
+                if (!is_null($linkid)) {
+                    $value['id'] = $linkid;
+                } else {
+                    $value['id'] = $id;
+                }
+                if (!is_null($pid)) {
+                    $value['pid'] = $pid;
+                }
+                if (!is_null($type)) {
+                    $value['type'] = $type;
+                }
+                $address = new Address($value);
+                $address->save();
             }
-            if (!is_null($pid)) {
-                $value['pid'] = $pid;
-            }
-            if (!is_null($type)) {
-                $value['type'] = $type;
-            }
-            $address = new Address($value);
-            $address->save();
         }
     }
 

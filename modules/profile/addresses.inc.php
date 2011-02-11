@@ -43,9 +43,11 @@ class ProfileSettingAddresses implements ProfileSetting
 
     public function save(ProfilePage &$page, $field, $value)
     {
-        Phone::deletePhones($page->pid(), Phone::LINK_ADDRESS, null, S::user()->isMe($page->owner) || S::admin());
-        Address::deleteAddresses($page->pid(), Address::LINK_PROFILE, null, S::user()->isMe($page->owner) || S::admin());
-        Address::saveFromArray($value, $page->pid(), Address::LINK_PROFILE);
+        $deletePrivate = S::user()->isMe($page->owner) || S::admin();
+
+        Phone::deletePhones($page->pid(), Phone::LINK_ADDRESS, null, $deletePrivate);
+        Address::deleteAddresses($page->pid(), Address::LINK_PROFILE, null, $deletePrivate);
+        Address::saveFromArray($value, $page->pid(), Address::LINK_PROFILE, null, $deletePrivate);
         if (S::user()->isMe($page->owner) && count($value) > 1) {
             Platal::page()->trigWarning('Attention, tu as plusieurs adresses sur ton profil. Pense à supprimer celles qui sont obsolètes.');
         }

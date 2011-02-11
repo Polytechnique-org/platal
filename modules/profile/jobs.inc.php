@@ -263,7 +263,7 @@ class ProfileSettingJob implements ProfileSetting
         Phone::deletePhones($page->pid(), Phone::LINK_JOB, null, $deletePrivate);
         $terms_values = array();
         foreach ($value as $id => &$job) {
-            if (isset($job['name']) && $job['name']) {
+            if (($job['pub'] != 'private' || $deletePrivate) && (isset($job['name']) && $job['name'])) {
                 if (isset($job['jobid']) && $job['jobid']) {
                     XDB::execute('INSERT INTO  profile_job (pid, id, description, email,
                                                             url, pub, email_pub, jobid)
