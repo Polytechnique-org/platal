@@ -106,7 +106,7 @@ class NLReq extends Validate
 
     public function commit()
     {
-        $nl = NewsLetter::forGroup(NewsLetter::GROUP_XORG)->getPendingIssue();
+        $nl = NewsLetter::forGroup(NewsLetter::GROUP_XORG)->getPendingIssue(true);
         $nl->saveArticle($this->art);
         return true;
     }

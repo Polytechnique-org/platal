@@ -231,16 +231,20 @@ class NewsLetter
     }
 
     /** Return the latest pending issue of the newsletter.
+     * @p $create Whether to create an empty issue if no pending issue exist.
      * @return Either null, or a NL object.
      */
-    public function getPendingIssue()
+    public function getPendingIssue($create = false)
     {
         $res = XDB::query('SELECT  MAX(id)
                              FROM  newsletter_issues
                             WHERE  nlid = {?} AND state = \'new\'',
                             $this->id);
-        if ($res->numRows()) {
-            $id = $res->fetchOneCell();
+        $id = $res->fetchOneCell();
+        if ($id != null) {
+            return new NLIssue($id, $this);
+        } else if ($create) {
+            $id = $this->createPending();
             return new NLIssue($id, $this);
         } else {
             return null;

@@ -59,14 +59,14 @@ masculin ou féminin, par son prénom, ou son nom.
     <tr>
       <td class="titre">Expéditeur&nbsp;:</td>
       <td>
-        <input type="text" name="from" size="55" maxlength="70"
+        <input type="text" name="from" size="55" maxlength="255"
           value="{if $smarty.request.from}{$smarty.request.from}{else}&quot;{$user->fullName()}&quot; &lt;{$user->bestEmail()}&gt;{/if}" />
       </td>
     </tr>
     <tr>
       <td class="titre">Répondre à&nbsp;:</td>
       <td>
-        <input type="text" name="replyto" size="55" maxlength="70" value="{$smarty.request.replyto}" />
+        <input type="text" name="replyto" size="55" maxlength="255" value="{$smarty.request.replyto}" />
       </td>
     </tr>
 

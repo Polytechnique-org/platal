@@ -78,7 +78,7 @@ Si tu n'accèdes pas à cet email dans les 6 heures, sollicite un nouveau certif
         <span class="smaller">"prenom.nom" ou "prenom.nom.promo"</span>
       </td>
       <td>
-        <input type="text" size="20" maxlength="50" name="login" />
+        <input type="text" size="20" maxlength="255" name="login" />
       </td>
     </tr>
     <tr>
@@ -95,7 +95,7 @@ Si tu n'accèdes pas à cet email dans les 6 heures, sollicite un nouveau certif
         Adresse email&nbsp;: <span class="smaller">(facultatif)</span>
       </td>
       <td>
-        <input type="text" size="20" maxlength="50" name="email" />
+        <input type="text" size="20" maxlength="255" name="email" />
       </td>
     </tr>
     <tr>

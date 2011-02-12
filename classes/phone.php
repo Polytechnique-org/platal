@@ -276,9 +276,9 @@ class Phone
     {
         $this->format();
         if (!$this->isEmpty()) {
-            XDB::execute('INSERT INTO  profile_phones (pid, link_type, link_id, tel_id, tel_type,
-                                                       search_tel, display_tel, pub, comment)
-                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+            XDB::execute('INSERT IGNORE INTO  profile_phones (pid, link_type, link_id, tel_id, tel_type,
+                                                              search_tel, display_tel, pub, comment)
+                                      VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
                          $this->pid, $this->link_type, $this->link_id, $this->id, $this->type,
                          $this->search, $this->display, $this->pub, $this->comment);
         }
@@ -350,12 +350,24 @@ class Phone
     // Formats an array of form phones into an array of form formatted phones.
     static public function formatFormArray(array $data, &$success = true, $maxPublicity = null)
     {
-        return self::formArrayWalk($data, 'toFormArray', $success, true, $maxPublicity);
+        $phones = self::formArrayWalk($data, 'toFormArray', $success, true, $maxPublicity);
+        usort($phones, 'ProfileVisibility::comparePublicity');
+        return $phones;
     }
 
     static public function formArrayToString(array $data)
     {
         return implode(', ', self::formArrayWalk($data, 'toString'));
+    }
+
+    static public function hasPrivate(array $phones)
+    {
+        foreach ($phones as $phone) {
+            if ($phone['pub'] == 'private') {
+                return true;
+            }
+        }
+        return false;
     }
 
     static public function iterate(array $pids = array(), array $link_types = array(),

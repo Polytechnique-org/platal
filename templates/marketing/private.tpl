@@ -121,7 +121,7 @@ Sa dernière relance date du {$relance|date_format}.
     <tr class="pair">
       <td align="right"><strong>To&nbsp;:</strong></td>
       <td>
-        <input type="text" value="{$rel_to}" name="to" size="40" maxlength="100" />
+        <input type="text" value="{$rel_to}" name="to" size="40" maxlength="255" />
         <input type="submit" name="valider" value="Envoyer" />
       </td>
     </tr>

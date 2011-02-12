@@ -32,6 +32,16 @@
 {else}
 {assign var=hiddenjob value=false}
 {/if}
+{if !hasPerm('directory_private') && ($job.w_address.pub eq 'private') && !empty($job.w_address.text|smarty:nodefaults)}
+{assign var=hiddenaddr value=true}
+{else}
+{assign var=hiddenaddr value=false}
+{/if}
+{if !hasPerm('directory_private') && ($job.w_email_pub eq 'private') && !empty($job.w_email|smarty:nodefaults)}
+{assign var=hiddenemail value=true}
+{else}
+{assign var=hiddenemail value=false}
+{/if}
 <div id="{$jobid}">
   <input type="hidden" name="{$jobpref}[removed]" value="0" />
   <input type="hidden" name="{$jobpref}[new]" value="{if $new}1{else}0{/if}" />
@@ -94,7 +104,7 @@
     <tr class="{$entreprise}" style="display: none">
       <td class="titre">Email de contact</td>
       <td>
-        <input type="text" maxlength="60" name="{$jobpref}[hq_email]" />
+        <input type="text" maxlength="255" name="{$jobpref}[hq_email]" />
       </td>
     </tr>
     <tr class="{$entreprise}" style="display: none">
@@ -165,7 +175,7 @@
                  name="{$jobpref}[w_url]" value="{$job.w_url}" />
       </td>
     </tr>
-    <tr id="{$jobid}_w_address" class="pair" {if $hiddenjob}style="display: none"{/if}>
+    <tr id="{$jobid}_w_address" class="pair" {if $hiddenjob || $hiddenaddr}style="display: none"{/if}>
       <td colspan="2">
         <div style="float: left">
           <div class="titre">Adresse</div>
@@ -180,9 +190,15 @@
         </div>
       </td>
     </tr>
-    {if $hiddenjob}
+    {if $hiddenaddr}
+    <tr class="pair">
+      <td class="titre" colspan="2">Adresse (masquée)</td>
+    </tr>
+    {/if}
+    {if $hiddenjob || $hiddenemail}
     <tr class="pair" {if $hiddenjob}style="display: none"{/if}>
-      <td colspan="2">
+      <td class="titre" colspan="2">
+        {if $hiddenemail}Email professionnel (masqué){/if}
         <input type="hidden" name="{$jobpref}[w_email]" value="{$job.w_email}" />
         <input type="hidden" name="{$jobpref}[w_email_pub]" value="{$job.w_email_pub}" />
       </td>

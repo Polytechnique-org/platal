@@ -224,11 +224,16 @@ class ProfileSettingJob implements ProfileSetting
             }
 
             if (isset($job['removed']) && $job['removed']) {
-                if ($job['name'] == '' && $entreprise && isset($entreprise[$entr_val - 1])) {
-                    $entreprise[$entr_val - 1]->clean();
+                if (S::user()->checkPerms('directory_ax')
+                    && (Phone::hasPrivate($job['w_phone']) || Address::hasPrivate($job['w_address']) || $job['w_email_pub'] == 'private')) {
+                    Platal::page()->trigWarning("L'entreprise ne peut être supprimée car elle contient des informations pour lesquelles vous n'avez le droit d'édition.");
+                } else {
+                    if ($job['name'] == '' && $entreprise && isset($entreprise[$entr_val - 1])) {
+                        $entreprise[$entr_val - 1]->clean();
+                    }
+                    unset($value[$key]);
+                    continue;
                 }
-                unset($value[$key]);
-                continue;
             }
             if (!isset($job['pub']) || !$job['pub']) {
                 $job['pub'] = 'private';
@@ -248,6 +253,7 @@ class ProfileSettingJob implements ProfileSetting
                 $success = ($success && $s);
             }
         }
+        usort($value, 'ProfileVisibility::comparePublicity');
         return $value;
     }
 
@@ -263,7 +269,7 @@ class ProfileSettingJob implements ProfileSetting
         Phone::deletePhones($page->pid(), Phone::LINK_JOB, null, $deletePrivate);
         $terms_values = array();
         foreach ($value as $id => &$job) {
-            if (isset($job['name']) && $job['name']) {
+            if (($job['pub'] != 'private' || $deletePrivate) && (isset($job['name']) && $job['name'])) {
                 if (isset($job['jobid']) && $job['jobid']) {
                     XDB::execute('INSERT INTO  profile_job (pid, id, description, email,
                                                             url, pub, email_pub, jobid)

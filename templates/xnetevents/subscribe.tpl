@@ -94,7 +94,7 @@
       <td>
         {if $event.topay}
         <div class="error">
-          {if !$event.paid}
+          {if $event.paid eq 0}
           Tu dois payer {$event.topay|replace:'.':','}&nbsp;&euro;.
           {elseif $event.paid < $event.topay}
           Tu dois encore payer {math equation="a-b" a=$event.topay b=$event.paid|replace:'.':','}&nbsp;&euro;
