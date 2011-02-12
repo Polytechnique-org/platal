@@ -601,14 +601,14 @@ class Address
             $this->error = !empty($this->geocodedText);
         }
         if ($format['stripGeocoding'] || ($this->type == self::LINK_COMPANY && $this->error) || $this->geocodeChosen === '0') {
-            $gmapsGeocoder = new GMapsGeocoder();
-            $gmapsGeocoder->stripGeocodingFromAddress($this);
             if ($this->geocodeChosen === '0') {
                 $mailer = new PlMailer('profile/geocoding.mail.tpl');
                 $mailer->assign('text', $this->text);
                 $mailer->assign('geoloc', $this->geocodedText);
                 $mailer->send();
             }
+            $gmapsGeocoder = new GMapsGeocoder();
+            $gmapsGeocoder->stripGeocodingFromAddress($this);
         }
         if ($this->countryId == '') {
             $this->countryId = null;
