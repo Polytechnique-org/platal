@@ -586,7 +586,7 @@ class Address
         $this->text = trim($this->text);
         $this->phones = Phone::formatFormArray($this->phones, $this->error, new ProfileVisibility($this->pub));
         if ($this->removed == 1) {
-            if (S::user()->checkPerms('directory_ax') && Phone::hasPrivate($this->phones)) {
+            if (!S::user()->checkPerms('directory_private') && Phone::hasPrivate($this->phones)) {
                 Platal::page()->trigWarning("L'adresse ne peut être supprimée car elle contient des informations pour lesquelles vous n'avez le droit d'édition.");
             } else  {
                 $this->text = '';
