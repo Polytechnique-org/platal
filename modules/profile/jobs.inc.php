@@ -226,7 +226,7 @@ class ProfileSettingJob implements ProfileSetting
             if (isset($job['removed']) && $job['removed']) {
                 if (!S::user()->checkPerms('directory_private')
                     && (Phone::hasPrivate($job['w_phone']) || Address::hasPrivate($job['w_address']) || $job['w_email_pub'] == 'private')) {
-                    Platal::page()->trigWarning("L'entreprise ne peut être supprimée car elle contient des informations pour lesquelles vous n'avez le droit d'édition.");
+                    Platal::page()->trigWarning("L'entreprise ne peut être supprimée car elle contient des informations pour lesquelles vous n'avez pas le droit d'édition.");
                 } else {
                     if ($job['name'] == '' && $entreprise && isset($entreprise[$entr_val - 1])) {
                         $entreprise[$entr_val - 1]->clean();
