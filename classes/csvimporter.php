@@ -243,7 +243,7 @@ class CSVImporter
      * @param $url   URI of the page
      * @param $field Editable fields
      */
-    public function apply(&$page, $url, $fields = null)
+    public function apply($page, $url, $fields = null)
     {
         $sesfields = array('csv_value', 'csv_user_value', 'csv_cond_field',
                            'csv_update', 'csv_action', 'csv_cond_field',

@@ -71,21 +71,21 @@ class CoreModule extends PLModule
         exit;
     }
 
-    function handler_400(PlPage& $page)
+    function handler_400(PlPage $page)
     {
         header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
         $page->coreTpl('40x.tpl');
         $page->trigError('Ta requête est invalide.');
     }
 
-    function handler_403(PlPage& $page)
+    function handler_403(PlPage $page)
     {
         header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
         $page->coreTpl('40x.tpl');
         $page->trigError('Tu n\'as pas les permissions nécessaires pour accéder à cette page.');
     }
 
-    function handler_404(PlPage& $page)
+    function handler_404(PlPage $page)
     {
         global $platal;
         header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');

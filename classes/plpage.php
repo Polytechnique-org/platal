@@ -453,7 +453,7 @@ function _to_globals($s) {
  * compilation plugin used to import $globals confing through #globals.foo.bar# directives
  */
 
-function at_to_globals($tpl_source, &$smarty)
+function at_to_globals($tpl_source, $smarty)
 {
     return preg_replace('/#globals\.([a-zA-Z0-9_.]+?)#/e', '_to_globals(\'\\1\')', $tpl_source);
 }
@@ -461,7 +461,7 @@ function at_to_globals($tpl_source, &$smarty)
 // }}}
 // {{{  function trimwhitespace
 
-function trimwhitespace($source, &$smarty)
+function trimwhitespace($source, $smarty)
 {
     $tags = '(script|pre|textarea)';
     preg_match_all("!<$tags.*?>.*?</(\\1)>!ius", $source, $tagsmatches);
@@ -478,7 +478,7 @@ function trimwhitespace($source, &$smarty)
 // }}}
 // {{{ function wiki_include
 
-function wiki_include($source, &$smarty)
+function wiki_include($source, $smarty)
 {
     global $globals;
     return preg_replace('/\{include( [^}]*)? wiki=([^} ]+)(.*?)\}/ui',
@@ -486,7 +486,7 @@ function wiki_include($source, &$smarty)
                         $source);
 }
 
-function core_include($source, &$smarty)
+function core_include($source, $smarty)
 {
     global $globals;
     return preg_replace('/\{include( [^}]*)? core=([^} ]+)(.*?)\}/ui',
@@ -497,7 +497,7 @@ function core_include($source, &$smarty)
 // }}}
 //{{{ function hasPerm
 
-function if_rewrites($source, &$smarty)
+function if_rewrites($source, $smarty)
 {
     $perms = 'isset($smarty.session.user|smarty:nodefaults) && $smarty.session.user';
     return preg_replace(array('/\{(else)?if([^}]*) (\!?)hasPerms?\(([^)]+)\)([^}]*)\}/',
@@ -510,7 +510,7 @@ function if_rewrites($source, &$smarty)
 // }}}
 // {{{
 
-function form_force_encodings($source, &$smarty)
+function form_force_encodings($source, $smarty)
 {
     return preg_replace('/<form[^\w]/',
                         '\0 accept-charset="utf-8" ',
@@ -528,7 +528,7 @@ function _hide_email($source)
         '//]]></script>';
 }
 
-function hide_emails($source, &$smarty)
+function hide_emails($source, $smarty)
 {
     if (!strpos($source, '@')) {
         return $source;

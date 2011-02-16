@@ -69,7 +69,7 @@ abstract class PlFeed implements PlIterator
 
     /** Fetch the feed for the given user.
      */
-    abstract protected function fetch(PlUser &$user);
+    abstract protected function fetch(PlUser $user);
 
     public function next()
     {
@@ -95,7 +95,7 @@ abstract class PlFeed implements PlIterator
         return $this->iterator->last();
     }
 
-    public function run(PlPage& $page, PlUser& $user, $require_auth = true, $type = 'rss2')
+    public function run(PlPage $page, PlUser $user, $require_auth = true, $type = 'rss2')
     {
         if (empty($user) && $require_auth) {
             return PL_FORBIDDEN;

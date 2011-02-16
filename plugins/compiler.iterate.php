@@ -19,11 +19,11 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function iterate_end($tag_attrs, &$compiler) {
+function iterate_end($tag_attrs, $compiler) {
     return 'endwhile;';
 }
 
-function smarty_compiler_iterate($tag_attrs, &$compiler)
+function smarty_compiler_iterate($tag_attrs, $compiler)
 {
     static $reg = false;
     if (!$reg) {

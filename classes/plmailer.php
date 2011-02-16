@@ -50,7 +50,7 @@ class PlMail extends Smarty
         $this->assign_by_ref('globals', $globals);
     }
 
-    public static function &get(&$mailer, $tpl)
+    public static function &get($mailer, $tpl)
     {
         static $plmail;
         if (!isset($plmail) || $plmail->tpl != $tpl) {
@@ -71,7 +71,7 @@ class PlMail extends Smarty
     }
 
     /** used to remove the empty lines due to {from ...}, {to ...} ... functions */
-    static public function mail_format($output, &$smarty)
+    static public function mail_format($output, $smarty)
     {
         return "\n".trim($output)."\n";
     }
@@ -91,7 +91,7 @@ class PlMail extends Smarty
      * {from full=...} for an already formatted address
      * {from addr=... [text=...]} else
      */
-    public function setFrom($params, &$smarty)
+    public function setFrom($params, $smarty)
     {
         $smarty->mailer->setFrom(PlMail::format_addr($params));
     }
@@ -100,7 +100,7 @@ class PlMail extends Smarty
      * {to full=...} for an already formatted address
      * {to addr=... [text=...]} else
      */
-    public function addTo($params, &$smarty)
+    public function addTo($params, $smarty)
     {
         $smarty->mailer->addTo(PlMail::format_addr($params));
     }
@@ -109,7 +109,7 @@ class PlMail extends Smarty
      * {cc full=...} for an already formatted address
      * {cc addr=... [text=...]} else
      */
-    public function addCc($params, &$smarty)
+    public function addCc($params, $smarty)
     {
         $smarty->mailer->addCc(PlMail::format_addr($params));
     }
@@ -118,7 +118,7 @@ class PlMail extends Smarty
      * {bcc full=...} for an already formatted address
      * {bcc addr=... [text=...]} else
      */
-    public function addBcc($params, &$smarty)
+    public function addBcc($params, $smarty)
     {
         $smarty->mailer->addBcc(PlMail::format_addr($params));
     }
@@ -126,7 +126,7 @@ class PlMail extends Smarty
     /** template function : subject.
      * {subject text=...}
      */
-    public function setSubject($params, &$smarty)
+    public function setSubject($params, $smarty)
     {
         $smarty->mailer->setSubject($params['text']);
     }
@@ -134,7 +134,7 @@ class PlMail extends Smarty
     /** template function : add_header.
      * {add_header name=... value=...}
      */
-    public function addHeader($params, &$smarty)
+    public function addHeader($params, $smarty)
     {
         $smarty->mailer->addHeader($params['name'], $params['value']);
     }
@@ -261,7 +261,7 @@ class PlMailer extends Mail_Mime {
         }
     }
 
-    public function addUploadAttachment(PlUpload &$upload, $name)
+    public function addUploadAttachment(PlUpload $upload, $name)
     {
         $encoding = $upload->isType('text') ? 'quoted-printable' : 'base64';
         $this->addAttachment($upload->getContents(), $upload->contentType(), $name, false, $encoding);
@@ -331,7 +331,7 @@ class PlMailer extends Mail_Mime {
         }
     }
 
-    public function sendTo(PlUser &$user)
+    public function sendTo(PlUser $user)
     {
         $this->setTo($user);
         $this->assign_by_ref('user', $user);

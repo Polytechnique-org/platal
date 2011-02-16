@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function smarty_compiler_icon($tag_attrs, &$compiler)
+function smarty_compiler_icon($tag_attrs, $compiler)
 {
     extract($compiler->_parse_attrs($tag_attrs));
 
