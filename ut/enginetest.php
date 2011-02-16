@@ -30,19 +30,19 @@ class TestPage extends PlPage
 
 class EngineTest extends PlTestCase
 {
-    public static function blahCallback(PlPage &$page)
+    public static function blahCallback(PlPage $page)
     {
         return 'blah';
     }
 
-    public static function blihCallback(PlPage &$page)
+    public static function blihCallback(PlPage $page)
     {
         $args = func_get_args();
         array_shift($args);
         return 'blih-' . implode('-', $args);
     }
 
-    public static function fooCallback(PlPage &$page, $arg1 = null)
+    public static function fooCallback(PlPage $page, $arg1 = null)
     {
         if (is_null($arg1)) {
             return 'foo';
@@ -51,7 +51,7 @@ class EngineTest extends PlTestCase
         }
     }
 
-    public static function barCallback(PlPage &$page, $arg1 = null, $arg2 = null)
+    public static function barCallback(PlPage $page, $arg1 = null, $arg2 = null)
     {
         if (is_null($arg1)) {
             return 'bar';

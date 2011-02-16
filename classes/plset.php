@@ -41,7 +41,7 @@ abstract class PlSet
     // The default view name
     private $default   = null;
 
-    public function __construct(PlFilterCondition &$cond, $orders = null)
+    public function __construct(PlFilterCondition $cond, $orders = null)
     {
         if ($cond instanceof PFC_And) {
             $this->conds = $cond;
@@ -83,14 +83,14 @@ abstract class PlSet
 
     /** Adds a new sort (on the PlFilter)
      */
-    public function addSort(PlFilterOrder &$order)
+    public function addSort(PlFilterOrder $order)
     {
         $this->orders[] = $order;
     }
 
     /** Adds a new condition to the PlFilter
      */
-    public function addCond(PlFilterCondition &$cond)
+    public function addCond(PlFilterCondition $cond)
     {
         $this->conds->addChild($cond);
     }
@@ -99,15 +99,15 @@ abstract class PlSet
      * @param $cond The PlFilterCondition for the filter
      * @param $orders An array of PlFilterOrder for the filter
      */
-    abstract protected function buildFilter(PlFilterCondition &$cond, $orders);
+    abstract protected function buildFilter(PlFilterCondition $cond, $orders);
 
     /** This function returns the results of the given filter
      * wihtin $limit; can be use to replace the default $pf->get call.
-     * @param &$pf The filter
+     * @param $pf The filter
      * @param $limit The PlLimit
      * @return The results of the filter
      */
-    protected function &getFilterResults(PlFilter &$pf, PlLimit $limit)
+    protected function &getFilterResults(PlFilter $pf, PlLimit $limit)
     {
         $res = $pf->get($limit);
         return $res;
@@ -225,7 +225,7 @@ abstract class PlSet
      * @param $page The page in which the view should be loaded
      * @param $view The name of the view; if null, the default one will be used.
      */
-    public function apply($baseurl, PlPage &$page, $view = null)
+    public function apply($baseurl, PlPage $page, $view = null)
     {
         $view =& $this->buildView($view);
         if (is_null($view)) {
@@ -253,7 +253,7 @@ interface PlView
      * @param $set The set
      * @param $params Parameters to tune the view (sort by score, include promo...)
      */
-    public function __construct(PlSet &$set, array $params);
+    public function __construct(PlSet $set, array $params);
 
     /** Applies the view to a page
      * The content of the set is fetched here.
@@ -261,7 +261,7 @@ interface PlView
      * @return The name of the global view template (for displaying the view,
      *              not the items of the set)
      */
-    public function apply(PlPage &$page);
+    public function apply(PlPage $page);
 
     /** As PlSet->args(), returns the ?foo=bar part of the URL for generating
      * this PlSet, after adding the necessary components and removing useless ones.
@@ -317,7 +317,7 @@ abstract class MultipageView implements PlView
      * @param $set The associated PlSet
      * @param $params Parameters of the view
      */
-    public function __construct(PlSet &$set, array $params)
+    public function __construct(PlSet $set, array $params)
     {
         $this->set   =& $set;
         $this->page   = Env::i('page', 1);
@@ -327,7 +327,7 @@ abstract class MultipageView implements PlView
 
     /** Add an order to the view
      */
-    protected function addSort(PlViewOrder &$pvo, $default = false)
+    protected function addSort(PlViewOrder $pvo, $default = false)
     {
         $this->sortkeys[$pvo->name] = $pvo;
         if (!$this->defaultkey || $default) {
@@ -382,7 +382,7 @@ abstract class MultipageView implements PlView
      */
     abstract protected function getBoundValue($obj);
 
-    public function apply(PlPage &$page)
+    public function apply(PlPage $page)
     {
         foreach ($this->order() as $order) {
             if (!is_null($order)) {

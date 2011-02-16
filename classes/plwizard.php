@@ -29,7 +29,7 @@ interface PlWizardPage
     /** Build a new instance of the class
      * associated with the given wizard master.
      */
-    public function __construct(PlWizard &$wiz);
+    public function __construct(PlWizard $wiz);
 
     /** Return the name of the templace describing the page.
      */
@@ -37,7 +37,7 @@ interface PlWizardPage
 
     /** Prepare the page by assigning to it any useful value.
      */
-    public function prepare(PlPage &$page, $id);
+    public function prepare(PlPage $page, $id);
 
     /** Process information resulting of the application of the page.
      * This function must return a clue indicating the next page to show.
@@ -156,7 +156,7 @@ class PlWizard
         return new $page($this);
     }
 
-    public function apply(PlPage &$smarty, $baseurl, $pgid = null, $mode = 'normal')
+    public function apply(PlPage $smarty, $baseurl, $pgid = null, $mode = 'normal')
     {
         if ($this->stateless && (isset($this->lookup[$pgid]) || isset($this->pages[$pgid]))) {
             $curpage = is_numeric($pgid) ? $pgid : $this->lookup[$pgid];
@@ -174,7 +174,7 @@ class PlWizard
             $page = $this->getPage(Post::i('valid_page'));
             $curpage = Post::i('valid_page');
             $success = false;
-            $next = $page->process(&$success);
+            $next = $page->process($success);
             $last = $curpage;
             switch ($next) {
               case PlWizard::FIRST_PAGE:

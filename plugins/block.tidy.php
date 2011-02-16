@@ -44,7 +44,7 @@ $tidy_config = array(
  * Purpose:
  * -------------------------------------------------------------
  */
-function smarty_block_tidy($params, $content, &$smarty)
+function smarty_block_tidy($params, $content, $smarty)
 {
     global $tidy_config;
     return tidy_repair_string($content, $tidy_config, 'utf8');

@@ -230,7 +230,7 @@ class PLTableEditor
     }
 
     // call when done
-    public function apply(PlPage &$page, $action, $id = false, $id2 = false)
+    public function apply(PlPage $page, $action, $id = false, $id2 = false)
     {
         $page->coreTpl('table-editor.tpl');
         $list = true;

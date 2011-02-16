@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function smarty_function_xsrf_token_field($params, &$smarty) {
+function smarty_function_xsrf_token_field($params, $smarty) {
     if (S::has('xsrf_token')) {
         return '<div style="display: none"><input type="hidden" name="token" value="' . S::v('xsrf_token') . '" /></div>';
     }

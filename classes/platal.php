@@ -54,9 +54,9 @@ abstract class PlHook
         return ($this->type & $type) == $type;
     }
 
-    abstract protected function run(PlPage &$page, array $args);
+    abstract protected function run(PlPage $page, array $args);
 
-    public function call(PlPage &$page, array $args)
+    public function call(PlPage $page, array $args)
     {
         global $globals, $session, $platal;
         if (!$session->checkAuth($this->auth)) {
@@ -92,7 +92,7 @@ class PlStdHook extends PlHook
         $this->callback = $callback;
     }
 
-    protected function run(PlPage &$page, array $args)
+    protected function run(PlPage $page, array $args)
     {
         global $session, $platal;
 
@@ -152,7 +152,7 @@ class PlApiHook extends PlHook
         return empty($encodedPayload) ? array() : json_decode($encodedPayload, true);
     }
 
-    protected function run(PlPage &$page, array $args)
+    protected function run(PlPage $page, array $args)
     {
         $method = $_SERVER['REQUEST_METHOD'];
         $encodedPayload = $this->getEncodedPayload($method);
@@ -215,7 +215,7 @@ class PlTokenHook extends PlHook
         $this->callback = $callback;
     }
 
-    protected function run(PlPage &$page, array $args)
+    protected function run(PlPage $page, array $args)
     {
         // Retrieve the user, either from the session (less expensive, as it is
         // already there), or from the in-path (user, token) pair.
@@ -250,7 +250,7 @@ class PlWikiHook extends PlHook
         parent::__construct($auth, $perms, $type);
     }
 
-    protected function run(PlPage &$page, array $args)
+    protected function run(PlPage $page, array $args)
     {
         return PL_WIKI;
     }
@@ -467,7 +467,7 @@ abstract class Platal
         return $url;
     }
 
-    private function call_hook(PlPage &$page)
+    private function call_hook(PlPage $page)
     {
         $hook = $this->find_hook();
         if (empty($hook)) {
@@ -483,7 +483,7 @@ abstract class Platal
 
     /** Show the authentication form.
      */
-    abstract public function force_login(PlPage& $page);
+    abstract public function force_login(PlPage $page);
 
     public function run()
     {
