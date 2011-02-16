@@ -21,7 +21,7 @@
 
 function bugize($list)
 {
-    $list = split(',', $list);
+    $list = preg_split('/,/', Env::s('libs'), -1, PREG_SPLIT_NO_EMPTY);
     $ans  = array();
 
     foreach ($list as $bug) {
@@ -59,7 +59,7 @@ class PlatalModule extends PLModule
         );
     }
 
-    function handler_index(&$page)
+    function handler_index($page)
     {
         // Include X-XRDS-Location response-header for Yadis discovery
         global $globals;
@@ -73,14 +73,14 @@ class PlatalModule extends PLModule
         }
     }
 
-    function handler_cacert(&$page)
+    function handler_cacert($page)
     {
         pl_cached_content_headers("application/x-x509-ca-cert");
         readfile("/etc/ssl/xorgCA/cacert.pem");
         exit;
     }
 
-    function handler_changelog(&$page, $core = null)
+    function handler_changelog($page, $core = null)
     {
         $page->changeTpl('platal/changeLog.tpl');
 
@@ -129,7 +129,7 @@ class PlatalModule extends PLModule
         }
     }
 
-    function handler_prefs(&$page)
+    function handler_prefs($page)
     {
         $page->changeTpl('platal/preferences.tpl');
         $page->setTitle('Mes préférences');
@@ -146,7 +146,7 @@ class PlatalModule extends PLModule
         }
     }
 
-    function handler_webredir(&$page)
+    function handler_webredir($page)
     {
         $page->changeTpl('platal/webredirect.tpl');
         $page->setTitle('Redirection de page WEB');
@@ -185,7 +185,7 @@ class PlatalModule extends PLModule
         $page->assign('bestalias', $res->fetchOneCell());
     }
 
-    function handler_prefs_rss(&$page)
+    function handler_prefs_rss($page)
     {
         $page->changeTpl('platal/filrss.tpl');
 
@@ -197,7 +197,7 @@ class PlatalModule extends PLModule
         }
     }
 
-    function handler_password(&$page)
+    function handler_password($page)
     {
         global $globals;
 
@@ -232,7 +232,7 @@ class PlatalModule extends PLModule
         $page->setTitle('Mon mot de passe');
     }
 
-    function handler_smtppass(&$page)
+    function handler_smtppass($page)
     {
         $page->changeTpl('platal/acces_smtp.tpl');
         $page->setTitle('Acces SMTP/NNTP');
@@ -266,7 +266,7 @@ class PlatalModule extends PLModule
         $page->assign('actif', $res->fetchOneCell());
     }
 
-    function handler_recovery(&$page)
+    function handler_recovery($page)
     {
         global $globals;
 
@@ -348,7 +348,7 @@ Adresse de secours : " . Post::v('email') : ""));
         S::logger($user->id())->log('recovery', $mails);
     }
 
-    function handler_tmpPWD(&$page, $certif = null)
+    function handler_tmpPWD($page, $certif = null)
     {
         global $globals;
         // XXX: recovery requires data from the profile
@@ -391,7 +391,7 @@ Adresse de secours : " . Post::v('email') : ""));
         }
     }
 
-    function handler_skin(&$page)
+    function handler_skin($page)
     {
         global $globals;
 
@@ -420,7 +420,7 @@ Adresse de secours : " . Post::v('email') : ""));
         $page->assign('skins', XDB::iterator($sql));
     }
 
-    function handler_exit(&$page, $level = null)
+    function handler_exit($page, $level = null)
     {
         if (S::suid()) {
             $old = S::user()->login();
@@ -454,7 +454,7 @@ Adresse de secours : " . Post::v('email') : ""));
         }
     }
 
-    function handler_review(&$page, $action = null, $mode = null)
+    function handler_review($page, $action = null, $mode = null)
     {
         // Include X-XRDS-Location response-header for Yadis discovery
         global $globals;

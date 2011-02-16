@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function smarty_function_profile($params, &$smarty)
+function smarty_function_profile($params, $smarty)
 {
     $params = new PlDict($params);
     $with_promo = $params->b('promo', false) || $params->b('cat', false);

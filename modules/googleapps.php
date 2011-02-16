@@ -36,7 +36,7 @@ class GoogleAppsModule extends PLModule
         );
     }
 
-    function handler_index(&$page, $action = null)
+    function handler_index($page, $action = null)
     {
         require_once("emails.inc.php");
         require_once("googleapps.inc.php");
@@ -115,7 +115,7 @@ class GoogleAppsModule extends PLModule
         $page->assign('account', $account);
     }
 
-    function handler_admin(&$page, $action = null) {
+    function handler_admin($page, $action = null) {
         require_once("googleapps.inc.php");
         $page->changeTpl('googleapps/admin.tpl');
         $page->setTitle('Administration Google Apps');
@@ -161,7 +161,7 @@ class GoogleAppsModule extends PLModule
         $page->assign('failed_requests', $res);
     }
 
-    function handler_admin_job(&$page, $job = null) {
+    function handler_admin_job($page, $job = null) {
         require_once("googleapps.inc.php");
         $page->changeTpl('googleapps/admin.job.tpl');
         $page->setTitle('Administration Google Apps');
@@ -180,7 +180,7 @@ class GoogleAppsModule extends PLModule
         }
     }
 
-    function handler_admin_user(&$page, $user = null) {
+    function handler_admin_user($page, $user = null) {
         require_once("emails.inc.php");
         require_once("googleapps.inc.php");
         $page->changeTpl('googleapps/admin.user.tpl');

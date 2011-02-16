@@ -36,7 +36,7 @@ class MarketingModule extends PLModule
         );
     }
 
-    function handler_marketing(&$page)
+    function handler_marketing($page)
     {
         $page->changeTpl('marketing/index.tpl');
         $page->setTitle('Marketing');
@@ -97,7 +97,7 @@ class MarketingModule extends PLModule
         $page->assign('marketings', $marketings);
     }
 
-    function handler_private(&$page, $hruid = null,
+    function handler_private($page, $hruid = null,
                              $action = null, $value = null)
     {
         global $globals;
@@ -191,7 +191,7 @@ class MarketingModule extends PLModule
         $page->assign('path', 'marketing/private/' . $user->login());
     }
 
-    function handler_broken(&$page, $uid = null)
+    function handler_broken($page, $uid = null)
     {
         $page->changeTpl('marketing/broken.tpl');
 
@@ -252,7 +252,7 @@ class MarketingModule extends PLModule
         }
     }
 
-    function handler_promo(&$page, $promo = null)
+    function handler_promo($page, $promo = null)
     {
         $page->changeTpl('marketing/promo.tpl');
 
@@ -268,7 +268,7 @@ class MarketingModule extends PLModule
         $page->assign('nonins', $users);
     }
 
-    function handler_public(&$page, $hruid = null)
+    function handler_public($page, $hruid = null)
     {
         $page->changeTpl('marketing/public.tpl');
 
@@ -329,7 +329,7 @@ class MarketingModule extends PLModule
         }
     }
 
-    function handler_week(&$page, $sorting = 'per_promo')
+    function handler_week($page, $sorting = 'per_promo')
     {
         $page->changeTpl('marketing/this_week.tpl');
 
@@ -339,7 +339,7 @@ class MarketingModule extends PLModule
         $page->assign('users', $uf->getUsers());
     }
 
-    function handler_volontaire(&$page, $promo = null)
+    function handler_volontaire($page, $promo = null)
     {
         $page->changeTpl('marketing/volontaire.tpl');
 
@@ -364,7 +364,7 @@ class MarketingModule extends PLModule
         }
     }
 
-    function handler_relance(&$page)
+    function handler_relance($page)
     {
         $page->changeTpl('marketing/relance.tpl');
 

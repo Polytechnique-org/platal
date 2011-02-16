@@ -46,18 +46,18 @@ class StatsModule extends PLModule
         );
     }
 
-    function handler_stats(&$page)
+    function handler_stats($page)
     {
         $page->changeTpl('stats/index.tpl');
     }
 
-    function handler_evolution(&$page, $jours = 365)
+    function handler_evolution($page, $jours = 365)
     {
         $page->changeTpl('stats/evolution_inscrits.tpl');
         $page->assign('jours', $jours);
     }
 
-    function handler_graph_evo(&$page, $jours = 365)
+    function handler_graph_evo($page, $jours = 365)
     {
         define('DUREEJOUR', 24 * 3600);
 
@@ -121,7 +121,7 @@ EOF2;
         exit;
     }
 
-    function handler_graph(&$page, $promo = null)
+    function handler_graph($page, $promo = null)
     {
         if ($promo == 'all') {
             // date de départ
@@ -246,7 +246,7 @@ EOF2;
         exit;
     }
 
-    function handler_promos(&$page, $promo = null)
+    function handler_promos($page, $promo = null)
     {
         $page->changeTpl('stats/nb_by_promo.tpl');
 
@@ -273,7 +273,7 @@ EOF2;
         $page->assign('promo', $promo);
     }
 
-    function handler_coupures(&$page, $cp_id = null)
+    function handler_coupures($page, $cp_id = null)
     {
         $page->changeTpl('stats/coupure.tpl');
 

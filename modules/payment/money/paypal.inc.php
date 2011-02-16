@@ -33,7 +33,7 @@ class PayPal
         $this->val_number = $val;
     }
 
-    function prepareform(&$pay)
+    function prepareform($pay)
     {
         // Documentation:
         // https://www.paypal.com/developer

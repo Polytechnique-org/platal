@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function smarty_function_poison($params, &$smarty) {
+function smarty_function_poison($params, $smarty) {
     $count = isset($params['count']) ? $params['count'] : 20;
     $seed  = isset($params['seed']) ? $params['seed'] : date('r');
     Platal::load('poison', 'poison.inc.php');

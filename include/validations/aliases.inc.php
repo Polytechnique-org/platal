@@ -35,7 +35,7 @@ class AliasReq extends Validate
                   Pas de contrainte pour les tirets ou les points, en revanche le souligné (_) est interdit.";
 
     // constructor {{{2
-    public function __construct(User &$_user, $_alias, $_raison, $_public, $_stamp=0)
+    public function __construct(User $_user, $_alias, $_raison, $_public, $_stamp=0)
     {
         global $globals;
         parent::__construct($_user, true, 'alias', $_stamp);

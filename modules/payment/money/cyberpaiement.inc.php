@@ -40,7 +40,7 @@ class CyberPayment
     // }}}
     // {{{ function form()
 
-    function prepareform(&$pay)
+    function prepareform($pay)
     {
         // toute la doc se trouve sur
         // http://www.cyberpaiement.tm.fr/donnees.htm

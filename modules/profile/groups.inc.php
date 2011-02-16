@@ -21,7 +21,7 @@
 
 class ProfileSettingSection implements ProfileSetting
 {
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         $success = true;
         if (is_null($value)) {
@@ -34,7 +34,7 @@ class ProfileSettingSection implements ProfileSetting
         return intval($value);
     }
 
-    public function save(ProfilePage &$page, $field, $value)
+    public function save(ProfilePage $page, $field, $value)
     {
         XDB::execute("UPDATE  profiles
                          SET  section = {?}
@@ -54,7 +54,7 @@ class ProfileSettingBinets implements ProfileSetting
     {
     }
 
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         if (is_null($value)) {
             $value = array();
@@ -75,7 +75,7 @@ class ProfileSettingBinets implements ProfileSetting
         return $value;
     }
 
-    public function save(ProfilePage &$page, $field, $value)
+    public function save(ProfilePage $page, $field, $value)
     {
         XDB::execute("DELETE FROM  profile_binets
                             WHERE  pid = {?}",
@@ -100,7 +100,7 @@ class ProfilePageGroups extends ProfilePage
 {
     protected $pg_template = 'profile/groups.tpl';
 
-    public function __construct(PlWizard &$wiz)
+    public function __construct(PlWizard $wiz)
     {
         parent::__construct($wiz);
         $this->settings['section']  = new ProfileSettingSection();
@@ -108,7 +108,7 @@ class ProfilePageGroups extends ProfilePage
         $this->watched['section'] = $this->watched['binets'] = true;
     }
 
-    public function _prepare(PlPage &$page, $id)
+    public function _prepare(PlPage $page, $id)
     {
         $page->assign('mygroups', XDB::iterator("SELECT  a.nom, a.site, a.diminutif, a.unsub_url, a.pub, m.perms
                                                    FROM  groups    AS a

@@ -39,7 +39,7 @@ class SurveyModule extends PLModule
     // }}}
 
     // {{{ function handler_index() : lists all available surveys
-    function handler_index(&$page, $action = null)
+    function handler_index($page, $action = null)
     {
         $this->load('survey.inc.php');
         $page->changeTpl('survey/index.tpl');
@@ -50,10 +50,10 @@ class SurveyModule extends PLModule
     // }}}
 
     // {{{ function handler_vote() : handles the vote to a survey
-    function handler_vote(&$page, $id = -1)
+    function handler_vote($page, $id = -1)
     {
         if (Post::has('survey_cancel')) { // if the user cancels, returns to index
-            return $this->handler_index(&$page);
+            return $this->handler_index($page);
         }
         $id = intval($id);
         if ($id == -1) {
@@ -125,7 +125,7 @@ class SurveyModule extends PLModule
     // }}}
 
     // {{{ function handler_admin() : index of admin mode
-    function handler_admin(&$page, $id = -1)
+    function handler_admin($page, $id = -1)
     {
         $this->load('survey.inc.php');
         $this->clear_session();
@@ -148,7 +148,7 @@ class SurveyModule extends PLModule
     // }}}
 
     // {{{ function handler_adminEdit() : edits a survey in admin mode
-    function handler_adminEdit(&$page, $id = -1, $req = -1)
+    function handler_adminEdit($page, $id = -1, $req = -1)
     {
         if ($id == -1 || ($id == 'req' && $req == -1)) {
             return $this->show_error($page, "Un identifiant de sondage doit être précisé.", 'survey/admin');
@@ -174,12 +174,12 @@ class SurveyModule extends PLModule
     // }}}
 
     // {{{ function handler_adminValidate() : validates a survey (admin mode)
-    function handler_adminValidate(&$page, $id = -1)
+    function handler_adminValidate($page, $id = -1)
     {
         $id = Post::i('survey_id', $id);
         if (Post::has('survey_cancel')) { // if the admin cancels the validation, returns to the admin index
             $this->clear_session();
-            return $this->handler_admin(&$page, $id);
+            return $this->handler_admin($page, $id);
         }
         if ($id == -1) {
             return $this->show_error($page, "Un identifiant de sondage doit être précisé.", 'survey/admin');
@@ -204,11 +204,11 @@ class SurveyModule extends PLModule
     // }}}
 
     // {{{ function handler_adminDelete() : deletes a survey (admin mode)
-    function handler_adminDelete(&$page, $id = -1)
+    function handler_adminDelete($page, $id = -1)
     {
         $id = Post::i('survey_id', $id);
         if (Post::has('survey_cancel')) { // if the admin cancels the suppression, returns to the admin index
-            return $this->handler_admin(&$page, $id);
+            return $this->handler_admin($page, $id);
         }
         if ($id == -1) {
             return $this->show_error($page, "Un identifiant de sondage doit être précisé.", 'survey/admin');
@@ -232,7 +232,7 @@ class SurveyModule extends PLModule
     // }}}
 
     // {{{ function handler_edit() : edits a survey (in normal mode unless called by handler_adminEdit() )
-    function handler_edit(&$page, $action = 'show', $qid = 'root')
+    function handler_edit($page, $action = 'show', $qid = 'root')
     {
         $this->load('survey.inc.php');
         $action = Post::v('survey_action', $action);
@@ -357,7 +357,7 @@ class SurveyModule extends PLModule
                     return $this->handler_index($page); // else shows the 'normal' index
                 }
             } else { // asks for a confirmation if it has not been sent
-                $this->show_confirm(&$page, "Êtes-vous certain de vouloir annuler totalement l'édition de ce sondage ? Attention, "
+                $this->show_confirm($page, "Êtes-vous certain de vouloir annuler totalement l'édition de ce sondage ? Attention, "
                                            ."toutes les données éditées jusque là seront définitivement perdues.",
                                                 'edit', array('action' => $action));
             }
@@ -366,7 +366,7 @@ class SurveyModule extends PLModule
     // }}}
 
     // {{{ function handler_ajax() : some ajax in editing a new question (for now, there may be a little more later)
-    function handler_ajax(&$page, $type)
+    function handler_ajax($page, $type)
     {
         $this->load('survey.inc.php');
         pl_content_headers("text/html");
@@ -401,7 +401,7 @@ class SurveyModule extends PLModule
     // }}}
 
     // {{{ function check_surveyPerms() : checks the particular surveys access permissions
-    function check_surveyPerms(&$page, $survey, $silent = false, $admin_allowed = true)
+    function check_surveyPerms($page, $survey, $silent = false, $admin_allowed = true)
     {
         $this->load('survey.inc.php');
         if ($survey->isMode(Survey::MODE_ALL)) { // if the survey is not reserved to alumni
@@ -439,7 +439,7 @@ class SurveyModule extends PLModule
     // }}}
 
     // {{{ function show_survey() : calls the template to display a survey, for editing, voting, or consulting the results
-    function show_survey(&$page, $survey)
+    function show_survey($page, $survey)
     {
         $page->changeTpl('survey/show_root.tpl');
         $page->assign('survey', $survey->toArray());
@@ -448,7 +448,7 @@ class SurveyModule extends PLModule
     // }}}
 
     // {{{ function show_form() : calls the template to display the editing form
-    function show_form(&$page, $action, $qid, $type = 'new', $current = null)
+    function show_form($page, $action, $qid, $type = 'new', $current = null)
     {
         $page->changeTpl('survey/edit_survey.tpl');
         $page->assign('survey_action', $action);
@@ -468,7 +468,7 @@ class SurveyModule extends PLModule
     // }}}
 
     // {{{ function show_confirm() : calls the template to display a confirm form
-    function show_confirm(&$page, $message, $formaction, $formhidden = null)
+    function show_confirm($page, $message, $formaction, $formhidden = null)
     {
         $page->changeTpl('survey/confirm.tpl');
         $page->assign('survey_message', $message);
@@ -478,7 +478,7 @@ class SurveyModule extends PLModule
     // }}}
 
     // {{{ function show_error() : calls the template to display an error message
-    function show_error(&$page, $message, $link = "", $errArray = null)
+    function show_error($page, $message, $link = "", $errArray = null)
     {
         $page->changeTpl('survey/error.tpl');
         $page->assign('survey_message', $message);
@@ -491,7 +491,7 @@ class SurveyModule extends PLModule
     // }}}
 
     // {{{ function show_success() : calls the template to display a success message
-    function show_success(&$page, $message = "", $link = "")
+    function show_success($page, $message = "", $link = "")
     {
         $page->changeTpl('survey/success.tpl');
         $page->assign('survey_message', $message);

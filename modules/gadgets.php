@@ -31,13 +31,13 @@ class GadgetsModule extends PLModule
         );
     }
 
-    function handler_ig_events_xml(&$page)
+    function handler_ig_events_xml($page)
     {
         require_once 'gadgets/gadgets.inc.php';
         init_igoogle_xml('gadgets/ig-events.xml.tpl');
     }
 
-    function handler_ig_events(&$page)
+    function handler_ig_events($page)
     {
         require_once 'gadgets/gadgets.inc.php';
         init_igoogle_html('gadgets/ig-events.tpl', AUTH_COOKIE);
@@ -63,12 +63,12 @@ class GadgetsModule extends PLModule
         $page->assign('events', $data);
     }
 
-    function handler_ig_search_xml(&$page) {
+    function handler_ig_search_xml($page) {
         require_once 'gadgets/gadgets.inc.php';
         init_igoogle_xml('gadgets/ig-search.xml.tpl');
     }
 
-    function handler_ig_search(&$page)
+    function handler_ig_search($page)
     {
         if (Env::has('quick') && Env::s('quick') != '') {
             global $globals;

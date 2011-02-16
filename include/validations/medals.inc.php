@@ -31,7 +31,7 @@ class MedalReq extends ProfileValidate
     // }}}
     // {{{ constructor
 
-    public function __construct(User &$_user, Profile &$_profile, $_idmedal, $_subidmedal, $_stamp = 0)
+    public function __construct(User $_user, Profile $_profile, $_idmedal, $_subidmedal, $_stamp = 0)
     {
         parent::__construct($_user, $_profile, false, 'medal', $_stamp);
         $this->mid = $_idmedal;

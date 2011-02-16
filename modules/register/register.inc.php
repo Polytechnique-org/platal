@@ -21,7 +21,7 @@
 
 // {{{ function checkId
 
-function checkId(&$subState)
+function checkId($subState)
 {
     $subState->set('xorgid', Profile::getXorgId($subState->i('schoolid')));
     if (!$subState->v('xorgid')) {
@@ -57,7 +57,7 @@ function checkId(&$subState)
 // }}}
 // {{{ function checkOldId
 
-function checkOldId(&$subState)
+function checkOldId($subState)
 {
     $uf = new UserFilter(new PFC_And(
             new PFC_Not(new UFC_Dead()),
@@ -98,7 +98,7 @@ function checkOldId(&$subState)
 // }}}
 // {{{ function checkNewUser
 
-function checkNewUser(&$subState)
+function checkNewUser($subState)
 {
     $firstname = preg_replace("/[ \t]+/", ' ', $subState->t('firstname'));
     $firstname = preg_replace("/--+/", '-', $firstname);
@@ -125,7 +125,7 @@ function checkNewUser(&$subState)
 // }}}
 // {{{ function createAliases
 
-function createAliases(&$subState)
+function createAliases($subState)
 {
     global $globals;
 

@@ -94,7 +94,7 @@ class JobTerms {
      * subbranches, keeping only the one containing this text in its title or in the title of one of
      * its subbranches.
      */
-    static public function ajaxGetBranch(&$page, $filter = self::ALL) {
+    static public function ajaxGetBranch($page, $filter = self::ALL) {
         pl_content_headers('application/json');
         $page->changeTpl('include/jobterms.branch.tpl', NO_SKIN);
         $subTerms = self::getSubTerms(Env::v('jtid'), $filter, Env::v('text_filter'));

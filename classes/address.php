@@ -364,7 +364,7 @@ class Address
         return $this->phones;
     }
 
-    public function addPhone(Phone &$phone)
+    public function addPhone(Phone $phone)
     {
         if ($phone->linkType() == Phone::LINK_ADDRESS && $phone->pid() == $this->pid) {
             $this->phones[$phone->uniqueId()] = $phone;

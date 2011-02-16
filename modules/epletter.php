@@ -43,7 +43,7 @@ class EPLetterModule extends NewsletterModule
         return NewsLetter::forGroup(NewsLetter::GROUP_EP);
     }
 
-    function handler_out(&$page, $hash = null)
+    function handler_out($page, $hash = null)
     {
         if (!$hash) {
             if (!S::logged()) {

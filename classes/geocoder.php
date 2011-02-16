@@ -24,15 +24,15 @@
 abstract class Geocoder {
     // Geocodes @p the address, and returns the corresponding updated address.
     // Unknown key-value pairs available in the input map are retained as-is.
-    abstract public function getGeocodedAddress(Address &$address);
+    abstract public function getGeocodedAddress(Address $address);
 
     // Cleans the address from its geocoded data
-    abstract public function stripGeocodingFromAddress(Address &$address);
+    abstract public function stripGeocodingFromAddress(Address $address);
 
     // Updates geoloc_administrativeareas, geoloc_subadministrativeareas and
     // geoloc_localities databases with new geocoded data and returns the
     // corresponding id.
-    static public function getAreaId(Address &$address, $area)
+    static public function getAreaId(Address $address, $area)
     {
         static $databases = array(
             'administrativeArea'    => 'geoloc_administrativeareas',

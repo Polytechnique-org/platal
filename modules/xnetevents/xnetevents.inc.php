@@ -252,7 +252,7 @@ function subscribe_lists_event($uid, $evt, $participate, $paid, $payment = false
 // }}}
 
 //  {{{ function event_change_shortname()
-function event_change_shortname(&$page, $eid, $old, $new)
+function event_change_shortname($page, $eid, $old, $new)
 {
     global $globals;
 

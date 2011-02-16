@@ -31,11 +31,11 @@ interface ProfileSetting
      * Whatever happen, this function must always returns the function to
      * show on the page to the user.
      */
-    public function value(ProfilePage &$page, $field, $value, &$success);
+    public function value(ProfilePage $page, $field, $value, &$success);
 
     /** Save the new value for the given field.
      */
-    public function save(ProfilePage &$page, $field, $new_value);
+    public function save(ProfilePage $page, $field, $new_value);
 
     /** Get text from the value.
      */
@@ -44,7 +44,7 @@ interface ProfileSetting
 
 abstract class ProfileNoSave implements ProfileSetting
 {
-    public function save(ProfilePage &$page, $field, $new_value) { }
+    public function save(ProfilePage $page, $field, $new_value) { }
 
     public function getText($value) {
         return $value;
@@ -53,7 +53,7 @@ abstract class ProfileNoSave implements ProfileSetting
 
 class ProfileSettingWeb extends ProfileNoSave
 {
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         if (is_null($value)) {
             return isset($page->values[$field]) ? $page->values[$field] : S::v($field);
@@ -70,7 +70,7 @@ class ProfileSettingWeb extends ProfileNoSave
 
 class ProfileSettingEmail extends ProfileNoSave
 {
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         if (is_null($value)) {
             return isset($page->values[$field]) ? $page->values[$field] : S::v($field);
@@ -86,7 +86,7 @@ class ProfileSettingEmail extends ProfileNoSave
 
 class ProfileSettingNumber extends ProfileNoSave
 {
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         if (is_null($value)) {
             return isset($page->values[$field]) ? $page->values[$field] : S::v($field);
@@ -102,7 +102,7 @@ class ProfileSettingNumber extends ProfileNoSave
 
 class ProfileSettingPhones implements ProfileSetting
 {
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         $success = true;
         $phones = array();
@@ -127,7 +127,7 @@ class ProfileSettingPhones implements ProfileSetting
         }
     }
 
-    public function save(ProfilePage &$page, $field, $value)
+    public function save(ProfilePage $page, $field, $value)
     {
         Phone::deletePhones($page->pid(), Phone::LINK_PROFILE, null, S::user()->isMe($page->owner) || S::admin());
         Phone::savePhones($value, $page->pid(), Phone::LINK_PROFILE);
@@ -141,7 +141,7 @@ class ProfileSettingPhones implements ProfileSetting
 
 class ProfileSettingPub extends ProfileNoSave
 {
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         $success = true;
         if (is_null($value)) {
@@ -163,7 +163,7 @@ class ProfileSettingPub extends ProfileNoSave
 
 class ProfileSettingBool extends ProfileNoSave
 {
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         $success = true;
         if (is_null($value)) {
@@ -182,7 +182,7 @@ class ProfileSettingDate extends ProfileNoSave
         $this->allowEmpty = $allowEmpty;
     }
 
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         $success = true;
         if (is_null($value)) {
@@ -228,7 +228,7 @@ abstract class ProfilePage implements PlWizardPage
     public $profile  = null;
     public $owner    = null;
 
-    public function __construct(PlWizard &$wiz)
+    public function __construct(PlWizard $wiz)
     {
         $this->wizard =& $wiz;
         $this->profile = $this->wizard->getUserData('profile');
@@ -356,11 +356,11 @@ abstract class ProfilePage implements PlWizardPage
         return $this->profile->hrpid();
     }
 
-    protected function _prepare(PlPage &$page, $id)
+    protected function _prepare(PlPage $page, $id)
     {
     }
 
-    public function prepare(PlPage &$page, $id)
+    public function prepare(PlPage $page, $id)
     {
         if (count($this->values) == 0) {
             $this->fetchData();

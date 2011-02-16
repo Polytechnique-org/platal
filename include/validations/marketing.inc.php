@@ -40,7 +40,7 @@ class MarkReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct(User &$sender, User &$mark, $email, $perso, $type, $data, $personal_notes)
+    public function __construct(User $sender, User $mark, $email, $perso, $type, $data, $personal_notes)
     {
         parent::__construct($sender, false, 'marketing');
         $this->m_user  = &$mark;

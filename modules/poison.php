@@ -33,7 +33,7 @@ class PoisonModule extends PLModule
         );
     }
 
-    function handler_poison(&$page, $seed = null, $count = 20)
+    function handler_poison($page, $seed = null, $count = 20)
     {
         $this->load('poison.inc.php');
         if ($seed == null) {
@@ -47,7 +47,7 @@ class PoisonModule extends PLModule
         exit;
     }
 
-    function handler_tags(&$page, $seed = null, $count = 20)
+    function handler_tags($page, $seed = null, $count = 20)
     {
         global $globals;
 
@@ -64,7 +64,7 @@ class PoisonModule extends PLModule
         exit;
     }
 
-    function handler_mailto(&$page, $seed = null, $count = 20)
+    function handler_mailto($page, $seed = null, $count = 20)
     {
         global $globals;
 
@@ -82,7 +82,7 @@ class PoisonModule extends PLModule
         exit;
     }
 
-    function handler_rand(&$page) {
+    function handler_rand($page) {
         $this->load('poison.inc.php');
         randomize_poison_file();
         exit;

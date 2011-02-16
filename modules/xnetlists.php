@@ -54,7 +54,7 @@ class XnetListsModule extends ListsModule
         );
     }
 
-    function prepare_client(&$page, $user = null)
+    function prepare_client($page, $user = null)
     {
         global $globals;
         Platal::load('lists', 'lists.inc.php');
@@ -70,7 +70,7 @@ class XnetListsModule extends ListsModule
         return $globals->asso('mail_domain');
     }
 
-    function handler_lists(&$page)
+    function handler_lists($page)
     {
         global $globals;
 
@@ -126,7 +126,7 @@ class XnetListsModule extends ListsModule
         }
     }
 
-    function handler_create(&$page)
+    function handler_create($page)
     {
         global $globals;
 
@@ -199,7 +199,7 @@ class XnetListsModule extends ListsModule
         pl_redirect('lists/admin/'.$liste);
     }
 
-    function handler_sync(&$page, $liste = null)
+    function handler_sync($page, $liste = null)
     {
         global $globals;
 
@@ -233,7 +233,7 @@ class XnetListsModule extends ListsModule
         $page->assign('not_in_list', $not_in_list);
     }
 
-    function handler_aadmin(&$page, $lfull = null)
+    function handler_aadmin($page, $lfull = null)
     {
         global $globals;
 
@@ -291,7 +291,7 @@ class XnetListsModule extends ListsModule
         $page->assign('mem', $mem);
     }
 
-    function handler_acreate(&$page)
+    function handler_acreate($page)
     {
         global $globals;
 
@@ -330,7 +330,7 @@ class XnetListsModule extends ListsModule
         pl_redirect("alias/admin/$new");
     }
 
-    function handler_profile(&$page, $user = null)
+    function handler_profile($page, $user = null)
     {
         http_redirect('https://www.polytechnique.org/profile/'.$user);
     }

@@ -21,7 +21,7 @@
 
 class ProfileSettingDeco implements ProfileSetting
 {
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         $success = true;
         if (is_null($value)) {
@@ -50,7 +50,7 @@ class ProfileSettingDeco implements ProfileSetting
         return $value;
     }
 
-    public function save(ProfilePage &$page, $field, $value)
+    public function save(ProfilePage $page, $field, $value)
     {
         $orig =& $page->orig[$field];
 
@@ -94,7 +94,7 @@ class ProfilePageDecos extends ProfilePage
 {
     protected $pg_template = 'profile/deco.tpl';
 
-    public function __construct(PlWizard &$wiz)
+    public function __construct(PlWizard $wiz)
     {
         parent::__construct($wiz);
         $this->settings['medals'] = new ProfileSettingDeco();
@@ -121,7 +121,7 @@ class ProfilePageDecos extends ProfilePage
         }
     }
 
-    public function _prepare(PlPage &$page, $id)
+    public function _prepare(PlPage $page, $id)
     {
         $res = XDB::iterator('SELECT  *, FIND_IN_SET(\'validation\', flags) AS validate
                                 FROM  profile_medal_enum

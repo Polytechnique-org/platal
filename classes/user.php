@@ -587,13 +587,13 @@ class User extends PlUser
         return Profile::getBulkProfilesWithPIDs(array_keys($this->contacts));
     }
 
-    public function isContact(Profile &$profile)
+    public function isContact(Profile $profile)
     {
         $this->fetchContacts();
         return isset($this->contacts[$profile->id()]);
     }
 
-    public function isWatchedUser(Profile &$profile)
+    public function isWatchedUser(Profile $profile)
     {
         return in_array($profile->id(), $this->watchUsers());
     }
@@ -733,7 +733,7 @@ class User extends PlUser
     }
 
     // Merge all infos in other user and then clean this one
-    public function mergeIn(User &$newuser) {
+    public function mergeIn(User $newuser) {
         if ($this->profile()) {
             // Don't disable user with profile in this way.
             global $globals;

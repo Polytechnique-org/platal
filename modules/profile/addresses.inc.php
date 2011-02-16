@@ -21,7 +21,7 @@
 
 class ProfileSettingAddresses implements ProfileSetting
 {
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         $success = true;
         $addresses = array();
@@ -41,7 +41,7 @@ class ProfileSettingAddresses implements ProfileSetting
         return Address::formatFormArray($value, $success);
     }
 
-    public function save(ProfilePage &$page, $field, $value)
+    public function save(ProfilePage $page, $field, $value)
     {
         $deletePrivate = S::user()->isMe($page->owner) || S::admin();
 
@@ -63,7 +63,7 @@ class ProfilePageAddresses extends ProfilePage
 {
     protected $pg_template = 'profile/adresses.tpl';
 
-    public function __construct(PlWizard &$wiz)
+    public function __construct(PlWizard $wiz)
     {
         parent::__construct($wiz);
         $this->settings['addresses'] = new ProfileSettingAddresses();

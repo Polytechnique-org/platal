@@ -31,7 +31,7 @@ class EventFeed extends PlFeed
                             'events/rss.tpl');
     }
 
-    public static function nextEvent(PlIterator &$it, PlUser &$user)
+    public static function nextEvent(PlIterator $it, PlUser $user)
     {
         while ($body = $it->next()) {
             $uf = UserFilter::getLegacy($body['promo_min'], $body['promo_max']);
@@ -42,7 +42,7 @@ class EventFeed extends PlFeed
         return null;
     }
 
-    protected function fetch(PlUser &$user)
+    protected function fetch(PlUser $user)
     {
         global $globals;
         $events = XDB::iterator('SELECT  e.id, e.titre AS title, e.texte, e.creation_date AS publication, e.post_id,

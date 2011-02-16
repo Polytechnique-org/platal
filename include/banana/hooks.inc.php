@@ -307,7 +307,7 @@ class PlatalBananaPage extends BananaPage
 
 class BananaHandler
 {
-    public function __construct(PlWizard &$wiz)
+    public function __construct(PlWizard $wiz)
     {
     }
 
@@ -316,7 +316,7 @@ class BananaHandler
         return 'banana/index.tpl';
     }
 
-    public function prepare(PlPage &$page, $id)
+    public function prepare(PlPage $page, $id)
     {
     }
 
@@ -328,7 +328,7 @@ class BananaHandler
     }
 }
 
-function run_banana(&$page, $class, array $args)
+function run_banana($page, $class, array $args)
 {
     $user = S::user();
     $banana = new $class($user, $args);

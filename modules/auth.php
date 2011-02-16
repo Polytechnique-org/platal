@@ -36,14 +36,14 @@ class AuthModule extends PLModule
         );
     }
 
-    function handler_chall(&$page)
+    function handler_chall($page)
     {
         $_SESSION["chall"] = uniqid(rand(), 1);
         echo $_SESSION["chall"] . "\n" . session_id();
         exit;
     }
 
-    function handler_econf(&$page)
+    function handler_econf($page)
     {
         global $globals;
 
@@ -76,7 +76,7 @@ class AuthModule extends PLModule
         exit;
     }
 
-    function handler_manageurs(&$page)
+    function handler_manageurs($page)
     {
         global $globals;
 
@@ -99,17 +99,17 @@ class AuthModule extends PLModule
         exit;
     }
 
-    function handler_redirect(&$page)
+    function handler_redirect($page)
     {
         http_redirect(Env::v('dest', '/'));
     }
 
-    function handler_groupex_old(&$page)
+    function handler_groupex_old($page)
     {
         return $this->handler_groupex($page, 'iso-8859-1');
     }
 
-    function handler_groupex(&$page, $charset = 'utf8')
+    function handler_groupex($page, $charset = 'utf8')
     {
         $this->load('auth.inc.php');
         $page->assign('referer', true);
@@ -157,7 +157,7 @@ class AuthModule extends PLModule
         pl_redirect('/');
     }
 
-    function handler_admin_authgroupesx(&$page, $action = 'list', $id = null)
+    function handler_admin_authgroupesx($page, $action = 'list', $id = null)
     {
         $page->setTitle('Administration - Auth groupes X');
         $page->assign('title', 'Gestion de l\'authentification centralisée');

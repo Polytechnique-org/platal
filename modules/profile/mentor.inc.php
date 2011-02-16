@@ -22,7 +22,7 @@
 /** Terms associated to profile mentoring */
 class ProfileSettingTerms implements ProfileSetting
 {
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         $success = true;
         if (is_null($value)) {
@@ -63,7 +63,7 @@ class ProfileSettingTerms implements ProfileSetting
         return $value;
     }
 
-    public function save(ProfilePage &$page, $field, $value)
+    public function save(ProfilePage $page, $field, $value)
     {
 
         XDB::execute("DELETE FROM  profile_mentor_term
@@ -92,7 +92,7 @@ class ProfileSettingTerms implements ProfileSetting
 
 class ProfileSettingCountry implements ProfileSetting
 {
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         $success = true;
         if (is_null($value)) {
@@ -115,7 +115,7 @@ class ProfileSettingCountry implements ProfileSetting
         return $value;
     }
 
-    public function save(ProfilePage &$page, $field, $value)
+    public function save(ProfilePage $page, $field, $value)
     {
         XDB::execute("DELETE FROM  profile_mentor_country
                             WHERE  pid = {?}",
@@ -137,7 +137,7 @@ class ProfilePageMentor extends ProfilePage
 {
     protected $pg_template = 'profile/mentor.tpl';
 
-    public function __construct(PlWizard &$wiz)
+    public function __construct(PlWizard $wiz)
     {
         parent::__construct($wiz);
         $this->settings['expertise'] = null;
@@ -173,7 +173,7 @@ class ProfilePageMentor extends ProfilePage
         }
     }
 
-    public function _prepare(PlPage &$page, $id)
+    public function _prepare(PlPage $page, $id)
     {
         $page->assign('countryList', XDB::iterator("SELECT  iso_3166_1_a2, country
                                                       FROM  geoloc_countries

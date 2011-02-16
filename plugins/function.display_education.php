@@ -65,7 +65,7 @@ function display_education($name, $url, $degree, $gradYear, $field, $program, $f
     return $txt;
 }
 
-function smarty_function_display_education($params, &$smarty)
+function smarty_function_display_education($params, $smarty)
 {
     $params = new PlDict($params);
     $edu = $params->v('edu');

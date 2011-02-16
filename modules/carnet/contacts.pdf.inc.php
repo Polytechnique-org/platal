@@ -244,7 +244,7 @@ class ContactsPDF extends FPDF
         return $count;
     }
 
-    public static function AddContact(ContactsPDF $self, Profile &$profile, $wp = true)
+    public static function AddContact(ContactsPDF $self, Profile $profile, $wp = true)
     {
         /* infamous hack :
            1- we store the current state.

@@ -41,7 +41,7 @@ class EvtReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct($_titre, $_texte, $_pmin, $_pmax, $_expiration, $_comment, User &$_user, PlUpload &$upload = null)
+    public function __construct($_titre, $_texte, $_pmin, $_pmax, $_expiration, $_comment, User $_user, PlUpload $upload = null)
     {
         parent::__construct($_user, false, 'evts');
         $this->titre      = $_titre;
@@ -58,7 +58,7 @@ class EvtReq extends Validate
     // }}}
     // {{{ function readImage()
 
-    private function readImage(PlUpload &$upload)
+    private function readImage(PlUpload $upload)
     {
         if ($upload->exists() && $upload->isType('image')) {
             list($this->imgx, $this->imgy, $this->imgtype) = $upload->imageInfo();

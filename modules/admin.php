@@ -55,13 +55,13 @@ class AdminModule extends PLModule
         );
     }
 
-    function handler_phpinfo(&$page)
+    function handler_phpinfo($page)
     {
         phpinfo();
         exit;
     }
 
-    function handler_get_rights(&$page)
+    function handler_get_rights($page)
     {
         if (S::suid()) {
             $page->kill('Déjà en SUID');
@@ -85,7 +85,7 @@ class AdminModule extends PLModule
         }
     }
 
-    function handler_set_skin(&$page)
+    function handler_set_skin($page)
     {
         S::assert_xsrf_token();
         S::set('skin', Post::s('change_skin'));
@@ -96,13 +96,13 @@ class AdminModule extends PLModule
         }
     }
 
-    function handler_default(&$page)
+    function handler_default($page)
     {
         $page->changeTpl('admin/index.tpl');
         $page->setTitle('Administration');
     }
 
-    function handler_postfix_delayed(&$page)
+    function handler_postfix_delayed($page)
     {
         $page->changeTpl('admin/postfix_delayed.tpl');
         $page->setTitle('Administration - Postfix : Retardés');
@@ -128,7 +128,7 @@ class AdminModule extends PLModule
         $page->assign_by_ref('mails', $sql);
     }
 
-    function handler_postfix_regexpsbounces(&$page, $new = null) {
+    function handler_postfix_regexpsbounces($page, $new = null) {
         $page->changeTpl('admin/emails_bounces_re.tpl');
         $page->setTitle('Administration - Postfix : Regexps Bounces');
         $page->assign('new', $new);
@@ -294,7 +294,7 @@ class AdminModule extends PLModule
 
     // }}}
 
-    function handler_logger(&$page, $action = null, $arg = null) {
+    function handler_logger($page, $action = null, $arg = null) {
         if ($action == 'session') {
 
             // we are viewing a session
@@ -396,7 +396,7 @@ class AdminModule extends PLModule
         $page->setTitle('Administration - Logs des sessions');
     }
 
-    function handler_user(&$page, $login = false)
+    function handler_user($page, $login = false)
     {
         global $globals;
         $page->changeTpl('admin/user.tpl');
@@ -750,7 +750,7 @@ class AdminModule extends PLModule
         return null;
     }
 
-    private static function formatNewUser(&$page, $infosLine, $separator, $promo, $size)
+    private static function formatNewUser($page, $infosLine, $separator, $promo, $size)
     {
         $infos = explode($separator, $infosLine);
         if (sizeof($infos) > $size || sizeof($infos) < 2) {
@@ -774,7 +774,7 @@ class AdminModule extends PLModule
         return $infos;
     }
 
-    private static function formatSex(&$page, $sex, $line)
+    private static function formatSex($page, $sex, $line)
     {
         switch ($sex) {
           case 'F':
@@ -794,7 +794,7 @@ class AdminModule extends PLModule
         return date("Y-m-d", strtotime(str_replace('/', '-', $birthDate)));
     }
 
-    function handler_add_accounts(&$page, $action = null, $promo = null)
+    function handler_add_accounts($page, $action = null, $promo = null)
     {
         $page->changeTpl('admin/add_accounts.tpl');
 
@@ -936,7 +936,7 @@ class AdminModule extends PLModule
         }
     }
 
-    function handler_homonyms(&$page, $op = 'list', $target = null)
+    function handler_homonyms($page, $op = 'list', $target = null)
     {
         $page->changeTpl('admin/homonymes.tpl');
         $page->setTitle('Administration - Homonymes');
@@ -1003,7 +1003,7 @@ class AdminModule extends PLModule
         }
     }
 
-    function handler_deaths(&$page, $promo = 0, $validate = false)
+    function handler_deaths($page, $promo = 0, $validate = false)
     {
         $page->changeTpl('admin/deces_promo.tpl');
         $page->setTitle('Administration - Deces');
@@ -1053,7 +1053,7 @@ class AdminModule extends PLModule
         $page->assign('profileList', $res);
     }
 
-    function handler_dead_but_active(&$page)
+    function handler_dead_but_active($page)
     {
         $page->changeTpl('admin/dead_but_active.tpl');
         $page->setTitle('Administration - Décédés');
@@ -1071,7 +1071,7 @@ class AdminModule extends PLModule
         $page->assign('dead', $res);
     }
 
-    function handler_validate(&$page, $action = 'list', $id = null)
+    function handler_validate($page, $action = 'list', $id = null)
     {
         $page->changeTpl('admin/validation.tpl');
         $page->setTitle('Administration - Valider une demande');
@@ -1129,7 +1129,7 @@ class AdminModule extends PLModule
         $page->assign('isAdmin', S::admin());
     }
 
-    function handler_validate_answers(&$page, $action = 'list', $id = null)
+    function handler_validate_answers($page, $action = 'list', $id = null)
     {
         $page->setTitle('Administration - Réponses automatiques de validation');
         $page->assign('title', 'Gestion des réponses automatiques');
@@ -1140,7 +1140,7 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
 
-    function handler_skins(&$page, $action = 'list', $id = null)
+    function handler_skins($page, $action = 'list', $id = null)
     {
         $page->setTitle('Administration - Skins');
         $page->assign('title', 'Gestion des skins');
@@ -1154,7 +1154,7 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
 
-    function handler_postfix_blacklist(&$page, $action = 'list', $id = null)
+    function handler_postfix_blacklist($page, $action = 'list', $id = null)
     {
         $page->setTitle('Administration - Postfix : Blacklist');
         $page->assign('title', 'Blacklist de postfix');
@@ -1164,7 +1164,7 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
 
-    function handler_postfix_whitelist(&$page, $action = 'list', $id = null)
+    function handler_postfix_whitelist($page, $action = 'list', $id = null)
     {
         $page->setTitle('Administration - Postfix : Whitelist');
         $page->assign('title', 'Whitelist de postfix');
@@ -1173,7 +1173,7 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
 
-    function handler_mx_broken(&$page, $action = 'list', $id = null)
+    function handler_mx_broken($page, $action = 'list', $id = null)
     {
         $page->setTitle('Administration - MX Défaillants');
         $page->assign('title', 'MX Défaillant');
@@ -1184,7 +1184,7 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
 
-    function handler_logger_actions(&$page, $action = 'list', $id = null)
+    function handler_logger_actions($page, $action = 'list', $id = null)
     {
         $page->setTitle('Administration - Actions');
         $page->assign('title', 'Gestion des actions de logger');
@@ -1194,7 +1194,7 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
 
-    function handler_downtime(&$page, $action = 'list', $id = null)
+    function handler_downtime($page, $action = 'list', $id = null)
     {
         $page->setTitle('Administration - Coupures');
         $page->assign('title', 'Gestion des coupures');
@@ -1242,7 +1242,7 @@ class AdminModule extends PLModule
 
     }
 
-    function handler_account_types(&$page, $action = 'list', $id = null)
+    function handler_account_types($page, $action = 'list', $id = null)
     {
         $page->setTitle('Administration - Types de comptes');
         $page->assign('title', 'Gestion des types de comptes');
@@ -1252,7 +1252,7 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
 
-    function handler_wiki(&$page, $action = 'list', $wikipage = null, $wikipage2 = null)
+    function handler_wiki($page, $action = 'list', $wikipage = null, $wikipage2 = null)
     {
         if (S::hasAuthToken()) {
            $page->setRssLink('Changement Récents',
@@ -1320,7 +1320,7 @@ class AdminModule extends PLModule
         $page->assign('perms_opts', $perms);
     }
 
-    function handler_ipwatch(&$page, $action = 'list', $ip = null)
+    function handler_ipwatch($page, $action = 'list', $ip = null)
     {
         $page->changeTpl('admin/ipwatcher.tpl');
 
@@ -1428,7 +1428,7 @@ class AdminModule extends PLModule
         }
     }
 
-    function handler_icons(&$page)
+    function handler_icons($page)
     {
         $page->changeTpl('admin/icons.tpl');
         $dh = opendir('../htdocs/images/icons');
@@ -1445,7 +1445,7 @@ class AdminModule extends PLModule
         $page->assign('icons', $icons);
     }
 
-    function handler_account_watch(&$page)
+    function handler_account_watch($page)
     {
         $page->changeTpl('admin/accounts.tpl');
         $page->assign('disabled', XDB::iterator('SELECT  a.hruid, FIND_IN_SET(\'watch\', a.flags) AS watch,
@@ -1459,7 +1459,7 @@ class AdminModule extends PLModule
                                              ORDER BY  a.hruid'));
     }
 
-    function handler_jobs(&$page, $id = -1)
+    function handler_jobs($page, $id = -1)
     {
         $page->changeTpl('admin/jobs.tpl');
 
@@ -1542,7 +1542,7 @@ class AdminModule extends PLModule
         }
     }
 
-    function handler_profile(&$page)
+    function handler_profile($page)
     {
         $page->changeTpl('admin/profile.tpl');
 

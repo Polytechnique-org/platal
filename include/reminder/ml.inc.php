@@ -58,7 +58,7 @@ class ReminderMl extends Reminder
         }
     }
 
-    public function Prepare(&$page)
+    public function Prepare($page)
     {
         parent::Prepare($page);
 
@@ -89,7 +89,7 @@ class ReminderMl extends Reminder
         return "Inscription aux listes de diffusion";
     }
 
-    public static function IsCandidate(User &$user, $candidate)
+    public static function IsCandidate(User $user, $candidate)
     {
         $res = XDB::query("SELECT  COUNT(*) AS lists
                              FROM  register_subs

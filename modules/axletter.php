@@ -43,7 +43,7 @@ class AXLetterModule extends NewsletterModule
         return NewsLetter::forGroup(NewsLetter::GROUP_AX);
     }
 
-    function handler_out(&$page, $hash = null)
+    function handler_out($page, $hash = null)
     {
         if (!$hash) {
             if (!S::logged()) {

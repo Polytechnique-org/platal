@@ -46,7 +46,7 @@ class NewsletterModule extends PLModule
         return NewsLetter::forGroup(NewsLetter::GROUP_XORG);
     }
 
-    function handler_nl(&$page, $action = null, $hash = null)
+    function handler_nl($page, $action = null, $hash = null)
     {
         $nl = $this->getNl();
         if (!$nl) {
@@ -67,7 +67,7 @@ class NewsletterModule extends PLModule
         $page->assign('nl_list', $nl->listSentIssues(true));
     }
 
-    function handler_nl_show(&$page, $nid = 'last')
+    function handler_nl_show($page, $nid = 'last')
     {
         $page->changeTpl('newsletter/show.tpl');
         $nl = $this->getNl();
@@ -91,7 +91,7 @@ class NewsletterModule extends PLModule
         }
     }
 
-    function handler_nl_submit(&$page)
+    function handler_nl_submit($page)
     {
         $page->changeTpl('newsletter/submit.tpl');
 
@@ -118,7 +118,7 @@ class NewsletterModule extends PLModule
         $page->addCssLink($nl->cssFile());
     }
 
-    function handler_admin_nl(&$page, $new = false) {
+    function handler_admin_nl($page, $new = false) {
         $page->changeTpl('newsletter/admin.tpl');
         $page->setTitle('Administration - Newsletter : liste');
 
@@ -136,7 +136,7 @@ class NewsletterModule extends PLModule
         $page->assign('nl_list', $nl->listAllIssues());
     }
 
-    function handler_admin_nl_groups(&$page)
+    function handler_admin_nl_groups($page)
     {
         require_once 'newsletter.inc.php';
 
@@ -146,7 +146,7 @@ class NewsletterModule extends PLModule
         $page->assign('nls', Newsletter::getAll());
     }
 
-    function handler_admin_nl_edit(&$page, $nid = 'last', $aid = null, $action = 'edit') {
+    function handler_admin_nl_edit($page, $nid = 'last', $aid = null, $action = 'edit') {
         $page->changeTpl('newsletter/edit.tpl');
         $page->addCssLink('nl.Polytechnique.org.css');
         $page->setTitle('Administration - Newsletter : Édition');
@@ -264,7 +264,7 @@ class NewsletterModule extends PLModule
     /** This handler will cancel the sending of the currently pending issue
      * It is disabled for X.org mailings.
      */
-    function handler_admin_nl_cancel(&$page, $nid, $force = null)
+    function handler_admin_nl_cancel($page, $nid, $force = null)
     {
         $nl = $this->getNl();
         if (!$nl) {
@@ -293,7 +293,7 @@ class NewsletterModule extends PLModule
     /** This handler will enable the sending of the currently pending issue
      * It is disabled for X.org mailings.
      */
-    function handler_admin_nl_valid(&$page, $nid, $force = null)
+    function handler_admin_nl_valid($page, $nid, $force = null)
     {
         $nl = $this->getNl();
         if (!$nl) {
@@ -321,7 +321,7 @@ class NewsletterModule extends PLModule
 
     /** This handler will remove the given issue.
      */
-    function handler_admin_nl_delete(&$page, $nid, $force = null)
+    function handler_admin_nl_delete($page, $nid, $force = null)
     {
         $nl = $this->getNl();
         if (!$nl) {
@@ -350,7 +350,7 @@ class NewsletterModule extends PLModule
         $page->trigSuccessRedirect("La lettre a bien été supprimée.", $nl->adminPrefix());
     }
 
-    function handler_admin_nl_cat(&$page, $action = 'list', $id = null) {
+    function handler_admin_nl_cat($page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Newsletter : Catégories');
         $page->assign('title', 'Gestion des catégories de la newsletter');
         $table_editor = new PLTableEditor('admin/newsletter/categories','newsletter_cat','cid');
