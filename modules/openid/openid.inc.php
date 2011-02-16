@@ -87,7 +87,7 @@ class OpenId
     // SimpleRegistration helpers ----------------------------------------------
 
     // Determines which SREG data are requested by the endpoint, and returns them.
-    public function GetSRegDataForRequest(User &$user)
+    public function GetSRegDataForRequest(User $user)
     {
         require_once 'Auth/OpenID/SReg.php';
 
@@ -147,7 +147,7 @@ class OpenId
     // Updates the trust level for the given endpoint, based on the value pf
     // |trusted| and |permanent_trust| (the latter is ignored when the former
     // value is false). Returns true iff the current endpoint is trusted.
-    public function UpdateEndpointTrust(User &$user, $trusted, $permanent_trust) {
+    public function UpdateEndpointTrust(User $user, $trusted, $permanent_trust) {
         $initial_trust = $this->IsEndpointTrusted($user);
         if (!$initial_trust && $trusted && $permanent_trust) {
             XDB::execute(
@@ -162,7 +162,7 @@ class OpenId
     // Page renderers ----------------------------------------------------------
 
     // Renders the OpenId discovery page for |user|.
-    public function RenderDiscoveryPage(&$page, User &$user)
+    public function RenderDiscoveryPage($page, User $user)
     {
         $page->changeTpl('openid/openid.tpl');
         $page->setTitle($user->fullName());
@@ -175,7 +175,7 @@ class OpenId
     }
 
     // Renders the main XRDS page.
-    public function RenderMainXrdsPage(&$page)
+    public function RenderMainXrdsPage($page)
     {
         pl_content_headers("application/xrds+xml");
         $page->changeTpl('openid/idp_xrds.tpl', NO_SKIN);
@@ -185,7 +185,7 @@ class OpenId
     }
 
     // Renders the XRDS page of |user|.
-    public function RenderUserXrdsPage(&$page, User &$user)
+    public function RenderUserXrdsPage($page, User $user)
     {
         pl_content_headers("application/xrds+xml");
         $page->changeTpl('openid/user_xrds.tpl', NO_SKIN);
@@ -221,13 +221,13 @@ class OpenId
     // URL providers -----------------------------------------------------------
 
     // Returns the OpenId identity URL of the requested user.
-    private function GetUserUrl(User &$user)
+    private function GetUserUrl(User $user)
     {
         return $this->base_url . '/' . $user->login();
     }
 
     // Returns the private XRDS page of a user.
-    private function GetUserXrdsUrl(User &$user)
+    private function GetUserXrdsUrl(User $user)
     {
         return $this->base_url . '/xrds/' . $user->login();
     }

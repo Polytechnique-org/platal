@@ -38,7 +38,7 @@ class OrangeReq extends ProfileValidate
     // }}}
     // {{{ constructor
 
-    public function __construct(User &$_user, Profile &$_profile, $_newGradYear)
+    public function __construct(User $_user, Profile $_profile, $_newGradYear)
     {
         parent::__construct($_user, $_profile, true, 'orange');
         $this->newGradYear  = $_newGradYear;

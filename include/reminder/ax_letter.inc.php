@@ -52,7 +52,7 @@ class ReminderAxLetter extends Reminder
         return 'Xorg/MailsAX';
     }
 
-    public static function IsCandidate(User &$user, $candidate)
+    public static function IsCandidate(User $user, $candidate)
     {
         require_once 'newsletter.inc.php';
         $isSubscribed = NewsLetter::forGroup(NewsLetter::GROUP_AX)->subscriptionState();

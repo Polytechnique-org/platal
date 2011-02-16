@@ -19,14 +19,14 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function select_if_homonyme(PlUser &$user) {
+function select_if_homonyme(PlUser $user) {
     return XDB::fetchOneCell("SELECT  a.alias
                                 FROM  aliases AS a
                                WHERE  a.uid = {?} AND a.expire != ''",
                              $user->id());
 }
 
-function send_warning_homonyme(PlUser &$user, $loginbis) {
+function send_warning_homonyme(PlUser $user, $loginbis) {
     global $globals;
     $cc = "support+homonyme@" . $globals->mail->domain;
     $FROM = "\"Support Polytechnique.org\" <$cc>";
@@ -38,7 +38,7 @@ function send_warning_homonyme(PlUser &$user, $loginbis) {
     $mymail->sendTo($user);
 }
 
-function send_robot_homonyme(PlUser &$user, $loginbis) {
+function send_robot_homonyme(PlUser $user, $loginbis) {
     global $globals;
     $cc = "support+homonyme@" . $globals->mail->domain;
     $FROM = "\"Support Polytechnique.org\" <$cc>";
@@ -50,7 +50,7 @@ function send_robot_homonyme(PlUser &$user, $loginbis) {
     $mymail->sendTo($user);
 }
 
-function switch_bestalias(PlUser &$user, $loginbis) {
+function switch_bestalias(PlUser $user, $loginbis) {
     // check if loginbis was the bestalias
     $bestailas = XDB::fetchOneCell("SELECT  alias
                                       FROM  aliases

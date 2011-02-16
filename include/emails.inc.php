@@ -27,7 +27,7 @@ define("ERROR_LOOP_EMAIL", 4);
 // function fix_bestalias() {{{1
 // Checks for an existing 'bestalias' among the the current user's aliases, and
 // eventually selects a new bestalias when required.
-function fix_bestalias(User &$user)
+function fix_bestalias(User $user)
 {
     $res = XDB::query("SELECT  COUNT(*)
                          FROM  aliases
@@ -180,7 +180,7 @@ class Bogo
 
     // constructor {{{2
 
-    public function __construct(User &$user)
+    public function __construct(User $user)
     {
         if (!$user) {
             return;
@@ -272,7 +272,7 @@ class EmailRedirection extends Email
 {
     // constructor {{{2
 
-    public function __construct(User &$user, $row)
+    public function __construct(User $user, $row)
     {
         $this->user = &$user;
         $this->sufficient = true;
@@ -408,7 +408,7 @@ class EmailStorage extends Email
     }
 
     // Returns the list of allowed storages for the @p user.
-    static public function get_allowed_storages(User &$user)
+    static public function get_allowed_storages(User $user)
     {
         global $globals;
         $storages = array();
@@ -430,7 +430,7 @@ class EmailStorage extends Email
     }
 
 
-    public function __construct(User &$user, $name)
+    public function __construct(User $user, $name)
     {
         $this->user = &$user;
         $this->email = $name;
@@ -494,7 +494,7 @@ class Redirect
 
     // constructor {{{2
 
-    public function __construct(User &$user)
+    public function __construct(User $user)
     {
         $this->user = &$user;
         $this->bogo = new Bogo($user);

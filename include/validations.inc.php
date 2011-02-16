@@ -53,7 +53,7 @@ abstract class Validate
      * @param $_unique: set to false if a profile can have multiple requests of this type.
      * @param $_type: request's type.
      */
-    public function __construct(User &$_user, $_unique, $_type)
+    public function __construct(User $_user, $_unique, $_type)
     {
         $this->user   = &$_user;
         $this->stamp  = date('YmdHis');
@@ -463,7 +463,7 @@ abstract class ProfileValidate extends Validate
      * @param $_unique: set to false if a profile can have multiple requests of this type.
      * @param $_type: request's type.
      */
-    public function __construct(User &$_user, Profile &$_profile, $_unique, $_type)
+    public function __construct(User $_user, Profile $_profile, $_unique, $_type)
     {
         parent::__construct($_user, $_unique, $_type);
         $this->profile = &$_profile;

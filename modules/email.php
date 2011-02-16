@@ -45,7 +45,7 @@ class EmailModule extends PLModule
         );
     }
 
-    function handler_emails(&$page, $action = null, $email = null)
+    function handler_emails($page, $action = null, $email = null)
     {
         global $globals;
         require_once 'emails.inc.php';
@@ -104,7 +104,7 @@ class EmailModule extends PLModule
         $page->assign('melix', $res->fetchOneCell());
     }
 
-    function handler_alias(&$page, $action = null, $value = null)
+    function handler_alias($page, $action = null, $value = null)
     {
         global $globals;
 
@@ -204,7 +204,7 @@ class EmailModule extends PLModule
         $page->assign('mail_public', $visibility);
     }
 
-    function handler_redirect(&$page, $action = null, $email = null)
+    function handler_redirect($page, $action = null, $email = null)
     {
         global $globals;
 
@@ -316,7 +316,7 @@ class EmailModule extends PLModule
         fill_email_combobox($page);
     }
 
-    function handler_antispam(&$page, $statut_filtre = null)
+    function handler_antispam($page, $statut_filtre = null)
     {
         require_once 'emails.inc.php';
         $wp = new PlWikiPage('Xorg.Antispam');
@@ -332,7 +332,7 @@ class EmailModule extends PLModule
         $page->assign('filtre', $bogo->level());
     }
 
-    function handler_submit(&$page)
+    function handler_submit($page)
     {
         $wp = new PlWikiPage('Xorg.Mails');
         $wp->buildCache();
@@ -367,7 +367,7 @@ class EmailModule extends PLModule
         }
     }
 
-    function handler_send(&$page)
+    function handler_send($page)
     {
         $page->changeTpl('emails/send.tpl');
 
@@ -495,7 +495,7 @@ class EmailModule extends PLModule
         $page->assign('user', S::user());
     }
 
-    function handler_test(&$page, $hruid = null)
+    function handler_test($page, $hruid = null)
     {
         require_once 'emails.inc.php';
 
@@ -525,7 +525,7 @@ class EmailModule extends PLModule
         exit;
     }
 
-    function handler_rewrite_in(&$page, $mail, $hash)
+    function handler_rewrite_in($page, $mail, $hash)
     {
         $page->changeTpl('emails/rewrite.tpl');
         $page->assign('option', 'in');
@@ -553,7 +553,7 @@ class EmailModule extends PLModule
         return PL_NOT_FOUND;
     }
 
-    function handler_rewrite_out(&$page, $mail, $hash)
+    function handler_rewrite_out($page, $mail, $hash)
     {
         $page->changeTpl('emails/rewrite.tpl');
         $page->assign('option', 'out');
@@ -594,7 +594,7 @@ class EmailModule extends PLModule
         return PL_NOT_FOUND;
     }
 
-    function handler_imap_in(&$page, $hash = null, $login = null)
+    function handler_imap_in($page, $hash = null, $login = null)
     {
         $page->changeTpl('emails/imap_register.tpl');
         $user = null;
@@ -628,7 +628,7 @@ class EmailModule extends PLModule
         }
     }
 
-    function handler_broken(&$page, $warn = null, $email = null)
+    function handler_broken($page, $warn = null, $email = null)
     {
         require_once 'emails.inc.php';
         $wp = new PlWikiPage('Xorg.PatteCassée');
@@ -694,7 +694,7 @@ class EmailModule extends PLModule
         }
     }
 
-    function handler_duplicated(&$page, $action = 'list', $email = null)
+    function handler_duplicated($page, $action = 'list', $email = null)
     {
         $page->changeTpl('emails/duplicated.tpl');
 
@@ -788,7 +788,7 @@ class EmailModule extends PLModule
         }
     }
 
-    function handler_lost(&$page, $action = 'list', $email = null)
+    function handler_lost($page, $action = 'list', $email = null)
     {
         $page->changeTpl('emails/lost.tpl');
 
@@ -804,7 +804,7 @@ class EmailModule extends PLModule
                                    ORDER BY  pd.promo, a.hruid'));
     }
 
-    function handler_broken_addr(&$page)
+    function handler_broken_addr($page)
     {
         require_once 'emails.inc.php';
         $page->changeTpl('emails/broken_addr.tpl');

@@ -119,7 +119,7 @@ function eProtectDecode ($CompressedEmailAddress,$AlternateText) {
 }
 
 //----------------------------------------------------------------------
-function eProtectEncode ($pagename,&$page,&$new) {
+function eProtectEncode ($pagename,$page,&$new) {
 //----------------------------------------------------------------------
   global $KeepToken, $KPV, $UrlExcludeChars;
   if (!@$_POST['post']) return; // only Encode, when posting

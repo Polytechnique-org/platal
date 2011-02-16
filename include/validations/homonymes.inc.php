@@ -36,7 +36,7 @@ class HomonymeReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct(User &$_user, $_loginbis, $_homonymes_hruid, $warning=true)
+    public function __construct(User $_user, $_loginbis, $_homonymes_hruid, $warning=true)
     {
         $this->warning = $warning;
 

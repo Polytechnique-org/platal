@@ -30,10 +30,10 @@ Un camarade {$smarty.session.hruid} a forcé l'utilisation de l'adresse entrée
 à la main et a refusé la version geolocalisée :
 
 '''Version utilisateur (validée) :'''\\
-{$text|replace:"\n":"\\\\\n"}
+{$text}
 
 '''Version geoloc (refusée) :'''\\
-{$geoloc|replace:"\n":"\\\\\n"}
+{$geoloc}
 {include file="include/signature.mail.tpl"}
 {/if}
 

@@ -55,7 +55,7 @@ class ModerationBanana extends Banana
     static public $domain;
     static public $client;
 
-    function __construct(User &$user, $params = null)
+    function __construct(User $user, $params = null)
     {
         ini_set('memory_limit', '128M');
 
@@ -212,12 +212,12 @@ class BananaMLInterface implements BananaProtocoleInterface
         return array();
     }
 
-    public function send(BananaMessage &$message)
+    public function send(BananaMessage $message)
     {
         return true;
     }
 
-    public function cancel(BananaMessage &$message)
+    public function cancel(BananaMessage $message)
     {
         return true;
     }

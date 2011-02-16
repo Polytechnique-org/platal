@@ -131,7 +131,7 @@ class ProfileSettingJob implements ProfileSetting
         return $jobs;
     }
 
-    private function cleanJob(ProfilePage &$page, $jobid, array &$job, &$success, $maxPublicity)
+    private function cleanJob(ProfilePage $page, $jobid, array &$job, &$success, $maxPublicity)
     {
         if ($job['w_email'] == "new@example.org") {
             $job['w_email'] = $job['w_email_new'];
@@ -193,7 +193,7 @@ class ProfileSettingJob implements ProfileSetting
 
 
 
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         $entreprise = ProfileValidate::get_typed_requests($page->pid(), 'entreprise');
         $entr_val = 0;
@@ -224,9 +224,9 @@ class ProfileSettingJob implements ProfileSetting
             }
 
             if (isset($job['removed']) && $job['removed']) {
-                if (S::user()->checkPerms('directory_ax')
+                if (!S::user()->checkPerms('directory_private')
                     && (Phone::hasPrivate($job['w_phone']) || Address::hasPrivate($job['w_address']) || $job['w_email_pub'] == 'private')) {
-                    Platal::page()->trigWarning("L'entreprise ne peut être supprimée car elle contient des informations pour lesquelles vous n'avez le droit d'édition.");
+                    Platal::page()->trigWarning("L'entreprise ne peut être supprimée car elle contient des informations pour lesquelles vous n'avez pas le droit d'édition.");
                 } else {
                     if ($job['name'] == '' && $entreprise && isset($entreprise[$entr_val - 1])) {
                         $entreprise[$entr_val - 1]->clean();
@@ -257,7 +257,7 @@ class ProfileSettingJob implements ProfileSetting
         return $value;
     }
 
-    public function save(ProfilePage &$page, $field, $value)
+    public function save(ProfilePage $page, $field, $value)
     {
         $deletePrivate = S::user()->isMe($page->owner) || S::admin();
         XDB::execute('DELETE FROM  pj, pjt
@@ -344,7 +344,7 @@ class ProfileSettingJob implements ProfileSetting
 
 class ProfileSettingCorps implements ProfileSetting
 {
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         $success = true;
         if (is_null($value)) {
@@ -359,7 +359,7 @@ class ProfileSettingCorps implements ProfileSetting
         return $value;
     }
 
-    public function save(ProfilePage &$page, $field, $value)
+    public function save(ProfilePage $page, $field, $value)
     {
         if (!S::user()->isMe($page->owner)) {
             XDB::execute('INSERT INTO  profile_corps (original_corpsid, current_corpsid, rankid, corps_pub, pid)
@@ -390,7 +390,7 @@ class ProfilePageJobs extends ProfilePage
 {
     protected $pg_template = 'profile/jobs.tpl';
 
-    public function __construct(PlWizard &$wiz)
+    public function __construct(PlWizard $wiz)
     {
         parent::__construct($wiz);
         if (S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE)) {
@@ -425,7 +425,7 @@ class ProfilePageJobs extends ProfilePage
         }
     }
 
-    public function _prepare(PlPage &$page, $id)
+    public function _prepare(PlPage $page, $id)
     {
         require_once 'emails.combobox.inc.php';
         fill_email_combobox($page, $this->owner);

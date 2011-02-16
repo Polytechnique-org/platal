@@ -34,7 +34,7 @@ class ProfileSettingSkill implements ProfileSetting
         $this->text_field = $text;
     }
 
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         if (is_null($value)) {
             $value = array();
@@ -64,7 +64,7 @@ class ProfileSettingSkill implements ProfileSetting
         return $value;
     }
 
-    public function save(ProfilePage &$page, $field, $value)
+    public function save(ProfilePage $page, $field, $value)
     {
         XDB::execute("DELETE FROM  profile_{$this->table}s
                             WHERE  pid = {?}",
@@ -108,14 +108,14 @@ class ProfilePageSkills extends ProfilePage
 {
     protected $pg_template = 'profile/skill.tpl';
 
-    public function __construct(PlWizard &$wiz)
+    public function __construct(PlWizard $wiz)
     {
         parent::__construct($wiz);
         $this->settings['competences'] = new ProfileSettingSkill('skill', 'id', 'cid', 'text_fr');
         $this->settings['langues'] = new ProfileSettingSkill('langskill', 'iso_639_2b', 'lid', 'language');
     }
 
-    public function _prepare(PlPage &$page, $id)
+    public function _prepare(PlPage $page, $id)
     {
         $page->assign('comp_list', XDB::iterator("SELECT  id, text_fr, FIND_IN_SET('titre',flags) AS title
                                                     FROM  profile_skill_enum"));

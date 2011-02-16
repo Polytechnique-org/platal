@@ -23,12 +23,12 @@ __autoload('PlWizard');
 
 class ReviewPage implements PlWizardPage
 {
-    public function __construct(PlWizard &$wiz) { }
+    public function __construct(PlWizard $wiz) { }
     public function template() { return 'platal/review.tpl'; }
     public function process(&$success) { }
     public function success() { }
 
-    public function prepare(PlPage &$page, $id)
+    public function prepare(PlPage $page, $id)
     {
         $wp = new PlWikiPage((@$GLOBALS['IS_XNET_SITE'] ? 'ReviewXnet' : 'Review') . '.' . ucfirst($id));
         $wp->buildCache();

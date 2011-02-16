@@ -30,7 +30,7 @@ class ForumsModule extends PLModule
         );
     }
 
-    function handler_banana(&$page, $group = null, $action = null, $artid = null)
+    function handler_banana($page, $group = null, $action = null, $artid = null)
     {
         $page->changeTpl('banana/index.tpl');
         $page->setTitle('Forums & PA');
@@ -44,7 +44,7 @@ class ForumsModule extends PLModule
         run_banana($page, 'ForumsBanana', $get);
     }
 
-    function handler_rss(&$page, $group, $alias, $hash, $file = null)
+    function handler_rss($page, $group, $alias, $hash, $file = null)
     {
         if (is_null($file)) {
             if (is_null($hash)) {
@@ -63,7 +63,7 @@ class ForumsModule extends PLModule
         exit;
     }
 
-    function handler_forums_bans(&$page, $action = 'list', $id = null)
+    function handler_forums_bans($page, $action = 'list', $id = null)
     {
         $page->setTitle('Administration - Bannissements des forums');
         $page->assign('title', 'Gestion des mises au ban');
@@ -77,7 +77,7 @@ class ForumsModule extends PLModule
         $page->changeTpl('forums/admin.tpl');
     }
 
-    static function run_banana(&$page, $params = null)
+    static function run_banana($page, $params = null)
     {
         $page->changeTpl('banana/index.tpl');
         $page->setTitle('Forums & PA');

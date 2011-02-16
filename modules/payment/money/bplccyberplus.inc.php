@@ -55,7 +55,7 @@ class BPLCCyberPlus
     // }}}
     // {{{ function form()
 
-    function prepareform(&$pay)
+    function prepareform($pay)
     {
         global $globals, $platal;
         $log = S::v('log');

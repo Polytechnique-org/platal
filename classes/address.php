@@ -364,7 +364,7 @@ class Address
         return $this->phones;
     }
 
-    public function addPhone(Phone &$phone)
+    public function addPhone(Phone $phone)
     {
         if ($phone->link_type == Phone::LINK_ADDRESS && $phone->pid == $this->pid) {
             $this->phones[$phone->uniqueId()] = $phone;
@@ -586,7 +586,7 @@ class Address
         $this->text = trim($this->text);
         $this->phones = Phone::formatFormArray($this->phones, $this->error, new ProfileVisibility($this->pub));
         if ($this->removed == 1) {
-            if (S::user()->checkPerms('directory_ax') && Phone::hasPrivate($this->phones)) {
+            if (!S::user()->checkPerms('directory_private') && Phone::hasPrivate($this->phones)) {
                 Platal::page()->trigWarning("L'adresse ne peut être supprimée car elle contient des informations pour lesquelles vous n'avez le droit d'édition.");
             } else  {
                 $this->text = '';
@@ -601,14 +601,14 @@ class Address
             $this->error = !empty($this->geocodedText);
         }
         if ($format['stripGeocoding'] || ($this->type == self::LINK_COMPANY && $this->error) || $this->geocodeChosen === '0') {
-            $gmapsGeocoder = new GMapsGeocoder();
-            $gmapsGeocoder->stripGeocodingFromAddress($this);
             if ($this->geocodeChosen === '0') {
                 $mailer = new PlMailer('profile/geocoding.mail.tpl');
                 $mailer->assign('text', $this->text);
                 $mailer->assign('geoloc', $this->geocodedText);
                 $mailer->send();
             }
+            $gmapsGeocoder = new GMapsGeocoder();
+            $gmapsGeocoder->stripGeocodingFromAddress($this);
         }
         if ($this->countryId == '') {
             $this->countryId = null;

@@ -43,7 +43,7 @@ class PhotoReq extends ProfileValidate
     // }}}
     // {{{ constructor
 
-    public function __construct(User &$_user, Profile &$_profile, PlUpload &$upload, $_stamp = 0)
+    public function __construct(User $_user, Profile $_profile, PlUpload $upload, $_stamp = 0)
     {
         parent::__construct($_user, $_profile, true, 'photo', $_stamp);
         $this->read($upload);
@@ -52,7 +52,7 @@ class PhotoReq extends ProfileValidate
     // }}}
     // {{{ function read
 
-    private function read(PlUpload &$upload)
+    private function read(PlUpload $upload)
     {
         $this->valid = $upload->resizeImage(240, 300, 160, 0, SIZE_MAX);
         if (!$this->valid) {

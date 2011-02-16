@@ -30,7 +30,7 @@ class ForumsBanana extends Banana
 {
     private $user;
 
-    public function __construct(User &$user, $params = null)
+    public function __construct(User $user, $params = null)
     {
         $this->user = &$user;
 

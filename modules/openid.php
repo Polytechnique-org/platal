@@ -70,7 +70,7 @@ class OpenidModule extends PLModule
         );
     }
 
-    function handler_openid(&$page, $login = null)
+    function handler_openid($page, $login = null)
     {
         $this->load('openid.inc.php');
         $requested_user = User::getSilent($login);
@@ -133,7 +133,7 @@ class OpenidModule extends PLModule
         pl_redirect('');
     }
 
-    function handler_melix(&$page, $login = null)
+    function handler_melix($page, $login = null)
     {
         $this->load('openid.inc.php');
 
@@ -148,7 +148,7 @@ class OpenidModule extends PLModule
         }
     }
 
-    function handler_xrds(&$page, $login = null)
+    function handler_xrds($page, $login = null)
     {
         $this->load('openid.inc.php');
         $requested_user = User::getSilent($login);
@@ -163,7 +163,7 @@ class OpenidModule extends PLModule
         }
     }
 
-    function handler_trust(&$page)
+    function handler_trust($page)
     {
         $this->load('openid.inc.php');
         $server = new OpenId();
@@ -203,7 +203,7 @@ class OpenidModule extends PLModule
         }
     }
 
-    function handler_trusted(&$page, $action = 'list', $id = null)
+    function handler_trusted($page, $action = 'list', $id = null)
     {
         $page->setTitle('Sites tiers de confiance');
         $page->assign('title', 'Mes sites tiers de confiance pour OpenId');
@@ -215,7 +215,7 @@ class OpenidModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
 
-    function handler_admin_trusted(&$page, $action = 'list', $id = null)
+    function handler_admin_trusted($page, $action = 'list', $id = null)
     {
         $page->setTitle('Sites tiers de confiance');
         $page->assign('title', 'Sites tiers de confiance globaux pour OpenId');

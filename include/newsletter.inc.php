@@ -174,7 +174,7 @@ class NewsLetter
             }
         }
 
-        return new NLIssue($id, &$this);
+        return new NLIssue($id, $this);
     }
 
     /** Create a new, empty, pending newsletter issue
@@ -831,9 +831,9 @@ class NLIssue
     }
 
     /** Save an article
-     * @p &$a A reference to a NLArticle object (will be modified once saved)
+     * @p $a A reference to a NLArticle object (will be modified once saved)
      */
-    public function saveArticle(&$a)
+    public function saveArticle($a)
     {
         $this->fetchArticles();
 
@@ -927,7 +927,7 @@ class NLIssue
      * @p $page Smarty object
      * @return Either 'true' (if CSS was added to a page) or the raw CSS to add (when $page is null)
      */
-    public function css(&$page = null)
+    public function css($page = null)
     {
         if (!is_null($page)) {
             $page->addCssLink($this->nl->cssFile());
@@ -942,7 +942,7 @@ class NLIssue
      * @p $page Smarty object (using the $this->nl->tplFile() template)
      * @p $user User to use when rendering the template
      */
-    public function toText(&$page, $user)
+    public function toText($page, $user)
     {
         $this->fetchArticles();
 
@@ -959,7 +959,7 @@ class NLIssue
      * @p $page Smarty object (using the $this->nl->tplFile() template)
      * @p $user User to use when rendering the template
      */
-    public function toHtml(&$page, $user)
+    public function toHtml($page, $user)
     {
         $this->fetchArticles();
 
@@ -975,7 +975,7 @@ class NLIssue
     /** Set all 'common' data for the page (those which are required for both web and email rendering)
      * @p $smarty Smarty object (e.g page) which should be filled
      */
-    protected function assignData(&$smarty)
+    protected function assignData($smarty)
     {
         $this->fetchArticles();
 

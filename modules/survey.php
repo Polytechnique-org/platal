@@ -44,7 +44,7 @@ class SurveyModule extends PLModule
         $page->addJsLink('survey.js');
     }
 
-    function handler_index(&$page, $action = null)
+    function handler_index($page, $action = null)
     {
         $this->setup_page($page);
 

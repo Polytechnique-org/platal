@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function smarty_function_display_phones($param, &$smarty)
+function smarty_function_display_phones($param, $smarty)
 {
     $txthtml = "";
     if (count($param['tels'])) {

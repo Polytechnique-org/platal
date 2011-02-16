@@ -39,7 +39,7 @@ class NamesReq extends ProfileValidate
     // }}}
     // {{{ constructor
 
-    public function __construct(User &$_user, Profile &$_profile, $_search_names, $_private_name_end)
+    public function __construct(User $_user, Profile $_profile, $_search_names, $_private_name_end)
     {
         parent::__construct($_user, $_profile, true, 'usage');
         require_once 'name.func.inc.php';

@@ -39,7 +39,7 @@ class CarnetModule extends PLModule
         );
     }
 
-    function _add_rss_link(&$page)
+    function _add_rss_link($page)
     {
         if (!S::hasAuthToken()) {
             return;
@@ -48,14 +48,14 @@ class CarnetModule extends PLModule
                           '/carnet/rss/' . S::v('hruid') . '/' . S::user()->token . '/rss.xml');
     }
 
-    function handler_index(&$page)
+    function handler_index($page)
     {
         $page->changeTpl('carnet/index.tpl');
         $page->setTitle('Mon carnet');
         $this->_add_rss_link($page);
     }
 
-    function handler_panel(&$page)
+    function handler_panel($page)
     {
         $page->changeTpl('carnet/panel.tpl');
 
@@ -79,7 +79,7 @@ class CarnetModule extends PLModule
         $this->_add_rss_link($page);
     }
 
-    private function getSinglePromotion(PlPage &$page, $promo)
+    private function getSinglePromotion(PlPage $page, $promo)
     {
         if (!(is_int($promo) || ctype_digit($promo)) || $promo < 1920 || $promo > date('Y')) {
             $page->trigError('Promotion invalide&nbsp;: ' . $promo . '.');
@@ -88,7 +88,7 @@ class CarnetModule extends PLModule
         return (int)$promo;
     }
 
-    private function getPromo(PlPage &$page, $promo)
+    private function getPromo(PlPage $page, $promo)
     {
         if (strpos($promo, '-') === false) {
             $promo = $this->getSinglePromotion($page, $promo);
@@ -119,7 +119,7 @@ class CarnetModule extends PLModule
         return $array;
     }
 
-    private function addPromo(PlPage &$page, $promo)
+    private function addPromo(PlPage $page, $promo)
     {
         $promos = $this->getPromo($page, $promo);
         if (!$promos || count($promos) == 0) {
@@ -135,7 +135,7 @@ class CarnetModule extends PLModule
         Platal::session()->updateNbNotifs();
     }
 
-    private function delPromo(PlPage &$page, $promo)
+    private function delPromo(PlPage $page, $promo)
     {
         $promos = $this->getPromo($page, $promo);
         if (!$promos || count($promos) == 0) {
@@ -152,7 +152,7 @@ class CarnetModule extends PLModule
         Platal::session()->updateNbNotifs();
     }
 
-    public function addNonRegistered(PlPage &$page, PlUser &$user)
+    public function addNonRegistered(PlPage $page, PlUser $user)
     {
         XDB::execute('INSERT IGNORE INTO  watch_nonins (uid, ni_id)
                                   VALUES  ({?}, {?})', S::i('uid'), $user->id());
@@ -160,7 +160,7 @@ class CarnetModule extends PLModule
         Platal::session()->updateNbNotifs();
     }
 
-    public function delNonRegistered(PlPage &$page, PlUser &$user)
+    public function delNonRegistered(PlPage $page, PlUser $user)
     {
         XDB::execute('DELETE FROM  watch_nonins
                             WHERE  uid = {?} AND ni_id = {?}',
@@ -169,7 +169,7 @@ class CarnetModule extends PLModule
         Platal::session()->updateNbNotifs();
     }
 
-    public function handler_notifs(&$page, $action = null, $arg = null)
+    public function handler_notifs($page, $action = null, $arg = null)
     {
         $page->changeTpl('carnet/notifs.tpl');
 
@@ -265,7 +265,7 @@ class CarnetModule extends PLModule
         $page->assign('actions', $actions);
     }
 
-    function handler_contacts(&$page, $action = null, $subaction = null, $ssaction = null)
+    function handler_contacts($page, $action = null, $subaction = null, $ssaction = null)
     {
         $page->setTitle('Mes contacts');
         $this->_add_rss_link($page);
@@ -332,7 +332,7 @@ class CarnetModule extends PLModule
         //}
     }
 
-    function handler_pdf(&$page, $arg0 = null, $arg1 = null)
+    function handler_pdf($page, $arg0 = null, $arg1 = null)
     {
         $this->load('contacts.pdf.inc.php');
         $user = S::user();
@@ -358,7 +358,7 @@ class CarnetModule extends PLModule
         exit;
     }
 
-    function handler_rss(PlPage& $page, PlUser& $user)
+    function handler_rss(PlPage $page, PlUser $user)
     {
         $this->load('feed.inc.php');
         $feed = new CarnetFeed();
@@ -378,7 +378,7 @@ class CarnetModule extends PLModule
         );
     }
 
-    function handler_csv_birthday(PlPage& $page, PlUser& $user)
+    function handler_csv_birthday(PlPage $page, PlUser $user)
     {
         $page->changeTpl('carnet/calendar.outlook.tpl', NO_SKIN);
         $filter = new UserFilter(new UFC_Contact($user));
@@ -402,7 +402,7 @@ class CarnetModule extends PLModule
         pl_content_headers("text/comma-separated-values;charset=".$encoding);
     }
 
-    function handler_ical(PlPage& $page, PlUser& $user)
+    function handler_ical(PlPage $page, PlUser $user)
     {
         require_once 'ical.inc.php';
         $page->changeTpl('carnet/calendar.tpl', NO_SKIN);
@@ -415,7 +415,7 @@ class CarnetModule extends PLModule
         pl_content_headers("text/calendar");
     }
 
-    function handler_vcard(&$page, $photos = null)
+    function handler_vcard($page, $photos = null)
     {
         $pf = new ProfileFilter(new UFC_Contact(S::user()));
         $vcard = new VCard($photos == 'photos');
@@ -423,7 +423,7 @@ class CarnetModule extends PLModule
         $vcard->show();
     }
 
-    function handler_csv(PlPage& $page, PlUser& $user)
+    function handler_csv(PlPage $page, PlUser $user)
     {
         $page->changeTpl('carnet/mescontacts.outlook.tpl', NO_SKIN);
         $pf = new ProfileFilter(new UFC_Contact($user));

@@ -57,7 +57,7 @@ class ReminderProfileUpdate extends Reminder
         }
     }
 
-    public function Prepare(&$page)
+    public function Prepare($page)
     {
         parent::Prepare($page);
         $profile = $this->user->profile();
@@ -96,7 +96,7 @@ class ReminderProfileUpdate extends Reminder
         return new PlFlagSet($flags);
     }
 
-    public static function IsCandidate(User &$user, $candidate)
+    public static function IsCandidate(User $user, $candidate)
     {
         $profile = $user->profile();
         if (!$profile) {

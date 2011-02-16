@@ -124,7 +124,7 @@ class PaymentModule extends PLModule
         );
     }
 
-    function handler_payment(&$page, $ref = -1)
+    function handler_payment($page, $ref = -1)
     {
         global $globals;
 
@@ -185,7 +185,7 @@ class PaymentModule extends PLModule
         $page->assign('sex', S::user()->isFemale());
     }
 
-    function handler_cyber_return(&$page, $uid = null)
+    function handler_cyber_return($page, $uid = null)
     {
         /* reference banque (numero de transaction) */
         $champ901 = Env::s('CHAMP901');
@@ -283,7 +283,7 @@ class PaymentModule extends PLModule
         exit;
     }
 
-    function handler_cyber2_return(&$page, $uid = null)
+    function handler_cyber2_return($page, $uid = null)
     {
         global $globals, $platal;
 
@@ -381,7 +381,7 @@ class PaymentModule extends PLModule
         exit;
     }
 
-    function handler_paypal_return(&$page, $uid = null)
+    function handler_paypal_return($page, $uid = null)
     {
         $page->changeTpl('payment/retour_paypal.tpl');
 
@@ -477,7 +477,7 @@ class PaymentModule extends PLModule
         $page->assign('erreur', $erreur);
     }
 
-    function handler_xnet_payment(&$page, $pid = null)
+    function handler_xnet_payment($page, $pid = null)
     {
         global $globals;
 
@@ -589,7 +589,7 @@ class PaymentModule extends PLModule
         $page->assign('event', $event);
     }
 
-    function handler_admin(&$page, $action = 'list', $id = null) {
+    function handler_admin($page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Paiements');
         $page->assign('title', 'Gestion des télépaiements');
         $table_editor = new PLTableEditor('admin/payments','payments','id');
@@ -612,7 +612,7 @@ class PaymentModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
 
-    function handler_adm_transactions(&$page, $payment_id = null, $action = "list", $id = null) {
+    function handler_adm_transactions($page, $payment_id = null, $action = "list", $id = null) {
         // show transactions. FIXME: should not be modifiable
         $page->setTitle('Administration - Paiements - Transactions');
         $page->assign('title', "Liste des transactions pour le paiement {$payment_id}");
@@ -626,7 +626,7 @@ class PaymentModule extends PLModule
         $page->assign('readonly', 'readonly');     // don't show modification features
     }
 
-    function handler_adm_bankaccounts(&$page, $action = 'list', $id = null) {
+    function handler_adm_bankaccounts($page, $action = "list", $id = null) {
         // managment of bank account used for money transfert
         $page->setTitle('Administration - Paiements - RIBs');
         $page->assign('title', "Liste des RIBs");
@@ -647,7 +647,7 @@ class PaymentModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
 
-    function handler_adm_methods(&$page, $action = 'list', $id = null) {
+    function handler_adm_methods($page, $action = "list", $id = null) {
         // show and edit payment methods
         $page->setTitle('Administration - Paiements - Méthodes');
         $page->assign('title', 'Méthodes de paiement');
@@ -655,7 +655,7 @@ class PaymentModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
 
-    function handler_adm_reconcile(&$page, $step = 'list', $param = null) {
+    function handler_adm_reconcile($page, $step = 'list', $param = null) {
         // reconciles logs with transactions
         // FIXME: the admin is considered to be fair => he doesn't hack the $step value, nor other params
         $page->setTitle('Administration - Paiements - Réconciliations');
@@ -722,7 +722,7 @@ class PaymentModule extends PLModule
         }
     }
 
-    function handler_adm_importlogs(&$page, $step, $param = null) {
+    function handler_adm_importlogs($page, $step, $param = null) {
         $page->setTitle('Administration - Paiements - Réconciliations');
         $page->changeTpl('payment/reconcile.tpl');
         $page->assign('step', $step);
@@ -894,7 +894,7 @@ class PaymentModule extends PLModule
         }
     }
 
-    function handler_adm_transfers(&$page, $action = null, $id = null) {
+    function handler_adm_transfers($page, $action = null, $id = null) {
         // list/log all bank transfers and link them to individual transactions
 
         if (Post::has('generate')) {

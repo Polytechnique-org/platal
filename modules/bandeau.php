@@ -30,14 +30,14 @@ class BandeauModule extends PLModule
         );
     }
 
-    function handler_icone(&$page)
+    function handler_icone($page)
     {
         pl_cached_content_headers("image/png");
         readfile('../htdocs/images/x.png');
         exit();
     }
 
-    function handler_html(&$page, $login = '')
+    function handler_html($page, $login = '')
     {
         pl_cached_content_headers("text/html");
         $page->changeTpl('skin/common.bandeau.tpl', NO_SKIN);
@@ -46,7 +46,7 @@ class BandeauModule extends PLModule
         $page->assign('external', true);
     }
 
-    function handler_css(&$page)
+    function handler_css($page)
     {
         pl_cached_content_headers("text/css");
         readfile('../htdocs/css/bandeau.css');

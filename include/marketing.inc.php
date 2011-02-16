@@ -186,7 +186,7 @@ class Marketing
         }
     }
 
-    static public function relance(PlUser &$user, $nbx = -1)
+    static public function relance(PlUser $user, $nbx = -1)
     {
         global $globals;
 
@@ -282,7 +282,7 @@ class AnnuaireMarketing implements MarketingEngine
         return $this->personal_notes;
     }
 
-    protected function prepareText(PlPage &$page, array $user)
+    protected function prepareText(PlPage $page, array $user)
     {
         $page->assign('intro', $this->getIntro());
         $page->assign('u', $user);

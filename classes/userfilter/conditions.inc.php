@@ -1525,7 +1525,7 @@ class UFC_Mentor_Terms extends UserFilterCondition
 abstract class UFC_UserRelated extends UserFilterCondition
 {
     protected $user;
-    public function __construct(PlUser &$user)
+    public function __construct(PlUser $user)
     {
         $this->user =& $user;
     }
@@ -1570,7 +1570,7 @@ class UFC_WatchRegistration extends UFC_UserRelated
 class UFC_WatchPromo extends UFC_UserRelated
 {
     private $grade;
-    public function __construct(PlUser &$user, $grade = UserFilter::GRADE_ING)
+    public function __construct(PlUser $user, $grade = UserFilter::GRADE_ING)
     {
         parent::__construct($user);
         $this->grade = $grade;

@@ -47,7 +47,7 @@ class ListsModule extends PLModule
         );
     }
 
-    function prepare_client(&$page, $user = null)
+    function prepare_client($page, $user = null)
     {
         global $globals;
 
@@ -76,7 +76,7 @@ class ListsModule extends PLModule
         return array($subs, $mails);
     }
 
-    function handler_lists(&$page)
+    function handler_lists($page)
     {
         function filter_owner($list)
         {
@@ -132,7 +132,7 @@ class ListsModule extends PLModule
         }
     }
 
-    function handler_ajax(&$page, $list = null)
+    function handler_ajax($page, $list = null)
     {
         pl_content_headers("text/html");
         $domain = $this->prepare_client($page);
@@ -162,7 +162,7 @@ class ListsModule extends PLModule
         $page->assign_by_ref('liste', $liste);
     }
 
-    function handler_create(&$page)
+    function handler_create($page)
     {
         global $globals;
 
@@ -308,7 +308,7 @@ class ListsModule extends PLModule
         }
     }
 
-    function handler_members(&$page, $liste = null)
+    function handler_members($page, $liste = null)
     {
         if (is_null($liste)) {
             return PL_NOT_FOUND;
@@ -347,7 +347,7 @@ class ListsModule extends PLModule
         }
     }
 
-    function handler_csv(PlPage &$page, $liste = null)
+    function handler_csv(PlPage $page, $liste = null)
     {
         if (is_null($liste)) {
             return PL_NOT_FOUND;
@@ -362,7 +362,7 @@ class ListsModule extends PLModule
         exit;
     }
 
-    function handler_annu(&$page, $liste = null, $action = null, $subaction = null)
+    function handler_annu($page, $liste = null, $action = null, $subaction = null)
     {
         if (is_null($liste)) {
             return PL_NOT_FOUND;
@@ -411,7 +411,7 @@ class ListsModule extends PLModule
         $page->assign_by_ref('owners',  $moderos);
     }
 
-    function handler_archives(&$page, $liste = null, $action = null, $artid = null)
+    function handler_archives($page, $liste = null, $action = null, $artid = null)
     {
         global $globals;
 
@@ -440,7 +440,7 @@ class ListsModule extends PLModule
         }
     }
 
-    function handler_rss(&$page, $liste = null, $alias = null, $hash = null)
+    function handler_rss($page, $liste = null, $alias = null, $hash = null)
     {
         if (!$liste) {
             return PL_NOT_FOUND;
@@ -480,7 +480,7 @@ class ListsModule extends PLModule
                             $liste, $domain, $mid, S::i('uid'), $action, Post::v('reason'));
     }
 
-    function handler_moderate(&$page, $liste = null)
+    function handler_moderate($page, $liste = null)
     {
         if (is_null($liste)) {
              return PL_NOT_FOUND;
@@ -597,7 +597,7 @@ class ListsModule extends PLModule
         }
     }
 
-    function handler_admin(&$page, $liste = null)
+    function handler_admin($page, $liste = null)
     {
         global $globals;
 
@@ -730,7 +730,7 @@ class ListsModule extends PLModule
         }
     }
 
-    function handler_options(&$page, $liste = null)
+    function handler_options($page, $liste = null)
     {
         if (is_null($liste)) {
             return PL_NOT_FOUND;
@@ -797,7 +797,7 @@ class ListsModule extends PLModule
         }
     }
 
-    function handler_delete(&$page, $liste = null)
+    function handler_delete($page, $liste = null)
     {
         global $globals;
         if (is_null($liste)) {
@@ -844,7 +844,7 @@ class ListsModule extends PLModule
         }
     }
 
-    function handler_soptions(&$page, $liste = null)
+    function handler_soptions($page, $liste = null)
     {
         if (is_null($liste)) {
             return PL_NOT_FOUND;
@@ -873,7 +873,7 @@ class ListsModule extends PLModule
         }
     }
 
-    function handler_check(&$page, $liste = null)
+    function handler_check($page, $liste = null)
     {
         if (is_null($liste)) {
             return PL_NOT_FOUND;
@@ -896,7 +896,7 @@ class ListsModule extends PLModule
         }
     }
 
-    function handler_admin_all(&$page)
+    function handler_admin_all($page)
     {
         $page->changeTpl('lists/admin_all.tpl');
         $page->setTitle('Administration - Mailing lists');

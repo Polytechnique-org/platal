@@ -35,7 +35,7 @@ class XnetEventsModule extends PLModule
         );
     }
 
-    function handler_events(&$page, $archive = null)
+    function handler_events($page, $archive = null)
     {
         global $globals;
 
@@ -175,7 +175,7 @@ class XnetEventsModule extends PLModule
         $page->assign('undisplayed_events', $undisplayed_events);
     }
 
-    function handler_sub(&$page, $eid = null)
+    function handler_sub($page, $eid = null)
     {
         $this->load('xnetevents.inc.php');
         $page->changeTpl('xnetevents/subscribe.tpl');
@@ -290,7 +290,7 @@ class XnetEventsModule extends PLModule
         $page->assign('event', get_event_detail($eid));
     }
 
-    function handler_csv(&$page, $eid = null, $item_id = null)
+    function handler_csv($page, $eid = null, $item_id = null)
     {
         $this->load('xnetevents.inc.php');
 
@@ -320,7 +320,7 @@ class XnetEventsModule extends PLModule
         $page->assign('tout', !Env::v('item_id', false));
     }
 
-    function handler_ical(&$page, $eid = null)
+    function handler_ical($page, $eid = null)
     {
         global $globals;
 
@@ -352,7 +352,7 @@ class XnetEventsModule extends PLModule
         pl_content_headers("text/calendar");
     }
 
-    function handler_edit(&$page, $eid = null)
+    function handler_edit($page, $eid = null)
     {
         global $globals;
 
@@ -535,7 +535,7 @@ class XnetEventsModule extends PLModule
         $page->assign('url_ref', $eid);
     }
 
-    function handler_admin(&$page, $eid = null, $item_id = null)
+    function handler_admin($page, $eid = null, $item_id = null)
     {
         global $globals;
 

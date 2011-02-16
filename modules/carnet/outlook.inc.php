@@ -25,7 +25,7 @@ class Outlook {
         'fr' => array("Nom","Titre","Prénom","Deuxième prénom","Nom","Suffixe","Surnom","Société ","Service ","Titre","Rue (bureau)","Rue (bureau) 2","Rue (bureau) 3","Ville (bureau)","Dép/Région (bureau)","Code postal (bureau)","Pays (bureau)","Rue (domicile)","Rue (domicile) 2","Rue (domicile) 3","Ville (domicile)","Dép/Région (domicile)","Code postal (domicile)","Pays (domicile)","Rue (autre)","Rue (autre) 2","Rue (autre) 3","Ville (autre)","Dép/Région (autre)","Code postal (autre)","Pays (autre)","Téléphone de l'assistant(e)","Télécopie (bureau)","Téléphone (bureau)","Téléphone 2 (bureau)","Rappel","Téléphone (voiture)","Téléphone société","Télécopie (domicile)","Téléphone (domicile)","Téléphone 2 (domicile)","RNIS","Tél. mobile","Télécopie (autre)","Téléphone (autre)","Récepteur de radiomessagerie","Téléphone principal","Radio téléphone","Téléphone TDD/TTY","Télex","Adresse de messagerie","Type de messagerie","Nom complet de l'adresse de messagerie","Adresse de messagerie 2","Type de messagerie 2","Nom complet de l'adresse de messagerie 2","Adresse de messagerie 3","Type de messagerie 3","Nom complet de l'adresse de messagerie 3","Anniversaire","Anniversaire de mariage ou fête","Autre boîte postale","B.P. professionnelle","Boîte postale du domicile","Bureau","Catégories","Code gouvernement","Compte","Conjoint(e)","Critère de diffusion","Disponibilité Internet","Emplacement","Enfants","Informations facturation","Initiales","Kilométrage","Langue","Mots clés","Nom de l'assistant(e)","Notes","Numéro d'identification de l'organisation","Page Web","Passe-temps","Priorité","Privé","Profession","Recommandé par","Responsable","Serveur d'annuaire","Sexe","Utilisateur 1","Utilisateur 2","Utilisateur 3","Utilisateur 4"),
         );
 
-    private static function add_address(&$adr, &$contact, $adr_type = 'autre') {
+    private static function add_address($adr, $contact, $adr_type = 'autre') {
         $contact['Rue ('.$adr_type.')'] = $adr->text;
         $contact['Code postal ('.$adr_type.')'] = $adr->postalCode;
         $contact['Ville ('.$adr_type.')'] = $adr->locality;
@@ -42,7 +42,7 @@ class Outlook {
         }
     }
 
-    private static function profile_to_contact(&$p) {
+    private static function profile_to_contact($p) {
         $contact = array(
             'Prénom' => $p->firstName(),
             'Nom' => $p->lastName(),
@@ -54,15 +54,15 @@ class Outlook {
         // Homes
         $adrs = $p->iterAddresses(Profile::ADDRESS_PERSO);
         if ($adr = $adrs->next()) {
-            Outlook::add_address(&$adr, &$contact, 'domicile');
+            Outlook::add_address($adr, $contact, 'domicile');
         }
         if ($adr = $adrs->next()) {
-            Outlook::add_address(&$adr, &$contact, 'autre');
+            Outlook::add_address($adr, $contact, 'autre');
         }
         // Pro
         $adrs = $p->iterAddresses(Profile::ADDRESS_PRO);
         if ($adr = $adrs->next()) {
-            Outlook::add_address(&$adr, &$contact, 'bureau');
+            Outlook::add_address($adr, $contact, 'bureau');
         }
         $mainjob = $p->getMainJob();
         if ($mainjob && $mainjob->company) {
@@ -131,7 +131,7 @@ class Outlook {
         }
         echo "\r\n";
         foreach ($profiles as &$p) {
-            $values = Outlook::profile_to_contact(&$p);
+            $values = Outlook::profile_to_contact($p);
             foreach ($fields as $i => $k) {
                 if ($i != 0) {
                     echo ',';

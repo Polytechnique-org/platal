@@ -124,7 +124,7 @@ class GoogleAppsAccount
 
     // Constructs the account object, by retrieving all informations from the
     // GApps account table, from GApps job queue, and from plat/al validation queue.
-    public function __construct(User &$user)
+    public function __construct(User $user)
     {
         $this->user = &$user;
         if (!$this->user || !$this->user->login()) {

@@ -60,7 +60,7 @@ class ReminderPromotionMl extends Reminder
         return "Inscription à la liste de diffusion de ta promotion";
     }
 
-    public static function IsCandidate(User &$user, $candidate)
+    public static function IsCandidate(User $user, $candidate)
     {
         $profile = $user->profile();
         if (!$profile) {

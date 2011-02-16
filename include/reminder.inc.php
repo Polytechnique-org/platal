@@ -22,7 +22,7 @@
 // Base class for a reminder; it offers the factory for creating valid reminders
 // tailored for a given user, as well as base methods for reminder impls.
 // Sub-classes should define at least the abstract methods, and the static
-// IsCandidate method (prototype: (User &$user)).
+// IsCandidate method (prototype: (User $user)).
 //
 // Usage:
 //   // Instantiates and returns a valid Reminder object for the user.
@@ -47,7 +47,7 @@ abstract class Reminder
 
     // Constructs the Reminder object from a mandatory User instance, a list of
     // key-value pairs from the `reminder_type` and `reminder` tables.
-    function __construct(User &$user, array $type)
+    function __construct(User $user, array $type)
     {
         $this->user = &$user;
 
@@ -103,7 +103,7 @@ abstract class Reminder
 
     // Displays a reduced version of the reminder and notifies that the action
     // has been taken into account.
-    public function NotifiesAction(&$page)
+    public function NotifiesAction($page)
     {
         pl_content_headers("text/html");
         $page->changeTpl('reminder/notification.tpl', NO_SKIN);
@@ -112,7 +112,7 @@ abstract class Reminder
 
     // Displays the reminder as a standalone html snippet. It should be used
     // when the reminder is the only output of a page.
-    public function DisplayStandalone(&$page, $previous_reminder = null)
+    public function DisplayStandalone($page, $previous_reminder = null)
     {
         pl_content_headers("text/html");
         $page->changeTpl('reminder/base.tpl', NO_SKIN);
@@ -123,7 +123,7 @@ abstract class Reminder
     }
 
     // Prepares the display by assigning template variables.
-    public function Prepare(&$page)
+    public function Prepare($page)
     {
         $page->assign_by_ref('reminder', $this);
     }
@@ -165,7 +165,7 @@ abstract class Reminder
     // Static factories -------------------------------------------------------
 
     // Returns a chosen class using the user data from |user|, and from the database.
-    public static function GetCandidateReminder(User &$user)
+    public static function GetCandidateReminder(User $user)
     {
         $res = XDB::query('SELECT  rt.*, r.status, r.remind_last
                              FROM  reminder_type AS rt
@@ -194,7 +194,7 @@ abstract class Reminder
 
     // Returns an instantiation of the reminder class which name is |name|, using
     // user data from |user|, and from the database.
-    public static function GetByName(User &$user, $name)
+    public static function GetByName(User $user, $name)
     {
         if (!($class = self::GetClassName($name))) {
             return null;

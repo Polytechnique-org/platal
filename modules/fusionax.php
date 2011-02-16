@@ -56,7 +56,7 @@ class FusionAxModule extends PLModule
     }
 
 
-    function handler_index(&$page)
+    function handler_index($page)
     {
         if (Platal::globals()->merge->state == 'pending') {
             $page->changeTpl('fusionax/index.tpl');
@@ -87,7 +87,7 @@ class FusionAxModule extends PLModule
     }
 
     /** Import de l'annuaire de l'AX depuis l'export situé dans le home de jacou */
-    function handler_import(&$page, $action = 'index', $file = '')
+    function handler_import($page, $action = 'index', $file = '')
     {
         if ($action == 'index') {
             $page->changeTpl('fusionax/import.tpl');
@@ -252,7 +252,7 @@ class FusionAxModule extends PLModule
         exit;
     }
 
-    function handler_view(&$page, $action = '')
+    function handler_view($page, $action = '')
     {
         $page->changeTpl('fusionax/view.tpl');
         if ($action == 'create') {
@@ -364,7 +364,7 @@ class FusionAxModule extends PLModule
     }
 
     /** Module de mise en correspondance les ids */
-    function handler_ids(&$page, $part = 'main', $pid = null, $ax_id = null)
+    function handler_ids($page, $part = 'main', $pid = null, $ax_id = null)
     {
         $nbToLink = 100;
         $page->assign('xorg_title', 'Polytechnique.org - Fusion - Mise en correspondance simple');
@@ -451,7 +451,7 @@ class FusionAxModule extends PLModule
         }
     }
 
-    function handler_deceased(&$page, $action = '')
+    function handler_deceased($page, $action = '')
     {
         if ($action == 'updateXorg') {
             XDB::execute('UPDATE  fusionax_deceased
@@ -494,7 +494,7 @@ class FusionAxModule extends PLModule
         $page->assign('deceasedDifferent', $res);
     }
 
-    function handler_promo(&$page, $action = '')
+    function handler_promo($page, $action = '')
     {
         $page->changeTpl('fusionax/promo.tpl');
         $res = XDB::iterator('SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
@@ -534,7 +534,7 @@ class FusionAxModule extends PLModule
         $page->assign('nbMissmatchingPromosTotal', $nbMissmatchingPromos);
     }
 
-    function handler_names(&$page, $action = '')
+    function handler_names($page, $action = '')
     {
         $page->changeTpl('fusionax/names.tpl');
 
@@ -578,7 +578,7 @@ class FusionAxModule extends PLModule
 
     }
 
-    function handler_edu(&$page, $action = '')
+    function handler_edu($page, $action = '')
     {
         $page->changeTpl('fusionax/education.tpl');
 
@@ -609,7 +609,7 @@ class FusionAxModule extends PLModule
         $page->assign('missingCoupleCount', $missingCouple->total());
     }
 
-    function handler_corps(&$page)
+    function handler_corps($page)
     {
         $page->changeTpl('fusionax/corps.tpl');
 
@@ -630,7 +630,7 @@ class FusionAxModule extends PLModule
         $page->assign('missingGradeCount', $missingGrade->total());
     }
 
-    function handler_issues_deathdate(&$page, $action = '')
+    function handler_issues_deathdate($page, $action = '')
     {
         $page->changeTpl('fusionax/deathdate_issues.tpl');
         if ($action == 'edit') {
@@ -672,7 +672,7 @@ class FusionAxModule extends PLModule
         $page->assign('total', count($issues));
     }
 
-    function handler_issues_promo(&$page, $action = '')
+    function handler_issues_promo($page, $action = '')
     {
         $page->changeTpl('fusionax/promo_issues.tpl');
         if ($action == 'edit') {
@@ -719,7 +719,7 @@ class FusionAxModule extends PLModule
         $page->assign('total', count($issues));
     }
 
-    function handler_issues(&$page, $action = '')
+    function handler_issues($page, $action = '')
     {
         static $issueList = array(
             'name'      => 'noms',

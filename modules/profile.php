@@ -74,12 +74,12 @@ class ProfileModule extends PLModule
     /* Function needed for compatibility reasons.
      * TODO: removes calls to fiche.php?user=blah.machin.2083 and then removes this.
      */
-    function handler_fiche(&$page)
+    function handler_fiche($page)
     {
         return $this->handler_profile($page, Env::v('user'));
     }
 
-    function handler_photo(&$page, $x = null, $req = null)
+    function handler_photo($page, $x = null, $req = null)
     {
         if (!$x || !($profile = Profile::get($x))) {
             return PL_NOT_FOUND;
@@ -97,7 +97,7 @@ class ProfileModule extends PLModule
         $photo->send();
     }
 
-    function handler_medal(&$page, $mid)
+    function handler_medal($page, $mid)
     {
         $thumb = ($mid == 'thumb');
         $mid = $thumb ? @func_get_arg(2) : $mid;
@@ -114,7 +114,7 @@ class ProfileModule extends PLModule
         exit;
     }
 
-    function handler_name_info(&$page)
+    function handler_name_info($page)
     {
         pl_content_headers("text/html");
         $page->changeTpl('profile/name_info.tpl', SIMPLE);
@@ -127,7 +127,7 @@ class ProfileModule extends PLModule
         $page->assign('types', $res);
     }
 
-    function handler_networking(&$page, $mid)
+    function handler_networking($page, $mid)
     {
         $res = XDB::query("SELECT  icon
                              FROM  profile_networking_enum
@@ -162,7 +162,7 @@ class ProfileModule extends PLModule
         return $profile;
     }
 
-    function handler_photo_change(&$page, $hrpid = null)
+    function handler_photo_change($page, $hrpid = null)
     {
         global $globals;
         $profile = $this->findProfile($hrpid);
@@ -228,7 +228,7 @@ class ProfileModule extends PLModule
         $page->assign('has_trombi_x', file_exists($trombi_x));
     }
 
-    function handler_profile(&$page, $id = null)
+    function handler_profile($page, $id = null)
     {
         // Checks if the identifier corresponds to an actual profile. Numeric
         // identifiers canonly be user by logged users.
@@ -296,7 +296,7 @@ class ProfileModule extends PLModule
         header('Last-Modified: ' . date('r', strtotime($profile->last_change)));
     }
 
-    function handler_ax(&$page, $user = null)
+    function handler_ax($page, $user = null)
     {
         $user = Profile::get($user);
         if (!$user) {
@@ -308,7 +308,7 @@ class ProfileModule extends PLModule
         http_redirect("http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&ancc_id=" . $user->ax_id);
     }
 
-    function handler_p_edit(&$page, $hrpid = null, $opened_tab = null, $mode = null, $success = null)
+    function handler_p_edit($page, $hrpid = null, $opened_tab = null, $mode = null, $success = null)
     {
         global $globals;
 
@@ -360,14 +360,14 @@ class ProfileModule extends PLModule
        }
     }
 
-    function handler_education_js(&$page)
+    function handler_education_js($page)
     {
         pl_cached_content_headers("text/javascript", "utf-8");
         $page->changeTpl('profile/education.js.tpl', NO_SKIN);
         require_once 'education.func.inc.php';
     }
 
-    function handler_grades_js(&$page)
+    function handler_grades_js($page)
     {
         pl_cached_content_headers("text/javascript", "utf-8");
         $page->changeTpl('profile/grades.js.tpl', NO_SKIN);
@@ -390,7 +390,7 @@ class ProfileModule extends PLModule
         $page->assign('medal_list', $mlist);
     }
 
-    function handler_ajax_address(&$page, $id)
+    function handler_ajax_address($page, $id)
     {
         pl_content_headers("text/html");
         $page->changeTpl('profile/adresses.address.tpl', NO_SKIN);
@@ -398,7 +398,7 @@ class ProfileModule extends PLModule
         $page->assign('address', array());
     }
 
-    function handler_ajax_tel(&$page, $prefid, $prefname, $telid, $subField, $mainField, $mainId)
+    function handler_ajax_tel($page, $prefid, $prefname, $telid, $subField, $mainField, $mainId)
     {
         pl_content_headers("text/html");
         $page->changeTpl('profile/phone.tpl', NO_SKIN);
@@ -414,7 +414,7 @@ class ProfileModule extends PLModule
         }
     }
 
-    function handler_ajax_edu(&$page, $eduid, $class)
+    function handler_ajax_edu($page, $eduid, $class)
     {
         pl_content_headers("text/html");
         $page->changeTpl('profile/general.edu.tpl', NO_SKIN);
@@ -427,7 +427,7 @@ class ProfileModule extends PLModule
         require_once "education.func.inc.php";
     }
 
-    function handler_ajax_medal(&$page, $id)
+    function handler_ajax_medal($page, $id)
     {
         pl_content_headers("text/html");
         $page->changeTpl('profile/deco.medal.tpl', NO_SKIN);
@@ -435,7 +435,7 @@ class ProfileModule extends PLModule
         $page->assign('medal', array('valid' => 0, 'grade' => 0));
     }
 
-    function handler_ajax_job(&$page, $id)
+    function handler_ajax_job($page, $id)
     {
         pl_content_headers("text/html");
         $page->changeTpl('profile/jobs.job.tpl', NO_SKIN);
@@ -458,12 +458,12 @@ class ProfileModule extends PLModule
      * @param Env::v('treeid') tree id that will be given as first argument of attrfunc function
      * the second argument will be the chosen job term id and the third one the chosen job full name.
      */
-    function handler_ajax_tree_job_terms(&$page, $filter = JobTerms::ALL)
+    function handler_ajax_tree_job_terms($page, $filter = JobTerms::ALL)
     {
-        JobTerms::ajaxGetBranch(&$page, $filter);
+        JobTerms::ajaxGetBranch($page, $filter);
     }
 
-    function handler_ajax_skill(&$page, $cat, $id)
+    function handler_ajax_skill($page, $cat, $id)
     {
         pl_content_headers("text/html");
         $page->changeTpl('profile/skill.skill.tpl', NO_SKIN);
@@ -483,7 +483,7 @@ class ProfileModule extends PLModule
         }
     }
 
-    function handler_ajax_searchname(&$page, $id, $isFemale)
+    function handler_ajax_searchname($page, $id, $isFemale)
     {
         pl_content_headers("text/html");
         $page->changeTpl('profile/general.searchname.tpl', NO_SKIN);
@@ -496,7 +496,7 @@ class ProfileModule extends PLModule
         $page->assign('i', $id);
     }
 
-    function handler_ajax_buildnames(&$page, $data, $isFemale)
+    function handler_ajax_buildnames($page, $data, $isFemale)
     {
         pl_content_headers("text/html");
         $page->changeTpl('profile/general.buildnames.tpl', NO_SKIN);
@@ -504,7 +504,7 @@ class ProfileModule extends PLModule
         $page->assign('names', build_javascript_names($data, $isFemale));
     }
 
-    function handler_referent(&$page, $pf)
+    function handler_referent($page, $pf)
     {
         $page->changeTpl('profile/fiche_referent.tpl', SIMPLE);
 
@@ -524,7 +524,7 @@ class ProfileModule extends PLModule
         $page->assign('pays', $res->fetchColumn());
     }
 
-    function handler_ref_country(&$page)
+    function handler_ref_country($page)
     {
         pl_content_headers("text/html");
         $page->changeTpl('include/field.select.tpl', NO_SKIN);
@@ -542,9 +542,9 @@ class ProfileModule extends PLModule
      * separated by "|" chars) for jobterms in referent (mentor) search.
      * @see handler_jobterms
      */
-    function handler_ref_autocomplete(&$page)
+    function handler_ref_autocomplete($page)
     {
-        $this->handler_jobterms(&$page, 'mentor');
+        $this->handler_jobterms($page, 'mentor');
     }
 
     /**
@@ -557,7 +557,7 @@ class ProfileModule extends PLModule
      *
      * @param Env::v('q') the text that has been typed and to complete automatically
      */
-    function handler_jobterms(&$page, $type = 'nomentor')
+    function handler_jobterms($page, $type = 'nomentor')
     {
         pl_content_headers("text/plain");
 
@@ -617,7 +617,7 @@ class ProfileModule extends PLModule
         exit();
     }
 
-    function handler_xnet(&$page)
+    function handler_xnet($page)
     {
         $page->changeTpl('profile/groupesx.tpl');
         $page->setTitle('Promo, Groupes X, Binets');
@@ -632,7 +632,7 @@ class ProfileModule extends PLModule
         $page->assign('assos', $req->fetchAllAssoc());
     }
 
-    function handler_xnetlogo(&$page, $id)
+    function handler_xnetlogo($page, $id)
     {
         if (is_null($id)) {
             return PL_NOT_FOUND;
@@ -654,7 +654,7 @@ class ProfileModule extends PLModule
         exit;
     }
 
-    function handler_vcard(&$page, $x = null)
+    function handler_vcard($page, $x = null)
     {
         if (is_null($x)) {
             return PL_NOT_FOUND;
@@ -671,7 +671,7 @@ class ProfileModule extends PLModule
         $vcard->show();
     }
 
-    function handler_admin_trombino(&$page, $login = null, $action = null) {
+    function handler_admin_trombino($page, $login = null, $action = null) {
         $page->changeTpl('profile/admin_trombino.tpl');
         $page->setTitle('Administration - Trombino');
 
@@ -706,7 +706,7 @@ class ProfileModule extends PLModule
                 break;
         }
     }
-    function handler_admin_names(&$page, $action = 'list', $id = null) {
+    function handler_admin_names($page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Types de noms');
         $page->assign('title', 'Gestion des types de noms');
         $table_editor = new PLTableEditor('admin/names', 'profile_name_enum', 'id', true);
@@ -717,7 +717,7 @@ class ProfileModule extends PLModule
         $table_editor->describe('score', 'Score', true);
         $table_editor->apply($page, $action, $id);
     }
-    function handler_admin_binets(&$page, $action = 'list', $id = null) {
+    function handler_admin_binets($page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Binets');
         $page->assign('title', 'Gestion des binets');
         $table_editor = new PLTableEditor('admin/binets', 'profile_binet_enum', 'id');
@@ -725,7 +725,7 @@ class ProfileModule extends PLModule
         $table_editor->describe('text','intitulé',true);
         $table_editor->apply($page, $action, $id);
     }
-    function handler_admin_education(&$page, $action = 'list', $id = null) {
+    function handler_admin_education($page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Formations');
         $page->assign('title', 'Gestion des formations');
         $table_editor = new PLTableEditor('admin/education', 'profile_education_enum', 'id');
@@ -735,7 +735,7 @@ class ProfileModule extends PLModule
         $table_editor->describe('url', 'site web', false);
         $table_editor->apply($page, $action, $id);
     }
-    function handler_admin_education_field(&$page, $action = 'list', $id = null) {
+    function handler_admin_education_field($page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Domaines de formation');
         $page->assign('title', 'Gestion des domaines de formation');
         $table_editor = new PLTableEditor('admin/education_field', 'profile_education_field_enum', 'id', true);
@@ -743,7 +743,7 @@ class ProfileModule extends PLModule
         $table_editor->describe('field', 'domaine', true);
         $table_editor->apply($page, $action, $id);
     }
-    function handler_admin_education_degree(&$page, $action = 'list', $id = null) {
+    function handler_admin_education_degree($page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Niveau de formation');
         $page->assign('title', 'Gestion des niveau de formation');
         $table_editor = new PLTableEditor('admin/education_degree', 'profile_education_degree_enum', 'id');
@@ -752,7 +752,7 @@ class ProfileModule extends PLModule
         $table_editor->describe('degree', 'niveau', true);
         $table_editor->apply($page, $action, $id);
     }
-    function handler_admin_education_degree_set(&$page, $action = 'list', $id = null, $id2 = null) {
+    function handler_admin_education_degree_set($page, $action = 'list', $id = null, $id2 = null) {
         $page->setTitle('Administration - Correspondances formations - niveau de formation');
         $page->assign('title', 'Gestion des correspondances formations - niveau de formation');
         $table_editor = new PLTableEditor('admin/education_degree_set', 'profile_education_degree', 'eduid', true, 'degreeid');
@@ -768,14 +768,14 @@ class ProfileModule extends PLModule
 
         $table_editor->apply($page, $action, $id, $id2);
     }
-    function handler_admin_sections(&$page, $action = 'list', $id = null) {
+    function handler_admin_sections($page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Sections');
         $page->assign('title', 'Gestion des sections');
         $table_editor = new PLTableEditor('admin/sections','profile_section_enum','id');
         $table_editor->describe('text','intitulé',true);
         $table_editor->apply($page, $action, $id);
     }
-    function handler_admin_networking(&$page, $action = 'list', $id = null) {
+    function handler_admin_networking($page, $action = 'list', $id = null) {
         $page->assign('xorg_title', 'Polytechnique.org - Administration - Networking');
         $page->assign('title', 'Gestion des types de networking');
         $table_editor = new PLTableEditor('admin/networking', 'profile_networking_enum', 'nwid');
@@ -785,7 +785,7 @@ class ProfileModule extends PLModule
         $table_editor->describe('link', 'lien web', true);
         $table_editor->apply($page, $action, $id);
     }
-    function handler_admin_corps_enum(&$page, $action = 'list', $id = null) {
+    function handler_admin_corps_enum($page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Corps');
         $page->assign('title', 'Gestion des Corps');
         $table_editor = new PLTableEditor('admin/corps_enum', 'profile_corps_enum', 'id');
@@ -794,7 +794,7 @@ class ProfileModule extends PLModule
         $table_editor->describe('still_exists', 'existe encore ?', true);
         $table_editor->apply($page, $action, $id);
     }
-    function handler_admin_corps_rank(&$page, $action = 'list', $id = null) {
+    function handler_admin_corps_rank($page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Grade dans les Corps');
         $page->assign('title', 'Gestion des grade dans les Corps');
         $table_editor = new PLTableEditor('admin/corps_rank', 'profile_corps_rank_enum', 'id');
@@ -802,7 +802,7 @@ class ProfileModule extends PLModule
         $table_editor->describe('abbreviation', 'abbréviation', true);
         $table_editor->apply($page, $action, $id);
     }
-    function handler_admin_medals(&$page, $action = 'list', $id = null) {
+    function handler_admin_medals($page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Distinctions');
         $page->assign('title', 'Gestion des Distinctions');
         $table_editor = new PLTableEditor('admin/medals','profile_medal_enum','id');

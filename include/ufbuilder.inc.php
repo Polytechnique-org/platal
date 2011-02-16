@@ -29,7 +29,7 @@ class StoredUserFilterBuilder
     protected $env;
     protected $ufc;
 
-    public function __construct(UserFilterBuilder &$ufb, PlFilterCondition &$ufc = null, array $env = array())
+    public function __construct(UserFilterBuilder $ufb, PlFilterCondition $ufc = null, array $env = array())
     {
         $this->ufb = $ufb;
         $this->ufc = $ufc;
@@ -142,19 +142,19 @@ class UserFilterBuilder
         $this->ufc = new PFC_And();
 
         foreach ($this->fields as $field) {
-            $this->valid = $field->apply(&$this);
+            $this->valid = $field->apply($this);
             if (!$this->valid) {
                 return;
             }
         }
     }
 
-    public function addCond(PlFilterCondition &$cond)
+    public function addCond(PlFilterCondition $cond)
     {
         $this->ufc->addChild($cond);
     }
 
-    public function addOrder(PlFilterOrder &$order)
+    public function addOrder(PlFilterOrder $order)
     {
         $this->order[] = $order;
     }
@@ -452,7 +452,7 @@ abstract class UFB_Field
         return false;
     }
 
-    public function apply(UserFilterBuilder &$ufb) {
+    public function apply(UserFilterBuilder $ufb) {
         if (!$this->check($ufb)) {
             return false;
         }
@@ -473,15 +473,15 @@ abstract class UFB_Field
 
     /** Create the UFC associated to the field; won't be called
      * if the field is "empty"
-     * @param &$ufb UFB to which fields must be added
+     * @param $ufb UFB to which fields must be added
      * @return UFC
      */
-    abstract protected function buildUFC(UserFilterBuilder &$ufb);
+    abstract protected function buildUFC(UserFilterBuilder $ufb);
 
     /** This function is intended to run consistency checks on the value
      * @return boolean Whether the input is valid
      */
-    abstract protected function check(UserFilterBuilder &$ufb);
+    abstract protected function check(UserFilterBuilder $ufb);
 
     // Simple form interface
 
@@ -509,7 +509,7 @@ abstract class UFBF_Text extends UFB_Field
         $this->maxlength      = $maxlength;
     }
 
-    protected function check(UserFilterBuilder &$ufb)
+    protected function check(UserFilterBuilder $ufb)
     {
         if ($ufb->blank($this->envfield)) {
             $this->empty = true;
@@ -546,7 +546,7 @@ abstract class UFBF_Range extends UFB_Field
         $this->max = $max;
     }
 
-    protected function check(UserFilterBuilder &$ufb)
+    protected function check(UserFilterBuilder $ufb)
     {
         if ($ufb->blank($this->envfield)) {
             $this->empty = true;
@@ -569,7 +569,7 @@ abstract class UFBF_Range extends UFB_Field
  */
 abstract class UFBF_Index extends UFB_Field
 {
-    protected function check(UserFilterBuilder &$ufb)
+    protected function check(UserFilterBuilder $ufb)
     {
         if ($ufb->blank($this->envfield)) {
             $this->empty = true;
@@ -594,7 +594,7 @@ abstract class UFBF_Enum extends UFB_Field
         $this->strict = $strict;
     }
 
-    protected function check(UserFilterBuilder &$ufb)
+    protected function check(UserFilterBuilder $ufb)
     {
         if ($ufb->blank($this->envfield)) {
             $this->empty = true;
@@ -617,7 +617,7 @@ abstract class UFBF_Enum extends UFB_Field
 // {{{ class UFBF_Bool
 abstract class UFBF_Bool extends UFB_Field
 {
-    protected function check(UserFilterBuilder &$ufb)
+    protected function check(UserFilterBuilder $ufb)
     {
         if ($ufb->blank($this->envfield)) {
             $this->empty = true;
@@ -647,7 +647,7 @@ abstract class UFBF_Mixed extends UFB_Field
         $this->envfieldindex = $envfieldindex;
     }
 
-    protected function check(UserFilterBuilder &$ufb)
+    protected function check(UserFilterBuilder $ufb)
     {
         if ($ufb->blank($this->envfieldindex) && !$ufb->hasAlnum($this->envfield)) {
             $this->empty = true;
@@ -683,7 +683,7 @@ abstract class UFBF_Mixed extends UFB_Field
 // {{{ class UFBF_Quick
 class UFBF_Quick extends UFB_Field
 {
-    protected function check(UserFilterBuilder &$ufb)
+    protected function check(UserFilterBuilder $ufb)
     {
         if ($ufb->blank($this->envfield)) {
             $this->empty = true;
@@ -695,7 +695,7 @@ class UFBF_Quick extends UFB_Field
         return true;
     }
 
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
 
         $r = $s = $this->val;
@@ -786,7 +786,7 @@ class UFBF_SchoolIds extends UFB_Field
         $this->reversed_envfield = $reversed_envfield;
     }
 
-    protected function check(UserFilterBuilder &$ufb)
+    protected function check(UserFilterBuilder $ufb)
     {
         if ($ufb->blank($this->envfield)) {
             $this->empty = true;
@@ -810,7 +810,7 @@ class UFBF_SchoolIds extends UFB_Field
         return true;
     }
 
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         $ufc = new UFC_SchoolId($this->type, $this->val);
         if ($this->reversed) {
@@ -825,7 +825,7 @@ class UFBF_SchoolIds extends UFB_Field
 // {{{ class UFBF_Name
 class UFBF_Name extends UFBF_Text
 {
-    protected function check(UserFilterBuilder &$ufb)
+    protected function check(UserFilterBuilder $ufb)
     {
         if (!parent::check($ufb)) {
             return false;
@@ -838,7 +838,7 @@ class UFBF_Name extends UFBF_Text
         return true;
     }
 
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         return new UFC_NameTokens($this->val, array(), $ufb->b('with_soundex'), $ufb->b('exact'));
     }
@@ -858,7 +858,7 @@ class UFBF_Promo extends UFB_Field
         $this->envfieldcomp = $envfieldcomp;
     }
 
-    protected function check(UserFilterBuilder &$ufb)
+    protected function check(UserFilterBuilder $ufb)
     {
         if ($ufb->blank($this->envfield) || $ufb->blank($this->envfieldcomp)) {
             $this->empty = true;
@@ -881,7 +881,7 @@ class UFBF_Promo extends UFB_Field
         return true;
     }
 
-    protected function buildUFC(UserFilterBuilder &$ufb) {
+    protected function buildUFC(UserFilterBuilder $ufb) {
         return new UFC_Promo($this->comp, UserFilter::GRADE_ING, $this->val);
     }
 
@@ -912,7 +912,7 @@ class UFBF_Sex extends UFBF_Enum
         }
     }
 
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         return new UFC_Sex(self::getVal($this->val));
     }
@@ -923,7 +923,7 @@ class UFBF_Sex extends UFBF_Enum
 // Simple field for selecting only alive, not registered users (for quick search)
 class UFBF_NotRegistered extends UFBF_Bool
 {
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         if ($this->val) {
             return new PFC_And(
@@ -943,7 +943,7 @@ class UFBF_Registered extends UFBF_Enum
         parent::__construct($envfield, $formtext, array(1, 2));
     }
 
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         if ($this->val == 1) {
             return new UFC_Registered();
@@ -962,7 +962,7 @@ class UFBF_Dead extends UFBF_Enum
         parent::__construct($envfield, $formtext, array(1, 2));
     }
 
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         if ($this->val == 1) {
             return new PFC_Not(new UFC_Dead());
@@ -992,7 +992,7 @@ class UFBF_Town extends UFBF_Text
         parent::__construct($envfield, $formtext, 2, 30);
     }
 
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         if ($ufb->isOn($this->onlycurrentfield)) {
             $flags = UFC_Address::FLAG_CURRENT;
@@ -1038,7 +1038,7 @@ class UFBF_Country extends UFBF_Mixed
         $this->onlycurrentfield = $onlycurrentfield;
     }
 
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         if ($ufb->isOn($this->onlycurrentfield)) {
             $flags = UFC_Address::FLAG_CURRENT;
@@ -1069,7 +1069,7 @@ class UFBF_AdminArea extends UFBF_Index
     }
 
 
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         if ($ufb->isOn($this->onlycurrentfield)) {
             $flags = UFC_Address::FLAG_CURRENT;
@@ -1100,7 +1100,7 @@ class UFBF_SubAdminArea extends UFBF_Index
     }
 
 
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         if ($ufb->isOn($this->onlycurrentfield)) {
             $flags = UFC_Address::FLAG_CURRENT;
@@ -1129,7 +1129,7 @@ class UFBF_JobCompany extends UFBF_Text
         $this->onlymentorfield = $onlymentorfield;
     }
 
-    public function check(UserFilterBuilder &$ufb) {
+    public function check(UserFilterBuilder $ufb) {
         if (parent::check($ufb)) {
             # No company check for mentors
            if ($ufb->isOn($this->onlymentorfield)) {
@@ -1141,7 +1141,7 @@ class UFBF_JobCompany extends UFBF_Text
         }
     }
 
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         return new UFC_Job_Company(UFC_Job_Company::JOBNAME, $this->val);
     }
@@ -1156,7 +1156,7 @@ class UFBF_JobCompany extends UFBF_Text
 // {{{ class UFBF_JobTerms
 class UFBF_JobTerms extends UFBF_Index
 {
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         return new UFC_Job_Terms($this->val);
     }
@@ -1174,7 +1174,7 @@ class UFBF_JobDescription extends UFBF_Text
         $this->onlymentorfield = $onlymentorfield;
     }
 
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         if ($ufb->isOn($this->onlymentorfield)) {
             return new UFC_Mentor_Expertise($this->val);
@@ -1201,7 +1201,7 @@ class UFBF_JobCv extends UFBF_Text
         $this->onlymentorfield = $onlymentorfield;
     }
 
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         if ($ufb->isOn($this->onlymentorfield)) {
             return new UFC_Mentor_Expertise($this->val);
@@ -1222,7 +1222,7 @@ class UFBF_Nationality extends UFBF_Mixed
 {
     protected $direnum = DirEnum::NATIONALITIES;
 
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         return new UFC_Nationality($this->val);
     }
@@ -1234,7 +1234,7 @@ class UFBF_Binet extends UFBF_Mixed
 {
     protected $direnum = DirEnum::BINETS;
 
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         return new UFC_Binet($this->val);
     }
@@ -1246,7 +1246,7 @@ class UFBF_Group extends UFBF_Mixed
 {
     protected $direnum = DirEnum::GROUPESX;
 
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         if (count($this->val) == 1) {
             return new UFC_Group($this->val[0]);
@@ -1266,7 +1266,7 @@ class UFBF_Section extends UFBF_Mixed
 {
     protected $direnum = DirEnum::SECTIONS;
 
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         return new UFC_Section($this->val);
     }
@@ -1278,7 +1278,7 @@ class UFBF_EducationSchool extends UFBF_Mixed
 {
     protected $direnum = DirEnum::EDUSCHOOLS;
 
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         return new UFC_EducationSchool($this->val);
     }
@@ -1290,7 +1290,7 @@ class UFBF_EducationDegree extends UFBF_Mixed
 {
     protected $direnum = DirEnum::EDUDEGREES;
 
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         return new UFC_EducationDegree($this->val);
     }
@@ -1302,7 +1302,7 @@ class UFBF_EducationField extends UFBF_Mixed
 {
     protected $direnum = DirEnum::EDUFIELDS;
 
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         return new UFC_EducationField($this->val);
     }
@@ -1312,7 +1312,7 @@ class UFBF_EducationField extends UFBF_Mixed
 // {{{ class UFBF_Comment
 class UFBF_Comment extends UFBF_Text
 {
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         return new UFC_Comment($this->val);
     }
@@ -1322,7 +1322,7 @@ class UFBF_Comment extends UFBF_Text
 // {{{ class UFBF_Phone
 class UFBF_Phone extends UFBF_Text
 {
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         return new UFC_Phone($this->val);
     }
@@ -1341,7 +1341,7 @@ class UFBF_Networking extends UFBF_Text
         $this->networktypefield  = $networktypefield;
     }
 
-    public function check(UserFilterBuilder &$ufb)
+    public function check(UserFilterBuilder $ufb)
     {
         if (parent::check($ufb)) {
             $this->nwtype = $ufb->i($this->networktypefield);
@@ -1356,7 +1356,7 @@ class UFBF_Networking extends UFBF_Text
         return parent::isEmpty() || $this->nwtype == 0;
     }
 
-    public function buildUFC(UserFilterBuilder &$ufb)
+    public function buildUFC(UserFilterBuilder $ufb)
     {
         return new UFC_Networking($this->nwtype, $this->val);
     }
@@ -1371,7 +1371,7 @@ class UFBF_Networking extends UFBF_Text
 // {{{ class UFBF_Mentor
 class UFBF_Mentor extends UFBF_Bool
 {
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         return new UFC_Mentor();
     }
@@ -1381,7 +1381,7 @@ class UFBF_Mentor extends UFBF_Bool
 // {{{ class UFBF_MentorCountry
 class UFBF_MentorCountry extends UFBF_Text
 {
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         return new UFC_Mentor_Country($this->val);
     }
@@ -1391,7 +1391,7 @@ class UFBF_MentorCountry extends UFBF_Text
 // {{{ class UFBF_Mentorterm
 class UFBF_MentorTerm extends UFBF_Index
 {
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         return new UFC_Mentor_Terms($this->val);
     }
@@ -1401,7 +1401,7 @@ class UFBF_MentorTerm extends UFBF_Index
 // {{{ class UFBF_MentorExpertise
 class UFBF_MentorExpertise extends UFBF_Text
 {
-    protected function buildUFC(UserFilterBuilder &$ufb)
+    protected function buildUFC(UserFilterBuilder $ufb)
     {
         return new UFC_Mentor_Expertise($this->val);
     }

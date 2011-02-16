@@ -41,7 +41,7 @@ class ReminderEmailWarning extends Reminder
         return true;
     }
 
-    public static function IsCandidate(User &$user, $candidate)
+    public static function IsCandidate(User $user, $candidate)
     {
         if (!$user->checkPerms(User::PERM_MAIL)) {
             return false;

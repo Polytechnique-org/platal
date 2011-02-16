@@ -29,7 +29,7 @@ class RegisterModule extends PLModule
         );
     }
 
-    function handler_register(&$page, $hash = null)
+    function handler_register($page, $hash = null)
     {
         $alert = null;
         $subState = new PlDict(S::v('subState', array()));
@@ -254,7 +254,7 @@ class RegisterModule extends PLModule
         }
     }
 
-    function handler_end(&$page, $hash = null)
+    function handler_end($page, $hash = null)
     {
         global $globals;
         $_SESSION['subState'] = array('step' => 5);

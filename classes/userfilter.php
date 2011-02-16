@@ -214,7 +214,7 @@ class UserFilter extends PlFilter
         return $groups;
     }
 
-    private function getUIDList($uids = null, PlLimit &$limit)
+    private function getUIDList($uids = null, PlLimit $limit)
     {
         $this->requireAccounts();
         $this->buildQuery();
@@ -232,7 +232,7 @@ class UserFilter extends PlFilter
         return $fetched;
     }
 
-    private function getPIDList($pids = null, PlLimit &$limit)
+    private function getPIDList($pids = null, PlLimit $limit)
     {
         $this->requireProfiles();
         $this->buildQuery();
@@ -260,7 +260,7 @@ class UserFilter extends PlFilter
 
     /** Check that the user match the given rule.
      */
-    public function checkUser(PlUser &$user)
+    public function checkUser(PlUser $user)
     {
         $this->requireAccounts();
         $this->buildQuery();
@@ -272,7 +272,7 @@ class UserFilter extends PlFilter
 
     /** Check that the profile match the given rule.
      */
-    public function checkProfile(Profile &$profile)
+    public function checkProfile(Profile $profile)
     {
         $this->requireProfiles();
         $this->buildQuery();

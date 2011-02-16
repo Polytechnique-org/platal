@@ -55,7 +55,7 @@ class ReminderEmailBackup extends Reminder
         return 'Xorg/IMAP';
     }
 
-    public static function IsCandidate(User &$user, $candidate)
+    public static function IsCandidate(User $user, $candidate)
     {
         if (!$user->checkPerms(User::PERM_MAIL)) {
             return false;

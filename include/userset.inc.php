@@ -21,12 +21,12 @@
 
 class UserSet extends PlSet
 {
-    public function __construct(PlFilterCondition &$cond, $orders = null)
+    public function __construct(PlFilterCondition $cond, $orders = null)
     {
         parent::__construct($cond, $orders);
     }
 
-    protected function buildFilter(PlFilterCondition &$cond, $orders)
+    protected function buildFilter(PlFilterCondition $cond, $orders)
     {
         return new UserFilter($cond, $orders);
     }
@@ -34,12 +34,12 @@ class UserSet extends PlSet
 
 class ProfileSet extends PlSet
 {
-    public function __construct(PlFilterCondition &$cond, $orders = null)
+    public function __construct(PlFilterCondition $cond, $orders = null)
     {
         parent::__construct($cond, $orders);
     }
 
-    protected function buildFilter(PlFilterCondition &$cond, $orders)
+    protected function buildFilter(PlFilterCondition $cond, $orders)
     {
         return new ProfileFilter($cond, $orders);
     }
@@ -52,7 +52,7 @@ class SearchSet extends ProfileSet
     protected $score    = null;
     protected $valid    = true;
 
-    public function __construct(UserFilterBuilder &$ufb, PlFilterCondition $cond = null)
+    public function __construct(UserFilterBuilder $ufb, PlFilterCondition $cond = null)
     {
         if (is_null($cond)) {
             $conds = new PFC_And();
@@ -92,7 +92,7 @@ class SearchSet extends ProfileSet
         return $args;
     }
 
-    protected function &getFilterResults(PlFilter &$pf, PlLimit $limit)
+    protected function &getFilterResults(PlFilter $pf, PlLimit $limit)
     {
         $profiles = $pf->getProfiles($limit, Profile::FETCH_MINIFICHES);
         return $profiles;
@@ -191,7 +191,7 @@ abstract class ProfileView extends MultipageView
  */
 class MinificheView extends ProfileView
 {
-    public function __construct(PlSet &$set, array $params)
+    public function __construct(PlSet $set, array $params)
     {
         global $globals;
         $this->entriesPerPage = $globals->search->per_page;
@@ -219,7 +219,7 @@ class MinificheView extends ProfileView
         parent::__construct($set, $params);
     }
 
-    public function apply(PlPage &$page)
+    public function apply(PlPage $page)
     {
         if (array_key_exists('starts_with', $this->params)
             && $this->params['starts_with'] != ""
@@ -241,7 +241,7 @@ class MinificheView extends ProfileView
 
 class MentorView extends ProfileView
 {
-    public function __construct(PlSet &$set, array $params)
+    public function __construct(PlSet $set, array $params)
     {
         $this->entriesPerPage = 10;
         $this->addSort(new PlViewOrder('rand', array(new PFO_Random(S::i('uid'))), 'aléatoirement'));
@@ -266,7 +266,7 @@ class MentorView extends ProfileView
 
 class TrombiView extends ProfileView
 {
-    public function __construct(PlSet &$set, array $params)
+    public function __construct(PlSet $set, array $params)
     {
         $this->entriesPerPage = 24;
         $this->defaultkey = 'name';
@@ -292,7 +292,7 @@ class TrombiView extends ProfileView
         return 'include/plview.trombi.tpl';
     }
 
-    public function apply(PlPage &$page)
+    public function apply(PlPage $page)
     {
         if (!empty($GLOBALS['IS_XNET_SITE'])) {
             global $globals;
@@ -304,12 +304,12 @@ class TrombiView extends ProfileView
 
 class GadgetView implements PlView
 {
-    public function __construct(PlSet &$set, array $params)
+    public function __construct(PlSet $set, array $params)
     {
         $this->set =& $set;
     }
 
-    public function apply(PlPage &$page)
+    public function apply(PlPage $page)
     {
         $page->assign_by_ref('set', $this->set->get(new PlLimit(5, 0)));
     }
@@ -324,12 +324,12 @@ class AddressesView implements PlView
 {
     private $set;
 
-    public function __construct(PlSet &$set, array $params)
+    public function __construct(PlSet $set, array $params)
     {
         $this->set =& $set;
     }
 
-    public function apply(PlPage &$page)
+    public function apply(PlPage $page)
     {
         $pids = $this->set->getIds(new PlLimit());
         $visibility = new ProfileVisibility(ProfileVisibility::VIS_AX);
