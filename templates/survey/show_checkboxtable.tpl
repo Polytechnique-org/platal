@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,75 +20,33 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Sondages</h1>
-
-{* Survey::MODE_ALL equals 0. *}
-{assign var=SurveyMODE_ALL value=0}
-{if $survey_current->total() > 0 || $smarty.session.auth}
 <table class="bicol">
-  <tr>
-    <th colspan="3">
-      Sondages en cours
-    </th>
+  <tr class="pair">
+    <td></td>
+    {foreach from=$squestion.choices item=schoice}
+      <td>{$schoice}</td>
+    {/foreach}
   </tr>
-  {iterate item=s from=$survey_current}
-  {if $smarty.session.auth || $s.mode == $SurveyMODE_ALL}
-  <tr class="{cycle name=cs_cycle values="impair,pair"}">
-    <td class="half" style="clear: both">
-      <a href="survey/vote/{$s.id}">{$s.title}</a>
-      {if $s.uid eq $smarty.session.user->id() || hasPerm('admin')}
-      (<a href="survey/result/{$s.id}">résultats partiels</a>)
-      {/if}
-    </td>
+{foreach from=$squestion.subquestions item=ssubq key=ssqid}
+  <tr class="{cycle values="impair,pair"}">
+    <td>{$ssubq}</td>
+  {assign var=sid value=$survey.id}
+  {assign var=sqid value=$squestion.id}
+  {if $survey_resultmode}
+    {foreach from=$squestion.choices item=schoice key=value}
     <td>
-      {$s.end|date_format:"%x"}
+      {$squestion.result.$ssqid.$value*100/$survey.votes|string_format:"%.1f"}% ({$squestion.result.$ssqid.$value} votes)
     </td>
+    {/foreach}
+  {else}
+    {foreach from=$squestion.choices item=schoice key=value}
     <td>
-      {$survey_modes[$s.mode]}
+      <label><input type="checkbox" name="survey{$sid}[{$sqid}][{$ssqid}][]" value="{$value}" {if !$survey_votemode}disabled="disabled" {/if}/></label>
     </td>
-  </tr>
-    {assign var="has_cs" value="true"}
+    {/foreach}
   {/if}
-  {/iterate}
-  <tr class="impair">
-    <td colspan="3" style="text-align: right">
-      {if $smarty.session.auth}<a href="survey/edit/new">{icon name=page_edit} Proposer un sondage</a>{/if}
-    </td>
   </tr>
-</table>
-{/if}
-
-<br />
-
-<table class="bicol">
-  <tr>
-    <th colspan="3">
-      Anciens sondages
-    </th>
-  </tr>
-  {iterate item=s from=$survey_old}
-    {if $smarty.session.auth || $s.mode == $SurveyMODE_ALL}
-  <tr class="{cycle name=os_cycle values="impair,pair"}">
-    <td>
-      <a href="survey/result/{$s.id}">
-        {$s.title}
-      </a>
-    </td>
-    <td>
-      {$s.end|date_format:"%x"}
-    </td>
-    <td>
-      {$survey_modes[$s.mode]}
-    </td>
-  </tr>
-      {assign var="has_os" value="true"}
-    {/if}
-  {/iterate}
-  {if !$has_os}
-  <tr>
-    <td class="half">Aucun ancien sondage</td>
-  </tr>
-  {/if}
+{/foreach}
 </table>
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

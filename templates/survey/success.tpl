@@ -19,29 +19,14 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
+<h1>Sondages&nbsp;: succès</h1>
 
-<h1>{$survey->title}</h1>
-
-<p>{$survey->description|miniwiki}</p>
-
-<form action="survey/vote/{$survey->shortname}" method="post">
-  <div id="questions">
-  </div>
-
-  <div class="center">
-    {xsrf_token_field}
-    <input type="submit" name="vote" value="Enregister mon vote" />
-  </div>
-</form>
-
-{include file="survey/vote.questions.tpl"}
-
-<script type="text/javascript">
-  //<![CDATA[
-  var questions = {$survey->exportQuestionsToJSON()|smarty:nodefaults};
-
-  $($("#questions").showQuestions(questions));
-  //]]>
-</script>
+{if $survey_message neq ""}
+  {$survey_message}
+{else}
+  Opération réussie
+{/if}
+<br/>
+<a href="{$survey_link}">Retour</a>
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

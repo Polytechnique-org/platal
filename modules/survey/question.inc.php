@@ -47,11 +47,7 @@ class SurveyQuestion extends PlDBTableEntry
 
     public static function instanceForType(Survey $survey, $type)
     {
-        $file = dirname(__FILE__) . '/' . $type . '.inc.php';
-        if (!file_exists($file)) {
-            throw new Exception("Unknown question type \"$type\"");
-        }
-        require_once $file;
+        require_once dirname(__FILE__) . '/' . $type . '.inc.php';
         $class = 'SurveyQuestion' . $type;
         return new $class($survey);
     }
@@ -91,19 +87,6 @@ class SurveyQuestion extends PlDBTableEntry
         }
         return $answer;
     }
-
-    public function export()
-    {
-        $export = parent::export();
-        if (isset($export['parameters'])) {
-            foreach ($export['parameters'] as $key=>$value) {
-                $export[$key] = $value;
-            }
-            unset($export['parameters']);
-        }
-        return $export;
-    }
-
 }
 
 class SurveyQuestionGroup extends SurveyQuestion implements SurveyQuestionContainer

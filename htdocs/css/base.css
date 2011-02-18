@@ -128,15 +128,6 @@
     overflow: hidden;
 }
 
-.ui-datepicker-calendar {
-    border-collapse: collapse;
-    text-align: right;
-}
-
-.ui-datepicker-calendar td {
-    width: 20px;
-}
-
 .ui-datepicker-week-end {
     background-color: #eee;
 }
