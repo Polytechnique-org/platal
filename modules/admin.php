@@ -870,9 +870,9 @@ class AdminModule extends PLModule
                                                                         directory_name, short_name, sort_name, promo)
                                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
                                          $pid, $infos[1], $fullName, $fullName, $directoryName, $fullName, $directoryName, $promo);
-                            XDB::execute('INSERT INTO  profile_education (pid, eduid, degreeid, entry_year, grad_year, flags)
-                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?})',
-                                         $pid, $eduSchools[Profile::EDU_X], $degreeid, $entry_year, $grad_year, 'primary');
+                            XDB::execute('INSERT INTO  profile_education (id, pid, eduid, degreeid, entry_year, grad_year, flags)
+                                               VALUES  (100, {?}, {?}, {?}, {?}, {?}, \'primary\')',
+                                         $pid, $eduSchools[Profile::EDU_X], $degreeid, $entry_year, $grad_year);
                             XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, full_name, directory_name, display_name, sex)
                                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
                                          $infos['hrid'], $type, 0, 'pending', $fullName, $directoryName, $infos[1], $sex);
