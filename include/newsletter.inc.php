@@ -689,7 +689,7 @@ class NLIssue
     {
         if ($this->state == self::STATE_PENDING) {
             $success = XDB::execute('UPDATE  newsletter_issues
-                                        SET  send_before = NULL, state = \'new\'
+                                        SET  state = \'new\'
                                       WHERE  id = {?}', $this->id);
             if ($success) {
                 $this->refresh();
@@ -999,7 +999,7 @@ class NLIssue
      */
     public function isEmpty()
     {
-        return $this->mail_title == '' || $this->mail_title == 'to be continued' || (count($this->arts == 0 && strlen($this->head) == 0));
+        return $this->title_mail == '' || $this->title_mail == 'to be continued' || (count($this->arts) == 0 && strlen($this->head) == 0);
     }
 
     /** Retrieve the 'Send before' date, in a clean format.

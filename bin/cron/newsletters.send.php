@@ -24,13 +24,17 @@ require_once './connect.db.inc.php';
 require_once 'newsletter.inc.php';
 ini_set('memory_limit', '128M');
 
-$nls = NewsLetter::getIssuesToSend();
-foreach ($nls as $nl) {
-    echo "Envoi de la lettre \"{$nl->title()}\" (Groupe {$nl->group})\n\n";
-    echo ' ' . date("H:i:s") . " -> début de l'envoi\n";
-    $emailsCount = $nl->sendToAll();
-    echo ' ' . date("H:i:s") . " -> fin de l'envoi\n\n";
-    echo $emailsCount . " emails ont été envoyés lors de cet envoi.\n\n";
+$issues = NewsLetter::getIssuesToSend();
+foreach ($issues as $issue) {
+    if ($issue->isEmpty()) {
+        echo "Lettre \"{$issue->title()}\" (Groupe {$issue->nl->group}) ignorée car vide.";
+    } else {
+        echo "Envoi de la lettre \"{$issue->title()}\" (Groupe {$issue->nl->group})\n\n";
+        echo ' ' . date("H:i:s") . " -> début de l'envoi\n";
+        $emailsCount = $issue->sendToAll();
+        echo ' ' . date("H:i:s") . " -> fin de l'envoi\n\n";
+        echo $emailsCount . " emails ont été envoyés lors de cet envoi.\n\n";
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
