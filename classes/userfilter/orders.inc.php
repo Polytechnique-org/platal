@@ -53,6 +53,7 @@ abstract class UserFilterOrders
           case 'hruid':
           case 'pid':
           case 'hrpid':
+          case 'is_admin':
             $class = 'UFO_' . str_replace('_', '', $type);
             return new $class($desc);
 
@@ -311,6 +312,23 @@ class UFO_Hrpid extends PlFilterOrder
     public function export()
     {
         return $this->buildExport('hrpid');
+    }
+}
+// }}}
+// {{{ class UFO_IsAdmin
+/** Sorts users, putting admins first
+ */
+class UFO_IsAdmin extends PlFilterOrder
+{
+    protected function getSortTokens(PlFilter $uf)
+    {
+        $uf->requireAccounts();
+        return 'a.is_admin';
+    }
+
+    public function export()
+    {
+        return $this->buildExport('is_admin');
     }
 }
 // }}}
