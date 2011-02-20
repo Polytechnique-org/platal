@@ -666,6 +666,14 @@ class NLIssue
                                       WHERE  id = {?}',
                                       $this->id);
             if ($success) {
+                global $globals;
+                $mailer = new PlMailer('newsletter/notify_scheduled.mail.tpl');
+                $mailer->assign('group', $this->nl->group);
+                $mailer->assign('nl_title', $this->title_mail);
+                $mailer->assign('nl_id', $this->id());
+                $mailer->assign('base', $globals->baseurl);
+                $mailer->assign('send_before', $this->send_before);
+                $mailer->send();
                 $this->refresh();
             }
             return $success;
@@ -681,7 +689,7 @@ class NLIssue
     {
         if ($this->state == self::STATE_PENDING) {
             $success = XDB::execute('UPDATE  newsletter_issues
-                                        SET  send_before = NULL, state = \'new\'
+                                        SET  state = \'new\'
                                       WHERE  id = {?}', $this->id);
             if ($success) {
                 $this->refresh();
@@ -985,7 +993,15 @@ class NLIssue
 
     // }}}
     // {{{ Mailing
-    
+
+    /** Check whether this issue is empty
+     * An issue is empty if the email has no title (or the default one), or no articles and an empty head.
+     */
+    public function isEmpty()
+    {
+        return $this->title_mail == '' || $this->title_mail == 'to be continued' || (count($this->arts) == 0 && strlen($this->head) == 0);
+    }
+
     /** Retrieve the 'Send before' date, in a clean format.
      */
     public function getSendBeforeDate()
@@ -1079,7 +1095,7 @@ class NLIssue
 
         $ufc = new PFC_And($this->getRecipientsUFC(), new UFC_NLSubscribed($this->nl->id, $this->id), new UFC_HasEmailRedirect());
         $emailsCount = 0;
-        $uf = new UserFilter($ufc);
+        $uf = new UserFilter($ufc, array(new UFO_IsAdmin(), new UFO_Uid()));
         $limit = new PlLimit(self::BATCH_SIZE);
 
         while (true) {

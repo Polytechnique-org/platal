@@ -500,9 +500,9 @@ class XnetGrpModule extends PLModule
             $uf = New UserFilter(New UFC_Group($globals->asso('id'), true));
             $admins = $uf->iterUsers();
             $admin = $admins->next();
-            $to = $admin->bestalias;
+            $to = $admin->bestEmail();
             while ($admin = $admins->next()) {
-                $to .= ', ' . $admin->bestalias;
+                $to .= ', ' . $admin->bestEmail();
             }
 
             $append = "\n"

@@ -166,6 +166,12 @@ abstract class UserFilterCondition implements PlFilterCondition
             $cond = new $class($values);
             break;
 
+          case 'school_id':
+            $values = $export->v('values', array());
+            $school_type = $export->s('school_type');
+            $cond = new UFC_SchoolId($school_type, $values);
+            break;
+
           case 'has_profile':
             $class = 'ufc_' . str_replace('_', '', $type);
             $cond = new $class();
@@ -486,6 +492,14 @@ class UFC_SchoolId extends UserFilterCondition
             $ids  = array_map(array('Profile', 'getXorgId'), $ids);
         }
         return XDB::format('p.' . $type . '_id IN {?}', $ids);
+    }
+
+    public function export()
+    {
+        $export = $this->buildExport('school_id');
+        $export['school_type'] = $this->type;
+        $export['values'] = $this->ids;
+        return $export;
     }
 }
 // }}}
