@@ -99,7 +99,7 @@ class User extends PlUser
                               INNER JOIN  email_virtual_domains AS m ON (s.domain = m.id)
                               INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
                                    WHERE  s.email = {?} AND d.name = {?}',
-                                 $email, $login);
+                                 $email, $domain);
         if ($res) {
             return $res;
         }

@@ -616,36 +616,50 @@ class AdminModule extends PLModule
             if ($domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2) {
                 $req = new AliasReq($user, $alias, 'Admin request', false);
                 if ($req->commit()) {
-                    $page->trigSuccess("Nouvel alias '$alias@$domain' attribué");
+                    $page->trigSuccess("Nouvel alias '$alias@$domain' attribué.");
                 } else {
-                    $page->trigError("Impossible d'ajouter l'alias '$alias@$domain', il est probablement déjà attribué");
+                    $page->trigError("Impossible d'ajouter l'alias '$alias@$domain', il est probablement déjà attribué.");
                 }
             } elseif ($domain == $globals->mail->domain || $domain == $globals->mail->domain2) {
-                $res = XDB::execute("INSERT INTO  aliases (uid, alias, type)
-                                          VALUES  ({?}, {?}, 'alias')",
-                                    $user->id(), $alias);
+                XDB::execute('INSERT INTO  email_source_account (email, uid, domain, type, flags)
+                                   SELECT  {?}, {?}, id, \'alias\', \'\'
+                                     FROM  email_virtual_domains
+                                    WHERE  name = {?}',
+                              $alias, $user->id(), $globals->mail->alias_dom);
                 $page->trigSuccess("Nouvel alias '$alias' ajouté");
             } else {
                 $page->trigError("Le domaine '$domain' n'est pas valide");
             }
         } else if (!Post::blank('del_alias')) {
-            XDB::execute("DELETE FROM  aliases
-                                WHERE  uid = {?} AND alias = {?} AND
-                                       type NOT IN ('a_vie', 'homonyme')",
-                         $user->id(), $val);
-            XDB::execute("UPDATE  emails
-                             SET  rewrite = ''
-                           WHERE  uid = {?} AND rewrite LIKE CONCAT({?}, '@%')",
-                         $user->id(), $val);
+            $delete_alias = Post::t('del_alias');
+            list($email, $domain) = explode('@', $delete_alias);
+            XDB::execute('DELETE  s
+                            FROM  email_source_account  AS s
+                      INNER JOIN  email_virtual_domains AS m ON (s.domain = m.id)
+                      INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
+                           WHERE  s.email = {?} AND s.uid = {?} AND d.name = {?} AND type = \'alias\'',
+                          $email, $user->id(), $domain);
+            XDB::execute('UPDATE  email_redirect_account AS r
+                      INNER JOIN  email_virtual_domains  AS m ON (m.name = {?})
+                      INNER JOIN  email_virtual_domains  AS d ON (d.aliasing = m.id)
+                             SET  r.rewrite = \'\'
+                           WHERE  r.uid = {?} AND r.rewrite = CONCAT({?}, \'@\', d.name)',
+                         $domain, $user->id(), $email);
             fix_bestalias($user);
-            $page->trigSuccess("L'alias '$val' a été supprimé");
+            $page->trigSuccess("L'alias '$delete_alias' a été supprimé");
         } else if (!Post::blank('best')) {
-            XDB::execute("UPDATE  aliases
+            $best_alias = Post::t('best');
+            // First delete the bestalias flag from all this user's emails.
+            XDB::execute("UPDATE  email_source_account
                              SET  flags = TRIM(BOTH ',' FROM REPLACE(CONCAT(',', flags, ','), ',bestalias,', ','))
                            WHERE  uid = {?}", $user->id());
-            XDB::execute("UPDATE  aliases
-                             SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'bestalias')
-                           WHERE  uid = {?} AND alias = {?}", $user->id(), $val);
+            // Then gives the bestalias flag to the given email.
+            list($email, $domain) = explode('@', $best_alias);
+            XDB::execute("UPDATE  email_source_account  AS s
+                      INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
+                             SET  s.flags = CONCAT_WS(',', IF(s.flags = '', NULL, s.flags), 'bestalias')
+                           WHERE  s.uid = {?} AND s.email = {?} AND d.name = {?}", $user->id(), $email, $domain);
+
             // As having a non-null bestalias value is critical in
             // plat/al's code, we do an a posteriori check on the
             // validity of the bestalias.
@@ -692,11 +706,16 @@ class AdminModule extends PLModule
 
         // Display active aliases.
         $page->assign('virtuals', $user->emailGroupAliases());
-        $page->assign('aliases', XDB::iterator("SELECT  alias, type='a_vie' AS for_life,
-                                                        FIND_IN_SET('bestalias',flags) AS best, expire
-                                                  FROM  aliases
-                                                 WHERE  uid = {?} AND type != 'homonyme'
-                                              ORDER BY  type != 'a_vie'", $user->id()));
+        $aliases = XDB::iterator("SELECT  CONCAT(s.email, '@', d.name) AS email, (s.type = 'forlife') AS forlife,
+                                          (s.email REGEXP '\\\\.[0-9]{2}$') AS hundred_year,
+                                          FIND_IN_SET('bestalias', s.flags) AS bestalias, s.expire,
+                                          (d.name = {?}) AS alias
+                                    FROM  email_source_account  AS s
+                              INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
+                                   WHERE  s.uid = {?}
+                                ORDER BY  !alias, s.email",
+                                 $globals->mail->alias_dom, $user->id());
+        $page->assign('aliases', $aliases);
         $page->assign('account_types', XDB::iterator('SELECT * FROM account_types ORDER BY type'));
         $page->assign('skins', XDB::iterator('SELECT id, name FROM skins ORDER BY name'));
         $page->assign('profiles', XDB::iterator('SELECT  p.pid, p.hrpid, FIND_IN_SET(\'owner\', ap.perms) AS owner

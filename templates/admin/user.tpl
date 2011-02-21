@@ -342,17 +342,17 @@ $(function() {
     {iterate from=$aliases item=a}
     <tr class="{cycle values="impair,pair"}">
       <td>
-        <input type="radio" name='best' {if $a.best}checked="checked"{/if} value='{$a.alias}' onclick="this.form.submit()" />
+        <input type="radio" name='best' {if $a.bestalias}checked="checked"{/if} value='{$a.email}' onclick="this.form.submit()" />
       </td>
       <td>
-        {if $a.for_life}<strong>{$a.alias}</strong>{else}{$a.alias}{/if}
+        {if $a.forlife}<strong>{$a.email}</strong>{elseif $a.alias}<em>{$a.email}</em>{else}{$a.email}{/if}
         {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
       </td>
-      {if $a.for_life}
+      {if $a.forlife}
       <td>garanti à vie*</td>
       {else}
       <td class="action">
-        <a href="javascript:del_alias('{$a.alias}')">{icon name=cross}</a>
+        <a href="javascript:del_alias('{$a.email}')">{icon name=cross}</a>
       </td>
       {/if}
     </tr>
@@ -491,7 +491,7 @@ $(function() {
 <br />
 <table class="bicol">
   <tr>
-    <th>Virtual aliases auquel l'utilisateur appartient</th>
+    <th>Alias de groupe auquel l'utilisateur appartient</th>
   </tr>
   {foreach from=$virtuals item=virtual}
   <tr class="{cycle values="impair,pair"}">
