@@ -42,14 +42,12 @@ $(function() {
 
   <form action="prefs" method="post" id="form">
   {xsrf_token_field}
-  <p>
+  <dl>
     <dt>Apparence du site</dt>
     <dd>
       Tu peux changer l'apparence du site en choisissant une autre skin.<br />
       <a href="prefs/skin">Changer de skin</a>
     </dd>
-  </p>
-  <p>
     <dt>Format des emails envoyés par le site</dt>
     <dd>
       Lorsque le site t'envoie des emails (lettre mensuelle, carnet, ...) ceux-ci peuvent
@@ -57,8 +55,6 @@ $(function() {
       texte brut <input type="radio" name="email_format" value="text" {if $smarty.session.user->email_format neq 'html'}checked="checked"{/if} />
       <input type="radio" name="email_format" value="html" {if $smarty.session.user->email_format eq 'html'}checked="checked"{/if} /> HTML
     </dd>
-  </p>
-  <p>
     <dt>Fils RSS</dt>
     <dd>
       Le site de propose plusieurs fils RSS qui te permettent d'être averti lors, par exemple, de la publication
@@ -68,14 +64,12 @@ $(function() {
       désactivés <input type="radio" name="rss" value="off" {if !$smarty.session.user->token}checked="checked"{/if} />
       <input type="radio" name="rss" value="on" {if $smarty.session.user->token}checked="checked"{/if} /> activés
     </dd>
-  </p>
-  <p>
     <dt>Mot de passe</dt>
     <dd>
       Tu peux changer ton mot de passe d'accès au site quand tu le souhaites.<br />
       <a href="password">Changer de mot de passe</a>
     </dd>
-  </p>
+  </dl>
   </form>
 </fieldset>
 
@@ -83,16 +77,13 @@ $(function() {
 <fieldset>
   <legend>{icon name="email"} Paramètres du service de Polytechnique.org</legend>
 
-  <p>
+  <dl>
     <dt>Tes adresses de redirection</dt>
     <dd>
       Tu peux à tout moment changer les boîtes mails vers lesquelles les mails adressés
       à tes adresses polytechniciennes sont redirigés.<br />
       <a href="emails">Gérer tes redirections mail</a>
     </dd>
-  </p>
-
-  <p>
     <dt>Ton accès SMTP et NNTP</dt>
     <dd>
       Polytechnique.org te permet d'envoyer des emails et de consulter les forums
@@ -100,9 +91,6 @@ $(function() {
       te faut configurer ton mot de passe SMTP et NNTP.<br />
       <a href="password/smtp">Gérer ton accès au SMTP et NNTP sécurisé</a>
     </dd>
-  </p>
-
-  <p>
     <dt>Ta redirection Web</dt>
     <dd>
       Polytechnique.org te propose, en plus de ta redirection mail, un service de
@@ -110,7 +98,7 @@ $(function() {
       http://www.carva.org/{$smarty.session.user->hruid} vers la page de ton choix.<br />
       <a href="prefs/webredirect">Gérer ta redirection Web</a>
     </dd>
-  </p>
+  </dl>
 </fieldset>
 {/if}
 
