@@ -139,7 +139,7 @@ $(function() {
     <tr>
       <td class="titre">Nom complet<br />
         <span class="smaller">Prénom NOM</span>
-      </br></td>
+      </td>
       <td>{if $hasProfile}{$user->fullName()}{else}<input type="text" name="full_name" maxlength="255" value="{$user->fullName()}" />{/if}</td>
     </tr>
     <tr>
