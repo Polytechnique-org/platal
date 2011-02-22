@@ -26,9 +26,9 @@
 
 <p style="float: left">
   {if $smarty.get.text}
-  [<a href='nl/show/{$issue->id()}'>version HTML</a>]
+  [<a href='{$nl->prefix()}/show/{$issue->id()}'>version HTML</a>]
   {else}
-  [<a href='nl/show/{$issue->id()}?text=1'>version Texte</a>]
+  [<a href='{$nl->prefix()}/show/{$issue->id()}?text=1'>version Texte</a>]
   {/if}
   {if $nl->mayEdit()}
   [<a href='{$nl->adminPrefix()}/edit/{$issue->id()}'>Éditer</a>]

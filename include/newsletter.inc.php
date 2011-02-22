@@ -433,7 +433,7 @@ class NewsLetter
     /** Get the prefix leading to the page for this NL
      * Only X.org / AX / X groups may be seen on X.org.
      */
-    public function prefix()
+    public function prefix($enforce_xnet=true)
     {
         if (!empty($GLOBALS['IS_XNET_SITE'])) {
             return $this->group . '/nl';
@@ -447,7 +447,7 @@ class NewsLetter
             return 'epletter';
         default:
             // Don't display groups NLs on X.org
-            assert(false);
+            assert(!$enforce_xnet);
         }
     }
 
