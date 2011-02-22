@@ -30,7 +30,7 @@ Bonjour !
   Nous t'écrivons car lors de l'envoi de la lettre d'information mensuelle
 de Polytechnique.org à ton adresse polytechnicienne :
 
-    {$x.alias}@{$globals->mail->domain},
+    {$user.alias}@{$globals->mail->domain},
 
 l'adresse {$email}, sur laquelle tu rediriges tes emails, ne fonctionnait pas.
 
@@ -51,7 +51,7 @@ d'accéder au site, rends toi sur la page
     https://www.polytechnique.org/recovery
 
 elle te permettra de créer un nouveau mot de passe après avoir rentré ton
-login ({$x.alias}) et ta date de naissance !";
+login ({$user.alias}) et ta date de naissance !";
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

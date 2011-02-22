@@ -24,6 +24,45 @@ define('ERROR_INACTIVE_REDIRECTION', 2);
 define('ERROR_INVALID_EMAIL', 3);
 define('ERROR_LOOP_EMAIL', 4);
 
+// function mark_broken_email() {{{1
+function mark_broken_email($email, $admin = false)
+{
+    $email = valide_email($email);
+    if (empty($email) || $email == '@') {
+        return;
+    }
+
+    $user = XDB::fetchOneAssoc('SELECT  r1.uid, r1.broken_level != 0 AS broken, a.hruid, COUNT(r2.uid) AS nb_mails, a.full_name, s.email AS alias
+                                  FROM  email_redirect_account AS r1
+                            INNER JOIN  accounts               AS a  ON (a.uid = r1.uid)
+                            INNER JOIN  email_source_account   AS s  ON (a.uid = s.uid AND s.flags = \'bestalias\')
+                             LEFT JOIN  email_redirect_account AS r2 ON (a.uid = r2.uid AND r1.redirect != r2.redirect AND
+                                                                         r2.broken_level = 0 AND r2.flags = \'active\' AND
+                                                                         (r2.type = \'smtp\' OR r2.type = \'googleapps\'))
+                                 WHERE  r1.redirect = {?}
+                              GROUP BY  r1.uid', $email);
+
+    if ($user) {
+        // Mark address as broken.
+        if (!$user['broken']) {
+            XDB::execute('UPDATE  email_redirect_account
+                             SET  broken_date = NOW(), last = NOW(), broken_level = 1
+                           WHERE  redirect = {?}', $email);
+        } elseif ($admin) {
+            XDB::execute('UPDATE  email_redirect_account
+                             SET  last = CURDATE(), broken_level = IF(broken_level > 1, 3, 2)
+                           WHERE  redirect = {?} AND DATE_ADD(last, INTERVAL 14 DAY) < CURDATE()',
+                         $email);
+        } else {
+            XDB::execute('UPDATE  email_redirect_account
+                             SET  broken_level = 1
+                           WHERE  redirect = {?} AND broken_level = 0', $email);
+        }
+    }
+
+    return $user;
+}
+
 // function fix_bestalias() {{{1
 // Checks for an existing 'bestalias' among the the current user's aliases, and
 // eventually selects a new bestalias when required.

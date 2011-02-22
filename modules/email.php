@@ -621,11 +621,12 @@ class EmailModule extends PLModule
         if ($warn == 'warn' && $email) {
             S::assert_xsrf_token();
 
+            // Usual verifications.
             $email = valide_email($email);
-            // vérifications d'usage
-            $uid = XDB::fetchOneCell("SELECT  uid
-                                        FROM  emails
-                                       WHERE  email = {?}", $email);
+            $uid = XDB::fetchOneCell('SELECT  uid
+                                        FROM  email_redirect_account
+                                       WHERE  redirect = {?}', $email);
+
             if ($uid) {
                 $dest = User::getWithUID($uid);
 
@@ -638,38 +639,17 @@ class EmailModule extends PLModule
         } elseif (Post::has('email')) {
             S::assert_xsrf_token();
 
-            $email = valide_email(Post::v('email'));
+            $email = Post::t('email');
+            list(, $domain) = explode('@', $email);
+            $domain = strtolower($domain);
 
-            list(,$fqdn) = explode('@', $email);
-            $fqdn = strtolower($fqdn);
-            if ($fqdn == 'polytechnique.org' || $fqdn == 'melix.org' ||  $fqdn == 'm4x.org' || $fqdn == 'melix.net') {
+            if ($domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2
+                || $domain == $globals->mail->domain || $domain == $globals->mail->domain2) {
                 $page->assign('neuneu', true);
             } else {
-                $page->assign('email',$email);
-                $x = XDB::fetchOneAssoc("SELECT  e1.uid, e1.panne != 0 AS panne, a.hruid,
-                                                 (COUNT(e2.uid) + IF(FIND_IN_SET('googleapps', eo.storage), 1, 0)) AS nb_mails
-                                           FROM  emails        AS e1
-                                     INNER JOIN  email_options AS eo ON (eo.uid = e1.uid)
-                                     INNER JOIN  accounts      AS a  ON (e1.uid = a.uid)
-                                      LEFT JOIN  emails        AS e2 ON (e1.uid = e2.uid
-                                                                         AND FIND_IN_SET('active', e2.flags)
-                                                                         AND e1.email != e2.email)
-                                          WHERE  e1.email = {?}
-                                       GROUP BY  e1.uid", $email);
-                if ($x) {
-                    // on écrit dans la base que l'adresse est cassée
-                    if (!$x['panne']) {
-                        XDB::execute("UPDATE  emails
-                                         SET  panne=NOW(), last=NOW(), panne_level = 1
-                                       WHERE  email = {?}", $email);
-                    } else {
-                        XDB::execute("UPDATE  emails
-                                         SET  panne_level = 1
-                                       WHERE  email = {?} AND panne_level = 0", $email);
-                    }
-                    $x['user'] = User::getWithUID($x['uid']);
-                    $page->assign_by_ref('x', $x);
-                }
+                $user = mark_broken_email($email);
+                $page->assign('user', $user);
+                $page->assign('email', $email);
             }
         }
     }
@@ -807,13 +787,13 @@ class EmailModule extends PLModule
                         if (empty($email) || $email == '@') {
                             $invalid_emails[] = trim($orig_email) . ': invalid email';
                         } elseif (!in_array($email, $valid_emails)) {
-                            $res = XDB::query('SELECT  COUNT(*)
-                                                 FROM  emails
-                                                WHERE  email = {?}', $email);
-                            if ($res->fetchOneCell() > 0) {
+                            $nb = XDB::fetchOneCell('SELECT  COUNT(*)
+                                                       FROM  email_redirect_account
+                                                      WHERE  redirect = {?}', $email);
+                            if ($nb > 0) {
                                 $valid_emails[] = $email;
                             } else {
-                                $invalid_emails[] = "$orig_email: no such redirection";
+                                $invalid_emails[] = $orig_email . ': no such redirection';
                             }
                         }
                     }
@@ -834,62 +814,33 @@ class EmailModule extends PLModule
                 $broken_user_list = array();
                 $broken_list = explode("\n", $list);
                 sort($broken_list);
-                foreach ($broken_list as $orig_email) {
-                    $email = valide_email(trim($orig_email));
-                    if (empty($email) || $email == '@') {
-                        continue;
-                    }
 
-                    $sel = XDB::query(
-                        "SELECT  e1.uid, e1.panne != 0 AS panne, count(e2.uid) AS nb_mails,
-                                 acc.full_name, a.alias
-                           FROM  emails        AS e1
-                      LEFT JOIN  emails        AS e2 ON (e1.uid = e2.uid AND FIND_IN_SET('active', e2.flags)
-                                                         AND e1.email != e2.email)
-                     INNER JOIN  accounts      AS acc  ON (e1.uid = acc.uid)
-                     INNER JOIN  aliases       AS a  ON (acc.uid = a.uid AND FIND_IN_SET('bestalias', a.flags))
-                          WHERE  e1.email = {?}
-                       GROUP BY  e1.uid", $email);
-
-                    if ($x = $sel->fetchOneAssoc()) {
-                        if (!$x['panne']) {
-                            XDB::execute('UPDATE  emails
-                                             SET  panne=NOW(), last=NOW(), panne_level = 1
-                                           WHERE  email = {?}',
-                                          $email);
-                        } else {
-                            XDB::execute('UPDATE  emails
-                                             SET  last = CURDATE(), panne_level = panne_level + 1
-                                           WHERE  email = {?}
-                                                  AND DATE_ADD(last, INTERVAL 14 DAY) < CURDATE()',
-                                         $email);
-                        }
-
-                        if (!empty($x['nb_mails'])) {
+                foreach ($broken_list as $email) {
+                    if ($user = mark_broken_email($email, true)) {
+                        if ($user['nb_mails'] > 0) {
                             $mail = new PlMailer('emails/broken.mail.tpl');
-                            $mail->addTo("\"{$x['full_name']}\" <{$x['alias']}@"
-                                         . Platal::globals()->mail->domain . '>');
-                            $mail->assign('x', $x);
+                            $mail->addTo('"' . $user['full_name'] . '" <' . $user['alias'] . '@' . Platal::globals()->mail->domain . '>');
+                            $mail->assign('user', $user);
                             $mail->assign('email', $email);
                             $mail->send();
                         }
 
-                        if (!isset($broken_user_list[$x['alias']])) {
-                            $broken_user_list[$x['alias']] = array($email);
+                        if (!isset($broken_user_list[$user['alias']])) {
+                            $broken_user_list[$user['alias']] = array($email);
                         } else {
-                            $broken_user_list[$x['alias']][] = $email;
+                            $broken_user_list[$user['alias']][] = $email;
                         }
                     }
                 }
 
-                XDB::execute("UPDATE  emails
-                                 SET  panne_level = panne_level - 1
-                               WHERE  flags = 'active' AND panne_level > 1
-                                      AND DATE_ADD(last, INTERVAL 1 MONTH) < CURDATE()");
-                XDB::execute("UPDATE  emails
-                                 SET  panne_level = 0
-                               WHERE  flags = 'active' AND panne_level = 1
-                                      AND DATE_ADD(last, INTERVAL 1 YEAR) < CURDATE()");
+                XDB::execute('UPDATE  email_redirect_account
+                                 SET  broken_level = broken_level - 1
+                               WHERE  flags = \'active\' AND broken_level > 1
+                                      AND DATE_ADD(last, INTERVAL 1 MONTH) < CURDATE()');
+                XDB::execute('UPDATE  email_redirect_account
+                                 SET  broken_level = 0
+                               WHERE  flags = \'active\' AND broken_level = 1
+                                      AND DATE_ADD(last, INTERVAL 1 YEAR) < CURDATE()');
 
                 // Output the list of users with recently broken addresses,
                 // along with the count of valid redirections.
@@ -900,23 +851,23 @@ class EmailModule extends PLModule
                 fputcsv($csv, array('nom', 'promo', 'alias', 'bounce', 'nbmails', 'url', 'corps', 'job', 'networking'), ';');
                 foreach ($broken_user_list as $alias => $mails) {
                     $sel = Xdb::query(
-                        "SELECT  acc.uid, count(DISTINCT(e.email)) AS nb_mails,
-                                 IFNULL(pd.public_name, acc.full_name) AS fullname,
-                                 IFNULL(pd.promo, 0) AS promo, IFNULL(pce.name, 'Aucun') AS corps,
-                                 IFNULL(pje.name, 'Aucun') AS job, GROUP_CONCAT(pn.address SEPARATOR ', ') AS networking
-                           FROM  aliases            AS a
-                     INNER JOIN  accounts           AS acc ON (a.uid = acc.uid)
-                      LEFT JOIN  emails             AS e   ON (e.uid = acc.uid
-                                                               AND FIND_IN_SET('active', e.flags) AND e.panne = 0)
-                      LEFT JOIN  account_profiles   AS ap  ON (acc.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
-                      LEFT JOIN  profile_display    AS pd  ON (pd.pid = ap.pid)
-                      LEFT JOIN  profile_corps      AS pc  ON (pc.pid = ap.pid)
-                      LEFT JOIN  profile_corps_enum AS pce ON (pc.current_corpsid = pce.id)
-                      LEFT JOIN  profile_job        AS pj  ON (pj.pid = ap.pid)
-                      LEFT JOIN  profile_job_enum   AS pje ON (pj.jobid = pje.id)
-                      LEFT JOIN  profile_networking AS pn  ON (pn.pid = ap.pid)
-                          WHERE  a.alias = {?}
-                       GROUP BY  acc.uid", $alias);
+                        'SELECT  a.uid, count(DISTINCT(r.redirect)) AS nb_mails,
+                                 IFNULL(pd.public_name, a.full_name) AS fullname,
+                                 IFNULL(pd.promo, 0) AS promo, IFNULL(pce.name, \'Aucun\') AS corps,
+                                 IFNULL(pje.name, \'Aucun\') AS job, GROUP_CONCAT(pn.address SEPARATOR \', \') AS networking
+                           FROM  email_source_account   AS s
+                     INNER JOIN  accounts               AS a   ON (s.uid = a.uid)
+                      LEFT JOIN  email_redirect_account AS r   ON (a.uid = r.uid AND r.broken_level = 0 AND r.flags = \'active\' AND
+                                                                   (r.type = \'smtp\' OR r.type = \'googleapps\'))
+                      LEFT JOIN  account_profiles       AS ap  ON (a.uid = ap.uid AND FIND_IN_SET(\'owner\', ap.perms))
+                      LEFT JOIN  profile_display        AS pd  ON (pd.pid = ap.pid)
+                      LEFT JOIN  profile_corps          AS pc  ON (pc.pid = ap.pid)
+                      LEFT JOIN  profile_corps_enum     AS pce ON (pc.current_corpsid = pce.id)
+                      LEFT JOIN  profile_job            AS pj  ON (pj.pid = ap.pid)
+                      LEFT JOIN  profile_job_enum       AS pje ON (pj.jobid = pje.id)
+                      LEFT JOIN  profile_networking     AS pn  ON (pn.pid = ap.pid)
+                          WHERE  s.email = {?}
+                       GROUP BY  a.uid', $alias);
 
                     if ($x = $sel->fetchOneAssoc()) {
                         if ($x['nb_mails'] == 0) {

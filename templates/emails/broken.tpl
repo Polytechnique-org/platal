@@ -32,10 +32,10 @@ ce qui est invalide.
 En effet, il faut nous donner l'adresse qui se cache derrière l'adresse polytechnicienne de ton
 correspondant si tu veux que nous puissions te répondre.
 </p>
-{elseif $x && $x.nb_mails}
+{elseif t($user) && $user.nb_mails}
 <h2>Patte cassée</h2>
   <p>
-    Ton correspondant a à l'heure actuelle <span class="erreur">{$x.nb_mails} adresse(s) email(s) de redirection active(s)
+    Ton correspondant a à l'heure actuelle <span class="erreur">{$user.nb_mails} adresse(s) email(s) de redirection active(s)
     en dehors de celle que tu nous as communiquée</span>. Cela ne veut pas forcément dire qu'il les avait
     déjà activées lorsque tu as envoyé ton email, mais c'est fort probable.
   </p>
@@ -44,10 +44,10 @@ correspondant si tu veux que nous puissions te répondre.
     Si tu veux que nous lui envoyions un email automatique de ta part pour le prévenir,
     <a href="emails/broken/warn/{$email}?token={xsrf_token}">clique sur ce lien</a>.
   </p>
-{elseif $x}
+{elseif $user}
 <h2>Patte cassée</h2>
   <p>
-    Désolé, mais ton correspondant, {$x.user->fullName()},
+    Désolé, mais ton correspondant, {$user.full_name},
     n'a actuellement <span class="erreur">aucune adresse email de redirection
       active autre que celle que tu viens de rentrer.</span>
     Nous t'invitons à prendre contact avec lui autrement que par email,
@@ -55,7 +55,7 @@ correspondant si tu veux que nous puissions te répondre.
   </p>
   <p>
     Si tu connais une autre adresse email où le contacter, nous pouvons l'inviter à mettre à jour sa redirection
-    Polytechnique.org. Pour ceci il suffit que tu remplisses <a href="marketing/broken/{$x.hruid}">ce formulaire</a>.
+    Polytechnique.org. Pour ceci il suffit que tu remplisses <a href="marketing/broken/{$user.hruid}">ce formulaire</a>.
   </p>
 {elseif $email}
 <p class="erreur">

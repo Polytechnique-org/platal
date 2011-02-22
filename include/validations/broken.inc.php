@@ -88,9 +88,10 @@ class BrokenReq extends Validate
         global $globals;
         $email =  $this->m_user->bestEmail();
 
-        XDB::execute("UPDATE  emails
-                         SET  flags = 'active', panne_level = 2
-                       WHERE  uid = {?} AND email = {?}", $this->m_user->id(), $this->m_email);
+        XDB::execute('UPDATE  email_redirect_account
+                         SET  flags = \'active\', broken_level = 2
+                       WHERE  uid = {?} AND redirect = {?}',
+                     $this->m_user->id(), $this->m_email);
         if (XDB::affectedRows() > 0) {
             $this->m_reactive = true;
             $mailer = new PlMailer();
@@ -113,7 +114,10 @@ class BrokenReq extends Validate
             $subject = "Ton adresse $email semble ne plus fonctionner";
             $reason  = "Nous avons été informés que ton adresse $email ne fonctionne plus correctement par un camarade";
         } else {
-            $res = XDB::iterRow("SELECT email FROM emails WHERE uid = {?} AND flags = 'panne'", $this->m_user->id());
+            $res = XDB::iterRow('SELECT  redirect
+                                   FROM  email_redirect_account
+                                  WHERE  uid = {?} AND flags = \'broken\'',
+                                $this->m_user->id());
             $redirect = array();
             while (list($red) = $res->next()) {
                 list(, $redirect[]) = explode('@', $red);
