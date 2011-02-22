@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function fill_email_combobox(PlPage& $page, $user = null, $profile = null)
+function fill_email_combobox(PlPage $page, $user = null, $profile = null)
 {
     global $globals;
 
