@@ -185,6 +185,7 @@
           <br />
           <i>Entrer une liste de matricules AX (un par ligne)</i><br />
           <input type="checkbox" name="axid_reversed" id="axid_reversed" {if $smarty.request.axid_reversed}checked="checked"{/if} value="1" />
+          Inverser la sélection <i>(sélectionner dans l'intervalle de promotions, à l'exception des matricules indiqués)</i>
         </td>
       </tr>
       {/if}
