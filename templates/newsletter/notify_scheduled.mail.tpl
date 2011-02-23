@@ -24,13 +24,13 @@
 {if $mail_part eq 'head'}
 {from full=#from#}
 {to addr=#to#}
-{subject text="Validation de l'envoi d'une NL du groupe $group"}
+{subject text="Validation de l'envoi d'une NL du groupe `$issue->nl->group`"}
 {elseif $mail_part eq 'text'}
 
-L'envoi d'une NL pour le groupe {$group}, "{$nl_title}", a été planifié pour le {$send_before}.
+L'envoi d'une NL pour le groupe {$issue->nl->group}, "{$issue->title_mail}", a été planifié pour le {$issue->send_before}.
 
 Aperçu / édition :
-{$base}/newsletter/admin/edit/{$nl_id}
+{$base}/{$issue->nl->adminPrefix(false)}/edit/{$issue->id()}
 
 {/if}
 

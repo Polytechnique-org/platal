@@ -433,7 +433,7 @@ class NewsLetter
     /** Get the prefix leading to the page for this NL
      * Only X.org / AX / X groups may be seen on X.org.
      */
-    public function prefix()
+    public function prefix($enforce_xnet=true)
     {
         if (!empty($GLOBALS['IS_XNET_SITE'])) {
             return $this->group . '/nl';
@@ -447,13 +447,13 @@ class NewsLetter
             return 'epletter';
         default:
             // Don't display groups NLs on X.org
-            assert(false);
+            assert(!$enforce_xnet);
         }
     }
 
     /** Get the prefix to use for all 'admin' pages of this NL.
      */
-    public function adminPrefix()
+    public function adminPrefix($enforce_xnet=true)
     {
         if (!empty($GLOBALS['IS_XNET_SITE'])) {
             return $this->group . '/admin/nl';
@@ -467,7 +467,7 @@ class NewsLetter
             return 'epletter/admin';
         default:
             // Don't display groups NLs on X.org
-            assert(false);
+            assert(!$enforce_xnet);
         }
     }
 
@@ -668,11 +668,8 @@ class NLIssue
             if ($success) {
                 global $globals;
                 $mailer = new PlMailer('newsletter/notify_scheduled.mail.tpl');
-                $mailer->assign('group', $this->nl->group);
-                $mailer->assign('nl_title', $this->title_mail);
-                $mailer->assign('nl_id', $this->id());
+                $mailer->assign('issue', $this);
                 $mailer->assign('base', $globals->baseurl);
-                $mailer->assign('send_before', $this->send_before);
                 $mailer->send();
                 $this->refresh();
             }
