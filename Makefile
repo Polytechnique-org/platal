@@ -22,6 +22,9 @@ q:
 	@echo -e "Code statistics\n"
 	@sloccount $(wildcard */) 2> /dev/null | egrep '^[a-z]*:'
 
+doc:
+	@doxygen doc/doxygen.cfg
+
 ################################################################################
 # targets
 
@@ -31,4 +34,4 @@ q:
 include/version.inc.php: Makefile ChangeLog
 	echo '<?php define("PLATAL_CORE_VERSION", "${VERSION}"); ?>' > $@
 
-.PHONY: build dist clean q test
+.PHONY: build dist clean q test doc
