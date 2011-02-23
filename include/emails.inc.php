@@ -24,6 +24,103 @@ define('ERROR_INACTIVE_REDIRECTION', 2);
 define('ERROR_INVALID_EMAIL', 3);
 define('ERROR_LOOP_EMAIL', 4);
 
+function add_to_list_alias(User $user, $local_part, $domain)
+{
+    Platal::assert($user !== null);
+
+    XDB::execute('INSERT IGNORE INTO  email_virtual (email, domain, redirect, type)
+                              SELECT  {?}, id, {?}, {?}
+                                FROM  email_virtual_domains
+                               WHERE  name = {?}',
+                 $local_part, $user->forlifeEmail(), $type, $domain);
+}
+
+function delete_from_list_alias(User $user, $local_part, $domain)
+{
+    Platal::assert($user !== null);
+
+    XDB::execute('DELETE  v
+                    FROM  email_virtual         AS v
+              INNER JOIN  email_virtual_domains AS m ON (v.domain = m.id)
+              INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
+                   WHERE  v.email = {?} AND d.name = {?} AND v.redirect = {?} AND type = {?}',
+                 $local_part, $domain, $user->forlifeEmail(), $type);
+}
+
+function list_alias_members($local_part, $domain)
+{
+    $emails = XDB::fetchColumn('SELECT  DISTINCT(redirect)
+                                  FROM  email_virtual         AS v
+                            INNER JOIN  email_virtual_domains AS m ON (v.domain = m.id)
+                            INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
+                                 WHERE  v.email = {?} AND d.name = {?} AND type = \'user\'',
+                               $local_part, $domain);
+
+    $members = array();
+    foreach ($emails as $email) {
+        $members[] = User::getSilent($email);
+    }
+
+    return $members;
+}
+
+function delete_list_alias($local_part, $domain)
+{
+    XDB::execute('DELETE  v
+                    FROM  email_virtual         AS v
+              INNER JOIN  email_virtual_domains AS m ON (v.domain = m.id)
+              INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
+                   WHERE  v.email = {?} AND d.name = {?} AND type = \'user\'',
+                 $local_part, $domain);
+}
+
+function iterate_list_alias($domain)
+{
+    return XDB::fetchColumn('SELECT  CONCAT(v.email, \'@\', m.name)
+                               FROM  email_virtual         AS v
+                         INNER JOIN  email_virtual_domains AS m ON (v.domain = m.id)
+                              WHERE  m.name = {?} AND v.type = \'user\'
+                           GROUP BY  v.email',
+                            $domain);
+}
+
+function create_list($local_part, $domain)
+{
+    global $globals;
+
+    $redirect = $domain . '_' . $local_part . '+';
+    foreach(array('post', 'owner', 'admin', 'bounces', 'unsubscribe') as $suffix) {
+        XDB::execute('INSERT IGNORE INTO  email_virtual (email, domain, redirect, type)
+                                  SELECT  {?}, id, {?}, \'list\'
+                                    FROM  email_virtual_domains
+                                   WHERE  name = {?}',
+                     ($suffix == 'post') ? $local_part : $local_part . '-' . $suffix,
+                     $redirect . $suffix . '@' . $globals->lists->redirect_domain, $domain);
+    }
+}
+
+function delete_list($local_part, $domain)
+{
+    global $globals;
+
+    $redirect = $domain . '_' . $local_part . '+';
+    foreach(array('post', 'owner', 'admin', 'bounces', 'unsubscribe') as $suffix) {
+        XDB::execute('DELETE  email_virtual
+                       WHERE  redirect = {?} AND type = \'list\'',
+                     $redirect . $suffix . '@' . $globals->lists->redirect_domain);
+    }
+}
+
+function list_exist($local_part, $domain)
+{
+    return XDB::fetchOneCell('SELECT  COUNT(*)
+                                FROM  email_virtual         AS v
+                          INNER JOIN  email_virtual_domains AS m ON (v.domain = m.id)
+                          INNER JOIN  email_virtual_domains AS d ON (m.id = d.aliasing)
+                               WHERE  v.email = {?} AND d.name = {?}',
+                             $local_part, $domain);
+}
+
 // function mark_broken_email() {{{1
 function mark_broken_email($email, $admin = false)
 {
