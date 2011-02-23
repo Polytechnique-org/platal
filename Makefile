@@ -45,7 +45,7 @@ update:
 	@git fetch && git rebase `git symbolic-ref HEAD | sed -e 's~refs/heads/~origin/~'` && git submodule update
 
 doc:
-	@doxygen doc/doxygen.cfg
+	@doxygen core/doc/doxygen.cfg
 
 ################################################################################
 # targets
