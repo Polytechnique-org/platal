@@ -208,8 +208,13 @@ class XnetGrpModule extends PLModule
                       Post::v('unsub_url'), $flags, Post::t('welcome_msg'),
                       $globals->asso('id'));
                 if (Post::v('mail_domain')) {
-                    XDB::execute('INSERT IGNORE INTO virtual_domains (domain) VALUES({?})',
-                                           Post::v('mail_domain'));
+                    XDB::execute('INSERT IGNORE INTO  email_virtual_domains (name)
+                                              VALUES  ({?})',
+                                 Post::t('mail_domain'));
+                    XDB::execute('UPDATE  email_virtual_domains
+                                     SET  aliasing = id
+                                   WHERE  name = {?}',
+                                 Post::t('mail_domain'));
                 }
             } else {
                 XDB::execute(
@@ -793,11 +798,11 @@ class XnetGrpModule extends PLModule
             }
         }
 
-        XDB::execute("DELETE FROM  virtual_redirect
-                            USING  virtual_redirect
-                       INNER JOIN  virtual USING(vid)
-                            WHERE  redirect={?} AND alias LIKE {?}",
-                       $user->forlifeEmail(), '%@'.$domain);
+        XDB::execute('DELETE  v
+                        FROM  email_virtual         AS v
+                  INNER JOIN  email_virtual_domains AS d ON (v.domain = d.id)
+                       WHERE  v.redirect = {?} AND d.name = {?}',
+                     $user->forlifeEmail(), $domain);
         return !$warning;
     }
 
@@ -974,26 +979,18 @@ class XnetGrpModule extends PLModule
 
             // Change subscriptioin to aliases
             foreach (Env::v('ml3', array()) as $ml => $state) {
+                require_once 'emails.inc.php';
                 $ask = !empty($_REQUEST['ml4'][$ml]);
                 if($state == $ask) {
                     if ($state && $email_changed) {
-                        XDB::query("UPDATE  virtual_redirect AS vr, virtual AS v
-                                       SET  vr.redirect = {?}
-                                     WHERE  vr.vid = v.vid AND v.alias = {?} AND vr.redirect = {?}",
-                                     $user->forlifeEmail(), $ml, $from_email);
+                        update_list_alias($user, $from_email, $ml, $globals->asso('mail_domain'));
                         $page->trigSuccess("L'abonnement de {$user->fullName()} à $ml a été mis à jour.");
                     }
                 } else if($ask) {
-                    XDB::query("INSERT INTO  virtual_redirect (vid,redirect)
-                                     SELECT  vid,{?} FROM virtual WHERE alias={?}",
-                               $user->forlifeEmail(), $ml);
+                    add_to_list_alias($user, $ml, $globals->asso('mail_domain'));
                     $page->trigSuccess("{$user->fullName()} a été abonné à $ml.");
                 } else {
-                    XDB::query("DELETE FROM  virtual_redirect
-                                      USING  virtual_redirect
-                                 INNER JOIN  virtual USING(vid)
-                                      WHERE  redirect={?} AND alias={?}",
-                               $from_email, $ml);
+                    delete_from_list_alias($user, $ml, $globals->asso('mail_domain'));
                     $page->trigSuccess("{$user->fullName()} a été désabonné de $ml.");
                 }
             }

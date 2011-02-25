@@ -81,10 +81,13 @@ class XnetModule extends PLModule
                 $page->trigSuccess('membres supprimés');
 
                 if ($domain) {
-                    XDB::query('DELETE FROM  virtual_domains WHERE domain={?}', $domain);
-                    XDB::query('DELETE FROM  virtual, virtual_redirect
-                                                USING  virtual INNER JOIN virtual_redirect USING (vid)
-                                                WHERE  alias LIKE {?}', '%@'.$domain);
+                    XDB::execute('DELETE  v
+                                    FROM  email_virtual         AS v
+                              INNER JOIN  email_virtual_domains AS d ON (v.domain = d.id)
+                                   WHERE  d.name = {?}',
+                                 $domain);
+                    XDB::execute('DELETE FROM  email_virtual_domains
+                                        WHERE  name = {?}', $domain);
                     $page->trigSuccess('suppression des alias mails');
 
                     $mmlist = new MMList(S::v('uid'), S::v('password'), $domain);
