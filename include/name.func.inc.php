@@ -293,14 +293,18 @@ function set_alias_names(&$sn_new, $sn_old, $pid, $uid, $update_new = false, $ne
         }
     }
     if ($update_new) {
-        XDB::execute("DELETE FROM  aliases
-                            WHERE  FIND_IN_SET('usage', flags) AND uid = {?}",
-                     $uid);
+        XDB::execute('DELETE  s
+                        FROM  email_source_account  AS s
+                  INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
+                       WHERE  FIND_IN_SET(\'usage\', s.flags) AND s.uid = {?} AND d.name = {?}',
+                     $uid, Platal::globals()->mail->domain);
     }
     if ($new_alias) {
-        XDB::execute("INSERT INTO  aliases (alias, type, flags, uid)
-                           VALUES  ({?}, 'alias', 'usage', {?})",
-                     $new_alias, $uid);
+        XDB::execute('INSERT INTO  email_source_account (email, uid, type, flags, domain)
+                           SELECT  {?}, {?}, \'alias\', \'usage\', id
+                             FROM  email_virtual_domains
+                            WHERE  name = {?}',
+                     $new_alias, $uid, Platal::globals()->mail->domain);
     }
     Profile::rebuildSearchTokens($pid, false);
     return $has_new;

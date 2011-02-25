@@ -179,10 +179,11 @@ function get_nouveau_infos($method, $params) {
 
         $res = XDB::query("SELECT  pnl.name AS nom, pnu.name AS nom_usage, pnf.name AS prenom,
                                    p.sex = 'female' AS femme, p.deathdate IS NOT NULL AS decede,
-                                   p.birthdate, pd.promo, CONCAT(a.alias, '@m4x.org') AS mail
+                                   p.birthdate, pd.promo, CONCAT(e.email, '@', d.name) AS mail
                              FROM  profiles         AS p
                        INNER JOIN  account_profiles AS ap ON (p.pid = ap.pid AND FIND_IN_SET('owner', perms)
-                       INNER JOIN  aliases          AS a  ON (a.uid = ap.uid)
+                       INNER JOIN  email_source_account AS s ON (s.uid = ap.uid AND FIND_IN_SET('bestalias', s.flags))
+                       INNER JOIN  email_virtual_domains AS d ON (s.domain = s.id)
                        INNER JOIN  profile_display  AS pd PN (p.pid = pd.pid)
                        INNER JOIN  profile_name AS pnl ON (p.pid = pnl.pid AND pnl.typeid = {?})
                        INNER JOIN  profile_name AS pnf ON (p.pid = pnf.pid AND pnf.typeid = {?})

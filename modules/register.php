@@ -335,13 +335,22 @@ class RegisterModule extends PLModule
         XDB::execute("UPDATE  profiles
                          SET  birthdate = {?}, last_change = NOW()
                        WHERE  pid = {?}", $birthdate, $pid);
-        XDB::execute("INSERT INTO  aliases (uid, alias, type)
-                           VALUES  ({?}, {?}, 'a_vie')", $uid, $forlife);
-        XDB::execute("INSERT INTO  aliases (uid, alias, type, flags)
-                           VALUES  ({?}, {?}, 'alias', 'bestalias')", $uid, $bestalias);
+        XDB::execute('INSERT INTO  email_source_account (email, uid, type, flags, domain)
+                           SELECT  {?}, {?}, \'forlife\', \'\', id
+                             FROM  email_virtual_domains
+                            WHERE  name = {?}',
+                     $forlife, $uid, $globals->mail->domain);
+        XDB::execute('INSERT INTO  email_source_account (email, uid, type, flags, domain)
+                           SELECT  {?}, {?}, \'alias\', \'bestalias\', id
+                             FROM  email_virtual_domains
+                            WHERE  name = {?}',
+                     $bestalias, $uid, $globals->mail->domain);
         if ($emailXorg2) {
-            XDB::execute("INSERT INTO  aliases (uid, alias, type)
-                               VALUES  ({?}, {?}, 'alias')", $uid, $emailXorg2);
+            XDB::execute('INSERT INTO  email_source_account (email, uid, type, flags, domain)
+                               SELECT  {?}, {?}, \'alias\', \'\', id
+                                 FROM  email_virtual_domains
+                                WHERE  name = {?}',
+                         $emailXorg2, $uid, $globals->mail->domain);
         }
         XDB::commit();
 

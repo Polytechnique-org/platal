@@ -59,17 +59,18 @@ class NamesReq extends ProfileValidate
         }
 
         if (!is_null($this->profileOwner)) {
-            $res = XDB::query("SELECT  alias
-                                 FROM  aliases
-                                WHERE  uid = {?} AND type = 'alias' AND FIND_IN_SET('usage', flags)",
-                              $this->profileOwner->id());
-            $this->old_alias  = $res->fetchOneCell();
+            $this->old_alias = XDB::fetchOneCell('SELECT  s.email
+                                                    FROM  email_source_account  AS s
+                                              INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
+                                                   WHERE  s.uid = {?} AND s.type = \'alias\' AND FIND_IN_SET(\'usage\', s.flags) AND d.name = {?}',
+                                                 $this->profileOwner->id(), Platal::globals()->mail->domain);
             if ($this->old_alias != $this->new_alias) {
-                $res = XDB::query("SELECT  uid
-                                     FROM  aliases
-                                    WHERE  alias = {?}",
-                                  $this->new_alias);
-                if ($res->fetchOneCell()) {
+                $used = XDB::fetchOneCell('SELECT  COUNT(s.*)
+                                             FROM  email_source_account  AS s
+                                       INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
+                                            WHERE  s.email = {?} AND d.name = {?}',
+                                          $this->new_alias, Platal::globals()->mail->domain);
+                if ($used) {
                     $this->new_alias = null;
                 }
             }
