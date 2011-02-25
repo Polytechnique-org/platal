@@ -38,9 +38,29 @@
         }
     };
 
+    var ajaxParams = function(onSuccess, onError, extraParameters) {
+        return $.extend({
+            success: function(data, textStatus, xhr) {
+                if (textStatus === 'success') {
+                    if (onSuccess) {
+                        onSuccess(data, textStatus, xhr);
+                    }
+                } else if (textStatus === 'error') {
+                    if (onError) {
+                        onError(data, textStatus, xhr);
+                    } else {
+                        alert("Une error s'est produite lors du traitement de la requête.\n"
+                            + "Ta session a peut-être expiré");
+                    }
+                }
+            }
+        }, extraParameters);
+    };
 
     /* Add new functions to jQuery namesapce */
     $.extend({
+        xapiVersion: '1',
+
         plURL: (function() {
             var base;
             return function(url) {
@@ -80,27 +100,27 @@
                 onError = null;
             }
 
-            function ajaxHandler(data, textStatus, xhr) {
-                if (textStatus === 'success') {
-                    if (onSuccess) {
-                        onSuccess(data, textStatus, xhr);
-                    }
-                } else if (textStatus === 'error') {
-                    if (onError) {
-                        onError(data, textStatus, xhr);
-                    } else {
-                        alert("Une error s'est produite lors du traitement de la requête.\n"
-                            + "Ta session a peut-être expiré");
-                    }
-                }
-            }
-            return $.ajax({
+            return $.ajax(ajaxParams(onSuccess, onError, {
                 url: $.plURL(source),
                 type: method,
-                success: ajaxHandler,
                 data : data,
                 dataType: type
-            });
+            }));
+        },
+
+        xapi: function(apicall, payload, onSuccess, onError) {
+            if ($.isFunction(payload)) {
+                onError   = onSuccess;
+                onSuccess = payload;
+            }
+
+            return $.ajax(ajaxParams(onSuccess, onError, {
+                url: $.plURL('api/' + $.xapiVersion + '/' + apicall),
+                type: 'POST',
+                data: JSON.stringify(payload),
+                dataType: 'json',
+                contentType: 'text/javascript'
+            }));
         },
 
         xget: function(source, data, onSuccess, onError, type) {
