@@ -31,27 +31,18 @@ function smarty_insert_getUsername()
     }
 
     if (Cookie::v('domain', 'login') != 'alias') {
-        $res = XDB::query("SELECT  alias
-                             FROM  aliases
-                            WHERE  uid = {?} AND (type IN ('a_vie', 'alias') AND FIND_IN_SET('bestalias', flags))",
-                          $id);
-        return $res->fetchOneCell();
+        return XDB::fetchOneCell('SELECT  email
+                                    FROM  email_source_account  AS e
+                              INNER JOIN  email_virtual_domains AS d ON (e.domain = d.id)
+                                   WHERE  e.uid = {?} AND d.name = {?} AND FIND_IN_SET(\'bestalias\', e.flags)',
+                                 $id, $globals->mail->domain);
     } else {
-        $res = XDB::query("
-            SELECT  v.alias
-              FROM  virtual AS v
-        INNER JOIN  virtual_redirect USING (vid)
-        INNER JOIN  aliases AS a ON (uid = {?} AND a.type = 'a_vie')
-             WHERE  redirect = CONCAT(a.alias, {?}) OR redirect = CONCAT(a.alias, {?})",
-            $id, '@' . $globals->mail->domain, '@' . $globals->mail->domain2);
-        $aliases = $res->fetchAllAssoc();
-        foreach ($aliases as $alias) {
-            list($login, $domain) = explode('@', $alias['alias']);
-            if ($domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2) {
-                return $login;
-            }
-        }
-     }
+        return XDB::fetchOneCell('SELECT  email
+                                    FROM  email_source_account  AS e
+                              INNER JOIN  email_virtual_domains AS d ON (e.domain = d.id)
+                                   WHERE  e.uid = {?} AND d.name = {?}',
+                                 $id, $globals->mail->alias_dom);
+    }
 
      return '';
 }
