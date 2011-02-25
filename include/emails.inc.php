@@ -178,7 +178,7 @@ function fix_bestalias(User $user)
 {
     $count = XDB::fetchOneCell('SELECT  COUNT(*)
                                   FROM  email_source_account
-                                 WHERE  uid = {?} AND FIND_IN_SET(\'bestalias\', flags)',
+                                 WHERE  uid = {?} AND FIND_IN_SET(\'bestalias\', flags) AND expire IS NULL',
                                $user->id());
 
     if ($count == 1) {
@@ -196,7 +196,7 @@ function fix_bestalias(User $user)
     // related to a usage name and contains a '.'.
     XDB::execute("UPDATE  email_source_account
                      SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'bestalias')
-                   WHERE  uid = {?}
+                   WHERE  uid = {?} AND expire IS NULL
                 ORDER BY  NOT FIND_IN_SET('usage', flags), email LIKE '%.%', LENGTH(email)
                    LIMIT  1",
                  $user->id());
