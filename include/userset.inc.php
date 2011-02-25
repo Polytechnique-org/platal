@@ -367,10 +367,11 @@ class JSonView implements PlView
     public function apply(PlPage $page)
     {
         $export = array();
-        $profiles = $this->set->get(new PlLimit());
-        while ($profile = $profiles->next()) {
+        $profiles = $this->set->get(new PlLimit(10));
+        foreach ($profiles as $profile) {
             $export[] = $profile->export();
         }
+        $page->jsonAssign('profile_count', $this->set->count());
         $page->jsonAssign('profiles', $export);
     }
 

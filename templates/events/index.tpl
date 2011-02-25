@@ -208,19 +208,6 @@ Bienvenue {$smarty.session.user->displayName()}{if t($birthday)}
   </p>
 
   <p class="center">
-    <a id="blah">Blah  </a>
-
-    <script type="text/javascript">//<![CDATA[
-      {literal}
-      $($("#blah").click(function() {
-        $.xapi('1/search?token={/literal}{$smarty.session.xsrf_token}{literal}',
-               { 'quick': 'fruneau' },
-               function(data) { alert(JSON.stringify(data)); });
-        return false;
-      }));
-      {/literal}
-    //]]></script>
-
     {icon name=page_edit}&nbsp;
     <a href="events/submit">Proposer une information événementielle</a>&nbsp;&bull;
     <a href="nl/submit">Proposer un article pour la Lettre mensuelle</a>

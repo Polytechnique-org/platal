@@ -850,6 +850,133 @@ function sendTestEmail(token, hruid)
 
 // }}}
 
+/***************************************************************************
+ * Quick search
+ */
+
+(function($) {
+    function findPos(obj) {
+        var curleft = obj.offsetLeft || 0;
+        var curtop = obj.offsetTop || 0;
+        while (obj = obj.offsetParent) {
+            curleft += obj.offsetLeft
+            curtop += obj.offsetTop
+        }
+        return {x:curleft,y:curtop};
+    }
+
+    $.template('quickMinifiche',
+            '<div class="contact {{if !is_active}}grayed{{/if}}" style="clear: both">' +
+                '<div class="identity">' +
+                    '<div class="photo"><img src="photo/${hrpid}" alt="${directory_name}" /></div>' +
+                    '<div class="nom">' +
+                        '{{if is_female}}&bull;{{/if}}<a href="profile/${hrpid}">${directory_name}</a>' +
+                    '</div>' +
+                    '<div class="edu">${promo}</div>' +
+                '</div>' +
+                '<div class="noprint bits"></div>' +
+                '<div class="long"></div>' +
+            '</div>');
+
+    $.fn.extend({
+        quickSearch: function(args) {
+            var query = null;
+            var previous = null;
+            var $this = this;
+            var $popup;
+            var token = (args && args.token) || $.xsrf_token;
+            var url   = 'search';
+            var pending = false;
+            var pos     = findPos(this.get(0));
+            var disabled = false;
+            var updatePopup;
+            if (token) {
+                url += '?token=' + token;
+            }
+            $popup =  $('<div>').hide()
+                .addClass('contact-list')
+                .css({
+                    position: 'absolute',
+                    width: '300px',
+                    top: $this.css('bottom'),
+                    left: pos.x - 300 + $this.width(),
+                    clear: 'both',
+                    'text-align': 'left'
+                });
+            $this.after($popup);
+
+            function formatProfile(profile) {
+                var data = $.tmpl('quickMinifiche', profile);
+                data.find('a').popWin(840, 600).click(function() { $popup.hide(); });
+                data.click(data.find('a').click());
+                return data;
+            }
+
+            function markPending() {
+                pending = true;
+            }
+
+            function doUpdatePopup()
+            {
+                var quick = $(this).val();
+                if (disabled) {
+                    $popup.hide();
+                    return true;
+                }
+                if (previous === quick) {
+                    $popup.show();
+                    return true;
+                }
+                if (query !== null) {
+                    query.abort();
+                    query = null;
+                }
+                query = $.xapi(url, $.extend({ 'quick': quick }, args), function(data) {
+                    query = null;
+                    $popup.empty();
+                    if (data.profile_count > 10) {
+                        $popup.hide();
+                        return;
+                    }
+                    for (var i = 0, len = data.profiles.length; i < len; i++) {
+                        formatProfile(data.profiles[i]).appendTo($popup);
+                    }
+                    previous = quick;
+                    $popup.show();
+                }, function() { disabled = true; });
+                updatePopup = markPending;
+                setTimeout(function() {
+                    updatePopup = doUpdatePopup;
+                    if (pending) {
+                        updatePopup();
+                    }
+                    pending = false;
+                }, 500);
+                return true;
+            }
+            updatePopup = doUpdatePopup;
+
+            return this.keyup(function(e) {
+                if (e.keyCode != 27 /* escape */) {
+                    return updatePopup.call(this);
+                }
+                return true;
+            })
+            .keydown(function(e) {
+                if (e.keyCode == 27) {
+                    $popup.hide();
+                }
+                return true;
+            })
+            .blur(function() {
+                if (!$popup.is(':hover')) {
+                    $popup.hide();
+                }
+            })
+            .focus(updatePopup);
+        }
+    });
+}(jQuery));
 
 /***************************************************************************
  * Overlib made simple
@@ -925,7 +1052,8 @@ $(function() {
         })
         .blur(function() {
             $("#quick_button").hide();
-        });
+        })
+        .quickSearch();
     $("#quick_button").click(function() {
         if ($("#quick").val() === 'Recherche dans l\'annuaire'
             || $("#quick").val() === '') {
