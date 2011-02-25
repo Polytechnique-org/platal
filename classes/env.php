@@ -149,6 +149,7 @@ class Post
     public static function set($key, $value)
     {
         $_POST[$key] =& $value;
+        Env::set($key, $value);
     }
 
     public static function bootstrap($key, $value)
@@ -219,6 +220,7 @@ class Get
     public static function set($key, $value)
     {
         $_GET[$key] =& $value;
+        Env::set($key, $value);
     }
 
     public static function bootstrap($key, $value)
@@ -260,6 +262,7 @@ class Cookie
             setcookie($key, $value, time() + 86400 * $days, $globals->cookie_path, '',
                       $secure, $secure);
             $_COOKIE[$key] = $value;
+            Env::set($key, $value);
         }
     }
 
