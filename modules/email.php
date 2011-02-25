@@ -381,8 +381,8 @@ class EmailModule extends PLModule
 
             unset($_POST['save']);
             if (trim(preg_replace('/-- .*/', '', Post::v('contenu'))) != "") {
-                $_POST['to_contacts'] = explode(';', @$_POST['to_contacts']);
-                $_POST['cc_contacts'] = explode(';', @$_POST['cc_contacts']);
+                Post::set('to_contacts', explode(';', Post::s('to_contacts')));
+                Post::set('cc_contacts', explode(';', Post::s('cc_contacts')));
                 $data = serialize($_POST);
                 XDB::execute('INSERT INTO  email_send_save (uid, data)
                                    VALUES  ({?}, {?})

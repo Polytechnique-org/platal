@@ -51,7 +51,7 @@ class AuthModule extends PLModule
 
         $res = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<membres>\n\n";
 
-        if (S::v('chall') && $_GET['PASS'] == md5(S::v('chall').$cle)) {
+        if (S::v('chall') && Get::s('PASS') == md5(S::v('chall').$cle)) {
             $list = new MMList(User::getWithUID(10154), "x-econfiance.polytechnique.org");
             $members = $list->get_members('membres');
             if (is_array($members)) {
