@@ -152,22 +152,28 @@ function createAliases($subState)
              . "<a href=\"mailto:support@{$globals->mail->domain}\">support@{$globals->mail->domain}</a>.";
     }
 
-    $res = XDB::query('SELECT  uid, type, expire
-                         FROM  aliases
-                        WHERE  alias = {?}', $emailXorg);
-    if ($res->numRows()) {
+    $count = XDB::numRows('SELECT  *
+                             FROM  email_source_account  AS s
+                       INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
+                            WHERE  s.email = {?} AND d.name = {?}',
+                          $emailXorg, $globals->mail->domain);
+    if ($count) {
         list($h_id, $h_type, $expire) = $res->fetchOneRow();
         if ($h_type != 'homonyme' and empty($expire)) {
-            XDB::execute('UPDATE  aliases
-                             SET  expire = ADDDATE(NOW(), INTERVAL 1 MONTH)
-                           WHERE  alias = {?}', $emailXorg);
-            XDB::execute('INSERT IGNORE INTO  homonyms (homonyme_id, uid)
+            XDB::execute('UPDATE  email_source_account  AS e
+                      INNER JOIN  email_virtual_domains AS d ON (e.domain = d.id)
+                             SET  e.expire = ADDDATE(NOW(), INTERVAL 1 MONTH)
+                           WHERE  e.email = {?} AND d.name = {?}',
+                         $emailXorg, $globals->mail->domain);
+            $hrmid = 'h.' . $emailXorg . '.' . $globals->mail->domain;
+            XDB::execute('INSERT IGNORE INTO  homonyms_list (hrmid, uid)
                                       VALUES  ({?}, {?}), ({?}, {?})',
-                         $subState->i('uid'), $h_id, $h_id, $subState->i('uid'));
-            $res = XDB::query('SELECT  alias
-                                 FROM  aliases
-                                WHERE  uid = {?} AND expire IS NULL', $h_id);
-            $als = $res->fetchColumn();
+                         $hrmid, $h_id, $hrmid, $subState->i('uid'));
+            $als = XDB::fetchColumn('SELECT  *
+                                       FROM  email_source_account  AS s
+                                 INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
+                                      WHERE  s.uid = {?} AND d.name = {?} AND s.expire IS NULL',
+                                    $h_id, $globals->mail->domain);
 
             $mailer = new PlMailer('register/lostalias.mail.tpl');
             $mailer->addTo($emailXorg . '@' . $globals->mail->domain);

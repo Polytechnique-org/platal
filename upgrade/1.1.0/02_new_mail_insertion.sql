@@ -56,8 +56,8 @@ INSERT INTO  email_source_account (uid, domain, email, type)
       WHERE  v.type = 'user' AND v.alias LIKE '%@melix.net' AND a.uid IS NOT NULL;
 
 -- 3/ Feeds email_source_other
-INSERT INTO  email_source_other (hrmid, email, domain, type)
-     SELECT  CONCAT(CONCAT('h.', alias), '.polytechnique.org'), alias, @p_domain_id, 'homonym'
+INSERT INTO  email_source_other (hrmid, email, domain, type, expire)
+     SELECT  CONCAT(CONCAT('h.', alias), '.polytechnique.org'), alias, @p_domain_id, 'homonym', IF(expire IS NULL, '0000-00-00', expire)
        FROM  aliases
       WHERE  type = 'homonyme'
    GROUP BY  alias;

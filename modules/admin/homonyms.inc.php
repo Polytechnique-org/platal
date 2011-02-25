@@ -19,10 +19,10 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function select_if_homonyme(PlUser $user) {
-    return XDB::fetchOneCell("SELECT  a.alias
-                                FROM  aliases AS a
-                               WHERE  a.uid = {?} AND a.expire != ''",
+function select_if_homonym(PlUser $user) {
+    return XDB::fetchOneCell('SELECT  email
+                                FROM  email_source_account
+                               WHERE  uid = {?} AND expire IS NOT NULL',
                              $user->id());
 }
 
@@ -48,29 +48,6 @@ function send_robot_homonyme(PlUser $user, $loginbis) {
     $mymail->addCc($cc);
     $mymail->setTxtBody(Env::v('mailbody'));
     $mymail->sendTo($user);
-}
-
-function switch_bestalias(PlUser $user, $loginbis) {
-    // check if loginbis was the bestalias
-    $bestailas = XDB::fetchOneCell("SELECT  alias
-                                      FROM  aliases
-                                     WHERE  uid = {?} AND FIND_IN_SET('bestalias', flags)",
-                                   $user->id());
-    if ($bestalias && $bestalias != $loginbis) {
-        return false;
-    }
-
-    // select the shortest alias still alive
-    $newbest = XDB::fetchOneCell("SELECT  alias
-                                    FROM  aliases
-                                   WHERE  uid = {?} AND alias != {?} AND expire IS NULL
-                                ORDER BY  LENGTH(alias)
-                                   LIMIT  1", $user->id(), $loginbis);
-    // change the bestalias flag
-    XDB::execute("UPDATE  aliases
-                     SET  flags = (flags & (255 - 1)) | IF(alias = {?}, 1, 0)
-                   WHERE  uid = {?}", $newbest, $user->id());
-    return $newbest;
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

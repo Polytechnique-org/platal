@@ -24,40 +24,69 @@
 
 {if $op eq 'list' || $op eq 'mail' || $op eq 'correct'}
 
+{if $homonyms_to_fix|@count}
 <p>
-  Les utilisateurs signalés en rouge sont ceux qui conservent actuellement
-  l'alias prenom.nom et empêchent donc la mise en place du robot détrompeur.
+  Liste des homonymies à corriger, celles en rouge devraient déjà être traitées.
 </p>
 
 <table class="bicol">
   <tr>
     <th>alias concerné</th>
     <th>date de péremption de l'alias</th>
-    <th>op</th>
+    <th>actions</th>
   </tr>
-  {foreach from=$hnymes key=login item=row}
+  {foreach from=$homonyms_to_fix key=login item=row}
   <tr class="pair">
-    <td colspan="3">
+    <td>
+      {if $row.0.urgent}
+      <span class="erreur"><strong>{$login}</strong></span>
+      {else}
       <strong>{$login}</strong>
+      {/if}
+    </td>
+    <td>{$row.0.expire|date_format}</td>
+    <td>
+      <a href="admin/homonyms/mail-conf/{$row.0.uid}">envoyer un email</a>
+      <a href="admin/homonyms/correct-conf/{$row.0.uid}">corriger</a>
     </td>
   </tr>
   {foreach from=$row item=user}
   <tr class="impair">
-    <td>&nbsp;&nbsp;
-      {if $user.type eq 'alias'}
-      <span class="erreur"><strong>{$user.forlife}</strong></span>
-      {else}
-      {$user.forlife}
-      {/if}
-    </td>
-    <td>{$user.expire|date_format}</td>
+    <td>&nbsp;&nbsp;{$user.forlife}</td>
+    <td></td>
     <td>
       <a href="profile/{$user.forlife}" class='popup2'>fiche</a>
       <a href="admin/user/{$user.forlife}">edit</a>
-      {if $user.type eq 'alias'}
-      <a href="admin/homonyms/mail-conf/{$user.uid}">envoyer un email</a>
-      <a href="admin/homonyms/correct-conf/{$user.uid}">corriger</a>
-      {/if}
+    </td>
+  </tr>
+  {/foreach}
+  {/foreach}
+</table>
+{/if}
+
+<p>
+  Liste des homonymies déjà corrigées.
+</p>
+
+<table class="bicol">
+  <tr>
+    <th>alias concerné</th>
+    <th>alias prémimé depuis</th>
+    <th>actions</th>
+  </tr>
+  {foreach from=$homonyms key=login item=row}
+  <tr class="pair">
+    <td><strong>{$login}</strong></td>
+    <td>{if $row.0.expire eq '0000-00-00'}---{else}{$row.0.expire|date_format}{/if}</td>
+    <td></td>
+  </tr>
+  {foreach from=$row item=user}
+  <tr class="impair">
+    <td>&nbsp;&nbsp;{$user.forlife}</td>
+    <td></td>
+    <td>
+      <a href="profile/{$user.forlife}" class='popup2'>fiche</a>
+      <a href="admin/user/{$user.forlife}">edit</a>
     </td>
   </tr>
   {/foreach}

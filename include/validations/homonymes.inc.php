@@ -121,12 +121,24 @@ est ambigu pour des raisons d'homonymie et signalera ton email exact.";
     public function commit()
     {
         Platal::load('admin', 'homonyms.inc.php');
-        switch_bestalias($this->user, $this->loginbis);
         if (!$this->warning) {
-            XDB::execute("UPDATE aliases SET type = 'homonyme', expire = NOW() WHERE alias = {?}", $this->loginbis);
-            XDB::execute('INSERT IGNORE INTO  homonyms (homonyme_id, uid)
+            global $globals;
+            require_once 'emails.inc.php';
+
+            XDB::execute('DELETE  e
+                            FROM  email_source_account  AS e
+                      INNER JOIN  email_virtual_domains AS d ON (e.domain = d.id)
+                           WHERE  e.email = {?} AND d.name = {?}',
+                         $this->loginbis, $globals->mail->domain);
+            XDB::execute('INSERT INTO  email_source_other (hrmid, email, domain, type, expire)
+                               SELECT  CONCAT(\'h.\', {?}, \'.\', {?}), {?}, id, \'homonym\', NOW()
+                                 FROM  email_virtual_domains
+                                WHERE  name = {?}',
+                         $this->loginbis, $globals->mail->domain, $this->loginbis, $globals->mail->domain);
+            XDB::execute('INSERT IGNORE INTO  homonyms_list (hrmid, uid)
                                       VALUES  ({?}, {?})',
-                         $this->user->id(), $this->user->id());
+                         'h.' . $this->loginbis . '.' . $globals->mail->domain, $this->user->id());
+            fix_bestalias($this->user);
         }
 
         return true;

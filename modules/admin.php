@@ -938,13 +938,14 @@ class AdminModule extends PLModule
 
     function handler_homonyms($page, $op = 'list', $target = null)
     {
+        global $globals;
         $page->changeTpl('admin/homonymes.tpl');
         $page->setTitle('Administration - Homonymes');
         $this->load("homonyms.inc.php");
 
         if ($target) {
-            $user = User::getSilent($target);
-            if (!$user || !($loginbis = select_if_homonyme($user))) {
+            $user = User::getSilentWithUID($target);
+            if (!$user || !($loginbis = select_if_homonym($user))) {
                 $target = 0;
             } else {
                 $page->assign('user', $user);
@@ -955,15 +956,16 @@ class AdminModule extends PLModule
         $page->assign('op', $op);
         $page->assign('target', $target);
 
-        // on a un $target valide, on prepare les mails
+        // When we have a valid target, prepare emails.
         if ($target) {
-            // on examine l'op a effectuer
+            require_once 'emails.inc.php';
+            // Examine what operation needs to be performed.
             switch ($op) {
                 case 'mail':
                     S::assert_xsrf_token();
 
                     send_warning_homonyme($user, $loginbis);
-                    switch_bestalias($user, $loginbis);
+                    fix_bestalias($user);
                     $op = 'list';
                     $page->trigSuccess('Email envoyé à ' . $user->forlifeEmail() . '.');
                     break;
@@ -971,12 +973,20 @@ class AdminModule extends PLModule
                 case 'correct':
                     S::assert_xsrf_token();
 
-                    switch_bestalias($user, $loginbis);
-                    XDB::execute("UPDATE  aliases
-                                     SET  type = 'homonyme', expire=NOW()
-                                   WHERE  alias = {?}", $loginbis);
-                    XDB::execute('INSERT IGNORE INTO  homonyms (homonyme_id, uid)
-                                              VALUES  ({?}, {?})', $target, $target);
+                    XDB::execute('DELETE  e
+                                    FROM  email_source_account  AS e
+                              INNER JOIN  email_virtual_domains AS d ON (e.domain = d.id)
+                                   WHERE  e.email = {?} AND d.name = {?}',
+                                 $loginbis, $globals->mail->domain);
+                    XDB::execute('INSERT INTO  email_source_other (hrmid, email, domain, type, expire)
+                                       SELECT  CONCAT(\'h.\', {?}, \'.\', {?}), {?}, id, \'homonym\', NOW()
+                                         FROM  email_virtual_domains
+                                        WHERE  name = {?}',
+                                 $loginbis, $globals->mail->domain, $loginbis, $globals->mail->domain);
+                    XDB::execute('INSERT IGNORE INTO  homonyms_list (hrmid, uid)
+                                              VALUES  ({?}, {?})',
+                                 'h.' . $loginbis . '.' . $globals->mail->domain, $target);
+                    fix_bestalias($user);
                     send_robot_homonyme($user, $loginbis);
                     $op = 'list';
                     $page->trigSuccess('Email envoyé à ' . $user->forlifeEmail() . ', alias supprimé.');
@@ -985,21 +995,36 @@ class AdminModule extends PLModule
         }
 
         if ($op == 'list') {
-            $res = XDB::iterator(
-                    "SELECT  a.alias AS homonyme, s.alias AS forlife,
-                             IF(h.homonyme_id = s.uid, a.expire, NULL) AS expire,
-                             IF(h.homonyme_id = s.uid, a.type, NULL) AS type, ac.uid
-                       FROM  aliases       AS a
-                  LEFT JOIN  homonyms      AS h  ON (h.homonyme_id = a.uid)
-                 INNER JOIN  aliases       AS s  ON (s.uid = h.uid AND s.type = 'a_vie')
-                 INNER JOIN  accounts      AS ac ON (ac.uid = a.uid)
-                      WHERE  a.type = 'homonyme' OR a.expire != ''
-                   ORDER BY  a.alias, forlife");
-            $hnymes = Array();
-            while ($tab = $res->next()) {
-                $hnymes[$tab['homonyme']][] = $tab;
+            // Retrieves homonyms that are already been fixed.
+            $res = XDB::iterator('SELECT  o.email AS homonym, f.email AS forlife, o.expire, f.uid
+                                    FROM  email_source_other    AS o
+                              INNER JOIN  homonyms_list         AS h ON (o.hrmid = h.hrmid)
+                              INNER JOIN  email_source_account  AS f ON (h.uid = f.uid AND f.type = \'forlife\')
+                              INNER JOIN  email_virtual_domains AS d ON (f.domain = d.id)
+                                   WHERE  o.expire IS NOT NULL AND d.name = {?}
+                                ORDER BY  homonym, forlife',
+                                 $globals->mail->domain);
+            $homonyms = array();
+            while ($item = $res->next()) {
+                $homonyms[$item['homonym']][] = $item;
             }
-            $page->assign_by_ref('hnymes', $hnymes);
+            $page->assign_by_ref('homonyms', $homonyms);
+
+            // Retrieves homonyms that needs to be fixed.
+            $res = XDB::iterator('SELECT  e.email AS homonym, f.email AS forlife, e.expire, e.uid, (e.expire < NOW()) AS urgent
+                                    FROM  email_source_account  AS e
+                              INNER JOIN  homonyms_list         AS l ON (e.uid = l.uid)
+                              INNER JOIN  homonyms_list         AS h ON (l.hrmid = h.hrmid)
+                              INNER JOIN  email_source_account  AS f ON (h.uid = f.uid AND f.type = \'forlife\')
+                              INNER JOIN  email_virtual_domains AS d ON (f.domain = d.id)
+                                   WHERE  e.expire IS NOT NULL AND d.name = {?}
+                                ORDER BY  homonym, forlife',
+                                 $globals->mail->domain);
+            $homonyms_to_fix = array();
+            while ($item = $res->next()) {
+                $homonyms_to_fix[$item['homonym']][] = $item;
+            }
+            $page->assign_by_ref('homonyms_to_fix', $homonyms_to_fix);
         }
     }
 

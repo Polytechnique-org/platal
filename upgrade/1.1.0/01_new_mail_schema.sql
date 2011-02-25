@@ -35,7 +35,7 @@ CREATE TABLE email_source_other (
   domain SMALLINT(3) UNSIGNED NOT NULL DEFAULT 1,
   hrmid VARCHAR(255) NOT NULL,
   type ENUM('homonym', 'ax', 'honeypot'),
-  expire DATE NOT NULL DEFAULT '0000-00-00',
+  expire DATE DEFAULT NULL,
   PRIMARY KEY (email, domain),
   KEY (domain),
   FOREIGN KEY (domain) REFERENCES email_virtual_domains (id) ON UPDATE CASCADE ON DELETE CASCADE
