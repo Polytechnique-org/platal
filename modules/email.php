@@ -693,12 +693,11 @@ class EmailModule extends PLModule
         $page->assign('action', $action);
 
         if ($action == 'list') {
-            $sql = "SELECT  w.email, w.detection, w.state, a.alias AS forlife
-                      FROM  email_watch  AS w
-                 LEFT JOIN  emails        AS e USING(email)
-                 LEFT JOIN  aliases       AS a ON (a.uid = e.uid AND a.type = 'a_vie')
-                  ORDER BY  w.state, w.email, a.alias";
-            $it = Xdb::iterRow($sql);
+            $it = XDB::iterRow('SELECT  w.email, w.detection, w.state, s.email AS forlife
+                                  FROM  email_watch            AS w
+                            INNER JOIN  email_redirect_account AS r ON (w.email = r.redirect)
+                            INNER JOIN  email_source_account   AS s ON (s.uid = r.uid AND s.type = \'forlife\')
+                              ORDER BY  w.state, w.email, s.email');
 
             $table = array();
             $props = array();
@@ -720,15 +719,15 @@ class EmailModule extends PLModule
             }
             $page->assign('table', $table);
         } elseif ($action == 'edit') {
-            $sql = "SELECT  w.detection, w.state, w.last, w.description,
-                            a1.alias AS edit, a2.alias AS forlife
-                      FROM  email_watch AS w
-                 LEFT JOIN  aliases      AS a1 ON (a1.uid = w.uid AND a1.type = 'a_vie')
-                 LEFT JOIN  emails       AS e  ON (w.email = e.email)
-                 LEFT JOIN  aliases      AS a2 ON (a2.uid = e.uid AND a2.type = 'a_vie')
-                     WHERE  w.email = {?}
-                  ORDER BY  a2.alias";
-            $it = Xdb::iterRow($sql, $email);
+            $it = XDB::iterRow('SELECT  w.detection, w.state, w.last, w.description,
+                                        a.hruid AS edit, s.email AS forlife
+                                  FROM  email_watch            AS w
+                            INNER JOIN  email_redirect_account AS r ON (w.email = r.redirect)
+                            INNER JOIN  email_source_account   AS s ON (s.uid = r.uid AND s.type = \'forlife\')
+                            INNER JOIN  accounts               AS a ON (w.uid = a.uid)
+                                 WHERE  w.email = {?}
+                              ORDER BY  s.email',
+                               $email);
 
             $props = array();
             while (list($detection, $state, $last, $description, $edit, $forlife) = $it->next()) {
@@ -754,13 +753,14 @@ class EmailModule extends PLModule
 
         $page->assign('lost_emails',
                       XDB::iterator('SELECT  a.uid, a.hruid, pd.promo
-                                       FROM  accounts         AS a
-                                 INNER JOIN  email_options    AS eo ON (eo.uid = a.uid)
-                                  LEFT JOIN  emails           AS e  ON (a.uid = e.uid AND FIND_IN_SET(\'active\', e.flags))
-                                  LEFT JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET(\'owner\', perms))
-                                  LEFT JOIN  profile_display  AS pd ON (ap.pid = pd.pid)
-                                      WHERE  e.uid IS NULL AND FIND_IN_SET(\'googleapps\', eo.storage) = 0
-                                             AND a.state = \'active\'
+                                       FROM  accounts               AS a
+                                 INNER JOIN  account_types          AS at ON (a.type = at.type)
+                                  LEFT JOIN  email_redirect_account AS er ON (er.uid = a.uid AND er.flags = \'active\' AND er.broken_level < 3
+                                                                              AND er.type != \'imap\' AND er.type != \'homonym\')
+                                  LEFT JOIN  account_profiles       AS ap ON (ap.uid = a.uid AND FIND_IN_SET(\'owner\', ap.perms))
+                                  LEFT JOIN  profile_display        AS pd ON (ap.pid = pd.pid)
+                                      WHERE  a.state = \'active\' AND er.redirect IS NULL AND FIND_IN_SET(\'mail\', at.perms)
+                                   GROUP BY  a.uid
                                    ORDER BY  pd.promo, a.hruid'));
     }
 
