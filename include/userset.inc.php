@@ -355,5 +355,30 @@ class AddressesView implements PlView
     }
 }
 
+class JSonView implements PlView
+{
+    private $set;
+
+    public function __construct(PlSet $set, array $params)
+    {
+        $this->set = $set;
+    }
+
+    public function apply(PlPage $page)
+    {
+        $export = array();
+        $profiles = $this->set->get(new PlLimit());
+        while ($profile = $profiles->next()) {
+            $export[] = $profile->export();
+        }
+        $page->jsonAssign('profiles', $export);
+    }
+
+    public function args()
+    {
+        return $this->set->args();
+    }
+}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

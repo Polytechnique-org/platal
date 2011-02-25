@@ -26,13 +26,14 @@ class ApiModule extends PlModule
         return array(
             // TODO(vzanotti): Extend the plat/al engine to support placeholders
             // in handler urls, for instance "api/1/user/%forlife/isRegistered".
-            'api/1/user' => $this->make_api_hook('user', AUTH_COOKIE, 'api_user_readonly'),
+            'api/1/user'   => $this->make_api_hook('user', AUTH_COOKIE, 'api_user_readonly'),
+            'api/1/search' => $this->make_api_hook('search', AUTH_COOKIE),
         );
     }
 
     // This handler supports the following URL patterns:
     //   /api/1/user/{forlife}/isRegistered
-    function handler_user(PlPage& $page, PlUser& $authUser, $payload, $user = null, $selector = null)
+    function handler_user(PlPage $page, PlUser $authUser, $payload, $user = null, $selector = null)
     {
         // Retrieve the PlUser referenced in the request. Note that this is the
         // target user, not the authenticated user.
@@ -47,6 +48,26 @@ class ApiModule extends PlModule
         } else {
             return PL_NOT_FOUND;
         }
+    }
+
+    function handler_search(PlPage $page, PlUser $authUser, $payload, $mode = 'quick')
+    {
+        if (!isset($payload['quick'])) {
+            $page->trigError('Malformed search query');
+            return PL_BAD_REQUEST;
+        }
+        Env::set('quick', $payload['quick']);
+        foreach (array('with_soundex', 'exact') as $key) {
+            if (isset($payload[$key])) {
+                Env::set($key, $payload[$key]);
+            }
+        }
+
+        require_once 'userset.inc.php';
+        $view = new QuickSearchSet();
+        $view->addMod('json', 'JSon', true, array('with_score' => true, 'starts_with' => $byletter));
+        $view->apply('api/1/search', $page, 'json');
+        return PL_JSON;
     }
 }
 

@@ -182,7 +182,7 @@ $(MEDAL_THUMBNAILS): $(subst /medals/thumb/,/medals/,$(@F))
 ##
 ## jquery
 ##
-JQUERY_VERSION=1.5
+JQUERY_VERSION=1.5.1
 JQUERY_PLUGINS=color form
 JQUERY_PLUGINS_PATHES=$(addprefix htdocs/javascript/jquery.,$(addsuffix .js,$(JQUERY_PLUGINS)))
 
