@@ -166,7 +166,6 @@ class ListeReq extends Validate
                 XDB::execute('INSERT INTO virtual_redirect (vid, redirect)
                                         VALUES ({?}, {?})', XDB::insertId(),
                                        $red . $mdir . '@listes.polytechnique.org');
-                $list->mass_subscribe($liste, join(' ', $this->members));
             }
         }
         return $ret;
