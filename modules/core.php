@@ -224,7 +224,7 @@ class CoreModule extends PLModule
         $mode = $allkeys[1];
         unset($allkeys[0]);
         unset($allkeys[1]);
-        $_REQUEST['display'] = $mode;
+        Env::set('display', $mode);
         $globals->baseurl .= '/embedded/' . $mode;
         $platal->path = join('/', $allkeys);
         $platal->run();
