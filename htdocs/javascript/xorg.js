@@ -907,8 +907,9 @@ function sendTestEmail(token, hruid)
 
             function formatProfile(profile) {
                 var data = $.tmpl('quickMinifiche', profile);
-                data.find('a').popWin(840, 600).click(function() { $popup.hide(); });
-                data.click(data.find('a').click());
+                data.find('a').popWin(840, 600).click(function() {
+                    $popup.hide();
+                });
                 return data;
             }
 
@@ -919,7 +920,11 @@ function sendTestEmail(token, hruid)
             function doUpdatePopup()
             {
                 var quick = $(this).val();
-                if (disabled) {
+                if (query !== null) {
+                    query.abort();
+                }
+                if (disabled || quick.length < 3) {
+                    previous = quick;
                     $popup.hide();
                     return true;
                 }
@@ -927,14 +932,10 @@ function sendTestEmail(token, hruid)
                     $popup.show();
                     return true;
                 }
-                if (query !== null) {
-                    query.abort();
-                    query = null;
-                }
                 query = $.xapi(url, $.extend({ 'quick': quick }, args), function(data) {
                     query = null;
                     $popup.empty();
-                    if (data.profile_count > 10) {
+                    if (data.profile_count > 10 || data.profile_count < 0) {
                         $popup.hide();
                         return;
                     }
@@ -948,7 +949,7 @@ function sendTestEmail(token, hruid)
                 setTimeout(function() {
                     updatePopup = doUpdatePopup;
                     if (pending) {
-                        updatePopup();
+                        updatePopup.call($this.get(0));
                     }
                     pending = false;
                 }, 500);

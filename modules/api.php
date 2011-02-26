@@ -56,6 +56,11 @@ class ApiModule extends PlModule
             $page->trigError('Malformed search query');
             return PL_BAD_REQUEST;
         }
+        if (strlen(trim($payload['quick'])) < 3) {
+            $page->jsonAssign('profile_count', -1);
+            $page->jsonAssign('profiles', array());
+            return PL_JSON;
+        }
         Env::set('quick', $payload['quick']);
         foreach (array('with_soundex', 'exact') as $key) {
             if (isset($payload[$key])) {
