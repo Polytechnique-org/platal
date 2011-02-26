@@ -854,6 +854,7 @@ function sendTestEmail(token, hruid)
  * Quick search
  */
 
+/* quick search {{{ */
 (function($) {
     function findPos(obj) {
         var curleft = obj.offsetLeft || 0;
@@ -878,6 +879,134 @@ function sendTestEmail(token, hruid)
                 '<div class="long"></div>' +
             '</div>');
 
+
+    function buildPopup(input, linkBindFunction)
+    {
+        var pos    = findPos(input.get(0));
+        var $popup = $('<div>').hide()
+            .addClass('contact-list')
+            .css({
+                position: 'absolute',
+                width: '300px',
+                top: input.css('bottom'),
+                left: pos.x - 300 + input.width(),
+                clear: 'both',
+                'text-align': 'left'
+            });
+        var selected = null;
+
+        function updateSelection()
+        {
+            var sel = $popup.children('.contact').addClass('grayed');
+            if (selected !== null) {
+                while (selected < 0) {
+                    selected += sel.length;
+                }
+                if (selected >= sel.length) {
+                    selected -= sel.length;
+                }
+                sel.eq(selected).removeClass('grayed');
+            }
+        }
+
+        function formatProfile(i, profile) {
+            var data = $.tmpl('quickMinifiche', profile)
+                .hover(function() {
+                    selected = i;
+                    updateSelection();
+                }, function() {
+                    if (selected === i) {
+                        selected = null;
+                        updateSelection();
+                    }
+                }).mouseup(function() {
+                    if (!($(this).find('a').is(':hover'))) {
+                        $(this).find('a').click();
+                    }
+                });
+            return data;
+        }
+
+        input.after($popup);
+
+        return {
+            hide: function(ignoreIfHover) {
+                if (ignoreIfHover && $popup.is(':hover')) {
+                    return true;
+                }
+                selected = null;
+                updateSelection();
+                $popup.hide();
+                return true;
+            },
+
+            show: function() {
+                $popup.show();
+                return true;
+            },
+
+            selected: function() {
+                return selected !== null;
+            },
+
+            unselect: function() {
+                selected = null;
+                updateSelection();
+            },
+
+            selectNext: function() {
+                if (selected === null) {
+                    selected = 0;
+                } else {
+                    selected++;
+                }
+                updateSelection();
+                return true;
+            },
+
+            selectPrev: function() {
+                if (selected === null) {
+                    selected = -1;
+                } else {
+                    selected--;
+                }
+                updateSelection();
+                return true;
+            },
+
+            activeCurrent: function() {
+                var sel = $popup.children('.contact');
+                if (selected !== null) {
+                    sel.eq(selected).find('a').click();
+                    return false;
+                }
+                return true;
+            },
+
+            updateContent: function(profiles) {
+                var profile;
+                $popup.empty();
+                for (var i = 0, len = profiles.length; i < len; i++) {
+                    profile = formatProfile(i, profiles[i]);
+                    profile.find('a').each(linkBindFunction);
+                    profile.appendTo($popup);
+                }
+                if (len === 1) {
+                    selected = 0;
+                } else {
+                    selected = null;
+                }
+                updateSelection();
+                if (len > 0) {
+                    this.show();
+                } else {
+                    this.hide();
+                }
+                return true;
+            }
+        };
+    }
+
     $.fn.extend({
         quickSearch: function(args) {
             var query = null;
@@ -887,45 +1016,18 @@ function sendTestEmail(token, hruid)
             var token = (args && args.token) || $.xsrf_token;
             var url   = 'search';
             var pending = false;
-            var pos     = findPos(this.get(0));
             var disabled = false;
             var updatePopup;
-            var selected = null;
             if (token) {
                 url += '?token=' + token;
             }
-            $popup =  $('<div>').hide()
-                .addClass('contact-list')
-                .css({
-                    position: 'absolute',
-                    width: '300px',
-                    top: $this.css('bottom'),
-                    left: pos.x - 300 + $this.width(),
-                    clear: 'both',
-                    'text-align': 'left'
-                });
-            $this.after($popup);
 
-            function formatProfile(i, profile) {
-                var data = $.tmpl('quickMinifiche', profile)
-                    .hover(function() {
-                        console.log("hover", i);
-                        selected = i;
-                        updateSelection();
-                    }, function() {
-                        if (selected === i) {
-                            console.log("unhover", i);
-                            selected = null;
-                            updateSelection();
-                        }
-                    }).mouseup(function() {
-                        $(this).find('a').click();
+            $popup = buildPopup(this, function() {
+                $(this).popWin(840, 600)
+                    .click(function() {
+                        $popup.hide();
                     });
-                data.find('a').popWin(840, 600).click(function() {
-                    hidePopup();
-                });
-                return data;
-            }
+            });
 
             function markPending() {
                 pending = true;
@@ -948,18 +1050,12 @@ function sendTestEmail(token, hruid)
                 }
                 query = $.xapi(url, $.extend({ 'quick': quick }, args), function(data) {
                     query = null;
-                    $popup.empty();
                     if (data.profile_count > 10 || data.profile_count < 0) {
                         $popup.hide();
                         return;
                     }
-                    for (var i = 0, len = data.profiles.length; i < len; i++) {
-                        formatProfile(i, data.profiles[i]).appendTo($popup);
-                    }
+                    $popup.updateContent(data.profiles);
                     previous = quick;
-                    selected = len == 1 ? 0 : null;
-                    updateSelection();
-                    $popup.show();
                 }, function() { disabled = true; });
                 updatePopup = markPending;
                 setTimeout(function() {
@@ -969,38 +1065,6 @@ function sendTestEmail(token, hruid)
                     }
                     pending = false;
                 }, 500);
-                return true;
-            }
-
-            function hidePopup()
-            {
-                selected = null;
-                updateSelection();
-                $popup.hide();
-                return true;
-            }
-
-            function updateSelection()
-            {
-                var sel = $popup.children('.contact').addClass('grayed');
-                if (selected !== null) {
-                    while (selected < 0) {
-                        selected += sel.length;
-                    }
-                    if (selected >= sel.length) {
-                        selected -= sel.length;
-                    }
-                    sel.eq(selected).removeClass('grayed');
-                }
-            }
-
-            function activeCurrent()
-            {
-                var sel = $popup.children('.contact');
-                if (selected !== null) {
-                    sel.eq(selected).find('a').click();
-                    return false;
-                }
                 return true;
             }
 
@@ -1018,27 +1082,28 @@ function sendTestEmail(token, hruid)
                 switch (e.keyCode) {
                   case 9: /* Tab */
                   case 40: /* Down */
-                    selected += 1;
-                    updateSelection();
+                    $popup.selectNext();
                     return false;
 
                   case 38:
-                    selected -= 1;
-                    updateSelection();
+                    $popup.selectPrev();
                     return false;
 
                   case 13: /* Return */
-                    return activeCurrent();
+                    return $popup.activeCurrent();
 
                   case 27: /* Escape */
-                    return hidePopup();
+                    if ($popup.selected()) {
+                        $popup.unselect();
+                    } else {
+                        $popup.hide();
+                    }
+                    return true;
                 }
                 return true;
             })
             .blur(function() {
-                if (!$popup.is(':hover')) {
-                    return hidePopup();
-                }
+                return $popup.hide(true);
             })
             .focus(updatePopup);
         }
@@ -1100,7 +1165,7 @@ function sendTestEmail(token, hruid)
         }
     });
 }(jQuery));
-
+/* }}} */
 
 /***************************************************************************
  * The real OnLoad
