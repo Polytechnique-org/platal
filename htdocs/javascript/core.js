@@ -39,21 +39,19 @@
     };
 
     var ajaxParams = function(onSuccess, onError, extraParameters) {
-        return $.extend({
-            success: function(data, textStatus, xhr) {
-                if (textStatus === 'success') {
-                    if (onSuccess) {
-                        onSuccess(data, textStatus, xhr);
-                    }
-                } else if (textStatus === 'error') {
-                    if (onError) {
-                        onError(data, textStatus, xhr);
-                    } else {
-                        alert("Une error s'est produite lors du traitement de la requête.\n"
-                            + "Ta session a peut-être expiré");
-                    }
-                }
+        function errorHandler()
+        {
+            if (onError) {
+                return onError.apply(this, arguments);
+            } else {
+                alert("Une error s'est produite lors du traitement de la requête.\n"
+                    + "Ta session a peut-être expiré");
             }
+        }
+
+        return $.extend({
+            success: onSuccess,
+            error: errorHandler
         }, extraParameters);
     };
 
