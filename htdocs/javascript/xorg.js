@@ -1013,11 +1013,13 @@ function sendTestEmail(token, hruid)
             var previous = null;
             var $this = this;
             var $popup;
-            var token = (args && args.token) || $.xsrf_token;
+            var token;
             var url   = 'search';
             var pending = false;
             var disabled = false;
             var updatePopup;
+            args  = args || { };
+            token = args.token || $.xsrf_token;
             if (token) {
                 url += '?token=' + token;
             }
@@ -1056,7 +1058,11 @@ function sendTestEmail(token, hruid)
                     }
                     $popup.updateContent(data.profiles);
                     previous = quick;
-                }, function() { disabled = true; });
+                }, function(data, text) {
+                    if (text !== 'abort') {
+                        disabled = true;
+                    }
+                });
                 updatePopup = markPending;
                 setTimeout(function() {
                     updatePopup = doUpdatePopup;
