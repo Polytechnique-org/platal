@@ -866,7 +866,7 @@ function sendTestEmail(token, hruid)
     }
 
     $.template('quickMinifiche',
-            '<div class="contact {{if !is_active}}grayed{{/if}}" style="clear: both">' +
+            '<div class="contact grayed" style="clear: both">' +
                 '<div class="identity">' +
                     '<div class="photo"><img src="photo/${hrpid}" alt="${directory_name}" /></div>' +
                     '<div class="nom">' +
@@ -890,6 +890,7 @@ function sendTestEmail(token, hruid)
             var pos     = findPos(this.get(0));
             var disabled = false;
             var updatePopup;
+            var selected = null;
             if (token) {
                 url += '?token=' + token;
             }
@@ -905,10 +906,23 @@ function sendTestEmail(token, hruid)
                 });
             $this.after($popup);
 
-            function formatProfile(profile) {
-                var data = $.tmpl('quickMinifiche', profile);
+            function formatProfile(i, profile) {
+                var data = $.tmpl('quickMinifiche', profile)
+                    .hover(function() {
+                        console.log("hover", i);
+                        selected = i;
+                        updateSelection();
+                    }, function() {
+                        if (selected === i) {
+                            console.log("unhover", i);
+                            selected = null;
+                            updateSelection();
+                        }
+                    }).mouseup(function() {
+                        $(this).find('a').click();
+                    });
                 data.find('a').popWin(840, 600).click(function() {
-                    $popup.hide();
+                    hidePopup();
                 });
                 return data;
             }
@@ -940,9 +954,11 @@ function sendTestEmail(token, hruid)
                         return;
                     }
                     for (var i = 0, len = data.profiles.length; i < len; i++) {
-                        formatProfile(data.profiles[i]).appendTo($popup);
+                        formatProfile(i, data.profiles[i]).appendTo($popup);
                     }
                     previous = quick;
+                    selected = len == 1 ? 0 : null;
+                    updateSelection();
                     $popup.show();
                 }, function() { disabled = true; });
                 updatePopup = markPending;
@@ -955,23 +971,73 @@ function sendTestEmail(token, hruid)
                 }, 500);
                 return true;
             }
+
+            function hidePopup()
+            {
+                selected = null;
+                updateSelection();
+                $popup.hide();
+                return true;
+            }
+
+            function updateSelection()
+            {
+                var sel = $popup.children('.contact').addClass('grayed');
+                if (selected !== null) {
+                    while (selected < 0) {
+                        selected += sel.length;
+                    }
+                    if (selected >= sel.length) {
+                        selected -= sel.length;
+                    }
+                    sel.eq(selected).removeClass('grayed');
+                }
+            }
+
+            function activeCurrent()
+            {
+                var sel = $popup.children('.contact');
+                if (selected !== null) {
+                    sel.eq(selected).find('a').click();
+                    return false;
+                }
+                return true;
+            }
+
             updatePopup = doUpdatePopup;
 
             return this.keyup(function(e) {
-                if (e.keyCode != 27 /* escape */) {
+                if (e.keyCode !== 27 /* escape */ && e.keyCode !== 13 /* enter */
+                    && e.keyCode !== 9 /* tab */ && e.keyCode !== 38 /* up */
+                    && e.keyCode !== 40 /* down */) {
                     return updatePopup.call(this);
                 }
                 return true;
             })
             .keydown(function(e) {
-                if (e.keyCode == 27) {
-                    $popup.hide();
+                switch (e.keyCode) {
+                  case 9: /* Tab */
+                  case 40: /* Down */
+                    selected += 1;
+                    updateSelection();
+                    return false;
+
+                  case 38:
+                    selected -= 1;
+                    updateSelection();
+                    return false;
+
+                  case 13: /* Return */
+                    return activeCurrent();
+
+                  case 27: /* Escape */
+                    return hidePopup();
                 }
                 return true;
             })
             .blur(function() {
                 if (!$popup.is(':hover')) {
-                    $popup.hide();
+                    return hidePopup();
                 }
             })
             .focus(updatePopup);
