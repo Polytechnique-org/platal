@@ -87,11 +87,11 @@ class CheckDB extends PlTestCase
                        HAVING  c > 1'),
 
             'google apps' =>
-                array('SELECT  a.alias, g.g_status, eo.storage
-                         FROM  email_options  AS eo
-                   INNER JOIN  aliases        AS a ON (a.uid = eo.uid AND a.type = \'a_vie\')
-                   INNER JOIN  gapps_accounts AS g ON (g.l_userid = eo.uid)
-                        WHERE  FIND_IN_SET(\'googleapps\', eo.storage) > 0 AND g.g_status != \'active\'')
+                array('SELECT  s.email, g.g_status, r.redirect
+                         FROM  email_redirect_account AS r
+                   INNER JOIN  email_source_account   AS s ON (r.uid = s.uid AND s.type = \'forlife\')
+                   INNER JOIN  gapps_accounts         AS g ON (g.l_userid = r.uid)
+                        WHERE  r.type = \'googleapps\' AND r.flags = \'active\' AND g.g_status != \'active\'')
         );
 
         $tests = array(
