@@ -56,12 +56,30 @@ class ApiModule extends PlModule
             $page->trigError('Malformed search query');
             return PL_BAD_REQUEST;
         }
-        if (strlen(trim($payload['quick'])) < 3) {
+
+        $query = trim($payload['quick']);
+        if (@$payload['allow_special']) {
+            if (starts_with($query, 'admin:')) {
+                $page->jsonAssign('link_type', 'admin');
+                $query = substr($query, 6);
+            } else if (starts_with($query, 'adm:')) {
+                $page->jsonAssign('link_type', 'admin');
+                $query = substr($query, 4);
+            } else if (starts_with('admin', $query) || strpos($query, ':') !== false) {
+                $page->jsonAssign('profile_count', -1);
+                $page->jsonAssign('profiles', array());
+                return PL_JSON;
+            } else {
+                $page->jsonAssign('link_type', 'profile');
+            }
+        }
+        if (strlen($query) < 3) {
             $page->jsonAssign('profile_count', -1);
             $page->jsonAssign('profiles', array());
             return PL_JSON;
         }
-        Env::set('quick', $payload['quick']);
+
+        Env::set('quick', $query);
         foreach (array('with_soundex', 'exact') as $key) {
             if (isset($payload[$key])) {
                 Env::set($key, $payload[$key]);

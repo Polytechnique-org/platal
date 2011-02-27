@@ -871,7 +871,7 @@ function sendTestEmail(token, hruid)
                 '<div class="identity">' +
                     '<div class="photo"><img src="photo/${hrpid}" alt="${directory_name}" /></div>' +
                     '<div class="nom">' +
-                        '{{if is_female}}&bull;{{/if}}<a href="profile/${hrpid}">${directory_name}</a>' +
+                        '{{if is_female}}&bull;{{/if}}<a>${directory_name}</a>' +
                     '</div>' +
                     '<div class="edu">${promo}</div>' +
                 '</div>' +
@@ -993,13 +993,18 @@ function sendTestEmail(token, hruid)
                 return true;
             },
 
-            updateContent: function(profiles) {
+            updateContent: function(profiles, extra) {
                 var profile;
+                var $this;
                 $popup.empty();
                 for (var i = 0, len = profiles.length; i < len; i++) {
-                    profile = formatProfile(i, profiles[i]);
-                    profile.find('a').each(linkBindFunction);
-                    profile.appendTo($popup);
+                    (function(elt) {
+                        var profile = formatProfile(i, elt);
+                        profile.find('a').each(function() {
+                            linkBindFunction.call(this, elt, $this, extra);
+                        });
+                        profile.appendTo($popup);
+                    }(profiles[i]));
                 }
                 if (len === 1) {
                     selected = 0;
@@ -1038,23 +1043,29 @@ function sendTestEmail(token, hruid)
                 queryParams:       {
                     offset: 0,
                     count:  10,
+                    allow_special: true,
                 },
                 loadingClassLeft:  'ac_loading',
                 loadingClassRight: 'ac_loading_left',
-                selectAction: function() {
-                    $(this).popWin(840, 600);
+                selectAction: function(profile, popup, extra) {
+                    var type = extra.link_type || 'profile';
+                    switch (type) {
+                      case 'profile':
+                        $(this).attr('href', 'profile/' + profile.hrpid)
+                        .popWin(840, 600)
+                        .click(function() { popup.hide(); });
+                        break;
+                      case 'admin':
+                        $(this).attr('href', 'admin/user/' + profile.hrpid)
+                        .click(function() { window.open($(this).attr('href')); return false });
+                        break;
+                    }
                 }
             }, options);
             options.loadingClass = $this.css('text-align') === 'right' ? options.loadingClassRight
                                                                        : options.loadingClassLeft;
             $this.attr('autocomplete', 'off');
-
-            $popup = buildPopup($this, options.destination, function() {
-                options.selectAction.apply(this, arguments);
-                $(this).click(function() {
-                    $popup.hide();
-                });
-            });
+            $popup = buildPopup($this, options.destination, options.selectAction);
 
             function markPending() {
                 pending = true;
@@ -1071,7 +1082,7 @@ function sendTestEmail(token, hruid)
                     if (data.profile_count > options.queryParams.count || data.profile_count < 0) {
                         return $popup.hide();
                     }
-                    $popup.updateContent(data.profiles);
+                    $popup.updateContent(data.profiles, data);
                     previous = quick;
                 }, function(data, text) {
                     if (text !== 'abort') {
