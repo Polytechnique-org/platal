@@ -47,17 +47,15 @@ if (PEAR::isError($opts)) {
 /*
  * Check duplicated addresses
  */
-$it = Xdb::iterRow("SELECT  al1.alias, al2.alias, e1.email
-                      FROM  emails      AS e1
-                INNER JOIN  emails      AS e2  ON (e1.email = e2.email AND e1.uid != e2.uid
-                                                   AND (e1.uid < e2.uid OR NOT FIND_IN_SET('active', e2.flags)))
-                INNER JOIN  aliases     AS al1 ON (al1.uid = e1.uid AND al1.type = 'a_vie')
-                INNER JOIN  aliases     AS al2 ON (al2.uid = e2.uid AND al2.type = 'a_vie')
-                INNER JOIN  accounts    AS a1  ON (al1.uid = a1.uid)
-                INNER JOIN  accounts    AS a2  ON (al2.uid = a2.uid)
-                 LEFT JOIN  email_watch AS w   ON (e1.email = w.email)
-                     WHERE  FIND_IN_SET('active', e1.flags) AND w.email IS NULL
-                  ORDER BY  al1.alias");
+$it = Xdb::iterRow("SELECT  s1.email, s2.email, r1.redirect
+                      FROM  email_redirect_account AS r1
+                INNER JOIN  email_redirect_account AS r2 ON (r1.redirect = r2.redirect AND r1.uid != r2.uid)
+                INNER JOIN  email_source_account   AS s1 ON (s1.uid = r1.uid AND s1.type = 'forlife')
+                INNER JOIN  email_source_account   AS s2 ON (s2.uid = r2.uid AND s2.type = 'forlife')
+                 LEFT JOIN  email_watch            AS w  ON (r1.redirect = w.email)
+                     WHERE  w.email IS NULL
+                  GROUP BY  r1.redirect
+                  ORDER BY  r1.redirect, s1.email");
 
 $insert   = array();
 $conflits = array();
@@ -84,29 +82,28 @@ if (count($conflits) > 0) {
  * Check dead emails
  */
 if ($panne_level > 0) {
-    $res = Xdb::query("SELECT  e.email, a.hruid
-                         FROM  emails   AS e
-                   INNER JOIN  accounts AS a ON (a.uid = e.uid)
-                        WHERE  e.panne_level = {?} AND e.flags = 'active'
-                     ORDER BY  a.hruid",
-                      $panne_level);
+    $res = XDB::fetchAllAssoc("SELECT  r.redirect, a.hruid
+                                 FROM  email_redirect_account AS r
+                           INNER JOIN  accounts               AS a ON (a.uid = r.uid)
+                                WHERE  r.broken_level = {?} AND r.flags != 'broken'
+                             ORDER BY  a.hruid",
+                              $panne_level);
 
-    if ($res->numRows()) {
-        $result = $res->fetchAllAssoc();
+    if ($res) {
         echo "Nouvelles adresses en panne detectees :\n";
-        foreach ($result as $assoc) {
-            echo '* ' . $assoc['email'] . ' pour ' . $assoc['hruid'] . "\n";
+        foreach ($res as $assoc) {
+            echo '* ' . $assoc['redirect'] . ' pour ' . $assoc['hruid'] . "\n";
         }
         echo "\n\n";
 
-        Xdb::execute("UPDATE  emails
-                         SET  flags = 'panne'
-                       WHERE  panne_level = 3 AND flags = 'active'");
+        Xdb::execute("UPDATE  email_redirect_account
+                         SET  flags = 'broken'
+                       WHERE  broken_level = 3");
     }
 
-    Xdb::execute('UPDATE  emails
-                     SET  panne_level = {?}
-                   WHERE  panne_level > {?}',
+    Xdb::execute('UPDATE  email_redirect_account
+                     SET  broken_level = {?}
+                   WHERE  broken_level > {?}',
                  $panne_level, $panne_level);
 }
 
@@ -115,19 +112,18 @@ if ($panne_level > 0) {
  * inactive redirection.
  */
 if ($opt_verbose) {
-    $res = XDB::query("SELECT  a.hruid, ei.email
-                         FROM  accounts      AS a
-                    LEFT JOIN  emails        AS ea ON (ea.uid = a.uid AND ea.flags = 'active')
-                   INNER JOIN  emails        AS ei ON (ei.uid = a.uid AND ei.flags = '')
-                   INNER JOIN  email_options AS eo ON (eo.uid = a.uid)
-                        WHERE  NOT FIND_IN_SET('googleapps', eo.storage) AND ea.email IS NULL
-                     GROUP BY  a.uid");
+    $res = XDB::fetchAllAssoc("SELECT  a.hruid, r2.redirect
+                                 FROM  accounts               AS a
+                            LEFT JOIN  email_redirect_account AS r1 ON (a.uid = r1.uid AND r1.flags = 'active')
+                           INNER JOIN  email_redirect_account AS r2 ON (a.uid = r2.uid AND r2.flags = 'inactive'
+                                                                        AND r2.type != 'imap' AND r2.type != 'homonym')
+                                WHERE  r1.uid IS NULL
+                             GROUP BY  a.uid");
 
-    if ($res->numRows()) {
-        $result = $res->fetchAllAssoc();
+    if ($res) {
         echo "Camarades n'ayant plus d'adresses actives, mais ayant une adresse inactive :\n";
-        foreach ($result as $user) {
-            echo '* ' . $user['email'] . ' pour ' . $user['hruid'] . "\n";
+        foreach ($res as $user) {
+            echo '* ' . $user['redirect'] . ' pour ' . $user['hruid'] . "\n";
         }
     }
     echo "\n";

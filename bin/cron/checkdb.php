@@ -105,42 +105,45 @@ if (PEAR::isError($opts)) {
 }
 
 /* Checks rewriting on deleted aliases. */
-check("SELECT  a.alias, e.email, e.rewrite AS broken
-         FROM  aliases AS a
-   INNER JOIN  emails  AS e ON (a.uid = e.uid AND rewrite != '')
-    LEFT JOIN  aliases AS b ON (b.uid = a.uid AND rewrite LIKE CONCAT(b.alias, '@%') AND b.type != 'homonyme')
-        WHERE  a.type = 'a_vie' AND b.type IS NULL",
+check("SELECT  s1.email, r.redirect, r.rewrite AS broken
+         FROM  email_redirect_account AS r
+   INNER JOIN  email_source_account   AS s1 ON (r.uid = s1.uid AND s1.type = 'forlife')
+    LEFT JOIN  email_source_account   AS s2 ON (r.uid = s2.uid AND r.rewrite LIKE CONCAT(s2.email, '@%'))
+        WHERE  r.rewrite != '' AND s2.uid IS NULL",
       "Personnes qui ont des rewrite sur un alias perdu.");
 
 /* Lists unsound emails that remain unprocessed by the administrators. */
-check("SELECT  a1.alias, a2.alias, e1.email, e2.flags
-         FROM  emails      AS e1
-   INNER JOIN  emails      AS e2 ON (e1.email = e2.email AND e1.uid != e2.uid AND
-                                     (e1.uid < e2.uid OR NOT FIND_IN_SET('active', e2.flags)))
-   INNER JOIN  email_watch AS w  ON (w.email = e1.email AND w.state = 'pending')
-   INNER JOIN  aliases     AS a1 ON (a1.uid = e1.uid AND a1.type = 'a_vie')
-   INNER JOIN  aliases     AS a2 ON (a2.uid = e2.uid AND a2.type = 'a_vie')
-        WHERE  FIND_IN_SET('active', e1.flags)
-     ORDER BY  a1.alias",
+check("SELECT  s1.email, s2.email, w.email
+         FROM  email_watch            AS w
+   INNER JOIN  email_redirect_account AS r1 ON (w.email = r1.redirect)
+    LEFT JOIN  email_redirect_account AS r2 ON (w.email = r2.redirect AND r1.uid != r2.uid)
+   INNER JOIN  email_source_account   AS s1 ON (s1.uid = r1.uid AND s1.type = 'forlife')
+    LEFT JOIN  email_source_account   AS s2 ON (s2.uid = r2.uid AND s2.type = 'forlife')
+        WHERE  w.state = 'pending'
+     GROUP BY  w.email
+     ORDER BY  w.email",
       "Donne la liste des emails douteux actuellement non traites par les administrateurs.");
 
 /* Lists dangerous and unsound emails. */
-info("SELECT  a1.alias, a2.alias, e1.email, e2.flags, w.state
-        FROM  emails      AS e1
-  INNER JOIN  emails      AS e2 ON (e1.email = e2.email AND e1.uid != e2.uid AND
-                                    (e1.uid < e2.uid OR NOT FIND_IN_SET('active', e2.flags)))
-  INNER JOIN  email_watch AS w  ON (w.email = e1.email AND w.state != 'safe')
-  INNER JOIN  aliases     AS a1 ON (a1.uid = e1.uid AND a1.type = 'a_vie')
-  INNER JOIN  aliases     AS a2 ON (a2.uid = e2.uid AND a2.type = 'a_vie')
-       WHERE  FIND_IN_SET('active', e1.flags)
-    ORDER BY  a1.alias",
+info("SELECT  s1.email, s2.email, w.email, w.state
+        FROM  email_watch            AS w
+  INNER JOIN  email_redirect_account AS r1 ON (w.email = r1.redirect)
+   LEFT JOIN  email_redirect_account AS r2 ON (w.email = r2.redirect AND r1.uid != r2.uid)
+  INNER JOIN  email_source_account   AS s1 ON (s1.uid = r1.uid AND s1.type = 'forlife')
+   LEFT JOIN  email_source_account   AS s2 ON (s2.uid = r2.uid AND s2.type = 'forlife')
+       WHERE  w.state != 'safe'
+    GROUP BY  w.email
+    ORDER BY  w.email",
      "Donne la liste des emails dangereux ou douteux.");
 
 /* Lists homonyms who have an alias equals to their loginbis for more than a month. */
-check("SELECT  a.alias AS username, b.alias AS loginbis, b.expire
-         FROM  aliases AS a
-   INNER JOIN  aliases AS b ON (a.uid=b.uid AND b.type != 'homonyme' and b.expire < NOW())
-        WHERE  a.type = 'a_vie'",
+check("SELECT  e.email AS homonym, f.email AS forlife, e.expire
+         FROM  email_source_account  AS e
+   INNER JOIN  homonyms_list         AS l ON (e.uid = l.uid)
+   INNER JOIN  homonyms_list         AS h ON (l.hrmid = h.hrmid)
+   INNER JOIN  email_source_account  AS f ON (h.uid = f.uid AND f.type = 'forlife')
+        WHERE  e.expire < NOW()
+     ORDER BY  homonym, forlife",
       "Donne la liste des homonymes qui ont un alias égal à leur loginbis depuis plus d'un mois, il est temps de supprimer leur alias.");
 
 // Counts empty profile fields that should never be empty.

@@ -158,7 +158,7 @@ function mark_broken_email($email, $admin = false)
                            WHERE  redirect = {?}', $email);
         } elseif ($admin) {
             XDB::execute('UPDATE  email_redirect_account
-                             SET  last = CURDATE(), broken_level = IF(broken_level > 1, 3, 2)
+                             SET  last = CURDATE(), broken_level = broken_level + 1
                            WHERE  redirect = {?} AND DATE_ADD(last, INTERVAL 14 DAY) < CURDATE()',
                          $email);
         } else {
