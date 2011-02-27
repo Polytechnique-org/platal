@@ -885,6 +885,7 @@ function sendTestEmail(token, hruid)
         var pos    = findPos(input.get(0));
         var $popup = destination;
         var selected = null;
+        var hovered  = 0;
 
         function updateSelection()
         {
@@ -902,24 +903,25 @@ function sendTestEmail(token, hruid)
 
         function formatProfile(i, profile) {
             var data = $.tmpl('quickMinifiche', profile)
+                .css('cursor', 'pointer')
                 .hover(function() {
                     selected = i;
                     updateSelection();
+                    hovered++;
                 }, function() {
                     if (selected === i) {
                         selected = null;
                         updateSelection();
                     }
+                    hovered--;
                 }).mouseup(function() {
                     var sel = $(this).find('a');
-                    try {
-                        if (!sel.is(':hover')) {
-                            sel.click();
-                        }
-                    } catch (e) {
+                    if (!sel.attr('hovered')) {
                         sel.click();
                     }
                 });
+            data.find('a').hover(function() { $(this).attr('hovered', true) },
+                                 function() { $(this).attr('hovered', false) });
             return data;
         }
 
@@ -939,7 +941,7 @@ function sendTestEmail(token, hruid)
 
         return {
             hide: function(ignoreIfHover) {
-                if (ignoreIfHover && $popup.is(':hover')) {
+                if (ignoreIfHover && hovered !== 0) {
                     return true;
                 }
                 selected = null;
