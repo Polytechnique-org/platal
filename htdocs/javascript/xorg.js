@@ -1008,26 +1008,21 @@ function sendTestEmail(token, hruid)
     }
 
     $.fn.extend({
-        quickSearch: function(args) {
+        quickSearch: function(options) {
             var previous = null;
-            var $this = this;
+            var $this  = this;
+            var $input = $this.get(0);
             var $popup;
-            var token;
-            var url      = 'search';
             var pending  = false;
             var disabled = false;
             var updatePopup;
-            var loadingClass = 'ac_loading_left';
-            if ($this.css('text-align') !== 'right') {
-                loadingClass = 'ac_loading';
-            }
-            args  = args || { };
-            token = args.token || $.xsrf_token;
-            if (token) {
-                url += '?token=' + token;
-            }
 
-            $popup = buildPopup(this, function() {
+            options = options || { };
+            options.queryParams = options.queryParams || { };
+            options.loadingClass = options.loadingClass ||
+                                   ($this.css('text-align') === 'right' ? 'ac_loading_left' : 'ac_loading');
+
+            $popup = buildPopup(this, options.selectAction || function() {
                 $(this).popWin(840, 600)
                     .click(function() {
                         $popup.hide();
@@ -1044,8 +1039,8 @@ function sendTestEmail(token, hruid)
                     return true;
                 }
                 updatePopup = markPending;
-                $this.addClass(loadingClass);
-                $.xapi(url, $.extend({ 'quick': quick }, args), function(data) {
+                $this.addClass(options.loadingClass);
+                $.xapi('search', $.extend({ 'quick': quick }, options.queryParams), function(data) {
                     if (data.profile_count > 10 || data.profile_count < 0) {
                         return $popup.hide();
                     }
@@ -1056,10 +1051,10 @@ function sendTestEmail(token, hruid)
                         disabled = true;
                     }
                 }).complete(function() {
-                    $this.removeClass(loadingClass);
+                    $this.removeClass(options.loadingClass);
                     updatePopup = doUpdatePopup;
                     if (pending) {
-                        updatePopup.call($this.get(0));
+                        updatePopup();
                     }
                 });
                 return true;
@@ -1067,9 +1062,8 @@ function sendTestEmail(token, hruid)
 
             function doUpdatePopup(dontDelay)
             {
-                var quick = $(this).val();
+                var quick = $this.val();
                 if ($.isFunction(quick.trim)) {
-                    console.log('it trims');
                     quick = quick.trim();
                 }
                 pending = false;
@@ -1079,13 +1073,13 @@ function sendTestEmail(token, hruid)
                 } else if (!dontDelay) {
                     var timeout = quick.length < 5 ? 300 : 100;
                     setTimeout(function() {
-                        updatePopup.call($this.get(0), true);
+                        updatePopup(true);
                     }, timeout);
                     return true;
                 } else if (previous === quick) {
                     return $popup.show();
                 }
-                return performUpdate.call(this, quick);
+                return performUpdate(quick);
             }
 
             updatePopup = doUpdatePopup;
@@ -1094,7 +1088,7 @@ function sendTestEmail(token, hruid)
                 if (e.keyCode !== 27 /* escape */ && e.keyCode !== 13 /* enter */
                     && e.keyCode !== 9 /* tab */ && e.keyCode !== 38 /* up */
                     && e.keyCode !== 40 /* down */) {
-                    return updatePopup.call(this);
+                    return updatePopup();
                 }
                 return true;
             })
