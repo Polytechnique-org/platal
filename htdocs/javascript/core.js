@@ -112,6 +112,10 @@
                 onSuccess = payload;
             }
 
+            if ($.xsrf_token) {
+                apicall += '?token=' + $.xsrf_token;
+            }
+
             return $.ajax(ajaxParams(onSuccess, onError, {
                 url: $.plURL('api/' + $.xapiVersion + '/' + apicall),
                 type: 'POST',
