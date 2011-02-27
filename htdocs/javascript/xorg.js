@@ -1009,15 +1009,18 @@ function sendTestEmail(token, hruid)
 
     $.fn.extend({
         quickSearch: function(args) {
-            var query = null;
             var previous = null;
             var $this = this;
             var $popup;
             var token;
-            var url   = 'search';
-            var pending = false;
+            var url      = 'search';
+            var pending  = false;
             var disabled = false;
             var updatePopup;
+            var loadingClass = 'ac_loading_left';
+            if ($this.css('text-align') !== 'right') {
+                loadingClass = 'ac_loading';
+            }
             args  = args || { };
             token = args.token || $.xsrf_token;
             if (token) {
@@ -1035,26 +1038,16 @@ function sendTestEmail(token, hruid)
                 pending = true;
             }
 
-            function doUpdatePopup()
+            function performUpdate(quick)
             {
-                var quick = $(this).val();
-                if (query !== null) {
-                    query.abort();
-                }
-                if (disabled || quick.length < 3) {
-                    previous = quick;
-                    $popup.hide();
+                if (updatePopup === markPending) {
                     return true;
                 }
-                if (previous === quick) {
-                    $popup.show();
-                    return true;
-                }
-                query = $.xapi(url, $.extend({ 'quick': quick }, args), function(data) {
-                    query = null;
+                updatePopup = markPending;
+                $this.addClass(loadingClass);
+                $.xapi(url, $.extend({ 'quick': quick }, args), function(data) {
                     if (data.profile_count > 10 || data.profile_count < 0) {
-                        $popup.hide();
-                        return;
+                        return $popup.hide();
                     }
                     $popup.updateContent(data.profiles);
                     previous = quick;
@@ -1062,16 +1055,37 @@ function sendTestEmail(token, hruid)
                     if (text !== 'abort') {
                         disabled = true;
                     }
-                });
-                updatePopup = markPending;
-                setTimeout(function() {
+                }).complete(function() {
+                    $this.removeClass(loadingClass);
                     updatePopup = doUpdatePopup;
                     if (pending) {
                         updatePopup.call($this.get(0));
                     }
-                    pending = false;
-                }, 500);
+                });
                 return true;
+            }
+
+            function doUpdatePopup(dontDelay)
+            {
+                var quick = $(this).val();
+                if ($.isFunction(quick.trim)) {
+                    console.log('it trims');
+                    quick = quick.trim();
+                }
+                pending = false;
+                if (disabled || quick.length < 3) {
+                    previous = quick;
+                    return $popup.hide();
+                } else if (!dontDelay) {
+                    var timeout = quick.length < 5 ? 300 : 100;
+                    setTimeout(function() {
+                        updatePopup.call($this.get(0), true);
+                    }, timeout);
+                    return true;
+                } else if (previous === quick) {
+                    return $popup.show();
+                }
+                return performUpdate.call(this, quick);
             }
 
             updatePopup = doUpdatePopup;
