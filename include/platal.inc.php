@@ -144,7 +144,14 @@ function pl_print_errors($html = false)
     }
 }
 
+function pl_assert_cb($file, $line, $message)
+{
+    Platal::assert(false, "Assertion failed at $file:$line with message: $message");
+}
+
 set_error_handler('pl_error_handler', E_ALL | E_STRICT);
+assert_options(ASSERT_CALLBACK, 'pl_assert_cb');
+assert_options(ASSERT_WARNING, false);
 if (php_sapi_name() == 'cli') {
     register_shutdown_function('pl_print_errors');
 }

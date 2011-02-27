@@ -135,6 +135,7 @@ class PlGlobals
             $this->baseurl      = @trim($base    .$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']), '/');
             $this->baseurl_http = @trim('http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']), '/');
         }
+        assert_options(ASSERT_ACTIVE, $this->debug != 0);
 
         $this->setLocale();
     }
