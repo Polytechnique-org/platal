@@ -37,7 +37,8 @@ $(function() {
 <h1>{$asso->nom}&nbsp;: Gestion des télépaiements </h1>
 
 <p class="descr">
-Voici la liste des paiements en ligne possible pour le groupe {$asso->nom}&nbsp;:
+Voici la liste des paiements en ligne possible pour le groupe {$asso->nom}. Pour afficher les camarades dans un certain ordre,
+il suffit de cliquer sur le titre de la colonne concernée.
 </p>
 
 {foreach from=$titles item=p}
