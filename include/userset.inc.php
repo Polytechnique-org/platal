@@ -358,16 +358,20 @@ class AddressesView implements PlView
 class JSonView implements PlView
 {
     private $set;
+    private $params;
 
     public function __construct(PlSet $set, array $params)
     {
-        $this->set = $set;
+        $this->set    = $set;
+        $this->params = $params;
     }
 
     public function apply(PlPage $page)
     {
         $export = array();
-        $profiles = $this->set->get(new PlLimit(10));
+        $start  = isset($this->params['offset']) ? $this->params['offset'] : 0;
+        $count  = isset($this->params['count'])  ? $this->params['count']  : 10;
+        $profiles = $this->set->get(new PlLimit($start, $count));
         foreach ($profiles as $profile) {
             $export[] = $profile->export();
         }

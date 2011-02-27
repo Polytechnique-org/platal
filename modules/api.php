@@ -70,7 +70,7 @@ class ApiModule extends PlModule
 
         require_once 'userset.inc.php';
         $view = new QuickSearchSet();
-        $view->addMod('json', 'JSon', true, array('with_score' => true, 'starts_with' => $byletter));
+        $view->addMod('json', 'JSon', true, $payload);
         $view->apply('api/1/search', $page, 'json');
         return PL_JSON;
     }

@@ -880,19 +880,10 @@ function sendTestEmail(token, hruid)
             '</div>');
 
 
-    function buildPopup(input, linkBindFunction)
+    function buildPopup(input, destination, linkBindFunction)
     {
         var pos    = findPos(input.get(0));
-        var $popup = $('<div>').hide()
-            .addClass('contact-list')
-            .css({
-                position: 'absolute',
-                width: '300px',
-                top: input.css('bottom'),
-                left: pos.x - 300 + input.width(),
-                clear: 'both',
-                'text-align': 'left'
-            });
+        var $popup = destination;
         var selected = null;
 
         function updateSelection()
@@ -927,7 +918,19 @@ function sendTestEmail(token, hruid)
             return data;
         }
 
-        input.after($popup);
+        if (!$popup) {
+            $popup = $('<div>').hide()
+            .addClass('contact-list')
+            .css({
+                position: 'absolute',
+                width: '300px',
+                top: input.css('bottom'),
+                left: pos.x - 300 + input.width(),
+                clear: 'both',
+                'text-align': 'left'
+            });
+            input.after($popup);
+        }
 
         return {
             hide: function(ignoreIfHover) {
@@ -1009,24 +1012,41 @@ function sendTestEmail(token, hruid)
 
     $.fn.extend({
         quickSearch: function(options) {
-            var previous = null;
             var $this  = this;
             var $input = $this.get(0);
             var $popup;
+            var previous = null;
             var pending  = false;
             var disabled = false;
             var updatePopup;
+            var loadingClass;
 
             options = options || { };
-            options.queryParams = options.queryParams || { };
-            options.loadingClass = options.loadingClass ||
-                                   ($this.css('text-align') === 'right' ? 'ac_loading_left' : 'ac_loading');
+            options = $.extend({
+                destination:       null,
+                minChars:          3,
+                shortChars:        5,
+                shortTimeout:      300,
+                longTimeout:       100,
+                queryParams:       {
+                    offset: 0,
+                    count:  10,
+                },
+                loadingClassLeft:  'ac_loading',
+                loadingClassRight: 'ac_loading_left',
+                selectAction: function() {
+                    $(this).popWin(840, 600);
+                }
+            }, options);
+            console.log(options);
+            options.loadingClass = $this.css('text-align') === 'right' ? options.loadingClassRight
+                                                                       : options.loadingClassLeft;
 
-            $popup = buildPopup(this, options.selectAction || function() {
-                $(this).popWin(840, 600)
-                    .click(function() {
-                        $popup.hide();
-                    });
+            $popup = buildPopup(this, options.destination, function() {
+                options.selectAction.apply(this, arguments);
+                $(this).click(function() {
+                    $popup.hide();
+                });
             });
 
             function markPending() {
@@ -1041,7 +1061,7 @@ function sendTestEmail(token, hruid)
                 updatePopup = markPending;
                 $this.addClass(options.loadingClass);
                 $.xapi('search', $.extend({ 'quick': quick }, options.queryParams), function(data) {
-                    if (data.profile_count > 10 || data.profile_count < 0) {
+                    if (data.profile_count > options.queryParams.count || data.profile_count < 0) {
                         return $popup.hide();
                     }
                     $popup.updateContent(data.profiles);
@@ -1067,11 +1087,11 @@ function sendTestEmail(token, hruid)
                     quick = quick.trim();
                 }
                 pending = false;
-                if (disabled || quick.length < 3) {
+                if (disabled || quick.length < options.minChars) {
                     previous = quick;
                     return $popup.hide();
                 } else if (!dontDelay) {
-                    var timeout = quick.length < 5 ? 300 : 100;
+                    var timeout = quick.length < options.shortChars ? options.shortTimeout : options.longTimeout;
                     setTimeout(function() {
                         updatePopup(true);
                     }, timeout);
