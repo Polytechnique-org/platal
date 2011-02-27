@@ -34,6 +34,7 @@ class CoreModule extends PLModule
             'sql_errors'    => $this->make_hook('siteerror',     AUTH_COOKIE, 'admin'),
             'assert_errors' => $this->make_hook('siteerror',     AUTH_COOKIE, 'admin'),
             'site_errors'   => $this->make_hook('siteerror',     AUTH_COOKIE, 'admin'),
+            'site_errors/rss' => $this->make_token_hook('siteerror_rss', AUTH_COOKIE, 'admin'),
 
             'embedded'      => $this->make_hook('embedded',      AUTH_PUBLIC),
 
@@ -207,14 +208,22 @@ class CoreModule extends PLModule
         exit;
     }
 
-    function handler_siteerror($page) {
+    function handler_siteerror($page)
+    {
         global $globals;
         $page->coreTpl('site_errors.tpl');
+        $page->setRssLink('Polytechnique.org :: Erreurs',
+                          'site_errors/rss/' . S::v('hruid') . '/' . S::user()->token . '/rss.xml');
         if (Post::has('clear')) {
             PlErrorReport::clear();
             $page->trigSuccess("Erreurs effacées.");
         }
         $page->assign('errors', PlErrorReport::iterate());
+    }
+
+    function handler_siteerror_rss(PlPage $page, PlUser $user)
+    {
+        return PlErrorReport::feed($page, $user);
     }
 
     function handler_embedded($page)

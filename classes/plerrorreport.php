@@ -62,6 +62,12 @@ class PlErrorReport
         return new PlErrorReportIterator();
     }
 
+    public static function feed(PlPage $page, PlUser $user)
+    {
+        $feed = new PlErrorReportFeed();
+        return $feed->run($page, $user);
+    }
+
     public static function clear()
     {
         @unlink(Platal::globals()->spoolroot . '/spool/tmp/site_errors');
@@ -110,6 +116,40 @@ class PlErrorReportIterator implements PlIterator
     public function last()
     {
         return false;
+    }
+}
+
+class PlErrorReportFeed extends PlFeed
+{
+    public function __construct()
+    {
+        global $globals;
+        parent::__construct($globals->core->sitename . ' :: News',
+                            $globals->baseurl . '/site_errors',
+                            'Erreurs d\'exécution',
+                            $globals->baseurl . '/images/logo.png',
+                            $globals->spoolroot . '/core/templates/site_errors.feed.tpl');
+    }
+
+    protected function fetch(PlUser $user)
+    {
+        global $globals;
+        $it   = PlErrorReport::iterate();
+        $data = array();
+        while ($row = $it->next()) {
+            $title = explode("\n", $row->error);
+            $title = $title[0];
+            $line = array();
+            $line['id'] = $row->date + count($data);
+            $line['author'] = 'admin';
+            $line['link']   = $globals->baseurl . '/site_errors';
+            $line['data']   = $row;
+            $line['title']  = $title;
+            $line['last_modification'] = $row->date;
+            $line['publication'] = $row->date;
+            $data[] = $line;
+        }
+        return PlIteratorUtils::fromArray($data, 1, true);
     }
 }
 
