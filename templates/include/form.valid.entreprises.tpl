@@ -27,7 +27,18 @@
 </tr>
 <tr class="pair">
   <td class="titre">Noms similaires existants&nbsp;:</td>
-  <td>{$valid->suggestions}</td>
+  <td>
+    <span id="{$valid->type}_{$valid->profile->id()}_{$valid->stamp}_truncated"
+          onclick="$('#{$valid->type}_{$valid->profile->id()}_{$valid->stamp}_truncated').toggle();
+                   $('#{$valid->type}_{$valid->profile->id()}_{$valid->stamp}_full').toggle()">
+      {$valid->suggestions|truncate:200:"&hellip; <strong><small>(cliquez pour tout afficher)</small></strong>"}
+    </span>
+    <span id="{$valid->type}_{$valid->profile->id()}_{$valid->stamp}_full" style="display: none"
+          onclick="$('#{$valid->type}_{$valid->profile->id()}_{$valid->stamp}_truncated').toggle();
+                   $('#{$valid->type}_{$valid->profile->id()}_{$valid->stamp}_full').toggle()">
+      {$valid->suggestions}
+    </span>
+  </td>
 </tr>
 <tr class="pair">
   <td class="titre">Acronyme&nbsp;:</td>
