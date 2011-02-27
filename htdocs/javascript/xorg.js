@@ -1041,6 +1041,7 @@ function sendTestEmail(token, hruid)
             console.log(options);
             options.loadingClass = $this.css('text-align') === 'right' ? options.loadingClassRight
                                                                        : options.loadingClassLeft;
+            $this.attr('autocomplete', 'off');
 
             $popup = buildPopup(this, options.destination, function() {
                 options.selectAction.apply(this, arguments);
@@ -1157,10 +1158,10 @@ function sendTestEmail(token, hruid)
             if (typeof text === 'string') {
                 args.push(text);
                 if (width) {
-                    args.push(width);
+                    args.push(WIDTH, width);
                 }
                 if (height) {
-                    args.push(height);
+                    args.push(HEIGHT, height);
                 }
             } else {
                 for (key in text) {
