@@ -911,8 +911,13 @@ function sendTestEmail(token, hruid)
                         updateSelection();
                     }
                 }).mouseup(function() {
-                    if (!($(this).find('a').is(':hover'))) {
-                        $(this).find('a').click();
+                    var sel = $(this).find('a');
+                    try {
+                        if (!sel.is(':hover')) {
+                            sel.click();
+                        }
+                    } catch (e) {
+                        sel.click();
                     }
                 });
             return data;
@@ -1012,14 +1017,14 @@ function sendTestEmail(token, hruid)
 
     $.fn.extend({
         quickSearch: function(options) {
-            var $this  = this;
-            var $input = $this.get(0);
+            return this.each(function() {
+            var $this  = $(this);
+            var $input = this;
             var $popup;
             var previous = null;
             var pending  = false;
             var disabled = false;
             var updatePopup;
-            var loadingClass;
 
             options = options || { };
             options = $.extend({
@@ -1038,12 +1043,11 @@ function sendTestEmail(token, hruid)
                     $(this).popWin(840, 600);
                 }
             }, options);
-            console.log(options);
             options.loadingClass = $this.css('text-align') === 'right' ? options.loadingClassRight
                                                                        : options.loadingClassLeft;
             $this.attr('autocomplete', 'off');
 
-            $popup = buildPopup(this, options.destination, function() {
+            $popup = buildPopup($this, options.destination, function() {
                 options.selectAction.apply(this, arguments);
                 $(this).click(function() {
                     $popup.hide();
@@ -1105,7 +1109,7 @@ function sendTestEmail(token, hruid)
 
             updatePopup = doUpdatePopup;
 
-            return this.keyup(function(e) {
+            return $this.keyup(function(e) {
                 if (e.keyCode !== 27 /* escape */ && e.keyCode !== 13 /* enter */
                     && e.keyCode !== 9 /* tab */ && e.keyCode !== 38 /* up */
                     && e.keyCode !== 40 /* down */) {
@@ -1140,7 +1144,7 @@ function sendTestEmail(token, hruid)
             .blur(function() {
                 return $popup.hide(true);
             })
-            .focus(updatePopup);
+            .focus(updatePopup);});
         }
     });
 }(jQuery));
