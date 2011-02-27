@@ -35,6 +35,7 @@ Bug/Wish:
         - #1367: Improves postal address formatting                        -JAC
         - #1368: Allows admin profile edition even if birthdate is unknown -JAC
         - #1369: Properly displays moderated jobs                          -JAC
+        - #1401: Main addresses are displayed before secondary addresses   -JAC
 
     * Register:
         - #1374: Adapts registration for master and doctorate              -JAC

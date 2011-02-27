@@ -809,12 +809,27 @@ class Address
         return $addresses;
     }
 
+    // Compares two addresses. First sort by publicity, then place primary
+    // addresses before secondary addresses.
+    static private function compare(array $a, array $b)
+    {
+        $value = ProfileVisibility::comparePublicity($a, $b);
+        if ($value == 0) {
+            if ($a['secondary'] != $b['secondary']) {
+                $value = $a['secondary'] ? 1 : -1;
+            }
+        }
+        return $value;
+    }
+
     // Formats an array of form addresses into an array of form formatted addresses.
     static public function formatFormArray(array $data, &$success = true)
     {
+        $addresses = self::formArrayWalk($data, 'toFormArray', $success, true);
+
         // Only a single address can be the profile's current address and she must have one.
         $hasCurrent = false;
-        foreach ($data as $key => &$address) {
+        foreach ($addresses as $key => &$address) {
             if (isset($address['current']) && $address['current']) {
                 if ($hasCurrent) {
                     $address['current'] = false;
@@ -830,8 +845,7 @@ class Address
             }
         }
 
-        $addresses = self::formArrayWalk($data, 'toFormArray', $success, true);
-        usort($addresses, 'ProfileVisibility::comparePublicity');
+        usort($addresses, 'Address::compare');
         return $addresses;
     }
 
