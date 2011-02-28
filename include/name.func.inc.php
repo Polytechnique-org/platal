@@ -251,12 +251,17 @@ function set_alias_names(&$sn_new, $sn_old, $pid, $uid, $update_new = false, $ne
 {
     $has_new = false;
     foreach ($sn_new as $typeid => $sn) {
-        if (isset($sn['pub'])) {
+        if (isset($sn['pub']) && !is_null($sn['fullname'])) {
             if (isset($sn_old[$typeid]) && $update_new) {
                 XDB::execute("UPDATE  profile_name
                                  SET  particle = {?}, name = {?}, typeid = {?}
                                WHERE  id = {?} AND pid = {?}",
                              $sn['particle'], $sn['name'], $typeid, $sn_old[$typeid]['id'], $pid);
+                unset($sn_old[$typeid]);
+            } elseif ($sn['fullname'] == $sn_old[$typeid]['fullname'] && $sn['name'] == $sn_old[$typeid]['name']) {
+                XDB::execute('INSERT INTO  profile_name (particle, name, typeid, pid)
+                                   VALUES  ({?}, {?}, {?}, {?})',
+                             $sn_old[$typeid]['particle'], $sn_old[$typeid]['name'], $typeid, $pid);
                 unset($sn_old[$typeid]);
             } else {
                 $has_new = true;
