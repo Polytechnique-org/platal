@@ -1201,6 +1201,37 @@ class UserFilter extends PlFilter
         return $joins;
     }
 
+    /** DELTATEN
+     */
+    private $dts = array();
+    const DELTATEN = 1;
+    const DELTATEN_MESSAGE = 2;
+    // TODO: terms
+
+    public function addDeltaTenFilter($type)
+    {
+        $this->requireProfiles();
+        switch ($type) {
+        case self::DELTATEN:
+            $this->dts['pdt'] = 'profile_deltaten';
+            return 'pdt';
+        case self::DELTATEN_MESSAGE:
+            $this->dts['pdtm'] = 'profile_deltaten';
+            return 'pdtm';
+        default:
+            Platal::page()->killError("Undefined DeltaTen filter.");
+        }
+    }
+
+    protected function deltatenJoins()
+    {
+        $joins = array();
+        foreach ($this->dts as $sub => $tab) {
+            $joins[$sub] = PlSqlJoin::left($tab, '$ME.pid = $PID');
+        }
+        return $joins;
+    }
+
     /** MENTORING
      */
 
@@ -1213,7 +1244,7 @@ class UserFilter extends PlFilter
 
     public function addMentorFilter($type)
     {
-        $this->requireAccounts();
+        $this->requireProfiles();
         switch($type) {
         case self::MENTOR:
             $this->pms['pm'] = 'profile_mentor';

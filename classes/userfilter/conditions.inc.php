@@ -1584,6 +1584,36 @@ abstract class UFC_UserRelated extends UserFilterCondition
     }
 }
 // }}}
+// {{{ class UFC_DeltaTen
+class UFC_DeltaTen extends UserFilterCondition
+{
+    public function buildCondition(PlFilter $uf)
+    {
+        $sub = $uf->addDeltaTenFilter(UserFilter::DELTATEN);
+        return $sub . '.message IS NOT NULL';
+    }
+}
+// }}}
+// {{{ class UFC_DeltaTen_Message
+/** Filters users by deltaten message
+ * @param $message Message for the DeltaTen program
+ */
+class UFC_DeltaTen_Message extends UserFilterCondition
+{
+    private $message;
+
+    public function __construct($message)
+    {
+        $this->message = $message;
+    }
+
+    public function buildCondition(PlFilter $uf)
+    {
+        $sub = $uf->addDeltaTenFilter(UserFilter::DELTATEN_MESSAGE);
+        return $sub . '.message ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->message);
+    }
+}
+// }}}
 // {{{ class UFC_Contact
 /** Filters users who belong to selected user's contacts
  */
