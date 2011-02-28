@@ -376,13 +376,16 @@ class User extends PlUser
                                       WHERE  v.redirect = CONCAT(s.email, \'@\', ds.name) AND v.type = \'user\'',
                                     $this->id());
         } else {
-            return XDB::fetchAllAssoc('SELECT  CONCAT(v.email, \'@\', dv.name) AS alias, v.uid IS NOT NULL AS sub
+            return XDB::fetchAllAssoc('alias',
+                                      'SELECT  CONCAT(v.email, \'@\', dv.name) AS alias, MAX(v.redirect = CONCAT(s.email, \'@\', ds.name)) AS sub
                                          FROM  email_virtual         AS v
                                    INNER JOIN  email_virtual_domains AS dv ON (v.domain = dv.id AND dv.name = {?})
                                    INNER JOIN  email_source_account  AS s  ON (s.uid = {?})
                                    INNER JOIN  email_virtual_domains AS ms ON (s.domain = ms.id)
                                    INNER JOIN  email_virtual_domains AS ds ON (ds.aliasing = ms.id)
-                                        WHERE  v.redirect = CONCAT(s.email, \'@\', ds.name) AND v.type = \'user\'',
+                                        WHERE  v.type = \'user\'
+                                     GROUP BY  v.email
+                                     ORDER BY  v.email',
                                       $domain, $this->id());
         }
     }
