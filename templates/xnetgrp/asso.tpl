@@ -72,6 +72,20 @@
   </tr>
   {/if}
 
+  {if $asso->phone}
+  <tr>
+    <td class="titre">Téléphone&nbsp;:</td>
+    <td>{$asso->phone}</td>
+  </tr>
+  {/if}
+
+  {if $asso->fax}
+  <tr>
+    <td class="titre">Fax&nbsp;:</td>
+    <td>{$asso->fax}</td>
+  </tr>
+  {/if}
+
   {if !$is_member && $is_logged && $asso->inscriptible && $xnet_type != 'promotions'}
   <tr>
     <td class="titre">

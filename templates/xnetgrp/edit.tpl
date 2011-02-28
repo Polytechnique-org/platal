@@ -125,6 +125,19 @@
     </tr>
 
     <tr>
+      <td class="titre">Téléphone</td>
+      <td>
+        <input type="text" maxlength="28" name="phone" value="{$asso->phone}" />
+      </td>
+    </tr>
+    <tr>
+      <td class="titre">Fax</td>
+      <td>
+        <input type="text" maxlength="28" name="fax" value="{$asso->fax}" />
+      </td>
+    </tr>
+
+    <tr>
       <td class="titre">
         Forum&nbsp;:
       </td>

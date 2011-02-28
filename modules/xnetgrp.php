@@ -231,6 +231,13 @@ class XnetGrpModule extends PLModule
                       $globals->asso('id'));
             }
 
+            Phone::deletePhones(0, Phone::LINK_GROUP, $globals->asso('id'));
+            $phone = new Phone(array('link_type' => 'group', 'link_id' => $globals->asso('id'), 'id' => 0,
+                                     'type' => 'fixed', 'display' => Post::v('phone'), 'pub' => 'public'));
+            $fax   = new Phone(array('link_type' => 'group', 'link_id' => $globals->asso('id'), 'id' => 1,
+                                     'type' => 'fax', 'display' => Post::v('fax'), 'pub' => 'public'));
+            $phone->save();
+            $fax->save();
 
             if ($_FILES['logo']['name']) {
                 $upload = PlUpload::get($_FILES['logo'], $globals->asso('id'), 'asso.logo', true);
