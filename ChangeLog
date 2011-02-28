@@ -48,6 +48,9 @@ Bug/Wish:
     * XnetEvent:
         - #1373: Fixes acceptance of non member in xnet events.            -JAC
 
+    * XnetGrp:
+        - #907: Adds more info about groups (address, phones, positions)   -JAC
+
 ================================================================================
 VERSION 1.0.1                                                         26 10 2010
 
