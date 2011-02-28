@@ -65,7 +65,7 @@ class NamesReq extends ProfileValidate
                                                    WHERE  s.uid = {?} AND s.type = \'alias\' AND FIND_IN_SET(\'usage\', s.flags) AND d.name = {?}',
                                                  $this->profileOwner->id(), Platal::globals()->mail->domain);
             if ($this->old_alias != $this->new_alias) {
-                $used = XDB::fetchOneCell('SELECT  COUNT(s.*)
+                $used = XDB::fetchOneCell('SELECT  COUNT(s.uid)
                                              FROM  email_source_account  AS s
                                        INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
                                             WHERE  s.email = {?} AND d.name = {?}',
