@@ -109,10 +109,11 @@ class Profile implements PlExportable
     const FETCH_PHONES         = 0x000100;
     const FETCH_JOB_TERMS      = 0x000200;
     const FETCH_MENTOR_TERMS   = 0x000400;
+    const FETCH_DELTATEN       = 0x000800;
 
     const FETCH_MINIFICHES   = 0x00012D; // FETCH_ADDRESSES | FETCH_EDU | FETCH_JOBS | FETCH_NETWORKING | FETCH_PHONES
 
-    const FETCH_ALL          = 0x0007FF; // OR of FETCH_*
+    const FETCH_ALL          = 0x000FFF; // OR of FETCH_*
 
     static public $descriptions = array(
         'search_names'    => 'Noms',
@@ -144,7 +145,8 @@ class Profile implements PlExportable
         'langues'         => 'Langues',
         'expertise'       => 'Expertises (mentoring)',
         'terms'           => 'Compétences (mentoring)',
-        'countries'       => 'Pays (mentoring)'
+        'countries'       => 'Pays (mentoring)',
+        'deltaten'        => 'Opération N N-10',
     );
 
     private $fetched_fields  = 0x000000;
@@ -421,8 +423,8 @@ class Profile implements PlExportable
 
     /**
      * Clears a profile.
-     *  *always deletes in: profile_addresses, profile_binets, profile_job,
-     *      profile_langskills, profile_mentor, profile_networking,
+     *  *always deletes in: profile_addresses, profile_binets, profile_deltaten,
+     *      profile_job, profile_langskills, profile_mentor, profile_networking,
      *      profile_phones, profile_skills, watch_profile
      *  *always keeps in: profile_corps, profile_display, profile_education,
      *      profile_medals, profile_name, profile_photos, search_name
@@ -433,7 +435,8 @@ class Profile implements PlExportable
         $tables = array(
             'profile_job', 'profile_langskills', 'profile_mentor',
             'profile_networking', 'profile_skills', 'watch_profile',
-            'profile_phones', 'profile_addresses', 'profile_binets');
+            'profile_phones', 'profile_addresses', 'profile_binets',
+            'profile_deltaten');
 
         foreach ($tables as $t) {
             XDB::execute('DELETE FROM  ' . $t . '
@@ -804,6 +807,44 @@ class Profile implements PlExportable
         }
     }
 
+    /** DeltaTen
+     */
+
+    /** Find out whether this profile may take part to the "DeltaTen" operation.
+     * @param $role Which role to select ('young' or 'old')
+     * @return Boolean: whether it is enabled.
+     */
+    const DELTATEN_YOUNG = 'young';
+    const DELTATEN_OLD = 'old';
+    public function isDeltaTenEnabled($role)
+    {
+        global $globals;
+        switch ($role) {
+        case self::DELTATEN_YOUNG:
+            return ($this->mainGrade() == UserFilter::GRADE_ING && $this->yearpromo() >= $globals->deltaten->first_promo_young);
+        case self::DELTATEN_OLD:
+            // Roughly compute the current promo in second year on the campus:
+            // Promo 2010 is in second year between 09/2011 and 08/2012 => use 2012.
+            // DeltaTen program begins around January of the second year.
+            $promo_on_platal = ((int) date('Y')) - 2;
+            return ($this->mainGrade() == UserFilter::GRADE_ING && $this->yearpromo() >= $globals->deltaten->first_promo_young - 10 && $this->yearpromo() <= $promo_on_platal - 10);
+        default:
+            Platal::assert(false, "Invalid DeltaTen role $role");
+        }
+    }
+
+    /** Retrieve the "Deltaten" message of the user.
+     * Returns "null" if the message is empty or the user is not taking part to the
+     * DeltaTen operation.
+     */
+    public function getDeltatenMessage()
+    {
+        if ($this->isDeltaTenEnabled(self::DELTATEN_OLD)) {
+            return $this->deltaten_message;
+        } else {
+            return null;
+        }
+    }
 
     /* Binets
      */
@@ -907,16 +948,17 @@ class Profile implements PlExportable
                                      pe.entry_year, pe.grad_year, pe.promo_year, pe.program, pe.fieldid,
                                      IF ({?}, pse.text, NULL) AS section,
                                      pn_f.name AS firstname, pn_l.name AS lastname,
-                                     IF( {?}, pn_n.name, NULL) AS nickname,
-                                     IF(pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_ordinary,
-                                     IF(pn_ul.name IS NULL, pn_l.name, pn_ul.name) AS lastname_ordinary,
+                                     IF ({?}, pn_n.name, NULL) AS nickname,
+                                     IF (pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_ordinary,
+                                     IF (pn_ul.name IS NULL, pn_l.name, pn_ul.name) AS lastname_ordinary,
                                      pd.yourself, pd.promo, pd.short_name, pd.public_name AS full_name,
                                      pd.directory_name, pd.public_name, pd.private_name,
-                                     IF(pp.pub IN {?}, pp.display_tel, NULL) AS mobile,
+                                     IF (pp.pub IN {?}, pp.display_tel, NULL) AS mobile,
                                      (ph.pub IN {?} AND ph.attach IS NOT NULL) AS has_photo,
                                      ph.x AS photo_width, ph.y AS photo_height,
                                      p.last_change < DATE_SUB(NOW(), INTERVAL 365 DAY) AS is_old,
                                      pm.expertise AS mentor_expertise,
+                                     IF ({?}, pdt.message, NULL) AS deltaten_message,
                                      ap.uid AS owner_id
                                FROM  profiles AS p
                          INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
@@ -935,6 +977,7 @@ class Profile implements PlExportable
                           LEFT JOIN  profile_phones AS pp ON (pp.pid = p.pid AND pp.link_type = \'user\' AND tel_type = \'mobile\')
                           LEFT JOIN  profile_photos AS ph ON (ph.pid = p.pid)
                           LEFT JOIN  profile_mentor AS pm ON (pm.pid = p.pid)
+                          LEFT JOIN  profile_deltaten AS pdt ON (pdt.pid = p.pid)
                           LEFT JOIN  account_profiles AS ap ON (ap.pid = p.pid AND FIND_IN_SET(\'owner\', ap.perms))
                               WHERE  p.pid IN {?}
                            GROUP BY  p.pid
@@ -945,6 +988,7 @@ class Profile implements PlExportable
                            $visibility->isVisible(ProfileVisibility::VIS_PRIVATE), // nickname
                            $visibility->levels(), // mobile
                            $visibility->levels(), // photo
+                           $visibility->isVisible(ProfileVisibility::VIS_PRIVATE), // deltaten_message
                            $pids
                        );
         return new ProfileIterator($it, $pids, $fields, $visibility);

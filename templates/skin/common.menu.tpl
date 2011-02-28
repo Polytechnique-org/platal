@@ -86,6 +86,12 @@
 <div class="menu_item"><a href="groupes-x">Mes groupes X</a></div>
 {/if}
 <div class="menu_item"><a href="survey">Sondages</a></div>
+{if hasPerm('directory_private') && $smarty.session.user->hasProfile()}
+  {assign var='profile' value=$smarty.session.user->profile()}
+  {if $profile->isDeltaTenEnabled(#Profile::DELTATEN_YOUNG#)}
+    <div class="menu_item"><a href="deltaten">Opération N N-10</a></div>
+  {/if}
+{/if}
 
 <div class="menu_title">Informations</div>
 <div class="menu_item"><a href="Xorg/">Documentations</a></div>

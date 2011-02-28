@@ -437,6 +437,7 @@ require_once dirname(__FILE__) . '/decos.inc.php';
 require_once dirname(__FILE__) . '/jobs.inc.php';
 require_once dirname(__FILE__) . '/skills.inc.php';
 require_once dirname(__FILE__) . '/mentor.inc.php';
+require_once dirname(__FILE__) . '/deltaten.inc.php';
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

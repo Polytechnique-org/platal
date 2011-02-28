@@ -39,6 +39,7 @@ class ProfileModule extends PLModule
             'profile/networking'         => $this->make_hook('networking',                 AUTH_PUBLIC),
             'profile/ajax/job'           => $this->make_hook('ajax_job',                   AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/skill'         => $this->make_hook('ajax_skill',                 AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/deltaten'      => $this->make_hook('ajax_deltaten',              AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/searchname'    => $this->make_hook('ajax_searchname',            AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/buildnames'    => $this->make_hook('ajax_buildnames',            AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/tree/jobterms' => $this->make_hook('ajax_tree_job_terms',        AUTH_COOKIE, 'user', NO_AUTH),
@@ -312,7 +313,7 @@ class ProfileModule extends PLModule
     {
         global $globals;
 
-        if (in_array($hrpid, array('general', 'adresses', 'emploi', 'poly', 'deco', 'skill', 'mentor'))) {
+        if (in_array($hrpid, array('general', 'adresses', 'emploi', 'poly', 'deco', 'skill', 'mentor', 'deltaten'))) {
             $aux = $opened_tab;
             $opened_tab = $hrpid;
             $hrpid = $aux;
@@ -346,6 +347,9 @@ class ProfileModule extends PLModule
         if (S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE)) {
             $wiz->addPage('ProfilePageSkills', 'Compétences diverses', 'skill');
             $wiz->addPage('ProfilePageMentor', 'Mentoring', 'mentor');
+        }
+        if (S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE) && $profile->isDeltatenEnabled(Profile::DELTATEN_OLD)) {
+            $wiz->addPage('ProfilePageDeltaten', 'Opération N N-10', 'deltaten');
         }
         $wiz->apply($page, 'profile/edit/' . $profile->hrid(), $opened_tab, $mode);
 
