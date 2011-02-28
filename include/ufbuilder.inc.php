@@ -401,6 +401,39 @@ class UFB_MentorSearch extends UserFilterBuilder
 }
 // }}}
 
+// {{{ class UFB_DeltaTenSearch
+class UFB_DeltaTenSearch extends UserFilterBuilder
+{
+    public function __construct($envprefix = '')
+    {
+        $fields = array(
+            new UFBF_DeltaTenMessage('deltaten_message'),
+
+            new UFBF_Town('city', 'Ville / Code Postal'),
+            new UFBF_Country('countryTxt', 'country', 'Pays'),
+            new UFBF_AdminArea('administrativearea', 'Région'),
+            new UFBF_SubAdminArea('subadministrativearea', 'Département'),
+
+
+            new UFBF_EducationSchool('schoolTxt', 'school', "École d'application"),
+            new UFBF_EducationDegree('diplomaTxt', 'diploma', 'Diplôme'),
+            new UFBF_EducationField('fieldTxt', 'field', "Domaine d'études"),
+
+            new UFBF_JobCompany('entreprise', 'Entreprise'),
+            new UFBF_JobDescription('jobdescription', 'Fonction'),
+            new UFBF_JobTerms('jobterm', 'Mots-clefs'),
+
+            new UFBF_Nationality('nationaliteTxt', 'nationalite', 'Nationalité'),
+            new UFBF_Binet('binetTxt', 'binet', 'Binet'),
+            new UFBF_Group('groupexTxt', 'groupex', 'Groupe X'),
+            new UFBF_Section('sectionTxt', 'section', 'Section'),
+            new UFBF_Sex('woman', 'Sexe'),
+        );
+        parent::__construct($fields, $envprefix);
+    }
+}
+// }}}
+
 // {{{ class UFB_NewsLetter
 class UFB_NewsLetter extends UserFilterBuilder
 {
@@ -1499,6 +1532,16 @@ class UFBF_MentorExpertise extends UFBF_Text
     protected function buildUFC(UserFilterBuilder $ufb)
     {
         return new UFC_Mentor_Expertise($this->val);
+    }
+}
+// }}}
+
+// {{{ class UFBF_DeltaTenMessage
+class UFBF_DeltaTenMessage extends UFBF_Text
+{
+    protected function buildUFC(UserFilterBuilder $ufb)
+    {
+        return new UFC_DeltaTen_Message($this->val);
     }
 }
 // }}}
