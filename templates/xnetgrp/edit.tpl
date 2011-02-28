@@ -136,6 +136,12 @@
         <input type="text" maxlength="28" name="fax" value="{$asso->fax}" />
       </td>
     </tr>
+    <tr>
+      <td class="titre">Adresse</td>
+      <td>
+        <textarea name="address" cols="30" rows="4">{$asso->address}</textarea>
+      </td>
+    </tr>
 
     <tr>
       <td class="titre">

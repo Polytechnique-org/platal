@@ -238,6 +238,9 @@ class XnetGrpModule extends PLModule
                                      'type' => 'fax', 'display' => Post::v('fax'), 'pub' => 'public'));
             $phone->save();
             $fax->save();
+            Address::deleteAddresses(null, Address::LINK_GROUP, null, $globals->asso('id'));
+            $address = new Address(array('groupid' => $globals->asso('id'), 'type' => Address::LINK_GROUP, 'text' => Post::v('address')));
+            $address->save();
 
             if ($_FILES['logo']['name']) {
                 $upload = PlUpload::get($_FILES['logo'], $globals->asso('id'), 'asso.logo', true);

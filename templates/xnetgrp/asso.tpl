@@ -86,6 +86,13 @@
   </tr>
   {/if}
 
+  {if $asso->address}
+  <tr>
+    <td class="titre">Adresse&nbsp;:</td>
+    <td>{$asso->address}</td>
+  </tr>
+  {/if}
+
   {if !$is_member && $is_logged && $asso->inscriptible && $xnet_type != 'promotions'}
   <tr>
     <td class="titre">

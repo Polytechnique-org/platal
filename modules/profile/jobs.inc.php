@@ -265,7 +265,7 @@ class ProfileSettingJob implements ProfileSetting
                         LEFT JOIN  profile_job_term AS pjt ON (pj.pid = pjt.pid AND pj.id = pjt.jid)
                             WHERE  pj.pid = {?}' . (($deletePrivate) ? '' : ' AND pj.pub IN (\'public\', \'ax\')'),
                      $page->pid());
-        Address::deleteAddresses($page->pid(), Address::LINK_JOB, null, $deletePrivate);
+        Address::deleteAddresses($page->pid(), Address::LINK_JOB, null, null, $deletePrivate);
         Phone::deletePhones($page->pid(), Phone::LINK_JOB, null, $deletePrivate);
         $terms_values = array();
         foreach ($value as $id => &$job) {
