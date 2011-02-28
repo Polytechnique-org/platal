@@ -142,7 +142,7 @@
 
       {if $e.topay}
       <span class="error">
-        {if !$e.paid}
+        {if $e.paid eq '0.00'}
         Tu dois payer {$e.topay|replace:'.':','}&nbsp;&euro;.
         {elseif $e.paid < $e.topay}
         Tu dois encore payer {math equation="a-b" a=$e.topay b=$e.paid|replace:'.':','}&nbsp;&euro;
