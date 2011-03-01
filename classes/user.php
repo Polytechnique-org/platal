@@ -373,7 +373,7 @@ class User extends PlUser
                                  INNER JOIN  email_source_account  AS s  ON (s.uid = {?})
                                  INNER JOIN  email_virtual_domains AS ms ON (s.domain = ms.id)
                                  INNER JOIN  email_virtual_domains AS ds ON (ds.aliasing = ms.id)
-                                      WHERE  v.redirect = CONCAT(s.email, \'@\', ds.name) AND v.type = \'user\'',
+                                      WHERE  v.redirect = CONCAT(s.email, \'@\', ds.name) AND v.type = \'alias\'',
                                     $this->id());
         } else {
             return XDB::fetchAllAssoc('alias',
@@ -383,7 +383,7 @@ class User extends PlUser
                                    INNER JOIN  email_source_account  AS s  ON (s.uid = {?})
                                    INNER JOIN  email_virtual_domains AS ms ON (s.domain = ms.id)
                                    INNER JOIN  email_virtual_domains AS ds ON (ds.aliasing = ms.id)
-                                        WHERE  v.type = \'user\'
+                                        WHERE  v.type = \'alias\'
                                      GROUP BY  v.email
                                      ORDER BY  v.email',
                                       $domain, $this->id());

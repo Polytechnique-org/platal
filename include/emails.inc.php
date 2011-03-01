@@ -24,7 +24,7 @@ define('ERROR_INACTIVE_REDIRECTION', 2);
 define('ERROR_INVALID_EMAIL', 3);
 define('ERROR_LOOP_EMAIL', 4);
 
-function add_to_list_alias(User $user, $local_part, $domain, $type = 'user')
+function add_to_list_alias(User $user, $local_part, $domain, $type = 'alias')
 {
     Platal::assert($user !== null);
 
@@ -35,7 +35,7 @@ function add_to_list_alias(User $user, $local_part, $domain, $type = 'user')
                  $local_part, $user->forlifeEmail(), $type, $domain);
 }
 
-function delete_from_list_alias(User $user, $local_part, $domain, $type = 'user')
+function delete_from_list_alias(User $user, $local_part, $domain, $type = 'alias')
 {
     Platal::assert($user !== null);
 
@@ -47,7 +47,7 @@ function delete_from_list_alias(User $user, $local_part, $domain, $type = 'user'
                  $local_part, $domain, $user->forlifeEmail(), $type);
 }
 
-function update_list_alias(User $user, $former_email, $local_part, $domain, $type = 'user')
+function update_list_alias(User $user, $former_email, $local_part, $domain, $type = 'alias')
 {
     Platal::assert($user !== null);
 
@@ -64,7 +64,7 @@ function list_alias_members($local_part, $domain)
                                   FROM  email_virtual         AS v
                             INNER JOIN  email_virtual_domains AS m ON (v.domain = m.id)
                             INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
-                                 WHERE  v.email = {?} AND d.name = {?} AND type = \'user\'',
+                                 WHERE  v.email = {?} AND d.name = {?} AND type = \'alias\'',
                                $local_part, $domain);
 
     $members = array();
@@ -81,7 +81,7 @@ function delete_list_alias($local_part, $domain)
                     FROM  email_virtual         AS v
               INNER JOIN  email_virtual_domains AS m ON (v.domain = m.id)
               INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
-                   WHERE  v.email = {?} AND d.name = {?} AND type = \'user\'',
+                   WHERE  v.email = {?} AND d.name = {?} AND type = \'alias\'',
                  $local_part, $domain);
 }
 
@@ -90,7 +90,7 @@ function iterate_list_alias($domain)
     return XDB::fetchColumn('SELECT  CONCAT(v.email, \'@\', m.name)
                                FROM  email_virtual         AS v
                          INNER JOIN  email_virtual_domains AS m ON (v.domain = m.id)
-                              WHERE  m.name = {?} AND v.type = \'user\'
+                              WHERE  m.name = {?} AND v.type = \'alias\'
                            GROUP BY  v.email',
                             $domain);
 }

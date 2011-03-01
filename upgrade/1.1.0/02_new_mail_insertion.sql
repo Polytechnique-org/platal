@@ -145,7 +145,7 @@ INSERT INTO  email_virtual (email, type, domain, redirect)
       WHERE  type = 'liste';
 
 INSERT INTO  email_virtual (email, redirect, domain, type)
-     SELECT  SUBSTRING_INDEX(v.alias, '@', 1), vr.redirect, @m_domain_id, 'user'
+     SELECT  SUBSTRING_INDEX(v.alias, '@', 1), vr.redirect, @m_domain_id, 'alias'
        FROM  virtual          AS v
   LEFT JOIN  virtual_redirect AS vr ON (v.vid = vr.vid)
   LEFT JOIN  accounts         AS a  ON (a.hruid = LEFT(vr.redirect, LOCATE('@', vr.redirect) - 1))
