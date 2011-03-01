@@ -35,7 +35,7 @@ class VCard extends PlVCard
 
     public function addProfile($profile)
     {
-        $profile = Profile::get($profile);
+        $profile = Profile::get($profile, Profile::FETCH_ALL);
         if ($profile) {
             $this->profile_list[] = $profile;
             $this->count++;
@@ -105,23 +105,39 @@ class VCard extends PlVCard
         }
 
         // Pro
-        $adrs = $pf->iterAddresses(Profile::ADDRESS_PRO);
-        while ($adr = $adrs->next()) {
-            if (!$adr->postalCode || !$adr->locality || !$adr->country) {
-                $group = $entry->addWork(null, null, null, null,
-                                         $adr->text, null, null, null,
-                                         null, $adr->administrativeArea, null);
-            } else {
-                // TODO : link address to company
-                $group = $entry->addWork(null, null, null, null,
-                                         trim(Geocoder::getFirstLines($adr->text, $adr->postalCode, 4)), null, null, $adr->postalCode,
-                                         $adr->locality, $adr->administrativeArea, $adr->country);
+        $jobs = $pf->getJobs();
+        foreach ($jobs as $job) {
+            $terms_array = array();
+            foreach ($job->terms as $term) {
+               $terms_array[] = $term->full_name;
             }
-            foreach ($adr->phones() as $phone) {
-                if ($phone->link_type == Phone::TYPE_FIXED) {
-                    $entry->addTel($group, $phone->display);
-                } else if ($phone->link_type == Phone::TYPE_FAX) {
+            $terms = implode(', ', $terms_array);
+            if ($job->address) {
+                if (!$job->address->postalCode || !$job->address->locality || !$job->address->country) {
+                    $group = $entry->addWork($job->company->name, null, $job->description, $terms,
+                                             $job->address->text, null, null, null,
+                                             null, $job->address->administrativeArea, null);
+                } else {
+                    $group = $entry->addWork($job->company->name, null, $job->description, $terms,
+                                             trim(Geocoder::getFirstLines($job->address->text, $job->address->postalCode, 4)),
+                                             null, null, $job->address->postalCode,
+                                             $job->address->locality, $job->address->administrativeArea, $job->address->country);
+                }
+            } else {
+                $group = $entry->addWork($job->company->name, null, $job->description, $terms,
+                                         null, null, null, null,
+                                         null, null, null);
+            }
+            if ($job->user_email) {
+                $entry->addMail($group, $job->user_email);
+            }
+            foreach ($job->phones as $phone) {
+                if ($phone->type == Phone::TYPE_MOBILE) {
+                    $entry->addTel($group, $phone->display, false, true, true, false, true);
+                } else if ($phone->type == Phone::TYPE_FAX) {
                     $entry->addTel($group, $phone->display, true);
+                } else {
+                    $entry->addTel($group, $phone->display, false, true, true);
                 }
             }
         }

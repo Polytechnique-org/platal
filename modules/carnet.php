@@ -419,7 +419,7 @@ class CarnetModule extends PLModule
     {
         $pf = new ProfileFilter(new UFC_Contact(S::user()));
         $vcard = new VCard($photos == 'photos');
-        $vcard->addProfiles($pf->getProfiles());
+        $vcard->addProfiles($pf->getProfiles(null, Profile::FETCH_ALL));
         $vcard->show();
     }
 
