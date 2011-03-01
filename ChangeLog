@@ -1,6 +1,19 @@
 ================================================================================
 VERSION 1.1.0                                                         XX XX XXXX
 
+Bug/Wish:
+
+    * Admin:
+        - #1399: Displays all similar entreprises only on demand           -JAC
+        - #1403: Displays grade if any in medal validation process         -JAC
+
+    * Profile:
+        - #1324,1352: Adds jobs to vcards                                  -JAC
+        - #1389: Do not require validation for private names modifications -JAC
+        - #1401: Main addresses are displayed before secondary addresses   -JAC
+
+    * XnetGrp:
+        - #907: Adds more info about groups (address, phones, positions)   -JAC
 
 ================================================================================
 VERSION 1.0.2                                                         31 01 2011
@@ -8,9 +21,7 @@ VERSION 1.0.2                                                         31 01 2011
 Bug/Wish:
 
     * Admin:
-        - #1399: Displays all similar entreprises only on demand           -JAC
         - #1362: List last profile modifications for secretary             -JAC
-        - #1403: Displays grade if any in medal validation process         -JAC
 
     * Core:
         - #1352: Fixes csv downloading with IE8.                           -JAC
@@ -26,7 +37,6 @@ Bug/Wish:
 
     * Profile:
         - #1270: Adapts default picture to main education                  -JAC
-        - #1324,1352: Adds jobs to vcards                                  -JAC
         - #1340: Allows secretaries and admin to fully edit profiles' name -JAC
         - #1354: Do not notify death to a deceased user                    -JAC
         - #1356: Indicates delivery issues on addresses                    -JAC
@@ -37,8 +47,6 @@ Bug/Wish:
         - #1367: Improves postal address formatting                        -JAC
         - #1368: Allows admin profile edition even if birthdate is unknown -JAC
         - #1369: Properly displays moderated jobs                          -JAC
-        - #1389: Do not require validation for private names modifications -JAC
-        - #1401: Main addresses are displayed before secondary addresses   -JAC
 
     * Register:
         - #1374: Adapts registration for master and doctorate              -JAC
@@ -49,9 +57,6 @@ Bug/Wish:
 
     * XnetEvent:
         - #1373: Fixes acceptance of non member in xnet events.            -JAC
-
-    * XnetGrp:
-        - #907: Adds more info about groups (address, phones, positions)   -JAC
 
 ================================================================================
 VERSION 1.0.1                                                         26 10 2010
