@@ -74,10 +74,17 @@ class MedalReq extends ProfileValidate
 
     public function medal_name()
     {
-        $res = XDB::query('SELECT  m.text
-                             FROM  profile_medal_enum AS m
-                            WHERE  m.id = {?}', $this->mid);
-        return $res->fetchOneCell();
+        $name = XDB::fetchOneCell('SELECT  text
+                                     FROM  profile_medal_enum
+                                    WHERE  id = {?}', $this->mid);
+        $grade = XDB::fetchOneCell('SELECT  text
+                                      FROM  profile_medal_grade_enum
+                                     WHERE  mid = {?} AND gid = {?}',
+                                   $this->mid, $this->gid);
+        if (is_null($grade)) {
+            return $name;
+        }
+        return $name . ' (' . $grade . ')';
     }
 
     // }}}

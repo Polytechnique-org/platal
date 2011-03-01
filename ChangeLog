@@ -10,6 +10,7 @@ Bug/Wish:
     * Admin:
         - #1399: Displays all similar entreprises only on demand           -JAC
         - #1362: List last profile modifications for secretary             -JAC
+        - #1403: Displays grade if any in medal validation process         -JAC
 
     * Core:
         - #1352: Fixes csv downloading with IE8.                           -JAC
