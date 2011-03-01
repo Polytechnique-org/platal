@@ -79,11 +79,10 @@ INSERT INTO  homonyms_list (hrmid, uid)
 
 -- 5/ Feeds email_redirect_account
 INSERT INTO  email_redirect_account (uid, redirect, rewrite, type, action, broken_date, broken_level, last, flags, hash, allow_rewrite)
-     SELECT  a.uid, e.email, e.rewrite, 'smtp', ef.email, e.panne, e.panne_level, e.last,
+     SELECT  e.uid, e.email, e.rewrite, 'smtp', ef.email, e.panne, e.panne_level, e.last,
              IF(e.flags = '', 'inactive', IF(e.flags = 'disable', 'disabled', IF(e.flags = 'panne', 'broken', e.flags))), e.hash, e.allow_rewrite
        FROM  emails   AS e
   LEFT JOIN  emails   AS ef ON (e.uid = ef.uid)
-  LEFT JOIN  accounts AS a  ON (e.uid = a.uid)
       WHERE  e.flags != 'filter' AND ef.flags = 'filter';
 INSERT INTO  email_redirect_account (uid, redirect, type, action, flags)
      SELECT  a.uid, CONCAT(a.hruid, '@g.polytechnique.org'), 'googleapps', ef.email, 'active'
