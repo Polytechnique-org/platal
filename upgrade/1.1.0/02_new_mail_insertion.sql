@@ -1,8 +1,5 @@
 -- 1/ Feeds email_virtual_domains from virtual_domains and aliases.
 
--- Note: There are some adresses on virtual that have no match on the virtual_redirect.
---       The adresses in this situation are dropped.
-
 INSERT INTO  email_virtual_domains (name)
      VALUES  ('polytechnique.org');
 INSERT INTO  email_virtual_domains (name)
@@ -128,6 +125,10 @@ INSERT INTO  email_redirect_other (hrmid, redirect, type, action)
              ('honey.jean-pierre.bilah.1980.polytechnique.org', 'raphael.barrois.2006@polytechnique.org', 'smtp', 'let_spams');
 
 -- 7/ Feeds email_virtual
+
+-- Note: There are some adresses on virtual that have no match on the virtual_redirect.
+--       The adresses in this situation are dropped.
+
 INSERT INTO  email_virtual (email, domain, redirect, type)
      SELECT  SUBSTRING_INDEX(v.alias, '@', 1), d.id, vr.redirect, IF(v.type = 'evt', 'event', v.type)
        FROM  virtual               AS v
