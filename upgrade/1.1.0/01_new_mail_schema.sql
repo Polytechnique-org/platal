@@ -83,7 +83,7 @@ CREATE TABLE email_virtual (
   email VARCHAR(255) NOT NULL,
   domain SMALLINT(3) UNSIGNED NOT NULL DEFAULT 1,
   redirect VARCHAR(255) NOT NULL,
-  type ENUM('user', 'list', 'domain', 'event', 'admin', 'partner'),
+  type ENUM('user', 'list', 'event', 'admin', 'partner'),
   expire DATE NOT NULL DEFAULT '0000-00-00',
   PRIMARY KEY (email, domain, redirect),
   KEY (domain),
