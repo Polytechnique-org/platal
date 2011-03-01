@@ -427,12 +427,12 @@ class ProfileModule extends PLModule
         require_once "education.func.inc.php";
     }
 
-    function handler_ajax_medal($page, $id)
+    function handler_ajax_medal($page, $i, $id)
     {
         pl_content_headers("text/html");
         $page->changeTpl('profile/deco.medal.tpl', NO_SKIN);
-        $page->assign('id', $id);
-        $page->assign('medal', array('valid' => 0, 'grade' => 0));
+        $page->assign('id', $i);
+        $page->assign('medal', array('id' => $id, 'grade' => 0, 'valid' => 0));
     }
 
     function handler_ajax_job($page, $id)

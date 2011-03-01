@@ -117,11 +117,11 @@ class MedalReq extends ProfileValidate
     // }}}
     // {{{ function get_request($medal)
 
-    static public function get_request($pid, $type)
+    static public function get_request($pid, $type, $grade)
     {
         $reqs = parent::get_typed_requests($pid, 'medal');
         foreach ($reqs as &$req) {
-            if ($req->mid == $type) {
+            if ($req->mid == $type && $req->gid == $grade) {
                 return $req;
             }
         }

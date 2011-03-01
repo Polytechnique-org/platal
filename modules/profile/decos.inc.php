@@ -21,61 +21,69 @@
 
 class ProfileSettingDeco implements ProfileSetting
 {
+    private static function compareMedals(array $a, array $b)
+    {
+        if ($a['id'] == $b['id']) {
+            return $a['grade'] > $b['grade'];
+        }
+        return $a['id'] > $b['id'];
+    }
+
     public function value(ProfilePage $page, $field, $value, &$success)
     {
         $success = true;
         if (is_null($value)) {
             // Fetch already attributed medals
-            $res = XDB::iterRow("SELECT  m.id AS id, s.gid AS grade
-                                   FROM  profile_medals    AS s
-                             INNER JOIN  profile_medal_enum        AS m ON ( s.mid = m.id )
-                                  WHERE  s.pid = {?}",
-                                $page->pid());
-            $value = array();
-            while (list($id, $grade) = $res->next()) {
-                $value[$id] = array('grade' => $grade,
-                                    'valid' => '1');
-            }
+            $value = XDB::fetchAllAssoc('SELECT  mid AS id, gid AS grade, 1 AS valid
+                                           FROM  profile_medals
+                                          WHERE  pid = {?}',
+                                        $page->pid());
 
             // Fetch not yet validated medals
             $medals = ProfileValidate::get_typed_requests($page->pid(), 'medal');
             foreach ($medals as &$medal) {
-                $value[$medal->mid] = array('grade' => $medal->gid,
-                                            'valid' => '0');
+                $value[] = array(
+                    'id'    => $medal->mid,
+                    'grade' => $medal->gid,
+                    'valid' => '0'
+                );
             }
-        } else if (!is_array($value)) {
+        } elseif (!is_array($value)) {
             $value = array();
         }
-        ksort($value);
+        usort($value, 'self::compareMedals');
         return $value;
     }
 
     public function save(ProfilePage $page, $field, $value)
     {
-        $orig =& $page->orig[$field];
+        $original =& $page->orig[$field];
 
-        // Remove old ones
-        foreach ($orig as $id=>&$val) {
-            if (!isset($value[$id]) || $val['grade'] != $value[$id]['grade']) {
-                if ($val['valid']) {
-                    XDB::execute("DELETE FROM  profile_medals
-                                        WHERE  pid = {?} AND mid = {?}",
-                                 $page->pid(), $id);
+        $i = $j = 0;
+        $total_original = count($original);
+        $total_value = count($value);
+
+        while ($i < $total_original || $j < $total_value) {
+            if (isset($value[$j]) && (!isset($original[$i]) || self::compareMedals($original[$i], $value[$j]))) {
+                $req = new MedalReq(S::user(), $page->profile, $value[$j]['id'], $value[$j]['grade']);
+                $req->submit();
+                sleep(1);
+                ++$j;
+            } elseif (isset($original[$i]) && (!isset($value[$j]) || self::compareMedals($value[$j], $original[$i]))) {
+                if ($original[$i]['valid']) {
+                    XDB::execute('DELETE FROM  profile_medals
+                                        WHERE  pid = {?} AND mid = {?} AND gid = {?}',
+                                 $page->pid(), $original[$i]['id'], $original[$i]['grade']);
                 } else {
-                    $req = MedalReq::get_request($page->pid(), $id);
+                    $req = MedalReq::get_request($page->pid(), $original[$i]['id'], $original[$i]['grade']);
                     if ($req) {
                         $req->clean();
                     }
                 }
-            }
-        }
-
-        // Add new ones
-        foreach ($value as $id=>&$val) {
-            if (!isset($orig[$id]) || $orig[$id]['grade'] != $val['grade']) {
-                $req = new MedalReq(S::user(), $page->profile, $id, $val['grade']);
-                $req->submit();
-                sleep(1);
+                ++$i;
+            } else {
+                ++$i;
+                ++$j;
             }
         }
     }

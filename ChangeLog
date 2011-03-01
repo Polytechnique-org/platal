@@ -9,6 +9,7 @@ Bug/Wish:
 
     * Profile:
         - #1324,1352: Adds jobs to vcards                                  -JAC
+        - #1380: Allows multiple entries for some medals                   -JAC
         - #1389: Do not require validation for private names modifications -JAC
         - #1401: Main addresses are displayed before secondary addresses   -JAC
 
