@@ -1,8 +1,8 @@
+DROP TABLE IF EXISTS email_redirect_account;
+DROP TABLE IF EXISTS email_redirect_other;
 DROP TABLE IF EXISTS email_source_account;
 DROP TABLE IF EXISTS email_source_other;
 DROP TABLE IF EXISTS homonyms_list;
-DROP TABLE IF EXISTS email_redirect_account;
-DROP TABLE IF EXISTS email_redirect_other;
 DROP TABLE IF EXISTS email_virtual;
 DROP TABLE IF EXISTS email_virtual_domains;
 
@@ -33,11 +33,12 @@ CREATE TABLE email_source_account (
 CREATE TABLE email_source_other (
   email VARCHAR(255) NOT NULL,
   domain SMALLINT(3) UNSIGNED NOT NULL DEFAULT 1,
-  hrmid VARCHAR(255) NOT NULL,
+  hrmid VARCHAR(255) NOT NULL DEFAULT '',
   type ENUM('homonym', 'ax', 'honeypot'),
   expire DATE DEFAULT NULL,
   PRIMARY KEY (email, domain),
   KEY (domain),
+  KEY(hrmid),
   FOREIGN KEY (domain) REFERENCES email_virtual_domains (id) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB, CHARSET=utf8;
 
@@ -74,7 +75,8 @@ CREATE TABLE email_redirect_other (
   action ENUM('default', 'drop_spams', 'let_spams', 'tag_and_drop_spams', 'tag_spams', 'imap_and_bounce', 'homonym') NOT NULL DEFAULT 'default',
   PRIMARY KEY (hrmid, redirect),
   KEY (hrmid),
-  KEY (redirect)
+  KEY (redirect),
+  FOREIGN KEY (hrmid) REFERENCES email_source_other (hrmid) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB, CHARSET=utf8;
 
 CREATE TABLE email_virtual (
