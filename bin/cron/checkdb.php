@@ -146,7 +146,73 @@ check("SELECT  e.email AS homonym, f.email AS forlife, e.expire
      ORDER BY  homonym, forlife",
       "Donne la liste des homonymes qui ont un alias égal à leur loginbis depuis plus d'un mois, il est temps de supprimer leur alias.");
 
+// Check foreign keys manually when not possible because of local key beeing a primary key, and thus can not be null.
+check("SELECT  a.*
+         FROM  profile_addresses AS a
+        WHERE  a.type = 'home' AND NOT EXISTS (SELECT  *
+                                                 FROM  profiles AS p
+                                                WHERE  a.pid = p.pid)",
+      "Adresses de type 'home' reliées à un profil inexsitant.");
+check("SELECT  a.*
+         FROM  profile_addresses AS a
+        WHERE  a.type = 'job' AND NOT EXISTS (SELECT  *
+                                                FROM  profile_job AS j
+                                               WHERE  a.pid = j.pid AND a.id = j.id)",
+      "Adresses de type 'job' reliées à un emploi inexsitant.");
+check("SELECT  a.*
+         FROM  profile_addresses AS a
+        WHERE  a.type = 'hq' AND NOT EXISTS (SELECT  *
+                                               FROM  profile_job_enum AS je
+                                              WHERE  a.jobid = je.id)",
+      "Adresses de type 'hq' reliées à une entreprise inexsitante.");
+check("SELECT  a.*
+         FROM  profile_addresses AS a
+        WHERE  a.type = 'group' AND NOT EXISTS (SELECT  *
+                                                  FROM  groups AS g
+                                                 WHERE  a.groupid = g.id)",
+      "Adresses de type 'group' reliées à un groupe inexsitant.");
+
+check("SELECT  m.*
+         FROM  profile_medals AS m
+        WHERE  m.gid != 0 AND NOT EXISTS (SELECT  *
+                                            FROM  profile_medal_grade_enum AS mg
+                                           WHERE  m.mid = mg.mid AND m.gid = mg.gid)",
+      "Médailles avec grade sans correspondance dans la liste des grades.");
+
+check("SELECT  p.*
+         FROM  profile_phones AS p
+        WHERE  p.link_type = 'address' AND NOT EXISTS (SELECT  *
+                                                         FROM  profile_addresses AS a
+                                                        WHERE  p.pid = a.pid AND p.link_id = a.id)",
+      "Téléphones de type 'address' reliés à une adresses inexistante.");
+check("SELECT  p.*
+         FROM  profile_phones AS p
+        WHERE  p.link_type = 'pro' AND NOT EXISTS (SELECT  *
+                                                     FROM  profile_job AS j
+                                                    WHERE  p.pid = j.pid AND p.link_id = j.id)",
+      "Téléphones de type 'pro' reliés à un emploi inexistant.");
+check("SELECT  p.*
+         FROM  profile_phones AS p
+        WHERE  p.link_type = 'user' AND NOT EXISTS (SELECT  *
+                                                      FROM  profiles AS pf
+                                                     WHERE  p.pid = pf.pid)",
+      "Téléphones de type 'user' reliés à un profil inexistant.");
+check("SELECT  p.*
+         FROM  profile_phones AS p
+        WHERE  p.link_type = 'hq' AND NOT EXISTS (SELECT  *
+                                                    FROM  profile_job_enum AS je
+                                                   WHERE  p.link_id = je.id)",
+      "Téléphones de type 'hq' reliés à une entreprise inexistante.");
+check("SELECT  p.*
+         FROM  profile_phones AS p
+        WHERE  p.link_type = 'group' AND NOT EXISTS (SELECT  *
+                                                       FROM  groups AS g
+                                                      WHERE  p.link_id = g.id)",
+      "Téléphones de type 'group' reliés à un groupe inexistant.");
+
 // Counts empty profile fields that should never be empty.
+infoCountEmpty('profile_addresses', 'type');
+infoCountEmpty('profile_phones', 'link_type');
 infoCountEmpty('profile_addresses', 'text');
 infoCountEmpty('profile_addresses', 'postalText');
 infoCountEmpty('profile_education', 'eduid');
