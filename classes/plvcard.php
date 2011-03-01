@@ -702,9 +702,11 @@ class PlVCardEntry
         if (!is_null($role)) {
             $this->addInGroup($group, 'ROLE', $role);
         }
-        $field =& $this->addInGroup($group, 'ADR',
-                                    new ADR_Field($postBox, $extra, $street, $city,
-                                                  $region, $postCode, $country));
+        if (!is_null($street)) {
+            $field =& $this->addInGroup($group, 'ADR',
+                                        new ADR_Field($postBox, $extra, $street, $city,
+                                                      $region, $postCode, $country));
+        }
         $field->TYPE = new PlFlagset();
         $field->TYPE->addFlag('work');
         return $group;
