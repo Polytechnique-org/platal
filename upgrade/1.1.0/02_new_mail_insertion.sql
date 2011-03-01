@@ -133,7 +133,7 @@ INSERT INTO  email_virtual (email, domain, redirect, type)
        FROM  virtual               AS v
  INNER JOIN  email_virtual_domains AS d  ON (SUBSTRING_INDEX(v.alias, '@', -1) = d.name AND d.id = d.aliasing)
   LEFT JOIN  virtual_redirect      AS vr ON (vr.vid = v.vid)
-      WHERE  v.alias NOT LIKE '%@melix.net' AND vr.vid IS NOT NULL AND v.alias != '@melix.org' AND v.type != 'dom';
+      WHERE  v.alias NOT LIKE '%@melix.net' AND vr.vid IS NOT NULL AND v.type != 'dom';
 
 INSERT INTO  email_virtual (email, type, domain, redirect)
      SELECT  alias, 'list', @p_domain_id,
