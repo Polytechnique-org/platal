@@ -7,6 +7,9 @@ Bug/Wish:
         - #1399: Displays all similar entreprises only on demand           -JAC
         - #1403: Displays grade if any in medal validation process         -JAC
 
+    * Payments:
+        - #1398: Creates csv for payments                                  -JAC
+
     * Profile:
         - #1324,1352: Adds jobs to vcards                                  -JAC
         - #1380: Allows multiple entries for some medals                   -JAC
