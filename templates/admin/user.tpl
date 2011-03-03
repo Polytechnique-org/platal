@@ -381,7 +381,7 @@ $(function() {
   {xsrf_token_field}
   <table class="bicol" cellpadding="2" cellspacing="0">
     <tr>
-      <th colspan="4">
+      <th colspan="5">
         Redirections
       </th>
     </tr>
@@ -414,6 +414,9 @@ $(function() {
         {if $mail->email == 'googleapps'}</a>{/if}
         {if $mail->broken}<em> (en panne)</em></span>{/if}
       </td>
+      <td>
+        {if $mail->type != 'imap'}<span class="smaller">(niveau {$mail->filter_level} : {$mail->action})</span>{/if}
+      </td>
       <td class="action">
         {if $mail->is_removable()}
         <a href="javascript:del_fwd('{$mail->email}')">{icon name=cross}</a>
@@ -422,7 +425,7 @@ $(function() {
     </tr>
     {if $mail->panne && $mail->panne neq "0000-00-00"}
     <tr class="{$class}">
-      <td colspan="3" class="smaller" style="color: #f00">
+      <td colspan="4" class="smaller" style="color: #f00">
         {icon name=error title="Panne"}
         Panne de {$mail->display_email} le {$mail->panne|date_format}
         {if $mail->panne neq $mail->last}confirmée le {$mail->last|date_format}{/if}
@@ -438,7 +441,7 @@ $(function() {
       <td class="titre" colspan="2">
         Ajouter une adresse
       </td>
-      <td>
+      <td colspan="2">
         <input type="text" name="email" size="29" maxlength="255" value="" />
       </td>
       <td class="action">
@@ -451,7 +454,7 @@ $(function() {
       </td>
     </tr>
     <tr class="{$class}">
-      <td colspan="4" class="center">
+      <td colspan="5" class="center">
         {if $actives}
         <input type="submit" name="disable_fwd" value="Désactiver la redirection des emails" />
         {/if}

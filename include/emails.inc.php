@@ -296,7 +296,7 @@ function ids_from_mails(array $emails)
 // The Bogo class represents a spam filtering level in plat/al architecture.
 class Bogo
 {
-    private static $states = array(
+    public static $states = array(
         0 => 'default',
         1 => 'let_spams',
         2 => 'tag_spams',
@@ -393,6 +393,7 @@ class Email
     public $display_email;
     public $domain;
     public $action;
+    public $filter_level;
 
     // Redirection status properties.
     public $active;
@@ -426,6 +427,7 @@ class Email
             $this->$status = ($status == $row['flags']);
         }
         $this->sufficient = ($this->type == 'smtp' || $this->type == 'googleapps');
+        $this->filter_level = ($this->type == 'imap') ? null : array_search($this->action, Bogo::$states);
         $this->user = &$user;
     }
 
