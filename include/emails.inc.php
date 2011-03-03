@@ -296,10 +296,19 @@ function ids_from_mails(array $emails)
 // The Bogo class represents a spam filtering level in plat/al architecture.
 class Bogo
 {
-    private static $states = array('let_spams', 'tag_spams', 'tag_and_drop_spams', 'drop_spams');
+    private static $states = array(
+        0 => 'default',
+        1 => 'let_spams',
+        2 => 'tag_spams',
+        3 => 'tag_and_drop_spams',
+        4 => 'drop_spams'
+    );
 
     private $user;
-    private $state;
+    public $state;
+    public $single_state;
+    public $redirections;
+    public $single_redirection;
 
     public function __construct(User $user)
     {
@@ -308,28 +317,51 @@ class Bogo
         }
 
         $this->user = &$user;
-        $res = XDB::query('SELECT  action
-                             FROM  email_redirect_account
-                            WHERE  uid = {?} AND (type = \'smtp\' OR type = \'googleapps\')',
-                          $user->id());
-        if ($res->numRows() == 0) {
+        $res = XDB::fetchOneAssoc('SELECT  COUNT(DISTINCT(action)) AS action_count, COUNT(redirect) AS redirect_count, action
+                                     FROM  email_redirect_account
+                                    WHERE  uid = {?} AND (type = \'smtp\' OR type = \'googleapps\') AND flags = \'active\'',
+                                  $user->id());
+        if ($res['redirect_count'] == 0) {
             return;
         }
-        $this->state = $res->fetchOneCell();
+
+        $this->single_redirection = ($res['redirect_count'] == 1);
+        $this->redirections = XDB::fetchAllAssoc('SELECT  IF(type = \'googleapps\', type, redirect) AS redirect, type, action
+                                                    FROM  email_redirect_account
+                                                   WHERE  uid = {?} AND (type = \'smtp\' OR type = \'googleapps\')
+                                                ORDER BY  type, redirect',
+                                                 $user->id());
+
+        foreach ($this->redirections AS &$redirection) {
+            $redirection['filter'] = array_search($redirection['action'], self::$states);
+        }
+        if ($res['action_count'] == 1) {
+            $this->state = array_search($res['action'], self::$states);
+            $this->single_state = true;
+        } else {
+            $this->single_state = $this->state = false;
+        }
     }
 
-    public function change($state)
+    public function changeAll($state)
     {
-        $this->state = is_int($state) ? self::$states[$state] : $state;
+        Platal::assert($state >= 0 && $state < count(self::$states), 'Unknown antispam level.');
+
+        $this->state = $state;
         XDB::execute('UPDATE  email_redirect_account
                          SET  action = {?}
                        WHERE  uid = {?} AND (type = \'smtp\' OR type = \'googleapps\')',
-                     $this->state, $this->user->id());
+                     self::$states[$this->state], $this->user->id());
     }
 
-    public function level()
+    public function change($redirection, $state)
     {
-        return array_search($this->state, self::$states);
+        Platal::assert($state >= 0 && $state < count(self::$states), 'Unknown antispam level.');
+
+        XDB::execute('UPDATE  email_redirect_account
+                         SET  action = {?}
+                       WHERE  uid = {?} AND (type = {?} OR redirect = {?})',
+                     self::$states[$state], $this->user->id(), $redirection, $redirection);
     }
 }
 

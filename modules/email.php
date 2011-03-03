@@ -298,7 +298,7 @@ class EmailModule extends PLModule
         fill_email_combobox($page);
     }
 
-    function handler_antispam($page, $filter_status = null)
+    function handler_antispam($page, $filter_status = null, $redirection = null)
     {
         require_once 'emails.inc.php';
         $wp = new PlWikiPage('Xorg.Antispam');
@@ -308,10 +308,17 @@ class EmailModule extends PLModule
 
         $user = S::user();
         $bogo = new Bogo($user);
-        if (isset($filter_status)) {
-            $bogo->change($filter_status + 0);
+        if (!is_null($filter_status)) {
+            if (is_null($redirection)) {
+                $bogo->changeAll($filter_status);
+            } else {
+                $bogo->change($redirection, $filter_status);
+            }
         }
-        $page->assign('filter', $bogo->level());
+        $page->assign('filter', $bogo->state);
+        $page->assign('single_state', $bogo->single_state);
+        $page->assign('single_redirection', $bogo->single_redirection);
+        $page->assign('redirections', $bogo->redirections);
     }
 
     function handler_submit($page)

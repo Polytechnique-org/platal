@@ -7,6 +7,9 @@ Bug/Wish:
         - #1399: Displays all similar entreprises only on demand           -JAC
         - #1403: Displays grade if any in medal validation process         -JAC
 
+    * Emails:
+        - Allows antispam level choice for each redirection                -JAC
+
     * Payments:
         - #1398: Creates csv for payments                                  -JAC
 
