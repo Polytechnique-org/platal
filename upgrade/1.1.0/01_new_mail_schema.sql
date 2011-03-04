@@ -19,7 +19,7 @@ CREATE TABLE email_source_account (
   email VARCHAR(255) NOT NULL,
   domain SMALLINT(3) UNSIGNED NOT NULL DEFAULT 1,
   uid INT(11) UNSIGNED NOT NULL,
-  type ENUM('forlife', 'alias') NOT NULL DEFAULT 'forlife',
+  type ENUM('forlife', 'alias', 'alias_aux') NOT NULL DEFAULT 'forlife',
   flags SET('bestalias', 'usage', 'marital') NOT NULL DEFAULT '',
   expire DATE DEFAULT NULL,
   PRIMARY KEY (email, domain),

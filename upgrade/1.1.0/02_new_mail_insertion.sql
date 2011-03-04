@@ -46,7 +46,7 @@ INSERT INTO  email_source_account (uid, domain, email, type, flags, expire)
        FROM  aliases
       WHERE  type = 'a_vie' OR type = 'alias';
 INSERT INTO  email_source_account (uid, domain, email, type)
-     SELECT  a.uid, @m_domain_id, SUBSTRING_INDEX(v.alias, '@', 1), 'alias'
+     SELECT  a.uid, @m_domain_id, SUBSTRING_INDEX(v.alias, '@', 1), 'alias_aux'
        FROM  virtual          AS v
   LEFT JOIN  virtual_redirect AS vr ON (v.vid = vr.vid)
   LEFT JOIN  accounts         AS a  ON (a.hruid = LEFT(vr.redirect, LOCATE('@', vr.redirect) - 1))

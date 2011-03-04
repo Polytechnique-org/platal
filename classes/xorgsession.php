@@ -145,10 +145,9 @@ class XorgSession extends PlSession
             $uname = Post::v('username');
             if (Post::s('domain') == "alias") {
                 $login = XDB::fetchOneCell('SELECT  uid
-                                              FROM  email_source_account  AS e
-                                        INNER JOIN  email_virtual_domains AS d ON (e.domain = d.id)
-                                             WHERE  e.email = {?} AND d.name = {?}',
-                                           $uname, Platal::globals()->mail->alias_dom);
+                                              FROM  email_source_account
+                                             WHERE  email = {?} AND type = \'alias_aux\'',
+                                           $uname);
                 $loginType = 'uid';
             } else if (Post::s('domain') == "ax") {
                 $login = $uname;

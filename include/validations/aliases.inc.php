@@ -79,8 +79,6 @@ class AliasReq extends Validate
     // function commit() {{{2
     public function commit()
     {
-        global $globals;
-
         if ($this->user->hasProfile()) {
             XDB::execute('UPDATE  profiles
                              SET  alias_pub = {?}
@@ -89,17 +87,16 @@ class AliasReq extends Validate
         }
 
         if ($this->old) {
-            $success = XDB::execute('UPDATE  email_source_account AS s
-                                 INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
-                                        SET  s.email = {?}
-                                      WHERE  s.uid = {?} AND d.name = {?}',
-                                    $this->alias, $this->user->id(), $globals->mail->alias_dom);
+            $success = XDB::execute('UPDATE  email_source_account
+                                        SET  email = {?}
+                                      WHERE  uid = {?} AND type = \'alias_aux\'',
+                                    $this->alias, $this->user->id());
         } else {
             $success = XDB::execute('INSERT INTO  email_source_account (email, uid, domain, type, flags)
-                                          SELECT  {?}, {?}, id, \'alias\', \'\'
+                                          SELECT  {?}, {?}, id, \'alias_aux\', \'\'
                                             FROM  email_virtual_domains
                                            WHERE  name = {?}',
-                                     $this->alias, $this->user->id(), $globals->mail->alias_dom);
+                                     $this->alias, $this->user->id(), Platal::globals()->mail->alias_dom);
         }
 
         return $success;

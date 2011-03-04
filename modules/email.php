@@ -82,19 +82,18 @@ class EmailModule extends PLModule
         $aliases = XDB::iterator("SELECT  CONCAT(s.email, '@', d.name) AS email, (s.type = 'forlife') AS forlife,
                                           (s.email REGEXP '\\\\.[0-9]{2}$') AS hundred_year,
                                           FIND_IN_SET('bestalias', s.flags) AS bestalias, s.expire,
-                                          (d.name = {?}) AS alias
+                                          (s.type = 'alias_aux') AS alias
                                     FROM  email_source_account  AS s
                               INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
                                    WHERE  s.uid = {?}
                                 ORDER BY  !alias, s.email",
-                                 $globals->mail->alias_dom, $user->id());
+                                 $user->id());
         $page->assign('aliases', $aliases);
 
-        $alias = XDB::fetchOneCell('SELECT  COUNT(s.email)
-                                      FROM  email_source_account  AS s
-                                INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
-                                     WHERE  s.uid = {?} AND d.name = {?}',
-                                   $user->id(), $globals->mail->alias_dom);
+        $alias = XDB::fetchOneCell('SELECT  COUNT(email)
+                                      FROM  email_source_account
+                                     WHERE  uid = {?} AND type = \'alias_aux\'',
+                                   $user->id());
         $page->assign('alias', $alias);
 
 
@@ -120,22 +119,20 @@ class EmailModule extends PLModule
         if ($action == 'delete') {
             S::assert_xsrf_token();
 
-            XDB::execute('DELETE  s
-                            FROM  email_source_account  AS s
-                      INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
-                           WHERE  s.uid = {?} AND d.name = {?}',
-                         $user->id(), $globals->mail->alias_dom);
+            XDB::execute('DELETE FROM  email_source_account
+                                WHERE  uid = {?} AND type = \'alias_aux\'',
+                         $user->id());
 
             require_once 'emails.inc.php';
             fix_bestalias($user);
         }
 
-        // Fetch existing @alias_dom aliases.
+        // Fetch existing auxiliary aliases.
         list($alias, $old_alias) = XDB::fetchOneRow('SELECT  CONCAT(s.email, \'@\', d.name), s.email
                                                        FROM  email_source_account  AS s
                                                  INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
-                                                      WHERE  s.uid = {?} AND d.name = {?}',
-                                                    $user->id(), $globals->mail->alias_dom);
+                                                      WHERE  s.uid = {?} AND s.type = \'alias_aux\'',
+                                                    $user->id());
         $visibility = $user->hasProfile() && ($user->profile(true)->alias_pub == 'public');
         $page->assign('current', $alias);
         $page->assign('user', $user);
@@ -164,11 +161,10 @@ class EmailModule extends PLModule
                 return;
             } else {
                 // Checks if the alias has already been given.
-                $res = XDB::query('SELECT  COUNT(s.email)
-                                     FROM  email_source_account  AS s
-                               INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
-                                    WHERE  s.email = {?} AND d.name = {?}',
-                                  $new_alias, $globals->mail->alias_dom);
+                $res = XDB::query('SELECT  COUNT(email)
+                                     FROM  email_source_account
+                                    WHERE  email = {?} AND type = \'alias_aux\'',
+                                  $new_alias);
                 if ($res->fetchOneCell() > 0) {
                     $page->trigError("L'alias $new_alias a déja été attribué. Tu ne peux donc pas l'obtenir.");
                     return;
@@ -284,8 +280,8 @@ class EmailModule extends PLModule
                          INNER JOIN  email_virtual_domains AS m ON (s.domain = m.id)
                          INNER JOIN  email_virtual_domains AS d ON (m.id = d.aliasing)
                               WHERE  s.uid = {?}
-                           ORDER BY  NOT (m.name = {?}), s.email, d.name',
-                            $user->id(), $globals->mail->alias_dom);
+                           ORDER BY  NOT(s.type = \'alias_aux\'), s.email, d.name',
+                            $user->id());
         $page->assign('alias', $alias->fetchAllAssoc());
 
         $page->assign('emails', $redirect->emails);

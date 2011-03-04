@@ -338,7 +338,7 @@ class User extends PlUser
                                  $this->id(), $profile->id());
     }
 
-    /** Fetch existing @alias_dom alias.
+    /** Fetch existing auxiliary alias.
      */
     public function emailAlias()
     {
@@ -349,7 +349,7 @@ class User extends PlUser
         return null;
     }
 
-    /** Fetch existing @alias_dom aliases.
+    /** Fetch existing auxiliary aliases.
      */
     public function emailAliases()
     {
@@ -357,9 +357,9 @@ class User extends PlUser
                                    FROM  email_source_account  AS s
                              INNER JOIN  email_virtual_domains AS m ON (s.domain = m.id)
                              INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
-                                  WHERE  s.uid = {?} AND m.name = {?}
+                                  WHERE  s.uid = {?} AND s.type = \'alias_aux\'
                                ORDER BY  d.name',
-                                $this->id(), Platal::globals()->mail->alias_dom);
+                                $this->id());
     }
 
     /** Get all group aliases the user belongs to.

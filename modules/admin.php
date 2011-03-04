@@ -622,7 +622,7 @@ class AdminModule extends PLModule
                 }
             } elseif ($domain == $globals->mail->domain || $domain == $globals->mail->domain2) {
                 XDB::execute('INSERT INTO  email_source_account (email, uid, domain, type, flags)
-                                   SELECT  {?}, {?}, id, \'alias\', \'\'
+                                   SELECT  {?}, {?}, id, \'alias_aux\', \'\'
                                      FROM  email_virtual_domains
                                     WHERE  name = {?}',
                               $alias, $user->id(), $globals->mail->alias_dom);
@@ -709,12 +709,12 @@ class AdminModule extends PLModule
         $aliases = XDB::iterator("SELECT  CONCAT(s.email, '@', d.name) AS email, (s.type = 'forlife') AS forlife,
                                           (s.email REGEXP '\\\\.[0-9]{2}$') AS hundred_year,
                                           FIND_IN_SET('bestalias', s.flags) AS bestalias, s.expire,
-                                          (d.name = {?}) AS alias
+                                          (s.type = 'alias_aux') AS alias
                                     FROM  email_source_account  AS s
                               INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
                                    WHERE  s.uid = {?}
                                 ORDER BY  !alias, s.email",
-                                 $globals->mail->alias_dom, $user->id());
+                                 $user->id());
         $page->assign('aliases', $aliases);
         $page->assign('account_types', XDB::iterator('SELECT * FROM account_types ORDER BY type'));
         $page->assign('skins', XDB::iterator('SELECT id, name FROM skins ORDER BY name'));

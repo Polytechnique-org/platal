@@ -21,8 +21,6 @@
 
 function smarty_insert_getUsername()
 {
-    global $globals;
-
     $id = Cookie::i('uid', -1);
     $id = S::v('uid', $id);
 
@@ -32,16 +30,14 @@ function smarty_insert_getUsername()
 
     if (Cookie::v('domain', 'login') != 'alias') {
         return XDB::fetchOneCell('SELECT  email
-                                    FROM  email_source_account  AS e
-                              INNER JOIN  email_virtual_domains AS d ON (e.domain = d.id)
-                                   WHERE  e.uid = {?} AND d.name = {?} AND FIND_IN_SET(\'bestalias\', e.flags)',
-                                 $id, $globals->mail->domain);
+                                    FROM  email_source_account
+                                   WHERE  uid = {?} AND type != \'alias_aux\' AND FIND_IN_SET(\'bestalias\', flags)',
+                                 $id);
     } else {
         return XDB::fetchOneCell('SELECT  email
-                                    FROM  email_source_account  AS e
-                              INNER JOIN  email_virtual_domains AS d ON (e.domain = d.id)
-                                   WHERE  e.uid = {?} AND d.name = {?}',
-                                 $id, $globals->mail->alias_dom);
+                                    FROM  email_source_account
+                                   WHERE  uid = {?} AND type = \'alias_aux\'',
+                                 $id);
     }
 
      return '';
