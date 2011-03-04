@@ -208,4 +208,8 @@ INSERT INTO  email_virtual (domain, email, redirect, type)
 -- Drop renamed list
 DELETE FROM email_virtual WHERE email LIKE 'tech-email%';
 
+-- Deletes erroneous domains
+DELETE FROM  email_virtual_domains
+      WHERE  name IN ('fanfarix.polytechnique.net', 'asd', 'x-russie', 'formation', 'groupetest', 'x-sursaut');
+
 -- vim:set syntax=mysql:
