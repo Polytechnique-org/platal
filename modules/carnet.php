@@ -373,7 +373,7 @@ class CarnetModule extends PLModule
             'timestamp' => $date,
             'date' => date('Ymd', $date),
             'tomorrow' => date('Ymd', $tomorrow),
-            'hruid' => $profile->hrid(),
+            'email' => $profile->owner()->bestEmail(),
             'summary' => 'Anniversaire de ' . $profile->fullName(true)
         );
     }

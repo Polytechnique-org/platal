@@ -604,7 +604,7 @@ class AdminModule extends PLModule
             if (strpos($alias, '@') !== false) {
                 list($alias, $domain) = explode('@', $alias);
             } else {
-                $domain = $globals->mail->domain;
+                $domain = $user->mainEmailDomain();
             }
 
             // Checks for alias' user validity.
@@ -620,15 +620,15 @@ class AdminModule extends PLModule
                 } else {
                     $page->trigError("Impossible d'ajouter l'alias '$alias@$domain', il est probablement déjà attribué.");
                 }
-            } elseif ($domain == $globals->mail->domain || $domain == $globals->mail->domain2) {
+            } elseif ($domain == $user->mainEmailDomain()) {
                 XDB::execute('INSERT INTO  email_source_account (email, uid, domain, type, flags)
-                                   SELECT  {?}, {?}, id, \'alias_aux\', \'\'
+                                   SELECT  {?}, {?}, id, \'alias\', \'\'
                                      FROM  email_virtual_domains
                                     WHERE  name = {?}',
-                              $alias, $user->id(), $globals->mail->alias_dom);
+                              $alias, $user->id(), $domain);
                 $page->trigSuccess("Nouvel alias '$alias' ajouté");
             } else {
-                $page->trigError("Le domaine '$domain' n'est pas valide");
+                $page->trigError("Le domaine '$domain' n'est pas valide pour cet utilisateur.");
             }
         } else if (!Post::blank('del_alias')) {
             $delete_alias = Post::t('del_alias');
@@ -637,7 +637,7 @@ class AdminModule extends PLModule
                             FROM  email_source_account  AS s
                       INNER JOIN  email_virtual_domains AS m ON (s.domain = m.id)
                       INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
-                           WHERE  s.email = {?} AND s.uid = {?} AND d.name = {?} AND type = \'alias\'',
+                           WHERE  s.email = {?} AND s.uid = {?} AND d.name = {?} AND type != \'forlife\'',
                           $email, $user->id(), $domain);
             XDB::execute('UPDATE  email_redirect_account AS r
                       INNER JOIN  email_virtual_domains  AS m ON (m.name = {?})
@@ -938,7 +938,6 @@ class AdminModule extends PLModule
 
     function handler_homonyms($page, $op = 'list', $target = null)
     {
-        global $globals;
         $page->changeTpl('admin/homonymes.tpl');
         $page->setTitle('Administration - Homonymes');
         $this->load("homonyms.inc.php");
@@ -973,19 +972,15 @@ class AdminModule extends PLModule
                 case 'correct':
                     S::assert_xsrf_token();
 
-                    XDB::execute('DELETE  e
-                                    FROM  email_source_account  AS e
-                              INNER JOIN  email_virtual_domains AS d ON (e.domain = d.id)
-                                   WHERE  e.email = {?} AND d.name = {?}',
-                                 $loginbis, $globals->mail->domain);
+                    XDB::execute('DELETE FROM  email_source_account
+                                        WHERE  email = {?} AND type = \'alias\'',
+                                 $loginbis);
                     XDB::execute('INSERT INTO  email_source_other (hrmid, email, domain, type, expire)
-                                       SELECT  CONCAT(\'h.\', {?}, \'.\', {?}), {?}, id, \'homonym\', NOW()
+                                       SELECT  {?}, {?}, id, \'homonym\', NOW()
                                          FROM  email_virtual_domains
                                         WHERE  name = {?}',
-                                 $loginbis, $globals->mail->domain, $loginbis, $globals->mail->domain);
-                    XDB::execute('INSERT IGNORE INTO  homonyms_list (hrmid, uid)
-                                              VALUES  ({?}, {?})',
-                                 'h.' . $loginbis . '.' . $globals->mail->domain, $target);
+                                 'h.' . $loginbis . '.' . Platal::globals()->mail->domain,
+                                 $loginbis, $user->mainEmailDomain());
                     fix_bestalias($user);
                     send_robot_homonyme($user, $loginbis);
                     $op = 'list';
@@ -1000,10 +995,8 @@ class AdminModule extends PLModule
                                     FROM  email_source_other    AS o
                               INNER JOIN  homonyms_list         AS h ON (o.hrmid = h.hrmid)
                               INNER JOIN  email_source_account  AS f ON (h.uid = f.uid AND f.type = \'forlife\')
-                              INNER JOIN  email_virtual_domains AS d ON (f.domain = d.id)
-                                   WHERE  o.expire IS NOT NULL AND d.name = {?}
-                                ORDER BY  homonym, forlife',
-                                 $globals->mail->domain);
+                                   WHERE  o.expire IS NOT NULL
+                                ORDER BY  homonym, forlife');
             $homonyms = array();
             while ($item = $res->next()) {
                 $homonyms[$item['homonym']][] = $item;
@@ -1016,10 +1009,8 @@ class AdminModule extends PLModule
                               INNER JOIN  homonyms_list         AS l ON (e.uid = l.uid)
                               INNER JOIN  homonyms_list         AS h ON (l.hrmid = h.hrmid)
                               INNER JOIN  email_source_account  AS f ON (h.uid = f.uid AND f.type = \'forlife\')
-                              INNER JOIN  email_virtual_domains AS d ON (f.domain = d.id)
-                                   WHERE  e.expire IS NOT NULL AND d.name = {?}
-                                ORDER BY  homonym, forlife',
-                                 $globals->mail->domain);
+                                   WHERE  e.expire IS NOT NULL
+                                ORDER BY  homonym, forlife');
             $homonyms_to_fix = array();
             while ($item = $res->next()) {
                 $homonyms_to_fix[$item['homonym']][] = $item;

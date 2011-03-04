@@ -152,31 +152,29 @@ function createAliases($subState)
              . "<a href=\"mailto:support@{$globals->mail->domain}\">support@{$globals->mail->domain}</a>.";
     }
 
-    $count = XDB::numRows('SELECT  *
-                             FROM  email_source_account  AS s
-                       INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
-                            WHERE  s.email = {?} AND d.name = {?}',
-                          $emailXorg, $globals->mail->domain);
+    $count = XDB::numRows('SELECT  uid, expire
+                             FROM  email_source_account
+                            WHERE  email = {?} AND type != \'alias_aux\'',
+                          $emailXorg);
     if ($count) {
-        list($h_id, $h_type, $expire) = $res->fetchOneRow();
-        if ($h_type != 'homonyme' and empty($expire)) {
-            XDB::execute('UPDATE  email_source_account  AS e
-                      INNER JOIN  email_virtual_domains AS d ON (e.domain = d.id)
-                             SET  e.expire = ADDDATE(NOW(), INTERVAL 1 MONTH)
-                           WHERE  e.email = {?} AND d.name = {?}',
-                         $emailXorg, $globals->mail->domain);
+        list($h_id, $expire) = $res->fetchOneRow();
+        if (empty($expire)) {
+            XDB::execute('UPDATE  email_source_account
+                             SET  expire = ADDDATE(NOW(), INTERVAL 1 MONTH)
+                           WHERE  email = {?} AND type != \'alias_aux\'',
+                         $emailXorg);
             $hrmid = 'h.' . $emailXorg . '.' . $globals->mail->domain;
             XDB::execute('INSERT IGNORE INTO  homonyms_list (hrmid, uid)
                                       VALUES  ({?}, {?}), ({?}, {?})',
                          $hrmid, $h_id, $hrmid, $subState->i('uid'));
-            $als = XDB::fetchColumn('SELECT  *
-                                       FROM  email_source_account  AS s
-                                 INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
-                                      WHERE  s.uid = {?} AND d.name = {?} AND s.expire IS NULL',
-                                    $h_id, $globals->mail->domain);
+            $als = XDB::fetchColumn('SELECT  email
+                                       FROM  email_source_account
+                                      WHERE  uid = {?} AND type != \'alias_aux\' AND expire IS NULL',
+                                    $h_id);
 
+            $homonym = User::getSilentWithUID($h_id);
             $mailer = new PlMailer('register/lostalias.mail.tpl');
-            $mailer->addTo($emailXorg . '@' . $globals->mail->domain);
+            $mailer->addTo($homonym);
             $mailer->setSubject("Perte de ton alias $emailXorg dans un mois !");
             $mailer->assign('emailXorg', $emailXorg);
             $mailer->assign('als', join(', ', $als));
@@ -219,7 +217,7 @@ function finishRegistration($subState)
     $mymail->assign('to', $subState->s('email'));
     $mymail->assign('baseurl', $globals->baseurl);
     $mymail->assign('hash', $hash);
-    $mymail->assign('subject', $subState->s('bestalias') . '@' . $globals->mail->domain);
+    $mymail->assign('subject', ucfirst($globals->mail->domain) . ' : ' . $subState->s('bestalias'));
     $mymail->send();
 }
 

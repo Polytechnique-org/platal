@@ -315,8 +315,8 @@ class MarketingModule extends PLModule
             $market = new AnnuaireMarketing(null, true);
             $text = $market->getText(array(
                 'sexe'           => $user->isFemale(),
-                'forlife_email'  => $user->login() . '@' . $globals->mail->domain,
-                'forlife_email2' => $user->login() . '@' . $globals->mail->domain2
+                'forlife_email'  => $user->forlifeEmail(),
+                'forlife_email2' => $user->forlifeEmailAlternate()
             ));
             $text = str_replace('%%hash%%', '', $text);
             $text = str_replace('%%personal_notes%%', '<em id="personal_notes_display"></em>', $text);

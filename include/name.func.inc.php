@@ -247,7 +247,7 @@ function compare_basename($a, $b) {
     return name_to_basename($a) == name_to_basename($b);
 }
 
-function set_alias_names(&$sn_new, $sn_old, $pid, $uid, $update_new = false, $new_alias = null)
+function set_alias_names(&$sn_new, $sn_old, $pid, PlUser $user, $update_new = false, $new_alias = null)
 {
     $has_new = false;
     foreach ($sn_new as $typeid => $sn) {
@@ -298,18 +298,16 @@ function set_alias_names(&$sn_new, $sn_old, $pid, $uid, $update_new = false, $ne
         }
     }
     if ($update_new) {
-        XDB::execute('DELETE  s
-                        FROM  email_source_account  AS s
-                  INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
-                       WHERE  FIND_IN_SET(\'usage\', s.flags) AND s.uid = {?} AND d.name = {?}',
-                     $uid, Platal::globals()->mail->domain);
+        XDB::execute('DELETE FROM  email_source_account
+                            WHERE  FIND_IN_SET(\'usage\', flags) AND uid = {?} AND type = \'alias\'',
+                     $user->id());
     }
     if ($new_alias) {
         XDB::execute('INSERT INTO  email_source_account (email, uid, type, flags, domain)
                            SELECT  {?}, {?}, \'alias\', \'usage\', id
                              FROM  email_virtual_domains
                             WHERE  name = {?}',
-                     $new_alias, $uid, Platal::globals()->mail->domain);
+                     $new_alias, $user->id(), $user->mainEmailDomain());
     }
     Profile::rebuildSearchTokens($pid, false);
     return $has_new;

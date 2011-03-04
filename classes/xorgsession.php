@@ -81,11 +81,10 @@ class XorgSession extends PlSession
     {
         if ($login_type == 'alias') {
             $res = XDB::query('SELECT  a.uid, a.password
-                                 FROM  accounts              AS a
-                           INNER JOIN  email_source_account  AS e ON (e.uid = a.uid)
-                           INNER JOIN  email_virtual_domains AS d ON (e.domain = d.id)
-                                WHERE  e.email = {?} AND d.name = {?}',
-                              $login, Platal::globals()->mail->domain);
+                                 FROM  accounts             AS a
+                           INNER JOIN  email_source_account AS e ON (e.uid = a.uid)
+                                WHERE  e.email = {?}',
+                              $login);
         } else {
             $res = XDB::query('SELECT  uid, password
                                  FROM  accounts

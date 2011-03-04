@@ -26,11 +26,7 @@ class HomonymeReq extends Validate
     // {{{ properties
 
     public $loginbis;
-
     public $warning = true;
-
-    public $homonymes_hruid;
-
     public $rules = "Accepter, sauf cas particulier d'utilisateur dont l'homonymie est traité plus &hellip; manuellement.";
 
     // }}}
@@ -44,7 +40,6 @@ class HomonymeReq extends Validate
 
         $this->refuse = false;
         $this->loginbis = $_loginbis;
-        $this->homonymes_hruid = $_homonymes_hruid;
     }
 
     // }}}
@@ -68,10 +63,9 @@ class HomonymeReq extends Validate
 
     protected function _mail_subj()
     {
-        global $globals;
         return "[Polytechnique.org/Support] "
             . ($this->warning ? "Dans une semaine : suppression de l'alias " : "Mise en place du robot")
-            . " $loginbis@" . $globals->mail->domain;
+            . " $loginbis@" . $this->user->mainEmailDomain();
     }
 
     // }}}
@@ -79,16 +73,15 @@ class HomonymeReq extends Validate
 
     protected function _mail_body($isok)
     {
-        global $globals;
         return
 "
 Comme nous t'en avons informé par email il y a quelques temps,
 pour respecter nos engagements en terme d'adresses email devinables,
-tu te verras bientôt retirer l'alias ".$this->loginbis."@".$globals->mail->domain." pour
+tu te verras bientôt retirer l'alias " . $this->loginbis . "@" . $this->user->mainEmailDomain() . " pour
 ne garder que " . $this->user->forlifeEmail() . ".
 
-Toute personne qui écrira à ".$this->loginbis."@".$globals->mail->domain." recevra la
-réponse d'un robot qui l'informera que ".$this->loginbis."@".$globals->mail->domain."
+Toute personne qui écrira à " . $this->loginbis . "@" . $this->user->mainEmailDomain() . " recevra la
+réponse d'un robot qui l'informera que " . $this->loginbis . "@" . $this->user->mainEmailDomain() . "
 est ambigu pour des raisons d'homonymie et signalera ton email exact.";
     }
 
@@ -122,22 +115,17 @@ est ambigu pour des raisons d'homonymie et signalera ton email exact.";
     {
         Platal::load('admin', 'homonyms.inc.php');
         if (!$this->warning) {
-            global $globals;
             require_once 'emails.inc.php';
 
-            XDB::execute('DELETE  e
-                            FROM  email_source_account  AS e
-                      INNER JOIN  email_virtual_domains AS d ON (e.domain = d.id)
-                           WHERE  e.email = {?} AND d.name = {?}',
-                         $this->loginbis, $globals->mail->domain);
+            XDB::execute('DELETE FROM  email_source_account
+                                WHERE  email = {?} AND type = \'alias\'',
+                         $this->loginbis);
             XDB::execute('INSERT INTO  email_source_other (hrmid, email, domain, type, expire)
-                               SELECT  CONCAT(\'h.\', {?}, \'.\', {?}), {?}, id, \'homonym\', NOW()
+                               SELECT  {?}, {?}, id, \'homonym\', NOW()
                                  FROM  email_virtual_domains
                                 WHERE  name = {?}',
-                         $this->loginbis, $globals->mail->domain, $this->loginbis, $globals->mail->domain);
-            XDB::execute('INSERT IGNORE INTO  homonyms_list (hrmid, uid)
-                                      VALUES  ({?}, {?})',
-                         'h.' . $this->loginbis . '.' . $globals->mail->domain, $this->user->id());
+                         'h.' . $this->loginbis . '.' . Platal::globals()->mail->domain,
+                         $this->loginbis, $this->user->mainEmailDomain());
             fix_bestalias($this->user);
         }
 

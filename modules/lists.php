@@ -571,7 +571,7 @@ class ListsModule extends PLModule
 
     static public function no_login_callback($login)
     {
-        global $list_unregistered, $globals;
+        global $list_unregistered;
 
         $users = User::getPendingAccounts($login, true);
         if ($users && $users->total()) {
@@ -580,8 +580,8 @@ class ListsModule extends PLModule
             }
             $list_unregistered[$login] = $users;
         } else {
-            list($name, $dom) = @explode('@', $login);
-            if ($dom == $globals->mail->domain || $dom == $globals->mail->domain2) {
+            list($name, $domain) = @explode('@', $login);
+            if (User::isMainMailDomain($domain)) {
                 User::_default_user_callback($login);
             }
         }
@@ -668,8 +668,9 @@ class ListsModule extends PLModule
             S::assert_xsrf_token();
 
             if (strpos(Env::v('del_member'), '@') === false) {
-                $this->client->mass_unsubscribe(
-                    $liste, array(Env::v('del_member').'@'.$globals->mail->domain));
+                if ($del_member = User::getSilent(Env::t('del_member'))) {
+                    $this->client->mass_unsubscribe($liste, array($del_member->forlifeEmail()));
+                }
             } else {
                 $this->client->mass_unsubscribe($liste, array(Env::v('del_member')));
             }
@@ -693,7 +694,9 @@ class ListsModule extends PLModule
             S::assert_xsrf_token();
 
             if (strpos(Env::v('del_owner'), '@') === false) {
-                $this->client->del_owner($liste, Env::v('del_owner').'@'.$globals->mail->domain);
+                if ($del_owner = User::getSilent(Env::t('del_owner'))) {
+                    $this->client->mass_unsubscribe($liste, array($del_owner->forlifeEmail()));
+                }
             } else {
                 $this->client->del_owner($liste, Env::v('del_owner'));
             }

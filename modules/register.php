@@ -52,7 +52,7 @@ class RegisterModule extends PLModule
             $nameTypes = DirEnum::getOptions(DirEnum::NAMETYPES);
             $nameTypes = array_flip($nameTypes);
             $res = XDB::query("SELECT  a.uid, pd.promo, pnl.name AS lastname, pnf.name AS firstname, p.xorg_id AS xorgid,
-                                       p.birthdate_ref AS birthdateRef, FIND_IN_SET('watch', a.flags) AS watch, m.hash
+                                       p.birthdate_ref AS birthdateRef, FIND_IN_SET('watch', a.flags) AS watch, m.hash, a.type
                                  FROM  register_marketing AS m
                            INNER JOIN  accounts           AS a   ON (m.uid = a.uid)
                            INNER JOIN  account_profiles   AS ap  ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
@@ -65,6 +65,7 @@ class RegisterModule extends PLModule
 
             if ($res->numRows() == 1) {
                 $subState->merge($res->fetchOneRow());
+                $subState->set('main_mail_domain', User::$sub_mail_domains[$subState->v('type')]);
                 $subState->set('yearpromo', substr($subState->s('promo'), 1, 4));
 
                 XDB::execute('INSERT INTO  register_mstats (uid, sender, success)
@@ -305,6 +306,7 @@ class RegisterModule extends PLModule
              $birthdate, $lastname, $firstname, $promo, $sex, $birthdate_ref, $eduType) = $res->fetchOneRow();
         $isX = ($eduType == 'x');
         $yearpromo = substr($promo, 1, 4);
+        $mail_domain = User::$sub_mail_domains[$eduType];
 
         // Prepare the template for display.
         $page->changeTpl('register/end.tpl');
@@ -339,18 +341,18 @@ class RegisterModule extends PLModule
                            SELECT  {?}, {?}, \'forlife\', \'\', id
                              FROM  email_virtual_domains
                             WHERE  name = {?}',
-                     $forlife, $uid, $globals->mail->domain);
+                     $forlife, $uid, $mail_domain);
         XDB::execute('INSERT INTO  email_source_account (email, uid, type, flags, domain)
                            SELECT  {?}, {?}, \'alias\', \'bestalias\', id
                              FROM  email_virtual_domains
                             WHERE  name = {?}',
-                     $bestalias, $uid, $globals->mail->domain);
+                     $bestalias, $uid, $mail_domain);
         if ($emailXorg2) {
             XDB::execute('INSERT INTO  email_source_account (email, uid, type, flags, domain)
                                SELECT  {?}, {?}, \'alias\', \'\', id
                                  FROM  email_virtual_domains
                                 WHERE  name = {?}',
-                         $emailXorg2, $uid, $globals->mail->domain);
+                         $emailXorg2, $uid, $mail_domain);
         }
         XDB::commit();
 

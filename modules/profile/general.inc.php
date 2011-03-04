@@ -217,7 +217,7 @@ class ProfileSettingSearchNames implements ProfileSetting
                        INNER JOIN  profile_name_enum AS e ON (s.typeid = e.id)
                             WHERE  s.pid = {?} AND NOT FIND_IN_SET('not_displayed', e.flags)",
                      $page->pid());
-        $has_new = set_alias_names($this->search_names, $sn_old, $page->pid(), $page->owner->id());
+        $has_new = set_alias_names($this->search_names, $sn_old, $page->pid(), $page->owner);
 
         // Only requires validation if modification in public names
         if ($has_new) {

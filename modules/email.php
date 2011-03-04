@@ -103,6 +103,13 @@ class EmailModule extends PLModule
         // Display active redirections.
         $redirect = new Redirect($user);
         $page->assign('mails', $redirect->active_emails());
+
+        // User's mail domains.
+        $mail_domains = array($user->alternateEmailDomain());
+        $mail_domains[] = User::$sub_mail_domains['all'] . $globals->mail->domain;
+        $mail_domains[] = User::$sub_mail_domains['all'] . $globals->mail->domain2;
+        $page->assign('main_email_domain', $user->mainEmailDomain());
+        $page->assign('mail_domains', $mail_domains);
     }
 
     function handler_alias($page, $action = null, $value = null)
@@ -643,11 +650,8 @@ class EmailModule extends PLModule
             S::assert_xsrf_token();
 
             $email = Post::t('email');
-            list(, $domain) = explode('@', $email);
-            $domain = strtolower($domain);
 
-            if ($domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2
-                || $domain == $globals->mail->domain || $domain == $globals->mail->domain2) {
+            if (!User::isForeignEmailAddress($email)) {
                 $page->assign('neuneu', true);
             } else {
                 $user = mark_broken_email($email);
@@ -822,7 +826,7 @@ class EmailModule extends PLModule
                     if ($user = mark_broken_email($email, true)) {
                         if ($user['nb_mails'] > 0) {
                             $mail = new PlMailer('emails/broken.mail.tpl');
-                            $mail->addTo('"' . $user['full_name'] . '" <' . $user['alias'] . '@' . Platal::globals()->mail->domain . '>');
+                            $mail->addTo($user);
                             $mail->assign('user', $user);
                             $mail->assign('email', $email);
                             $mail->send();

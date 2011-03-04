@@ -40,6 +40,28 @@ INSERT INTO  email_virtual_domains (name, aliasing)
        FROM  email_virtual_domains
       WHERE  name = 'x-consult.polytechnique.org';
 
+INSERT INTO  email_virtual_domains (name, aliasing)
+     VALUES  ('alumni.polytechnique.org', @p_domain_id), ('alumni.m4x.org', @p_domain_id),
+             ('master.polytechnique.org', 1), ('doc.polytechnique.org', 1);
+SET @master_domain_id = 0;
+SET @doc_domain_id = 0;
+SELECT  @master_domain_id := id
+  FROM  email_virtual_domains
+ WHERE  name = 'master.polytechnique.org';
+SELECT  @doc_domain_id := id
+  FROM  email_virtual_domains
+ WHERE  name = 'doc.polytechnique.org';
+UPDATE  email_virtual_domains
+   SET  aliasing = @master_domain_id
+ WHERE  name = 'master.polytechnique.org';
+UPDATE  email_virtual_domains
+   SET  aliasing = @doc_domain_id
+ WHERE  name = 'doc.polytechnique.org';
+INSERT INTO  email_virtual_domains (name, aliasing)
+     VALUES  ('alumni.polytechnique.org', @master_domain_id), ('alumni.m4x.org', @master_domain_id),
+             ('alumni.polytechnique.org', @doc_domain_id), ('alumni.m4x.org', @doc_domain_id),
+             ('master.m4x.org', @master_domain_id), ('doc.m4x.org', @doc_domain_id);
+
 -- 2/ Feeds email_source_account
 INSERT INTO  email_source_account (uid, domain, email, type, flags, expire)
      SELECT  uid, @p_domain_id, alias, IF(type = 'a_vie', 'forlife', 'alias'), REPLACE(flags, 'epouse', 'marital'), expire

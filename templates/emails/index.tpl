@@ -44,8 +44,11 @@
     Tes adresses polytechniciennes sont&nbsp;:<br />
     <div>
       {iterate from=$aliases item=a}
-      <label><input type='radio' {if $a.bestalias}checked="checked"{/if} name='best' value='{$a.email}' />
-      <strong>{$a.email}</strong> et <strong>{if $a.alias}@{#globals.mail.alias_dom2#}{else}@{#globals.mail.domain2#}{/if}</strong></label>&nbsp;{if $a.forlife}(**){/if}{if $a.hundred_year}(*){/if}
+      <label>
+        <input type='radio' {if $a.bestalias}checked="checked"{/if} name='best' value='{$a.email}' />
+        <strong>{$a.email}</strong>{if $a.alias} et <strong>@{#globals.mail.alias_dom2#}</strong>{else}
+        {foreach from=$mail_domains item=domain} et <strong>@{$domain}</strong>{/foreach}{/if}
+      </label>&nbsp;{if $a.forlife}(**){/if}{if $a.hundred_year}(*){/if}
       {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
       {if $a.alias}<a href="emails/alias">(changer ou supprimer mon alias melix)</a>{/if}
       <br />
@@ -61,9 +64,9 @@
   <hr />
   <div>
     (M4X signifie <em>mail for X</em>, son intérêt est de te doter d'une adresse à vie
-    moins "voyante" que l'adresse @{#globals.mail.domain#}).
+    moins "voyante" que l'adresse {$main_email_domain}).
     {if !$alias}
-    Tu peux ouvrir en supplément une adresse synonyme de ton adresse @{#globals.mail.domain#},
+    Tu peux ouvrir en supplément une adresse synonyme de ton adresse @{$main_email_domain},
     sur les domaines @{#globals.mail.alias_dom#} et @{#globals.mail.alias_dom2#} (melix = Mél X).<br />
     <div class="center"><a href="emails/alias">Créer un alias melix</a></div>
     {/if}
@@ -79,12 +82,12 @@
 </p>
 <p class="smaller">
 {if $homonyme}
-Tu as un homonyme X donc tu ne peux pas profiter de l'alias {$homonyme}@{#globals.mail.domain#}. Si quelqu'un essaie
+Tu as un homonyme donc tu ne peux pas profiter de l'alias {$homonyme}@{$main_email_domain}. Si quelqu'un essaie
 d'envoyer un email à cette adresse par mégarde il recevra une réponse d'un robot lui expliquant l'ambiguité et lui
 proposant les adresses des différents homonymes.
 {else}
-Si tu venais à avoir un homonyme X, l'alias «prenom.nom»@{#globals.mail.domain#} sera désactivé. Si bien que
-ton homonyme et toi-même ne disposeraient plus que des adresses de la forme «prenom.nom.promo»@{#globals.mail.domain#}.
+Si tu venais à avoir un homonyme, l'alias «prenom.nom»@{$main_email_domain} sera désactivé. Si bien que
+ton homonyme et toi-même ne disposeraient plus que des adresses de la forme «prenom.nom.promo»@{$main_email_domain}.
 {/if}
 </p>
 

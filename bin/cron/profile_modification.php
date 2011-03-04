@@ -24,13 +24,12 @@ require_once 'connect.db.inc.php';
 require_once 'plmailer.php';
 global $globals;
 
-$res = XDB::iterator('SELECT  p.hrpid, pm.pid, a.full_name, pm.field, pm.oldText, pm.newText, p.sex, pd.yourself, s.email
+$res = XDB::iterator('SELECT  p.hrpid, pm.pid, a.full_name, pm.field, pm.oldText, pm.newText, p.sex, pd.yourself, ap.uid
                         FROM  profile_modifications AS pm
                   INNER JOIN  accounts              AS a  ON (pm.uid = a.uid)
                   INNER JOIN  profiles              AS p  ON (pm.pid = p.pid)
                   INNER JOIN  profile_display       AS pd ON (pm.pid = pd.pid)
                   INNER JOIN  account_profiles      AS ap ON (pm.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
-                  INNER JOIN  email_source_account  AS s  ON (a.uid = s.uid AND FIND_IN_SET(\'bestalias\', s.flags))
                        WHERE  pm.type = \'third_party\' AND pm.field != \'deathdate\'
                     ORDER BY  pm.pid, pm.field, pm.timestamp');
 
@@ -41,7 +40,7 @@ if ($res->total() > 0) {
     $pid = $values['pid'];
     $sex = ($values['sex'] == 'female') ? 1 : 0;
     $yourself = $values['yourself'];
-    $alias = $values['email'];
+    $user = User::getSilentWithUID($values['uid']);
     $hrpid = $values['hrpid'];
     $modifications = array();
     $modifications[] = array(
@@ -54,7 +53,7 @@ if ($res->total() > 0) {
     while ($values = $res->next()) {
         if ($values['pid'] != $pid) {
             $mailer = new PlMailer('profile/notification.mail.tpl');
-            $mailer->addTo($alias . '@' . $globals->mail->domain);
+            $mailer->addTo($user);
             $mailer->assign('modifications', $modifications);
             $mailer->assign('yourself', $yourself);
             $mailer->assign('hrpid', $hrpid);
@@ -66,7 +65,7 @@ if ($res->total() > 0) {
         $pid = $values['pid'];
         $sex = ($values['sex'] == 'female') ? 1 : 0;
         $yourself = $values['yourself'];
-        $alias = $values['alias'];
+        $user = User::getSilentWithUID($values['uid']);
         $hrpid = $values['hrpid'];
         $modifications[] = array(
             'full_name' => $values['full_name'],
@@ -76,7 +75,7 @@ if ($res->total() > 0) {
         );
     }
     $mailer = new PlMailer('profile/notification.mail.tpl');
-    $mailer->addTo($alias . '@' . $globals->mail->domain);
+    $mailer->addTo($user);
     $mailer->assign('modifications', $modifications);
     $mailer->assign('yourself', $yourself);
     $mailer->assign('hrpid', $hrpid);

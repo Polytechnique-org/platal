@@ -33,7 +33,7 @@ function send_warning_homonyme(PlUser $user, $loginbis) {
     $mymail = new PlMailer();
     $mymail->setFrom($FROM);
     $mymail->addCc($cc);
-    $mymail->setSubject("Dans 2 semaines, suppression de $loginbis@" . $globals->mail->domain);
+    $mymail->setSubject("Dans 2 semaines, suppression de $loginbis@" . $user->mainEmailDomain());
     $mymail->setTxtBody(Env::v('mailbody'));
     $mymail->sendTo($user);
 }
@@ -44,7 +44,7 @@ function send_robot_homonyme(PlUser $user, $loginbis) {
     $FROM = "\"Support Polytechnique.org\" <$cc>";
     $mymail = new PlMailer();
     $mymail->setFrom($FROM);
-    $mymail->setSubject("Mise en place du robot $loginbis@" . $globals->mail->domain);
+    $mymail->setSubject("Mise en place du robot $loginbis@" . $user->mainEmailDomain());
     $mymail->addCc($cc);
     $mymail->setTxtBody(Env::v('mailbody'));
     $mymail->sendTo($user);

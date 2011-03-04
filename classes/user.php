@@ -31,6 +31,13 @@ class User extends PlUser
     const PERM_MAIL              = 'mail';
     const PERM_PAYMENT           = 'payment';
 
+    public static $sub_mail_domains = array(
+        'x'      => '',
+        'master' => 'master.',
+        'phd'    => 'doc.',
+        'all'    => 'alumni.'
+    );
+
     private $_profile_fetched = false;
     private $_profile = null;
 
@@ -88,7 +95,7 @@ class User extends PlUser
         $login = trim(strtolower($login));
         if (strstr($login, '@') === false) {
             $email = $login;
-            $domain = $globals->mail->domain;
+            $domain = $this->mainEmailDomain();
         } else {
             list($email, $domain) = explode('@', $login);
         }
@@ -153,10 +160,10 @@ class User extends PlUser
         $uids = array_map(array('XDB', 'escape'), $uids);
 
         return XDB::iterator('SELECT  a.uid, a.hruid, a.registration_date, h.uid IS NOT NULL AS homonym,
-                                      IF(ef.email IS NULL, NULL, CONCAT(ef.email, \'@\', MAX(df.name))) AS forlife,
-                                      IF(ef.email IS NULL, NULL, CONCAT(ef.email, \'@\', MIN(df.name))) AS forlife_alternate,
-                                      IF(eb.email IS NULL, NULL, CONCAT(eb.email, \'@\', MAX(db.name))) AS bestalias,
-                                      IF(eb.email IS NULL, NULL, CONCAT(eb.email, \'@\', MIN(db.name))) AS bestalias_alternate,
+                                      IF(ef.email IS NULL, NULL, CONCAT(ef.email, \'@\', mf.name)) AS forlife,
+                                      IF(ef.email IS NULL, NULL, CONCAT(ef.email, \'@\', df.name)) AS forlife_alternate,
+                                      IF(eb.email IS NULL, NULL, CONCAT(eb.email, \'@\', mb.name)) AS bestalias,
+                                      IF(eb.email IS NULL, NULL, CONCAT(eb.email, \'@\', db.name)) AS bestalias_alternate,
                                       (er.redirect IS NULL AND a.state = \'active\') AS lost,
                                       a.email, a.full_name, a.directory_name, a.display_name, a.sex = \'female\' AS gender,
                                       IF(a.state = \'active\', CONCAT(at.perms, \',\', IF(a.user_perms IS NULL, \'\', a.user_perms)), \'\') AS perms,
@@ -170,10 +177,12 @@ class User extends PlUser
                           INNER JOIN  account_types          AS at ON (at.type = a.type)
                            LEFT JOIN  email_source_account   AS ef ON (ef.uid = a.uid AND ef.type = \'forlife\')
                            LEFT JOIN  email_virtual_domains  AS mf ON (ef.domain = mf.id)
-                           LEFT JOIN  email_virtual_domains  AS df ON (df.aliasing = mf.id)
+                           LEFT JOIN  email_virtual_domains  AS df ON (df.aliasing = mf.id AND
+                                                                       df.name LIKE CONCAT(\'%\', {?}) AND df.name NOT LIKE \'alumni.%\')
                            LEFT JOIN  email_source_account   AS eb ON (eb.uid = a.uid AND eb.flags = \'bestalias\')
                            LEFT JOIN  email_virtual_domains  AS mb ON (eb.domain = mb.id)
-                           LEFT JOIN  email_virtual_domains  AS db ON (db.aliasing = mb.id)
+                           LEFT JOIN  email_virtual_domains  AS db ON (db.aliasing = mb.id AND
+                                                                       db.name LIKE CONCAT(\'%\', {?}) AND db.name NOT LIKE \'alumni.%\')
                            LEFT JOIN  email_redirect_account AS er ON (er.uid = a.uid AND er.flags = \'active\' AND er.broken_level < 3
                                                                        AND er.type != \'imap\' AND er.type != \'homonym\')
                            LEFT JOIN  homonyms_list          AS h  ON (h.uid = a.uid)
@@ -184,7 +193,7 @@ class User extends PlUser
                                    ' . $joins . '
                                WHERE  a.uid IN (' . implode(', ', $uids) . ')
                             GROUP BY  a.uid
-                                   ' . $order);
+                                   ' . $order, $globals->mail->domain2, $globals->mail->domain2);
     }
 
     // Implementation of the data loader.
@@ -336,6 +345,24 @@ class User extends PlUser
                                     FROM  account_profiles
                                    WHERE  uid = {?} AND pid = {?}',
                                  $this->id(), $profile->id());
+    }
+
+    /** Determines main email domain for this user.
+     */
+    public function mainEmailDomain()
+    {
+        if (array_key_exists($this->type, self::$sub_mail_domains)) {
+            return self::$sub_mail_domains[$this->type] . Platal::globals()->mail->domain;
+        }
+    }
+
+    /** Determines alternate email domain for this user.
+     */
+    public function alternateEmailDomain()
+    {
+        if (array_key_exists($this->type, self::$sub_mail_domains)) {
+            return self::$sub_mail_domains[$this->type] . Platal::globals()->mail->domain2;
+        }
     }
 
     /** Fetch existing auxiliary alias.
@@ -797,45 +824,45 @@ class User extends PlUser
         }
     }
 
+    public static function isMainMailDomain($domain)
+    {
+        global $globals;
+
+        $is_main_domain = false;
+        foreach (self::$sub_mail_domains as $sub_domain) {
+            $is_main_domain = $is_main_domain || $domain != ($sub_domain . $globals->mail->domain) && $domain != ($sub_domain . $globals->mail->domain2);
+        }
+        return $is_main_domain;
+    }
+
+    public static function isAliasMailDomain($domain)
+    {
+        global $globals;
+
+        return $domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2;
+    }
+
     // Implementation of the static email locality checker.
     public static function isForeignEmailAddress($email)
     {
-        global $globals;
         if (strpos($email, '@') === false) {
             return false;
         }
 
-        list($user, $dom) = explode('@', $email);
-        return $dom != $globals->mail->domain &&
-               $dom != $globals->mail->domain2 &&
-               $dom != $globals->mail->alias_dom &&
-               $dom != $globals->mail->alias_dom2;
-    }
-
-    public static function isVirtualEmailAddress($email)
-    {
-        global $globals;
-        if (strpos($email, '@') === false) {
-            return false;
-        }
-
-        list($user, $dom) = explode('@', $email);
-        return $dom == $globals->mail->alias_dom
-            || $dom == $globals->mail->alias_dom2;
+        list(, $domain) = explode('@', $email);
+        return !(self::isMainMailDomain($domain) || self::isAliasMailDomain($domain));
     }
 
     /* Tries to find pending accounts with an hruid close to $login. */
     public static function getPendingAccounts($login, $iterator = false)
     {
-        global $globals;
-
         if (strpos($login, '@') === false) {
             return null;
         }
 
         list($login, $domain) = explode('@', $login);
 
-        if ($domain && $domain != $globals->mail->domain && $domain != $globals->mail->domain2) {
+        if ($domain && !self::isMainMailDomain($domain)) {
             return null;
         }
 

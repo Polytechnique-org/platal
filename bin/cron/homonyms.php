@@ -34,7 +34,7 @@ while ($old = $resRobot->next()) {
                          FROM  homonyms_list AS h
                    INNER JOIN  accounts      AS a ON (h.uid = a.uid)
                         WHERE  hrmid = {?}',
-                      'h.' . $old['email'] . '.polytechnique.org');
+                      'h.' . $old['email'] . '.' . Platal::globals()->mail->domain);
     $hruids = $res->fetchColumn();
 
     $homonym = User::getSilent($old['uid']);

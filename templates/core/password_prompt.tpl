@@ -52,7 +52,7 @@
       <td>
         <input type="text" name="username" size="20" maxlength="50" value="{insert name="getUserName"}" />
         <select name="domain">
-          <option value="login">@ {#globals.mail.domain#} / {#globals.mail.domain2#}</option>
+          <option value="login">@alumni. {#globals.mail.domain#} / {#globals.mail.domain2#}</option>
           <option value="alias" {if t($smarty.cookies.ORGdomain) eq "alias"}selected="selected"{/if}>
             @ {#globals.mail.alias_dom#} / {#globals.mail.alias_dom2#}
           </option>

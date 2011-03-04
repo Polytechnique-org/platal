@@ -217,7 +217,7 @@ function valide_email($str)
         return;
     }
     list($ident, $dom) = explode('@', $em);
-    if ($dom == $globals->mail->domain || $dom == $globals->mail->domain2) {
+    if (User::isMainMailDomain($dom)) {
         list($ident1) = explode('_', $ident);
         list($ident) = explode('+', $ident1);
     }
@@ -231,8 +231,7 @@ function valide_email($str)
  */
 function isvalid_email_redirection($email)
 {
-    return isvalid_email($email) &&
-        !preg_match("/@(polytechnique\.(org|edu)|melix\.(org|net)|m4x\.org)$/", $email);
+    return isvalid_email($email) && !preg_match("/@polytechnique\.edu$/", $email) && User::isForeignEmailAddress($email);
 }
 
 // function ids_from_mails() {{{1
@@ -240,37 +239,43 @@ function isvalid_email_redirection($email)
 // given email when we found a matching user.
 function ids_from_mails(array $emails)
 {
-    global $globals;
-
     // Removes duplicates, if any.
     $emails = array_unique($emails);
 
     // Formats and splits by domain type (locally managed or external) emails.
-    $domain_emails = array();
-    $other_emails  = array();
+    $main_domain_emails = array();
+    $aux_domain_emails = array();
+    $other_emails = array();
     foreach ($emails as $email) {
         if (strpos($email, '@') === false) {
-            $user = $email;
-            $domain = $globals->mail->domain2;
+            $main_domain_emails[] = $email;
         } else {
-            list($user, $domain) = explode('@', $email);
-        }
-        if ($domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2
-            || $domain == $globals->mail->domain || $domain == $globals->mail->domain2) {
-            list($user) = explode('+', $user);
-            list($user) = explode('_', $user);
-            $domain_emails[$email] = strtolower($user . '@' . $domain);
-        } else {
-            $other_emails[$email] = strtolower($user . '@' . $domain);
+            if (User::isForeignEmailAddress($email)) {
+                $other_emails[$email] = strtolower($user . '@' . $domain);
+            } else {
+                list($local_part, $domain) = explode('@', $email);
+                list($local_part) = explode('+', $local_part);
+                list($local_part) = explode('_', $local_part);
+                if (User::isMainMailDomain($domain)) {
+                    $main_domain_emails[$email] = strtolower($local_part);
+                } elseif (User::isAliasMailDomain($domain)) {
+                    $aux_domain_emails[$email] = strtolower($local_part);
+                }
+            }
         }
     }
 
     // Retrieves emails from our domains.
-    $domain_uids = XDB::fetchAllAssoc('email',
-                                      'SELECT  email, uid
-                                         FROM  email_source_account
-                                        WHERE  email IN {?}',
-                                      array_unique($domain_emails));
+    $main_domain_uids = XDB::fetchAllAssoc('email',
+                                           'SELECT  email, uid
+                                              FROM  email_source_account
+                                             WHERE  email IN {?} AND type != \'alias_aux\'',
+                                           array_unique($main_domain_emails));
+    $aux_domain_uids = XDB::fetchAllAssoc('email',
+                                          'SELECT  email, uid
+                                             FROM  email_source_account
+                                            WHERE  email IN {?} AND type = \'alias_aux\'',
+                                          array_unique($aux_domain_emails));
 
     // Retrieves emails from redirections.
     $other_uids = XDB::fetchAllAssoc('redirect',
@@ -281,15 +286,17 @@ function ids_from_mails(array $emails)
 
     // Associates given emails with the corresponding uid.
     $uids = array();
-    foreach (array_merge($domain_emails, $other_emails) as $email => $canonical_email) {
-        if (array_key_exists($canonical_email, $domain_uids)) {
-            $uids[$email] = $domain_uids[$canonical_email];
-        } elseif (array_key_exists($canonical_email, $other_uids)) {
-            $uids[$email] = $other_uids[$canonical_email];
-        }
+    foreach ($main_domain_emails as $email => $key) {
+        $uids[$email] = $main_domain_uids[$key];
+    }
+    foreach ($aux_domain_emails as $email => $key) {
+        $uids[$email] = $aux_domain_uids[$key];
+    }
+    foreach ($other_emails as $email => $key) {
+        $uids[$email] = $other_uids[$key];
     }
 
-    return $uids;
+    return array_unique($uids);
 }
 
 // class Bogo {{{1

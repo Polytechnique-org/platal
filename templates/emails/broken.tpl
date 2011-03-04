@@ -24,8 +24,8 @@
 <h2 class='erreur'>Erreur&nbsp;!</h2>
 
 <p>
-Tu as entré une adresse @{#globals.mail.domain#}, @{#globals.mail.domain2#} ou @{#globals.mail.alias_dom#},
-ce qui est invalide.
+Tu as entré une adresse sur un de nos domaines ({#globals.mail.domain#}, {#globals.mail.domain2#}, {#globals.mail.alias_dom#},
+{#globals.mail.alias_dom2#}) ce qui est invalide.
 </p>
 
 <p>
