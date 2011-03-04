@@ -58,7 +58,7 @@
     l'antispam pour toutes tes redirections au niveau demandé.
   </span><br />{/if}
   <input id="s0" type="radio" name="filter_status" value="0" {if $single_state && $filter eq 0}checked="checked"{/if} />
-  <label for="s0"><strong>(0) fais confiance à Polytechnique.org et utilise le réglage préconisé par défaut</strong>
+  <label for="s0"><strong>(0) fais confiance à Polytechnique.org et utilise le réglage recommandé</strong>
   (actuellement, le niveau {#globals.mail.antispam#})</label>
   <br />
   <input id="s1" type="radio" name="filter_status" value="1" {if $single_state && $filter eq 1}checked="checked"{/if} />
@@ -86,27 +86,59 @@
 
 <div id="bogo-msg-mult" style="position:absolute;"></div><br />
 
-{foreach from=$redirections key=i item=redirection}
-<fieldset>
-  <legend><strong>{$redirection.redirect|replace:'googleapps':'Compte Google Apps'}&nbsp;:</strong></legend>
-  <input id="bogo_{$i}" type="hidden" value="{$redirection.redirect}" />
-  <input id="s0_{$i}" type="radio" name="filter_status_{$i}" value="0" {if $redirection.filter eq 0}checked="checked"{/if} />
-  <label for="s0_{$i}"><strong>(0) fais confiance à Polytechnique.org et utilise le réglage préconisé par défaut</strong>
-  (actuellement, le niveau {#globals.mail.antispam#})</label>
-  <br />
-  <input id="s1_{$i}" type="radio" name="filter_status_{$i}" value="1" {if $redirection.filter eq 1}checked="checked"{/if} />
-  <label for="s1_{$i}">(1) le filtre anti-spam n'agit pas sur tes emails</label>
-  <br />
-  <input id="s2_{$i}" type="radio" name="filter_status_{$i}" value="2" {if $redirection.filter eq 2}checked="checked"{/if} />
-  <label for="s2_{$i}">(2) le filtre anti-spam marque les emails</label>
-  <br />
-  <input id="s3_{$i}" type="radio" name="filter_status_{$i}" value="3" {if $redirection.filter eq 3}checked="checked"{/if} />
-  <label for="s3_{$i}">(3) le filtre anti-spam marque les emails, et élimine les spams avec des notes les plus hautes</label>
-  <br />
-  <input id="s4_{$i}" type="radio" name="filter_status_{$i}" value="4" {if $redirection.filter eq 4}checked="checked"{/if} />
-  <label for="s4_{$i}">(4) le filtre anti-spam élimine les emails détectés comme spams</label>
-</fieldset>
-{/foreach}
+<table class="bicol">
+  <tr>
+    <th>Redirection</th>
+    <th>Niveau recommandé</th>
+    <th>Niveau 1</th>
+    <th>Niveau 2</th>
+    <th>Niveau 3</th>
+    <th>Niveau 4</th>
+  </tr>
+  {foreach from=$redirections key=i item=redirection}
+  <tr>
+    <td class="titre">
+      {$redirection.redirect|replace:'googleapps':'Compte Google Apps'}
+      <input id="bogo_{$i}" type="hidden" value="{$redirection.redirect}" />
+    </td>
+    <td class="center">
+      <input id="s0_{$i}" type="radio" name="filter_status_{$i}" value="0" {if $redirection.filter eq 0}checked="checked"{/if} />
+    </td>
+    <td class="center">
+      <input id="s1_{$i}" type="radio" name="filter_status_{$i}" value="1" {if $redirection.filter eq 1}checked="checked"{/if} />
+    </td>
+    <td class="center">
+      <input id="s2_{$i}" type="radio" name="filter_status_{$i}" value="2" {if $redirection.filter eq 2}checked="checked"{/if} />
+    </td>
+    <td class="center">
+      <input id="s3_{$i}" type="radio" name="filter_status_{$i}" value="3" {if $redirection.filter eq 3}checked="checked"{/if} />
+    </td>
+    <td class="center">
+      <input id="s4_{$i}" type="radio" name="filter_status_{$i}" value="4" {if $redirection.filter eq 4}checked="checked"{/if} />
+    </td>
+  </tr>
+  {/foreach}
+</table>
+
+<h2>Légende</h2>
+<ul>
+  <li>
+    <strong>Niveau recommandé&nbsp;: fais confiance à Polytechnique.org et utilise le réglage que nous recommandons</strong>
+    (actuellement, le niveau {#globals.mail.antispam#}).
+  </li>
+  <li>
+    Niveau 1&nbsp;: le filtre anti-spam n'agit pas sur tes emails.
+  </li>
+  <li>
+    Niveau 2&nbsp;: le filtre anti-spam marque les emails.
+  </li>
+  <li>
+    Niveau 3&nbsp;: le filtre anti-spam marque les emails, et élimine les spams avec des notes les plus hautes.
+  </li>
+  <li>
+    Niveau 4&nbsp;: le filtre anti-spam élimine les emails détectés comme spams.
+  </li>
+</ul>
 {/if}
 
 {include wiki=Xorg.Antispam part=2}
