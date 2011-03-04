@@ -212,4 +212,8 @@ DELETE FROM email_virtual WHERE email LIKE 'tech-email%';
 DELETE FROM  email_virtual_domains
       WHERE  name IN ('fanfarix.polytechnique.net', 'asd', 'x-russie', 'formation', 'groupetest', 'x-sursaut');
 
+-- Deletes unused domains
+DELETE FROM  email_virtual_domains
+      WHERE  name LIKE 'manageurs.%';
+
 -- vim:set syntax=mysql:
