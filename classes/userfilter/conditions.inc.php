@@ -338,8 +338,7 @@ class UFC_HasEmailRedirect extends UserFilterCondition
     public function buildCondition(PlFilter $uf)
     {
         $sub_redirect = $uf->addEmailRedirectFilter();
-        $sub_options = $uf->addEmailOptionsFilter();
-        return 'e' . $sub_redirect . '.flags = \'active\' OR FIND_IN_SET(\'googleapps\', ' . $sub_options . '.storage)';
+        return 'ra' . $sub_redirect . '.flags = \'active\'';
     }
 }
 // }}}
@@ -944,9 +943,8 @@ class UFC_Email extends UserFilterCondition
     public function buildCondition(PlFilter $uf)
     {
         $foreign = array();
-        $virtual = array();
-        $aliases = array();
-        $cond = array();
+        $local   = array();
+        $cond    = array();
 
         if (count($this->emails) == 0) {
             return PlFilterCondition::COND_TRUE;
@@ -955,25 +953,19 @@ class UFC_Email extends UserFilterCondition
         foreach ($this->emails as $entry) {
             if (User::isForeignEmailAddress($entry)) {
                 $foreign[] = $entry;
-            } else if (User::isVirtualEmailAddress($entry)) {
-                $virtual[] = $entry;
             } else {
-                @list($user, $domain) = explode('@', $entry);
-                $aliases[] = $user;
+                list($local_part, ) = explode('@', $entry);
+                $local[] = $local_part;
             }
         }
 
         if (count($foreign) > 0) {
             $sub = $uf->addEmailRedirectFilter($foreign);
-            $cond[] = XDB::format('e' . $sub . '.email IS NOT NULL OR a.email IN {?}', $foreign);
+            $cond[] = XDB::format('ra' . $sub . '.redirect IS NOT NULL OR ra.redirect IN {?}', $foreign);
         }
-        if (count($virtual) > 0) {
-            $sub = $uf->addVirtualEmailFilter($virtual);
-            $cond[] = 'vr' . $sub . '.redirect IS NOT NULL';
-        }
-        if (count($aliases) > 0) {
-            $sub = $uf->addAliasFilter($aliases);
-            $cond[] = 'al' . $sub . '.alias IS NOT NULL';
+        if (count($local) > 0) {
+            $sub = $uf->addAliasFilter($local);
+            $cond[] = 'sa' . $sub . '.email IS NOT NULL';
         }
         return '(' . implode(') OR (', $cond) . ')';
     }
