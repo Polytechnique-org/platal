@@ -1090,7 +1090,7 @@ class NLIssue
                        WHERE  id = {?}',
                        $this->id);
 
-        $ufc = new PFC_And($this->getRecipientsUFC(), new UFC_NLSubscribed($this->nl->id, $this->id), new UFC_HasEmailRedirect());
+        $ufc = new PFC_And($this->getRecipientsUFC(), new UFC_NLSubscribed($this->nl->id, $this->id), new UFC_HasValidEmail());
         $emailsCount = 0;
         $uf = new UserFilter($ufc, array(new UFO_IsAdmin(), new UFO_Uid()));
         $limit = new PlLimit(self::BATCH_SIZE);

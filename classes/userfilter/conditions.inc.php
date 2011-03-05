@@ -173,6 +173,8 @@ abstract class UserFilterCondition implements PlFilterCondition
             break;
 
           case 'has_profile':
+          case 'has_email_redirect':
+          case 'has_valid_email':
             $class = 'ufc_' . str_replace('_', '', $type);
             $cond = new $class();
             break;
@@ -331,7 +333,7 @@ class UFC_Hrpid extends UserFilterCondition
 }
 // }}}
 // {{{ class UFC_HasEmailRedirect
-/** Filters users, keeping only those with a valid email redirection.
+/** Filters users, keeping only those with a valid email redirection (only X.org accounts).
  */
 class UFC_HasEmailRedirect extends UserFilterCondition
 {
@@ -339,6 +341,31 @@ class UFC_HasEmailRedirect extends UserFilterCondition
     {
         $sub_redirect = $uf->addEmailRedirectFilter();
         return 'ra' . $sub_redirect . '.flags = \'active\'';
+    }
+
+    public function export()
+    {
+        $export = $this->buildExport('has_email_redirect');
+        return $export;
+    }
+}
+// }}}
+// {{{ class UFC_HasValidEmail
+/** Filters users, keeping only those with a valid email address (all accounts).
+ */
+class UFC_HasValidEmail extends UserFilterCondition
+{
+    public function buildCondition(PlFilter $uf)
+    {
+        $sub_redirect = $uf->addEmailRedirectFilter();
+        $uf->requireAccounts();
+        return 'ra' . $sub_redirect . '.flags = \'active\' OR a.email IS NOT NULL';
+    }
+
+    public function export()
+    {
+        $export = $this->buildExport('has_valid_email');
+        return $export;
     }
 }
 // }}}
