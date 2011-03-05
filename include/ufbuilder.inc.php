@@ -720,7 +720,7 @@ class UFBF_Quick extends UFB_Field
         }
 
         if (count($strings)) {
-            if (S::logged()) {
+            if (S::user()->checkPerms('directory_private')) {
                 $flags = array();
             } else {
                 $flags = array('public');
