@@ -423,12 +423,12 @@ $(function() {
         {/if}
       </td>
     </tr>
-    {if $mail->panne && $mail->panne neq "0000-00-00"}
+    {if $mail->broken && $mail->broken_date neq "0000-00-00"}
     <tr class="{$class}">
       <td colspan="4" class="smaller" style="color: #f00">
         {icon name=error title="Panne"}
-        Panne de {$mail->display_email} le {$mail->panne|date_format}
-        {if $mail->panne neq $mail->last}confirmée le {$mail->last|date_format}{/if}
+        Panne de {$mail->display_email} le {$mail->broken_date|date_format}
+        {if $mail->broken_date neq $mail->last}confirmée le {$mail->last|date_format}{/if}
       </td>
       <td class="action">
         <a href="javascript:clean_fwd('{$mail->email}')">effacer les pannes</a>
