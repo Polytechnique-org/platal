@@ -124,8 +124,7 @@ est ambigu pour des raisons d'homonymie et signalera ton email exact.";
                                SELECT  {?}, {?}, id, \'homonym\', NOW()
                                  FROM  email_virtual_domains
                                 WHERE  name = {?}',
-                         'h.' . $this->loginbis . '.' . Platal::globals()->mail->domain,
-                         $this->loginbis, $this->user->mainEmailDomain());
+                         User::makeHomonymHrmid($this->loginbis), $this->loginbis, $this->user->mainEmailDomain());
             fix_bestalias($this->user);
         }
 

@@ -33,8 +33,8 @@ while ($old = $resRobot->next()) {
     $res = XDB::query('SELECT  a.hruid
                          FROM  homonyms_list AS h
                    INNER JOIN  accounts      AS a ON (h.uid = a.uid)
-                        WHERE  hrmid = {?}',
-                      'h.' . $old['email'] . '.' . Platal::globals()->mail->domain);
+                        WHERE  h.hrmid = {?}',
+                      User::makeHomonymHrmid($old['email']);
     $hruids = $res->fetchColumn();
 
     $homonym = User::getSilent($old['uid']);

@@ -824,6 +824,11 @@ class User extends PlUser
         }
     }
 
+    public static function makeHomonymHrmid($alias)
+    {
+        return 'h.' . $alias . '.' . Platal::globals()->mail->domain;
+    }
+
     public static function isMainMailDomain($domain)
     {
         global $globals;

@@ -979,8 +979,7 @@ class AdminModule extends PLModule
                                        SELECT  {?}, {?}, id, \'homonym\', NOW()
                                          FROM  email_virtual_domains
                                         WHERE  name = {?}',
-                                 'h.' . $loginbis . '.' . Platal::globals()->mail->domain,
-                                 $loginbis, $user->mainEmailDomain());
+                                 User::makeHomonymHrmid($loginbis), $loginbis, $user->mainEmailDomain());
                     fix_bestalias($user);
                     send_robot_homonyme($user, $loginbis);
                     $op = 'list';

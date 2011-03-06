@@ -163,7 +163,7 @@ function createAliases($subState)
                              SET  expire = ADDDATE(NOW(), INTERVAL 1 MONTH)
                            WHERE  email = {?} AND type != \'alias_aux\'',
                          $emailXorg);
-            $hrmid = 'h.' . $emailXorg . '.' . $globals->mail->domain;
+            $hrmid = User::makeHomonymHrmid($emailXorg);
             XDB::execute('INSERT IGNORE INTO  homonyms_list (hrmid, uid)
                                       VALUES  ({?}, {?}), ({?}, {?})',
                          $hrmid, $h_id, $hrmid, $subState->i('uid'));
