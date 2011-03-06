@@ -585,9 +585,9 @@ class AdminModule extends PLModule
         } else if (!Post::blank('del_fwd')) {
             $redirect->delete_email(Post::t('del_fwd'));
         } else if (!Post::blank('activate_fwd')) {
-            $redirect->modify_one_email(Post::t('activate_fwd', true));
+            $redirect->modify_one_email(Post::t('activate_fwd'), true);
         } else if (!Post::blank('deactivate_fwd')) {
-            $redirect->modify_one_email(Post::t('deactivate_fwd', false));
+            $redirect->modify_one_email(Post::t('deactivate_fwd'), false);
         } else if (Post::has('disable_fwd')) {
             $redirect->disable();
         } else if (Post::has('enable_fwd')) {
