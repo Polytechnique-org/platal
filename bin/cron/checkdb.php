@@ -210,6 +210,13 @@ check("SELECT  p.*
                                                       WHERE  p.link_id = g.id)",
       "Téléphones de type 'group' reliés à un groupe inexistant.");
 
+// List domain aliasing with depth higher than 1: they will not be found by postfix.
+check("SELECT  evd.name
+         FROM  email_virtual_domains AS evd
+   INNER JOIN  email_virtual_domains AS evd2 ON (evd.aliasing = evd2.id)
+        WHERE  evd2.id != evd2.aliasing",
+      "Domaines aliasés de niveau 2 ou plus qui ne sont pas vu par postfix.");
+
 // Counts empty profile fields that should never be empty.
 infoCountEmpty('profile_addresses', 'type');
 infoCountEmpty('profile_phones', 'link_type');
