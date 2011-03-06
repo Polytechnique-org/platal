@@ -129,5 +129,15 @@ if ($opt_verbose) {
     echo "\n";
 }
 
+/*
+ * Updates imap settings for users with no active redirection. Their emails
+ * must go to imap and bounce.
+ */
+XDB::execute("UPDATE  email_redirect_account AS r
+           LEFT JOIN  email_redirect_account AS a ON (r.uid = a.uid AND a.flags = 'active' AND a.type != 'imap')
+                 SET  r.action = 'imap_and_bounce'
+               WHERE  r.type = 'imap' AND a.redirect IS NULL");
+
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

@@ -651,6 +651,7 @@ class Redirect
             }
         }
         check_redirect($this);
+        $this->update_imap();
         return SUCCESS;
     }
 
@@ -696,6 +697,7 @@ class Redirect
         // security stuff
         check_email($email, "Ajout d'une adresse surveillée aux redirections de " . $this->user->login());
         check_redirect($this);
+        $this->update_imap();
         return SUCCESS;
     }
 
@@ -710,6 +712,7 @@ class Redirect
             $email->set_rewrite($emails_rewrite[$email->email]);
         }
         check_redirect($this);
+        $this->update_imap();
         return SUCCESS;
     }
 
@@ -732,6 +735,7 @@ class Redirect
             $this->emails[$thisone]->deactivate();
         }
         check_redirect($this);
+        $this->update_imap();
         if ($allinactive && !$activate) {
             return ERROR_INACTIVE_REDIRECTION;
         }
@@ -744,6 +748,7 @@ class Redirect
             if ($mail->email == $email) {
                 $mail->set_rewrite($redirect);
                 check_redirect($this);
+                $this->update_imap();
                 return;
             }
         }
@@ -754,6 +759,7 @@ class Redirect
         foreach ($this->emails as &$mail) {
             if ($mail->email == $email) {
                 check_redirect($this);
+                $this->update_imap();
                 return $mail->clean_errors();
             }
         }
@@ -772,6 +778,7 @@ class Redirect
             }
         }
         check_redirect($this);
+        $this->update_imap();
     }
 
     public function enable()
@@ -786,6 +793,7 @@ class Redirect
             }
             check_redirect($this);
         }
+        $this->update_imap();
     }
 
     public function get_broken_mx()
@@ -837,6 +845,22 @@ class Redirect
     public function get_uid()
     {
         return $this->user->id();
+    }
+
+    private function update_imap()
+    {
+        // Imaps must bounce if and only if the user has no active redirection.
+        if (!$this->other_active('')) {
+            XDB::execute('UPDATE  email_redirect_account
+                             SET  action = \'imap_and_bounce\'
+                           WHERE  type = \'imap\' AND uid = {?}',
+                         $this->user->id());
+        } else {
+            XDB::execute('UPDATE  email_redirect_account
+                             SET  action = \'let_spams\'
+                           WHERE  type = \'imap\' AND uid = {?}',
+                         $this->user->id());
+        }
     }
 }
 
