@@ -610,12 +610,10 @@ class Redirect
     private $user;
 
     public $emails;
-    public $bogo;
 
     public function __construct(User $user)
     {
         $this->user = &$user;
-        $this->bogo = new Bogo($user);
 
         // Adds third-party email redirections.
         $res = XDB::iterator('SELECT  redirect, rewrite, type, action, broken_date, broken_level, last, flags, hash, allow_rewrite
@@ -665,10 +663,15 @@ class Redirect
         if (!isvalid_email_redirection($email_stripped)) {
             return ERROR_LOOP_EMAIL;
         }
+        // We first need to retrieve the value for the antispam filter: it is
+        // either the user's redirections common value, or if they differ, our
+        // default value.
+        $bogo = new Bogo($this->user);
+        $filter = ($bogo->single_state ? Bogo::$states[$bogo->state] : Bogo::$states[0]);
         // If the email was already present for this user, we reset it to the default values, we thus use REPLACE INTO.
-        XDB::execute('REPLACE INTO  email_redirect_account (uid, redirect, flags)
-                            VALUES  ({?}, {?}, \'active\')',
-                     $this->user->id(), $email);
+        XDB::execute('REPLACE INTO  email_redirect_account (uid, redirect, flags, action)
+                            VALUES  ({?}, {?}, \'active\', {?})',
+                     $this->user->id(), $email, $filter);
         if ($logger = S::v('log', null)) { // may be absent --> step4.php
             S::logger()->log('email_add', $email . ($this->user->id() != S::v('uid') ? " (admin on {$this->user->login()})" : ""));
         }
@@ -681,7 +684,7 @@ class Redirect
                 'redirect'      => $email,
                 'rewrite'       => '',
                 'type'          => 'smtp',
-                'action'        => 'default',
+                'action'        => $filter,
                 'broken_date'   => '0000-00-00',
                 'broken_level'  => 0,
                 'last'          => '0000-00-00',
