@@ -10,6 +10,7 @@ Bug/Wish:
 
     * Emails:
         - Allows antispam level choice for each redirection                -JAC
+        - #1035: Bases emails on users types (eg educationnal types)       -JAC
 
     * Payments:
         - #1398: Creates csv for payments                                  -JAC
