@@ -176,30 +176,13 @@ function mark_broken_email($email, $admin = false)
 // eventually selects a new bestalias when required.
 function fix_bestalias(User $user)
 {
-    // First check if best_domain is properly set.
-    $count = XDB::fetchOneCell('SELECT  COUNT(*)
-                                  FROM  accounts              AS a
-                            INNER JOIN  email_virtual_domains AS d ON (d.id = a.best_domain)
-                            INNER JOIN  email_virtual_domains AS m ON (d.aliasing = m.id)
-                                 WHERE  a.uid = {?} AND m.name = {?}',
-                               $user->id(), $user->mainEmailDomain());
-    if ($count == 0) {
-        XDB::execute('UPDATE  accounts              AS a
-                  INNER JOIN  email_virtual_domains AS d ON (d.name = {?})
-                         SET  a.best_domain = d.id
-                       WHERE  a.uid = {?}',
-                     $user->mainEmailDomain(), $user->id());
-    }
+    // First check if the bestalias is properly set.
+    $alias_count = XDB::fetchOneCell('SELECT  COUNT(*)
+                                        FROM  email_source_account
+                                       WHERE  uid = {?} AND FIND_IN_SET(\'bestalias\', flags) AND expire IS NULL',
+                                     $user->id());
 
-    // Then check the alias.
-    $count = XDB::fetchOneCell('SELECT  COUNT(*)
-                                  FROM  email_source_account
-                                 WHERE  uid = {?} AND FIND_IN_SET(\'bestalias\', flags) AND expire IS NULL',
-                               $user->id());
-
-    if ($count == 1) {
-        return;
-    } elseif ($count > 1) {
+    if ($alias_count > 1) {
         // If too many bestaliases, delete the bestalias flag from all this
         // user's emails (this should never happen).
         XDB::execute("UPDATE  email_source_account
@@ -207,15 +190,37 @@ function fix_bestalias(User $user)
                        WHERE  uid = {?}",
                      $user->id());
     }
+     if ($alias_count != 1) {
+        // If no bestalias is selected, we choose the shortest email which is not
+        // related to a usage name and contains a '.'.
+        XDB::execute("UPDATE  email_source_account
+                         SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'bestalias')
+                       WHERE  uid = {?} AND expire IS NULL
+                    ORDER BY  NOT FIND_IN_SET('usage', flags), email LIKE '%.%', LENGTH(email)
+                       LIMIT  1",
+                     $user->id());
+     }
 
-    // If no bestalias is selected, we choose the shortest email which is not
-    // related to a usage name and contains a '.'.
-    XDB::execute("UPDATE  email_source_account
-                     SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'bestalias')
-                   WHERE  uid = {?} AND expire IS NULL
-                ORDER BY  NOT FIND_IN_SET('usage', flags), email LIKE '%.%', LENGTH(email)
-                   LIMIT  1",
-                 $user->id());
+    // First check if best_domain is properly set.
+    $domain_count = XDB::fetchOneCell('SELECT  COUNT(*)
+                                         FROM  accounts              AS a
+                                   INNER JOIN  email_source_account  AS s ON (s.uid = a.uid AND FIND_IN_SET(\'bestalias\', s.flags))
+                                   INNER JOIN  email_virtual_domains AS d ON (d.id = a.best_domain)
+                                   INNER JOIN  email_virtual_domains AS m ON (d.aliasing = m.id)
+                                   INNER JOIN  email_virtual_domains AS v ON (v.aliasing = m.id AND v.id = s.domain)
+                                        WHERE  a.uid = {?} AND (m.name = {?} OR m.name = {?})',
+                                      $user->id(), $user->mainEmailDomain(), Platal::globals()->mail->alias_dom);
+
+    if ($domain_count == 0) {
+        XDB::execute('UPDATE  accounts              AS a
+                  INNER JOIN  email_source_account  AS s ON (s.uid = a.uid AND FIND_IN_SET(\'bestalias\', s.flags))
+                  INNER JOIN  email_virtual_domains AS d ON (d.aliasing = s.domain AND (d.name = {?} OR d.name = {?}))
+                         SET  a.best_domain = d.id
+                       WHERE  a.uid = {?}',
+                     $user->mainEmailDomain(), Platal::globals()->mail->alias_dom, $user->id());
+    }
+
+
 }
 
 // function valide_email() {{{1

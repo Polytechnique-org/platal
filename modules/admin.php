@@ -655,10 +655,9 @@ class AdminModule extends PLModule
                            WHERE  uid = {?}", $user->id());
             // Then gives the bestalias flag to the given email.
             list($email, $domain) = explode('@', $best_alias);
-            XDB::execute("UPDATE  email_source_account  AS s
-                      INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
-                             SET  s.flags = CONCAT_WS(',', IF(s.flags = '', NULL, s.flags), 'bestalias')
-                           WHERE  s.uid = {?} AND s.email = {?} AND d.name = {?}", $user->id(), $email, $domain);
+            XDB::execute("UPDATE  email_source_account
+                             SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'bestalias')
+                           WHERE  uid = {?} AND email = {?}", $user->id(), $email);
 
             // As having a non-null bestalias value is critical in
             // plat/al's code, we do an a posteriori check on the
