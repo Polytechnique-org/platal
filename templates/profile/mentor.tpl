@@ -101,7 +101,7 @@
       Il est préférable de mentionner des notions précises : <em>Pizzaïolo</em> plutôt que <em>Hôtellerie</em>.
       En effet Les recherches sur le mot-clef <em>Hôtellerie</em> te trouveront dans les deux cas mais une
       recherche sur <em>Production culinaire</em> ou <em>Pizzaïolo</em> non.
-    <td/>
+    </td>
   </tr>
   <tr>
     <td class="titre" style="width:30%">Mots-clefs</td>
