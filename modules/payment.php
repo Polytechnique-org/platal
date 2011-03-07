@@ -446,10 +446,10 @@ class PaymentModule extends PLModule
         }
 
         /* on genere le mail de confirmation */
-        $conf_text = str_replace(array('<prenom>', '<nom>', '<promo>', '<montant>', '<salutation>', '<cher>'),
+        $conf_text = str_replace(array('<prenom>', '<nom>', '<promo>', '<montant>', '<salutation>', '<cher>', '<comment>'),
                                  array($user->firstName(), $user->lastName(), $user->promo(), $montant,
-                                       $user->isFemale() ? 'Chère' : 'Cher',
-                                       $user->isFemale() ? 'Chère' : 'Cher'), $conf_text);
+                                       $user->isFemale() ? 'Chère' : 'Cher', $user->isFemale() ? 'Chère' : 'Cher',
+                                       Env::v('comment')), $conf_text);
 
         global $globals;
         $mymail = new PlMailer();
