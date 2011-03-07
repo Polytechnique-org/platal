@@ -60,7 +60,7 @@ class ReminderEmailBackup extends Reminder
         }
 
         require_once 'emails.inc.php';
-        $active = Email::is_active_storage($user, 'imap')
+        $active = Email::is_active_storage($user, 'imap');
         if ($active) {
             Reminder::MarkCandidateAsAccepted($user->id(), $candidate);
         }

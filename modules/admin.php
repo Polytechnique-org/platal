@@ -778,9 +778,9 @@ class AdminModule extends PLModule
     {
         switch ($sex) {
           case 'F':
-            return PlUser::GENDER_FEMALE;
+            return 'female';
           case 'M':
-            return PlUser::GENDER_MALE;
+            return 'male';
           default:
             $page->trigError("La ligne $line n'a pas été ajoutée car le sexe $sex n'est pas pris en compte.");
             return null;
@@ -806,7 +806,6 @@ class AdminModule extends PLModule
             $nameTypes = array_flip($nameTypes);
 
             if (Env::t('add_type') == 'promo') {
-                $type = 'x';
                 $eduSchools = DirEnum::getOptions(DirEnum::EDUSCHOOLS);
                 $eduSchools = array_flip($eduSchools);
                 $eduDegrees = DirEnum::getOptions(DirEnum::EDUDEGREES);
@@ -818,6 +817,7 @@ class AdminModule extends PLModule
                     $grad_year = $promotion + 3;
                     $promo = 'X' . $promotion;
                     $hrpromo = $promotion;
+                    $type = 'x';
                     break;
                   case 'M':
                     $degreeid = $eduDegrees[Profile::DEGREE_M];
@@ -847,7 +847,11 @@ class AdminModule extends PLModule
                             $fullName = $infos[1] . ' ' . $infos[0];
                             $directoryName = $infos[0] . ' ' . $infos[1];
                             $birthDate = self::formatBirthDate($infos[2]);
-                            $xorgId = Profile::getXorgId($infos[4]);
+                            if ($type == 'x') {
+                                $xorgId = Profile::getXorgId($infos[4]);
+                            } else {
+                                $xorgId = trim($infos[4]);
+                            }
                             if (is_null($xorgId)) {
                                 $page->trigError("La ligne $line n'a pas été ajoutée car le matricule École est mal renseigné.");
                                 continue;

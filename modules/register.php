@@ -93,8 +93,9 @@ class RegisterModule extends PLModule
 
             case 1:
                 if (Post::has('yearpromo')) {
-                    $promo = Post::t('edu_type') . Post::t('yearpromo');
+                    $edu_type = Post::t('edu_type');
                     $yearpromo = Post::i('yearpromo');
+                    $promo = $edu_type . $yearpromo;
                     $res = XDB::query("SELECT  COUNT(*)
                                          FROM  accounts         AS a
                                    INNER JOIN  account_profiles AS ap ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
@@ -109,10 +110,15 @@ class RegisterModule extends PLModule
                         $subState->set('step', 2);
                         $subState->set('promo', $promo);
                         $subState->set('yearpromo', $yearpromo);
-                        if ($yearpromo >= 1996 && $yearpromo < 2000) {
-                            $subState->set('schoolid', ($yearpromo % 100) * 10 . '???');
-                        } elseif($yearpromo >= 2000) {
-                            $subState->set('schoolid', 100 + ($yearpromo % 100) . '???');
+                        $subState->set('edu_type', $edu_type);
+                        if ($edu_type == 'X') {
+                            if ($yearpromo >= 1996 && $yearpromo < 2000) {
+                                $subState->set('schoolid', ($yearpromo % 100) * 10 . '???');
+                            } elseif($yearpromo >= 2000) {
+                                $subState->set('schoolid', 100 + ($yearpromo % 100) . '???');
+                            }
+                        } else {
+                            $subState->set('schoolid', '');
                         }
                     }
                 }
@@ -306,7 +312,7 @@ class RegisterModule extends PLModule
              $birthdate, $lastname, $firstname, $promo, $sex, $birthdate_ref, $eduType) = $res->fetchOneRow();
         $isX = ($eduType == 'x');
         $yearpromo = substr($promo, 1, 4);
-        $mail_domain = User::$sub_mail_domains[$eduType];
+        $mail_domain = User::$sub_mail_domains[$eduType] . $globals->mail->domain;
 
         // Prepare the template for display.
         $page->changeTpl('register/end.tpl');
@@ -358,12 +364,13 @@ class RegisterModule extends PLModule
 
         // Add the registration email address as first and only redirection.
         require_once 'emails.inc.php';
+        $user = User::getSilentWithUID($uid);
         $redirect = new Redirect($user);
         $redirect->add_email($email);
 
         // Try to start a session (so the user don't have to log in); we will use
         // the password available in Post:: to authenticate the user.
-        $success = Platal::session()->start(AUTH_MDP);
+        Platal::session()->start(AUTH_MDP);
 
         // Subscribe the user to the services she did request at registration time.
         foreach (explode(',', $services) as $service) {

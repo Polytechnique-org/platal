@@ -110,10 +110,14 @@ function checkNewUser($subState)
     $lastname = preg_replace("/''+/", '\'', $lastname);
     $subState->set('lastname', mb_strtoupper($lastname));
 
-    if ($subState->i('yearpromo') >= 1996) {
+    if ($subState->i('yearpromo') >= 1996 && $subState->v('edu_type') == 'X') {
         $res = checkId($subState);
     } else {
         $res = checkOldId($subState);
+    }
+    if ($subState->v('edu_type') != 'X' &&
+        $subState->v('xorgid') != $subState->v('schoolid')) {
+        return 'Le matricule est incorrect.';
     }
     if ($res !== true) {
         return $res;
@@ -132,7 +136,7 @@ function createAliases($subState)
     $emailXorg  = PlUser::makeUserName($subState->t('firstname'), $subState->t('lastname'));
     $emailXorg2 = $emailXorg . sprintf(".%02u", ($subState->i('yearpromo') % 100));
 
-    $res = XDB::query("SELECT  hruid, state
+    $res = XDB::query("SELECT  hruid, state, type
                          FROM  accounts
                         WHERE  uid = {?} AND hruid != ''",
                       $subState->i('uid'));
@@ -141,7 +145,7 @@ function createAliases($subState)
             . "Envoie un mail à <a href=\"mailto:support@{$globals->mail->domain}\">"
             . "support@{$globals->mail->domain}</a> en expliquant ta situation.";
     } else {
-        list($forlife, $state) = $res->fetchOneRow();
+        list($forlife, $state, $type) = $res->fetchOneRow();
     }
     if ($state == 'active') {
         return "Tu es déjà inscrit, si tu ne te souviens plus de ton mot de passe d'accès au site, "
@@ -152,11 +156,11 @@ function createAliases($subState)
              . "<a href=\"mailto:support@{$globals->mail->domain}\">support@{$globals->mail->domain}</a>.";
     }
 
-    $count = XDB::numRows('SELECT  uid, expire
-                             FROM  email_source_account
-                            WHERE  email = {?} AND type != \'alias_aux\'',
-                          $emailXorg);
-    if ($count) {
+    $res = XDB::query('SELECT  uid, expire
+                         FROM  email_source_account
+                        WHERE  email = {?} AND type != \'alias_aux\'',
+                      $emailXorg);
+    if ($res->numRows()) {
         list($h_id, $expire) = $res->fetchOneRow();
         if (empty($expire)) {
             XDB::execute('UPDATE  email_source_account
@@ -190,6 +194,7 @@ function createAliases($subState)
         $subState->set('bestalias', $emailXorg);
         $subState->set('emailXorg2', $emailXorg2);
     }
+    $subState->set('main_mail_domain', User::$sub_mail_domains[$type] . Platal::globals()->mail->domain);
 
     return true;
 }

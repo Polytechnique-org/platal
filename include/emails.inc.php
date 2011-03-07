@@ -596,7 +596,7 @@ class Email
         }
         $res = XDB::fetchOneCell('SELECT  COUNT(*)
                                     FROM  email_redirect_account
-                                   WHERE  uid = {?} AND type = {?} AND flags = \'active\')',
+                                   WHERE  uid = {?} AND type = {?} AND flags = \'active\'',
                                  $user->id(), $storage);
         return !is_null($res) && $res > 0;
     }
