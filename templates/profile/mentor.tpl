@@ -65,7 +65,7 @@
       <select name="countries_sel" onchange="updateElement('countries')">
         <option value="">&nbsp;</option>
         {iterate from=$countryList item=country}
-        <option value="{$country.iso_3166_1_a2}">{$country.countryFR|default:"&nbsp;"}</option>
+        <option value="{$country.iso_3166_1_a2}">{$country.country|default:"&nbsp;"}</option>
         {/iterate}
       </select>
     </td>
