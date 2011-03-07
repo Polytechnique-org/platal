@@ -80,6 +80,8 @@ class EmailModule extends PLModule
             // plat/al's code, we do an a posteriori check on the
             // validity of the bestalias.
             fix_bestalias($user);
+            // Then refetch the user to update its bestalias.
+            S::set('user', User::getWithUID(S::user()->id()));
         }
 
         // Fetch and display aliases.
