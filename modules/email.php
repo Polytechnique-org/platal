@@ -71,6 +71,11 @@ class EmailModule extends PLModule
                       INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
                              SET  s.flags = CONCAT_WS(',', IF(s.flags = '', NULL, s.flags), 'bestalias')
                            WHERE  s.uid = {?} AND s.email = {?} AND d.name = {?}", $user->id(), $email, $domain);
+            XDB::execute('UPDATE  accounts              AS a
+                      INNER JOIN  email_virtual_domains AS d ON (d.name = {?})
+                             SET  a.best_domain = d.id
+                           WHERE  a.uid = {?}',
+                         $domain, $user->id());
 
             // As having a non-null bestalias value is critical in
             // plat/al's code, we do an a posteriori check on the
@@ -80,11 +85,13 @@ class EmailModule extends PLModule
 
         // Fetch and display aliases.
         $aliases = XDB::iterator("SELECT  CONCAT(s.email, '@', d.name) AS email, (s.type = 'forlife') AS forlife,
-                                          (s.email REGEXP '\\\\.[0-9]{2}$') AS hundred_year,
-                                          FIND_IN_SET('bestalias', s.flags) AS bestalias, s.expire,
-                                          (s.type = 'alias_aux') AS alias
+                                          (s.email REGEXP '\\\\.[0-9]{2}$') AS hundred_year, s.expire,
+                                          (FIND_IN_SET('bestalias', s.flags) AND a.best_domain = d.id) AS bestalias,
+                                          ((s.type = 'alias_aux') AND d.aliasing = d.id) AS alias
                                     FROM  email_source_account  AS s
-                              INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
+                              INNER JOIN  accounts              AS a ON (s.uid = a.uid)
+                              INNER JOIN  email_virtual_domains AS m ON (s.domain = m.id)
+                              INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
                                    WHERE  s.uid = {?}
                                 ORDER BY  !alias, s.email",
                                  $user->id());

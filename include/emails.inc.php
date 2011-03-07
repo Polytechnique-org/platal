@@ -176,6 +176,22 @@ function mark_broken_email($email, $admin = false)
 // eventually selects a new bestalias when required.
 function fix_bestalias(User $user)
 {
+    // First check if best_domain is properly set.
+    $count = XDB::fetchOneCell('SELECT  COUNT(*)
+                                  FROM  accounts              AS a
+                            INNER JOIN  email_virtual_domains AS d ON (d.id = a.best_domain)
+                            INNER JOIN  email_virtual_domains AS m ON (d.aliasing = m.id)
+                                 WHERE  a.uid = {?} AND m.name = {?}',
+                               $user->id(), $user->mainEmailDomain());
+    if ($count == 0) {
+        XDB::execute('UPDATE  accounts              AS a
+                  INNER JOIN  email_virtual_domains AS d ON (d.name = {?})
+                         SET  a.best_domain = d.id
+                       WHERE  a.uid = {?}',
+                     $user->mainEmailDomain(), $user->id());
+    }
+
+    // Then check the alias.
     $count = XDB::fetchOneCell('SELECT  COUNT(*)
                                   FROM  email_source_account
                                  WHERE  uid = {?} AND FIND_IN_SET(\'bestalias\', flags) AND expire IS NULL',

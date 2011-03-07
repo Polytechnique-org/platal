@@ -163,7 +163,6 @@ class User extends PlUser
                                       IF(ef.email IS NULL, NULL, CONCAT(ef.email, \'@\', mf.name)) AS forlife,
                                       IF(ef.email IS NULL, NULL, CONCAT(ef.email, \'@\', df.name)) AS forlife_alternate,
                                       IF(eb.email IS NULL, NULL, CONCAT(eb.email, \'@\', mb.name)) AS bestalias,
-                                      IF(eb.email IS NULL, NULL, CONCAT(eb.email, \'@\', db.name)) AS bestalias_alternate,
                                       (er.redirect IS NULL AND a.state = \'active\') AS lost,
                                       a.email, a.full_name, a.directory_name, a.display_name, a.sex = \'female\' AS gender,
                                       IF(a.state = \'active\', CONCAT(at.perms, \',\', IF(a.user_perms IS NULL, \'\', a.user_perms)), \'\') AS perms,
@@ -180,9 +179,7 @@ class User extends PlUser
                            LEFT JOIN  email_virtual_domains  AS df ON (df.aliasing = mf.id AND
                                                                        df.name LIKE CONCAT(\'%\', {?}) AND df.name NOT LIKE \'alumni.%\')
                            LEFT JOIN  email_source_account   AS eb ON (eb.uid = a.uid AND eb.flags = \'bestalias\')
-                           LEFT JOIN  email_virtual_domains  AS mb ON (eb.domain = mb.id)
-                           LEFT JOIN  email_virtual_domains  AS db ON (db.aliasing = mb.id AND
-                                                                       db.name LIKE CONCAT(\'%\', {?}) AND db.name NOT LIKE \'alumni.%\')
+                           LEFT JOIN  email_virtual_domains  AS mb ON (a.best_domain = mb.id)
                            LEFT JOIN  email_redirect_account AS er ON (er.uid = a.uid AND er.flags = \'active\' AND er.broken_level < 3
                                                                        AND er.type != \'imap\' AND er.type != \'homonym\')
                            LEFT JOIN  homonyms_list          AS h  ON (h.uid = a.uid)

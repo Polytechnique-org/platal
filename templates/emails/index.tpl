@@ -46,8 +46,7 @@
       {iterate from=$aliases item=a}
       <label>
         <input type='radio' {if $a.bestalias}checked="checked"{/if} name='best' value='{$a.email}' />
-        <strong>{$a.email}</strong>{if $a.alias} et <strong>@{#globals.mail.alias_dom2#}</strong>{else}
-        {foreach from=$mail_domains item=domain} et <strong>@{$domain}</strong>{/foreach}{/if}
+        <strong>{$a.email}</strong>
       </label>&nbsp;{if $a.forlife}(**){/if}{if $a.hundred_year}(*){/if}
       {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
       {if $a.alias}<a href="emails/alias">(changer ou supprimer mon alias melix)</a>{/if}

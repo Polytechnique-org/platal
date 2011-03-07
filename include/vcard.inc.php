@@ -75,9 +75,10 @@ class VCard extends PlVCard
         // Emails
         if (!is_null($user)) {
             $entry->addMail(null, $user->bestalias, true);
-            $entry->addMail(null, $user->bestalias_alternate);
             if ($user->forlife != $user->bestalias) {
                 $entry->addMail(null, $user->forlife);
+            }
+            if ($user->forlife_alternate != $user->bestalias) {
                 $entry->addMail(null, $user->forlife_alternate);
             }
         }
