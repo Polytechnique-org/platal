@@ -298,6 +298,7 @@ class EmailModule extends PLModule
                            ORDER BY  NOT(s.type = \'alias_aux\'), s.email, d.name',
                             $user->id());
         $page->assign('alias', $alias->fetchAllAssoc());
+        $page->assign('best_email', $user->bestEmail());
 
         $page->assign('emails', $redirect->emails);
 

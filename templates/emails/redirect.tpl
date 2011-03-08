@@ -26,10 +26,20 @@
   <p>
   Tu configures ici les adresses emails vers lesquelles tes adresses (listées ci-dessous) sont redirigées&nbsp;:
   </p>
-  <ul>
-    {foreach from=$alias item=a}
-    <li>
-      <strong>{$a.email}</strong>
+  <ul class="aliases">
+    <li onclick="$('.aliases').toggle()">
+      {icon name="table" title="Afficher toutes tes adresses polytechniciennes"}&nbsp;<strong>{$best_email}</strong>
+    </li>
+  </ul>
+  <ul class="aliases" style="display: none">
+    {foreach from=$alias item=a name=alias}
+    <li onclick="$('.aliases').toggle()">
+      {if $smarty.foreach.alias.first}
+      {icon name="table" title="Cacher tes adresses polytechniciennes"}
+      {else}
+      {icon name="null"}
+      {/if}
+      &nbsp;<strong>{$a.email}</strong>
       {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
     </li>
     {/foreach}
