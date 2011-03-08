@@ -132,16 +132,17 @@ function addSearchEngine()
             var s_img;
             var s_title;
             var s_url;
+            var href = this.attr('href');
 
             for (site in goodies[type].sites) {
                 entry = goodies[type].sites[site];
                 s_alt   = entry.alt || "";
                 s_img   = entry.img;
                 s_title = entry.title || "";
-                s_url   = entry.url_prefix.length > 0 ? entry.url_prefix + escape(this.href) : this.href;
+                s_url   = entry.url_prefix.length > 0 ? entry.url_prefix + escape(href) : href;
 
                 text += '<a href="' + s_url + '"><img src="' + s_img + '" title="' + s_title + '" alt="' + s_alt + '"></a><br />';
-                }
+            }
             text += '<a href="https://www.polytechnique.org/Xorg/Goodies">Plus de bonus</a> ...</div>';
 
             return this.overlib({
