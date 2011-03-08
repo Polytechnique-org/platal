@@ -882,7 +882,6 @@ function sendTestEmail(token, hruid)
 
     function buildPopup(input, destination, linkBindFunction)
     {
-        var pos    = findPos(input.get(0));
         var $popup = destination;
         var selected = null;
         var hovered  = 0;
@@ -932,7 +931,6 @@ function sendTestEmail(token, hruid)
                 position: 'absolute',
                 width: '300px',
                 top: input.css('bottom'),
-                left: pos.x - 300 + input.width(),
                 clear: 'both',
                 'text-align': 'left'
             });
@@ -951,7 +949,8 @@ function sendTestEmail(token, hruid)
             },
 
             show: function() {
-                $popup.show();
+                var pos = findPos(input.get(0));
+                $popup.css('left', pos.x - 300 + input.width()).show();
                 return true;
             },
 
