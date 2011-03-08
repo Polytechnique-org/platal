@@ -1053,7 +1053,7 @@ function sendTestEmail(token, hruid)
                       case 'profile':
                         $(this).attr('href', 'profile/' + profile.hrpid)
                         .popWin(840, 600)
-                        .click(function() { popup.hide(); });
+                        .click(function() { $popup.hide(); return false; });
                         break;
                       case 'admin':
                         $(this).attr('href', 'admin/user/' + profile.hrpid)
