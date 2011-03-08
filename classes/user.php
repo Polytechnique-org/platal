@@ -362,6 +362,14 @@ class User extends PlUser
         }
     }
 
+    public function forlifeEmailAlternate()
+    {
+        if (!empty($this->forlife_alternate)) {
+            return $this->forlife_alternate;
+        }
+        return $this->email;
+    }
+
     /** Fetch existing auxiliary alias.
      */
     public function emailAlias()
