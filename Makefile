@@ -186,7 +186,7 @@ JQUERY_VERSION=1.5.1
 JQUERY_PLUGINS=color form
 JQUERY_PLUGINS_PATHES=$(addprefix htdocs/javascript/jquery.,$(addsuffix .js,$(JQUERY_PLUGINS)))
 
-JQUERY_UI_VERSION=1.8.7
+JQUERY_UI_VERSION=1.8.10
 JQUERY_UI=core widget tabs datepicker
 JQUERY_UI_PATHES=$(addprefix htdocs/javascript/jquery.ui.,$(addsuffix .js,$(JQUERY_UI)))
 
@@ -224,7 +224,11 @@ htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js: DOWNLOAD_SRC = http://jqu
 htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js:
 	@$(download)
 
-$(JQUERY_UI_PATHES): htdocs/javascript/jquery.ui.%.js: htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js
+htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).datepicker-fr.js: DOWNLOAD_SRC = http://jquery-ui.googlecode.com/svn/tags/$(JQUERY_UI_VERSION)/ui/minified/i18n/jquery.ui.datepicker-fr.min.js
+htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).datepicker-fr.js:
+	@$(download)
+
+$(JQUERY_UI_PATHES) htdocs/javascript/jquery.ui.datepicker-fr.js: htdocs/javascript/jquery.ui.%.js: htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js
 	ln -snf $(<F) $@
 
 htdocs/javascript/jquery.tmpl-$(JQUERY_TMPL_VERSION).js: DOWNLOAD_SRC = https://github.com/jquery/jquery-tmpl/raw/$(JQUERY_TMPL_VERSION)/jquery.tmpl.js --no-check-certificate
