@@ -74,7 +74,7 @@
 
 <p class="smaller">
 {assign var="profile" value=$smarty.session.user->profile()}
-(*) ces adresses email t'est réservée pour une période 100 ans après ton entrée à l'X (dans ton cas, jusqu'en {$profile->yearpromo()+100}).
+(*) ces adresses email te sont réservées pour une période 100 ans après ton entrée à l'X (dans ton cas, jusqu'en {$profile->yearpromo()+100}).
 </p>
 <p class="smaller">
 (**) ces adresses email te sont réservées à vie.

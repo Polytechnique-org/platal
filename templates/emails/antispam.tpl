@@ -58,8 +58,7 @@
     l'antispam pour toutes tes redirections au niveau demandé.
   </span><br />{/if}
   <input id="s0" type="radio" name="filter_status" value="0" {if $single_state && $filter eq 0}checked="checked"{/if} />
-  <label for="s0"><strong>(0) fais confiance à Polytechnique.org et utilise le réglage recommandé</strong>
-  (actuellement, le niveau {#globals.mail.antispam#})</label>
+  <label for="s0"><strong>(0) fais confiance à Polytechnique.org et utilise le réglage recommandé</strong> (actuellement, le niveau {#globals.mail.antispam#})</label>
   <br />
   <input id="s1" type="radio" name="filter_status" value="1" {if $single_state && $filter eq 1}checked="checked"{/if} />
   <label for="s1">(1) le filtre anti-spam n'agit pas sur tes emails</label>
