@@ -98,6 +98,9 @@ function doPlatalLink($link, $text)
 {
     if (strlen(trim($text)) == 0) {
         $profile = Profile::get($link);
+        if (!$profile) {
+            return '##Utilisateur inconnu##' . $text . '##';
+        }
         $text = $profile->fullName();
     }
     return '<a href="profile/' . $link . '" class="popup2">' . $text . '</a>';
