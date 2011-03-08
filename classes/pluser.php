@@ -171,13 +171,6 @@ abstract class PlUser implements PlUserInterface
         }
         return $this->email;
     }
-    public function forlifeEmailAlternate()
-    {
-        if (!empty($this->forlife_alternate)) {
-            return $this->forlife_alternate;
-        }
-        return $this->email;
-    }
 
     public function displayName()
     {
