@@ -1,0 +1,10 @@
+À ajouter dans platal.conf:
+[Mail]
+antispam = 3
+
+[Xnet]
+participant_list = "-participants"
+absent_list = "-absents"
+unpayed_list = "-participants-non-paye"
+payed_list = "-paye"
+event_lists = "-absents,-participants,-paye,-participants-non-paye"
