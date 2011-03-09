@@ -32,7 +32,7 @@ conserver ton alias {$emailXorg} qui correspond maintenant à deux personnes.
 
 Tu gardes tout de même l'usage de cet alias pour un mois encore à compter de ce jour.
 
-Lorsque cet alias sera désactivé, l'adresse {$emailXorg}@polytechnique.org renverra vers un robot qui indiquera qu'il y a plusieurs personnes portant le même nom ; cela évite que l'un des homonymes reçoive des courriels destinés à l'autre.
+Lorsque cet alias sera désactivé, l'adresse {$emailXorg} renverra vers un robot qui indiquera qu'il y a plusieurs personnes portant le même nom ; cela évite que l'un des homonymes reçoive des courriels destinés à l'autre.
 
 Pour te connecter au site, tu pourras utiliser comme identifiant n'importe lequel de tes autres alias : {$als}.
 Commence dès aujourd'hui à communiquer à tes correspondants la nouvelle adresse que tu comptes utiliser !

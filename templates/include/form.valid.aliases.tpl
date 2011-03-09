@@ -23,7 +23,7 @@
 
 <tr class="pair">
   <td class="titre">Ancien alias</td>
-  <td>{$valid->old|default:"-none-"}</td>
+  <td>{$valid->old|default:"-aucun-"}</td>
 </tr>
 <tr class="pair">
   <td class="titre">Nouvel&nbsp;alias&nbsp;:</td>
@@ -35,7 +35,7 @@
 </tr>
 <tr class="pair">
   <td class="titre">Motif&nbsp;:</td>
-  <td>{$valid->raison|nl2br}</td>
+  <td>{$valid->reason|nl2br}</td>
 </tr>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

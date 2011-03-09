@@ -41,6 +41,12 @@
  *   - `id` is the id of the job to which we refer (in profile_job)
  *   - `jobid` is set to 0
  *
+ * - for a Group:
+ *  - `type` is set to 'group'
+ *  - `pid` is set to 0
+ *  - `jobid` is set to 0
+ *  - `groupid` is set to the group id
+ *
  * Thus an Address can be linked to a Company, a Profile, or a Job.
  */
 class Address
@@ -48,6 +54,7 @@ class Address
     const LINK_JOB     = 'job';
     const LINK_COMPANY = 'hq';
     const LINK_PROFILE = 'home';
+    const LINK_GROUP   = 'group';
 
     // List of all available postal formattings.
     private static $formattings = array('FRANCE' => 'FR');
@@ -284,6 +291,7 @@ class Address
     // Primary key fields: the quadruplet ($pid, $jobid, $type, $id) defines a unique address.
     public $pid = 0;
     public $jobid = 0;
+    public $groupid = 0;
     public $type = Address::LINK_PROFILE;
     public $id = 0;
 
@@ -723,14 +731,14 @@ class Address
                 Geocoder::getAreaId($this, $area);
             }
 
-            XDB::execute('INSERT IGNORE INTO  profile_addresses (pid, jobid, type, id, flags, accuracy,
+            XDB::execute('INSERT IGNORE INTO  profile_addresses (pid, jobid, groupid, type, id, flags, accuracy,
                                                                  text, postalText, postalCode, localityId,
                                                                  subAdministrativeAreaId, administrativeAreaId,
                                                                  countryId, latitude, longitude, pub, comment,
                                                                  north, south, east, west)
                                       VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
-                                               {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                         $this->pid, $this->jobid, $this->type, $this->id, $this->flags, $this->accuracy,
+                                               {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                         $this->pid, $this->jobid, $this->groupid, $this->type, $this->id, $this->flags, $this->accuracy,
                          $this->text, $this->postalText, $this->postalCode, $this->localityId,
                          $this->subAdministrativeAreaId, $this->administrativeAreaId,
                          $this->countryId, $this->latitude, $this->longitude,
@@ -746,11 +754,11 @@ class Address
     public function delete()
     {
         XDB::execute('DELETE FROM  profile_addresses
-                            WHERE  pid = {?} AND jobid = {?} AND type = {?} AND id = {?}',
-                     $this->pid, $this->jobid, $this->type, $this->id);
+                            WHERE  pid = {?} AND jobid = {?} AND groupid = {?} AND type = {?} AND id = {?}',
+                     $this->pid, $this->jobid, $this->groupid, $this->type, $this->id);
     }
 
-    static public function deleteAddresses($pid, $type, $jobid = null, $deletePrivate = true)
+    static public function deleteAddresses($pid, $type, $jobid = null, $groupid = null, $deletePrivate = true)
     {
         $where = '';
         if (!is_null($pid)) {
@@ -758,6 +766,9 @@ class Address
         }
         if (!is_null($jobid)) {
             $where = XDB::format(' AND jobid = {?}', $jobid);
+        }
+        if (!is_null($groupid)) {
+            $where = XDB::format(' AND groupid = {?}', $groupid);
         }
         XDB::execute('DELETE FROM  profile_addresses
                             WHERE  type = {?}' . $where . (($deletePrivate) ? '' : ' AND pub IN (\'public\', \'ax\')'),
@@ -809,12 +820,27 @@ class Address
         return $addresses;
     }
 
+    // Compares two addresses. First sort by publicity, then place primary
+    // addresses before secondary addresses.
+    static private function compare(array $a, array $b)
+    {
+        $value = ProfileVisibility::comparePublicity($a, $b);
+        if ($value == 0) {
+            if ($a['secondary'] != $b['secondary']) {
+                $value = $a['secondary'] ? 1 : -1;
+            }
+        }
+        return $value;
+    }
+
     // Formats an array of form addresses into an array of form formatted addresses.
     static public function formatFormArray(array $data, &$success = true)
     {
+        $addresses = self::formArrayWalk($data, 'toFormArray', $success, true);
+
         // Only a single address can be the profile's current address and she must have one.
         $hasCurrent = false;
-        foreach ($data as $key => &$address) {
+        foreach ($addresses as $key => &$address) {
             if (isset($address['current']) && $address['current']) {
                 if ($hasCurrent) {
                     $address['current'] = false;
@@ -830,8 +856,7 @@ class Address
             }
         }
 
-        $addresses = self::formArrayWalk($data, 'toFormArray', $success, true);
-        usort($addresses, 'ProfileVisibility::comparePublicity');
+        usort($addresses, 'Address::compare');
         return $addresses;
     }
 

@@ -44,6 +44,9 @@ up: update
 update:
 	@git fetch && git rebase `git symbolic-ref HEAD | sed -e 's~refs/heads/~origin/~'` && git submodule update
 
+doc:
+	@doxygen core/doc/doxygen.cfg
+
 ################################################################################
 # targets
 
@@ -179,11 +182,11 @@ $(MEDAL_THUMBNAILS): $(subst /medals/thumb/,/medals/,$(@F))
 ##
 ## jquery
 ##
-JQUERY_VERSION=1.5
+JQUERY_VERSION=1.5.1
 JQUERY_PLUGINS=color form
 JQUERY_PLUGINS_PATHES=$(addprefix htdocs/javascript/jquery.,$(addsuffix .js,$(JQUERY_PLUGINS)))
 
-JQUERY_UI_VERSION=1.8.7
+JQUERY_UI_VERSION=1.8.10
 JQUERY_UI=core widget tabs datepicker
 JQUERY_UI_PATHES=$(addprefix htdocs/javascript/jquery.ui.,$(addsuffix .js,$(JQUERY_UI)))
 
@@ -274,4 +277,4 @@ restart-listrpc: stop-listrpc start-listrpc
 .PHONY: wiki build-wiki
 .PHONY: banana banana-sub htdocs/images/banana htdocs/css/banana.css
 .PHONY: start-listrpc start-listrpc-fg stop-listrpc restart-listrpc
-.PHONY: up update
+.PHONY: up update doc

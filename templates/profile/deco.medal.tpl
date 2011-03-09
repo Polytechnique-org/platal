@@ -22,17 +22,22 @@
 
 <div id="medal_{$id}" style="clear: both; margin-top: 1em; height: 50px; vertical-align: middle">
   <div style="float: left; margin-right: 0.3em">
-    <img src="profile/medal/thumb/{$id}" height="50px" />
+    <img alt="" src="profile/medal/thumb/{$medal.id}" height="50px" />
   </div>
   <div style="float: left; width: 70%">
-    <div><b id="medal_name_{$id}"></b>
-    {if !$medal.valid}(en attente de modération){/if}</div>
-    <div id="medal_grade_{$id}"><input type="hidden" name="medals[{$id}][valid]" value="{$medal.valid}" /></div>
+    <div>
+      <b class="medal_name_{$medal.id}"></b>
+      {if !$medal.valid}(en attente de modération){/if}
+    </div>
+    <div id="medal_grade_{$id}">
+      <input type="hidden" name="medals_{$id}_grade" value="{$medal.grade}" />
+      <input type="hidden" name="medals[{$id}][id]" value="{$medal.id}" />
+      <input type="hidden" name="medals[{$id}][valid]" value="{$medal.valid}" />
+    </div>
   </div>
-  <a href="javascript:removeMedal({$id})" style="vertical-align: middle">
+  <a class="removeMedal" href="javascript:removeMedal({$id})" style="vertical-align: middle">
     {icon name="cross" title="Supprimer cette médaille"}
   </a>
-  <input type="hidden" name="medal_{$id}_grade" value="{$medal.grade}" />
 </div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

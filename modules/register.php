@@ -52,7 +52,7 @@ class RegisterModule extends PLModule
             $nameTypes = DirEnum::getOptions(DirEnum::NAMETYPES);
             $nameTypes = array_flip($nameTypes);
             $res = XDB::query("SELECT  a.uid, pd.promo, pnl.name AS lastname, pnf.name AS firstname, p.xorg_id AS xorgid,
-                                       p.birthdate_ref AS birthdateRef, FIND_IN_SET('watch', a.flags) AS watch, m.hash
+                                       p.birthdate_ref AS birthdateRef, FIND_IN_SET('watch', a.flags) AS watch, m.hash, a.type
                                  FROM  register_marketing AS m
                            INNER JOIN  accounts           AS a   ON (m.uid = a.uid)
                            INNER JOIN  account_profiles   AS ap  ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
@@ -65,6 +65,7 @@ class RegisterModule extends PLModule
 
             if ($res->numRows() == 1) {
                 $subState->merge($res->fetchOneRow());
+                $subState->set('main_mail_domain', User::$sub_mail_domains[$subState->v('type')]);
                 $subState->set('yearpromo', substr($subState->s('promo'), 1, 4));
 
                 XDB::execute('INSERT INTO  register_mstats (uid, sender, success)
@@ -92,8 +93,9 @@ class RegisterModule extends PLModule
 
             case 1:
                 if (Post::has('yearpromo')) {
-                    $promo = Post::t('edu_type') . Post::t('yearpromo');
+                    $edu_type = Post::t('edu_type');
                     $yearpromo = Post::i('yearpromo');
+                    $promo = $edu_type . $yearpromo;
                     $res = XDB::query("SELECT  COUNT(*)
                                          FROM  accounts         AS a
                                    INNER JOIN  account_profiles AS ap ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
@@ -108,10 +110,15 @@ class RegisterModule extends PLModule
                         $subState->set('step', 2);
                         $subState->set('promo', $promo);
                         $subState->set('yearpromo', $yearpromo);
-                        if ($yearpromo >= 1996 && $yearpromo < 2000) {
-                            $subState->set('schoolid', ($yearpromo % 100) * 10 . '???');
-                        } elseif($yearpromo >= 2000) {
-                            $subState->set('schoolid', 100 + ($yearpromo % 100) . '???');
+                        $subState->set('edu_type', $edu_type);
+                        if ($edu_type == 'X') {
+                            if ($yearpromo >= 1996 && $yearpromo < 2000) {
+                                $subState->set('schoolid', ($yearpromo % 100) * 10 . '???');
+                            } elseif($yearpromo >= 2000) {
+                                $subState->set('schoolid', 100 + ($yearpromo % 100) . '???');
+                            }
+                        } else {
+                            $subState->set('schoolid', '');
                         }
                     }
                 }
@@ -305,6 +312,7 @@ class RegisterModule extends PLModule
              $birthdate, $lastname, $firstname, $promo, $sex, $birthdate_ref, $eduType) = $res->fetchOneRow();
         $isX = ($eduType == 'x');
         $yearpromo = substr($promo, 1, 4);
+        $mail_domain = User::$sub_mail_domains[$eduType] . $globals->mail->domain;
 
         // Prepare the template for display.
         $page->changeTpl('register/end.tpl');
@@ -335,24 +343,34 @@ class RegisterModule extends PLModule
         XDB::execute("UPDATE  profiles
                          SET  birthdate = {?}, last_change = NOW()
                        WHERE  pid = {?}", $birthdate, $pid);
-        XDB::execute("INSERT INTO  aliases (uid, alias, type)
-                           VALUES  ({?}, {?}, 'a_vie')", $uid, $forlife);
-        XDB::execute("INSERT INTO  aliases (uid, alias, type, flags)
-                           VALUES  ({?}, {?}, 'alias', 'bestalias')", $uid, $bestalias);
+        XDB::execute('INSERT INTO  email_source_account (email, uid, type, flags, domain)
+                           SELECT  {?}, {?}, \'forlife\', \'\', id
+                             FROM  email_virtual_domains
+                            WHERE  name = {?}',
+                     $forlife, $uid, $mail_domain);
+        XDB::execute('INSERT INTO  email_source_account (email, uid, type, flags, domain)
+                           SELECT  {?}, {?}, \'alias\', \'bestalias\', id
+                             FROM  email_virtual_domains
+                            WHERE  name = {?}',
+                     $bestalias, $uid, $mail_domain);
         if ($emailXorg2) {
-            XDB::execute("INSERT INTO  aliases (uid, alias, type)
-                               VALUES  ({?}, {?}, 'alias')", $uid, $emailXorg2);
+            XDB::execute('INSERT INTO  email_source_account (email, uid, type, flags, domain)
+                               SELECT  {?}, {?}, \'alias\', \'\', id
+                                 FROM  email_virtual_domains
+                                WHERE  name = {?}',
+                         $emailXorg2, $uid, $mail_domain);
         }
         XDB::commit();
 
         // Add the registration email address as first and only redirection.
         require_once 'emails.inc.php';
+        $user = User::getSilentWithUID($uid);
         $redirect = new Redirect($user);
         $redirect->add_email($email);
 
         // Try to start a session (so the user don't have to log in); we will use
         // the password available in Post:: to authenticate the user.
-        $success = Platal::session()->start(AUTH_MDP);
+        Platal::session()->start(AUTH_MDP);
 
         // Subscribe the user to the services she did request at registration time.
         foreach (explode(',', $services) as $service) {
@@ -365,8 +383,7 @@ class RegisterModule extends PLModule
                     NewsLetter::forGroup(NewsLetter::GROUP_XORG)->subscribe($user);
                     break;
                 case 'imap':
-                    $storage = new EmailStorage($user, 'imap');
-                    $storage->activate();
+                    Email::activate_storage($user, 'imap');
                     break;
                 case 'ml_promo':
                     $r = XDB::query('SELECT id FROM groups WHERE diminutif = {?}', $yearpromo);

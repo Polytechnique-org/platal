@@ -433,7 +433,7 @@ class NewsLetter
     /** Get the prefix leading to the page for this NL
      * Only X.org / AX / X groups may be seen on X.org.
      */
-    public function prefix()
+    public function prefix($enforce_xnet=true)
     {
         if (!empty($GLOBALS['IS_XNET_SITE'])) {
             return $this->group . '/nl';
@@ -447,13 +447,13 @@ class NewsLetter
             return 'epletter';
         default:
             // Don't display groups NLs on X.org
-            assert(false);
+            assert(!$enforce_xnet);
         }
     }
 
     /** Get the prefix to use for all 'admin' pages of this NL.
      */
-    public function adminPrefix()
+    public function adminPrefix($enforce_xnet=true)
     {
         if (!empty($GLOBALS['IS_XNET_SITE'])) {
             return $this->group . '/admin/nl';
@@ -467,7 +467,7 @@ class NewsLetter
             return 'epletter/admin';
         default:
             // Don't display groups NLs on X.org
-            assert(false);
+            assert(!$enforce_xnet);
         }
     }
 
@@ -666,6 +666,11 @@ class NLIssue
                                       WHERE  id = {?}',
                                       $this->id);
             if ($success) {
+                global $globals;
+                $mailer = new PlMailer('newsletter/notify_scheduled.mail.tpl');
+                $mailer->assign('issue', $this);
+                $mailer->assign('base', $globals->baseurl);
+                $mailer->send();
                 $this->refresh();
             }
             return $success;
@@ -681,7 +686,7 @@ class NLIssue
     {
         if ($this->state == self::STATE_PENDING) {
             $success = XDB::execute('UPDATE  newsletter_issues
-                                        SET  send_before = NULL, state = \'new\'
+                                        SET  state = \'new\'
                                       WHERE  id = {?}', $this->id);
             if ($success) {
                 $this->refresh();
@@ -985,7 +990,15 @@ class NLIssue
 
     // }}}
     // {{{ Mailing
-    
+
+    /** Check whether this issue is empty
+     * An issue is empty if the email has no title (or the default one), or no articles and an empty head.
+     */
+    public function isEmpty()
+    {
+        return $this->title_mail == '' || $this->title_mail == 'to be continued' || (count($this->arts) == 0 && strlen($this->head) == 0);
+    }
+
     /** Retrieve the 'Send before' date, in a clean format.
      */
     public function getSendBeforeDate()
@@ -1077,9 +1090,9 @@ class NLIssue
                        WHERE  id = {?}',
                        $this->id);
 
-        $ufc = new PFC_And($this->getRecipientsUFC(), new UFC_NLSubscribed($this->nl->id, $this->id), new UFC_HasEmailRedirect());
+        $ufc = new PFC_And($this->getRecipientsUFC(), new UFC_NLSubscribed($this->nl->id, $this->id), new UFC_HasValidEmail());
         $emailsCount = 0;
-        $uf = new UserFilter($ufc);
+        $uf = new UserFilter($ufc, array(new UFO_IsAdmin(), new UFO_Uid()));
         $limit = new PlLimit(self::BATCH_SIZE);
 
         while (true) {

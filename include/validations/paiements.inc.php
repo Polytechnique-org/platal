@@ -188,25 +188,20 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
             list($nom, $diminutif, $evt) = $res->fetchOneRow();
             require_once dirname(__FILE__) . '/../../modules/xnetevents/xnetevents.inc.php';
             $participants = get_event_participants(get_event_detail($this->evt, false, $this->asso_id), null);
-            foreach ($participants as &$u) {
+            foreach ($participants as $u) {
                 if (!$u['notify_payment']) {
                     continue;
                 }
                 $topay = $u['montant'] - $u['paid'];
                 if ($topay > 0) {
                     $mailer = new PlMailer('xnetevents/newpayment.mail.tpl');
+                    $mail->addTo($u['user']);
                     $mailer->assign('asso', $nom);
                     $mailer->assign('diminutif', $diminutif);
                     $mailer->assign('evt', $evt);
                     $mailer->assign('payment', $id);
-                    $mailer->assign('prenom', $u['prenom']);
+                    $mailer->assign('prenom', $u['user']->firstName());
                     $mailer->assign('topay', $topay);
-
-                    if (strpos($u['email'], '@') === false) {
-                        $mailer->assign('to', $u['email'] . '@' . $globals->mail->domain);
-                    } else {
-                        $mailer->assign('to', $u['email']);
-                    }
                     $mailer->send();
                 }
             }

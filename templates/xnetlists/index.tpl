@@ -112,18 +112,18 @@ t'empêcherait de t'y réabonner par la suite sans l'aide d'un administrateur.
   <tr>
     <th{if $may_update} colspan='3'{/if}>Alias</th>
   </tr>
-  {if $alias->total()}
-  {iterate from=$alias item=a}
+  {if $aliases|@count}
+  {foreach from=$aliases item=alias}
   <tr>
     {if $may_update}
-    <td class="center"><a href='mailto:{$a.alias}'>{icon name=email title="email"}</a></td>
-    <td><a href="{$platal->ns}alias/admin/{$a.alias}">{$a.alias}</a></td>
-    <td class="center"><a href="{$platal->ns}lists?del_alias={$a.alias}">{icon name=delete title='supprimer'}</a></td>
+    <td class="center"><a href='mailto:{$alias}'>{icon name=email title="email"}</a></td>
+    <td><a href="{$platal->ns}alias/admin/{$alias}">{$alias}</a></td>
+    <td class="center"><a href="{$platal->ns}lists?del_alias={$alias}">{icon name=delete title='supprimer'}</a></td>
     {else}
-    <td><a href='mailto:{$a.alias}'>{icon name=email title="email"} {$a.alias}</a></td>
+    <td><a href='mailto:{$alias}'>{icon name=email title="email"} {$alias}</a></td>
     {/if}
   </tr>
-  {/iterate}
+  {/foreach}
   {else}
   <tr>
     <td{if $may_update} colspan='3'{/if}>Aucun alias pour ce groupe</td>

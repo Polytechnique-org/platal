@@ -37,7 +37,8 @@ $(function() {
 <h1>{$asso->nom}&nbsp;: Gestion des télépaiements </h1>
 
 <p class="descr">
-Voici la liste des paiements en ligne possible pour le groupe {$asso->nom}&nbsp;:
+Voici la liste des paiements en ligne possible pour le groupe {$asso->nom}. Pour afficher les camarades dans un certain ordre,
+il suffit de cliquer sur le titre de la colonne concernée.
 </p>
 
 {foreach from=$titles item=p}
@@ -78,7 +79,10 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso->nom}&nbsp;
 {/if}
 
 {if $is_admin && $trans[$p.id]}
-<p>Liste des personnes ayant payé (pour les administrateurs uniquement)&nbsp;:</p>
+<p>
+  Liste des personnes ayant payé (pour les administrateurs uniquement)&nbsp;:<br />
+  <a href="{$platal->ns}payment/csv/{$p.id}.csv">{icon name=page_excel title="Fichier Excel"} Obtenir au format Excel</a>
+</p>
 <table cellpadding="0" cellspacing="0" id="list_{$p.id}" class='bicol'>
   <tr>
     <th>

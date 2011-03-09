@@ -111,6 +111,7 @@ class PaymentModule extends PLModule
             'payment/paypal_return'        => $this->make_hook('paypal_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
             '%grp/paiement'                => $this->make_hook('xnet_payment',     AUTH_MDP),
             '%grp/payment'                 => $this->make_hook('xnet_payment',     AUTH_MDP),
+            '%grp/payment/csv'             => $this->make_hook('payment_csv',      AUTH_MDP,    'groupadmin'),
             '%grp/payment/cyber_return'    => $this->make_hook('cyber_return',     AUTH_PUBLIC, 'user', NO_HTTPS),
             '%grp/payment/cyber2_return'   => $this->make_hook('cyber2_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
             '%grp/payment/paypal_return'   => $this->make_hook('paypal_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
@@ -248,7 +249,7 @@ class PaymentModule extends PLModule
         if ($eid = $res->fetchOneCell()) {
             require_once dirname(__FILE__) . '/xnetevents/xnetevents.inc.php';
             $evt = get_event_detail($eid);
-            subscribe_lists_event($uid, $evt, 1, $montant, true);
+            subscribe_lists_event($uid, $evt['short_name'], 1, $montant, true);
         }
 
         /* on genere le mail de confirmation */
@@ -345,7 +346,7 @@ class PaymentModule extends PLModule
             list($eid, $asso_id) = $res->fetchOneRow();
             require_once dirname(__FILE__) . '/xnetevents/xnetevents.inc.php';
             $evt = get_event_detail($eid, false, $asso_id);
-            subscribe_lists_event($user->id(), $evt, 1, $amount, true);
+            subscribe_lists_event($user->id(), $evt['short_name'], 1, $amount, true);
         }
 
         /* on genere le mail de confirmation */
@@ -441,14 +442,14 @@ class PaymentModule extends PLModule
         if ($eid = $res->fetchOneCell()) {
             require_once dirname(__FILE__) . '/xnetevents/xnetevents.inc.php';
             $evt = get_event_detail($eid);
-            subscribe_lists_event($user->id(), $evt, 1, $montant, true);
+            subscribe_lists_event($user->id(), $evt['short_name'], 1, $montant, true);
         }
 
         /* on genere le mail de confirmation */
-        $conf_text = str_replace(array('<prenom>', '<nom>', '<promo>', '<montant>', '<salutation>', '<cher>'),
+        $conf_text = str_replace(array('<prenom>', '<nom>', '<promo>', '<montant>', '<salutation>', '<cher>', '<comment>'),
                                  array($user->firstName(), $user->lastName(), $user->promo(), $montant,
-                                       $user->isFemale() ? 'Chère' : 'Cher',
-                                       $user->isFemale() ? 'Chère' : 'Cher'), $conf_text);
+                                       $user->isFemale() ? 'Chère' : 'Cher', $user->isFemale() ? 'Chère' : 'Cher',
+                                       Env::v('comment')), $conf_text);
 
         global $globals;
         $mymail = new PlMailer();
@@ -587,6 +588,43 @@ class PaymentModule extends PLModule
         $page->register_modifier('decode_comment', 'decode_comment');
         $page->assign('trans', $trans);
         $page->assign('event', $event);
+    }
+
+    function handler_payment_csv($page, $pid = null)
+    {
+        if (is_null($pid)) {
+            pl_redirect('payment');
+        }
+        if (substr($pid, -4) == '.vcf') {
+            $pid = substr($pid, 0, strlen($pid) - 4);
+        }
+
+        $res = XDB::fetchAllAssoc('SELECT  uid, IF(timestamp = \'0000-00-00\', 0, timestamp) AS date, comment, amount
+                                     FROM  payment_transactions
+                                    WHERE  ref = {?}
+                                 ORDER BY  timestamp',
+                                  $pid);
+        if (is_null($res)) {
+            pl_redirect('payment');
+        }
+
+        $users = User::getBulkUsersWithUIDs($res, 'uid', 'user');
+        $sum = 0;
+
+        pl_cached_content_headers('text/x-csv', 1);
+        $csv = fopen('php://output', 'w');
+        fputcsv($csv, array('Date', 'Nom', 'Prénom', 'Sexe', 'Promotion', 'Email', 'Commentaire', 'Montant'), ';');
+        foreach ($users as $item) {
+            $user = $item['user'];
+            $sum += strtr(substr($item['amount'], 0, strpos($item['amount'], 'EUR')), ',', '.');
+            fputcsv($csv, array(format_datetime($item['date'], '%d/%m/%y'), $user->lastName(), $user->firstName(),
+                                ($user->isFemale()) ? 'F' : 'M', $user->promo(), $user->ForlifeEmail(),
+                                $item['comment'], str_replace('EUR', '€', $item['amount'])), ';');
+        }
+        fputcsv($csv, array(date('d/m/y'), 'Total', '', '', '' , '', '', strtr($sum, '.', ',') . ' €'), ';');
+
+        fclose($csv);
+        exit;
     }
 
     function handler_admin($page, $action = 'list', $id = null) {

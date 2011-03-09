@@ -285,7 +285,7 @@ class ProfileModule extends PLModule
 
         // Determines and displays the virtual alias.
         if (!is_null($owner) && $profile->alias_pub == 'public') {
-            $page->assign('virtualalias', $owner->emailAlias());
+            $page->assign('virtualalias', $owner->emailAliases());
         }
 
         $page->assign_by_ref('profile', $profile);
@@ -427,12 +427,12 @@ class ProfileModule extends PLModule
         require_once "education.func.inc.php";
     }
 
-    function handler_ajax_medal($page, $id)
+    function handler_ajax_medal($page, $i, $id)
     {
         pl_content_headers("text/html");
         $page->changeTpl('profile/deco.medal.tpl', NO_SKIN);
-        $page->assign('id', $id);
-        $page->assign('medal', array('valid' => 0, 'grade' => 0));
+        $page->assign('id', $i);
+        $page->assign('medal', array('id' => $id, 'grade' => 0, 'valid' => 0));
     }
 
     function handler_ajax_job($page, $id)
@@ -667,7 +667,7 @@ class ProfileModule extends PLModule
         }
 
         $vcard = new VCard();
-        $vcard->addProfile(Profile::get($x));
+        $vcard->addProfile(Profile::get($x, Profile::FETCH_ALL));
         $vcard->show();
     }
 

@@ -32,10 +32,10 @@ if (!$globals->mailstorage->googleapps_domain) {
 
 /* Updates the l_userid parameter for newer user accounts. */
 $res = XDB::iterator(
-    "SELECT  g.g_account_name, a.uid
+    "SELECT  g.g_account_name, s.uid
        FROM  gapps_accounts AS g
-  LEFT JOIN  aliases as a ON (a.alias = g.g_account_name AND a.type = 'a_vie')
-      WHERE  (g.l_userid IS NULL OR g.l_userid <= 0) AND a.uid IS NOT NULL");
+  LEFT JOIN  email_source_account AS s ON (s.email = g.g_account_name AND s.type = 'forlife')
+      WHERE  (g.l_userid IS NULL OR g.l_userid <= 0) AND s.uid IS NOT NULL");
 while ($account = $res->next()) {
     XDB::execute(
         "UPDATE  gapps_accounts
@@ -48,8 +48,8 @@ while ($account = $res->next()) {
 $res = XDB::iterator(
     "SELECT  g.g_account_name
        FROM  gapps_accounts AS g
-  LEFT JOIN  aliases as a ON (a.alias = g.g_account_name AND a.type = 'a_vie')
-      WHERE  (g.l_userid IS NULL OR g.l_userid <= 0) AND a.uid IS NULL");
+  LEFT JOIN  email_source_account AS s ON (s.email = g.g_account_name AND s.type = 'forlife')
+      WHERE  (g.l_userid IS NULL OR g.l_userid <= 0) AND s.uid IS NULL");
 while ($account = $res->next()) {
     if (!preg_match("/^admin-/", $account['g_account_name'])) {
         printf("Warning: GApps account '%s' has no local uid.\n", $account['g_account_name']);
@@ -58,10 +58,10 @@ while ($account = $res->next()) {
 
 /* Updates the l_userid parameter for newer nicknames. */
 $res = XDB::iterator(
-    "SELECT  g.g_account_name, a.uid
+    "SELECT  g.g_account_name, s.uid
        FROM  gapps_nicknames AS g
-  LEFT JOIN  aliases AS a ON (a.alias = g.g_account_name AND a.type = 'a_vie')
-      WHERE  (g.l_userid IS NULL or g.l_userid <= 0) AND a.uid IS NOT NULL
+  LEFT JOIN  email_source_account AS s ON (s.email = g.g_account_name AND s.type = 'forlife')
+      WHERE  (g.l_userid IS NULL or g.l_userid <= 0) AND s.uid IS NOT NULL
    GROUP BY  g_account_name");
 while ($nickname = $res->next()) {
     XDB::execute(
@@ -75,8 +75,8 @@ while ($nickname = $res->next()) {
 $res = XDB::iterator(
     "SELECT  g.g_account_name
        FROM  gapps_nicknames AS g
-  LEFT JOIN  aliases as a ON (a.alias = g.g_account_name AND a.type = 'a_vie')
-      WHERE  (g.l_userid IS NULL OR g.l_userid <= 0) AND a.uid IS NULL");
+  LEFT JOIN  email_source_account AS s ON (s.email = g.g_account_name AND s.type = 'forlife')
+      WHERE  (g.l_userid IS NULL OR g.l_userid <= 0) AND s.uid IS NULL");
 while ($nickname = $res->next()) {
     if (!preg_match("/^admin-/", $nickname['g_account_name'])) {
         printf("Warning: Nickname '%s' has no local uid.\n", $nickname['g_account_name']);
@@ -86,11 +86,11 @@ while ($nickname = $res->next()) {
 /* Checks that all nicknames have been synchronized to GoogleApps. Creates the
    missing ones. */
 $res = XDB::iterator(
-    "SELECT  g.l_userid AS id, f.alias AS username, a.alias AS nickname
+    "SELECT  g.l_userid AS id, s1.email AS username, s2.email AS nickname
        FROM  gapps_accounts AS g
- INNER JOIN  aliases AS f ON (f.uid = g.l_userid AND f.type = 'a_vie')
- INNER JOIN  aliases AS a ON (a.uid = g.l_userid AND a.type = 'alias')
-  LEFT JOIN  gapps_nicknames AS n ON (n.l_userid = g.l_userid AND n.g_nickname = a.alias)
+ INNER JOIN  email_source_account AS s1 ON (s1.uid = g.l_userid AND s1.type = 'forlife')
+ INNER JOIN  email_source_account AS s2 ON (s2.uid = g.l_userid AND s2.type = 'alias')
+  LEFT JOIN  gapps_nicknames AS n ON (n.l_userid = g.l_userid AND n.g_nickname = s2.email)
       WHERE  g.g_status = 'active' AND n.g_nickname IS NULL AND g.l_userid IS NOT NULL");
 while ($nickname = $res->next()) {
     // Checks that the requested nickname doesn't look like a regular forlife;
@@ -111,8 +111,8 @@ while ($nickname = $res->next()) {
 $res = XDB::iterator(
     "SELECT  g.l_userid AS id, g.g_nickname AS nickname
        FROM  gapps_nicknames AS g
-  LEFT JOIN  aliases AS a ON (a.uid = g.l_userid AND a.type = 'alias' AND a.alias = g.g_nickname)
-      WHERE  g.l_userid IS NOT NULL AND a.alias IS NULL");
+  LEFT JOIN  email_source_account AS s ON (s.uid = g.l_userid AND s.type = 'forlife' AND s.email = g.g_nickname)
+      WHERE  g.l_userid IS NOT NULL AND s.email IS NULL");
 while ($nickname = $res->next()) {
     XDB::execute(
         "INSERT  INTO gapps_queue

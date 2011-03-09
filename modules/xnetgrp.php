@@ -208,8 +208,13 @@ class XnetGrpModule extends PLModule
                       Post::v('unsub_url'), $flags, Post::t('welcome_msg'),
                       $globals->asso('id'));
                 if (Post::v('mail_domain')) {
-                    XDB::execute('INSERT IGNORE INTO virtual_domains (domain) VALUES({?})',
-                                           Post::v('mail_domain'));
+                    XDB::execute('INSERT IGNORE INTO  email_virtual_domains (name)
+                                              VALUES  ({?})',
+                                 Post::t('mail_domain'));
+                    XDB::execute('UPDATE  email_virtual_domains
+                                     SET  aliasing = id
+                                   WHERE  name = {?}',
+                                 Post::t('mail_domain'));
                 }
             } else {
                 XDB::execute(
@@ -226,6 +231,16 @@ class XnetGrpModule extends PLModule
                       $globals->asso('id'));
             }
 
+            Phone::deletePhones(0, Phone::LINK_GROUP, $globals->asso('id'));
+            $phone = new Phone(array('link_type' => 'group', 'link_id' => $globals->asso('id'), 'id' => 0,
+                                     'type' => 'fixed', 'display' => Post::v('phone'), 'pub' => 'public'));
+            $fax   = new Phone(array('link_type' => 'group', 'link_id' => $globals->asso('id'), 'id' => 1,
+                                     'type' => 'fax', 'display' => Post::v('fax'), 'pub' => 'public'));
+            $phone->save();
+            $fax->save();
+            Address::deleteAddresses(null, Address::LINK_GROUP, null, $globals->asso('id'));
+            $address = new Address(array('groupid' => $globals->asso('id'), 'type' => Address::LINK_GROUP, 'text' => Post::v('address')));
+            $address->save();
 
             if ($_FILES['logo']['name']) {
                 $upload = PlUpload::get($_FILES['logo'], $globals->asso('id'), 'asso.logo', true);
@@ -369,7 +384,7 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
         $vcard = new VCard($photos == 'photos', 'Membre du groupe ' . $globals->asso('nom'));
-        $vcard->addProfiles($globals->asso()->getMembersFilter()->getProfiles());
+        $vcard->addProfiles($globals->asso()->getMembersFilter()->getProfiles(null, Profile::FETCH_ALL));
         $vcard->show();
     }
 
@@ -500,9 +515,9 @@ class XnetGrpModule extends PLModule
             $uf = New UserFilter(New UFC_Group($globals->asso('id'), true));
             $admins = $uf->iterUsers();
             $admin = $admins->next();
-            $to = $admin->bestalias;
+            $to = $admin->bestEmail();
             while ($admin = $admins->next()) {
-                $to .= ', ' . $admin->bestalias;
+                $to .= ', ' . $admin->bestEmail();
             }
 
             $append = "\n"
@@ -793,11 +808,11 @@ class XnetGrpModule extends PLModule
             }
         }
 
-        XDB::execute("DELETE FROM  virtual_redirect
-                            USING  virtual_redirect
-                       INNER JOIN  virtual USING(vid)
-                            WHERE  redirect={?} AND alias LIKE {?}",
-                       $user->forlifeEmail(), '%@'.$domain);
+        XDB::execute('DELETE  v
+                        FROM  email_virtual         AS v
+                  INNER JOIN  email_virtual_domains AS d ON (v.domain = d.id)
+                       WHERE  v.redirect = {?} AND d.name = {?}',
+                     $user->forlifeEmail(), $domain);
         return !$warning;
     }
 
@@ -974,26 +989,18 @@ class XnetGrpModule extends PLModule
 
             // Change subscriptioin to aliases
             foreach (Env::v('ml3', array()) as $ml => $state) {
+                require_once 'emails.inc.php';
                 $ask = !empty($_REQUEST['ml4'][$ml]);
                 if($state == $ask) {
                     if ($state && $email_changed) {
-                        XDB::query("UPDATE  virtual_redirect AS vr, virtual AS v
-                                       SET  vr.redirect = {?}
-                                     WHERE  vr.vid = v.vid AND v.alias = {?} AND vr.redirect = {?}",
-                                     $user->forlifeEmail(), $ml, $from_email);
+                        update_list_alias($user, $from_email, $ml, $globals->asso('mail_domain'));
                         $page->trigSuccess("L'abonnement de {$user->fullName()} à $ml a été mis à jour.");
                     }
                 } else if($ask) {
-                    XDB::query("INSERT INTO  virtual_redirect (vid,redirect)
-                                     SELECT  vid,{?} FROM virtual WHERE alias={?}",
-                               $user->forlifeEmail(), $ml);
+                    add_to_list_alias($user, $ml, $globals->asso('mail_domain'));
                     $page->trigSuccess("{$user->fullName()} a été abonné à $ml.");
                 } else {
-                    XDB::query("DELETE FROM  virtual_redirect
-                                      USING  virtual_redirect
-                                 INNER JOIN  virtual USING(vid)
-                                      WHERE  redirect={?} AND alias={?}",
-                               $from_email, $ml);
+                    delete_from_list_alias($user, $ml, $globals->asso('mail_domain'));
                     $page->trigSuccess("{$user->fullName()} a été désabonné de $ml.");
                 }
             }
@@ -1004,7 +1011,7 @@ class XnetGrpModule extends PLModule
 
         $page->assign('user', $user);
         $page->assign('listes', $mmlist->get_lists($user->forlifeEmail()));
-        $page->assign('alias', $user->emailAliases($globals->asso('mail_domain'), 'user', true));
+        $page->assign('alias', $user->emailGroupAliases($globals->asso('mail_domain')));
         $page->assign('positions', explode(',', $positions));
     }
 

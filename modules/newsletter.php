@@ -127,7 +127,7 @@ class NewsletterModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        if($new) {
+        if ($new == 'new') {
             $id = $nl->createPending();
             pl_redirect($nl->adminPrefix() . '/edit/' . $id);
         }
@@ -173,7 +173,7 @@ class NewsletterModule extends PLModule
         );
 
         // Update the current issue
-        if($aid == 'update') {
+        if($aid == 'update' && Post::has('submit')) {
 
             // Save common fields
             $issue->title      = Post::s('title');

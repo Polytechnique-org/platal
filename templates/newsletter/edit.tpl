@@ -138,7 +138,7 @@
         {if $issue->isEditable()}
         Le {valid_date name="send_before_date" value=$issue->getSendBeforeDate() from=3 to=15} vers {html_select_time prefix="send_before_time_" time=$issue->getSendBeforeTime() display_hours=true display_minutes=false display_seconds=false display_meridian=false use_24_hours=true} heures
         {else}
-        Le {$issue->send_before|date_format:"%X vers %Hh"}
+        Le {$issue->send_before|date_format:"%d/%m/%Y vers %Hh"}
         {/if}
       </td>
     </tr>
@@ -185,13 +185,14 @@
           <br />
           <i>Entrer une liste de matricules AX (un par ligne)</i><br />
           <input type="checkbox" name="axid_reversed" id="axid_reversed" {if $smarty.request.axid_reversed}checked="checked"{/if} value="1" />
+          Inverser la sélection <i>(sélectionner dans l'intervalle de promotions, à l'exception des matricules indiqués)</i>
         </td>
       </tr>
       {/if}
     {/if}
     <tr class='center'>
       <td colspan='2'>
-        <input type='submit' value='Sauver' />
+        <input type='submit' name='submit' value='Sauver' />
       </td>
     </tr>
   </table>

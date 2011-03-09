@@ -34,11 +34,7 @@ ORGANIZER;CN="{$e.prenom} {$e.nom}":MAILTO:{$e.alias}@polytechnique.org
 UID:event-{$e.short_name}-{$e.eid}@{$asso->diminutif}.polytechnique.org
 {if $admin}
 {foreach from=$participants item=m}
-{if $m.x}
-ATTENDEE;CN="{$m.prenom} {$m.nom} (X{$m.promo})":MAILTO:{$m.email}@{#globals.mail.domain#}
-{else}
-ATTENDEE;CN="{$m.prenom} {$m.nom} (non-X)":MAILTO:{$m.email}
-{/if}
+ATTENDEE;CN="{$m.user->fullName('promo')}":MAILTO:{$m.user->bestEmail()}
 {/foreach}
 {/if}
 {if $e.accept_nonmembre}

@@ -59,6 +59,10 @@
     background: window url(../images/wait.gif) no-repeat scroll right center;
 }
 
+.ac_loading_left {
+    background: window url(../images/wait.gif) no-repeat scroll left center;
+}
+
 .hidden_valid {
     background-color: #bfb;
 }

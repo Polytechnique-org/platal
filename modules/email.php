@@ -61,27 +61,49 @@ class EmailModule extends PLModule
                 return PL_FORBIDDEN;
             }
 
-            XDB::execute("UPDATE  aliases
+            // First delete the bestalias flag from all this user's emails.
+            XDB::execute("UPDATE  email_source_account
                              SET  flags = TRIM(BOTH ',' FROM REPLACE(CONCAT(',', flags, ','), ',bestalias,', ','))
                            WHERE  uid = {?}", $user->id());
-            XDB::execute("UPDATE  aliases
+            // Then gives the bestalias flag to the given email.
+            list($email, $domain) = explode('@', $email);
+            XDB::execute("UPDATE  email_source_account
                              SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'bestalias')
-                           WHERE  uid = {?} AND alias = {?}", $user->id(), $email);
+                           WHERE  uid = {?} AND email = {?}", $user->id(), $email);
+            XDB::execute('UPDATE  accounts              AS a
+                      INNER JOIN  email_virtual_domains AS d ON (d.name = {?})
+                             SET  a.best_domain = d.id
+                           WHERE  a.uid = {?}',
+                         $domain, $user->id());
 
             // As having a non-null bestalias value is critical in
             // plat/al's code, we do an a posteriori check on the
             // validity of the bestalias.
             fix_bestalias($user);
+            // Then refetch the user to update its bestalias.
+            S::set('user', User::getWithUID(S::user()->id()));
         }
 
         // Fetch and display aliases.
-        $sql = "SELECT  alias, (type='a_vie') AS a_vie,
-                        (alias REGEXP '\\\\.[0-9]{2}$') AS cent_ans,
-                        FIND_IN_SET('bestalias',flags) AS best, expire
-                  FROM  aliases
-                 WHERE  uid = {?} AND type!='homonyme'
-              ORDER BY  LENGTH(alias)";
-        $page->assign('aliases', XDB::iterator($sql, $user->id()));
+        $aliases = XDB::iterator("SELECT  CONCAT(s.email, '@', d.name) AS email, (s.type = 'forlife') AS forlife,
+                                          (s.email REGEXP '\\\\.[0-9]{2}$') AS hundred_year, s.expire,
+                                          (FIND_IN_SET('bestalias', s.flags) AND a.best_domain = d.id) AS bestalias,
+                                          ((s.type = 'alias_aux') AND d.aliasing = d.id) AS alias
+                                    FROM  email_source_account  AS s
+                              INNER JOIN  accounts              AS a ON (s.uid = a.uid)
+                              INNER JOIN  email_virtual_domains AS m ON (s.domain = m.id)
+                              INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
+                                   WHERE  s.uid = {?}
+                                ORDER BY  !alias, s.email",
+                                 $user->id());
+        $page->assign('aliases', $aliases);
+
+        $alias = XDB::fetchOneCell('SELECT  COUNT(email)
+                                      FROM  email_source_account
+                                     WHERE  uid = {?} AND type = \'alias_aux\'',
+                                   $user->id());
+        $page->assign('alias', $alias);
+
 
         // Check for homonyms.
         $page->assign('homonyme', $user->homonyme);
@@ -90,18 +112,12 @@ class EmailModule extends PLModule
         $redirect = new Redirect($user);
         $page->assign('mails', $redirect->active_emails());
 
-        // Display, when available, the @alias_dom email alias.
-        $res = XDB::query(
-                "SELECT  alias
-                   FROM  virtual          AS v
-             INNER JOIN  virtual_redirect AS vr USING(vid)
-                  WHERE  (redirect={?} OR redirect={?})
-                         AND alias LIKE '%@{$globals->mail->alias_dom}'",
-                $user->forlifeEmail(),
-                // TODO: remove this über-ugly hack. The issue is that you need
-                // to remove all @m4x.org addresses in virtual_redirect first.
-                $user->login() . '@' . $globals->mail->domain2);
-        $page->assign('melix', $res->fetchOneCell());
+        // User's mail domains.
+        $mail_domains = array($user->alternateEmailDomain());
+        $mail_domains[] = User::$sub_mail_domains['all'] . $globals->mail->domain;
+        $mail_domains[] = User::$sub_mail_domains['all'] . $globals->mail->domain2;
+        $page->assign('main_email_domain', $user->mainEmailDomain());
+        $page->assign('mail_domains', $mail_domains);
     }
 
     function handler_alias($page, $action = null, $value = null)
@@ -112,76 +128,76 @@ class EmailModule extends PLModule
         $page->setTitle('Alias melix.net');
 
         $user = S::user();
-        $page->assign('demande', AliasReq::get_request($user->id()));
+        $page->assign('request', AliasReq::get_request($user->id()));
 
         // Remove the email alias.
-        if ($action == 'delete' && $value) {
+        if ($action == 'delete') {
             S::assert_xsrf_token();
 
-            XDB::execute(
-                    "DELETE  virtual, virtual_redirect
-                       FROM  virtual
-                 INNER JOIN  virtual_redirect USING (vid)
-                      WHERE  alias = {?} AND (redirect = {?} OR redirect = {?})",
-                    $value, $user->forlifeEmail(), $user->m4xForlifeEmail());
+            XDB::execute('DELETE FROM  email_source_account
+                                WHERE  uid = {?} AND type = \'alias_aux\'',
+                         $user->id());
+
+            require_once 'emails.inc.php';
+            fix_bestalias($user);
         }
 
-        // Fetch existing @alias_dom aliases.
-        $alias = $user->emailAlias();
-        $visibility = $user->hasProfile() && $user->profile()->alias_pub;
-        $page->assign('actuel', $alias);
+        // Fetch existing auxiliary aliases.
+        list($alias, $old_alias) = XDB::fetchOneRow('SELECT  CONCAT(s.email, \'@\', d.name), s.email
+                                                       FROM  email_source_account  AS s
+                                                 INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
+                                                      WHERE  s.uid = {?} AND s.type = \'alias_aux\'',
+                                                    $user->id());
+        $visibility = $user->hasProfile() && ($user->profile(true)->alias_pub == 'public');
+        $page->assign('current', $alias);
         $page->assign('user', $user);
         $page->assign('mail_public', $visibility);
 
-        if ($action == 'ask' && Env::has('alias') && Env::has('raison')) {
+        if ($action == 'ask' && Env::has('alias') && Env::has('reason')) {
             S::assert_xsrf_token();
 
-            //Si l'utilisateur vient de faire une damande
-            $alias  = Env::v('alias');
-            $raison = Env::v('raison');
+            // Retrieves user request.
+            $new_alias  = Env::v('alias');
+            $reason = Env::v('reason');
             $public = (Env::v('public', 'off') == 'on') ? 'public' : 'private';
 
-            $page->assign('r_alias', $alias);
-            $page->assign('r_raison', $raison);
+            $page->assign('r_alias', $new_alias);
+            $page->assign('r_reason', $reason);
             if ($public == 'public') {
                 $page->assign('r_public', true);
             }
 
-            //Quelques vérifications sur l'alias (caractères spéciaux)
-            if (!preg_match("/^[a-zA-Z0-9\-.]{3,20}$/", $alias)) {
+            // Checks special charaters in alias.
+            if (!preg_match("/^[a-zA-Z0-9\-.]{3,20}$/", $new_alias)) {
                 $page->trigError("L'adresse demandée n'est pas valide."
                             . " Vérifie qu'elle comporte entre 3 et 20 caractères"
                             . " et qu'elle ne contient que des lettres non accentuées,"
                             . " des chiffres ou les caractères - et .");
                 return;
             } else {
-                $alias_mail = $alias.'@'.$globals->mail->alias_dom;
-
-                //vérifier que l'alias n'est pas déja pris
-                $res = XDB::query('SELECT  COUNT(*)
-                                     FROM  virtual
-                                    WHERE  alias={?}',
-                                  $alias_mail);
+                // Checks if the alias has already been given.
+                $res = XDB::query('SELECT  COUNT(email)
+                                     FROM  email_source_account
+                                    WHERE  email = {?} AND type = \'alias_aux\'',
+                                  $new_alias);
                 if ($res->fetchOneCell() > 0) {
-                    $page->trigError("L'alias $alias_mail a déja été attribué.
-                                      Tu ne peux donc pas l'obtenir.");
+                    $page->trigError("L'alias $new_alias a déja été attribué. Tu ne peux donc pas l'obtenir.");
                     return;
                 }
 
-                //vérifier que l'alias n'est pas déja en demande
+                // Checks if the alias has already been asked for.
                 $it = Validate::iterate('alias');
                 while($req = $it->next()) {
-                    if ($req->alias == $alias_mail) {
-                        $page->trigError("L'alias $alias_mail a déja été demandé.
-                                    Tu ne peux donc pas l'obtenir pour l'instant.");
-                        return ;
+                    if ($req->alias == $new_alias) {
+                        $page->trigError("L'alias $new_alias a déja été demandé. Tu ne peux donc pas l'obtenir pour l'instant.");
+                        return;
                     }
                 }
 
-                //Insertion de la demande dans la base, écrase les requêtes précédente
-                $myalias = new AliasReq($user, $alias, $raison, $public);
+                // Sends requests. This will erase any previous alias pending request.
+                $myalias = new AliasReq($user, $new_alias, $reason, $public, $old_alias);
                 $myalias->submit();
-                $page->assign('success',$alias);
+                $page->assign('success', $new_alias);
                 return;
             }
         } elseif ($action == 'set' && ($value == 'public' || $value == 'private')) {
@@ -190,24 +206,18 @@ class EmailModule extends PLModule
             }
 
             if ($user->hasProfile()) {
-                XDB::execute("UPDATE  profiles
+                XDB::execute('UPDATE  profiles
                                  SET  alias_pub = {?}
-                               WHERE  pid = {?}",
+                               WHERE  pid = {?}',
                             $value, $user->profile()->id());
             }
-            $visibility = ($value == 'public');
             exit;
         }
-
-        $page->assign('actuel', $alias);
-        $page->assign('user', $user);
-        $page->assign('mail_public', $visibility);
     }
 
-    function handler_redirect($page, $action = null, $email = null)
+    function handler_redirect($page, $action = null, $email = null, $rewrite = null)
     {
         global $globals;
-
         require_once 'emails.inc.php';
 
         $page->changeTpl('emails/redirect.tpl');
@@ -238,15 +248,13 @@ class EmailModule extends PLModule
         }
 
         if ($action == 'rewrite' && $email) {
-            $rewrite = @func_get_arg(3);
             $redirect->modify_one_email_redirect($email, $rewrite);
         }
 
         if (Env::has('emailop')) {
             S::assert_xsrf_token();
 
-            $actifs = Env::v('emails_actifs', Array());
-            print_r(Env::v('emails_rewrite'));
+            $actifs = Env::v('emails_actifs', array());
             if (Env::v('emailop') == "ajouter" && Env::has('email')) {
                 $error_email = false;
                 $new_email = Env::v('email');
@@ -263,7 +271,7 @@ class EmailModule extends PLModule
             } elseif (empty($actifs)) {
                 $result = ERROR_INACTIVE_REDIRECTION;
             } elseif (is_array($actifs)) {
-                $result = $redirect->modify_email($actifs, Env::v('emails_rewrite', Array()));
+                $result = $redirect->modify_email($actifs, Env::v('emails_rewrite', array()));
             }
         }
 
@@ -281,31 +289,17 @@ class EmailModule extends PLModule
                              . $globals->mail->domain2 . ' ni vers polytechnique.edu.');
             break;
         }
-
-        // Fetch the @alias_dom email alias, if any.
-        $res = XDB::query(
-                "SELECT  alias
-                   FROM  virtual
-             INNER JOIN  virtual_redirect USING(vid)
-                  WHERE  (redirect={?} OR redirect={?})
-                         AND alias LIKE '%@{$globals->mail->alias_dom}'",
-                $user->forlifeEmail(),
-                // TODO: remove this über-ugly hack. The issue is that you need
-                // to remove all @m4x.org addresses in virtual_redirect first.
-                $user->login() . '@' . $globals->mail->domain2);
-        $melix = $res->fetchOneCell();
-        if ($melix) {
-            list($melix) = explode('@', $melix);
-            $page->assign('melix',$melix);
-        }
-
         // Fetch existing email aliases.
-        $res = XDB::query(
-                "SELECT  alias,expire
-                   FROM  aliases
-                  WHERE  uid={?} AND (type='a_vie' OR type='alias')
-               ORDER BY  !FIND_IN_SET('usage',flags), LENGTH(alias)", $user->id());
-        $page->assign('alias', $res->fetchAllAssoc());
+        $alias = XDB::query('SELECT  CONCAT(s.email, \'@\', d.name) AS email, s.expire
+                               FROM  email_source_account  AS s
+                         INNER JOIN  email_virtual_domains AS m ON (s.domain = m.id)
+                         INNER JOIN  email_virtual_domains AS d ON (m.id = d.aliasing)
+                              WHERE  s.uid = {?}
+                           ORDER BY  NOT(s.type = \'alias_aux\'), s.email, d.name',
+                            $user->id());
+        $page->assign('alias', $alias->fetchAllAssoc());
+        $page->assign('best_email', $user->bestEmail());
+
         $page->assign('emails', $redirect->emails);
 
         // Display GoogleApps acount information.
@@ -316,7 +310,7 @@ class EmailModule extends PLModule
         fill_email_combobox($page);
     }
 
-    function handler_antispam($page, $statut_filtre = null)
+    function handler_antispam($page, $filter_status = null, $redirection = null)
     {
         require_once 'emails.inc.php';
         $wp = new PlWikiPage('Xorg.Antispam');
@@ -326,10 +320,17 @@ class EmailModule extends PLModule
 
         $user = S::user();
         $bogo = new Bogo($user);
-        if (isset($statut_filtre)) {
-            $bogo->change($statut_filtre + 0);
+        if (!is_null($filter_status)) {
+            if (is_null($redirection)) {
+                $bogo->changeAll($filter_status);
+            } else {
+                $bogo->change($redirection, $filter_status);
+            }
         }
-        $page->assign('filtre', $bogo->level());
+        $page->assign('filter', $bogo->state);
+        $page->assign('single_state', $bogo->single_state);
+        $page->assign('single_redirection', $bogo->single_redirection);
+        $page->assign('redirections', $bogo->redirections);
     }
 
     function handler_submit($page)
@@ -381,8 +382,8 @@ class EmailModule extends PLModule
 
             unset($_POST['save']);
             if (trim(preg_replace('/-- .*/', '', Post::v('contenu'))) != "") {
-                $_POST['to_contacts'] = explode(';', @$_POST['to_contacts']);
-                $_POST['cc_contacts'] = explode(';', @$_POST['cc_contacts']);
+                Post::set('to_contacts', explode(';', Post::s('to_contacts')));
+                Post::set('cc_contacts', explode(';', Post::s('cc_contacts')));
                 $data = serialize($_POST);
                 XDB::execute('INSERT INTO  email_send_save (uid, data)
                                    VALUES  ({?}, {?})
@@ -537,16 +538,16 @@ class EmailModule extends PLModule
             return PL_NOT_FOUND;
         }
         $mail{$pos} = '@';
-        $res = XDB::query("SELECT  COUNT(*)
-                             FROM  emails
-                            WHERE  email = {?} AND hash = {?}",
+        $res = XDB::query('SELECT  COUNT(*)
+                             FROM  email_redirect_account
+                            WHERE  redirect = {?} AND hash = {?} AND type = \'smtp\'',
                           $mail, $hash);
         $count = intval($res->fetchOneCell());
         if ($count > 0) {
-            XDB::query("UPDATE  emails
+            XDB::query('UPDATE  email_redirect_account
                            SET  allow_rewrite = true, hash = NULL
-                         WHERE  email = {?} AND hash = {?}",
-                         $mail, $hash);
+                         WHERE  redirect = {?} AND hash = {?} AND type = \'smtp\'',
+                       $mail, $hash);
             $page->trigSuccess("Réécriture activée pour l'adresse " . $mail);
             return;
         }
@@ -565,28 +566,28 @@ class EmailModule extends PLModule
             return PL_NOT_FOUND;
         }
         $mail{$pos} = '@';
-        $res = XDB::query("SELECT  COUNT(*)
-                             FROM  emails
-                            WHERE  email = {?} AND hash = {?}",
+        $res = XDB::query('SELECT  COUNT(*)
+                             FROM  email_redirect_account
+                            WHERE  redirect = {?} AND hash = {?} AND type = \'smtp\'',
                           $mail, $hash);
         $count = intval($res->fetchOneCell());
         if ($count > 0) {
             global $globals;
-            $res = XDB::query("SELECT  e.email, e.rewrite, a.alias
-                                 FROM  emails AS e
-                           INNER JOIN  aliases AS a ON (a.uid = e.uid AND a.type = 'a_vie')
-                                WHERE  e.email = {?} AND e.hash = {?}",
+            $res = XDB::query('SELECT  e.redirect, e.rewrite, a.hruid
+                                 FROM  email_redirect_account AS e
+                           INNER JOIN  accounts               AS a ON (e.uid = a.uid)
+                                WHERE  e.redirect = {?} AND e.hash = {?}',
                               $mail, $hash);
-            XDB::query("UPDATE  emails
+            XDB::query('UPDATE  email_redirect_account
                            SET  allow_rewrite = false, hash = NULL
-                         WHERE  email = {?} AND hash = {?}",
-                        $mail, $hash);
-            list($mail, $rewrite, $forlife) = $res->fetchOneRow();
+                         WHERE  redirect = {?} AND hash = {?}',
+                       $mail, $hash);
+            list($mail, $rewrite, $hruid) = $res->fetchOneRow();
             $mail = new PlMailer();
             $mail->setFrom("webmaster@" . $globals->mail->domain);
             $mail->addTo("support@" .  $globals->mail->domain);
             $mail->setSubject("Tentative de détournement de correspondance via le rewrite");
-            $mail->setTxtBody("$forlife a tenté un rewrite de $mail vers $rewrite. Cette demande a été rejetée via le web");
+            $mail->setTxtBody("$hruid a tenté un rewrite de $mail vers $rewrite. Cette demande a été rejetée via le web");
             $mail->send();
             $page->trigWarning("Un mail d'alerte a été envoyé à l'équipe de " . $globals->core->sitename);
             return;
@@ -611,17 +612,15 @@ class EmailModule extends PLModule
             }
         }
 
-        require_once('emails.inc.php');
+        require_once 'emails.inc.php';
         $page->assign('ok', false);
         if (S::logged() && (is_null($user) || $user->id() == S::i('uid'))) {
-            $storage = new EmailStorage(S::user(), 'imap');
-            $storage->activate();
+            Email::activate_storage(S::user(), 'imap');
             $page->assign('ok', true);
             $page->assign('yourself', S::user()->displayName());
             $page->assign('sexe', S::user()->isFemale());
         } else if (!S::logged() && $user) {
-            $storage = new EmailStorage($user, 'imap');
-            $storage->activate();
+            Email::activate_storage($user, 'imap');
             $page->assign('ok', true);
             $page->assign('yourself', $user->displayName());
             $page->assign('sexe', $user->isFemale());
@@ -641,11 +640,12 @@ class EmailModule extends PLModule
         if ($warn == 'warn' && $email) {
             S::assert_xsrf_token();
 
+            // Usual verifications.
             $email = valide_email($email);
-            // vérifications d'usage
-            $uid = XDB::fetchOneCell("SELECT  uid
-                                        FROM  emails
-                                       WHERE  email = {?}", $email);
+            $uid = XDB::fetchOneCell('SELECT  uid
+                                        FROM  email_redirect_account
+                                       WHERE  redirect = {?}', $email);
+
             if ($uid) {
                 $dest = User::getWithUID($uid);
 
@@ -658,38 +658,14 @@ class EmailModule extends PLModule
         } elseif (Post::has('email')) {
             S::assert_xsrf_token();
 
-            $email = valide_email(Post::v('email'));
+            $email = Post::t('email');
 
-            list(,$fqdn) = explode('@', $email);
-            $fqdn = strtolower($fqdn);
-            if ($fqdn == 'polytechnique.org' || $fqdn == 'melix.org' ||  $fqdn == 'm4x.org' || $fqdn == 'melix.net') {
+            if (!User::isForeignEmailAddress($email)) {
                 $page->assign('neuneu', true);
             } else {
-                $page->assign('email',$email);
-                $x = XDB::fetchOneAssoc("SELECT  e1.uid, e1.panne != 0 AS panne, a.hruid,
-                                                 (COUNT(e2.uid) + IF(FIND_IN_SET('googleapps', eo.storage), 1, 0)) AS nb_mails
-                                           FROM  emails        AS e1
-                                     INNER JOIN  email_options AS eo ON (eo.uid = e1.uid)
-                                     INNER JOIN  accounts      AS a  ON (e1.uid = a.uid)
-                                      LEFT JOIN  emails        AS e2 ON (e1.uid = e2.uid
-                                                                         AND FIND_IN_SET('active', e2.flags)
-                                                                         AND e1.email != e2.email)
-                                          WHERE  e1.email = {?}
-                                       GROUP BY  e1.uid", $email);
-                if ($x) {
-                    // on écrit dans la base que l'adresse est cassée
-                    if (!$x['panne']) {
-                        XDB::execute("UPDATE  emails
-                                         SET  panne=NOW(), last=NOW(), panne_level = 1
-                                       WHERE  email = {?}", $email);
-                    } else {
-                        XDB::execute("UPDATE  emails
-                                         SET  panne_level = 1
-                                       WHERE  email = {?} AND panne_level = 0", $email);
-                    }
-                    $x['user'] = User::getWithUID($x['uid']);
-                    $page->assign_by_ref('x', $x);
-                }
+                $user = mark_broken_email($email);
+                $page->assign('user', $user);
+                $page->assign('email', $email);
             }
         }
     }
@@ -733,12 +709,11 @@ class EmailModule extends PLModule
         $page->assign('action', $action);
 
         if ($action == 'list') {
-            $sql = "SELECT  w.email, w.detection, w.state, a.alias AS forlife
-                      FROM  email_watch  AS w
-                 LEFT JOIN  emails        AS e USING(email)
-                 LEFT JOIN  aliases       AS a ON (a.uid = e.uid AND a.type = 'a_vie')
-                  ORDER BY  w.state, w.email, a.alias";
-            $it = Xdb::iterRow($sql);
+            $it = XDB::iterRow('SELECT  w.email, w.detection, w.state, s.email AS forlife
+                                  FROM  email_watch            AS w
+                            INNER JOIN  email_redirect_account AS r ON (w.email = r.redirect)
+                            INNER JOIN  email_source_account   AS s ON (s.uid = r.uid AND s.type = \'forlife\')
+                              ORDER BY  w.state, w.email, s.email');
 
             $table = array();
             $props = array();
@@ -760,15 +735,15 @@ class EmailModule extends PLModule
             }
             $page->assign('table', $table);
         } elseif ($action == 'edit') {
-            $sql = "SELECT  w.detection, w.state, w.last, w.description,
-                            a1.alias AS edit, a2.alias AS forlife
-                      FROM  email_watch AS w
-                 LEFT JOIN  aliases      AS a1 ON (a1.uid = w.uid AND a1.type = 'a_vie')
-                 LEFT JOIN  emails       AS e  ON (w.email = e.email)
-                 LEFT JOIN  aliases      AS a2 ON (a2.uid = e.uid AND a2.type = 'a_vie')
-                     WHERE  w.email = {?}
-                  ORDER BY  a2.alias";
-            $it = Xdb::iterRow($sql, $email);
+            $it = XDB::iterRow('SELECT  w.detection, w.state, w.last, w.description,
+                                        a.hruid AS edit, s.email AS forlife
+                                  FROM  email_watch            AS w
+                            INNER JOIN  email_redirect_account AS r ON (w.email = r.redirect)
+                            INNER JOIN  email_source_account   AS s ON (s.uid = r.uid AND s.type = \'forlife\')
+                            INNER JOIN  accounts               AS a ON (w.uid = a.uid)
+                                 WHERE  w.email = {?}
+                              ORDER BY  s.email',
+                               $email);
 
             $props = array();
             while (list($detection, $state, $last, $description, $edit, $forlife) = $it->next()) {
@@ -794,13 +769,14 @@ class EmailModule extends PLModule
 
         $page->assign('lost_emails',
                       XDB::iterator('SELECT  a.uid, a.hruid, pd.promo
-                                       FROM  accounts         AS a
-                                 INNER JOIN  email_options    AS eo ON (eo.uid = a.uid)
-                                  LEFT JOIN  emails           AS e  ON (a.uid = e.uid AND FIND_IN_SET(\'active\', e.flags))
-                                  LEFT JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET(\'owner\', perms))
-                                  LEFT JOIN  profile_display  AS pd ON (ap.pid = pd.pid)
-                                      WHERE  e.uid IS NULL AND FIND_IN_SET(\'googleapps\', eo.storage) = 0
-                                             AND a.state = \'active\'
+                                       FROM  accounts               AS a
+                                 INNER JOIN  account_types          AS at ON (a.type = at.type)
+                                  LEFT JOIN  email_redirect_account AS er ON (er.uid = a.uid AND er.flags = \'active\' AND er.broken_level < 3
+                                                                              AND er.type != \'imap\' AND er.type != \'homonym\')
+                                  LEFT JOIN  account_profiles       AS ap ON (ap.uid = a.uid AND FIND_IN_SET(\'owner\', ap.perms))
+                                  LEFT JOIN  profile_display        AS pd ON (ap.pid = pd.pid)
+                                      WHERE  a.state = \'active\' AND er.redirect IS NULL AND FIND_IN_SET(\'mail\', at.perms)
+                                   GROUP BY  a.uid
                                    ORDER BY  pd.promo, a.hruid'));
     }
 
@@ -827,13 +803,13 @@ class EmailModule extends PLModule
                         if (empty($email) || $email == '@') {
                             $invalid_emails[] = trim($orig_email) . ': invalid email';
                         } elseif (!in_array($email, $valid_emails)) {
-                            $res = XDB::query('SELECT  COUNT(*)
-                                                 FROM  emails
-                                                WHERE  email = {?}', $email);
-                            if ($res->fetchOneCell() > 0) {
+                            $nb = XDB::fetchOneCell('SELECT  COUNT(*)
+                                                       FROM  email_redirect_account
+                                                      WHERE  redirect = {?}', $email);
+                            if ($nb > 0) {
                                 $valid_emails[] = $email;
                             } else {
-                                $invalid_emails[] = "$orig_email: no such redirection";
+                                $invalid_emails[] = $orig_email . ': no such redirection';
                             }
                         }
                     }
@@ -854,62 +830,33 @@ class EmailModule extends PLModule
                 $broken_user_list = array();
                 $broken_list = explode("\n", $list);
                 sort($broken_list);
-                foreach ($broken_list as $orig_email) {
-                    $email = valide_email(trim($orig_email));
-                    if (empty($email) || $email == '@') {
-                        continue;
-                    }
 
-                    $sel = XDB::query(
-                        "SELECT  e1.uid, e1.panne != 0 AS panne, count(e2.uid) AS nb_mails,
-                                 acc.full_name, a.alias
-                           FROM  emails        AS e1
-                      LEFT JOIN  emails        AS e2 ON (e1.uid = e2.uid AND FIND_IN_SET('active', e2.flags)
-                                                         AND e1.email != e2.email)
-                     INNER JOIN  accounts      AS acc  ON (e1.uid = acc.uid)
-                     INNER JOIN  aliases       AS a  ON (acc.uid = a.uid AND FIND_IN_SET('bestalias', a.flags))
-                          WHERE  e1.email = {?}
-                       GROUP BY  e1.uid", $email);
-
-                    if ($x = $sel->fetchOneAssoc()) {
-                        if (!$x['panne']) {
-                            XDB::execute('UPDATE  emails
-                                             SET  panne=NOW(), last=NOW(), panne_level = 1
-                                           WHERE  email = {?}',
-                                          $email);
-                        } else {
-                            XDB::execute('UPDATE  emails
-                                             SET  last = CURDATE(), panne_level = panne_level + 1
-                                           WHERE  email = {?}
-                                                  AND DATE_ADD(last, INTERVAL 14 DAY) < CURDATE()',
-                                         $email);
-                        }
-
-                        if (!empty($x['nb_mails'])) {
+                foreach ($broken_list as $email) {
+                    if ($user = mark_broken_email($email, true)) {
+                        if ($user['nb_mails'] > 0) {
                             $mail = new PlMailer('emails/broken.mail.tpl');
-                            $mail->addTo("\"{$x['full_name']}\" <{$x['alias']}@"
-                                         . Platal::globals()->mail->domain . '>');
-                            $mail->assign('x', $x);
+                            $mail->addTo($user);
+                            $mail->assign('user', $user);
                             $mail->assign('email', $email);
                             $mail->send();
                         }
 
-                        if (!isset($broken_user_list[$x['alias']])) {
-                            $broken_user_list[$x['alias']] = array($email);
+                        if (!isset($broken_user_list[$user['alias']])) {
+                            $broken_user_list[$user['alias']] = array($email);
                         } else {
-                            $broken_user_list[$x['alias']][] = $email;
+                            $broken_user_list[$user['alias']][] = $email;
                         }
                     }
                 }
 
-                XDB::execute("UPDATE  emails
-                                 SET  panne_level = panne_level - 1
-                               WHERE  flags = 'active' AND panne_level > 1
-                                      AND DATE_ADD(last, INTERVAL 1 MONTH) < CURDATE()");
-                XDB::execute("UPDATE  emails
-                                 SET  panne_level = 0
-                               WHERE  flags = 'active' AND panne_level = 1
-                                      AND DATE_ADD(last, INTERVAL 1 YEAR) < CURDATE()");
+                XDB::execute('UPDATE  email_redirect_account
+                                 SET  broken_level = broken_level - 1
+                               WHERE  flags = \'active\' AND broken_level > 1
+                                      AND DATE_ADD(last, INTERVAL 1 MONTH) < CURDATE()');
+                XDB::execute('UPDATE  email_redirect_account
+                                 SET  broken_level = 0
+                               WHERE  flags = \'active\' AND broken_level = 1
+                                      AND DATE_ADD(last, INTERVAL 1 YEAR) < CURDATE()');
 
                 // Output the list of users with recently broken addresses,
                 // along with the count of valid redirections.
@@ -920,23 +867,23 @@ class EmailModule extends PLModule
                 fputcsv($csv, array('nom', 'promo', 'alias', 'bounce', 'nbmails', 'url', 'corps', 'job', 'networking'), ';');
                 foreach ($broken_user_list as $alias => $mails) {
                     $sel = Xdb::query(
-                        "SELECT  acc.uid, count(DISTINCT(e.email)) AS nb_mails,
-                                 IFNULL(pd.public_name, acc.full_name) AS fullname,
-                                 IFNULL(pd.promo, 0) AS promo, IFNULL(pce.name, 'Aucun') AS corps,
-                                 IFNULL(pje.name, 'Aucun') AS job, GROUP_CONCAT(pn.address SEPARATOR ', ') AS networking
-                           FROM  aliases            AS a
-                     INNER JOIN  accounts           AS acc ON (a.uid = acc.uid)
-                      LEFT JOIN  emails             AS e   ON (e.uid = acc.uid
-                                                               AND FIND_IN_SET('active', e.flags) AND e.panne = 0)
-                      LEFT JOIN  account_profiles   AS ap  ON (acc.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
-                      LEFT JOIN  profile_display    AS pd  ON (pd.pid = ap.pid)
-                      LEFT JOIN  profile_corps      AS pc  ON (pc.pid = ap.pid)
-                      LEFT JOIN  profile_corps_enum AS pce ON (pc.current_corpsid = pce.id)
-                      LEFT JOIN  profile_job        AS pj  ON (pj.pid = ap.pid)
-                      LEFT JOIN  profile_job_enum   AS pje ON (pj.jobid = pje.id)
-                      LEFT JOIN  profile_networking AS pn  ON (pn.pid = ap.pid)
-                          WHERE  a.alias = {?}
-                       GROUP BY  acc.uid", $alias);
+                        'SELECT  a.uid, count(DISTINCT(r.redirect)) AS nb_mails,
+                                 IFNULL(pd.public_name, a.full_name) AS fullname,
+                                 IFNULL(pd.promo, 0) AS promo, IFNULL(pce.name, \'Aucun\') AS corps,
+                                 IFNULL(pje.name, \'Aucun\') AS job, GROUP_CONCAT(pn.address SEPARATOR \', \') AS networking
+                           FROM  email_source_account   AS s
+                     INNER JOIN  accounts               AS a   ON (s.uid = a.uid)
+                      LEFT JOIN  email_redirect_account AS r   ON (a.uid = r.uid AND r.broken_level = 0 AND r.flags = \'active\' AND
+                                                                   (r.type = \'smtp\' OR r.type = \'googleapps\'))
+                      LEFT JOIN  account_profiles       AS ap  ON (a.uid = ap.uid AND FIND_IN_SET(\'owner\', ap.perms))
+                      LEFT JOIN  profile_display        AS pd  ON (pd.pid = ap.pid)
+                      LEFT JOIN  profile_corps          AS pc  ON (pc.pid = ap.pid)
+                      LEFT JOIN  profile_corps_enum     AS pce ON (pc.current_corpsid = pce.id)
+                      LEFT JOIN  profile_job            AS pj  ON (pj.pid = ap.pid)
+                      LEFT JOIN  profile_job_enum       AS pje ON (pj.jobid = pje.id)
+                      LEFT JOIN  profile_networking     AS pn  ON (pn.pid = ap.pid)
+                          WHERE  s.email = {?}
+                       GROUP BY  a.uid', $alias);
 
                     if ($x = $sel->fetchOneAssoc()) {
                         if ($x['nb_mails'] == 0) {

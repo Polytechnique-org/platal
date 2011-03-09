@@ -65,7 +65,7 @@
       <select name="countries_sel" onchange="updateElement('countries')">
         <option value="">&nbsp;</option>
         {iterate from=$countryList item=country}
-        <option value="{$country.iso_3166_1_a2}">{$country.countryFR|default:"&nbsp;"}</option>
+        <option value="{$country.iso_3166_1_a2}">{$country.country|default:"&nbsp;"}</option>
         {/iterate}
       </select>
     </td>
@@ -101,7 +101,7 @@
       Il est préférable de mentionner des notions précises : <em>Pizzaïolo</em> plutôt que <em>Hôtellerie</em>.
       En effet Les recherches sur le mot-clef <em>Hôtellerie</em> te trouveront dans les deux cas mais une
       recherche sur <em>Production culinaire</em> ou <em>Pizzaïolo</em> non.
-    <td/>
+    </td>
   </tr>
   <tr>
     <td class="titre" style="width:30%">Mots-clefs</td>

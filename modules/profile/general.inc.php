@@ -149,7 +149,7 @@ class ProfileSettingSearchNames implements ProfileSetting
             $this->search_names = array();
             foreach ($value as &$sn) {
                 $sn['name'] = trim($sn['name']);
-                if (S::user()->isMe($this->owner) && ($sn['type'] == 'firstname' || $sn['type'] == 'lastname')) {
+                if (S::user()->isMe($page->owner) && ($sn['type'] == 'firstname' || $sn['type'] == 'lastname')) {
                     $sn['name'] = $this->prepare($page, $sn['type'], $sn['name'],
                                                  $initial[$sn['type']], $success_tmp);
                     $success = $success && $success_tmp;
@@ -217,7 +217,7 @@ class ProfileSettingSearchNames implements ProfileSetting
                        INNER JOIN  profile_name_enum AS e ON (s.typeid = e.id)
                             WHERE  s.pid = {?} AND NOT FIND_IN_SET('not_displayed', e.flags)",
                      $page->pid());
-        $has_new = set_alias_names($this->search_names, $sn_old, $page->pid(), $page->owner->id());
+        $has_new = set_alias_names($this->search_names, $sn_old, $page->pid(), $page->owner);
 
         // Only requires validation if modification in public names
         if ($has_new) {

@@ -51,10 +51,12 @@ function toggleField(name, id, obj) {
       <a href="profile/{$profile->hrpid}" class="popup2">
       {/if}
         {$valid->user->fullName("promo")}
+      {if $valid->user->hasProfile()}
       </a>
+      {/if}
     </td>
   </tr>
-  {if $valid->profile && !$valid->userIsProfileOwner}
+  {if t($valid->profile) && !$valid->userIsProfileOwner}
   <tr>
     <td class="titre" style="width: 20%">Profil concerné&nbsp;:</td>
     <td>

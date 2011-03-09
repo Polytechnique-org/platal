@@ -22,6 +22,7 @@
 
 subgrades = new Array();
 names     = new Array();
+multiple  = new Array();
 {foreach from=$medal_list key=type item=list}
   {foreach from=$list item=m}
     names[{$m.id}] = "{$m.text|regex_replace:"/\r?\n/":"\\n"}";
@@ -30,6 +31,9 @@ names     = new Array();
       {foreach from=$grades[$m.id] item=g}
         subgrades[{$m.id}][{$g.gid-1}] = [{$g.gid},"{$g.text|regex_replace:"/\r?\n/":"\\n"}"];
       {/foreach}
+    {/if}
+    {if $m.type != 'ordre'}
+      multiple[{$m.id}] = true;
     {/if}
   {/foreach}
 {/foreach}

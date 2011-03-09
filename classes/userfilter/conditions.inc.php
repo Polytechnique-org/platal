@@ -166,7 +166,15 @@ abstract class UserFilterCondition implements PlFilterCondition
             $cond = new $class($values);
             break;
 
+          case 'school_id':
+            $values = $export->v('values', array());
+            $school_type = $export->s('school_type');
+            $cond = new UFC_SchoolId($school_type, $values);
+            break;
+
           case 'has_profile':
+          case 'has_email_redirect':
+          case 'has_valid_email':
             $class = 'ufc_' . str_replace('_', '', $type);
             $cond = new $class();
             break;
@@ -325,15 +333,39 @@ class UFC_Hrpid extends UserFilterCondition
 }
 // }}}
 // {{{ class UFC_HasEmailRedirect
-/** Filters users, keeping only those with a valid email redirection.
+/** Filters users, keeping only those with a valid email redirection (only X.org accounts).
  */
 class UFC_HasEmailRedirect extends UserFilterCondition
 {
     public function buildCondition(PlFilter $uf)
     {
         $sub_redirect = $uf->addEmailRedirectFilter();
-        $sub_options = $uf->addEmailOptionsFilter();
-        return 'e' . $sub_redirect . '.flags = \'active\' OR FIND_IN_SET(\'googleapps\', ' . $sub_options . '.storage)';
+        return 'ra' . $sub_redirect . '.flags = \'active\'';
+    }
+
+    public function export()
+    {
+        $export = $this->buildExport('has_email_redirect');
+        return $export;
+    }
+}
+// }}}
+// {{{ class UFC_HasValidEmail
+/** Filters users, keeping only those with a valid email address (all accounts).
+ */
+class UFC_HasValidEmail extends UserFilterCondition
+{
+    public function buildCondition(PlFilter $uf)
+    {
+        $sub_redirect = $uf->addEmailRedirectFilter();
+        $uf->requireAccounts();
+        return 'ra' . $sub_redirect . '.flags = \'active\' OR a.email IS NOT NULL';
+    }
+
+    public function export()
+    {
+        $export = $this->buildExport('has_valid_email');
+        return $export;
     }
 }
 // }}}
@@ -486,6 +518,14 @@ class UFC_SchoolId extends UserFilterCondition
             $ids  = array_map(array('Profile', 'getXorgId'), $ids);
         }
         return XDB::format('p.' . $type . '_id IN {?}', $ids);
+    }
+
+    public function export()
+    {
+        $export = $this->buildExport('school_id');
+        $export['school_type'] = $this->type;
+        $export['values'] = $this->ids;
+        return $export;
     }
 }
 // }}}
@@ -930,9 +970,8 @@ class UFC_Email extends UserFilterCondition
     public function buildCondition(PlFilter $uf)
     {
         $foreign = array();
-        $virtual = array();
-        $aliases = array();
-        $cond = array();
+        $local   = array();
+        $cond    = array();
 
         if (count($this->emails) == 0) {
             return PlFilterCondition::COND_TRUE;
@@ -941,25 +980,19 @@ class UFC_Email extends UserFilterCondition
         foreach ($this->emails as $entry) {
             if (User::isForeignEmailAddress($entry)) {
                 $foreign[] = $entry;
-            } else if (User::isVirtualEmailAddress($entry)) {
-                $virtual[] = $entry;
             } else {
-                @list($user, $domain) = explode('@', $entry);
-                $aliases[] = $user;
+                list($local_part, ) = explode('@', $entry);
+                $local[] = $local_part;
             }
         }
 
         if (count($foreign) > 0) {
             $sub = $uf->addEmailRedirectFilter($foreign);
-            $cond[] = XDB::format('e' . $sub . '.email IS NOT NULL OR a.email IN {?}', $foreign);
+            $cond[] = XDB::format('ra' . $sub . '.redirect IS NOT NULL OR ra.redirect IN {?}', $foreign);
         }
-        if (count($virtual) > 0) {
-            $sub = $uf->addVirtualEmailFilter($virtual);
-            $cond[] = 'vr' . $sub . '.redirect IS NOT NULL';
-        }
-        if (count($aliases) > 0) {
-            $sub = $uf->addAliasFilter($aliases);
-            $cond[] = 'al' . $sub . '.alias IS NOT NULL';
+        if (count($local) > 0) {
+            $sub = $uf->addAliasFilter($local);
+            $cond[] = 'sa' . $sub . '.email IS NOT NULL';
         }
         return '(' . implode(') OR (', $cond) . ')';
     }

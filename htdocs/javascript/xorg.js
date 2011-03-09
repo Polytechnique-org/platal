@@ -132,16 +132,17 @@ function addSearchEngine()
             var s_img;
             var s_title;
             var s_url;
+            var href = this.attr('href');
 
             for (site in goodies[type].sites) {
                 entry = goodies[type].sites[site];
                 s_alt   = entry.alt || "";
                 s_img   = entry.img;
                 s_title = entry.title || "";
-                s_url   = entry.url_prefix.length > 0 ? entry.url_prefix + escape(this.href) : this.href;
+                s_url   = entry.url_prefix.length > 0 ? entry.url_prefix + escape(href) : href;
 
                 text += '<a href="' + s_url + '"><img src="' + s_img + '" title="' + s_title + '" alt="' + s_alt + '"></a><br />';
-                }
+            }
             text += '<a href="https://www.polytechnique.org/Xorg/Goodies">Plus de bonus</a> ...</div>';
 
             return this.overlib({
@@ -850,6 +851,316 @@ function sendTestEmail(token, hruid)
 
 // }}}
 
+/***************************************************************************
+ * Quick search
+ */
+
+/* quick search {{{ */
+(function($) {
+    function findPos(obj) {
+        var curleft = obj.offsetLeft || 0;
+        var curtop = obj.offsetTop || 0;
+        while (obj = obj.offsetParent) {
+            curleft += obj.offsetLeft
+            curtop += obj.offsetTop
+        }
+        return {x:curleft,y:curtop};
+    }
+
+    $.template('quickMinifiche',
+            '<div class="contact grayed" style="clear: both">' +
+                '<div class="identity">' +
+                    '<div class="photo"><img src="photo/${hrpid}" alt="${directory_name}" /></div>' +
+                    '<div class="nom">' +
+                        '{{if is_female}}&bull;{{/if}}<a>${directory_name}</a>' +
+                    '</div>' +
+                    '<div class="edu">${promo}</div>' +
+                '</div>' +
+                '<div class="noprint bits"></div>' +
+                '<div class="long"></div>' +
+            '</div>');
+
+
+    function buildPopup(input, destination, linkBindFunction)
+    {
+        var $popup = destination;
+        var selected = null;
+        var hovered  = 0;
+
+        function updateSelection()
+        {
+            var sel = $popup.children('.contact').addClass('grayed');
+            if (selected !== null) {
+                while (selected < 0) {
+                    selected += sel.length;
+                }
+                if (selected >= sel.length) {
+                    selected -= sel.length;
+                }
+                sel.eq(selected).removeClass('grayed');
+            }
+        }
+
+        function formatProfile(i, profile) {
+            var data = $.tmpl('quickMinifiche', profile)
+                .css('cursor', 'pointer')
+                .hover(function() {
+                    selected = i;
+                    updateSelection();
+                    hovered++;
+                }, function() {
+                    if (selected === i) {
+                        selected = null;
+                        updateSelection();
+                    }
+                    hovered--;
+                }).mouseup(function() {
+                    var sel = $(this).find('a');
+                    if (!sel.attr('hovered')) {
+                        sel.click();
+                    }
+                });
+            data.find('a').hover(function() { $(this).attr('hovered', true) },
+                                 function() { $(this).attr('hovered', false) });
+            return data;
+        }
+
+        if (!$popup) {
+            $popup = $('<div>').hide()
+            .addClass('contact-list')
+            .css({
+                position: 'absolute',
+                width: '300px',
+                top: input.css('bottom'),
+                clear: 'both',
+                'text-align': 'left'
+            });
+            input.after($popup);
+        }
+
+        return {
+            hide: function(ignoreIfHover) {
+                if (ignoreIfHover && hovered !== 0) {
+                    return true;
+                }
+                selected = null;
+                updateSelection();
+                $popup.hide();
+                return true;
+            },
+
+            show: function() {
+                var pos = findPos(input.get(0));
+                $popup.css('left', pos.x - 300 + input.width()).show();
+                return true;
+            },
+
+            selected: function() {
+                return selected !== null;
+            },
+
+            unselect: function() {
+                selected = null;
+                updateSelection();
+            },
+
+            selectNext: function() {
+                if (selected === null) {
+                    selected = 0;
+                } else {
+                    selected++;
+                }
+                updateSelection();
+                return true;
+            },
+
+            selectPrev: function() {
+                if (selected === null) {
+                    selected = -1;
+                } else {
+                    selected--;
+                }
+                updateSelection();
+                return true;
+            },
+
+            activeCurrent: function() {
+                var sel = $popup.children('.contact');
+                if (selected !== null) {
+                    sel.eq(selected).find('a').click();
+                    return false;
+                }
+                return true;
+            },
+
+            updateContent: function(profiles, extra) {
+                var profile;
+                var $this;
+                $popup.empty();
+                for (var i = 0, len = profiles.length; i < len; i++) {
+                    (function(elt) {
+                        var profile = formatProfile(i, elt);
+                        profile.find('a').each(function() {
+                            linkBindFunction.call(this, elt, $this, extra);
+                        });
+                        profile.appendTo($popup);
+                    }(profiles[i]));
+                }
+                if (len === 1) {
+                    selected = 0;
+                } else {
+                    selected = null;
+                }
+                updateSelection();
+                if (len > 0) {
+                    this.show();
+                } else {
+                    this.hide();
+                }
+                return true;
+            }
+        };
+    }
+
+    $.fn.extend({
+        quickSearch: function(options) {
+            return this.each(function() {
+            var $this  = $(this);
+            var $input = this;
+            var $popup;
+            var previous = null;
+            var pending  = false;
+            var disabled = false;
+            var updatePopup;
+
+            options = options || { };
+            options = $.extend({
+                destination:       null,
+                minChars:          3,
+                shortChars:        5,
+                shortTimeout:      300,
+                longTimeout:       100,
+                queryParams:       {
+                    offset: 0,
+                    count:  10,
+                    allow_special: true,
+                },
+                loadingClassLeft:  'ac_loading',
+                loadingClassRight: 'ac_loading_left',
+                selectAction: function(profile, popup, extra) {
+                    var type = extra.link_type || 'profile';
+                    switch (type) {
+                      case 'profile':
+                        $(this).attr('href', 'profile/' + profile.hrpid)
+                        .popWin(840, 600)
+                        .click(function() { $popup.hide(); return false; });
+                        break;
+                      case 'admin':
+                        $(this).attr('href', 'admin/user/' + profile.hrpid)
+                        .click(function() { window.open($(this).attr('href')); return false });
+                        break;
+                    }
+                }
+            }, options);
+            options.loadingClass = $this.css('text-align') === 'right' ? options.loadingClassRight
+                                                                       : options.loadingClassLeft;
+            $this.attr('autocomplete', 'off');
+            $popup = buildPopup($this, options.destination, options.selectAction);
+
+            function markPending() {
+                pending = true;
+            }
+
+            function performUpdate(quick)
+            {
+                if (updatePopup === markPending) {
+                    return true;
+                }
+                updatePopup = markPending;
+                $this.addClass(options.loadingClass);
+                $.xapi('search', $.extend({ 'quick': quick }, options.queryParams), function(data) {
+                    if (data.profile_count > options.queryParams.count || data.profile_count < 0) {
+                        return $popup.hide();
+                    }
+                    $popup.updateContent(data.profiles, data);
+                    previous = quick;
+                }, function(data, text) {
+                    if (text !== 'abort') {
+                        disabled = true;
+                    }
+                }).complete(function() {
+                    $this.removeClass(options.loadingClass);
+                    updatePopup = doUpdatePopup;
+                    if (pending) {
+                        updatePopup();
+                    }
+                });
+                return true;
+            }
+
+            function doUpdatePopup(dontDelay)
+            {
+                var quick = $this.val();
+                if ($.isFunction(quick.trim)) {
+                    quick = quick.trim();
+                }
+                pending = false;
+                if (disabled || quick.length < options.minChars) {
+                    previous = quick;
+                    return $popup.hide();
+                } else if (!dontDelay) {
+                    var timeout = quick.length < options.shortChars ? options.shortTimeout : options.longTimeout;
+                    setTimeout(function() {
+                        updatePopup(true);
+                    }, timeout);
+                    return true;
+                } else if (previous === quick) {
+                    return $popup.show();
+                }
+                return performUpdate(quick);
+            }
+
+            updatePopup = doUpdatePopup;
+
+            return $this.keyup(function(e) {
+                if (e.keyCode !== 27 /* escape */ && e.keyCode !== 13 /* enter */
+                    && e.keyCode !== 9 /* tab */ && e.keyCode !== 38 /* up */
+                    && e.keyCode !== 40 /* down */) {
+                    return updatePopup();
+                }
+                return true;
+            })
+            .keydown(function(e) {
+                switch (e.keyCode) {
+                  case 9: /* Tab */
+                  case 40: /* Down */
+                    $popup.selectNext();
+                    return false;
+
+                  case 38:
+                    $popup.selectPrev();
+                    return false;
+
+                  case 13: /* Return */
+                    return $popup.activeCurrent();
+
+                  case 27: /* Escape */
+                    if ($popup.selected()) {
+                        $popup.unselect();
+                    } else {
+                        $popup.hide();
+                    }
+                    return true;
+                }
+                return true;
+            })
+            .blur(function() {
+                return $popup.hide(true);
+            })
+            .focus(updatePopup);});
+        }
+    });
+}(jQuery));
 
 /***************************************************************************
  * Overlib made simple
@@ -864,10 +1175,10 @@ function sendTestEmail(token, hruid)
             if (typeof text === 'string') {
                 args.push(text);
                 if (width) {
-                    args.push(width);
+                    args.push(WIDTH, width);
                 }
                 if (height) {
-                    args.push(height);
+                    args.push(HEIGHT, height);
                 }
             } else {
                 for (key in text) {
@@ -906,7 +1217,7 @@ function sendTestEmail(token, hruid)
         }
     });
 }(jQuery));
-
+/* }}} */
 
 /***************************************************************************
  * The real OnLoad
@@ -925,7 +1236,8 @@ $(function() {
         })
         .blur(function() {
             $("#quick_button").hide();
-        });
+        })
+        .quickSearch();
     $("#quick_button").click(function() {
         if ($("#quick").val() === 'Recherche dans l\'annuaire'
             || $("#quick").val() === '') {

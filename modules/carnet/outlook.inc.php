@@ -91,8 +91,6 @@ class Outlook {
         if ($user) {
             $contact['Adresse de messagerie'] = $user->bestalias;
             $contact['Nom complet de l\'adresse de messagerie'] = $p->fullName().' <'.$user->bestalias.'>';
-            $contact['Adresse de messagerie 2'] = $user->bestalias_alternate;
-            $contact['Nom complet de l\'adresse de messagerie 2'] = $p->fullName().' <'.$user->bestalias_alternate.'>';
             if ($user->bestalias != $user->forlife) {
                 $contact['Adresse de messagerie 3'] = $user->forlife;
                 $contact['Nom complet de l\'adresse de messagerie 3'] = $p->fullName().' <'.$user->forlife.'>';

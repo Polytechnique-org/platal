@@ -720,7 +720,7 @@ class UFBF_Quick extends UFB_Field
         }
 
         if (count($strings)) {
-            if (S::logged()) {
+            if (S::user()->checkPerms('directory_private')) {
                 $flags = array();
             } else {
                 $flags = array('public');
@@ -794,7 +794,7 @@ class UFBF_SchoolIds extends UFB_Field
         }
 
         $value = $ufb->t($this->envfield);
-        $values = explode("\n", $value);
+        $values = explode("\r\n", $value);
         $ids = array();
         foreach ($values as $val) {
             if (preg_match('/^[0-9A-Z]{0,8}$/', $val)) {

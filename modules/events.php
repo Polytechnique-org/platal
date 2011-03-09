@@ -228,7 +228,7 @@ class EventsModule extends PLModule
         exit;
     }
 
-    function handler_rss(PlPage $page, PlPage $user)
+    function handler_rss(PlPage $page, PlUser $user)
     {
         $this->load('feed.inc.php');
         $feed = new EventFeed();

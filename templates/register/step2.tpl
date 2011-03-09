@@ -30,14 +30,14 @@
 
 <form action="register" method="post">
   <table class="bicol" summary="Identification" cellpadding="3">
-    {if $smarty.session.subState.yearpromo >= 1996}
+    {if $smarty.session.subState.edu_type neq 'X' || $smarty.session.subState.yearpromo >= 1996}
     {assign var="promo" value=$smarty.session.subState.yearpromo}
     <tr>
-      <th colspan="2">matricule</th>
+      <th colspan="2">Matricule</th>
     </tr>
     <tr>
       <td class="titre">
-        Matricule X&nbsp;:
+        Matricule École&nbsp;:
       </td>
       <td>
         <input type="text" size="6" maxlength="6" name="schoolid"
@@ -45,6 +45,7 @@
       </td>
     </tr>
     <tr class="pair">
+      {if $smarty.session.subState.edu_type eq 'X'}
       <td></td>
       <td>
         6 chiffres terminant par le numéro d'entrée (ex&nbsp;:
@@ -61,6 +62,7 @@
         {math equation="((promo + 1) % 100) + 100" promo=$promo}XXX
         {/if}
       </td>
+      {/if}
     </tr>
     {/if}
     <tr>

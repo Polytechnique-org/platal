@@ -27,30 +27,19 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
     if (is_null($asso_id)) {
         $asso_id = $globals->asso('id');
     }
-    $res = XDB::query('SELECT  SUM(nb) AS nb_tot, COUNT(DISTINCT ep.uid) AS nb, e.*,
-                               IF(e.deadline_inscription,
-                                     e.deadline_inscription >= LEFT(NOW(), 10),
-                                     1) AS inscr_open,
-                               LEFT(10, e.debut) AS start_day, LEFT(10, e.fin) AS last_day,
-                               LEFT(NOW(), 10) AS now,
-                               ei.titre, al.vid AS absent_list, pl.vid AS participant_list,
-                               pyl.vid AS payed_list, bl.vid AS booked_unpayed_list,
-                               e.subscription_notification
-                         FROM  group_events              AS e
-                   INNER JOIN  group_event_items        AS ei ON (e.eid = ei.eid)
-                    LEFT JOIN  group_event_participants AS ep ON(e.eid = ep.eid AND ei.item_id = ep.item_id)
-                    LEFT JOIN  virtual AS al ON(al.type = \'evt\' AND al.alias = CONCAT(short_name, {?}))
-                    LEFT JOIN  virtual AS pl ON(pl.type = \'evt\' AND pl.alias = CONCAT(short_name, {?}))
-                    LEFT JOIN  virtual AS pyl ON(pyl.type = \'evt\' AND pyl.alias = CONCAT(short_name, {?}))
-                    LEFT JOIN  virtual AS bl ON(bl.type = \'evt\' AND bl.alias = CONCAT(short_name, {?}))
-                        WHERE  (e.eid = {?} OR e.short_name = {?}) AND ei.item_id = {?} AND e.asso_id = {?}
-                     GROUP BY  ei.item_id',
-                   '-absents@'.$globals->xnet->evts_domain,
-                   '-participants@'.$globals->xnet->evts_domain,
-                   '-paye@' . $globals->xnet->evts_domain,
-                   '-participants-non-paye@' . $globals->xnet->evts_domain,
-                   $eid, $eid, $item_id ? $item_id : 1, $asso_id);
-    $evt = $res->fetchOneAssoc();
+    $evt = XDB::fetchOneAssoc('SELECT  SUM(nb) AS nb_tot, COUNT(DISTINCT ep.uid) AS nb, e.*,
+                                       IF(e.deadline_inscription,
+                                          e.deadline_inscription >= LEFT(NOW(), 10),
+                                          1) AS inscr_open,
+                                       LEFT(10, e.debut) AS start_day, LEFT(10, e.fin) AS last_day,
+                                       LEFT(NOW(), 10) AS now,
+                                       ei.titre, e.subscription_notification
+                                 FROM  group_events             AS e
+                           INNER JOIN  group_event_items        AS ei ON (e.eid = ei.eid)
+                            LEFT JOIN  group_event_participants AS ep ON(e.eid = ep.eid AND ei.item_id = ep.item_id)
+                                WHERE  (e.eid = {?} OR e.short_name = {?}) AND ei.item_id = {?} AND e.asso_id = {?}
+                             GROUP BY  ei.item_id',
+                           $eid, $eid, $item_id ? $item_id : 1, $asso_id);
 
     if (!$evt) {
         return null;
@@ -178,7 +167,7 @@ function get_event_participants(&$evt, $item_id, array $tri = array(), $limit = 
 /** Subscribes user to various event related mailing lists.
  *
  * @param $uid: user's id.
- * @param evt: events data, in particular ids of the lists at stake.
+ * @param short_name: event's short_name, which corresponds to the beginning of the emails.
  * @param participate: indicates if the user takes part at the event or not;
  *      -1 means he did not answer, 0 means no, and 1 means yes.
  * @param paid: has the user already payed anything?
@@ -186,65 +175,48 @@ function get_event_participants(&$evt, $item_id, array $tri = array(), $limit = 
  * @param payment: is this function called from a payment page?
  *      If true, only payment related lists should be updated.
  */
-function subscribe_lists_event($uid, $evt, $participate, $paid, $payment = false)
+function subscribe_lists_event($uid, $short_name, $participate, $paid, $payment = false)
 {
-    $participant_list  = $evt['participant_list'];
-    $absent_list       = $evt['absent_list'];
-    $unpayed_list      = $evt['booked_unpayed_list'];
-    $payed_list        = $evt['payed_list'];
+    global $globals;
+    require_once 'emails.inc.php';
 
-    $user = User::getSilent($uid);
-    $email = $user->forlifeEmail();
-
-    function subscribe($list, $email)
-    {
-        if ($list && $email) {
-            XDB::execute('INSERT IGNORE INTO  virtual_redirect
-                                      VALUES  ({?}, {?})',
-                         $list, $email);
-        }
+    if (is_null($short_name)) {
+        return;
     }
 
-    function unsubscribe($list, $email)
-    {
-        if ($list && $email) {
-            XDB::execute('DELETE FROM  virtual_redirect
-                                WHERE  vid = {?} AND redirect = {?}',
-                         $list, $email);
-        }
-    }
+    $user = User::getSilentWithUID($uid);
 
     /** If $payment is not null, we do not retrieve the value of $participate,
      * thus we do not alter participant and absent lists.
      */
     if ($payment === true) {
         if ($paid > 0) {
-            unsubscribe($unpayed_list, $email);
-            subscribe($payed_list, $email);
+            delete_from_list_alias($user, $short_name . $globals->xnet->unpayed_list, $globals->xnet->evts_domain, 'event');
+            add_to_list_alias($user, $short_name . $globals->xnet->payed_list, $globals->xnet->evts_domain, 'event');
         }
     } else {
         switch ($participate) {
           case -1:
-            unsubscribe($participant_list, $email);
-            unsubscribe($unpayed_list, $email);
-            unsubscribe($payed_list, $email);
-            subscribe($absent_list, $email);
+            delete_from_list_alias($user, $short_name . $globals->xnet->participant_list, $globals->xnet->evts_domain, 'event');
+            delete_from_list_alias($user, $short_name . $globals->xnet->unpayed_list, $globals->xnet->evts_domain, 'event');
+            delete_from_list_alias($user, $short_name . $globals->xnet->payed_list, $globals->xnet->evts_domain, 'event');
+            add_to_list_alias($user, $short_name . $globals->xnet->absent_list, $globals->xnet->evts_domain, 'event');
             break;
           case 0:
-            unsubscribe($participant_list, $email);
-            unsubscribe($absent_list, $email);
-            unsubscribe($unpayed_list, $email);
-            unsubscribe($payed_list, $email);
+            delete_from_list_alias($user, $short_name . $globals->xnet->participant_list, $globals->xnet->evts_domain, 'event');
+            delete_from_list_alias($user, $short_name . $globals->xnet->absent_list, $globals->xnet->evts_domain, 'event');
+            delete_from_list_alias($user, $short_name . $globals->xnet->unpayed_list, $globals->xnet->evts_domain, 'event');
+            delete_from_list_alias($user, $short_name . $globals->xnet->payed_list, $globals->xnet->evts_domain, 'event');
             break;
           case 1:
-            subscribe($participant_list, $email);
-            unsubscribe($absent_list, $email);
+            add_to_list_alias($user, $short_name . $globals->xnet->participant_list, $globals->xnet->evts_domain, 'event');
+            delete_from_list_alias($user, $short_name . $globals->xnet->absent_list, $globals->xnet->evts_domain, 'event');
             if ($paid > 0) {
-                unsubscribe($unpayed_list, $email);
-                subscribe($payed_list, $email);
+                delete_from_list_alias($user, $short_name . $globals->xnet->unpayed_list, $globals->xnet->evts_domain, 'event');
+                add_to_list_alias($user, $short_name . $globals->xnet->payed_list, $globals->xnet->evts_domain, 'event');
             } else {
-                subscribe($unpayed_list, $email);
-                unsubscribe($payed_list, $email);
+                add_to_list_alias($user, $short_name . $globals->xnet->unpayed_list, $globals->xnet->evts_domain, 'event');
+                delete_from_list_alias($user, $short_name . $globals->xnet->payed_list, $globals->xnet->evts_domain, 'event');
             }
             break;
         }
@@ -256,6 +228,7 @@ function subscribe_lists_event($uid, $evt, $participate, $paid, $payment = false
 function event_change_shortname($page, $eid, $old, $new)
 {
     global $globals;
+    require_once 'emails.inc.php';
 
     if (is_null($old)) {
         $old = '';
@@ -292,13 +265,13 @@ function event_change_shortname($page, $eid, $old, $new)
 
     if ($old && $new) {
         // if had a previous shortname change the old lists
-        foreach (array('-absents@', '-participants@', '-paye@', '-participants-non-paye@') as $v) {
-            $v .= $globals->xnet->evts_domain;
-            XDB::execute("UPDATE  virtual
-                             SET  alias = {?}
-                           WHERE  type = 'evt' AND alias = {?}",
-                         $new . $v, $old . $v);
+        foreach (explode(',', $globals->xnet->event_lists) as $suffix) {
+            XDB::execute('UPDATE  email_virtual
+                             SET  email = {?}
+                           WHERE  type = \'event\' AND email = {?}',
+                         $new . $suffix, $old . $suffix);
         }
+
         return $new;
     }
 
@@ -306,52 +279,40 @@ function event_change_shortname($page, $eid, $old, $new)
         // if we have a first new short_name create the lists
         $lastid = array();
         $where = array(
-            '-participants@'          => 'ep.nb > 0',
-            '-paye@'                  => 'ep.paid > 0',
-            '-participants-non-paye@' => 'ep.nb > 0 AND ep.paid = 0'
+            $globals->xnet->participant_list => 'nb > 0',
+            $globals->xnet->payed_list       => 'paid > 0',
+            $globals->xnet->unpayed_list     => 'nb > 0 AND paid = 0'
         );
 
-        foreach (array('-absents@', '-participants@', '-paye@', '-participants-non-paye@') as $v) {
-            XDB::execute("INSERT INTO  virtual
-                                  SET  type = 'evt', alias = {?}",
-                         $new . $v . $globals->xnet->evts_domain);
-
-            $lastid[$v] = XDB::insertId();
+        foreach (array($globals->xnet->participant_list, $globals->xnet->payed_list, $globals->xnet->unpayed_list) as $suffix) {
+            $uids = XDB::fetchColumn('SELECT  uid
+                                        FROM  group_event_participants
+                                       WHERE  eid = {?} AND ' . $where,
+                                     $eid);
+            $users = User::getBulkUsersWithUIDs($uids, null, null, false);
+            foreach ($users as $user) {
+                add_to_list_alias($user, $new . $suffix, $globals->xnet->evts_domain, 'event');
+            }
         }
-
-        foreach (array('-participants@', '-paye@', '-participants-non-paye@') as $v) {
-            XDB::execute("INSERT IGNORE INTO  virtual_redirect (
-                                      SELECT  {?} AS vid, IF(al.alias IS NULL, a.email, CONCAT(al.alias, {?})) AS redirect
-                                        FROM  group_event_participants AS ep
-                                   LEFT JOIN  accounts AS a  ON (ep.uid = a.uid)
-                                   LEFT JOIN  aliases  AS al ON (al.uid = a.uid AND al.type = 'a_vie')
-                                       WHERE  ep.eid = {?} AND " . $where[$v] . "
-                                    GROUP BY  ep.uid)",
-                         $lastid[$v], '@' . $globals->mail->domain, $eid);
+        $uids = XDB::fetchColumn('SELECT  m.uid
+                                    FROM  group_members            AS m
+                               LEFT JOIN  group_event_participants AS e ON (e.uid = m.uid AND e.eid = {?})
+                                   WHERE  m.asso_id = {?} AND e.uid IS NULL',
+                                 $eid, $globals->asso('id'));
+        $users = User::getBulkUsersWithUIDs($uids, null, null, false);
+        foreach ($users as $user) {
+            add_to_list_alias($user, $new . $globals->xnet->absent_list, $globals->xnet->evts_domain, 'event');
         }
-        XDB::execute("INSERT IGNORE INTO  virtual_redirect (
-                                  SELECT  {?} AS vid, IF(al.alias IS NULL, a.email, CONCAT(al.alias, {?})) AS redirect
-                                    FROM  group_members AS m
-                               LEFT JOIN  accounts  AS a  ON (a.uid = m.uid)
-                               LEFT JOIN  aliases   AS al ON (al.uid = a.uid AND al.type = 'a_vie')
-                               LEFT JOIN  group_event_participants AS ep ON (ep.uid = m.uid AND ep.eid = {?})
-                                   WHERE  m.asso_id = {?} AND ep.uid IS NULL
-                                GROUP BY  m.uid)",
-                     $lastid['-absents@'], '@' . $globals->mail->domain, $eid, $globals->asso('id'));
 
         return $new;
     }
 
     if ($old && !$new) {
         // if we delete the old short name, delete the lists
-        foreach (array('-absents@', '-participants@', '-paye@', '-participants-non-paye@') as $v) {
-            $v .= $globals->xnet->evts_domain;
-            XDB::execute("DELETE  virtual, virtual_redirect
-                            FROM  virtual
-                       LEFT JOIN  virtual_redirect USING(vid)
-                           WHERE  virtual.alias = {?}",
-                         $infos['short_name'] . $v);
+        foreach (explode(',', $globals->xnet->event_lists) as $suffix) {
+            delete_list_alias($old . $suffix, $globals->xnet->evts_domain);
         }
+
         return $new;
     }
 

@@ -55,6 +55,7 @@ class Phone
     const LINK_ADDRESS = 'address';
     const LINK_PROFILE = 'user';
     const LINK_COMPANY = 'hq';
+    const LINK_GROUP   = 'group';
 
     /** The following fields, but $error, all correspond to the fields of the
      * database table profile_phones.

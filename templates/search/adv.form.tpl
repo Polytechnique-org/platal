@@ -113,6 +113,15 @@
       });
   }
 
+  // when checking/unchecking "only_referent", disable/enable some fields
+  function changeOnlyReferent() {
+    if ($("#only_referent").is(':checked')) {
+      $("input[name='entreprise']").attr('disabled', true);
+    } else {
+      $("input[name='entreprise']").removeAttr('disabled');
+    }
+  }
+
   // when choosing a job term in tree, hide tree and set job term field
   function searchForJobTerm(treeid, jtid, full_name) {
     $(".term_tree").remove();
@@ -224,6 +233,10 @@
           // to ensure that, we unset it
           $(this).parent().find('.autocompleteTarget').val('');
         });
+
+      $("#only_referent").change(function() { changeOnlyReferent(); });
+      changeOnlyReferent();
+
     });
 /** Regexps to wipe out from search queries */
 var default_form_values = [ /&woman=0(&|$)/, /&subscriber=0(&|$)/, /&alive=0(&|$)/, /&egal[12]=[^&]*&promo[12]=(&|$)/g, /&networking_type=0(&|$)/, /&[^&=]+=(&|$)/g ];

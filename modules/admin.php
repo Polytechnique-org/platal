@@ -585,9 +585,9 @@ class AdminModule extends PLModule
         } else if (!Post::blank('del_fwd')) {
             $redirect->delete_email(Post::t('del_fwd'));
         } else if (!Post::blank('activate_fwd')) {
-            $redirect->modify_one_email(Post::t('activate_fwd', true));
+            $redirect->modify_one_email(Post::t('activate_fwd'), true);
         } else if (!Post::blank('deactivate_fwd')) {
-            $redirect->modify_one_email(Post::t('deactivate_fwd', false));
+            $redirect->modify_one_email(Post::t('deactivate_fwd'), false);
         } else if (Post::has('disable_fwd')) {
             $redirect->disable();
         } else if (Post::has('enable_fwd')) {
@@ -604,7 +604,7 @@ class AdminModule extends PLModule
             if (strpos($alias, '@') !== false) {
                 list($alias, $domain) = explode('@', $alias);
             } else {
-                $domain = $globals->mail->domain;
+                $domain = $user->mainEmailDomain();
             }
 
             // Checks for alias' user validity.
@@ -616,36 +616,49 @@ class AdminModule extends PLModule
             if ($domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2) {
                 $req = new AliasReq($user, $alias, 'Admin request', false);
                 if ($req->commit()) {
-                    $page->trigSuccess("Nouvel alias '$alias@$domain' attribué");
+                    $page->trigSuccess("Nouvel alias '$alias@$domain' attribué.");
                 } else {
-                    $page->trigError("Impossible d'ajouter l'alias '$alias@$domain', il est probablement déjà attribué");
+                    $page->trigError("Impossible d'ajouter l'alias '$alias@$domain', il est probablement déjà attribué.");
                 }
-            } elseif ($domain == $globals->mail->domain || $domain == $globals->mail->domain2) {
-                $res = XDB::execute("INSERT INTO  aliases (uid, alias, type)
-                                          VALUES  ({?}, {?}, 'alias')",
-                                    $user->id(), $alias);
+            } elseif ($domain == $user->mainEmailDomain()) {
+                XDB::execute('INSERT INTO  email_source_account (email, uid, domain, type, flags)
+                                   SELECT  {?}, {?}, id, \'alias\', \'\'
+                                     FROM  email_virtual_domains
+                                    WHERE  name = {?}',
+                              $alias, $user->id(), $domain);
                 $page->trigSuccess("Nouvel alias '$alias' ajouté");
             } else {
-                $page->trigError("Le domaine '$domain' n'est pas valide");
+                $page->trigError("Le domaine '$domain' n'est pas valide pour cet utilisateur.");
             }
         } else if (!Post::blank('del_alias')) {
-            XDB::execute("DELETE FROM  aliases
-                                WHERE  uid = {?} AND alias = {?} AND
-                                       type NOT IN ('a_vie', 'homonyme')",
-                         $user->id(), $val);
-            XDB::execute("UPDATE  emails
-                             SET  rewrite = ''
-                           WHERE  uid = {?} AND rewrite LIKE CONCAT({?}, '@%')",
-                         $user->id(), $val);
+            $delete_alias = Post::t('del_alias');
+            list($email, $domain) = explode('@', $delete_alias);
+            XDB::execute('DELETE  s
+                            FROM  email_source_account  AS s
+                      INNER JOIN  email_virtual_domains AS m ON (s.domain = m.id)
+                      INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
+                           WHERE  s.email = {?} AND s.uid = {?} AND d.name = {?} AND type != \'forlife\'',
+                          $email, $user->id(), $domain);
+            XDB::execute('UPDATE  email_redirect_account AS r
+                      INNER JOIN  email_virtual_domains  AS m ON (m.name = {?})
+                      INNER JOIN  email_virtual_domains  AS d ON (d.aliasing = m.id)
+                             SET  r.rewrite = \'\'
+                           WHERE  r.uid = {?} AND r.rewrite = CONCAT({?}, \'@\', d.name)',
+                         $domain, $user->id(), $email);
             fix_bestalias($user);
-            $page->trigSuccess("L'alias '$val' a été supprimé");
+            $page->trigSuccess("L'alias '$delete_alias' a été supprimé");
         } else if (!Post::blank('best')) {
-            XDB::execute("UPDATE  aliases
+            $best_alias = Post::t('best');
+            // First delete the bestalias flag from all this user's emails.
+            XDB::execute("UPDATE  email_source_account
                              SET  flags = TRIM(BOTH ',' FROM REPLACE(CONCAT(',', flags, ','), ',bestalias,', ','))
                            WHERE  uid = {?}", $user->id());
-            XDB::execute("UPDATE  aliases
+            // Then gives the bestalias flag to the given email.
+            list($email, $domain) = explode('@', $best_alias);
+            XDB::execute("UPDATE  email_source_account
                              SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'bestalias')
-                           WHERE  uid = {?} AND alias = {?}", $user->id(), $val);
+                           WHERE  uid = {?} AND email = {?}", $user->id(), $email);
+
             // As having a non-null bestalias value is critical in
             // plat/al's code, we do an a posteriori check on the
             // validity of the bestalias.
@@ -691,12 +704,17 @@ class AdminModule extends PLModule
         $page->assign('mlists', $listClient->get_all_user_lists($user->forlifeEmail()));
 
         // Display active aliases.
-        $page->assign('virtuals', $user->emailAliases());
-        $page->assign('aliases', XDB::iterator("SELECT  alias, type='a_vie' AS for_life,
-                                                        FIND_IN_SET('bestalias',flags) AS best, expire
-                                                  FROM  aliases
-                                                 WHERE  uid = {?} AND type != 'homonyme'
-                                              ORDER BY  type != 'a_vie'", $user->id()));
+        $page->assign('virtuals', $user->emailGroupAliases());
+        $aliases = XDB::iterator("SELECT  CONCAT(s.email, '@', d.name) AS email, (s.type = 'forlife') AS forlife,
+                                          (s.email REGEXP '\\\\.[0-9]{2}$') AS hundred_year,
+                                          FIND_IN_SET('bestalias', s.flags) AS bestalias, s.expire,
+                                          (s.type = 'alias_aux') AS alias
+                                    FROM  email_source_account  AS s
+                              INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
+                                   WHERE  s.uid = {?}
+                                ORDER BY  !alias, s.email",
+                                 $user->id());
+        $page->assign('aliases', $aliases);
         $page->assign('account_types', XDB::iterator('SELECT * FROM account_types ORDER BY type'));
         $page->assign('skins', XDB::iterator('SELECT id, name FROM skins ORDER BY name'));
         $page->assign('profiles', XDB::iterator('SELECT  p.pid, p.hrpid, FIND_IN_SET(\'owner\', ap.perms) AS owner
@@ -759,9 +777,9 @@ class AdminModule extends PLModule
     {
         switch ($sex) {
           case 'F':
-            return PlUser::GENDER_FEMALE;
+            return 'female';
           case 'M':
-            return PlUser::GENDER_MALE;
+            return 'male';
           default:
             $page->trigError("La ligne $line n'a pas été ajoutée car le sexe $sex n'est pas pris en compte.");
             return null;
@@ -787,7 +805,6 @@ class AdminModule extends PLModule
             $nameTypes = array_flip($nameTypes);
 
             if (Env::t('add_type') == 'promo') {
-                $type = 'x';
                 $eduSchools = DirEnum::getOptions(DirEnum::EDUSCHOOLS);
                 $eduSchools = array_flip($eduSchools);
                 $eduDegrees = DirEnum::getOptions(DirEnum::EDUDEGREES);
@@ -799,6 +816,7 @@ class AdminModule extends PLModule
                     $grad_year = $promotion + 3;
                     $promo = 'X' . $promotion;
                     $hrpromo = $promotion;
+                    $type = 'x';
                     break;
                   case 'M':
                     $degreeid = $eduDegrees[Profile::DEGREE_M];
@@ -828,7 +846,11 @@ class AdminModule extends PLModule
                             $fullName = $infos[1] . ' ' . $infos[0];
                             $directoryName = $infos[0] . ' ' . $infos[1];
                             $birthDate = self::formatBirthDate($infos[2]);
-                            $xorgId = Profile::getXorgId($infos[4]);
+                            if ($type == 'x') {
+                                $xorgId = Profile::getXorgId($infos[4]);
+                            } else {
+                                $xorgId = trim($infos[4]);
+                            }
                             if (is_null($xorgId)) {
                                 $page->trigError("La ligne $line n'a pas été ajoutée car le matricule École est mal renseigné.");
                                 continue;
@@ -851,9 +873,9 @@ class AdminModule extends PLModule
                                                                         directory_name, short_name, sort_name, promo)
                                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
                                          $pid, $infos[1], $fullName, $fullName, $directoryName, $fullName, $directoryName, $promo);
-                            XDB::execute('INSERT INTO  profile_education (pid, eduid, degreeid, entry_year, grad_year, flags)
-                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?})',
-                                         $pid, $eduSchools[Profile::EDU_X], $degreeid, $entry_year, $grad_year, 'primary');
+                            XDB::execute('INSERT INTO  profile_education (id, pid, eduid, degreeid, entry_year, grad_year, flags)
+                                               VALUES  (100, {?}, {?}, {?}, {?}, {?}, \'primary\')',
+                                         $pid, $eduSchools[Profile::EDU_X], $degreeid, $entry_year, $grad_year);
                             XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, full_name, directory_name, display_name, sex)
                                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
                                          $infos['hrid'], $type, 0, 'pending', $fullName, $directoryName, $infos[1], $sex);
@@ -924,8 +946,8 @@ class AdminModule extends PLModule
         $this->load("homonyms.inc.php");
 
         if ($target) {
-            $user = User::getSilent($target);
-            if (!$user || !($loginbis = select_if_homonyme($user))) {
+            $user = User::getSilentWithUID($target);
+            if (!$user || !($loginbis = select_if_homonym($user))) {
                 $target = 0;
             } else {
                 $page->assign('user', $user);
@@ -936,15 +958,16 @@ class AdminModule extends PLModule
         $page->assign('op', $op);
         $page->assign('target', $target);
 
-        // on a un $target valide, on prepare les mails
+        // When we have a valid target, prepare emails.
         if ($target) {
-            // on examine l'op a effectuer
+            require_once 'emails.inc.php';
+            // Examine what operation needs to be performed.
             switch ($op) {
                 case 'mail':
                     S::assert_xsrf_token();
 
                     send_warning_homonyme($user, $loginbis);
-                    switch_bestalias($user, $loginbis);
+                    fix_bestalias($user);
                     $op = 'list';
                     $page->trigSuccess('Email envoyé à ' . $user->forlifeEmail() . '.');
                     break;
@@ -952,12 +975,15 @@ class AdminModule extends PLModule
                 case 'correct':
                     S::assert_xsrf_token();
 
-                    switch_bestalias($user, $loginbis);
-                    XDB::execute("UPDATE  aliases
-                                     SET  type = 'homonyme', expire=NOW()
-                                   WHERE  alias = {?}", $loginbis);
-                    XDB::execute('INSERT IGNORE INTO  homonyms (homonyme_id, uid)
-                                              VALUES  ({?}, {?})', $target, $target);
+                    XDB::execute('DELETE FROM  email_source_account
+                                        WHERE  email = {?} AND type = \'alias\'',
+                                 $loginbis);
+                    XDB::execute('INSERT INTO  email_source_other (hrmid, email, domain, type, expire)
+                                       SELECT  {?}, {?}, id, \'homonym\', NOW()
+                                         FROM  email_virtual_domains
+                                        WHERE  name = {?}',
+                                 User::makeHomonymHrmid($loginbis), $loginbis, $user->mainEmailDomain());
+                    fix_bestalias($user);
                     send_robot_homonyme($user, $loginbis);
                     $op = 'list';
                     $page->trigSuccess('Email envoyé à ' . $user->forlifeEmail() . ', alias supprimé.');
@@ -966,21 +992,32 @@ class AdminModule extends PLModule
         }
 
         if ($op == 'list') {
-            $res = XDB::iterator(
-                    "SELECT  a.alias AS homonyme, s.alias AS forlife,
-                             IF(h.homonyme_id = s.uid, a.expire, NULL) AS expire,
-                             IF(h.homonyme_id = s.uid, a.type, NULL) AS type, ac.uid
-                       FROM  aliases       AS a
-                  LEFT JOIN  homonyms      AS h  ON (h.homonyme_id = a.uid)
-                 INNER JOIN  aliases       AS s  ON (s.uid = h.uid AND s.type = 'a_vie')
-                 INNER JOIN  accounts      AS ac ON (ac.uid = a.uid)
-                      WHERE  a.type = 'homonyme' OR a.expire != ''
-                   ORDER BY  a.alias, forlife");
-            $hnymes = Array();
-            while ($tab = $res->next()) {
-                $hnymes[$tab['homonyme']][] = $tab;
+            // Retrieves homonyms that are already been fixed.
+            $res = XDB::iterator('SELECT  o.email AS homonym, f.email AS forlife, o.expire, f.uid
+                                    FROM  email_source_other    AS o
+                              INNER JOIN  homonyms_list         AS h ON (o.hrmid = h.hrmid)
+                              INNER JOIN  email_source_account  AS f ON (h.uid = f.uid AND f.type = \'forlife\')
+                                   WHERE  o.expire IS NOT NULL
+                                ORDER BY  homonym, forlife');
+            $homonyms = array();
+            while ($item = $res->next()) {
+                $homonyms[$item['homonym']][] = $item;
             }
-            $page->assign_by_ref('hnymes', $hnymes);
+            $page->assign_by_ref('homonyms', $homonyms);
+
+            // Retrieves homonyms that needs to be fixed.
+            $res = XDB::iterator('SELECT  e.email AS homonym, f.email AS forlife, e.expire, e.uid, (e.expire < NOW()) AS urgent
+                                    FROM  email_source_account  AS e
+                              INNER JOIN  homonyms_list         AS l ON (e.uid = l.uid)
+                              INNER JOIN  homonyms_list         AS h ON (l.hrmid = h.hrmid)
+                              INNER JOIN  email_source_account  AS f ON (h.uid = f.uid AND f.type = \'forlife\')
+                                   WHERE  e.expire IS NOT NULL
+                                ORDER BY  homonym, forlife');
+            $homonyms_to_fix = array();
+            while ($item = $res->next()) {
+                $homonyms_to_fix[$item['homonym']][] = $item;
+            }
+            $page->assign_by_ref('homonyms_to_fix', $homonyms_to_fix);
         }
     }
 

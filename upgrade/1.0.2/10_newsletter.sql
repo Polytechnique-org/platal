@@ -42,7 +42,7 @@ CREATE TABLE newsletter_issues (
   nlid int(11) unsigned NOT NULL,
   id int(11) unsigned NOT NULL auto_increment,
   date date NOT NULL default '0000-00-00',
-  send_before date default NULL,
+  send_before datetime default NULL,
   state enum('sent','new','pending') NOT NULL default 'new',
   sufb_json text default NULL,
   title varchar(255) NOT NULL default '',

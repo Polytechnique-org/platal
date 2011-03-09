@@ -26,17 +26,21 @@
   <p>
   Tu configures ici les adresses emails vers lesquelles tes adresses (listées ci-dessous) sont redirigées&nbsp;:
   </p>
-  <ul>
-    {if $melix}
-    <li>
-    <strong>{$melix}@{#globals.mail.alias_dom#}</strong>,
-    <strong>{$melix}@{#globals.mail.alias_dom2#}</strong>
+  <ul class="aliases">
+    <li onclick="$('.aliases').toggle()">
+      {icon name="table" title="Afficher toutes tes adresses polytechniciennes"}&nbsp;<strong>{$best_email}</strong>
     </li>
-    {/if}
-    {foreach from=$alias item=a}
-    <li>
-    <strong>{$a.alias}@{#globals.mail.domain#}</strong>
-    {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
+  </ul>
+  <ul class="aliases" style="display: none">
+    {foreach from=$alias item=a name=alias}
+    <li onclick="$('.aliases').toggle()">
+      {if $smarty.foreach.alias.first}
+      {icon name="table" title="Cacher tes adresses polytechniciennes"}
+      {else}
+      {icon name="null"}
+      {/if}
+      &nbsp;<strong>{$a.email}</strong>
+      {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
     </li>
     {/foreach}
   </ul>
@@ -80,7 +84,7 @@
     {
         if (confirm("Supprimer l'adresse " + email + " ?")) {
           $.get(link.href, {},function() {
-            $('#line_' + email.replace('@', '_at_').replace('.','\\.')).remove();
+            $('#line_' + email.replace('@', '_at_').replace('.', '\\.')).remove();
             showRemove();
             activeEnable();
           });
@@ -135,8 +139,8 @@
       <tr class="{cycle values="pair,impair"}" id="line_{$e->email|replace:'@':'_at_'}">
         <td>
           <strong>
-            {if $e->broken}<span class="erreur">{assign var="erreur" value="1"}{/if}
-            {if $e->panne neq '0000-00-00'}{assign var="panne" value="1"}{icon name=error title="En panne"}{/if}
+            {if $e->broken}<span class="erreur">{assign var="error" value="1"}{/if}
+            {if $e->broken_date neq '0000-00-00'}{assign var="broken" value="1"}{icon name=error title="En panne"}{/if}
             {$e->display_email}
             {if $e->broken}</span>{/if}
           </strong>
@@ -150,13 +154,8 @@
           {if $e->has_rewrite()}
           <select onchange="$.get('emails/redirect/rewrite/{$e->email}/'+this.value, 'text',  rewriteUpdate('{$e->email}', {$e->allow_rewrite|default:"0"}, this)); return false">
             <option value=''>--- aucune ---</option>
-            {assign var=dom1 value=#globals.mail.domain#}
-            {assign var=dom2 value=#globals.mail.domain2#}
             {foreach from=$alias item=a}
-            <option {if $e->rewrite eq "`$a.alias`@`$dom1`"}selected='selected'{/if}
-              value='{$a.alias}@{#globals.mail.domain#}'>{$a.alias}@{#globals.mail.domain#}</option>
-            <option {if $e->rewrite eq "`$a.alias`@`$dom2`"}selected='selected'{/if}
-              value='{$a.alias}@{#globals.mail.domain2#}'>{$a.alias}@{#globals.mail.domain2#}</option>
+            <option value="{$a.email}" {if $e->rewrite eq $a.email}selected='selected'{/if}>{$a.email}</option>
             {/foreach}
           </select>
           {if $e->rewrite neq '' && !$e->allow_rewrite}{icon name="error" title="en attente de validation"}{/if}
@@ -166,9 +165,8 @@
         </td>
         <td>
           {if $e->is_removable()}
-          <a href="emails/redirect/remove/{$e->email}"
-             class="remove_email"
-             onclick="return removeRedirect(this, &quot;{$e->email}&quot;);" >
+          <a href="emails/redirect/remove/{$e->email}" class="remove_email"
+             onclick="return removeRedirect(this, '{$e->email}');" >
             {icon name=cross title="Supprimer"}
           </a>
           {else}
@@ -178,13 +176,16 @@
         </td>
       </tr>
       {/foreach}
-        {cycle values="pair,impair" assign=class_combobox}
-        {$error_email}
-        {include file="include/emails.combobox.tpl" name="email" val=$email class=$class_combobox error=$error_email i="0"}
-        <tr class="{$class_combobox}"><td colspan="4"><div>
-          <input type="submit" value="ajouter" name="emailop" />
-          {xsrf_token_field}
-        </div></td></tr>
+      {cycle values="pair,impair" assign=class_combobox}
+      {include file="include/emails.combobox.tpl" name="email" val=$email class=$class_combobox error=$error_email i="0"}
+      <tr class="{$class_combobox}">
+        <td colspan="4">
+          <div>
+            <input type="submit" value="ajouter" name="emailop" />
+            {xsrf_token_field}
+          </div>
+        </td>
+      </tr>
     </table>
     </form>
     <script type="text/javascript">showRemove(); activeEnable();</script>
@@ -193,7 +194,7 @@
   Légende&nbsp;: {icon name=cross title="Supprimer"} Supprimer la redirection
   - {icon name=information title="Plus d'informations"} Plus d'informations
 </p>
-{if $panne}
+{if t($broken)}
 <p class="smaller">
   <strong>
     {icon name=error title="En panne"}
@@ -203,7 +204,7 @@
   a été détectée. Si le problème persiste, la redirection vers ces adresses sera désactivée.
 </p>
 {/if}
-{if $erreur}
+{if t($error)}
 <p class="smaller">
   <strong>
     {icon name=error title="En panne"}

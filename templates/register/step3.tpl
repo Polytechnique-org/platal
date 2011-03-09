@@ -30,16 +30,16 @@
   {if $smarty.session.subState.emailXorg2}
   <p>
   Tu n'as pour le moment aucun homonyme dans notre base de données. Nous allons
-  donc te donner l'adresse <strong>{$smarty.session.subState.bestalias}@{#globals.mail.domain#}</strong>,
-  en plus de ton adresse à vie <strong>{$smarty.session.subState.forlife}@{#globals.mail.domain#}</strong>.
-  Note que tu pourrais perdre l'adresse <strong>{$smarty.session.subState.bestalias}@{#globals.mail.domain#}</strong>
+  donc te donner l'adresse <strong>{$smarty.session.subState.bestalias}@{$smarty.session.subState.main_mail_domain}</strong>,
+  en plus de ton adresse à vie <strong>{$smarty.session.subState.forlife}@{$smarty.session.subState.main_mail_domain}</strong>.
+  Note que tu pourrais perdre l'adresse <strong>{$smarty.session.subState.bestalias}@{$smarty.session.subState.main_mail_domain}</strong>
   si un homonyme s'inscrivait, même si cela reste assez rare.
   </p>
   {else}
   <p>
   Tu as déjà un homonyme inscrit dans notre base de données, dans une autre promotion. Nous allons
-  donc te donner l'adresse <strong>{$smarty.session.subState.bestalias}@{#globals.mail.domain#}</strong>, en plus
-  de ton adresse à vie <strong>{$smarty.session.subState.forlife}@{#globals.mail.domain#}</strong>.
+  donc te donner l'adresse <strong>{$smarty.session.subState.bestalias}@{$smarty.session.subState.main_mail_domain}</strong>, en plus
+  de ton adresse à vie <strong>{$smarty.session.subState.forlife}@{$smarty.session.subState.main_mail_domain}</strong>.
   </p>
   {/if}
 

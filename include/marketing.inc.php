@@ -67,8 +67,8 @@ class Marketing
             'sexe'           => $user->isFemale(),
             'mail'           => $email,
             'to'             => '"' . $user->fullName() . '" <' . $email . '>',
-            'forlife_email'  => $user->login() . '@' . $globals->mail->domain,
-            'forlife_email2' => $user->login() . '@' . $globals->mail->domain2,
+            'forlife_email'  => $user->forlifeEmail(),
+            'forlife_email2' => $user->forlifeEmailAlternate()
         );
     }
 
@@ -217,7 +217,7 @@ class Marketing
         $mymail->assign('baseurl',    $globals->baseurl);
         $mymail->assign('lins_id',    $hash);
         $mymail->assign('lemail',     $email);
-        $mymail->assign('subj',       $alias.'@'.$globals->mail->domain);
+        $mymail->assign('subj',       ucfirst($globals->mail->domain) . ' : ' . $alias);
         $mymail->send();
         XDB::execute('UPDATE  register_pending
                          SET  hash={?}, password={?}, relance=NOW()
