@@ -56,7 +56,7 @@
 </table>
 {/if}
 
-{if $text}
+{if t($text)}
 {$pmwiki|smarty:nodefaults}
 {else}
 {include file=$pmwiki_cache}
