@@ -91,22 +91,22 @@ class User extends PlUser
         }
 
         // From now, $login can only by an email alias, or an email redirection.
-        // If it doesn't look like a valid address, appends the plat/al's main domain.
         $login = trim(strtolower($login));
         if (strstr($login, '@') === false) {
-            $email = $login;
-            $domain = $this->mainEmailDomain();
+            $res = XDB::fetchOneCell('SELECT  uid
+                                        FROM  email_source_account
+                                       WHERE  email = {?}',
+                                     $login);
         } else {
             list($email, $domain) = explode('@', $login);
+            $res = XDB::fetchOneCell('SELECT  s.uid
+                                        FROM  email_source_account  AS s
+                                  INNER JOIN  email_virtual_domains AS m ON (s.domain = m.id)
+                                  INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
+                                       WHERE  s.email = {?} AND d.name = {?}',
+                                     $email, $domain);
         }
 
-        // Checks if $login is a valid alias on any domain.
-        $res = XDB::fetchOneCell('SELECT  s.uid
-                                    FROM  email_source_account  AS s
-                              INNER JOIN  email_virtual_domains AS m ON (s.domain = m.id)
-                              INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
-                                   WHERE  s.email = {?} AND d.name = {?}',
-                                 $email, $domain);
         if ($res) {
             return $res;
         }
