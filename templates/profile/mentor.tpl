@@ -105,7 +105,7 @@
   </tr>
   <tr>
     <td class="titre" style="width:30%">Mots-clefs</td>
-    <td class="job_terms">
+    <td class="jobs_terms">
       <input type="text" class="term_search" size="35"/>
       <a href="javascript:toggleJobTermsTree(-1)">{icon name="table" title="Tous les mots-clefs"}</a>
       <script type="text/javascript">
