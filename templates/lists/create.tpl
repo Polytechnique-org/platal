@@ -89,7 +89,7 @@ liste&nbsp;:
     <tr>
       <td class='titre'>Propriétés&nbsp;:</td>
       <td>visibilité&nbsp;:</td>
-      <td><label><input type='radio' name='advertise' value='0'
+      <td style="width: 6em"><label><input type='radio' name='advertise' value='0'
         {if $smarty.post.advertise eq 0 && $smarty.post}checked='checked'{/if} />publique</label></td>
       <td><label><input type='radio' name='advertise' value='1'
         {if $smarty.post.advertise neq 0 || !$smarty.post}checked='checked'{/if} />privée</label></td>
