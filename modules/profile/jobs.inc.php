@@ -172,11 +172,7 @@ class ProfileSettingJob implements ProfileSetting
                                 WHERE  name = {?}",
                               $job['name']);
             if ($res->numRows() != 1) {
-                $req = new EntrReq(S::user(), $page->profile, $jobid, $job['name'], $job['hq_acronym'], $job['hq_url'],
-                                   $job['hq_email'], $job['hq_fixed'], $job['hq_fax'], $job['hq_address']);
-                $req->submit();
                 $job['jobid'] = null;
-                sleep(1);
             } else {
                 $job['jobid'] = $res->fetchOneCell();
             }
@@ -259,6 +255,7 @@ class ProfileSettingJob implements ProfileSetting
 
     public function save(ProfilePage $page, $field, $value)
     {
+
         $deletePrivate = S::user()->isMe($page->owner) || S::admin();
         XDB::execute('DELETE FROM  pj, pjt
                             USING  profile_job      AS pj
@@ -267,6 +264,10 @@ class ProfileSettingJob implements ProfileSetting
                      $page->pid());
         Address::deleteAddresses($page->pid(), Address::LINK_JOB, null, null, $deletePrivate);
         Phone::deletePhones($page->pid(), Phone::LINK_JOB, null, $deletePrivate);
+        $previous_requests = EntrReq::get_typed_requests($page->pid(), 'entreprise');
+        foreach ($previous_requests as $request) {
+            $request->clean();
+        }
         $terms_values = array();
         foreach ($value as $id => &$job) {
             if (($job['pub'] != 'private' || $deletePrivate) && (isset($job['name']) && $job['name'])) {
@@ -282,6 +283,10 @@ class ProfileSettingJob implements ProfileSetting
                                        VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
                                  $page->pid(), $id, $job['description'], $job['w_email'],
                                  $job['w_url'], $job['pub'], $job['w_email_pub']);
+                    $request = new EntrReq(S::user(), $page->profile, $id, $job['name'], $job['hq_acronym'], $job['hq_url'],
+                                           $job['hq_email'], $job['hq_fixed'], $job['hq_fax'], $job['hq_address']);
+                    $request->submit();
+                    sleep(1);
                 }
                 $address = new Address(array_merge($job['w_address'],
                                                    array('pid' => $page->pid(),
