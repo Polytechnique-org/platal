@@ -27,8 +27,8 @@
     <legend>Description du sondage</legend>
 
     Titre&nbsp;: <input type="text" name="title" value="{$survey->title}" /><br />
-    Nom&nbsp;: <input type="text" name="shortname" value="{$survey->shortname}" /><br />
-    Description&nbsp;:<br /><textarea name="description" style="width: 100%">{$survey->description}</textarea>
+    Nom&nbsp;: <input type="text" name="shortname" maxlength="32" value="{$survey->shortname}" /><br />
+    Description&nbsp;:<br /><textarea rows="2" cols="80" name="description" style="width: 100%">{$survey->description}</textarea>
   </fieldset>
 
   <fieldset>
