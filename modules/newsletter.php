@@ -27,6 +27,7 @@ class NewsletterModule extends PLModule
             'nl'                           => $this->make_hook('nl',              AUTH_COOKIE),
             'nl/show'                      => $this->make_hook('nl_show',         AUTH_COOKIE),
             'nl/submit'                    => $this->make_hook('nl_submit',       AUTH_MDP),
+            'nl/remaining'                 => $this->make_hook('nl_remaining',    AUTH_MDP),
             'admin/nls'                    => $this->make_hook('admin_nl_groups', AUTH_MDP, 'admin'),
             'admin/newsletter'             => $this->make_hook('admin_nl',        AUTH_MDP, 'admin'),
             'admin/newsletter/categories'  => $this->make_hook('admin_nl_cat',    AUTH_MDP, 'admin'),
@@ -116,6 +117,21 @@ class NewsletterModule extends PLModule
             $page->assign('submited', true);
         }
         $page->addCssLink($nl->cssFile());
+    }
+
+    function handler_nl_remaining($page)
+    {
+        require_once 'newsletter.inc.php';
+
+        pl_content_headers('text/html');
+        $page->changeTpl('newsletter/remaining.tpl', NO_SKIN);
+
+        $article = new NLArticle('', Post::t('body'), '');
+        $rest = $article->remain();
+
+        $page->assign('too_long', $rest['remaining_lines'] < 0);
+        $page->assign('last_line', ($rest['remaining_lines'] == 0));
+        $page->assign('remaining', ($rest['remaining_lines'] == 0) ? $rest['remaining_characters_for_last_line'] : $rest['remaining_lines']);
     }
 
     function handler_admin_nl($page, $new = false) {

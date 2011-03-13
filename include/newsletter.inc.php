@@ -1124,7 +1124,8 @@ class NLIssue
 class NLArticle
 {
     // Maximum number of lines per article
-    const MAX_LINES_PER_ARTICLE = 9;
+    const MAX_LINES_PER_ARTICLE = 8;
+    const MAX_CHARACTERS_PER_LINE = 68;
 
     // {{{ properties
 
@@ -1212,17 +1213,30 @@ class NLArticle
 
     public function check()
     {
-        $text = MiniWiki::WikiToText($this->body);
-        $arr  = explode("\n",wordwrap($text,68));
-        $c    = 0;
-        foreach ($arr as $line) {
-            if (trim($line)) {
-                $c++;
-            }
-        }
-        return $c < self::MAX_LINES_PER_ARTICLE;
+        $rest = $this->remain();
+
+        return $rest['remaining_lines'] >= 0;
     }
 
+    // }}}
+    // {{{ function remain()
+
+    public function remain()
+    {
+        $text  = MiniWiki::WikiToText($this->body);
+        $array = explode("\n", wordwrap($text, self::MAX_CHARACTERS_PER_LINE));
+        $lines_count = 0;
+        foreach ($array as $line) {
+            if (trim($line) != '') {
+                ++$lines_count;
+            }
+        }
+
+        return array(
+            'remaining_lines'                    => self::MAX_LINES_PER_ARTICLE - $lines_count,
+            'remaining_characters_for_last_line' => self::MAX_CHARACTERS_PER_LINE - strlen($array[count($array) - 1])
+       );
+    }
     // }}}
     // {{{ function parseUrlsFromArticle()
 
