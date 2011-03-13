@@ -104,8 +104,13 @@ Tu peux <a href='nl/submit#conseils'>lire les conseils de rédaction</a> avant d
     <tr class="pair">
       <td class='titre'>Contenu</td>
       <td>
-        <textarea cols="68" rows="8" name='body'>{if t($art)}{$art->body()}{/if}</textarea>
+        <textarea onchange="{literal}$.post('nl/remaining/', {'body': this.value}, function(data) {$('#remaining').html(data)}){/literal}"
+                  onkeyup="{literal}$.post('nl/remaining/', {'body': this.value}, function(data) {$('#remaining').html(data)}){/literal}"
+                  cols="68" rows="8" name="body" >{if t($art)}{$art->body()}{/if}</textarea>
       </td>
+    </tr>
+    <tr class="pair">
+      <td id="remaining" class="center" colspan="2"></td>
     </tr>
     <tr class="impair">
       <td class='titre'>Ajouts (emails, contacts, tarifs, site web&hellip;)</td>
