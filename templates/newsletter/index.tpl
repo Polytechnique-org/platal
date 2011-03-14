@@ -52,6 +52,8 @@ Tu n'es actuellement pas inscrit à la {$nl->name}.
 </div>
 {/if}
 
+{include file="newsletter/search.tpl" nl_search_type="1" nl_search=""}
+
 <h2>Les archives</h2>
 
 <table class="bicol" cellpadding="3" cellspacing="0" summary="liste des NL">
