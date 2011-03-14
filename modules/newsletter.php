@@ -33,7 +33,7 @@ class NewsletterModule extends PLModule
             'admin/newsletter'             => $this->make_hook('admin_nl',        AUTH_MDP, 'admin'),
             'admin/newsletter/categories'  => $this->make_hook('admin_nl_cat',    AUTH_MDP, 'admin'),
             'admin/newsletter/edit'        => $this->make_hook('admin_nl_edit',   AUTH_MDP, 'admin'),
-            'admin/newsletter/edit/delete' => $this->make_hook('delete',          AUTH_MDP, 'admin'),
+            'admin/newsletter/edit/delete' => $this->make_hook('admin_nl_delete', AUTH_MDP, 'admin'),
             // Automatic mailing is disabled for X.org NL
 //            'admin/newsletter/edit/cancel' => $this->make_hook('cancel', AUTH_MDP, 'admin'),
 //            'admin/newsletter/edit/valid'  => $this->make_hook('valid',  AUTH_MDP, 'admin'),
