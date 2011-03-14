@@ -63,7 +63,8 @@
 {else}
   Envoyée
 {/if}
-
+      </td>
+    </tr>
     <tr>
       <td class='titre'>
         ID
@@ -126,7 +127,7 @@
         Signature de la lettre
       </td>
       <td>
-        <input type='text' size='60' name='signature' value="{$issue->signature}"</input>
+        <input type='text' size='60' name='signature' value="{$issue->signature}" />
       </td>
     </tr>
     {if $nl->automaticMailingEnabled() && ($issue->isEditable() || $issue->isPending())}
