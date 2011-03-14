@@ -47,6 +47,11 @@ class NewsLetter
     const GROUP_AX = 'AX';
     const GROUP_EP = 'Ecole';
 
+    // Searches on mutiple fields
+    const SEARCH_ALL = 'all';
+    const SEARCH_TITLE = 'title';
+
+
     // {{{ Constructor, NewsLetter retrieval (forGroup, getAll)
 
     public function __construct($id)
@@ -249,6 +254,63 @@ class NewsLetter
         } else {
             return null;
         }
+    }
+
+    /** Returns a list of either issues or articles corresponding to the search.
+     * @p $search The searched pattern.
+     * @p $field The fields where to search, if none given, search in all possible fields.
+     * @return The list of object found.
+     */
+    public function issueSearch($search, $field, $user)
+    {
+        $search = XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $search);
+        if ($field == self::SEARCH_ALL) {
+            $where = '(title ' . $search . ' OR mail_title ' . $search . ' OR head ' . $search . ' OR signature ' . $search . ')';
+        } elseif ($field == self::SEARCH_TITLE) {
+            $where = '(title ' . $search . ' OR mail_title ' . $search . ')';
+        } else {
+            $where = $field . $search;
+        }
+        $list = XDB::fetchColumn('SELECT  DISTINCT(id)
+                                    FROM  newsletter_issues
+                                   WHERE  nlid = {?} AND state = \'sent\' AND ' . $where . '
+                                ORDER BY  date DESC',
+                                 $this->id);
+
+        $issues = array();
+        foreach ($list as $id) {
+            $issue = new NLIssue($id, $this, false);
+            if ($issue->checkUser($user)) {
+                $issues[] = $issue;
+            }
+        }
+        return $issues;
+    }
+
+    public function articleSearch($search, $field, $user)
+    {
+        $search = XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $search);
+        if ($field == self::SEARCH_ALL) {
+            $where = '(a.title ' . $search . ' OR a.body ' . $search . ' OR a.append ' . $search . ')';
+        } else {
+            $where = 'a.' . $field . $search;
+        }
+        $list = XDB::fetchAllAssoc('SELECT  i.short_name, a.aid, i.id, a.title
+                                      FROM  newsletter_art    AS a
+                                INNER JOIN  newsletter_issues AS i ON (a.id = i.id)
+                                     WHERE  i.nlid = {?} AND i.state = \'sent\' AND ' . $where . '
+                                  GROUP BY  a.id, a.aid
+                                  ORDER BY  i.date DESC, a.aid',
+                                   $this->id);
+
+        $articles = array();
+        foreach ($list as $item) {
+            $issue = new NLIssue($item['id'], $this, false);
+            if ($issue->checkUser($user)) {
+                $articles[] = $item;
+            }
+        }
+        return $articles;
     }
 
     // }}}

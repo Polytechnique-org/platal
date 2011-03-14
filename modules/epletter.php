@@ -29,6 +29,7 @@ class EPLetterModule extends NewsletterModule
             'epletter'                   => $this->make_hook('nl',  AUTH_COOKIE),
             'epletter/out'               => $this->make_hook('out',    AUTH_PUBLIC),
             'epletter/show'              => $this->make_hook('nl_show',   AUTH_COOKIE),
+            'epletter/search'            => $this->make_hook('nl_search', AUTH_COOKIE),
             'epletter/admin'             => $this->make_hook('admin_nl', AUTH_MDP),
             'epletter/admin/edit'        => $this->make_hook('admin_nl_edit', AUTH_MDP),
             'epletter/admin/edit/valid'  => $this->make_hook('admin_nl_valid', AUTH_MDP),

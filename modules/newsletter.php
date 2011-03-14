@@ -26,6 +26,7 @@ class NewsletterModule extends PLModule
         return array(
             'nl'                           => $this->make_hook('nl',              AUTH_COOKIE),
             'nl/show'                      => $this->make_hook('nl_show',         AUTH_COOKIE),
+            'nl/search'                    => $this->make_hook('nl_search',       AUTH_COOKIE),
             'nl/submit'                    => $this->make_hook('nl_submit',       AUTH_MDP),
             'nl/remaining'                 => $this->make_hook('nl_remaining',    AUTH_MDP),
             'admin/nls'                    => $this->make_hook('admin_nl_groups', AUTH_MDP, 'admin'),
@@ -90,6 +91,55 @@ class NewsletterModule extends PLModule
         } catch (MailNotFound $e) {
             return PL_NOT_FOUND;
         }
+    }
+
+    function handler_nl_search($page)
+    {
+        S::assert_xsrf_token();
+        $nl = $this->getNl();
+        if (!$nl) {
+            return PL_NOT_FOUND;
+        }
+
+        if (!Post::has('nl_search')) {
+            pl_redirect($nl->prefix());
+        }
+
+        $nl_search = Post::t('nl_search');
+        $nl_search_type = Post::t('nl_search_type');
+        if (!$nl_search || !($nl_search_type > 0 && $nl_search_type < 10)) {
+            $page->trigErrorRedirect('La recherche est vide ou erronée.', $nl->prefix());
+        }
+
+        $page->changeTpl('newsletter/search.tpl');
+        $user = S::user();
+        $fields = array(1 => 'all', 2 => 'all', 3 => 'title', 4 => 'body', 5 => 'append', 6 => 'all', 7 => 'title', 8 => 'head', 9 => 'signature');
+        $res_articles = $res_issues = array();
+        if ($nl_search_type < 6) {
+            $res_articles = $nl->articleSearch($nl_search, $fields[$nl_search_type], $user);
+        }
+        if ($nl_search_type > 5 || $nl_search_type == 1) {
+            $res_issues = $nl->issueSearch($nl_search, $fields[$nl_search_type], $user);
+        }
+
+        $articles_count = count($res_articles);
+        $issues_count = count($res_issues);
+        $results_count = $articles_count + $issues_count;
+        if ($results_count > 200) {
+            $page->trigError('Recherche trop générale.');
+        } elseif ($results_count == 0) {
+            $page->trigWarning('Aucun résultat pour cette recherche.');
+        } else {
+            $page->assign('res_articles', $res_articles);
+            $page->assign('res_issues', $res_issues);
+            $page->assign('articles_count', $articles_count);
+            $page->assign('issues_count', $issues_count);
+        }
+
+        $page->assign_by_ref('nl', $nl);
+        $page->assign('nl_search', $nl_search);
+        $page->assign('nl_search_type', $nl_search_type);
+        $page->assign('results_count', $results_count);
     }
 
     function handler_nl_submit($page)

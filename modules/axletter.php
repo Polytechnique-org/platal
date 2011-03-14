@@ -29,6 +29,7 @@ class AXLetterModule extends NewsletterModule
             'ax'                   => $this->make_hook('nl',  AUTH_COOKIE),
             'ax/out'               => $this->make_hook('out',    AUTH_PUBLIC),
             'ax/show'              => $this->make_hook('nl_show',   AUTH_COOKIE),
+            'ax/search'            => $this->make_hook('nl_search', AUTH_COOKIE),
             'ax/admin'             => $this->make_hook('admin_nl', AUTH_MDP),
             'ax/admin/edit'        => $this->make_hook('admin_nl_edit', AUTH_MDP),
             'ax/admin/edit/valid'  => $this->make_hook('admin_nl_valid', AUTH_MDP),
