@@ -33,6 +33,7 @@ class XnetModule extends PLModule
             'plan'        => $this->make_hook('plan',      AUTH_PUBLIC),
             'photo'       => $this->make_hook('photo',     AUTH_MDP),
             'autologin'   => $this->make_hook('autologin', AUTH_MDP),
+            'login/ext'   => $this->make_hook('login_ext', AUTH_PUBLIC),
             'edit'        => $this->make_hook('edit',      AUTH_MDP, 'user'),
 
             'Xnet'        => $this->make_wiki_hook(),
@@ -223,6 +224,15 @@ class XnetModule extends PLModule
         pl_content_headers("text/javascript");
         echo '$.ajax({ url: "'.$url.'?forceXml=1", dataType: "xml", success: function(xml) { $("body",xml).insertBefore("body"); $("body:eq(1)").remove(); }});';
         exit;
+    }
+
+    function handler_login_ext($page)
+    {
+        if (!S::logged()) {
+            $page->changeTpl('xnet/login.tpl');
+        } else {
+            pl_redirect('');
+        }
     }
 
     function handler_edit(&$page)

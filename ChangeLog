@@ -28,6 +28,9 @@ Bug/Wish:
         - #1389: Do not require validation for private names modifications -JAC
         - #1401: Main addresses are displayed before secondary addresses   -JAC
 
+    * Xnet:
+        - #1211: Adds login page for xnet users                            -JAC
+
     * XnetGrp:
         - #907: Adds more info about groups (address, phones, positions)   -JAC
 

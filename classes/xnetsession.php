@@ -34,6 +34,25 @@ class XnetSession extends XorgSession
             }
         }
 
+        if (!S::logged() && Post::has('auth_type') && Post::v('auth_type') == 'xnet') {
+            $type = XDB::fetchOneCell('SELECT  type
+                                         FROM  accounts
+                                        WHERE  hruid = {?}',
+                                      Post::v('username'));
+            if (!is_null($type) && $type != 'xnet') {
+                Platal::page()->trigErrorRedirect('Ce formulaire d\'authentification est réservé aux extérieurs à la communauté polytechnicienne.', '');
+            }
+
+            $user = parent::doAuth(AUTH_MDP);
+            if (is_null($user)) {
+                return false;
+            }
+            if (!parent::checkAuth(AUTH_MDP) || !parent::startSessionAs($user, AUTH_MDP)) {
+                $this->destroy();
+                return false;
+            }
+        }
+
         global $globals;
         if (!S::logged() && $globals->xnet->auth_baseurl) {
             // prevent connection to be linked to disconnection
