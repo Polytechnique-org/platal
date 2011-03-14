@@ -194,6 +194,9 @@ class NewsletterModule extends PLModule
         }
 
         if ($new == 'new') {
+            // Logs NL creation.
+            S::logger()->log('nl_issue_create', $nid);
+
             $id = $nl->createPending();
             pl_redirect($nl->adminPrefix() . '/edit/' . $id);
         }
@@ -353,6 +356,9 @@ class NewsletterModule extends PLModule
             $page->trigErrorRedirect("Une erreur est survenue lors de l'annulation de l'envoi.", $nl->adminPrefix());
         }
 
+        // Logs NL cancelling.
+        S::logger()->log('nl_mailing_cancel', $nid);
+
         $page->trigSuccessRedirect("L'envoi de l'annonce {$issue->title()} est annulé.", $nl->adminPrefix());
     }
 
@@ -381,6 +387,9 @@ class NewsletterModule extends PLModule
         if (!$issue->scheduleMailing()) {
             $page->trigErrorRedirect("Une erreur est survenue lors de la validation de l'envoi.", $nl->adminPrefix());
         }
+
+        // Logs NL validation.
+        S::logger()->log('nl_mailing_valid', $nid);
 
         $page->trigSuccessRedirect("L'envoi de la newsletter {$issue->title()} a été validé.", $nl->adminPrefix());
     }
@@ -412,6 +421,9 @@ class NewsletterModule extends PLModule
         if (!$issue->delete()) {
             $page->trigErrorRedirect("Une erreur est survenue lors de la suppression de la lettre.", $nl->adminPrefix());
         }
+
+        // Logs NL deletion.
+        S::logger()->log('nl_issue_delete', $nid);
 
         $page->trigSuccessRedirect("La lettre a bien été supprimée.", $nl->adminPrefix());
     }

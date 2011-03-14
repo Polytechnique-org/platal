@@ -16,6 +16,7 @@ Bug/Wish:
     * Newsletter:
         - #664: Adds tool to search in nl archives                         -JAC
         - #908: Displays remaining lines and characters in submission      -JAC
+        - #1393: Logs main nl events (create, delete, validate, cancel)    -JAC
 
     * Payments:
         - #1398: Creates csv for payments                                  -JAC
