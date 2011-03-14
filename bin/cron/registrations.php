@@ -5,11 +5,11 @@ require 'connect.db.inc.php';
 
 $message = '';
 
-$res = XDB::iterRow("SELECT  a.registration_date, a.hruid, e.email
-                       FROM  accounts AS a
-                 INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
-                 INNER JOIN  profile_display  AS pd ON (ap.pid = pd.pid)
-                  LEFT JOIN  emails           AS e  ON (a.uid = e.uid AND NOT FIND_IN_SET('filter', e.flags))
+$res = XDB::iterRow("SELECT  a.registration_date, a.hruid, s.email
+                       FROM  accounts             AS a
+                 INNER JOIN  account_profiles     AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
+                 INNER JOIN  profile_display      AS pd ON (ap.pid = pd.pid)
+                  LEFT JOIN  email_source_account AS s  ON (a.uid = s.uid)
                       WHERE  a.registration_date > {?}
                    GROUP BY  a.hruid
                    ORDER BY  pd.promo",

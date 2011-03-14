@@ -24,40 +24,69 @@
 
 {if $op eq 'list' || $op eq 'mail' || $op eq 'correct'}
 
+{if $homonyms_to_fix|@count}
 <p>
-  Les utilisateurs signalés en rouge sont ceux qui conservent actuellement
-  l'alias prenom.nom et empêchent donc la mise en place du robot détrompeur.
+  Liste des homonymies à corriger, celles en rouge devraient déjà être traitées.
 </p>
 
 <table class="bicol">
   <tr>
     <th>alias concerné</th>
     <th>date de péremption de l'alias</th>
-    <th>op</th>
+    <th>actions</th>
   </tr>
-  {foreach from=$hnymes key=login item=row}
+  {foreach from=$homonyms_to_fix key=login item=row}
   <tr class="pair">
-    <td colspan="3">
+    <td>
+      {if $row.0.urgent}
+      <span class="erreur"><strong>{$login}</strong></span>
+      {else}
       <strong>{$login}</strong>
+      {/if}
+    </td>
+    <td>{$row.0.expire|date_format}</td>
+    <td>
+      <a href="admin/homonyms/mail-conf/{$row.0.uid}">envoyer un email</a>
+      <a href="admin/homonyms/correct-conf/{$row.0.uid}">corriger</a>
     </td>
   </tr>
   {foreach from=$row item=user}
   <tr class="impair">
-    <td>&nbsp;&nbsp;
-      {if $user.type eq 'alias'}
-      <span class="erreur"><strong>{$user.forlife}</strong></span>
-      {else}
-      {$user.forlife}
-      {/if}
-    </td>
-    <td>{$user.expire|date_format}</td>
+    <td>&nbsp;&nbsp;{$user.forlife}</td>
+    <td></td>
     <td>
       <a href="profile/{$user.forlife}" class='popup2'>fiche</a>
       <a href="admin/user/{$user.forlife}">edit</a>
-      {if $user.type eq 'alias'}
-      <a href="admin/homonyms/mail-conf/{$user.uid}">envoyer un email</a>
-      <a href="admin/homonyms/correct-conf/{$user.uid}">corriger</a>
-      {/if}
+    </td>
+  </tr>
+  {/foreach}
+  {/foreach}
+</table>
+{/if}
+
+<p>
+  Liste des homonymies déjà corrigées.
+</p>
+
+<table class="bicol">
+  <tr>
+    <th>alias concerné</th>
+    <th>alias prémimé depuis</th>
+    <th>actions</th>
+  </tr>
+  {foreach from=$homonyms key=login item=row}
+  <tr class="pair">
+    <td><strong>{$login}</strong></td>
+    <td>{if $row.0.expire eq '0000-00-00'}---{else}{$row.0.expire|date_format}{/if}</td>
+    <td></td>
+  </tr>
+  {foreach from=$row item=user}
+  <tr class="impair">
+    <td>&nbsp;&nbsp;{$user.forlife}</td>
+    <td></td>
+    <td>
+      <a href="profile/{$user.forlife}" class='popup2'>fiche</a>
+      <a href="admin/user/{$user.forlife}">edit</a>
     </td>
   </tr>
   {/foreach}
@@ -80,11 +109,11 @@
 
 Comme nous t'en avons informé par email il y a quelques temps,
 pour respecter nos engagements en terme d'adresses email devinables,
-tu te verras bientôt retirer l'alias {$loginbis}@{#globals.mail.domain#} pour
+tu te verras bientôt retirer l'alias {$loginbis}@{$user->mainEmailDomain()} pour
 ne garder que {$user->forlifeEmail()}.
 
-Toute personne qui écrira à {$loginbis}@{#globals.mail.domain#} recevra la
-réponse d'un robot qui l'informera que {$loginbis}@{#globals.mail.domain#}
+Toute personne qui écrira à {$loginbis}@{$user->mainEmailDomain()} recevra la
+réponse d'un robot qui l'informera que {$loginbis}@{$user->mainEmailDomain()}
 est ambigu pour des raisons d'homonymie et signalera ton email exact.
 
 L'équipe Polytechnique.org
@@ -106,7 +135,7 @@ L'équipe Polytechnique.org
   {xsrf_token_field}
   <table class="bicol">
     <tr>
-      <th>Mettre en place le robot {$loginbis}@{#globals.mail.domain#}</th>
+      <th>Mettre en place le robot {$loginbis}@{$user->mainEmailDomain()}</th>
     </tr>
     <tr>
       <td>
@@ -115,13 +144,13 @@ L'équipe Polytechnique.org
 
 Comme nous t'en avons informé par email il y a quelques temps,
 nous t'avons retiré de façon définitive l'adresse
-{$loginbis}@{#globals.mail.domain#}.
+{$loginbis}@{$user->mainEmailDomain()}.
 
-Toute personne qui écrit à {$loginbis}@{#globals.mail.domain#} reçoit la
-réponse d'un robot qui l'informe que {$loginbis}@{#globals.mail.domain#}
+Toute personne qui écrit à {$loginbis}@{$user->mainEmailDomain()} reçoit la
+réponse d'un robot qui l'informe que {$loginbis}@{$user->mainEmailDomain()}
 est ambigu pour des raisons d'homonymie et indique ton email exact.
 
-Tu peux faire l'essai toi-même en écrivant à {$loginbis}@{#globals.mail.domain#}.
+Tu peux faire l'essai toi-même en écrivant à {$loginbis}@{$user->mainEmailDomain()}.
 
 L'équipe Polytechnique.org
 {#globals.baseurl#}

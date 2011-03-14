@@ -24,59 +24,133 @@ class NewsletterModule extends PLModule
     function handlers()
     {
         return array(
-            'nl'                           => $this->make_hook('nl',            AUTH_COOKIE),
-            'nl/show'                      => $this->make_hook('nl_show',       AUTH_COOKIE),
-            'nl/submit'                    => $this->make_hook('nl_submit',     AUTH_MDP),
-            'admin/newsletter'             => $this->make_hook('admin_nl',      AUTH_MDP, 'admin'),
-            'admin/newsletter/categories'  => $this->make_hook('admin_nl_cat',  AUTH_MDP, 'admin'),
-            'admin/newsletter/edit'        => $this->make_hook('admin_nl_edit', AUTH_MDP, 'admin'),
+            'nl'                           => $this->make_hook('nl',              AUTH_COOKIE),
+            'nl/show'                      => $this->make_hook('nl_show',         AUTH_COOKIE),
+            'nl/search'                    => $this->make_hook('nl_search',       AUTH_COOKIE),
+            'nl/submit'                    => $this->make_hook('nl_submit',       AUTH_MDP),
+            'nl/remaining'                 => $this->make_hook('nl_remaining',    AUTH_MDP),
+            'admin/nls'                    => $this->make_hook('admin_nl_groups', AUTH_MDP, 'admin'),
+            'admin/newsletter'             => $this->make_hook('admin_nl',        AUTH_MDP, 'admin'),
+            'admin/newsletter/categories'  => $this->make_hook('admin_nl_cat',    AUTH_MDP, 'admin'),
+            'admin/newsletter/edit'        => $this->make_hook('admin_nl_edit',   AUTH_MDP, 'admin'),
+            'admin/newsletter/edit/delete' => $this->make_hook('admin_nl_delete', AUTH_MDP, 'admin'),
+            // Automatic mailing is disabled for X.org NL
+//            'admin/newsletter/edit/cancel' => $this->make_hook('cancel', AUTH_MDP, 'admin'),
+//            'admin/newsletter/edit/valid'  => $this->make_hook('valid',  AUTH_MDP, 'admin'),
         );
     }
 
-    function handler_nl(&$page, $action = null)
+    /** This function should return the adequate NewsLetter object for the current module.
+     */
+    protected function getNl()
     {
         require_once 'newsletter.inc.php';
+        return NewsLetter::forGroup(NewsLetter::GROUP_XORG);
+    }
+
+    function handler_nl($page, $action = null, $hash = null)
+    {
+        $nl = $this->getNl();
+        if (!$nl) {
+            return PL_NOT_FOUND;
+        }
 
         $page->changeTpl('newsletter/index.tpl');
         $page->setTitle('Lettres mensuelles');
 
         switch ($action) {
-          case 'out': NewsLetter::unsubscribe(); break;
-          case 'in':  NewsLetter::subscribe(); break;
+          case 'out': $nl->unsubscribe($hash, $hash != null); break;
+          case 'in':  $nl->subscribe(); break;
           default: ;
         }
 
-        $page->assign('nls', NewsLetter::subscriptionState());
-        $page->assign('nl_list', NewsLetter::listSent());
+        $page->assign_by_ref('nl', $nl);
+        $page->assign('nls', $nl->subscriptionState());
+        $page->assign('nl_list', $nl->listSentIssues(true));
     }
 
-    function handler_nl_show(&$page, $nid = 'last')
+    function handler_nl_show($page, $nid = 'last')
     {
         $page->changeTpl('newsletter/show.tpl');
-
-        require_once 'newsletter.inc.php';
+        $nl = $this->getNl();
+        if (!$nl) {
+            return PL_NOT_FOUND;
+        }
 
         try {
-            $nl = new NewsLetter($nid);
+            $issue = $nl->getIssue($nid);
             $user =& S::user();
             if (Get::has('text')) {
-                $nl->toText($page, $user);
+                $issue->toText($page, $user);
             } else {
-                $nl->toHtml($page, $user);
+                $issue->toHtml($page, $user);
             }
             if (Post::has('send')) {
-                $nl->sendTo($user);
+                $issue->sendTo($user);
             }
         } catch (MailNotFound $e) {
             return PL_NOT_FOUND;
         }
     }
 
-    function handler_nl_submit(&$page)
+    function handler_nl_search($page)
+    {
+        S::assert_xsrf_token();
+        $nl = $this->getNl();
+        if (!$nl) {
+            return PL_NOT_FOUND;
+        }
+
+        if (!Post::has('nl_search')) {
+            pl_redirect($nl->prefix());
+        }
+
+        $nl_search = Post::t('nl_search');
+        $nl_search_type = Post::t('nl_search_type');
+        if (!$nl_search || !($nl_search_type > 0 && $nl_search_type < 10)) {
+            $page->trigErrorRedirect('La recherche est vide ou erronée.', $nl->prefix());
+        }
+
+        $page->changeTpl('newsletter/search.tpl');
+        $user = S::user();
+        $fields = array(1 => 'all', 2 => 'all', 3 => 'title', 4 => 'body', 5 => 'append', 6 => 'all', 7 => 'title', 8 => 'head', 9 => 'signature');
+        $res_articles = $res_issues = array();
+        if ($nl_search_type < 6) {
+            $res_articles = $nl->articleSearch($nl_search, $fields[$nl_search_type], $user);
+        }
+        if ($nl_search_type > 5 || $nl_search_type == 1) {
+            $res_issues = $nl->issueSearch($nl_search, $fields[$nl_search_type], $user);
+        }
+
+        $articles_count = count($res_articles);
+        $issues_count = count($res_issues);
+        $results_count = $articles_count + $issues_count;
+        if ($results_count > 200) {
+            $page->trigError('Recherche trop générale.');
+        } elseif ($results_count == 0) {
+            $page->trigWarning('Aucun résultat pour cette recherche.');
+        } else {
+            $page->assign('res_articles', $res_articles);
+            $page->assign('res_issues', $res_issues);
+            $page->assign('articles_count', $articles_count);
+            $page->assign('issues_count', $issues_count);
+        }
+
+        $page->assign_by_ref('nl', $nl);
+        $page->assign('nl_search', $nl_search);
+        $page->assign('nl_search_type', $nl_search_type);
+        $page->assign('results_count', $results_count);
+    }
+
+    function handler_nl_submit($page)
     {
         $page->changeTpl('newsletter/submit.tpl');
 
-        require_once 'newsletter.inc.php';
+        $nl = $this->getNl();
+        if (!$nl) {
+            return PL_NOT_FOUND;
+        }
+
         $wp = new PlWikiPage('Xorg.LettreMensuelle');
         $wp->buildCache();
 
@@ -92,63 +166,130 @@ class NewsletterModule extends PLModule
             $art->submit();
             $page->assign('submited', true);
         }
-        $page->addCssLink('nl.css');
+        $page->addCssLink($nl->cssFile());
     }
 
-    function handler_admin_nl(&$page, $new = false) {
-        $page->changeTpl('newsletter/admin.tpl');
-        $page->setTitle('Administration - Newsletter : liste');
-        require_once("newsletter.inc.php");
-
-        if($new) {
-            NewsLetter::create();
-            pl_redirect("admin/newsletter");
-        }
-
-        $page->assign('nl_list', NewsLetter::listAll());
-    }
-
-    function handler_admin_nl_edit(&$page, $nid = 'last', $aid = null, $action = 'edit') {
-        $page->changeTpl('newsletter/edit.tpl');
-        $page->addCssLink('nl.css');
-        $page->setTitle('Administration - Newsletter : Édition');
+    function handler_nl_remaining($page)
+    {
         require_once 'newsletter.inc.php';
 
-        $nl = new NewsLetter($nid);
+        pl_content_headers('text/html');
+        $page->changeTpl('newsletter/remaining.tpl', NO_SKIN);
 
-        if($action == 'delete') {
-            $nl->delArticle($aid);
-            pl_redirect("admin/newsletter/edit/$nid");
+        $article = new NLArticle('', Post::t('body'), '');
+        $rest = $article->remain();
+
+        $page->assign('too_long', $rest['remaining_lines'] < 0);
+        $page->assign('last_line', ($rest['remaining_lines'] == 0));
+        $page->assign('remaining', ($rest['remaining_lines'] == 0) ? $rest['remaining_characters_for_last_line'] : $rest['remaining_lines']);
+    }
+
+    function handler_admin_nl($page, $new = false) {
+        $page->changeTpl('newsletter/admin.tpl');
+        $page->setTitle('Administration - Newsletter : liste');
+
+        $nl = $this->getNl();
+        if (!$nl) {
+            return PL_NOT_FOUND;
         }
 
-        if($aid == 'update') {
-            $nl->_title      = Post::v('title');
-            $nl->_title_mail = Post::v('title_mail');
-            $nl->_date       = Post::v('date');
-            $nl->_head       = Post::v('head');
-            $nl->_shortname  = strlen(Post::v('shortname')) ? Post::v('shortname') : null;
-            if (preg_match('/^[-a-z0-9]*$/i', $nl->_shortname) && !is_numeric($nl->_shortname)) {
-                $nl->save();
-            } else {
-                $page->trigError("Le nom de la NL n'est pas valide.");
-                pl_redirect('admin/newsletter/edit/' . $nl->_id);
+        if ($new == 'new') {
+            // Logs NL creation.
+            S::logger()->log('nl_issue_create', $nid);
+
+            $id = $nl->createPending();
+            pl_redirect($nl->adminPrefix() . '/edit/' . $id);
+        }
+
+        $page->assign_by_ref('nl', $nl);
+        $page->assign('nl_list', $nl->listAllIssues());
+    }
+
+    function handler_admin_nl_groups($page)
+    {
+        require_once 'newsletter.inc.php';
+
+        $page->changeTpl('newsletter/admin_all.tpl');
+        $page->setTitle('Administration - Newsletters : Liste des Newsletters');
+
+        $page->assign('nls', Newsletter::getAll());
+    }
+
+    function handler_admin_nl_edit($page, $nid = 'last', $aid = null, $action = 'edit') {
+        $page->changeTpl('newsletter/edit.tpl');
+        $page->addCssLink('nl.Polytechnique.org.css');
+        $page->setTitle('Administration - Newsletter : Édition');
+
+        $nl = $this->getNl();
+        if (!$nl) {
+            return PL_NOT_FOUND;
+        }
+
+        try {
+            $issue = $nl->getIssue($nid, false);
+        } catch (MailNotFound $e) {
+            return PL_NOT_FOUND;
+        }
+
+        $ufb = $nl->getSubscribersUFB();
+        $ufb_keepenv = false;  // Will be set to True if there were invalid modification to the UFB.
+
+        // Convert NLIssue error messages to human-readable errors
+        $error_msgs = array(
+            NLIssue::ERROR_INVALID_SHORTNAME => "Le nom court est invalide ou vide.",
+            NLIssue::ERROR_INVALID_UFC => "Le filtre des destinataires est invalide.",
+            NLIssue::ERROR_SQL_SAVE => "Une erreur est survenue en tentant de sauvegarder la lettre, merci de réessayer.",
+        );
+
+        // Update the current issue
+        if($aid == 'update' && Post::has('submit')) {
+
+            // Save common fields
+            $issue->title      = Post::s('title');
+            $issue->title_mail = Post::s('title_mail');
+            $issue->head       = Post::s('head');
+            $issue->signature  = Post::s('signature');
+
+            if ($issue->isEditable()) {
+                // Date and shortname may only be modified for pending NLs, otherwise all links get broken.
+                $issue->date = Post::s('date');
+                $issue->shortname = strlen(Post::blank('shortname')) ? null : Post::s('shortname');
+                $issue->sufb->updateFromEnv($ufb->getEnv());
+
+                if ($nl->automaticMailingEnabled()) {
+                    $issue->send_before = preg_replace('/^(\d\d\d\d)(\d\d)(\d\d)$/', '\1-\2-\3', Post::v('send_before_date')) . ' ' . Post::i('send_before_time_Hour') . ':00:00';
+                }
+            }
+            $errors = $issue->save();
+            if (count($errors)) {
+                foreach ($errors as $error_code) {
+                    $page->trigError($error_msgs[$error_code]);
+                }
             }
         }
 
+        // Delete an article
+        if($action == 'delete') {
+            $issue->delArticle($aid);
+            pl_redirect($nl->adminPrefix() . "/edit/$nid");
+        }
+
+        // Save an article
         if(Post::v('save')) {
             $art  = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'),
                                   $aid, Post::v('cid'), Post::v('pos'));
-            $nl->saveArticle($art);
-            pl_redirect("admin/newsletter/edit/$nid");
+            $issue->saveArticle($art);
+            pl_redirect($nl->adminPrefix() . "/edit/$nid");
         }
 
+        // Edit an article
         if ($action == 'edit' && $aid != 'update') {
             $eaid = $aid;
             if (Post::has('title')) {
                 $art  = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'),
                                       $eaid, Post::v('cid'), Post::v('pos'));
             } else {
-                $art = ($eaid == 'new') ? new NLArticle() : $nl->getArt($eaid);
+                $art = ($eaid == 'new') ? new NLArticle() : $issue->getArt($eaid);
             }
             if ($art && !$art->check()) {
                 $page->trigError("Cet article est trop long.");
@@ -156,12 +297,13 @@ class NewsletterModule extends PLModule
             $page->assign('art', $art);
         }
 
+        // Check blacklisted IPs
         if ($aid == 'blacklist_check') {
             global $globals;
             $ips_to_check = array();
             $blacklist_host_resolution_count = 0;
 
-            foreach ($nl->_arts as $key => $articles) {
+            foreach ($issue->arts as $key => $articles) {
                 foreach ($articles as $article) {
                     $article_ips = $article->getLinkIps($blacklist_host_resolution_count);
                     if (!empty($article_ips)) {
@@ -179,14 +321,118 @@ class NewsletterModule extends PLModule
             }
         }
 
+        if ($issue->state == NLIssue::STATE_SENT) {
+            $page->trigWarning("Cette lettre a déjà été envoyée ; il est recommandé de limiter les modifications au maximum (orthographe, adresses web et mail).");
+        }
+
+        $ufb->setEnv($issue->sufb->getEnv());
         $page->assign_by_ref('nl', $nl);
+        $page->assign_by_ref('issue', $issue);
     }
 
-    function handler_admin_nl_cat(&$page, $action = 'list', $id = null) {
+    /** This handler will cancel the sending of the currently pending issue
+     * It is disabled for X.org mailings.
+     */
+    function handler_admin_nl_cancel($page, $nid, $force = null)
+    {
+        $nl = $this->getNl();
+        if (!$nl) {
+            return PL_NOT_FOUND;
+        }
+
+        if (!$nl->mayEdit() || !S::has_xsrf_token()) {
+            return PL_FORBIDDEN;
+        }
+
+        if (!$nid) {
+            $page->kill("La lettre n'a pas été spécifiée");
+        }
+
+        $issue = $nl->getIssue($nid);
+        if (!$issue) {
+            $page->kill("La lettre {$nid} n'existe pas.");
+        }
+        if (!$issue->cancelMailing()) {
+            $page->trigErrorRedirect("Une erreur est survenue lors de l'annulation de l'envoi.", $nl->adminPrefix());
+        }
+
+        // Logs NL cancelling.
+        S::logger()->log('nl_mailing_cancel', $nid);
+
+        $page->trigSuccessRedirect("L'envoi de l'annonce {$issue->title()} est annulé.", $nl->adminPrefix());
+    }
+
+    /** This handler will enable the sending of the currently pending issue
+     * It is disabled for X.org mailings.
+     */
+    function handler_admin_nl_valid($page, $nid, $force = null)
+    {
+        $nl = $this->getNl();
+        if (!$nl) {
+            return PL_NOT_FOUND;
+        }
+
+        if (!$nl->mayEdit() || !S::has_xsrf_token()) {
+            return PL_FORBIDDEN;
+        }
+
+        if (!$nid) {
+            $page->kill("La lettre n'a pas été spécifiée.");
+        }
+
+        $issue = $nl->getIssue($nid);
+        if (!$issue) {
+            $page->kill("La lettre {$nid} n'existe pas.");
+        }
+        if (!$issue->scheduleMailing()) {
+            $page->trigErrorRedirect("Une erreur est survenue lors de la validation de l'envoi.", $nl->adminPrefix());
+        }
+
+        // Logs NL validation.
+        S::logger()->log('nl_mailing_valid', $nid);
+
+        $page->trigSuccessRedirect("L'envoi de la newsletter {$issue->title()} a été validé.", $nl->adminPrefix());
+    }
+
+    /** This handler will remove the given issue.
+     */
+    function handler_admin_nl_delete($page, $nid, $force = null)
+    {
+        $nl = $this->getNl();
+        if (!$nl) {
+            return PL_NOT_FOUND;
+        }
+
+        if (!$nl->mayEdit() || !S::has_xsrf_token()) {
+            return PL_FORBIDDEN;
+        }
+
+        if (!$nid) {
+            $page->kill("La lettre n'a pas été spécifiée.");
+        }
+
+        $issue = $nl->getIssue($nid);
+        if (!$issue) {
+            $page->kill("La lettre {$nid} n'existe pas");
+        }
+        if (!$issue->isEditable()) {
+            $page->trigErrorRedirect("La lette a été envoyée ou est en cours d'envoi, elle ne peut être supprimée.", $nl->adminPrefix());
+        }
+        if (!$issue->delete()) {
+            $page->trigErrorRedirect("Une erreur est survenue lors de la suppression de la lettre.", $nl->adminPrefix());
+        }
+
+        // Logs NL deletion.
+        S::logger()->log('nl_issue_delete', $nid);
+
+        $page->trigSuccessRedirect("La lettre a bien été supprimée.", $nl->adminPrefix());
+    }
+
+    function handler_admin_nl_cat($page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Newsletter : Catégories');
         $page->assign('title', 'Gestion des catégories de la newsletter');
         $table_editor = new PLTableEditor('admin/newsletter/categories','newsletter_cat','cid');
-        $table_editor->describe('titre','intitulé',true);
+        $table_editor->describe('title','intitulé',true);
         $table_editor->describe('pos','position',true);
         $table_editor->apply($page, $action, $id);
     }

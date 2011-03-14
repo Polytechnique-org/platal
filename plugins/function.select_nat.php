@@ -39,7 +39,7 @@ function select_nat($valeur, $pad=false) {
     return $html;
 }
 
-function smarty_function_select_nat($params, &$smarty) {
+function smarty_function_select_nat($params, $smarty) {
     if (empty($params['pad']) || !($params['pad'])) {
 	      $pad = false;
     } else {

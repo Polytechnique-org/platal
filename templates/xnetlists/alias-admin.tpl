@@ -23,29 +23,16 @@
 <p>[<a href='{$platal->ns}lists'>retour à la page des listes</a>]</p>
 
 <h1>Membres de {$platal->argv[1]}</h1>
-
 <table class='tinybicol'>
-  {if $mem|@count}
-  {foreach from=$mem item=m}
+  {if $members|@count}
+  {foreach from=$members item=member}
   <tr>
     <td>
-      {if $m.user}
-      {if $m.admin}<strong>{/if}
-      <a href="https://www.polytechnique.org/profile/{$m.user->login()}" class="popup2">{$m.user->fullName()}</a>
-      {if $m.admin}</strong>{/if}
-      {else}
-      {$m.email}
-      {/if}
+      <a href="https://www.polytechnique.org/profile/{$member->profile()->hrpid}" class="popup2">{$member->fullName()}</a>
     </td>
-    <td class="right">
-      {if $m.user}
-      {if $m.admin}<strong>{/if}
-      {$m.user->promo()}
-      {if $m.admin}</strong>{/if}
-      {/if}
-    </td>
+    <td class="right">{$member->promo()}</td>
     <td class="center">
-      <a href='{$platal->ns}alias/admin/{$platal->argv[1]}?del_member={$m.email|urlencode}&amp;token={xsrf_token}'>
+      <a href='{$platal->ns}alias/admin/{$platal->argv[1]}?del_member={$member->id()}&amp;token={xsrf_token}'>
       {icon name=delete title='retirer membre'}
       </a>
     </td>
@@ -54,7 +41,7 @@
   {else}
   <tr>
     <td colspan="3">
-      <em>aucun membre&hellip;<em>
+      <em>aucun membre&hellip;</em>
     </td>
   </tr>
   {/if}

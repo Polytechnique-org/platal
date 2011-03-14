@@ -41,11 +41,9 @@ class XnetPage extends PlPage
             $this->assign('is_admin', may_update());
             $this->assign('is_member', is_member());
         }
-        $this->addJsLink('jquery.js');
+        $this->addJsLink('jquery.xorg.js');
         $this->addJsLink('overlib.js');
-        $this->addJsLink('secure_hash.js');
-        $this->addJsLink('sha1.js');
-        $this->addJsLink('wiki.js');
+        $this->addJsLink('core.js');
         $this->addJsLink('xorg.js');
         $this->setTitle('Les associations polytechniciennes');
     }
@@ -104,6 +102,9 @@ class XnetPage extends PlPage
                 }
                 if ($globals->asso('mail_domain')) {
                     $sub['listes de diffusion'] = "$dim/lists";
+                }
+                if ($globals->asso('has_nl')) {
+                    $sub['newsletter'] = "$dim/nl";
                 }
             }
             $sub['événement'] = "$dim/events";

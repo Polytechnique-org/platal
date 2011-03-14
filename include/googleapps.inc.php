@@ -34,9 +34,8 @@ function post_queue_u_create($job) {
     // the user at creation time.
     $account = new GoogleAppsAccount($user);
     if ($account->activate_mail_redirection) {
-        require_once('emails.inc.php');
-        $storage = new EmailStorage($user, 'googleapps');
-        $storage->activate();
+        require_once 'emails.inc.php';
+        Email::activate_storage($user, 'googleapps');
     }
 
     // Sends the 'account created' email to the user, with basic documentation.
@@ -63,13 +62,12 @@ function post_queue_u_update($job) {
     }
 
     if (isset($parameters['suspended']) && $parameters['suspended'] == false) {
-        require_once('emails.inc.php');
+        require_once 'emails.inc.php';
         $account = new GoogleAppsAccount($user);
         if ($account->active()) {
             // Re-adds the email redirection (if the user did request it).
             if ($account->activate_mail_redirection) {
-                $storage = new EmailStorage($user, 'googleapps');
-                $storage->activate();
+                Email::activate_storage($user, 'googleapps');
             }
 
             // Sends an email to the account owner.
@@ -124,7 +122,7 @@ class GoogleAppsAccount
 
     // Constructs the account object, by retrieving all informations from the
     // GApps account table, from GApps job queue, and from plat/al validation queue.
-    public function __construct(User &$user)
+    public function __construct(User $user)
     {
         $this->user = &$user;
         if (!$this->user || !$this->user->login()) {

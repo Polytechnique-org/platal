@@ -41,6 +41,12 @@
  *   - `id` is the id of the job to which we refer (in profile_job)
  *   - `jobid` is set to 0
  *
+ * - for a Group:
+ *  - `type` is set to 'group'
+ *  - `pid` is set to 0
+ *  - `jobid` is set to 0
+ *  - `groupid` is set to the group id
+ *
  * Thus an Address can be linked to a Company, a Profile, or a Job.
  */
 class Address
@@ -48,6 +54,7 @@ class Address
     const LINK_JOB     = 'job';
     const LINK_COMPANY = 'hq';
     const LINK_PROFILE = 'home';
+    const LINK_GROUP   = 'group';
 
     // List of all available postal formattings.
     private static $formattings = array('FRANCE' => 'FR');
@@ -284,6 +291,7 @@ class Address
     // Primary key fields: the quadruplet ($pid, $jobid, $type, $id) defines a unique address.
     public $pid = 0;
     public $jobid = 0;
+    public $groupid = 0;
     public $type = Address::LINK_PROFILE;
     public $id = 0;
 
@@ -364,7 +372,7 @@ class Address
         return $this->phones;
     }
 
-    public function addPhone(Phone &$phone)
+    public function addPhone(Phone $phone)
     {
         if ($phone->link_type == Phone::LINK_ADDRESS && $phone->pid == $this->pid) {
             $this->phones[$phone->uniqueId()] = $phone;
@@ -584,9 +592,14 @@ class Address
             }
         }
         $this->text = trim($this->text);
+        $this->phones = Phone::formatFormArray($this->phones, $this->error, new ProfileVisibility($this->pub));
         if ($this->removed == 1) {
-            $this->text = '';
-            return true;
+            if (!S::user()->checkPerms('directory_private') && Phone::hasPrivate($this->phones)) {
+                Platal::page()->trigWarning("L'adresse ne peut être supprimée car elle contient des informations pour lesquelles vous n'avez le droit d'édition.");
+            } else  {
+                $this->text = '';
+                return true;
+            }
         }
 
         if ($format['requireGeocoding'] || $this->changed == 1) {
@@ -596,20 +609,19 @@ class Address
             $this->error = !empty($this->geocodedText);
         }
         if ($format['stripGeocoding'] || ($this->type == self::LINK_COMPANY && $this->error) || $this->geocodeChosen === '0') {
-            $gmapsGeocoder = new GMapsGeocoder();
-            $gmapsGeocoder->stripGeocodingFromAddress($this);
             if ($this->geocodeChosen === '0') {
                 $mailer = new PlMailer('profile/geocoding.mail.tpl');
                 $mailer->assign('text', $this->text);
                 $mailer->assign('geoloc', $this->geocodedText);
                 $mailer->send();
             }
+            $gmapsGeocoder = new GMapsGeocoder();
+            $gmapsGeocoder->stripGeocodingFromAddress($this);
         }
         if ($this->countryId == '') {
             $this->countryId = null;
         }
         $this->geocodeChosen = null;
-        $this->phones = Phone::formatFormArray($this->phones, $this->error, new ProfileVisibility($this->pub));
         if ($format['postalText']) {
             $this->formatPostalAddress();
         }
@@ -719,14 +731,14 @@ class Address
                 Geocoder::getAreaId($this, $area);
             }
 
-            XDB::execute('INSERT INTO  profile_addresses (pid, jobid, type, id, flags, accuracy,
-                                                          text, postalText, postalCode, localityId,
-                                                          subAdministrativeAreaId, administrativeAreaId,
-                                                          countryId, latitude, longitude, pub, comment,
-                                                          north, south, east, west)
-                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
-                                        {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                         $this->pid, $this->jobid, $this->type, $this->id, $this->flags, $this->accuracy,
+            XDB::execute('INSERT IGNORE INTO  profile_addresses (pid, jobid, groupid, type, id, flags, accuracy,
+                                                                 text, postalText, postalCode, localityId,
+                                                                 subAdministrativeAreaId, administrativeAreaId,
+                                                                 countryId, latitude, longitude, pub, comment,
+                                                                 north, south, east, west)
+                                      VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
+                                               {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                         $this->pid, $this->jobid, $this->groupid, $this->type, $this->id, $this->flags, $this->accuracy,
                          $this->text, $this->postalText, $this->postalCode, $this->localityId,
                          $this->subAdministrativeAreaId, $this->administrativeAreaId,
                          $this->countryId, $this->latitude, $this->longitude,
@@ -742,11 +754,11 @@ class Address
     public function delete()
     {
         XDB::execute('DELETE FROM  profile_addresses
-                            WHERE  pid = {?} AND jobid = {?} AND type = {?} AND id = {?}',
-                     $this->pid, $this->jobid, $this->type, $this->id);
+                            WHERE  pid = {?} AND jobid = {?} AND groupid = {?} AND type = {?} AND id = {?}',
+                     $this->pid, $this->jobid, $this->groupid, $this->type, $this->id);
     }
 
-    static public function deleteAddresses($pid, $type, $jobid = null, $deletePrivate = true)
+    static public function deleteAddresses($pid, $type, $jobid = null, $groupid = null, $deletePrivate = true)
     {
         $where = '';
         if (!is_null($pid)) {
@@ -754,6 +766,9 @@ class Address
         }
         if (!is_null($jobid)) {
             $where = XDB::format(' AND jobid = {?}', $jobid);
+        }
+        if (!is_null($groupid)) {
+            $where = XDB::format(' AND groupid = {?}', $groupid);
         }
         XDB::execute('DELETE FROM  profile_addresses
                             WHERE  type = {?}' . $where . (($deletePrivate) ? '' : ' AND pub IN (\'public\', \'ax\')'),
@@ -767,22 +782,24 @@ class Address
      * @param $data: an array of form formatted addresses.
      * @param $pid, $type, $linkid: pid, type and id concerned by the update.
      */
-    static public function saveFromArray(array $data, $pid, $type = self::LINK_PROFILE, $linkid = null)
+    static public function saveFromArray(array $data, $pid, $type = self::LINK_PROFILE, $linkid = null, $savePrivate = true)
     {
         foreach ($data as $id => $value) {
-            if (!is_null($linkid)) {
-                $value['id'] = $linkid;
-            } else {
-                $value['id'] = $id;
+            if ($value['pub'] != 'private' || $savePrivate) {
+                if (!is_null($linkid)) {
+                    $value['id'] = $linkid;
+                } else {
+                    $value['id'] = $id;
+                }
+                if (!is_null($pid)) {
+                    $value['pid'] = $pid;
+                }
+                if (!is_null($type)) {
+                    $value['type'] = $type;
+                }
+                $address = new Address($value);
+                $address->save();
             }
-            if (!is_null($pid)) {
-                $value['pid'] = $pid;
-            }
-            if (!is_null($type)) {
-                $value['type'] = $type;
-            }
-            $address = new Address($value);
-            $address->save();
         }
     }
 
@@ -803,12 +820,27 @@ class Address
         return $addresses;
     }
 
+    // Compares two addresses. First sort by publicity, then place primary
+    // addresses before secondary addresses.
+    static private function compare(array $a, array $b)
+    {
+        $value = ProfileVisibility::comparePublicity($a, $b);
+        if ($value == 0) {
+            if ($a['secondary'] != $b['secondary']) {
+                $value = $a['secondary'] ? 1 : -1;
+            }
+        }
+        return $value;
+    }
+
     // Formats an array of form addresses into an array of form formatted addresses.
     static public function formatFormArray(array $data, &$success = true)
     {
+        $addresses = self::formArrayWalk($data, 'toFormArray', $success, true);
+
         // Only a single address can be the profile's current address and she must have one.
         $hasCurrent = false;
-        foreach ($data as $key => &$address) {
+        foreach ($addresses as $key => &$address) {
             if (isset($address['current']) && $address['current']) {
                 if ($hasCurrent) {
                     $address['current'] = false;
@@ -824,12 +856,23 @@ class Address
             }
         }
 
-        return self::formArrayWalk($data, 'toFormArray', $success, true);
+        usort($addresses, 'Address::compare');
+        return $addresses;
     }
 
     static public function formArrayToString(array $data)
     {
         return implode(', ', self::formArrayWalk($data, 'toString'));
+    }
+
+    static public function hasPrivate(array $addresses)
+    {
+        foreach ($addresses as $address) {
+            if ($address['pub'] == 'private') {
+                return true;
+            }
+        }
+        return false;
     }
 
     static public function iterate(array $pids = array(), array $types = array(),
@@ -874,7 +917,7 @@ class AddressIterator implements PlIterator
                         gl.name AS locality, gl.nameLocal AS localityLocal,
                         gs.name AS subAdministrativeArea, gs.nameLocal AS subAdministrativeAreaLocal,
                         ga.name AS administrativeArea, ga.nameLocal AS administrativeAreaLocal,
-                        gc.country, gc.countryLocal
+                        gc.country
                   FROM  profile_addresses             AS pa
              LEFT JOIN  geoloc_localities             AS gl ON (gl.id = pa.localityId)
              LEFT JOIN  geoloc_administrativeareas    AS ga ON (ga.id = pa.administrativeAreaId)

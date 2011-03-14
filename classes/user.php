@@ -31,6 +31,13 @@ class User extends PlUser
     const PERM_MAIL              = 'mail';
     const PERM_PAYMENT           = 'payment';
 
+    public static $sub_mail_domains = array(
+        'x'      => '',
+        'master' => 'master.',
+        'phd'    => 'doc.',
+        'all'    => 'alumni.'
+    );
+
     private $_profile_fetched = false;
     private $_profile = null;
 
@@ -65,9 +72,9 @@ class User extends PlUser
 
         // If $data is an integer, fetches directly the result.
         if (is_numeric($login)) {
-            $res = XDB::query('SELECT  a.uid
-                                 FROM  accounts AS a
-                                WHERE  a.uid = {?}', $login);
+            $res = XDB::query('SELECT  uid
+                                 FROM  accounts
+                                WHERE  uid = {?}', $login);
             if ($res->numRows()) {
                 return $res->fetchOneCell();
             }
@@ -76,83 +83,46 @@ class User extends PlUser
         }
 
         // Checks whether $login is a valid hruid or not.
-        $res = XDB::query('SELECT  a.uid
-                             FROM  accounts AS a
-                            WHERE  a.hruid = {?}', $login);
+        $res = XDB::query('SELECT  uid
+                             FROM  accounts
+                            WHERE  hruid = {?}', $login);
         if ($res->numRows()) {
             return $res->fetchOneCell();
         }
 
         // From now, $login can only by an email alias, or an email redirection.
-        // If it doesn't look like a valid address, appends the plat/al's main domain.
         $login = trim(strtolower($login));
         if (strstr($login, '@') === false) {
-            $login = $login . '@' . $globals->mail->domain;
+            $res = XDB::fetchOneCell('SELECT  uid
+                                        FROM  email_source_account
+                                       WHERE  email = {?}',
+                                     $login);
+        } else {
+            list($email, $domain) = explode('@', $login);
+            $res = XDB::fetchOneCell('SELECT  s.uid
+                                        FROM  email_source_account  AS s
+                                  INNER JOIN  email_virtual_domains AS m ON (s.domain = m.id)
+                                  INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
+                                       WHERE  s.email = {?} AND d.name = {?}',
+                                     $email, $domain);
         }
 
-        // Checks if $login is a valid alias on the main domains.
-        list($mbox, $fqdn) = explode('@', $login);
-        if ($fqdn == $globals->mail->domain || $fqdn == $globals->mail->domain2) {
-            $res = XDB::query('SELECT  a.uid
-                                 FROM  accounts AS a
-                           INNER JOIN  aliases AS al ON (al.uid = a.uid AND al.type IN (\'alias\', \'a_vie\'))
-                                WHERE  al.alias = {?}', $mbox);
-            if ($res->numRows()) {
-                return $res->fetchOneCell();
-            }
-
-            if (preg_match('/^(.*)\.([0-9]{4})$/u', $mbox, $matches)) {
-                $res = XDB::query('SELECT  a.uid
-                                     FROM  accounts          AS a
-                               INNER JOIN  aliases           AS al ON (al.uid = a.uid AND al.type IN (\'alias\', \'a_vie\'))
-                               INNER JOIN  account_profiles  AS ap ON (a.uid = ap.uid AND FIND_IN_SET(\'owner\', ap.perms))
-                               INNER JOIN  profiles          AS p  ON (p.pid = ap.pid)
-                               INNER JOIN  profile_education AS pe ON (p.pid = pe.pid AND FIND_IN_SET(\'primary\', pe.flags))
-                                    WHERE  p.hrpid = {?} OR ((pe.entry_year <= {?} AND pe.grad_year >= {?}) AND al.alias = {?})
-                                 GROUP BY  a.uid',
-                                   $matches[0], $matches[2], $matches[2], $matches[1]);
-                if ($res->numRows() == 1) {
-                    return $res->fetchOneCell();
-                }
-            }
-
-            throw new UserNotFoundException();
-        }
-
-        // Looks for $login as an email alias from the dedicated alias domain.
-        if ($fqdn == $globals->mail->alias_dom || $fqdn == $globals->mail->alias_dom2) {
-            $res = XDB::query("SELECT  redirect
-                                 FROM  virtual_redirect
-                           INNER JOIN  virtual USING(vid)
-                                WHERE  alias = {?}", $mbox . '@' . $globals->mail->alias_dom);
-            if ($redir = $res->fetchOneCell()) {
-                // We now have a valid alias, which has to be translated to an hruid.
-                list($alias, $alias_fqdn) = explode('@', $redir);
-                $res = XDB::query("SELECT  a.uid
-                                     FROM  accounts AS a
-                                LEFT JOIN  aliases AS al ON (al.uid = a.uid AND al.type IN ('alias', 'a_vie'))
-                                    WHERE  al.alias = {?}", $alias);
-                if ($res->numRows()) {
-                    return $res->fetchOneCell();
-                }
-            }
-
-            throw new UserNotFoundException();
+        if ($res) {
+            return $res;
         }
 
         // Looks for an account with the given email.
-        $res = XDB::query('SELECT  a.uid
-                             FROM  accounts AS a
-                            WHERE  a.email = {?}', $login);
+        $res = XDB::query('SELECT  uid
+                             FROM  accounts
+                            WHERE  email = {?}', $login);
         if ($res->numRows() == 1) {
             return $res->fetchOneCell();
         }
 
         // Otherwise, we do suppose $login is an email redirection.
-        $res = XDB::query("SELECT  a.uid
-                             FROM  accounts AS a
-                        LEFT JOIN  emails AS e ON (e.uid = a.uid)
-                            WHERE  e.email = {?}", $login);
+        $res = XDB::query('SELECT  uid
+                             FROM  email_redirect_account
+                            WHERE  redirect = {?}', $login);
         if ($res->numRows() == 1) {
             return $res->fetchOneCell();
         }
@@ -189,35 +159,38 @@ class User extends PlUser
 
         $uids = array_map(array('XDB', 'escape'), $uids);
 
-        return XDB::iterator('SELECT  a.uid, a.hruid, a.registration_date, ah.alias AS homonym,
-                                      IF (af.alias IS NULL, NULL, CONCAT(af.alias, \'@' . $globals->mail->domain . '\')) AS forlife,
-                                      IF (af.alias IS NULL, NULL, CONCAT(af.alias, \'@' . $globals->mail->domain2 . '\')) AS forlife_alternate,
-                                      IF (ab.alias IS NULL, NULL, CONCAT(ab.alias, \'@' . $globals->mail->domain . '\')) AS bestalias,
-                                      IF (ab.alias IS NULL, NULL, CONCAT(ab.alias, \'@' . $globals->mail->domain2 . '\')) AS bestalias_alternate,
+        return XDB::iterator('SELECT  a.uid, a.hruid, a.registration_date, h.uid IS NOT NULL AS homonym,
+                                      IF(ef.email IS NULL, NULL, CONCAT(ef.email, \'@\', mf.name)) AS forlife,
+                                      IF(ef.email IS NULL, NULL, CONCAT(ef.email, \'@\', df.name)) AS forlife_alternate,
+                                      IF(eb.email IS NULL, NULL, CONCAT(eb.email, \'@\', mb.name)) AS bestalias,
+                                      (er.redirect IS NULL AND a.state = \'active\') AS lost,
                                       a.email, a.full_name, a.directory_name, a.display_name, a.sex = \'female\' AS gender,
                                       IF(a.state = \'active\', CONCAT(at.perms, \',\', IF(a.user_perms IS NULL, \'\', a.user_perms)), \'\') AS perms,
                                       a.user_perms, a.email_format, a.is_admin, a.state, a.type, at.description AS type_description, a.skin,
                                       FIND_IN_SET(\'watch\', a.flags) AS watch, a.comment,
                                       a.weak_password IS NOT NULL AS weak_access, g.g_account_name IS NOT NULL AS googleapps,
                                       a.token IS NOT NULL AS token_access, a.token, a.last_version,
-                                      (e.email IS NULL AND NOT FIND_IN_SET(\'googleapps\', eo.storage)) AND a.state != \'pending\' AS lost,
                                       UNIX_TIMESTAMP(s.start) AS lastlogin, s.host, UNIX_TIMESTAMP(fp.last_seen) AS banana_last
                                       ' . $fields . '
-                                FROM  accounts AS a
-                          INNER JOIN  account_types AS at ON (at.type = a.type)
-                           LEFT JOIN  aliases AS af ON (af.uid = a.uid AND af.type = \'a_vie\')
-                           LEFT JOIN  aliases AS ab ON (ab.uid = a.uid AND FIND_IN_SET(\'bestalias\', ab.flags))
-                           LEFT JOIN  aliases AS ah ON (ah.uid = a.uid AND ah.type = \'homonyme\')
-                           LEFT JOIN  emails AS e ON (e.uid = a.uid AND e.flags = \'active\')
-                           LEFT JOIN  email_options AS eo ON (eo.uid = a.uid)
-                           LEFT JOIN  gapps_accounts AS g ON (a.uid = g.l_userid AND g.g_status = \'active\')
-                           LEFT JOIN  log_last_sessions AS ls ON (ls.uid = a.uid)
-                           LEFT JOIN  log_sessions AS s ON (s.id = ls.id)
-                           LEFT JOIN  forum_profiles AS fp ON (fp.uid = a.uid)
+                                FROM  accounts               AS a
+                          INNER JOIN  account_types          AS at ON (at.type = a.type)
+                           LEFT JOIN  email_source_account   AS ef ON (ef.uid = a.uid AND ef.type = \'forlife\')
+                           LEFT JOIN  email_virtual_domains  AS mf ON (ef.domain = mf.id)
+                           LEFT JOIN  email_virtual_domains  AS df ON (df.aliasing = mf.id AND
+                                                                       df.name LIKE CONCAT(\'%\', {?}) AND df.name NOT LIKE \'alumni.%\')
+                           LEFT JOIN  email_source_account   AS eb ON (eb.uid = a.uid AND eb.flags = \'bestalias\')
+                           LEFT JOIN  email_virtual_domains  AS mb ON (a.best_domain = mb.id)
+                           LEFT JOIN  email_redirect_account AS er ON (er.uid = a.uid AND er.flags = \'active\' AND er.broken_level < 3
+                                                                       AND er.type != \'imap\' AND er.type != \'homonym\')
+                           LEFT JOIN  homonyms_list          AS h  ON (h.uid = a.uid)
+                           LEFT JOIN  gapps_accounts         AS g  ON (a.uid = g.l_userid AND g.g_status = \'active\')
+                           LEFT JOIN  log_last_sessions      AS ls ON (ls.uid = a.uid)
+                           LEFT JOIN  log_sessions           AS s  ON (s.id = ls.id)
+                           LEFT JOIN  forum_profiles         AS fp ON (fp.uid = a.uid)
                                    ' . $joins . '
                                WHERE  a.uid IN (' . implode(', ', $uids) . ')
                             GROUP BY  a.uid
-                                   ' . $order);
+                                   ' . $order, $globals->mail->domain2, $globals->mail->domain2);
     }
 
     // Implementation of the data loader.
@@ -371,60 +344,83 @@ class User extends PlUser
                                  $this->id(), $profile->id());
     }
 
-    /** Get the email alias of the user.
+    /** Determines main email domain for this user.
+     */
+    public function mainEmailDomain()
+    {
+        if (array_key_exists($this->type, self::$sub_mail_domains)) {
+            return self::$sub_mail_domains[$this->type] . Platal::globals()->mail->domain;
+        }
+    }
+
+    /** Determines alternate email domain for this user.
+     */
+    public function alternateEmailDomain()
+    {
+        if (array_key_exists($this->type, self::$sub_mail_domains)) {
+            return self::$sub_mail_domains[$this->type] . Platal::globals()->mail->domain2;
+        }
+    }
+
+    public function forlifeEmailAlternate()
+    {
+        if (!empty($this->forlife_alternate)) {
+            return $this->forlife_alternate;
+        }
+        return $this->email;
+    }
+
+    /** Fetch existing auxiliary alias.
      */
     public function emailAlias()
     {
-        global $globals;
-        $data = $this->emailAliases($globals->mail->alias_dom);
-        if (count($data) > 0) {
-            return array_pop($data);
+        $aliases = $this->emailAliases();
+        if (count($aliases)) {
+            return $aliases[0];
         }
         return null;
     }
 
-    /** Get all the aliases the user belongs to.
+    /** Fetch existing auxiliary aliases.
      */
-    public function emailAliases($domain = null, $type = 'user',  $sub_state = false)
+    public function emailAliases()
     {
-        $join = XDB::format('(vr.redirect = {?} OR vr.redirect = {?}) ',
-                             $this->forlifeEmail(), $this->m4xForlifeEmail());
-        $where = '';
-        if (!is_null($domain)) {
-            $where = XDB::format('WHERE v.alias LIKE CONCAT("%@", {?})', $domain);
-        }
-        if (!is_null($type)) {
-            if (empty($where)) {
-                $where = XDB::format('WHERE v.type = {?}', $type);
-            } else {
-                $where .= XDB::format(' AND v.type = {?}', $type);
-            }
-        }
-        if ($sub_state) {
-            return XDB::fetchAllAssoc('alias', 'SELECT  v.alias, vr.redirect IS NOT NULL AS sub
-                                                  FROM  virtual AS v
-                                             LEFT JOIN  virtual_redirect AS vr ON (v.vid = vr.vid AND ' . $join . ')
-                                                 ' . $where);
+        return XDB::fetchColumn('SELECT  CONCAT(s.email, \'@\', d.name)
+                                   FROM  email_source_account  AS s
+                             INNER JOIN  email_virtual_domains AS m ON (s.domain = m.id)
+                             INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
+                                  WHERE  s.uid = {?} AND s.type = \'alias_aux\'
+                               ORDER BY  d.name',
+                                $this->id());
+    }
+
+    /** Get all group aliases the user belongs to.
+     */
+    public function emailGroupAliases($domain = null)
+    {
+        if (is_null($domain)) {
+            return XDB::fetchColumn('SELECT  CONCAT(v.email, \'@\', dv.name) AS alias
+                                       FROM  email_virtual         AS v
+                                 INNER JOIN  email_virtual_domains AS dv ON (v.domain = dv.id)
+                                 INNER JOIN  email_source_account  AS s  ON (s.uid = {?})
+                                 INNER JOIN  email_virtual_domains AS ms ON (s.domain = ms.id)
+                                 INNER JOIN  email_virtual_domains AS ds ON (ds.aliasing = ms.id)
+                                      WHERE  v.redirect = CONCAT(s.email, \'@\', ds.name) AND v.type = \'alias\'',
+                                    $this->id());
         } else {
-            return XDB::fetchColumn('SELECT  v.alias
-                                       FROM  virtual AS v
-                                 INNER JOIN  virtual_redirect AS vr ON (v.vid = vr.vid AND ' . $join . ')
-                                     ' . $where);
+            return XDB::fetchAllAssoc('alias',
+                                      'SELECT  CONCAT(v.email, \'@\', dv.name) AS alias, MAX(v.redirect = CONCAT(s.email, \'@\', ds.name)) AS sub
+                                         FROM  email_virtual         AS v
+                                   INNER JOIN  email_virtual_domains AS dv ON (v.domain = dv.id AND dv.name = {?})
+                                   INNER JOIN  email_source_account  AS s  ON (s.uid = {?})
+                                   INNER JOIN  email_virtual_domains AS ms ON (s.domain = ms.id)
+                                   INNER JOIN  email_virtual_domains AS ds ON (ds.aliasing = ms.id)
+                                        WHERE  v.type = \'alias\'
+                                     GROUP BY  v.email
+                                     ORDER BY  v.email',
+                                      $domain, $this->id());
         }
     }
-
-    /** Get the alternative forlife email
-     * TODO: remove this uber-ugly hack. The issue is that you need to remove
-     * all @m4x.org addresses in virtual_redirect first.
-     * XXX: This is juste to make code more readable, to be remove as soon as possible
-     */
-    public function m4xForlifeEmail()
-    {
-        global $globals;
-        trigger_error('USING M4X FORLIFE', E_USER_NOTICE);
-        return $this->login() . '@' . $globals->mail->domain2;
-    }
-
 
     /** Get marketing informations
      */
@@ -589,13 +585,13 @@ class User extends PlUser
         return Profile::getBulkProfilesWithPIDs(array_keys($this->contacts));
     }
 
-    public function isContact(Profile &$profile)
+    public function isContact(Profile $profile)
     {
         $this->fetchContacts();
         return isset($this->contacts[$profile->id()]);
     }
 
-    public function isWatchedUser(Profile &$profile)
+    public function isWatchedUser(Profile $profile)
     {
         return in_array($profile->id(), $this->watchUsers());
     }
@@ -655,13 +651,13 @@ class User extends PlUser
      * Clears a user.
      *  *always deletes in: account_lost_passwords, register_marketing,
      *      register_pending, register_subs, watch_nonins, watch, watch_promo
-     *  *always keeps in: account_types, accounts, aliases, axletter_ins, carvas,
-     *      group_members, homonyms, newsletter_ins, register_mstats,
+     *  *always keeps in: account_types, accounts, email_virtual, carvas,
+     *      group_members, homonyms_list, newsletter_ins, register_mstats, email_source_account
      *  *deletes if $clearAll: account_auth_openid, announce_read, contacts,
-     *      email_options, email_send_save, emails, forum_innd, forum_profiles,
+     *      email_redirect_account, email_redirect_account, email_send_save, forum_innd, forum_profiles,
      *      forum_subs, gapps_accounts, gapps_nicknames, group_announces_read,
      *      group_member_sub_requests, reminder, requests, requests_hidden,
-     *      virtual, virtual_redirect, ML
+     *      email_virtual, ML
      *  *modifies if $clearAll: accounts
      *
      * Use cases:
@@ -705,16 +701,19 @@ class User extends PlUser
             }
 
             $tables = array('account_auth_openid', 'announce_read', 'contacts',
-                            'email_options', 'email_send_save', 'emails',
+                            'email_send_save', 'email_virtual',
                             'forum_innd', 'forum_profiles', 'forum_subs',
                             'group_announces_read', 'group_members',
                             'group_member_sub_requests', 'reminder', 'requests',
-                            'requests_hidden', 'aliases');
+                            'requests_hidden');
             foreach ($tables as $t) {
                 XDB::execute('DELETE FROM  ' . $t . '
                                     WHERE  uid = {?}',
                              $this->id());
             }
+            XDB::execute('DELETE FROM  email_redirect_account
+                                WHERE  uid = {?} AND type != \'homonym\'',
+                         $this->id());
 
             foreach (array('gapps_accounts', 'gapps_nicknames') as $t) {
                 XDB::execute('DELETE FROM  ' . $t . '
@@ -727,15 +726,6 @@ class User extends PlUser
                                   weak_password = NULL, token = NULL, is_admin = 0
                            WHERE  uid = {?}",
                          $this->id());
-
-            XDB::execute('DELETE  v.*
-                            FROM  virtual          AS v
-                      INNER JOIN  virtual_redirect AS r ON (v.vid = r.vid)
-                           WHERE  redirect = {?} OR redirect = {?}',
-                         $this->forlifeEmail(), $this->m4xForlifeEmail());
-            XDB::execute('DELETE FROM  virtual_redirect
-                                WHERE  redirect = {?} OR redirect = {?}',
-                         $this->forlifeEmail(), $this->m4xForlifeEmail());
 
             if ($globals->mailstorage->googleapps_domain) {
                 require_once 'googleapps.inc.php';
@@ -752,7 +742,7 @@ class User extends PlUser
     }
 
     // Merge all infos in other user and then clean this one
-    public function mergeIn(User &$newuser) {
+    public function mergeIn(User $newuser) {
         if ($this->profile()) {
             // Don't disable user with profile in this way.
             global $globals;
@@ -769,24 +759,13 @@ class User extends PlUser
                                  SET  email = {?}
                                WHERE  uid = {?} AND email IS NULL',
                              $this->forlifeEmail(), $newuser->id());
+
+                // Reftech new user so its forlifeEmail will be correct.
+                $newuser = getSilentWithUID($newuser->id());
             }
-            $newemail = XDB::fetchOneCell('SELECT  email
-                                             FROM  accounts
-                                            WHERE  uid = {?}',
-                                          $newuser->id());
 
-            // Change email used in aliases and mailing lists.
-            if ($this->forlifeEmail() != $newemail) {
-                // virtual_redirect (email aliases)
-                XDB::execute('DELETE  v1
-                                FROM  virtual_redirect AS v1, virtual_redirect AS v2
-                               WHERE  v1.vid = v2.vid AND v1.redirect = {?} AND v2.redirect = {?}',
-                             $this->forlifeEmail(), $newemail);
-                XDB::execute('UPDATE  virtual_redirect
-                                 SET  redirect = {?}
-                               WHERE  redirect = {?}',
-                             $newemail, $this->forlifeEmail());
-
+            // Change email used in mailing lists.
+            if ($this->forlifeEmail() != $newuser->forlifeEmail()) {
                 // group mailing lists
                 $group_domains = XDB::fetchColumn('SELECT  g.mail_domain
                                                      FROM  groups        AS g
@@ -795,11 +774,11 @@ class User extends PlUser
                                                   $this->id());
                 foreach ($group_domains as $mail_domain) {
                     $mmlist = new MMList($this, $mail_domain);
-                    $mmlist->replace_email_in_all($this->forlifeEmail(), $newemail);
+                    $mmlist->replace_email_in_all($this->forlifeEmail(), $newuser->forlifeEmail());
                 }
                 // main domain lists
                 $mmlist = new MMList($this);
-                $mmlist->replace_email_in_all($this->forlifeEmail(), $newemail);
+                $mmlist->replace_email_in_all($this->forlifeEmail(), $newuser->forlifeEmail());
             }
         }
 
@@ -812,7 +791,7 @@ class User extends PlUser
         }
 
         // Merges user in following tables, ie updates when possible, then deletes remaining occurences of the old user.
-        foreach (array('group_announces_read', 'group_event_participants', 'group_member_sub_requests', 'group_members') as $table) {
+        foreach (array('group_announces_read', 'group_event_participants', 'group_member_sub_requests', 'group_members', 'email_redirect_account') as $table) {
             XDB::execute('UPDATE IGNORE  ' . $table . '
                                     SET  uid = {?}
                                   WHERE  uid = {?}',
@@ -867,45 +846,50 @@ class User extends PlUser
         }
     }
 
+    public static function makeHomonymHrmid($alias)
+    {
+        return 'h.' . $alias . '.' . Platal::globals()->mail->domain;
+    }
+
+    public static function isMainMailDomain($domain)
+    {
+        global $globals;
+
+        $is_main_domain = false;
+        foreach (self::$sub_mail_domains as $sub_domain) {
+            $is_main_domain = $is_main_domain || $domain == ($sub_domain . $globals->mail->domain) && $domain == ($sub_domain . $globals->mail->domain2);
+        }
+        return $is_main_domain;
+    }
+
+    public static function isAliasMailDomain($domain)
+    {
+        global $globals;
+
+        return $domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2;
+    }
+
     // Implementation of the static email locality checker.
     public static function isForeignEmailAddress($email)
     {
-        global $globals;
         if (strpos($email, '@') === false) {
             return false;
         }
 
-        list($user, $dom) = explode('@', $email);
-        return $dom != $globals->mail->domain &&
-               $dom != $globals->mail->domain2 &&
-               $dom != $globals->mail->alias_dom &&
-               $dom != $globals->mail->alias_dom2;
-    }
-
-    public static function isVirtualEmailAddress($email)
-    {
-        global $globals;
-        if (strpos($email, '@') === false) {
-            return false;
-        }
-
-        list($user, $dom) = explode('@', $email);
-        return $dom == $globals->mail->alias_dom
-            || $dom == $globals->mail->alias_dom2;
+        list(, $domain) = explode('@', $email);
+        return !(self::isMainMailDomain($domain) || self::isAliasMailDomain($domain));
     }
 
     /* Tries to find pending accounts with an hruid close to $login. */
     public static function getPendingAccounts($login, $iterator = false)
     {
-        global $globals;
-
         if (strpos($login, '@') === false) {
             return null;
         }
 
         list($login, $domain) = explode('@', $login);
 
-        if ($domain && $domain != $globals->mail->domain && $domain != $globals->mail->domain2) {
+        if ($domain && !self::isMainMailDomain($domain)) {
             return null;
         }
 

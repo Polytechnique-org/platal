@@ -27,11 +27,9 @@ class XorgPage extends PlPage
 
         // Set the default page
         $this->changeTpl('platal/index.tpl');
-        $this->addJsLink('jquery.js');
+        $this->addJsLink('jquery.xorg.js');
         $this->addJsLink('overlib.js');
-        $this->addJsLink('secure_hash.js');
-        $this->addJsLink('sha1.js');
-        $this->addJsLink('wiki.js');
+        $this->addJsLink('core.js');
         $this->addJsLink('xorg.js');
         $this->setTitle('le site des élèves et anciens élèves de l\'École polytechnique');
         if (S::logged() && S::user()->checkPerms('admin')) {

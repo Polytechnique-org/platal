@@ -28,7 +28,7 @@
 </div>
 <br />
 
-<form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit='doChallengeResponse(); return false;'>
+<form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit='doChallengeResponseLogged(); return false;'>
   <table class="bicol" cellpadding="4" summary="Formulaire de login">
     <tr>
       <td class="titre">

@@ -24,8 +24,8 @@ class ReminderAxLetter extends Reminder
     public function HandleAction($action)
     {
         if ($action == 'yes') {
-            Platal::load('axletter', 'axletter.inc.php');
-            AXLetter::subscribe();
+            require_once 'newsletter.inc.php';
+            NewsLetter::forGroup(NewsLetter::GROUP_AX)->subscribe();
             $this->UpdateOnYes();
         }
 
@@ -52,10 +52,10 @@ class ReminderAxLetter extends Reminder
         return 'Xorg/MailsAX';
     }
 
-    public static function IsCandidate(User &$user, $candidate)
+    public static function IsCandidate(User $user, $candidate)
     {
-        Platal::load('axletter', 'axletter.inc.php');
-        $isSubscribed = AXLetter::subscriptionState();
+        require_once 'newsletter.inc.php';
+        $isSubscribed = NewsLetter::forGroup(NewsLetter::GROUP_AX)->subscriptionState();
         if ($isSubscribed) {
             Reminder::MarkCandidateAsAccepted($user->id(), $candidate);
         }

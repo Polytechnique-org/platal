@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class Profile
+class Profile implements PlExportable
 {
 
     /* name tokens */
@@ -527,8 +527,10 @@ class Profile
             }
             return $this->photo;
         } else if ($fallback) {
-            return PlImage::fromFile(dirname(__FILE__).'/../htdocs/images/none.png',
-                                     'image/png');
+            if ($this->mainEducation() == 'X') {
+                return PlImage::fromFile(dirname(__FILE__) . '/../htdocs/images/none_x.png', 'image/png');
+            }
+            return PlImage::fromFile(dirname(__FILE__) . '/../htdocs/images/none_md.png', 'image/png');
         }
         return null;
     }
@@ -839,6 +841,24 @@ class Profile
         }
 
         return ($isOk && ($maxlen > 2 || $maxlen == strlen($_lastname)));
+    }
+
+    /* Export to JSON
+     */
+    public function export()
+    {
+        return array(
+            'hrpid'        => $this->hrid(),
+            'display_name' => $this->shortName(),
+            'full_name'    => $this->fullName(),
+            'directory_name' => $this->directory_name,
+            'promo'        => $this->promo(),
+            'year_promo'   => $this->yearpromo(),
+            'is_active'    => $this->isActive(),
+            'first_name'   => $this->firstName(),
+            'last_name'    => $this->lastName(),
+            'is_female'    => $this->isFemale(),
+        );
     }
 
     private static function fetchProfileData(array $pids, $respect_order = true, $fields = 0x0000, $visibility = null)

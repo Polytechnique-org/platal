@@ -91,6 +91,7 @@
 <div class="menu_item"><a href="Xorg/">Documentations</a></div>
 <div class="menu_item"><a href="nl">Lettres mensuelles</a></div>
 <div class="menu_item"><a href="ax">Lettres de l'AX</a></div>
+<div class="menu_item"><a href="epletter">Lettres de l'École</a></div>
 <div class="menu_item"><a href="Xorg/NousContacter">Nous contacter</a></div>
 <div class="menu_item"><a href="send_bug/{ $smarty.server.REQUEST_URI }" class="popup2">Signaler un bug</a></div>
 

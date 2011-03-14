@@ -247,16 +247,21 @@ function compare_basename($a, $b) {
     return name_to_basename($a) == name_to_basename($b);
 }
 
-function set_alias_names(&$sn_new, $sn_old, $pid, $uid, $update_new = false, $new_alias = null)
+function set_alias_names(&$sn_new, $sn_old, $pid, PlUser $user, $update_new = false, $new_alias = null)
 {
     $has_new = false;
     foreach ($sn_new as $typeid => $sn) {
-        if (isset($sn['pub'])) {
+        if (isset($sn['pub']) && !is_null($sn['fullname'])) {
             if (isset($sn_old[$typeid]) && $update_new) {
                 XDB::execute("UPDATE  profile_name
                                  SET  particle = {?}, name = {?}, typeid = {?}
                                WHERE  id = {?} AND pid = {?}",
                              $sn['particle'], $sn['name'], $typeid, $sn_old[$typeid]['id'], $pid);
+                unset($sn_old[$typeid]);
+            } elseif ($sn['fullname'] == $sn_old[$typeid]['fullname'] && $sn['name'] == $sn_old[$typeid]['name']) {
+                XDB::execute('INSERT INTO  profile_name (particle, name, typeid, pid)
+                                   VALUES  ({?}, {?}, {?}, {?})',
+                             $sn_old[$typeid]['particle'], $sn_old[$typeid]['name'], $typeid, $pid);
                 unset($sn_old[$typeid]);
             } else {
                 $has_new = true;
@@ -293,14 +298,16 @@ function set_alias_names(&$sn_new, $sn_old, $pid, $uid, $update_new = false, $ne
         }
     }
     if ($update_new) {
-        XDB::execute("DELETE FROM  aliases
-                            WHERE  FIND_IN_SET('usage', flags) AND uid = {?}",
-                     $uid);
+        XDB::execute('DELETE FROM  email_source_account
+                            WHERE  FIND_IN_SET(\'usage\', flags) AND uid = {?} AND type = \'alias\'',
+                     $user->id());
     }
     if ($new_alias) {
-        XDB::execute("INSERT INTO  aliases (alias, type, flags, uid)
-                           VALUES  ({?}, 'alias', 'usage', {?})",
-                     $new_alias, $uid);
+        XDB::execute('INSERT INTO  email_source_account (email, uid, type, flags, domain)
+                           SELECT  {?}, {?}, \'alias\', \'usage\', id
+                             FROM  email_virtual_domains
+                            WHERE  name = {?}',
+                     $new_alias, $user->id(), $user->mainEmailDomain());
     }
     Profile::rebuildSearchTokens($pid, false);
     return $has_new;

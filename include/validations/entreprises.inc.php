@@ -46,7 +46,7 @@ class EntrReq extends ProfileValidate
     // }}}
     // {{{ constructor
 
-    public function __construct(User &$_user, Profile &$_profile, $_id, $_name, $_acronym, $_url, $_email, $_tel, $_fax, $_address, $_stamp = 0)
+    public function __construct(User $_user, Profile $_profile, $_id, $_name, $_acronym, $_url, $_email, $_tel, $_fax, $_address, $_stamp = 0)
     {
         parent::__construct($_user, $_profile, false, 'entreprise', $_stamp);
         $this->id       = $_id;
@@ -129,8 +129,7 @@ class EntrReq extends ProfileValidate
         if ($isok) {
             return "  L'entreprise " . $this->name . " vient d'être ajoutée à ta fiche.";
         } else {
-            return "  La demande que tu avais faite pour l'entreprise " . $this->name .
-                   " a été refusée, car elle figure déjà dans notre base.";
+            return '  La demande que tu avais faite pour l\'entreprise ' . $this->name . ' a été refusée.';
         }
     }
 

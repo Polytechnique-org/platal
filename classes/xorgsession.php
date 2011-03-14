@@ -81,9 +81,9 @@ class XorgSession extends PlSession
     {
         if ($login_type == 'alias') {
             $res = XDB::query('SELECT  a.uid, a.password
-                                 FROM  accounts AS a
-                           INNER JOIN  aliases  AS l ON (l.uid = a.uid AND l.type != \'homonyme\')
-                                WHERE  l.alias = {?} AND a.state = \'active\'',
+                                 FROM  accounts             AS a
+                           INNER JOIN  email_source_account AS e ON (e.uid = a.uid)
+                                WHERE  e.email = {?}',
                               $login);
         } else {
             $res = XDB::query('SELECT  uid, password
@@ -140,29 +140,19 @@ class XorgSession extends PlSession
         if (S::suid()) {
             $login = $uname = S::suid('uid');
             $loginType = 'uid';
-            $redirect = false;
         } else {
             $uname = Post::v('username');
             if (Post::s('domain') == "alias") {
-                $res = XDB::query('SELECT  redirect
-                                     FROM  virtual
-                               INNER JOIN  virtual_redirect USING(vid)
-                                    WHERE  alias LIKE {?}',
-                                   $uname . '@' . $globals->mail->alias_dom);
-                $redirect = $res->fetchOneCell();
-                if ($redirect) {
-                    $login = substr($redirect, 0, strpos($redirect, '@'));
-                } else {
-                    $login = '';
-                }
-                $loginType = 'alias';
+                $login = XDB::fetchOneCell('SELECT  uid
+                                              FROM  email_source_account
+                                             WHERE  email = {?} AND type = \'alias_aux\'',
+                                           $uname);
+                $loginType = 'uid';
             } else if (Post::s('domain') == "ax") {
                 $login = $uname;
-                $redirect = false;
                 $loginType = 'hruid';
             } else {
                 $login = $uname;
-                $redirect = false;
                 $loginType = is_numeric($uname) ? 'uid' : 'alias';
             }
         }

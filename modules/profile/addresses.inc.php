@@ -21,7 +21,7 @@
 
 class ProfileSettingAddresses implements ProfileSetting
 {
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         $success = true;
         $addresses = array();
@@ -41,11 +41,16 @@ class ProfileSettingAddresses implements ProfileSetting
         return Address::formatFormArray($value, $success);
     }
 
-    public function save(ProfilePage &$page, $field, $value)
+    public function save(ProfilePage $page, $field, $value)
     {
-        Phone::deletePhones($page->pid(), Phone::LINK_ADDRESS, null, S::user()->isMe($page->owner) || S::admin());
-        Address::deleteAddresses($page->pid(), Address::LINK_PROFILE, null, S::user()->isMe($page->owner) || S::admin());
-        Address::saveFromArray($value, $page->pid(), Address::LINK_PROFILE);
+        $deletePrivate = S::user()->isMe($page->owner) || S::admin();
+
+        Phone::deletePhones($page->pid(), Phone::LINK_ADDRESS, null, $deletePrivate);
+        Address::deleteAddresses($page->pid(), Address::LINK_PROFILE, null, null, $deletePrivate);
+        Address::saveFromArray($value, $page->pid(), Address::LINK_PROFILE, null, $deletePrivate);
+        if (S::user()->isMe($page->owner) && count($value) > 1) {
+            Platal::page()->trigWarning('Attention, tu as plusieurs adresses sur ton profil. Pense à supprimer celles qui sont obsolètes.');
+        }
     }
 
     public function getText($value)
@@ -58,7 +63,7 @@ class ProfilePageAddresses extends ProfilePage
 {
     protected $pg_template = 'profile/adresses.tpl';
 
-    public function __construct(PlWizard &$wiz)
+    public function __construct(PlWizard $wiz)
     {
         parent::__construct($wiz);
         $this->settings['addresses'] = new ProfileSettingAddresses();

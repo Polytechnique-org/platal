@@ -21,21 +21,21 @@
 {**************************************************************************}
 
 <h1 style="clear: both">
-  Lettre de Polytechnique.org du {$nl->_date|date_format}
+  {$issue->nl->name} du {$issue->date|date_format}
 </h1>
 
 <p style="float: left">
   {if $smarty.get.text}
-  [<a href='nl/show/{$nl->id()}'>version HTML</a>]
+  [<a href='{$nl->prefix()}/show/{$issue->id()}'>version HTML</a>]
   {else}
-  [<a href='nl/show/{$nl->id()}?text=1'>version Texte</a>]
+  [<a href='{$nl->prefix()}/show/{$issue->id()}?text=1'>version Texte</a>]
   {/if}
-  {if hasPerm('admin')}
-  [<a href='admin/newsletter/edit/{$nl->id()}'>Éditer</a>]
+  {if $nl->mayEdit()}
+  [<a href='{$nl->adminPrefix()}/edit/{$issue->id()}'>Éditer</a>]
   {/if}
 </p>
 
-{include file="include/massmailer-nav.tpl" mm=$nl base=nl}
+{include file="include/massmailer-nav.tpl" issue=$issue nl=$nl}
 
 <form method="post" action="{$platal->path}">
   <div class='center' style="clear: both">
@@ -44,10 +44,10 @@
 </form>
 
 <table class="bicol">
-  <tr><th>{$nl->title(true)}</th></tr>
+  <tr><th>{$issue->title(true)}</th></tr>
   <tr>
     <td>
-      {include file="newsletter/nl.mail.tpl" escape=true}
+      {include file=$nl->tplFile() escape=true}
     </td>
   </tr>
 </table>

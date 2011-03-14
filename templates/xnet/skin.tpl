@@ -30,7 +30,8 @@
     <link rel="apple-touch-icon" href="images/logo-xnet.png" type="image/png" />
 
     <link rel="stylesheet" type="text/css" href="css/xnet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="css/base.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/base.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="css/bandeau.css" />
 
     <link rel="bookmark" href="http://www.polytechnique.fr/"        title="| École polytechnique" />
     <link rel="bookmark" href="http://www.polytechnique.edu/"       title="| Institutionnal site" />
@@ -40,7 +41,6 @@
     <link rel="bookmark" href="http://www.polytechnique.fr/eleves/" title="| Site d'élèves" />
 
     {include core=plpage.header.tpl}
-    {include file=skin/common.bandeau.head.tpl}
   </head>
   <body>
     {include core=plpage.devel.tpl}
@@ -120,9 +120,9 @@
             <div>
               <select name="right" onchange="this.form.submit()" style="margin: 0; padding: 0">
                 {if hasPerm('admin') || ($suid && $smarty.session.suid.perms->hasFlag('admin'))}
-                <option value="admin" {if hasPerm('admin')}selected="selected"{/if}>Administrateur</option>
+                <option value="admin" {if hasPerm('admin') && !($suid && $smarty.session.suid.perms->hasFlag('admin'))}selected="selected"{/if}>Administrateur</option>
                 {/if}
-                <option value="anim" {if $is_admin && !hasPerm('admin')}selected="selected"{/if}>Animateur</option>
+                <option value="anim" {if $is_admin && !( hasPerm('admin') && !($suid && $smarty.session.suid.perms->hasFlag('admin')))}selected="selected"{/if}>Animateur</option>
                 <option value="member" {if !$is_admin && $is_member}selected="selected"{/if}>Membre</option>
                 <option value="logged" {if !$is_admin && !$is_member}selected="selected"{/if}>Non-membre</option>
               </select>

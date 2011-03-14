@@ -44,6 +44,9 @@ up: update
 update:
 	@git fetch && git rebase `git symbolic-ref HEAD | sed -e 's~refs/heads/~origin/~'` && git submodule update
 
+doc:
+	@doxygen core/doc/doxygen.cfg
+
 ################################################################################
 # targets
 
@@ -73,7 +76,10 @@ htdocs/.htaccess: htdocs/.htaccess.in Makefile
 ##
 ## static content
 ##
-static: htdocs/javascript@VERSION
+static: htdocs/javascript/core.js htdocs/javascript@VERSION
+
+htdocs/javascript/core.js:
+	cd htdocs/javascript/ && ln -s ../../core/htdocs/javascript/core.js
 
 %@VERSION: % Makefile ChangeLog
 	cd $< && rm -f $(VERSION) && ln -sf . $(VERSION)
@@ -119,10 +125,10 @@ wiki/pub/skins/empty:
 
 get-wiki:
 	@if ! test -d wiki; then                                          \
-	    wget http://www.pmwiki.org/pub/pmwiki/pmwiki-latest.tgz;      \
-	    tar -xzvf pmwiki-latest.tgz;                                  \
-	    rm pmwiki-latest.tgz;                                         \
-	    mv pmwiki-* wiki;                                             \
+		wget http://www.pmwiki.org/pub/pmwiki/pmwiki-latest.tgz;      \
+		tar -xzvf pmwiki-latest.tgz;                                  \
+		rm pmwiki-latest.tgz;                                         \
+		mv pmwiki-* wiki;                                             \
 	fi
 
 ##
@@ -132,14 +138,17 @@ get-wiki:
 openid: get-openid spool/openid/store
 
 # There is no obvious way to automatically use the latest version
-OPENID_VERSION = 2.1.3
+OPENID_VERSION = 2.2.2
+OPENID_COMMIT  = 782224d
 get-openid:
 	@if ! test -d include/Auth; then                                  \
-	    wget http://openidenabled.com/files/php-openid/packages/php-openid-$(OPENID_VERSION).tar.bz2; \
-	    tar -xjf php-openid-$(OPENID_VERSION).tar.bz2;                \
-	    mv php-openid-$(OPENID_VERSION)/Auth include/;                \
-	    rm php-openid-$(OPENID_VERSION).tar.bz2;                      \
-	    rm -r php-openid-$(OPENID_VERSION);                           \
+		wget --no-check-certificate                                   \
+			https://github.com/openid/php-openid/tarball/$(OPENID_VERSION) \
+			-O php-openid-$(OPENID_VERSION).tar.gz; \
+		tar -xzf php-openid-$(OPENID_VERSION).tar.gz;                \
+		mv openid-php-openid-$(OPENID_COMMIT)/Auth include/;                \
+		rm php-openid-$(OPENID_VERSION).tar.gz;                      \
+		rm -r openid-php-openid-$(OPENID_COMMIT);                           \
 	fi
 
 spool/openid/store:
@@ -173,12 +182,12 @@ $(MEDAL_THUMBNAILS): $(subst /medals/thumb/,/medals/,$(@F))
 ##
 ## jquery
 ##
-JQUERY_VERSION=1.4.4
+JQUERY_VERSION=1.5.1
 JQUERY_PLUGINS=color form
 JQUERY_PLUGINS_PATHES=$(addprefix htdocs/javascript/jquery.,$(addsuffix .js,$(JQUERY_PLUGINS)))
 
-JQUERY_UI_VERSION=1.8.7
-JQUERY_UI=core tabs widget
+JQUERY_UI_VERSION=1.8.10
+JQUERY_UI=core widget tabs datepicker
 JQUERY_UI_PATHES=$(addprefix htdocs/javascript/jquery.ui.,$(addsuffix .js,$(JQUERY_UI)))
 
 JQUERY_TMPL_VERSION=vBeta1.0.0
@@ -190,7 +199,13 @@ JSTREE_PATH=htdocs/javascript/jquery.jstree.js
 # TODO: jquery.autocomplete.js should rather be downloaded from an official source. The issue
 # is that the version we use is not available anymore on the Internet, and the latest version
 # we could use is not backward compatible with our current code.
-jquery: htdocs/javascript/jquery.js $(JQUERY_PLUGINS_PATHES) $(JQUERY_UI_PATHES) $(JQUERY_TMPL_PATH) $(JSTREE_PATH)
+jquery: htdocs/javascript/jquery.xorg.js htdocs/javascript/jquery.ui.xorg.js $(JSTREE_PATH)
+
+htdocs/javascript/jquery.xorg.js: htdocs/javascript/jquery.js $(JQUERY_PLUGINS_PATHES) $(JQUERY_TMPL_PATH) htdocs/javascript/jquery.autocomplete.js
+	cat $^ > $@
+
+htdocs/javascript/jquery.ui.xorg.js: $(JQUERY_UI_PATHES) htdocs/javascript/jquery.ui.datepicker-fr.js
+	cat $^ > $@
 
 htdocs/javascript/jquery-$(JQUERY_VERSION).min.js: DOWNLOAD_SRC = http://jquery.com/src/$(@F)
 htdocs/javascript/jquery-$(JQUERY_VERSION).min.js:
@@ -209,10 +224,14 @@ htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js: DOWNLOAD_SRC = http://jqu
 htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js:
 	@$(download)
 
-$(JQUERY_UI_PATHES): htdocs/javascript/jquery.ui.%.js: htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js
+htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).datepicker-fr.js: DOWNLOAD_SRC = http://jquery-ui.googlecode.com/svn/tags/$(JQUERY_UI_VERSION)/ui/minified/i18n/jquery.ui.datepicker-fr.min.js
+htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).datepicker-fr.js:
+	@$(download)
+
+$(JQUERY_UI_PATHES) htdocs/javascript/jquery.ui.datepicker-fr.js: htdocs/javascript/jquery.ui.%.js: htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js
 	ln -snf $(<F) $@
 
-htdocs/javascript/jquery.tmpl-$(JQUERY_TMPL_VERSION).js: DOWNLOAD_SRC = https://github.com/jquery/jquery-tmpl/raw/$(JQUERY_TMPL_VERSION)/jquery.tmpl.min.js --no-check-certificate
+htdocs/javascript/jquery.tmpl-$(JQUERY_TMPL_VERSION).js: DOWNLOAD_SRC = https://github.com/jquery/jquery-tmpl/raw/$(JQUERY_TMPL_VERSION)/jquery.tmpl.js --no-check-certificate
 htdocs/javascript/jquery.tmpl-$(JQUERY_TMPL_VERSION).js:
 	@-rm htdocs/javascript/jquery.tmpl*.js
 	@$(download)
@@ -258,4 +277,4 @@ restart-listrpc: stop-listrpc start-listrpc
 .PHONY: wiki build-wiki
 .PHONY: banana banana-sub htdocs/images/banana htdocs/css/banana.css
 .PHONY: start-listrpc start-listrpc-fg stop-listrpc restart-listrpc
-.PHONY: up update
+.PHONY: up update doc

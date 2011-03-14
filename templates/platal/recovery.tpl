@@ -28,7 +28,7 @@
 
 <p>
 <strong>Un certificat d'authentification</strong> vient de t'être attribué et a été envoyé vers les redirections de
-ton adresse en {#globals.mail.domain#}. Ce certificat te permet d'accéder à un formulaire de changement de mot de passe.
+ton adresse {#globals.mail.domain#}. Ce certificat te permet d'accéder à un formulaire de changement de mot de passe.
 <span class="erreur"> Il expire dans six heures.</span> Tu dois donc <strong>consulter tes emails avant son
 expiration</strong> et utiliser le certificat comme expliqué dans l'email pour changer ton mot de passe.
 </p>
@@ -78,7 +78,7 @@ Si tu n'accèdes pas à cet email dans les 6 heures, sollicite un nouveau certif
         <span class="smaller">"prenom.nom" ou "prenom.nom.promo"</span>
       </td>
       <td>
-        <input type="text" size="20" maxlength="50" name="login" />
+        <input type="text" size="20" maxlength="255" name="login" />
       </td>
     </tr>
     <tr>
@@ -95,7 +95,7 @@ Si tu n'accèdes pas à cet email dans les 6 heures, sollicite un nouveau certif
         Adresse email&nbsp;: <span class="smaller">(facultatif)</span>
       </td>
       <td>
-        <input type="text" size="20" maxlength="50" name="email" />
+        <input type="text" size="20" maxlength="255" name="email" />
       </td>
     </tr>
     <tr>

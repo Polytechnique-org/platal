@@ -19,29 +19,208 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-define("SUCCESS", 1);
-define("ERROR_INACTIVE_REDIRECTION", 2);
-define("ERROR_INVALID_EMAIL", 3);
-define("ERROR_LOOP_EMAIL", 4);
+define('SUCCESS', 1);
+define('ERROR_INACTIVE_REDIRECTION', 2);
+define('ERROR_INVALID_EMAIL', 3);
+define('ERROR_LOOP_EMAIL', 4);
+
+function add_to_list_alias(User $user, $local_part, $domain, $type = 'alias')
+{
+    Platal::assert($user !== null);
+
+    XDB::execute('INSERT IGNORE INTO  email_virtual (email, domain, redirect, type)
+                              SELECT  {?}, id, {?}, {?}
+                                FROM  email_virtual_domains
+                               WHERE  name = {?}',
+                 $local_part, $user->forlifeEmail(), $type, $domain);
+}
+
+function delete_from_list_alias(User $user, $local_part, $domain, $type = 'alias')
+{
+    Platal::assert($user !== null);
+
+    XDB::execute('DELETE  v
+                    FROM  email_virtual         AS v
+              INNER JOIN  email_virtual_domains AS m ON (v.domain = m.id)
+              INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
+                   WHERE  v.email = {?} AND d.name = {?} AND v.redirect = {?} AND type = {?}',
+                 $local_part, $domain, $user->forlifeEmail(), $type);
+}
+
+function update_list_alias(User $user, $former_email, $local_part, $domain, $type = 'alias')
+{
+    Platal::assert($user !== null);
+
+    XDB::execute('UPDATE  email_virtual         AS v
+              INNER JOIN  email_virtual_domains AS d ON (v.domain = d.id)
+                     SET  v.redirect = {?}
+                   WHERE  v.redirect = {?} AND d.name = {?} AND v.email = {?} AND v.type = {?}',
+                 $user->forlifeEmail(), $former_email, $domain, $local_part, $type);
+}
+
+function list_alias_members($local_part, $domain)
+{
+    $emails = XDB::fetchColumn('SELECT  DISTINCT(redirect)
+                                  FROM  email_virtual         AS v
+                            INNER JOIN  email_virtual_domains AS m ON (v.domain = m.id)
+                            INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
+                                 WHERE  v.email = {?} AND d.name = {?} AND type = \'alias\'',
+                               $local_part, $domain);
+
+    $members = array();
+    foreach ($emails as $email) {
+        $members[] = User::getSilent($email);
+    }
+
+    return $members;
+}
+
+function delete_list_alias($local_part, $domain)
+{
+    XDB::execute('DELETE  v
+                    FROM  email_virtual         AS v
+              INNER JOIN  email_virtual_domains AS m ON (v.domain = m.id)
+              INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
+                   WHERE  v.email = {?} AND d.name = {?} AND type = \'alias\'',
+                 $local_part, $domain);
+}
+
+function iterate_list_alias($domain)
+{
+    return XDB::fetchColumn('SELECT  CONCAT(v.email, \'@\', m.name)
+                               FROM  email_virtual         AS v
+                         INNER JOIN  email_virtual_domains AS m ON (v.domain = m.id)
+                              WHERE  m.name = {?} AND v.type = \'alias\'
+                           GROUP BY  v.email',
+                            $domain);
+}
+
+function create_list($local_part, $domain)
+{
+    global $globals;
+
+    $redirect = $domain . '_' . $local_part . '+';
+    foreach(array('post', 'owner', 'admin', 'bounces', 'unsubscribe') as $suffix) {
+        XDB::execute('INSERT IGNORE INTO  email_virtual (email, domain, redirect, type)
+                                  SELECT  {?}, id, {?}, \'list\'
+                                    FROM  email_virtual_domains
+                                   WHERE  name = {?}',
+                     ($suffix == 'post') ? $local_part : $local_part . '-' . $suffix,
+                     $redirect . $suffix . '@' . $globals->lists->redirect_domain, $domain);
+    }
+}
+
+function delete_list($local_part, $domain)
+{
+    global $globals;
+
+    $redirect = $domain . '_' . $local_part . '+';
+    foreach(array('post', 'owner', 'admin', 'bounces', 'unsubscribe') as $suffix) {
+        XDB::execute('DELETE  email_virtual
+                       WHERE  redirect = {?} AND type = \'list\'',
+                     $redirect . $suffix . '@' . $globals->lists->redirect_domain);
+    }
+}
+
+function list_exist($local_part, $domain)
+{
+    return XDB::fetchOneCell('SELECT  COUNT(*)
+                                FROM  email_virtual         AS v
+                          INNER JOIN  email_virtual_domains AS m ON (v.domain = m.id)
+                          INNER JOIN  email_virtual_domains AS d ON (m.id = d.aliasing)
+                               WHERE  v.email = {?} AND d.name = {?}',
+                             $local_part, $domain);
+}
+
+// function mark_broken_email() {{{1
+function mark_broken_email($email, $admin = false)
+{
+    $email = valide_email($email);
+    if (empty($email) || $email == '@') {
+        return;
+    }
+
+    $user = XDB::fetchOneAssoc('SELECT  r1.uid, r1.broken_level != 0 AS broken, a.hruid, COUNT(r2.uid) AS nb_mails, a.full_name, s.email AS alias
+                                  FROM  email_redirect_account AS r1
+                            INNER JOIN  accounts               AS a  ON (a.uid = r1.uid)
+                            INNER JOIN  email_source_account   AS s  ON (a.uid = s.uid AND s.flags = \'bestalias\')
+                             LEFT JOIN  email_redirect_account AS r2 ON (a.uid = r2.uid AND r1.redirect != r2.redirect AND
+                                                                         r2.broken_level = 0 AND r2.flags = \'active\' AND
+                                                                         (r2.type = \'smtp\' OR r2.type = \'googleapps\'))
+                                 WHERE  r1.redirect = {?}
+                              GROUP BY  r1.uid', $email);
+
+    if ($user) {
+        // Mark address as broken.
+        if (!$user['broken']) {
+            XDB::execute('UPDATE  email_redirect_account
+                             SET  broken_date = NOW(), last = NOW(), broken_level = 1
+                           WHERE  redirect = {?}', $email);
+        } elseif ($admin) {
+            XDB::execute('UPDATE  email_redirect_account
+                             SET  last = CURDATE(), broken_level = broken_level + 1
+                           WHERE  redirect = {?} AND DATE_ADD(last, INTERVAL 14 DAY) < CURDATE()',
+                         $email);
+        } else {
+            XDB::execute('UPDATE  email_redirect_account
+                             SET  broken_level = 1
+                           WHERE  redirect = {?} AND broken_level = 0', $email);
+        }
+    }
+
+    return $user;
+}
 
 // function fix_bestalias() {{{1
 // Checks for an existing 'bestalias' among the the current user's aliases, and
 // eventually selects a new bestalias when required.
-function fix_bestalias(User &$user)
+function fix_bestalias(User $user)
 {
-    $res = XDB::query("SELECT  COUNT(*)
-                         FROM  aliases
-                        WHERE  uid = {?} AND FIND_IN_SET('bestalias', flags) AND type != 'homonyme'",
-                      $user->id());
-    if ($res->fetchOneCell()) {
-        return;
+    // First check if the bestalias is properly set.
+    $alias_count = XDB::fetchOneCell('SELECT  COUNT(*)
+                                        FROM  email_source_account
+                                       WHERE  uid = {?} AND FIND_IN_SET(\'bestalias\', flags) AND expire IS NULL',
+                                     $user->id());
+
+    if ($alias_count > 1) {
+        // If too many bestaliases, delete the bestalias flag from all this
+        // user's emails (this should never happen).
+        XDB::execute("UPDATE  email_source_account
+                         SET  flags = TRIM(BOTH ',' FROM REPLACE(CONCAT(',', flags, ','), ',bestalias,', ','))
+                       WHERE  uid = {?}",
+                     $user->id());
+    }
+     if ($alias_count != 1) {
+        // If no bestalias is selected, we choose the shortest email which is not
+        // related to a usage name and contains a '.'.
+        XDB::execute("UPDATE  email_source_account
+                         SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'bestalias')
+                       WHERE  uid = {?} AND expire IS NULL
+                    ORDER BY  NOT FIND_IN_SET('usage', flags), email LIKE '%.%', LENGTH(email)
+                       LIMIT  1",
+                     $user->id());
+     }
+
+    // First check if best_domain is properly set.
+    $domain_count = XDB::fetchOneCell('SELECT  COUNT(*)
+                                         FROM  accounts              AS a
+                                   INNER JOIN  email_source_account  AS s ON (s.uid = a.uid AND FIND_IN_SET(\'bestalias\', s.flags))
+                                   INNER JOIN  email_virtual_domains AS d ON (d.id = a.best_domain)
+                                   INNER JOIN  email_virtual_domains AS m ON (d.aliasing = m.id)
+                                   INNER JOIN  email_virtual_domains AS v ON (v.aliasing = m.id AND v.id = s.domain)
+                                        WHERE  a.uid = {?} AND (m.name = {?} OR m.name = {?})',
+                                      $user->id(), $user->mainEmailDomain(), Platal::globals()->mail->alias_dom);
+
+    if ($domain_count == 0) {
+        XDB::execute('UPDATE  accounts              AS a
+                  INNER JOIN  email_source_account  AS s ON (s.uid = a.uid AND FIND_IN_SET(\'bestalias\', s.flags))
+                  INNER JOIN  email_virtual_domains AS d ON (d.aliasing = s.domain AND (d.name = {?} OR d.name = {?}))
+                         SET  a.best_domain = d.id
+                       WHERE  a.uid = {?}',
+                     $user->mainEmailDomain(), Platal::globals()->mail->alias_dom, $user->id());
     }
 
-    XDB::execute("UPDATE  aliases
-                     SET  flags=CONCAT(flags,',','bestalias')
-                   WHERE  uid={?} AND type!='homonyme'
-                ORDER BY  !FIND_IN_SET('usage',flags),alias LIKE '%.%', LENGTH(alias)
-                   LIMIT  1", $user->id());
+
 }
 
 // function valide_email() {{{1
@@ -59,7 +238,7 @@ function valide_email($str)
         return;
     }
     list($ident, $dom) = explode('@', $em);
-    if ($dom == $globals->mail->domain || $dom == $globals->mail->domain2) {
+    if (User::isMainMailDomain($dom)) {
         list($ident1) = explode('_', $ident);
         list($ident) = explode('+', $ident1);
     }
@@ -67,172 +246,186 @@ function valide_email($str)
 }
 
 // function isvalid_email_redirection() {{{1
-/** vérifie si une adresse email convient comme adresse de redirection
- * @param $email l'adresse email a verifier
+/** Checks if an email is a suitable redirection.
+ * @param $email the email to check
  * @return BOOL
  */
 function isvalid_email_redirection($email)
 {
-    return isvalid_email($email) &&
-        !preg_match("/@(polytechnique\.(org|edu)|melix\.(org|net)|m4x\.org)$/", $email);
+    return isvalid_email($email) && !preg_match("/@polytechnique\.edu$/", $email) && User::isForeignEmailAddress($email);
 }
 
 // function ids_from_mails() {{{1
-// Converts an array of emails to an array of email => uid
+// Converts an array of emails to an array of email => uid, where email is the
+// given email when we found a matching user.
 function ids_from_mails(array $emails)
 {
-    global $globals;
-    $domain_mails = array();
-    $alias_mails  = array();
-    $other_mails  = array();
+    // Removes duplicates, if any.
+    $emails = array_unique($emails);
 
-    // Determine the type of the email adresses. It can eiher be a domain
-    // email (@polytechnique.org), an alias email (@melix.net) or any other
-    // email (potentially used as a redirection by one user)
+    // Formats and splits by domain type (locally managed or external) emails.
+    $main_domain_emails = array();
+    $aux_domain_emails = array();
+    $other_emails = array();
     foreach ($emails as $email) {
         if (strpos($email, '@') === false) {
-            $user = $email;
-            $domain = $globals->mail->domain2;
+            $main_domain_emails[] = $email;
         } else {
-            list($user, $domain) = explode('@', $email);
-        }
-        if ($domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2) {
-            list($user) = explode('+', $user);
-            list($user) = explode('_', $user);
-            $alias_mails[$email] = $user . "@" . $globals->mail->alias_dom;
-        } elseif ($domain == $globals->mail->domain || $domain == $globals->mail->domain2) {
-            list($user) = explode('+', $user);
-            list($user) = explode('_', $user);
-            $domain_mails[$email] = $user;
-        } else {
-            $other_mails[] = $email;
+            if (User::isForeignEmailAddress($email)) {
+                $other_emails[$email] = strtolower($user . '@' . $domain);
+            } else {
+                list($local_part, $domain) = explode('@', $email);
+                list($local_part) = explode('+', $local_part);
+                list($local_part) = explode('_', $local_part);
+                if (User::isMainMailDomain($domain)) {
+                    $main_domain_emails[$email] = strtolower($local_part);
+                } elseif (User::isAliasMailDomain($domain)) {
+                    $aux_domain_emails[$email] = strtolower($local_part);
+                }
+            }
         }
     }
+
+    // Retrieves emails from our domains.
+    $main_domain_uids = XDB::fetchAllAssoc('email',
+                                           'SELECT  email, uid
+                                              FROM  email_source_account
+                                             WHERE  email IN {?} AND type != \'alias_aux\'',
+                                           array_unique($main_domain_emails));
+    $aux_domain_uids = XDB::fetchAllAssoc('email',
+                                          'SELECT  email, uid
+                                             FROM  email_source_account
+                                            WHERE  email IN {?} AND type = \'alias_aux\'',
+                                          array_unique($aux_domain_emails));
+
+    // Retrieves emails from redirections.
+    $other_uids = XDB::fetchAllAssoc('redirect',
+                                     'SELECT  redirect, uid
+                                        FROM  email_redirect_account
+                                       WHERE  redirect IN {?}',
+                                     array_unique($other_emails));
+
+    // Associates given emails with the corresponding uid.
     $uids = array();
-
-    // Look up user ids for addresses in domain
-    $alias_uids = array();
-    if (count($domain_mails)) {
-        $res = XDB::query("SELECT   alias, uid
-                             FROM   aliases
-                            WHERE   alias IN {?}", array_unique($domain_mails));
-        foreach ($res->fetchAllRow() as $row) {
-            list ($alias, $id) = $row;
-            $domain_uids[$alias] = $id;
-        }
+    foreach ($main_domain_emails as $email => $key) {
+        $uids[$email] = $main_domain_uids[$key];
     }
-    // Connect emails with uids
-    foreach ($domain_mails as $email => $user) {
-        // Some 'domain' emails might be invalid.
-        if (array_key_exists($user, $domain_uids)) {
-            $uids[$email] = $domain_uids[$user];
-        }
+    foreach ($aux_domain_emails as $email => $key) {
+        $uids[$email] = $aux_domain_uids[$key];
+    }
+    foreach ($other_emails as $email => $key) {
+        $uids[$email] = $other_uids[$key];
     }
 
-    // Look up user ids for addresses in our alias domain
-    $alias_uids = array();
-    if (count($alias_mails)) {
-        $res = XDB::query("SELECT   v.alias, a.uid
-                             FROM   virtual             AS v
-                       INNER JOIN   virtual_redirect    AS r USING(vid)
-                       INNER JOIN   aliases             AS a ON (a.type = 'a_vie'
-                                    AND r.redirect = CONCAT(a.alias, '@{$globals->mail->domain2}'))
-                            WHERE   v.alias IN {?}", array_unique($alias_mails));
-        foreach ($res->fetchAllRow() as $row) {
-            list ($alias, $id) = $row;
-            $alias_uids[$alias] = $id;
-        }
-    }
-    // Connect emails with uids
-    foreach ($alias_mails as $email => $user) {
-        if (array_key_exists($user, $alias_uids)) {
-            $uids[$email] = $alias_uids[$user];
-        }
-    }
-
-    // Look up user ids for other addresses in the email redirection list
-    if (count($other_mails)) {
-        $lowerupper = array();
-        foreach ($other_mails as $mail) {
-            $lowerupper[strtolower($mail)] = $mail;
-        }
-        $res = XDB::query("SELECT   email, uid
-                             FROM   emails
-                            WHERE   email IN {?}", $other_mails);
-        foreach ($res->fetchAllRow() as $row) {
-            list ($email, $uid) = $row;
-            $uids[$lowerupper[strtolower($email)]] = $uid;
-        }
-    }
-
-    return $uids;
+    return array_unique($uids);
 }
 
 // class Bogo {{{1
 // The Bogo class represents a spam filtering level in plat/al architecture.
 class Bogo
 {
-    // properties {{{2
+    public static $states = array(
+        0 => 'default',
+        1 => 'let_spams',
+        2 => 'tag_spams',
+        3 => 'tag_and_drop_spams',
+        4 => 'drop_spams'
+    );
 
     private $user;
-    private $state;
-    private $_states = Array('let_spams', 'tag_spams', 'tag_and_drop_spams', 'drop_spams');
+    public $state;
+    public $single_state;
+    public $redirections;
+    public $single_redirection;
 
-    // constructor {{{2
-
-    public function __construct(User &$user)
+    public function __construct(User $user)
     {
         if (!$user) {
             return;
         }
 
         $this->user = &$user;
-        $res = XDB::query('SELECT email FROM emails WHERE uid = {?} AND flags = "filter"', $user->id());
-        if ($res->numRows()) {
-            $this->state = $res->fetchOneCell();
+        $res = XDB::fetchOneAssoc('SELECT  COUNT(DISTINCT(action)) AS action_count, COUNT(redirect) AS redirect_count, action
+                                     FROM  email_redirect_account
+                                    WHERE  uid = {?} AND (type = \'smtp\' OR type = \'googleapps\') AND flags = \'active\'',
+                                  $user->id());
+        if ($res['redirect_count'] == 0) {
+            return;
+        }
+
+        $this->single_redirection = ($res['redirect_count'] == 1);
+        $this->redirections = XDB::fetchAllAssoc('SELECT  IF(type = \'googleapps\', type, redirect) AS redirect, type, action
+                                                    FROM  email_redirect_account
+                                                   WHERE  uid = {?} AND (type = \'smtp\' OR type = \'googleapps\')
+                                                ORDER BY  type, redirect',
+                                                 $user->id());
+
+        foreach ($this->redirections AS &$redirection) {
+            $redirection['filter'] = array_search($redirection['action'], self::$states);
+        }
+        if ($res['action_count'] == 1) {
+            $this->state = array_search($res['action'], self::$states);
+            $this->single_state = true;
         } else {
-            $this->state = 'tag_and_drop_spams';
-            $res = XDB::query(
-                    "INSERT INTO  emails (uid, email, rewrite, panne, flags)
-                          VALUES  ({?}, 'tag_and_drop_spams', '', '0000-00-00', 'filter')",
-                    $user->id());
+            $this->single_state = $this->state = false;
         }
     }
 
-    // public function change() {{{2
-
-    public function change($state)
+    public function changeAll($state)
     {
-        $this->state = is_int($state) ? $this->_states[$state] : $state;
-        XDB::execute('UPDATE emails SET email = {?} WHERE uid = {?} AND flags = "filter"',
-                     $this->state, $this->user->id());
+        Platal::assert($state >= 0 && $state < count(self::$states), 'Unknown antispam level.');
+
+        $this->state = $state;
+        XDB::execute('UPDATE  email_redirect_account
+                         SET  action = {?}
+                       WHERE  uid = {?} AND (type = \'smtp\' OR type = \'googleapps\')',
+                     self::$states[$this->state], $this->user->id());
     }
 
-    // pubic function level() {{{2
-
-    public function level()
+    public function change($redirection, $state)
     {
-        return array_search($this->state, $this->_states);
+        Platal::assert($state >= 0 && $state < count(self::$states), 'Unknown antispam level.');
+
+        XDB::execute('UPDATE  email_redirect_account
+                         SET  action = {?}
+                       WHERE  uid = {?} AND (type = {?} OR redirect = {?})',
+                     self::$states[$state], $this->user->id(), $redirection, $redirection);
     }
 }
 
 // class Email {{{1
 // Represents an "email address" used as final recipient for plat/al-managed
-// addresses; it can be subclasses a Redirection emails (third-party) or as
-// Storage emails (Polytechnique.org).
-abstract class Email
+// addresses.
+class Email
 {
-    protected $user;
+    // Lists fields to load automatically.
+    static private $field_names = array('rewrite', 'type', 'action', 'broken_date', 'broken_level', 'last', 'hash', 'allow_rewrite');
+
+    // Shortname to realname mapping for known mail storage backends.
+    static private $display_names = array(
+        'imap'       => 'Accès de secours aux emails (IMAP)',
+        'googleapps' => 'Compte Google Apps',
+    );
+    static private $storage_domains = array(
+        'imap'       => 'imap',
+        'googleapps' => 'g'
+    );
+
+    private $user;
 
     // Basic email properties; $sufficient indicates if the email can be used as
-    // an unique redirection; $email contains the delivery email address.
+    // an unique redirection; $redirect contains the delivery email address.
     public $type;
     public $sufficient;
     public $email;
     public $display_email;
+    public $domain;
+    public $action;
+    public $filter_level;
 
     // Redirection status properties.
     public $active;
+    public $inactive;
     public $broken;
     public $disabled;
     public $rewrite;
@@ -240,96 +433,83 @@ abstract class Email
     public $hash;
 
     // Redirection bounces stats.
-    public $panne;
     public $last;
-    public $panne_level;
+    public $broken_level;
+    public $broken_date;
 
-    // Activates the email address as a redirection.
-    public abstract function activate();
-
-    // Deactivates the email address as a redirection.
-    public abstract function deactivate();
-
-    // Sets the rewrite rule for the given address.
-    public abstract function set_rewrite($rewrite);
-
-    // Resets the error counts associated with the redirection.
-    public abstract function clean_errors();
-
-    // Email backend capabilities ('rewrite' refers to From: rewrite for mails
-    // forwarded by Polytechnique.org's MXs; 'removable' indicates if the email
-    // can be definitively removed; 'disable' indicates if the email has a third
-    // status 'disabled' in addition to 'active' and 'inactive').
-    public abstract function has_rewrite();
-    public abstract function is_removable();
-    public abstract function has_disable();
-}
-
-// class EmailRedirection {{{1
-// Implementation of Email for third-party redirection (redirection of emails to
-// external user-supplied addresses).
-class EmailRedirection extends Email
-{
-    // constructor {{{2
-
-    public function __construct(User &$user, $row)
+    public function __construct(User $user, array $row)
     {
-        $this->user = &$user;
-        $this->sufficient = true;
+        foreach (self::$field_names as $field) {
+            if (array_key_exists($field, $row)) {
+                $this->$field = $row[$field];
+            }
+        }
+        $this->email = $row['redirect'];
 
-        list($this->email, $flags, $this->rewrite, $this->allow_rewrite, $this->hash, $this->panne, $this->last, $this->panne_level) = $row;
-        $this->display_email = $this->email;
-        $this->active   = ($flags == 'active');
-        $this->broken   = ($flags == 'panne');
-        $this->disabled = ($flags == 'disable');
+        if (array_key_exists($this->type, Email::$display_names)) {
+            $this->display_email = self::$display_names[$this->type];
+        } else {
+            $this->display_email = $this->email;
+        }
+        foreach (array('active', 'inactive', 'broken', 'disabled') as $status) {
+            $this->$status = ($status == $row['flags']);
+        }
+        $this->sufficient = ($this->type == 'smtp' || $this->type == 'googleapps');
+        $this->filter_level = ($this->type == 'imap') ? null : array_search($this->action, Bogo::$states);
+        $this->user = &$user;
     }
 
-    // public function activate() {{{2
-
+    // Activates the email address as a redirection.
     public function activate()
     {
-        if (!$this->active) {
-            XDB::execute("UPDATE  emails
-                             SET  panne_level = IF(flags = 'panne', panne_level - 1, panne_level),
-                                  flags = 'active'
-                           WHERE  uid = {?} AND email = {?}", $this->user->id(), $this->email);
-            S::logger()->log("email_on", $this->email . ($this->user->id() != S::v('uid') ? "(admin on {$this->user->login()})" : ""));
-            $this->active = true;
-            $this->broken = false;
+        if ($this->inactive) {
+            XDB::execute('UPDATE  email_redirect_account
+                             SET  broken_level = IF(flags = \'broken\', broken_level - 1, broken_level), flags = \'active\'
+                           WHERE  uid = {?} AND redirect = {?}',
+                         $this->user->id(), $this->email);
+            S::logger()->log('email_on', $this->email . ($this->user->id() != S::v('uid') ? "(admin on {$this->user->login()})" : ''));
+            $this->inactive = false;
+            $this->active   = true;
         }
     }
 
-    // public function deactivate() {{{2
-
+    // Deactivates the email address as a redirection.
     public function deactivate()
     {
         if ($this->active) {
-            XDB::execute("UPDATE  emails SET flags =''
-                           WHERE  uid = {?} AND email = {?}", $this->user->id(), $this->email);
-            S::logger()->log("email_off", $this->email . ($this->user->id() != S::v('uid') ? "(admin on {$this->user->login()})" : "") );
-            $this->active = false;
+            XDB::execute('UPDATE  email_redirect_account
+                             SET  flags = \'inactive\'
+                           WHERE  uid = {?} AND redirect = {?}',
+                         $this->user->id(), $this->email);
+            S::logger()->log('email_off', $this->email . ($this->user->id() != S::v('uid') ? "(admin on {$this->user->login()})" : "") );
+            $this->inactive = true;
+            $this->active   = false;
         }
     }
 
-    // public function set_rewrite() {{{2
 
+    // Sets the rewrite rule for the given address.
     public function set_rewrite($rewrite)
     {
-        if ($this->rewrite == $rewrite) {
+        if ($this->type != 'smtp' || $this->rewrite == $rewrite) {
             return;
         }
         if (!$rewrite || !isvalid_email($rewrite)) {
             $rewrite = '';
         }
-        XDB::execute('UPDATE emails SET rewrite = {?} WHERE uid = {?} AND email = {?}', $rewrite, $this->user->id(), $this->email);
+        XDB::execute('UPDATE  email_redirect_account
+                         SET  rewrite = {?}
+                       WHERE  uid = {?} AND redirect = {?} AND type = \'smtp\'',
+                     $rewrite, $this->user->id(), $this->email);
         $this->rewrite = $rewrite;
         if (!$this->allow_rewrite) {
             global $globals;
             if (empty($this->hash)) {
                 $this->hash = rand_url_id();
-                XDB::execute("UPDATE emails
-                                 SET hash = {?}
-                               WHERE uid = {?} AND email = {?}", $this->hash, $this->user->id(), $this->email);
+                XDB::execute('UPDATE  email_redirect_account
+                                 SET  hash = {?}
+                               WHERE  uid = {?} AND redirect = {?} AND type = \'smtp\'',
+                             $this->hash, $this->user->id(), $this->email);
             }
             $mail = new PlMailer('emails/rewrite-in.mail.tpl');
             $mail->assign('mail', $this);
@@ -339,76 +519,54 @@ class EmailRedirection extends Email
             $mail->assign('to', $this->email);
             $mail->send($this->user->isEmailFormatHtml());
         }
-        return;
     }
 
-    // public function clean_errors() {{{2
 
+    // Resets the error counts associated with the redirection.
     public function clean_errors()
     {
+        if ($this->type != 'smtp') {
+            return;
+        }
         if (!S::admin()) {
             return false;
         }
-        $this->panne       = 0;
-        $this->panne_level = 0;
-        $this->last        = 0;
-        return XDB::execute("UPDATE  emails
-                                SET  panne_level = 0, panne = 0, last = 0
-                              WHERE  uid = {?} AND email = {?}",
+        $this->broken       = 0;
+        $this->broken_level = 0;
+        $this->last         = 0;
+        return XDB::execute('UPDATE  email_redirect_account
+                                SET  broken_level = 0, broken_date = 0, last = 0
+                              WHERE  uid = {?} AND redirect = {?} AND type = \'smtp\'',
                             $this->user->id(), $this->email);
     }
 
-    // public function has_rewrite() {{{2
 
+    // Email backend capabilities ('rewrite' refers to From: rewrite for mails
+    // forwarded by Polytechnique.org's MXs; 'removable' indicates if the email
+    // can be definitively removed; 'disable' indicates if the email has a third
+    // status 'disabled' in addition to 'active' and 'inactive').
     public function has_rewrite()
     {
-        return true;
+        return ($this->type == 'smtp');
     }
-
-    // public function is_removable() {{{2
 
     public function is_removable()
     {
-        return true;
+        return ($this->type == 'smtp');
     }
-
-    // public function has_disable() {{{2
 
     public function has_disable()
     {
         return true;
     }
-}
 
-// class EmailStorage {{{1
-// Implementation of Email for email storage backends from Polytechnique.org.
-class EmailStorage extends Email
-{
-    // Shortname to realname mapping for known mail storage backends.
-    private $display_names = array(
-        'imap'       => 'Accès de secours aux emails (IMAP)',
-        'googleapps' => 'Compte Google Apps',
-    );
-
-    // Retrieves the current list of actives storages.
-    private function get_storages()
+    public function is_redirection()
     {
-        return new PlFlagSet(XDB::fetchOneCell('SELECT  storage
-                                                  FROM  email_options
-                                                 WHERE  uid = {?}',
-                                                $this->user->id()));
-    }
-
-    // Updates the list of active storages.
-    private function set_storages($storages)
-    {
-        XDB::execute("UPDATE  email_options
-                         SET  storage = {?}
-                       WHERE  uid = {?}", $storages, $this->user->id());
+        return ($this->type == 'smtp');
     }
 
     // Returns the list of allowed storages for the @p user.
-    static public function get_allowed_storages(User &$user)
+    static private function get_allowed_storages(User $user)
     {
         global $globals;
         $storages = array();
@@ -429,92 +587,65 @@ class EmailStorage extends Email
         return $storages;
     }
 
-
-    public function __construct(User &$user, $name)
+    static public function activate_storage(User $user, $storage)
     {
-        $this->user = &$user;
-        $this->email = $name;
-        $this->display_email = (isset($this->display_names[$name]) ? $this->display_names[$name] : $name);
+        Platal::assert(in_array($storage, self::get_allowed_storages($user)));
 
-        $storages = $this->get_storages();
-        $this->sufficient = ($name == 'googleapps');
-        $this->active = $storages->hasFlag($name);
-        $this->broken = false;
-        $this->disabled = false;
-        $this->rewrite = '';
-        $this->panne = $this->last = $this->panne_level = 0;
-    }
+        if (!self::is_active_storage($user, $storage)) {
+            global $globals;
 
-    public function activate()
-    {
-        if (!$this->active) {
-            $storages = $this->get_storages();
-            $storages->addFlag($this->email);
-            $this->set_storages($storages);
-            $this->active = true;
+            XDB::execute('INSERT INTO  email_redirect_account (uid, type, redirect, flags)
+                               VALUES  ({?}, {?}, {?}, \'active\')',
+                         $user->id(), $storage,
+                         $user->hruid . '@' . self::$storage_domains[$storage] . '.' . $globals->mail->domain);
         }
     }
 
-    public function deactivate()
+    static public function deactivate_storage(User $user, $storage)
     {
-        if ($this->active) {
-            $storages = $this->get_storages();
-            $storages->rmFlag($this->email);
-            $this->set_storages($storages);
-            $this->active = false;
-        }
-
+        if (in_array($storage, self::$storage_domains)) {
+            XDB::execute('DELETE FROM  email_redirect_account
+                                WHERE  uid = {?} AND type = {?}',
+                         $user->id(), $storage);
+            }
     }
 
-    // Source rewrite can't be enabled for email storage addresses.
-    public function set_rewrite($rewrite) {}
-
-    // Email storage are not supposed to be broken, hence not supposed to be
-    // cleaned-up.
-    public function clean_errors() {}
-
-    // Capabilities.
-    public function has_rewrite() { return false; }
-    public function is_removable() { return false; }
-    public function has_disable() { return false; }
+    static public function is_active_storage(User $user, $storage)
+    {
+        if (!in_array($storage, self::$storage_domains)) {
+            return false;
+        }
+        $res = XDB::fetchOneCell('SELECT  COUNT(*)
+                                    FROM  email_redirect_account
+                                   WHERE  uid = {?} AND type = {?} AND flags = \'active\'',
+                                 $user->id(), $storage);
+        return !is_null($res) && $res > 0;
+    }
 }
-
 // class Redirect {{{1
 // Redirect is a placeholder class for an user's active redirections (third-party
 // redirection email, or Polytechnique.org mail storages).
 class Redirect
 {
-    // properties {{{2
-
-    private $flag_active = 'active';
+    private $flags = 'active';
     private $user;
 
     public $emails;
-    public $bogo;
 
-    // constructor {{{2
-
-    public function __construct(User &$user)
+    public function __construct(User $user)
     {
         $this->user = &$user;
-        $this->bogo = new Bogo($user);
 
         // Adds third-party email redirections.
-        $res = XDB::iterRow("SELECT  email, flags, rewrite, allow_rewrite, hash, panne, last, panne_level
-                               FROM  emails
-                              WHERE  uid = {?} AND flags != 'filter'", $user->id());
-        $this->emails = Array();
+        $res = XDB::iterator('SELECT  redirect, rewrite, type, action, broken_date, broken_level, last, flags, hash, allow_rewrite
+                                FROM  email_redirect_account
+                               WHERE  uid = {?} AND type != \'homonym\'',
+                            $user->id());
+        $this->emails = array();
         while ($row = $res->next()) {
-            $this->emails[] = new EmailRedirection($user, $row);
-        }
-
-        // Adds local email storage backends.
-        foreach (EmailStorage::get_allowed_storages($user) as $storage) {
-            $this->emails[] = new EmailStorage($user, $storage);
+            $this->emails[] = new Email($user, $row);
         }
     }
-
-    // public function other_active() {{{2
 
     public function other_active($email)
     {
@@ -526,14 +657,14 @@ class Redirect
         return false;
     }
 
-    // public function delete_email() {{{2
-
     public function delete_email($email)
     {
         if (!$this->other_active($email)) {
             return ERROR_INACTIVE_REDIRECTION;
         }
-        XDB::execute('DELETE FROM emails WHERE uid = {?} AND email = {?}', $this->user->id(), $email);
+        XDB::execute('DELETE FROM  email_redirect_account
+                            WHERE  uid = {?} AND redirect = {?} AND type != \'homonym\'',
+                     $this->user->id(), $email);
         S::logger()->log('email_del', $email . ($this->user->id() != S::v('uid') ? " (admin on {$this->user->login()})" : ""));
         foreach ($this->emails as $i => $mail) {
             if ($email == $mail->email) {
@@ -541,10 +672,9 @@ class Redirect
             }
         }
         check_redirect($this);
+        $this->update_imap();
         return SUCCESS;
     }
-
-    // public function add_email() {{{2
 
     public function add_email($email)
     {
@@ -555,10 +685,15 @@ class Redirect
         if (!isvalid_email_redirection($email_stripped)) {
             return ERROR_LOOP_EMAIL;
         }
+        // We first need to retrieve the value for the antispam filter: it is
+        // either the user's redirections common value, or if they differ, our
+        // default value.
+        $bogo = new Bogo($this->user);
+        $filter = ($bogo->single_state ? Bogo::$states[$bogo->state] : Bogo::$states[0]);
         // If the email was already present for this user, we reset it to the default values, we thus use REPLACE INTO.
-        XDB::execute('REPLACE INTO  emails (uid, email, flags)
-                            VALUES  ({?}, {?}, \'active\')',
-                     $this->user->id(), $email);
+        XDB::execute('REPLACE INTO  email_redirect_account (uid, redirect, flags, action)
+                            VALUES  ({?}, {?}, \'active\', {?})',
+                     $this->user->id(), $email, $filter);
         if ($logger = S::v('log', null)) { // may be absent --> step4.php
             S::logger()->log('email_add', $email . ($this->user->id() != S::v('uid') ? " (admin on {$this->user->login()})" : ""));
         }
@@ -567,30 +702,40 @@ class Redirect
                 return SUCCESS;
             }
         }
-        $this->emails[] = new EmailRedirection($this->user, array($email, 'active', '', 0, null, '0000-00-00', '0000-00-00', 0));
+        $this->emails[] = new Email($this->user, array(
+                'redirect'      => $email,
+                'rewrite'       => '',
+                'type'          => 'smtp',
+                'action'        => $filter,
+                'broken_date'   => '0000-00-00',
+                'broken_level'  => 0,
+                'last'          => '0000-00-00',
+                'flags'         => 'active',
+                'hash'          => null,
+                'allow_rewrite' => 0
+        ));
 
         // security stuff
         check_email($email, "Ajout d'une adresse surveillée aux redirections de " . $this->user->login());
         check_redirect($this);
+        $this->update_imap();
         return SUCCESS;
     }
 
-    // public function modify_email() {{{2
-
     public function modify_email($emails_actifs, $emails_rewrite)
     {
-        foreach ($this->emails as &$mail) {
-            if (in_array($mail->email, $emails_actifs)) {
-                $mail->activate();
+        foreach ($this->emails as &$email) {
+            if (in_array($email->email, $emails_actifs)) {
+                $email->activate();
             } else {
-                $mail->deactivate();
+                $email->deactivate();
             }
-            $mail->set_rewrite($emails_rewrite[$mail->email]);
+            $email->set_rewrite($emails_rewrite[$email->email]);
         }
         check_redirect($this);
+        $this->update_imap();
+        return SUCCESS;
     }
-
-    // public function modify_one_email() {{{2
 
     public function modify_one_email($email, $activate)
     {
@@ -611,14 +756,12 @@ class Redirect
             $this->emails[$thisone]->deactivate();
         }
         check_redirect($this);
+        $this->update_imap();
         if ($allinactive && !$activate) {
             return ERROR_INACTIVE_REDIRECTION;
-        } else {
-            return SUCCESS;
         }
+        return SUCCESS;
     }
-
-    // public function modify_one_email_redirect() {{{2
 
     public function modify_one_email_redirect($email, $redirect)
     {
@@ -626,29 +769,27 @@ class Redirect
             if ($mail->email == $email) {
                 $mail->set_rewrite($redirect);
                 check_redirect($this);
+                $this->update_imap();
                 return;
             }
         }
     }
-
-    // function clean_errors() {{{2
 
     public function clean_errors($email)
     {
         foreach ($this->emails as &$mail) {
             if ($mail->email == $email) {
                 check_redirect($this);
+                $this->update_imap();
                 return $mail->clean_errors();
             }
         }
         return false;
     }
 
-    // function disable() {{{2
-
     public function disable()
     {
-        XDB::execute("UPDATE  emails
+        XDB::execute("UPDATE  email_redirect_account
                          SET  flags = 'disable'
                        WHERE  flags = 'active' AND uid = {?}", $this->user->id());
         foreach ($this->emails as &$mail) {
@@ -658,25 +799,23 @@ class Redirect
             }
         }
         check_redirect($this);
+        $this->update_imap();
     }
-
-    // function enable() {{{2
 
     public function enable()
     {
-        XDB::execute("UPDATE  emails
+        XDB::execute("UPDATE  email_redirect_account
                          SET  flags = 'active'
                        WHERE  flags = 'disable' AND uid = {?}", $this->user->id());
         foreach ($this->emails as &$mail) {
             if ($mail->disabled) {
-                $mail->active   = true;
                 $mail->disabled = false;
+                $mail->active   = true;
             }
             check_redirect($this);
         }
+        $this->update_imap();
     }
-
-    // function get_broken_mx() {{{2
 
     public function get_broken_mx()
     {
@@ -713,8 +852,6 @@ class Redirect
         return $mails;
     }
 
-    // function active_emails() {{{2
-
     public function active_emails()
     {
         $emails = array();
@@ -726,11 +863,25 @@ class Redirect
         return $emails;
     }
 
-    // function get_uid() {{{2
-
     public function get_uid()
     {
         return $this->user->id();
+    }
+
+    private function update_imap()
+    {
+        // Imaps must bounce if and only if the user has no active redirection.
+        if (!$this->other_active('')) {
+            XDB::execute('UPDATE  email_redirect_account
+                             SET  action = \'imap_and_bounce\'
+                           WHERE  type = \'imap\' AND uid = {?}',
+                         $this->user->id());
+        } else {
+            XDB::execute('UPDATE  email_redirect_account
+                             SET  action = \'let_spams\'
+                           WHERE  type = \'imap\' AND uid = {?}',
+                         $this->user->id());
+        }
     }
 }
 

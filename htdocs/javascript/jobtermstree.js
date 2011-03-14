@@ -37,9 +37,9 @@ function createJobTermsTree(domElement, platalpage, treeid, clickFunc, text_filt
     $(domElement).jstree({
         "core" : {"strings":{"loading":"Chargement ..."}},
         "plugins" : ["themes","json_data"],
-        "themes" : { "url" : platal_baseurl + "css/jstree.css" },
+        "themes" : { "url" : $.plURL("css/jstree.css") },
         "json_data" : { "ajax" : {
-            "url" : platal_baseurl + platalpage,
+            "url" : $.plURL(platalpage),
             "data" : function(nod) {
                 var jtid = 0;
                 if (nod != -1) {

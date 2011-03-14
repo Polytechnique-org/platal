@@ -27,6 +27,14 @@
 <label><input type="radio" name="assotype" value="" {if !$valid->asso}checked="checked"{/if} />quelconque</label>
 <label><input type="radio" name="assotype" value="alias" {if $valid->asso eq "alias"}checked="checked"{/if} />alias</label>
 <label><input type="radio" name="assotype" value="groupex" {if $valid->asso eq "groupex"}checked="checked"{/if} />groupe X</label><br />
-<strong>Domaine&nbsp;:</strong> <input type="text" name="domainname" size="25" maxlength="200" value="{$valid->domain}" />
+<strong>Domaine&nbsp;:</strong> <input type="text" name="domainname" size="25" maxlength="200" value="{$valid->domain}" /><br />
+<strong>Gestionnaires&nbsp;:</strong>
+{foreach from=$valid->owners item=email key=i}
+<input type="text" name="owners_{$i}" size="40" value="{$email}" /><br />
+{/foreach}
+<strong>Membres&nbsp;:</strong>
+{foreach from=$valid->members item=email key=i}
+<input type="text" name="members_{$i}" size="40" value="{$email}" /><br />
+{/foreach}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

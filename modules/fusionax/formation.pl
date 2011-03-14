@@ -61,6 +61,10 @@ while (<FILE>)
   s/^.*\tFO\t\w{8}\tSFAF CIIA$//;
   s/^.*\tFO\t\w{8}\tINSEE$//;
   s/^.*\tFO\t\w{8}\tEconomiste Statisticien$//;
+  s/^.*\tFO\t\w{8}\tProgramme International de l'Ec Polytechnique$//;
+  s/^.*\tFO\t\w{8}\tInst d'Optique théorique et appliquée$//;
+  s/^.*\tFO\t\w{8}\tExpert-Comptable$//;
+  s/^.*\tFO\t\w{8}\tDoct de l'Ec polytechniqueHumanité & Sc sociales$//;
   s/^\n//;
   # Places education in third place as if it is not reconized, it will only be stored as a description.
   s/^(.*\tFO\t\w{8}\t)/\1\t\t/;
@@ -73,16 +77,21 @@ while (<FILE>)
   s/\t\t\tIngENSIMAG$/\tENSIMAG\tIng.\t/;
   s/\t\t\tIngESTP$/\tESTP\tIng.\t/;
   s/\t\t\tIng IEG$/\tENSIEG\tIng.\t/;
+  s/\t\t\tDEA Ponts$/\tPonts\tDEA\t/;
+  s/\t\t\tMScPonts$/\tPonts\tMSc\t/;
+  s/\t\t\tMSc Ponts$/\tPonts\tMSc\t/;
   s/\t\t\tMIB Ponts$/\tPonts\tMIB\t/;
   s/\t\t\tMPA Ponts$/\tPonts\tMBA\t/;
   s/\t\t\tMBA Ponts et Chaussées$/\tPonts\tMBA\t/;
   s/\t\t\tMBA Ponts$/\tPonts\tMBA\t/;
+  s/\t\t\tMBA Ponts Paris$/\tPonts\tMBA\t/;
   s/\t\t\tMaster PC$/\tPonts\tM\t/;
   s/\t\t\tENPC$/\tPonts\tIng.\t/;
   s/\t\t\tMIB ENPC$/\tPonts\tMIB\t/;
   s/\t\t\tMBA ENPC$/\tPonts\tMBA\t/;
   s/\t\t\tMaster ENPC Action publique$/\tPonts\tM\tAction publique/;
   s/\t\t\tIngcivPC$/\tPonts\tIng.\t/;
+  s/\t\t\tDoct ENPC$/\tPonts\tPhD\t/;
   s/\t\t\tIngSupelec$/\tSupélec\tIng.\t/;
   s/\t\t\tIngESE$/\tSupélec\tIng.\t/;
   s/\t\t\tESE$/\tSupélec\tIng.\t/;
@@ -101,18 +110,24 @@ while (<FILE>)
   s/\t\t\tIng AgroParisTech$/\tAgroParisTech\tIng.\t/;
   s/\t\t\tAgro Paris Tech$/\tAgroParisTech\tIng.\t/;
   s/\t\t\tDEA EERN$/\tAgroParisTech\tDEA\tEERN/;
+  s/\t\t\tDEA Agro Paris$/\tAgroParisTech\tDEA\t/;
   s/\t\t\tDEA EERN Economie de l'Environnement$/\tAgroParisTech\tDEA\tEERN Economie de l'Environnement/;
   s/\t\t\tMaster AgroParisTech$/\tAgroParisTech\tM\t/;
   s/\t\t\tIngENST Bretagne$/\tTélécom Bretagne\tIng.\t/;
   s/\t\t\tIngENST$/\tTélécom\tIng.\t/;
   s/\t\t\tENSTP$/\tTélécom\tIng.\t/;
   s/\t\t\tIngcivTéléc$/\tTélécom\tIng.\t/;
+  s/\t\t\tDEA ENST PhysAppliquée "Lasers et Matière"$/\tTélécom\tDEA\tPhysique appliquée - Lasers et Matière/;
   s/\t\t\tMastère SSIR de l'ENST$/\tTélécom\tM\tSSIR/;
   s/\t\t\tMSc Télécom Jussieu$/\tTélécom\tMSc\t/;
   s/\t\t\tMaster CAR ENST$/\tTélécom\tM\tCAR/;
+  s/\t\t\tDoctENST en Informatique et Réseaux$/\tTélécom\tPhD\tInformatique/;
   s/\t\t\tDoctENST$/\tTélécom\tPhD\t/;
   s/\t\t\tPhDTéléc$/\tTélécom\tPhD\t/;
   s/\t\t\tPhD Télécom$/\tTélécom\tPhD\t/;
+  s/\t\t\tPhD ENST$/\tTélécom\tPhD\t/;
+  s/\t\t\tPhD Téléc$/\tTélécom\tPhD\t/;
+  s/\t\t\tEcole Nationale Supérieure du Pétrole et des Moteurs$/\tENSPM\tIng.\t/;
   s/\t\t\tIngENSPM$/\tENSPM\tIng.\t/;
   s/\t\t\tIngIFP$/\tENSPM\tIng.\t/;
   s/\t\t\tIngENSPM Options Moteurs$/\tENSPM\tIng.\tOptions Moteurs/;
@@ -150,6 +165,7 @@ while (<FILE>)
   s/\t\t\tDoctorat Supaéro$/\tSUPAERO\tPhD\t/;
   s/\t\t\tSupAéro : PhD$/\tSUPAERO\tPhD\t/;
   s/\t\t\tPhD Supaéro$/\tSUPAERO\tPhD\t/;
+  s/\t\t\tDoct SupAéro$/\tSUPAERO\tPhD\t/;
   s/\t\t\tIngcivGM$/\tÉcole Nationale Supérieure du Génie Maritime\tIng.\t/;
   s/\t\t\tENSGM$/\tÉcole Nationale Supérieure du Génie Maritime\tIng.\t/;
   s/\t\t\tIngcivENSTA$/\tENSTA\tIng.\t/;
@@ -169,6 +185,7 @@ while (<FILE>)
   s/\t\t\tIng ISCM$/\tISMCM Saint-Ouen\tIng.\t/;
   s/\t\t\tISMCM Saint-Ouen$/\tISMCM Saint-Ouen\tIng.\t/;
   s/\t\t\tIng ENSIEG$/\tENSIEG\tIng.\t/;
+  s/\t\t\tÉcole Nationale de la Statistique et de l'Administration Économique ParisTech$/\tENSAE\tIng.\t/;
   s/\t\t\tCESS de l'ENSAÉ$/\tENSAE\tIng.\t/;
   s/\t\t\tENSAE$/\tENSAE\tIng.\t/;
   s/\t\t\tIng ENSAE$/\tENSAE\tIng.\t/;
@@ -180,9 +197,12 @@ while (<FILE>)
   s/\t\t\tDoctENSAE$/\tENSAE\tPhD\t/;
   s/\t\t\tIng de l'Institut Polytechnique de Grenoble$/\tGrenoble INP\tIng.\t/;
   s/\t\t\tDEA INPG$/\tGrenoble INP\tDEA\t/;
+  s/\t\t\tIng INPG$/\tGrenoble INP\tIng.\t/;
   s/\t\t\tDoctINPG$/\tGrenoble INP\tPhD\t/;
   s/\t\t\tPhD INPG$/\tGrenoble INP\tPhD\t/;
   s/\t\t\tPhD : INPG$/\tGrenoble INP\tPhD\t/;
+  s/\t\t\tMSc Toulouse School of Economics$/\tTSE\tMSc\t/;
+  s/\t\t\tPhD Toulouse School of Economics$/\tTSE\tPhD\t/;
   s/\t\t\tDEA IHM INPT$/\tINP Toulouse\tDEA\tIHM/;
   s/\t\t\tDocteur INP Toulouse maths info$/\tINP Toulouse\tPhD\tMathématiques Informatique/;
   s/\t\t\tDEA INPL$/\tINPL\tDEA\t/;
@@ -194,6 +214,7 @@ while (<FILE>)
   s/\t\t\tESPCI Ecole Sup Phys et de Chimie Industrielles$/\tESPCI\t\t/;
   s/\t\t\tIngESPCI$/\tESPCI\tIng.\t/;
   s/\t\t\tIng ESPCI$/\tESPCI\tIng.\t/;
+  s/\t\t\tIng ESPCI ParisTech$/\tESPCI\tIng.\t/;
   s/\t\t\tIngENSEEIHT$/\tENSEEIHT\tIng.\t/;
   s/\t\t\tIngENSEEIHT Informatique$/\tENSEEIHT\tIng.\tInformatique/;
   s/\t\t\tIngENSEEIHT Toulouse$/\tENSEEIHT\tIng.\t/;
@@ -202,8 +223,10 @@ while (<FILE>)
   s/\t\t\tDoctECP$/\tCentrale Paris\tPhD\t/;
   s/\t\t\tDEA TACS ENS Cachan$/\tENS Cachan\tDEA\tTACS/;
   s/\t\t\tDEA ENS Cachan$/\tENS Cachan\tDEA\t/;
+  s/\t\t\tDEA Normal Sup Cachan$/\tENS Cachan\tDEA\t/;
   s/\t\t\tENS Cachan$/\tENS Cachan\tM\t/;
   s/\t\t\tMSc ENS Cachan$/\tENS Cachan\tMSc\t/;
+  s/\t\t\tMSc Normale Sup Cachan$/\tENS Cachan\tMSc\t/;
   s/\t\t\tDoct\ ENS CACHAN Math Appliquée$/\tENS Cachan\tPhD\tMathématiques Appliquées/;
   s/\t\t\tPhD ENS Cachan$/\tENS Cachan\tPhD\t/;
   s/\t\t\tPhD Cachan$/\tENS Cachan\tPhD\t/;
@@ -212,8 +235,10 @@ while (<FILE>)
   s/\t\t\tENS Lyon$/\tENS Lyon\tM\t/;
   s/\t\t\tDoct ENS Lyon$/\tENS Lyon\tPhD\t/;
   s/\t\t\tDoctorat ENS Lyon$/\tENS Lyon\tPhD\t/;
+  s/\t\t\tDEA Normale Sup$/\tENS Ulm\tDEA\t/;
   s/\t\t\tDEA : ENS$/\tENS Ulm\tDEA\t/;
   s/\t\t\tDEA ENS$/\tENS Ulm\tDEA\t/;
+  s/\t\t\tDEA Informatique ENS$/\tENS Ulm\tDEA\tInformatique/;
   s/\t\t\tENS Ulm DEA$/\tENS Ulm\tDEA\t/;
   s/\t\t\tDEA ENS Ulm$/\tENS Ulm\tDEA\t/;
   s/\t\t\tDEA : ENS Ulm$/\tENS Ulm\tDEA\t/;
@@ -222,6 +247,7 @@ while (<FILE>)
   s/\t\t\tENS Ulm :DEA$/\tENS Ulm\tDEA\t/;
   s/\t\t\tENS$/\tENS Ulm\tM\t/;
   s/\t\t\tENS Ulm$/\tENS Ulm\tM\t/;
+  s/\t\t\tMSc Normale Sup$/\tENS Ulm\tMSc\t/;
   s/\t\t\tMSc ENS Ulm$/\tENS Ulm\tMSc\t/;
   s/\t\t\tMSc ENS$/\tENS Ulm\tMSc\t/;
   s/\t\t\tMS ENS Ulm$/\tENS Ulm\tMSc\t/;
@@ -259,6 +285,7 @@ while (<FILE>)
   s/\t\t\tMBA Collède des Ing$/\tCDI\tMBA\t/;
   s/\t\t\tCDI$/\tCDI\tMBA\t/;
   s/\t\t\tMBA CDI$/\tCDI\tMBA\t/;
+  s/\t\t\tDES Sc IAE Grenoble$/\tIAE de Grenoble\tDESS\t/;
   s/\t\t\tMBA Institut d'Administration des Entreprises$/\tIAE de Paris\tMBA\t/;
   s/\t\t\tMBA IAE$/\tIAE de Paris\tMBA\t/;
   s/\t\t\tMS IAE$/\tIAE de Paris\tMSc\t/;
@@ -275,12 +302,14 @@ while (<FILE>)
   s/\t\t\tMBA Centre de Perfect aux Affaires$/\tCPA de Paris\tMBA\t/;
   s/\t\t\tMBA Centre de Perfection aux Affaires$/\tCPA de Paris\tMBA\t/;
   s/\t\t\tCPA$/\tCPA de Paris\tMBA\t/;
+  s/\t\t\tCPA de Paris$/\tCPA de Paris\tMBA\t/;
   s/\t\t\tCPA 73\/2$/\tCPA de Paris\tMBA\t/;
   s/\t\t\tMBA CPA$/\tCPA de Paris\tMBA\t/;
   s/\t\t\tMBA CPA$/\tCPA de Paris\tMBA\t/;
   s/\t\t\tCPA Lyon$/\tCPA de Lyon\tMBA\t/;
   s/\t\t\tCPA Nord$/\tCPA du Nord\tMBA\t/;
   s/\t\t\tIHEDN$/\tIHEDN\tDipl.\t/;
+  s/\t\t\tMastère ENA$/\tENA\tM\t/;
   s/\t\t\tENA$/\tENA\tDipl.\t/;
   s/\t\t\tAncElENA$/\tENA\tDipl.\t/;
   s/\t\t\tDEA Economie EHESS-ENSAE$/\tEHESS\tDEA\tÉconomie/;
@@ -289,13 +318,14 @@ while (<FILE>)
   s/\t\t\tEHESS DEA$/\tEHESS\tDEA\t/;
   s/\t\t\tEHESS$/\tEHESS\tDEA\t/;
   s/\t\t\tMS EHESS$/\tEHESS\tMSc\t/;
+  s/\t\t\tMs EHESS$/\tEHESS\tMSc\t/;
   s/\t\t\tEHESS Master II Art & Langage$/\tEHESS\tM\tArt et Langage/;
   s/\t\t\tDoct3e cycle EHESS$/\tEHESS\tPhD\t/;
   s/\t\t\tDoct EHESS Sc cognitives$/\tEHESS\tPhD\tSciences cognitives/;
   s/\t\t\tEHESS : PhD$/\tEHESS\tPhD\t/;
   s/\t\t\tEHESS Phd$/\tEHESS\tPhD\t/;
   s/\t\t\tPhD EHESS$/\tEHESS\tPhD\t/;
-  s/\t\t\tDoctorat HEC Finance$/\tHEC\tPhD\tFinance/;
+  s/\t\t\tPhD de l'EHESS$/\tEHESS\tPhD\t/;
   s/\t\t\tDESS CAAE Univ Paris I$/\tPanthéon-Sorbonne\tDESS\t/;
   s/\t\t\tDEA MMME Sorbonne$/\tPanthéon-Sorbonne\tDEA\tModélisation et Méthodes Mathématiques en Économie/;
   s/\t\t\tDEA MMME$/\tPanthéon-Sorbonne\tDEA\tModélisation et Méthodes Mathématiques en Économie/;
@@ -309,7 +339,9 @@ while (<FILE>)
   s/\t\t\tDEA Univ Paris 1er$/\tPanthéon-Sorbonne\tDEA\t/;
   s/\t\t\tDEA Univ Paris I Panthéon-Sorbonne$/\tPanthéon-Sorbonne\tDEA\t/;
   s/\t\t\tDEA Economie Paris I$/\tPanthéon-Sorbonne\tDEA\tÉconomie/;
+  s/\t\t\tDEA Economie Univ Paris I$/\tPanthéon-Sorbonne\tDEA\tÉconomie/;
   s/\t\t\tMaster COSI Univ Paris I La Sorbonne$/\tPanthéon-Sorbonne\tM\tCOSI/;
+  s/\t\t\tMaster COSI Univ Paris I$/\tPanthéon-Sorbonne\tM\tCOSI/;
   s/\t\t\tMS Univ Paris 1$/\tPanthéon-Sorbonne\tMSc\t/;
   s/\t\t\tMS Univ Paris I Panthéon Sorbonne$/\tPanthéon-Sorbonne\tMSc\t/;
   s/\t\t\tMSc Univ Paris I$/\tPanthéon-Sorbonne\tMSc\t/;
@@ -325,15 +357,22 @@ while (<FILE>)
   s/\t\t\tDEA Univ Paris II Panthéon - Assas$/\tAssas\tDEA\t/;
   s/\t\t\tDEA Univ Paris II$/\tAssas\tDEA\t/;
   s/\t\t\tMS Univ Paris 2$/\tAssas\tMSc\t/;
+  s/\t\t\tMSc Univ Paris II$/\tAssas\tMSc\t/;
+  s/\t\t\tPhD Univ Paris II$/\tAssas\tPhD\t/;
   s/\t\t\tDEA Univ Paris IV$/\tParis-Sorbonne\tDEA\t/;
+  s/\t\t\tDEA Univ Paris 4$/\tParis-Sorbonne\tDEA\t/;
+  s/\t\t\tMSc Univ Paris IV$/\tParis-Sorbonne\tMSc\t/;
   s/\t\t\tDoct Paris IV Histoire Moderne$/\tParis-Sorbonne\tPhD\tHistoire Moderne/;
   s/\t\t\tDoctUnivParis IV$/\tParis-Sorbonne\tPhD\t/;
   s/\t\t\tPhD Univ Paris 4$/\tParis-Sorbonne\tPhD\t/;
-  s/\t\t\tDEA Univ Paris V$/\tParis-Sorbonne\tDEA\t/;
-  s/\t\t\tDEA Univ Paris 5$/\tParis-Sorbonne\tDEA\t/;
+  s/\t\t\tDEA Univ Paris V$/\tParis-Descartes\tDEA\t/;
+  s/\t\t\tDEA Univ Paris 5$/\tParis-Descartes\tDEA\t/;
+  s/\t\t\tMSc Univ Paris V$/\tParis-Descartes\tMSc\t/;
   s/\t\t\tDoctUnivParis V$/\tParis-Descartes\tPhD\t/;
   s/\t\t\tPhD Univ Paris V$/\tParis-Descartes\tPhD\t/;
   s/\t\t\tPhD Univ Paris 5$/\tParis-Descartes\tPhD\t/;
+  s/\t\t\tDEA Acoustique musicale Univ Paris VI$/\tUPMC\tDEA\tAcoustique musicale/;
+  s/\t\t\tDEA de Biologie Univ Paris VI$/\tUPMC\tDEA\tBiologie/;
   s/\t\t\tDEA Univ Paris 6$/\tUPMC\tDEA\t/;
   s/\t\t\tDEA Univ Paris VI Jussieu$/\tUPMC\tDEA\t/;
   s/\t\t\tDEA OJME Paris VI$/\tUPMC\t\tOJME/;
@@ -349,6 +388,7 @@ while (<FILE>)
   s/\t\t\tDEA Probab & Applications Paris 6$/\tUPMC\tDEA\tProbabilités et applications/;
   s/\t\t\tDEA Stat Univ Paris 6$/\tUPMC\tDEA\tStatistiques/;
   s/\t\t\tDEA Paris 6$/\tUPMC\tDEA\t/;
+  s/\t\t\tDiplôme d'Études Approfondies Université Pierre-et-Marie-Curie Paris-VI$/\tUPMC\tDEA\t/;
   s/\t\t\tDEA univ Paris VI$/\tUPMC\tDEA\t/;
   s/\t\t\tDEA Probabilités et Finance Paris VI$/\tUPMC\tDEA\tProbabilités et Finance/;
   s/\t\t\tDEA Sc des Matériaux Paris VI$/\tUPMC\tDEA\tSciences des matériaux/;
@@ -370,6 +410,7 @@ while (<FILE>)
   s/\t\t\tMS Univ Paris VI Pierre & Marie Curie$/\tUPMC\tMSc\t/;
   s/\t\t\tDoctUnivParis VI en Ecologie$/\tUPMC\tPhD\tÉcologie/;
   s/\t\t\tDoct Chimie Univ Paris VI$/\tUPMC\tPhD\tChimie/;
+  s/\t\t\tDocten Chimie Univ Paris VI$/\tUPMC\tPhD\tChimie/;
   s/\t\t\tDoctUnivParis VI$/\tUPMC\tPhD\t/;
   s/\t\t\tDoctès Sc Informatique\/Micro-électronique Univ Paris VI$/\tUPMC\tPhD\tInformatique Micro-électronique/;
   s/\t\t\tDocten Informatique \- Paris 6$/\tUPMC\tPhD\tInformatique/;
@@ -392,6 +433,8 @@ while (<FILE>)
   s/\t\t\tThése UnivParis VI SpécPhysique des Solides$/\tUPMC\tPhD\tPhysique des Solides/;
   s/\t\t\tDEUG Japonais Paris VII$/\tParis-Diderot\tDEUG\tJaponnais/;
   s/\t\t\tDEA Univ Paris 7$/\tParis-Diderot\tDEA\t/;
+  s/\t\t\tDEA UnivParis VII$/\tParis-Diderot\tDEA\t/;
+  s/\t\t\tDEA Paris VII$/\tParis-Diderot\tDEA\t/;
   s/\t\t\tDEA Télédétection Paris VII$/\tParis-Diderot\tDEA\tTélédétection/;
   s/\t\t\tDEA Jussieu Paris 7$/\tParis-Diderot\tDEA\t/;
   s/\t\t\tDEA Univ Paris VII$/\tParis-Diderot\tDEA\t/;
@@ -402,11 +445,13 @@ while (<FILE>)
   s/\t\t\tDEA Univ paris VII Diderot-Jussieu$/\tParis-Diderot\tDEA\t/;
   s/\t\t\tMSc Univ Paris VII$/\tParis-Diderot\tMSc\t/;
   s/\t\t\tMS Univ Paris VII$/\tParis-Diderot\tMSc\t/;
+  s/\t\t\tMSc Paris VII$/\tParis-Diderot\tMSc\t/;
   s/\t\t\tDoctUnivParis VII$/\tParis-Diderot\tPhD\t/;
   s/\t\t\tDoct Physique des Solides Univ Paris VII$/\tParis-Diderot\tPhD\tPhysique des Solides/;
   s/\t\t\tDoct3È Cycle Univ Paris 7$/\tParis-Diderot\tPhD\t/;
   s/\t\t\tThèse de DoctUnivParis VII$/\tParis-Diderot\tPhD\t/;
   s/\t\t\tPhD Univ Paris 7$/\tParis-Diderot\tPhD\t/;
+  s/\t\t\tPhD UnivParis VII$/\tParis-Diderot\tPhD\t/;
   s/\t\t\tPhD Univ Paris 7$/\tParis-Diderot\tPhD\t/;
   s/\t\t\tPhD Univ Paris VII$/\tParis-Diderot\tPhD\t/;
   s/\t\t\tPhD Univ Paris 8$/\tVincennes-Saint-Denis\tPhD\t/;
@@ -428,6 +473,7 @@ while (<FILE>)
   s/\t\t\tDEA Univ Paris IX$/\tDauphine\tDEA\t/;
   s/\t\t\tDEA Paris Dauphine$/\tDauphine\tDEA\t/;
   s/\t\t\tMSc Univ Paris IX$/\tDauphine\tMSc\t/;
+  s/\t\t\tMSc Paris IX$/\tDauphine\tMSc\t/;
   s/\t\t\tDoctUniv Paris IX$/\tDauphine\tPhD\t/;
   s/\t\t\tDoctUnivParis Dauphine$/\tDauphine\tPhD\t/;
   s/\t\t\tDoctUnivParis IX$/\tDauphine\tPhD\t/;
@@ -483,6 +529,7 @@ while (<FILE>)
   s/\t\t\tDocten Droit des Affaires Univ Paris 12$/\tParis-Val de Marne\tPhD\tDroit des Affaires/;
   s/\t\t\tPhD Univ Paris 12$/\tParis-Val de Marne\tPhD\t/;
   s/\t\t\tPhD Univ Paris XII$/\tParis-Val de Marne\tPhD\t/;
+  s/\t\t\tDoctès ScPhys Univ Paris XIII$/\tParis-Nord\tPhD\tPhysique/;
   s/\t\t\tDoctUnivParis-Nord$/\tParis-Nord\tPhD\t/;
   s/\t\t\tPhD Univ Paris 13$/\tParis-Nord\tPhD\t/;
   s/\t\t\tPhD Univ Paris XIII$/\tParis-Nord\tPhD\t/;
@@ -492,22 +539,31 @@ while (<FILE>)
   s/\t\t\tDoct Univ Toulouse III$/\tUniversité Paul-Sabatier\tPhD\t/;
   s/\t\t\tPhD Univ Paul Sabatier Toulouse$/\tUniversité Paul-Sabatier\tPhD\t/;
   s/\t\t\tPhD Univ Toulouse III$/\tUniversité Paul-Sabatier\tPhD\t/;
+  s/\t\t\tPhD Université Paul Sabatier Toulouse$/\tUniversité Paul-Sabatier\tPhD\t/;
   s/\t\t\tMSc Univ Grenoble I$/\tUJF\tMSc\t/;
+  s/\t\t\tPhD Univ Grenoble I$/\tUJF\tPhD\t/;
   s/\t\t\tDEA Informatique Univ de Grenoble$/\tUJF\tDEA\tInformatique/;
   s/\t\t\tDoctUnivGrenoble$/\tUJF\tPhD\t/;
   s/\t\t\tPhD Grenoble$/\tUJF\tPhD\t/;
+  s/\t\t\tDES Sc Informatique USTL$/\tUniversité Lille I\tDESS\tInformatique/;
+  s/\t\t\tMSc Univ Lyon I$/\tUniversité Claude Bernard\tMSc\t/;
   s/\t\t\tDoctUnivLyon I$/\tUniversité Claude Bernard\tPhD\t/;
   s/\t\t\tDoct Univ Lyon I$/\tUniversité Claude Bernard\tPhD\t/;
   s/\t\t\tDoct Université Lyon I$/\tUniversité Claude Bernard\tPhD\t/;
   s/\t\t\tDESGE Lyon III$/\tUniversité Jean-Moulin\tDESS\tDESGE/;
   s/\t\t\tDoct Aix Marseille II$/\tUniversité de la Méditerranée\tPhD\t/;
+  s/\t\t\tDocten Physique Univ Aix-Marseille I$/\tUniversité de Provence\tPhD\tPhysique/;
+  s/\t\t\tPhD Univ Aix-Marseille I$/\tUniversité de Provence\tPhD\t/;
   s/\t\t\tDoctUnivde Rennes$/\tUniversité de Rennes 1\tPhD\t/;
   s/\t\t\tLic Théologie & Sc des religions Univ Strasbourg$/\tUDS\tLic.\tThéologie Science des religion/;
   s/\t\t\tDoct Univ Strasbourg$/\tUDS\tPhD\t/;
   s/\t\t\tDocten Informatique et Applications de l'Univ de Caen$/\tUCBN\tPhD\tInformatique/;
   s/\t\t\tDEA IGP Bordeaux$/\tUniversité de Bordeaux\tDEA\tIGP/;
+  s/\t\t\tMSc Univ Bordeaux$/\tUniversité de Bordeaux\tMSc\t/;
+  s/\t\t\tPhD Univ Bordeaux$/\tUniversité de Bordeaux\tPhD\t/;
   s/\t\t\tHDR UBO$/\tUBO\tHDR\t/;
   s/\t\t\tThèse UTC$/\tUTC\tPhD\t/;
+  s/\t\t\tMBA Inst européen d'Adm des Affaires$/\tINSEAD\tMBA\t/;
   s/\t\t\tMBA Institut Européen d'Administration des Affaires$/\tINSEAD\tMBA\t/;
   s/\t\t\tMBA Inst Europ d'Adm des Aff$/\tINSEAD\tMBA\t/;
   s/\t\t\tINSEAD : MBA$/\tINSEAD\tMBA\t/;
@@ -516,6 +572,7 @@ while (<FILE>)
   s/\t\t\tINSEAD - AMP$/\tINSEAD\tMBA\tAMP/;
   s/\t\t\tMBA INSEAD$/\tINSEAD\tMBA\t/;
   s/\t\t\tINSEAD$/\tINSEAD\tMBA\t/;
+  s/\t\t\tINSEAD Adv Management Prog$/\tINSEAD\tMBA\t/;
   s/\t\t\tScPo Gestion et Stratégie des Entreprises$/\tSciences Po\tDipl.\tGestion et Stratégie des Entreprises/;
   s/\t\t\tScPo Economie$/\tSciences Po\tDipl.\tÉconomie/;
   s/\t\t\tIEP$/\tSciences Po\tDipl.\t/;
@@ -528,6 +585,9 @@ while (<FILE>)
   s/\t\t\tMS IEP Paris$/\tSciences Po\tMSc\t/;
   s/\t\t\tMS IEP$/\tSciences Po\tMSc\t/;
   s/\t\t\tMSc IEP$/\tSciences Po\tMSc\t/;
+  s/\t\t\tMs IEP$/\tSciences Po\tMSc\t/;
+  s/\t\t\tMSc Sc Po$/\tSciences Po\tMSc\t/;
+  s/\t\t\tMSc Institut d'Etudes Politiques de Paris$/\tSciences Po\tMSc\t/;
   s/\t\t\tEAPB Ecole Architecture Paris Belleville$/\tENSAPB\tDipl.\t/;
   s/\t\t\tEAPLV Ecole Architecture Paris La Villette$/\tENSAPLV\tDipl.\t/;
   s/\t\t\tEAVT Ecole d'Architecture de Marne la vallée$/\tEAVT\tDipl.\t/;
@@ -538,6 +598,7 @@ while (<FILE>)
   s/\t\t\tCEPE$/\tCEPE\tDipl.\t/;
   s/\t\t\tCEPE Ecole Pratique des Hautes Etudes$/\tCEPE\tDipl.\t/;
   s/\t\t\tECE$/\tECE\tIng.\t/;
+  s/\t\t\tChear-SN45$/\tCHEAr\tDipl.\tSN45/;
   s/\t\t\tCHEAR$/\tCHEAr\tDipl.\t/;
   s/\t\t\tCHEA$/\tCHEAr\tDipl.\t/;
   s/\t\t\tIHEDN-CHEAR$/\tCHEAr\tDipl.\tIHEDN/;
@@ -562,19 +623,26 @@ while (<FILE>)
   s/\t\t\tHEC : MS$/\tHEC\tMSc\t/;
   s/\t\t\tMaster HEC Finance$/\tHEC\tM\tFinance/;
   s/\t\t\tMS X-HEC Finance$/\tHEC\tMSc\tFinance/;
+  s/\t\t\tMSc HEC Finance Internationale$/\tHEC\tMSc\tFinance Internationale/;
   s/\t\t\tMBA CPA-HEC$/\tHEC\tMBA\tCPA/;
+  s/\t\t\tHEC Paris Business School$/\tHEC\tMBA\t/;
+  s/\t\t\tExecutive MBA à HEC$/\tHEC\tMBA\t/;
   s/\t\t\tExecutive MBA HEC$/\tHEC\tMBA\t/;
   s/\t\t\tMastère Gestion Financière HEC$/\tHEC\tM\tGestion Financière/;
   s/\t\t\tMBA HEC\/CPA$/\tHEC\tMBA\t/;
   s/\t\t\tHEC Entrepreneurs$/\tHEC\tM\tEntrepreneurs/;
   s/\t\t\tHEC Execut Management \/ CPA$/\tHEC\tMBA\t/;
   s/\t\t\tMSc HEC Start Management$/\tHEC\tMSc\tManagement/;
+  s/\t\t\tDoctorat HEC Finance$/\tHEC\tPhD\tFinance/;
+  s/\t\t\tPhD HEC Montréal Administration$/\tHEC\tPhD\t/;
   s/\t\t\tCEIPI$/\tCEIPI\tDipl.\t/;
   s/\t\t\tCEDEP cycle 43$/\tCEDEP\tDipl.\t/;
   s/\t\t\tCEDEP$/\tCEDEP\tDipl.\t/;
+  s/\t\t\tEcole du Personnel Navigant d'Essais et de Réception$/\tEPNER\tDipl.\t/;
   s/\t\t\tEPNER$/\tEPNER\tDipl.\t/;
   s/\t\t\tIFSBM$/\tIFSBM\tDipl.\t/;
   s/\t\t\tESG$/\tESG Paris\tDipl.\t/;
+  s/\t\t\tMBA ESCP-Europe$/\tESCP-EAP\tMBA\t/;
   s/\t\t\tMBA ESCP$/\tESCP-EAP\tMBA\t/;
   s/\t\t\tMBA ESCP-EAP$/\tESCP-EAP\tMBA\t/;
   s/\t\t\tMBA ESCP EAP$/\tESCP-EAP\tMBA\t/;
@@ -596,10 +664,13 @@ while (<FILE>)
   s/\t\t\tIHEDN 26° session$/\tIHEDN\tDipl.\t/;
   s/\t\t\tIHEE$/\tIHEE\tDipl.\t/;
   s/\t\t\tEcole de l'Air$/\tÉcole de l'Air\tDipl.\t/;
+  s/\t\t\tEcole de l'air$/\tÉcole de l'Air\tDipl.\t/;
   s/\t\t\tIHESI$/\tINHES\tDipl.\t/;
+  s/\t\t\tINHESJ$/\tINHES\tDipl.\t/;
   s/\t\t\tAFITEP$/\tAFITEP\tDipl.\t/;
 
   # Foreign universities.
+  s/\t\t\tCertif Program in Syst Engineering MIT$/\tMIT\tLic.\tSystem Engineering/;
   s/\t\t\tMS MIT$/\tMIT\tMSc\t/;
   s/\t\t\tMBA MIT$/\tMIT\tMBA\t/;
   s/\t\t\tMS MIT TPP$/\tMIT\tMSc\tTTP/;
@@ -647,6 +718,7 @@ while (<FILE>)
   s/\t\t\tMBA Purdue$/\tPurdue University\tMBA\t/;
   s/\t\t\tPhD Purdue$/\tPurdue University\tPhD\t/;
   s/\t\t\tDoctd'ArchitectUniversRome$/\tUniversity of Rome\tPhD\tArchitecture/;
+  s/\t\t\tMSc Chimie ETH Zurich$/\tETH Zürich\tMSc\tChimie/;
   s/\t\t\tMSc Univ ETH Zurich$/\tETH Zürich\tMSc\t/;
   s/\t\t\tMSc Eidgenossische Tech Hochschule Zurich$/\tETH Zürich\tMSc\t/;
   s/\t\t\tMSc Eidgenossische Tech Hochschule Zurich$/\tETH Zürich\tMSc\t/;
@@ -654,16 +726,22 @@ while (<FILE>)
   s/\t\t\tMSc Eidgenössische Technische Hochschule Zürich$/\tETH Zürich\tMSc\t/;
   s/\t\t\tDoctEcPolytZurich$/\tETH Zürich\tPhD\t/;
   s/\t\t\tDoct Eidgenössische Technische Hochschule Zürich$/\tETH Zürich\tPhD\t/;
+  s/\t\t\tPhD Eidgenössische Technische Hochschule Zürich$/\tETH Zürich\tPhD\t/;
   s/\t\t\tMS Univ Zürich$/\tUniversität Zürich\tMSc\t/;
   s/\t\t\tDoct Univ Zurich$/\tUniversität Zürich\tPhD\t/;
   s/\t\t\tIng EP Fédérale Lausanne$/\tEPFL\tIng.\t/;
   s/\t\t\tIng Ecole Polytechnique Lausanne$/\tEPFL\tIng.\t/;
   s/\t\t\tIng EP Lausanne$/\tEPFL\tIng.\t/;
+  s/\t\t\tIng Ecole Polytechnique fédérale de Lausanne$/\tEPFL\tIng.\t/;
+  s/\t\t\tIng École Polytechnique Fédérale de Lausanne$/\tEPFL\tIng.\t/;
+  s/\t\t\tIng EP fédérale de Lausanne$/\tEPFL\tIng.\t/;
   s/\t\t\tMSc Ecole polytechnique fédérale de Lausanne$/\tEPFL\tMSc\t/;
+  s/\t\t\tMSc EP fédérale de Lausanne$/\tEPFL\tMSc\t/;
   s/\t\t\tEP Fédérale Lausanne$/\tEPFL\tM\t/;
   s/\t\t\tcycle postgrade EPFL option Finance$/\tEPFL\tM\tFinance/;
   s/\t\t\tEPFL Génie Mécanique$/\tEPFL\tM\t/;
   s/\t\t\tDoct Ecole polytechnique fédérale de Lausanne$/\tEPFL\tPhD\t/;
+  s/\t\t\tDoct EP Fédérale Lausanne$/\tEPFL\tPhD\t/;
   s/\t\t\tPhD Univ Lausanne$/\tUNIL\tPhD\t/;
   s/\t\t\tMBA Institute for Management Development$/\tIMD\tMBA\t/;
   s/\t\t\tIMD Lausanne$/\tIMD\tMBA\t/;
@@ -678,8 +756,10 @@ while (<FILE>)
   s/\t\t\tMS Wisconsin USA$/\tUW-Madison\tMSc\t/;
   s/\t\t\tMBA Univ Wisconsin-Madison$/\tUW-Madison\tMBA\t/;
   s/\t\t\tMS Wisconsin Madison$/\tUW-Madison\tMSc\t/;
+  s/\t\t\tMSc Univ of Wisconsin-Madison$/\tUW-Madison\tMSc\t/;
   s/\t\t\tPhD Wisconsin$/\tUW-Madison\tPhD\t/;
   s/\t\t\tMS Berkeley$/\tBerkeley\tMSc\t/;
+  s/\t\t\tMSc University of California, Berkeley$/\tBerkeley\tMSc\t/;
   s/\t\t\tMEcoUcBerkeley$/\tBerkeley\tME\t/;
   s/\t\t\tMEcoAgricBerkeley$/\tBerkeley\tME\t/;
   s/\t\t\tUC Berkeley$/\tBerkeley\tM\t/;
@@ -731,10 +811,13 @@ while (<FILE>)
   s/\t\t\tPhD Salt Lake City$/\tUniversity of Utah\tPhD\t/;
   s/\t\t\tBA Univ Cornell$/\tCornell\tBA\t/;
   s/\t\t\tMS Cornell NY$/\tCornell\tMSc\t/;
+  s/\t\t\tMSc Cornell University$/\tCornell\tMSc\t/;
+  s/\t\t\tMSc Cornell Univ$/\tCornell\tMSc\t/;
   s/\t\t\tMBA Cornell University$/\tCornell\tMBA\t/;
   s/\t\t\tM Eng Cornell University$/\tCornell\tMEng\t/;
   s/\t\t\tME Univ Cornell$/\tCornell\tME\t/;
   s/\t\t\tPhD Cornell Ithaca$/\tCornell\tPhD\t/;
+  s/\t\t\tPhD Cornell University$/\tCornell\tPhD\t/;
   s/\t\t\tMS Computer ScUcla$/\tUCLA\tMSc\tInformatique/;
   s/\t\t\tMBA HEC\/Ucla$/\tUCLA\tMBA\t/;
   s/\t\t\tMS Ucla$/\tUCLA\tMSc\t/;
@@ -764,16 +847,22 @@ while (<FILE>)
   s/\t\t\tMS Columbia$/\tColumbia University\tMSc\t/;
   s/\t\t\tMSEE Columbia Univ$/\tColumbia University\tM\tMSEE/;
   s/\t\t\tMBA Univ Columbia$/\tColumbia University\tMBA\t/;
+  s/\t\t\tColumbia Business School - Senior Executive Program$/\tolumbia\tMBA\tSenior Executive Program/;
   s/\t\t\tMFSE Columbia Univ$/\tColumbia University\tM\tMFSE/;
   s/\t\t\tMSc Univ Columbia$/\tColumbia University\tMSc\t/;
+  s/\t\t\tMS Columbia New-York$/\tColumbia\tMSc\t/;
   s/\t\t\tPhD Columbia$/\tColumbia University\tPhD\t/;
   s/\t\t\tMS Univ British Columbia$/\tUBC\tMSc\t/;
   s/\t\t\tMSc Univ British Columbia$/\tUBC\tMSc\t/;
+  s/\t\t\tMIA Columbia$/\tColumbia\tMIA\t/;
+  s/\t\t\tMIA Columbia University$/\tColumbia\tMIA\t/;
+  s/\t\t\tMIA Columbia Univ$/\tColumbia\tMIA\t/;
   s/\t\t\tMBA Chicago$/\tUniversity of Chicago\tMBA\t/;
   s/\t\t\tMsChicago$/\tUniversity of Chicago\tMSc\t/;
   s/\t\t\tMSc Univ Chicago$/\tUniversity of Chicago\tMSc\t/;
   s/\t\t\tPhD EconomChicago$/\tUniversity of Chicago\tPhD\tÉconomie/;
   s/\t\t\tPhD Univ Chicago$/\tUniversity of Chicago\tPhD\t/;
+  s/\t\t\tPhD Univ of Chicago$/\tUniversity of Chicago\tPhD\t/;
   s/\t\t\tMS Imperial College$/\tImperial College\tMSc\t/;
   s/\t\t\tMS Imperial College Londres$/\tImperial College\tMSc\t/;
   s/\t\t\tMSc Imperial College$/\tImperial College\tMSc\t/;
@@ -783,8 +872,20 @@ while (<FILE>)
   s/\t\t\tM Sc Imperial College$/\tImperial College\tMSc\t/;
   s/\t\t\tMSc in Advanced Mechanical Engin \, Imperial College Londres$/\tImperial College\tMSc\tAdvanced Mechanical Engineering/;
   s/\t\t\tMSc Impreial College of London$/\tImperial College\tMSc\t/;
+  s/\t\t\tMSc Imperial College London$/\tImperial College\tMSc\t/;
+  s/\t\t\tPhD Imperial College of London$/\tImperial College\tPhD\t/;
   s/\t\t\tMSc Impérial Collège$/\tImperial College\tMSc\t/;
   s/\t\t\tPhD Imperial College$/\tImperial College\tPhD\t/;
+  s/\t\t\tMSc The London School of Eco & Political Science$/\tLSE\tMSc\t/;
+  s/\t\t\tMSc The London School of Eco & Political Sc$/\tLSE\tMSc\t/;
+  s/\t\t\tMSc The London School of Economics and Political Science$/\tLSE\tMSc\t/;
+  s/\t\t\tMSc London School of Eco & Political Sc$/\tLSE\tMSc\t/;
+  s/\t\t\tMSc The London School of Eco & Political Sc$/\tLSE\tMSc\t/;
+  s/\t\t\tSc The London School of Eco & Political Sc$/\tLSE\tMSc\t/;
+  s/\t\t\tMS London School of Eco & Political Sc$/\tLSE\tMSc\t/;
+  s/\t\t\tMSc The London School of Economics & Political Sc$/\tLSE\tMSc\t/;
+  s/\t\t\tMSc London School of Eco & Political Sc$/\tLSE\tMSc\t/;
+  s/\t\t\tMScLondon School of Eco & Political Sc$/\tLSE\tMSc\t/;
   s/\t\t\tMS London School of Economics$/\tLSE\tMSc\t/;
   s/\t\t\tMScLondon School of Economics$/\tLSE\tMSc\t/;
   s/\t\t\tMSc London School of Economics & Political Science$/\tLSE\tMSc\t/;
@@ -802,7 +903,9 @@ while (<FILE>)
   s/\t\t\tMS LSE$/\tLSE\tMSc\t/;
   s/\t\t\tPhD London School Econ& Polit Sc$/\tLSE\tPhD\t/;
   s/\t\t\tPhD London School of Econ$/\tLSE\tPhD\t/;
+  s/\t\t\tMaster de Philosophie UCLy$/\tUCL\tMPhil\tPhilosophie/;
   s/\t\t\tMSc Univ College of London$/\tUCL\tMSc\t/;
+  s/\t\t\tMSc Urban Regneration, Bartlett School$/\tUCL\tMSc\tThe Bartlett - Urban Regneration/;
   s/\t\t\tUniversity CollLondres$/\tUCL\tM\t/;
   s/\t\t\tMS Signal et Communications Londres$/\tUCL\tMSc\tSignal et Communications/;
   s/\t\t\tPhD London Royaume uni$/\tUCL\tPhD\t/;
@@ -821,6 +924,7 @@ while (<FILE>)
   s/\t\t\tPhD Caltech$/\tCalTech\tPhD\t/;
   s/\t\t\tPhD CalTech$/\tCalTech\tPhD\t/;
   s/\t\t\tMSc Univ Northwestern$/\tNU\tMSc\t/;
+  s/\t\t\tMSc Northwestern Univ$/\tNU\tPhD\t/;
   s/\t\t\tPhD Northwestern University$/\tNU\tPhD\t/;
   s/\t\t\tMScNY$/\tNYU\tMSc\t/;
   s/\t\t\tMS Schenectady NY$/\tNYU\tMSc\t/;
@@ -836,6 +940,9 @@ while (<FILE>)
   s/\t\t\tMS New york$/\tNYU\tMSc\t/;
   s/\t\t\tPhD Univ New York$/\tNYU\tPhD\t/;
   s/\t\t\tPhD Watson School of Biological Sciences$/\tWSBS\tPhD\tBiologie/;
+  s/\t\t\tM Eng McGill Univ$/\tMcGill\tMEng\t/;
+  s/\t\t\tMSc McGill Univ$/\tMcGill\tMSc\t/;
+  s/\t\t\tMSc en Mécanique McGill$/\tMcGill\tMSc\tMécanique/;
   s/\t\t\tMS McGill University$/\tMcGill\tMSc\t/;
   s/\t\t\tMaster of Management McGill University$/\tMcGill\tMM\t/;
   s/\t\t\tMS Univ McGill$/\tMcGill\tMSc\t/;
@@ -853,6 +960,7 @@ while (<FILE>)
   s/\t\t\tMSc Princeton$/\tPrinceton\tMSc\t/;
   s/\t\t\tMS Univ Princeton$/\tPrinceton\tMSc\t/;
   s/\t\t\tMS Princeton$/\tPrinceton\tMSc\t/;
+  s/\t\t\tMSc Princeton Univ$/\tPrinceton\tMSc\t/;
   s/\t\t\tMS Univ Princeton$/\tPrinceton\tMSc\t/;
   s/\t\t\tMSc Univ Princeton$/\tPrinceton\tMSc\t/;
   s/\t\t\tMS in Finance Princeton$/\tPrinceton\tMSc\tFinance/;
@@ -885,6 +993,7 @@ while (<FILE>)
   s/\t\t\tIng EP Montréal$/\tEPM\tIng.\t/;
   s/\t\t\tIng Ecole polytechnique de Montréal$/\tEPM\tIng.\t/;
   s/\t\t\tEP Montréal Ing$/\tEPM\tIng.\t/;
+  s/\t\t\tPhD EcPolytMontreal$/\tEPM\tPhD\t/;
   s/\t\t\tIng Univ RWTH-Aachen$/\tRWTH\tIng.\t/;
   s/\t\t\tIng Univ RWTH-AAchen$/\tRWTH\tIng.\t/;
   s/\t\t\tRWTH Aachen$/\tRWTH\tM\t/;
@@ -914,12 +1023,14 @@ while (<FILE>)
   s/\t\t\tME Univ Oxford$/\tOxford\tME\t/;
   s/\t\t\tMSc Univ of Oxford$/\tOxford\tMSc\t/;
   s/\t\t\tPhD Univ Oxford$/\tOxford\tPhD\t/;
+  s/\t\t\tPhD Oxford$/\tOxford\tPhD\t/;
   s/\t\t\tPhD Boulder$/\tCU\tPhD\t/;
   s/\t\t\tMS Singapour$/\tNUS\tMSc\t/;
   s/\t\t\tMSc Nat Univ of Singapore$/\tNUS\tMSc\t/;
   s/\t\t\tMSc National Univ of Singapore$/\tNUS\tMSc\t/;
   s/\t\t\tMSc National University of Singapour$/\tNUS\tMSc\t/;
   s/\t\t\tPhD Univ Singapour$/\tNUS\tPhD\t/;
+  s/\t\t\tPhD National Univ of Singapore$/\tNUS\tPhD\t/;
   s/\t\t\tMBA Carnegie Mellon$/\tCMU\tMBA\t/;
   s/\t\t\tMS Carnegie Mellon$/\tCMU\tMSc\t/;
   s/\t\t\tMS ComputCarnégie Mellon Univ$/\tCMU\tMSc\tInformatique/;
@@ -927,10 +1038,12 @@ while (<FILE>)
   s/\t\t\tMSc Univ NTNU$/\tNTNU\tMSc\t/;
   s/\t\t\tPhD NTNU$/\tNTNU\tPhD\t/;
   s/\t\t\tMS Georgia Tech$/\tGeorgia Tech\tMSc\t/;
+  s/\t\t\tMSc Georgia Inst of Technology$/\tGeorgia Tech\tMSc\t/;
   s/\t\t\tMS Univ Georgia$/\tGeorgia Tech\tMSc\t/;
   s/\t\t\tMSc Georgia Tech$/\tGeorgia Tech\tMSc\t/;
   s/\t\t\tMSc GeorgiaTech$/\tGeorgia Tech\tMSc\t/;
   s/\t\t\tPhD GeorgiaTech$/\tGeorgia Tech\tPhD\t/;
+  s/\t\t\tPhD Georgia Inst of Technology$/\tGeorgia Tech\tPhD\t/;
   s/\t\t\tPhD Univ Surrey$/\tUniversity of Surrey\tPhD\t/;
   s/\t\t\tMS Kyoto$/\tKyoto University\tMSc\t/;
   s/\t\t\tPhD Univ Kyoto$/\tKyoto University\tPhD\t/;
@@ -940,20 +1053,26 @@ while (<FILE>)
   s/\t\t\tMSc Univ of Tokyo$/\tTodai\tMSc\t/;
   s/\t\t\tPhD UnivTokyo$/\tTodai\tPhD\t/;
   s/\t\t\tPhD Univ Tokyo$/\tTodai\tPhD\t/;
+  s/\t\t\tPhD Univ of Tokyo$/\tTodai\tPhD\t/;
   s/\t\t\tPhD Tokyo Institute of Technology$/\tTokyo Tech\tPhD\t/;
+  s/\t\t\tMSc Technische Universität Darmstadt$/\tTU Darmstadt\tMSc\t/;
   s/\t\t\tIngDiplUniversité Stuttgart$/\tUniversität Stuttgart\tIng.\t/;
   s/\t\t\tIng Stuttgart$/\tUniversität Stuttgart\tIng.\t/;
   s/\t\t\tIng diplomé Fac d'Aéronautique de Stuttgart$/\tUniversität Stuttgart\tIng.\tAéronautique/;
   s/\t\t\tME Univ Stuttgart$/\tUniversität Stuttgart\tME\t/;
+  s/\t\t\tMSc Univ de Stuttgart$/\tUniversität Stuttgart\tMSc\t/;
   s/\t\t\tMSc Univ Stuttgart$/\tUniversität Stuttgart\tMSc\t/;
   s/\t\t\tMS Univ Stuttgart$/\tUniversität Stuttgart\tMSc\t/;
   s/\t\t\tDiplome de la Empire Test Pilot's School$/\tETPS\tDipl.\t/;
+  s/\t\t\tMBA Escuela Sup de Adm y Dir de Empresas$/\tESADE\tMBA\t/;
   s/\t\t\tIngde Caminos de Madrid$/\tUPM\tIng.\t/;
   s/\t\t\tIngeniero Industrial UPM Madrid$/\tUPM\tIng.\t/;
   s/\t\t\tEscuela Sup de Ing de Caminos Canales y Puertos$/\tUPM\tIng.\t/;
   s/\t\t\tMS Univ Madrid$/\tUPM\tMSc\t/;
+  s/\t\t\tMSc Universidad Politècnica de Madrid$/\tUPM\tMSc\t/;
   s/\t\t\tUniv Madrid$/\tUPM\tM\t/;
   s/\t\t\tME Univ Madrid$/\tUPM\tME\t/;
+  s/\t\t\tME Ingeniero Industrial UPM Madrid$/\tUPM\tME\t/;
   s/\t\t\tME UnivMadrid$/\tUPM\tME\t/;
   s/\t\t\tMS Madrid$/\tUPM\tMSc\t/;
   s/\t\t\tETSII Madrid$/\tUPM\tM\tETSSI/;
@@ -968,6 +1087,7 @@ while (<FILE>)
   s/\t\t\tMBA Kellogg School of Management$/\tKellogg\tMBA\t/;
   s/\t\t\tMBA Kellogg school of Management$/\tKellogg\tMBA\t/;
   s/\t\t\tInvestment Banking Program-Kellog School of Management$/\tKellogg\tMBA\tInvestment Banking Program/;
+  s/\t\t\tPhD Kellogg School of Management$/\tKellogg\tPhD\t/;
   s/\t\t\tMS Houston$/\tUH\tMSc\t/;
   s/\t\t\tEngineer Kentucky$/\tUK\tIng.\tEngineer/;
   s/\t\t\tEP Gdansk Pologne$/\tUniwersytet Gdański\tM\t/;
@@ -985,6 +1105,9 @@ while (<FILE>)
   s/\t\t\tMS München$/\tTU München\tMSc\t/;
   s/\t\t\tMSc Univ TU Munich$/\tTU München\tMSc\t/;
   s/\t\t\tME Univ TU Munich$/\tTU München\tME\t/;
+  s/\t\t\tMSc Technische Universität München$/\tTU München\tMSc\t/;
+  s/\t\t\tPhD Ludwig-Maximilians-Universität München$/\tUniversität München\tPhD\t/;
+  s/\t\t\tDiplom-Volkswirt Univ Mayence - Allemagne$/\tJGU\tME\t/;
   s/\t\t\tMS Ottawa$/\tOU\tMSc\t/;
   s/\t\t\tMPhilSheffield$/\tUniversity of Sheffield\tMPhil\t/;
   s/\t\t\tMS Urbana$/\tUrbana University\tMSc\t/;
@@ -1002,11 +1125,14 @@ while (<FILE>)
   s/\t\t\tCollège d'Europe Natolin Varsovie$/\tCollege of Europe\tMBA\tNatolin Varsovie/;
   s/\t\t\tCFA$/\tCFA Institute\tMBA\t/;
   s/\t\t\tChartered Financial Analyst$/\tCFA Institute\tMBA\tFinancial Analyst/;
+  s/\t\t\tChartered Financial Analyst Institute$/\tCFA Institute\tMBA\tFinancial Analyst/;
   s/\t\t\tChartered Institute of Management Accountant$/\tCIMA\tMBA\t/;
   s/\t\t\tNaval Postgraduate School$/\tNPS\tDipl.\t/;
   s/\t\t\tMBA Rotterdam School of Management$/\tRSM\tMBA\t/;
   s/\t\t\tME Univ Torino$/\tUNITO\tME\t/;
+  s/\t\t\tPhD Univ degli Studi di Torino$/\tUNITO\tPhD\t/;
   s/\t\t\tMSc Petroleum Engineering \- TU Delft$/\tTU Delft\tMSc\tPetroleum Engineering/;
+  s/\t\t\tMSc Technische Universiteit Delft$/\tTU Delft\tMSc\t/;
   s/\t\t\tMS Univ TU Delft$/\tTU Delft\tMSc\t/;
   s/\t\t\tMSc Univ TU Delft$/\tTU Delft\tMSc\t/;
   s/\t\t\tMSc Karlsruhe$/\tUniversität Karlsruhe\t\t/;
@@ -1021,23 +1147,32 @@ while (<FILE>)
   s/\t\t\tMS Politecnico di Milano$/\tPolitecnico di Milano\tMSc\t/;
   s/\t\t\tMSc Politecnico di Milano$/\tPolitecnico di Milano\tMSc\t/;
   s/\t\t\tME Univ TU Berlin$/\tTU Berlin\tME\t/;
+  s/\t\t\tME Univ Commerciale Luigi Bocconi Milan$/\tUniversità Bocconi\tMSc\t/;
   s/\t\t\tMSc Univ Bocconi$/\tUniversità Bocconi\tMSc\t/;
   s/\t\t\tMSc Univ Bocconi$/\tUniversità Bocconi\tMSc\t/;
+  s/\t\t\tMSc Università Commerciale Luigi Bocconi$/\tUniversità Bocconi\tMSc\t/;
   s/\t\t\tMSc Univ Pompeu Fabra$/\tUPF\tMSc\t/;
   s/\t\t\tMS Univ Pompeu Fabra$/\tUPF\tMSc\t/;
   s/\t\t\tMSc Pompeu Fabra$/\tUPF\tMSc\t/;
   s/\t\t\tMSc Univ Southampton$/\tUniversity of Southampton\tMSc\t/;
   s/\t\t\tMS Southampton$/\tUniversity of Southampton\tMSc\t/;
   s/\t\t\tMSc Univ Tsinghua$/\tTHU\tMSc\t/;
+  s/\t\t\tMSc Tsinghua Univ$/\tTHU\tMSc\t/;
   s/\t\t\tMS Univ Tsinghua$/\tTHU\tMSc\t/;
   s/\t\t\tMS Univ Chalmers$/\tChalmers\tMSc\t/;
+  s/\t\t\tMS Univ Chalmers Tekniska Högskola$/\tChalmers\tMSc\t/;
   s/\t\t\tOIV Wine Industry Management$/\tOIV\tMSc\t/;
   s/\t\t\tMS Indian Institutes of Technology$/\tIITs\tMSc\t/;
   s/\t\t\tMSc Univ Technion$/\tTechnion\tMSc\t/;
   s/\t\t\tMSc Kungliga Tekniska Högskolan$/\tKTH\tMSc\t/;
   s/\t\t\tMS Univ Stockholm$/\tStockholms Universitet\tMSc\t/;
+  s/\t\t\tMSc Bauman Moscow State Technical Univ$/\tBauman MSTU\tMSc\t/;
+  s/\t\t\tMSc Novosibirsk State Univ$/\tNSU\tMSc\t/;
 
   # Diploma missing.
+  s/\t\t\tUniv Mc Gill Montréal$/\tMcGill\t\t/;
+  s/\t\t\tEcole polytechnique fédérale de Lausanne$/\tEPFL\t\t/;
+  s/\t\t\tEcole polytechnique Fédérale de Lausanne$/\tEPFL\t\t/;
   s/\t\t\tUniv Syracuse USA$/\tSU\t\t/;
   s/\t\t\tHarvard$/\tHarvard\t\t/;
   s/\t\t\tTexas A&M University$/\tTAMU\t\t/;
@@ -1049,8 +1184,10 @@ while (<FILE>)
   s/\t\t\tISUP$/\tUPMC\t\tISUP/;
   s/\t\t\tBauman Univ Moscou$/\tBauman MSTU\t\t/;
   s/\t\t\tUniv Leiden$/\tUniversiteit Leiden\t\t/;
+  s/\t\t\tDiplome Univ Leiden$/\tUniversiteit Leiden\t\t/;
   s/\t\t\tBusiness School Dartmouth$/\tDartmouth College\t\t/;
   s/\t\t\tBocconi University Milan$/\tUniversità Bocconi\t\t/;
+  s/\t\t\tÉcole des Hautes Études en Sciences Sociales$/\tEHESS\t\t/;
 
   # University missing.
   s/\t\t\tBTS Technique agricole$/\t\tBTS\tTechnique agricole/;
@@ -1076,6 +1213,7 @@ while (<FILE>)
   s/\t\t\tLic canonique en théologie$/\t\tLic.\tThéologie/;
   s/\t\t\tLicence d'Histde l'Art$/\t\tLic.\tHistoire de l'art/;
   s/\t\t\tLicence Philosophie$/\t\tLic.\tPhilosophie/;
+  s/\t\t\tLicence d'Anglais$/\t\tLic.\tAnglais/;
   s/\t\t\tMaîtrise ScEcon$/\t\tMaîtr.\tÉconomie/;
   s/\t\t\tMa(î|i)trise en (.*)$/\t\tMaîtr.\t\2/;
   s/\t\t\tMa(î|i)trise ès (.*)$/\t\tMaîtr.\t\2/;
@@ -1097,6 +1235,7 @@ while (<FILE>)
   s/\t\t\tDESS dével culturel et dir de projet$/\t\tDESS\tDéveloppement culturel et direction de projets/;
   s/\t\t\tDESS Management Paris$/\t\tDESS\tManagement/;
   s/\t\t\tDESS Défense Stratégies & Dynamiques ind$/\t\tDESS\tDéfense Stratégies & Dynamiques indépendantes/;
+  s/\t\t\tDEA Systèmes de Télécommunications Numériques$/\t\tDEA\tSystèmes de Télécommunications Numériques/;
   s/\t\t\tDEA$/\t\tDEA\t/;
   s/\t\t\tDEA Univ$/\t\tDEA\t/;
   s/\t\t\tDEA d'Histoire$/\t\tDEA\tHistoire/;
@@ -1366,6 +1505,7 @@ while (<FILE>)
   s/\t\t\tDoct Phys des Solides$/\t\tPhD\tPhysique des solides/;
   s/\t\t\tDoctorat en Biologie$/\t\tPhD\tBiologie/;
   s/\t\t\tDoct en Sc Cognitives$/\t\tPhD\tSciences cognitives/;
+  s/\t\t\tDoct en Cryptologie$/\t\tPhD\tCryptologie/;
   s/\t\t\tDoctorat Physique Solides$/\t\tPhD\tPhysique des solides/;
   s/\t\t\tDoctorat en Sc biomédicales$/\t\tPhD\tSciences biomédicales/;
   s/\t\t\tDoctès Sc Immunologie$/\t\tPhD\tImmunologie/;
@@ -1417,6 +1557,8 @@ while (<FILE>)
   s/\t\t\tPhD Electrical Engineering$/\t\tPhD\tIngénierie électrique/;
   s/\t\t\tPhD Information theory$/\t\tPhD\tThéorie de l'information/;
   s/\t\t\tPhD Electrical Engin & Computer Science$/\t\tPhD\tIngénierie électrique Informatique/;
+  s/\t\t\tPhD Ingénieur$/\t\tPhD\t/;
+  s/\t\t\tPhD micro-nanofluidique$/\t\tPhD\tMicro-nanofluidique/;
   s/\t\t\tThèse d'Astrophysique$/\t\tPhD\tAstrophysique/;
   s/\t\t\tThèse Maths$/\t\tPhD\tMathématiques/;
   s/\t\t\tThèse Océano Physique$/\t\tPhD\tOcéanographie Physique/;
@@ -1520,6 +1662,7 @@ while (<FILE>)
   s/\t\t\tMS Management Aéroportuaire$/\t\tMSc\tManagement Aéroportuaire/;
   s/\t\t\tMS spécialisé en sécurité des syst d'inform$/\t\tMSc\tSécurité des système d'information/;
   s/\t\t\tMScin applied Mathematics$/\t\tMSc\tMathématiques appliquées/;
+  s/\t\t\tMSc Inst Français de gestion$/\t\tMSc\tGestion/;
   s/\t\t\tEMBA 2005$/\t\tMBA\t/;
   s/\t\t\tMaster Droit des affaires Int & Eur$/\t\tM\tDroit des affaires Intérieures et Européennes/;
   s/\t\t\tMaster de Management par les compétences et organisations$/\t\tM\tManagement par les compétences et organisations/;
@@ -1534,6 +1677,19 @@ while (<FILE>)
   s/\t\t\tDES de Neurologie$/\t\tDESS\tNeurologie/;
   s/\t\t\tMs Affaires Internationales$/\t\tMSc\tAffaires Internationales/;
   s/\t\t\tMaster de Recherche Santé Publique$/\t\tM\tSanté Publique/;
+  s/\t\t\tMaster européen RH$/\t\tM\tRessources humaines/;
+  s/\t\t\tMSc Matériaux Genre des Procédés$/\t\tMSc\tMatériaux Genre des Procédés/;
+  s/\t\t\tMaster Professionnel en Droit de l'Entreprise$/\t\tM\tDroit de l'Entreprise/;
+  s/\t\t\tMSc IFG - Mastère Manager un Centre de Responsabilités$/\t\tMSc\tManager un Centre de Responsabilités/;
+  s/\t\t\tPhD en Philosophie$/\t\tPhD\tPhilosophie/;
+  s/\t\t\tThèse en Mathématiques$/\t\tPhD\tMathématiques/;
+  s/\t\t\tMaster en droit privé$/\t\tM\tDroit privé/;
+  s/\t\t\tLicence LEA Anglais-Russe$/\t\tLic.\tLEA Anglais-Russe/;
+  s/\t\t\tDocteur en opto-électronique$/\t\tPhD\tOpto-électronique/;
+  s/\t\t\tDEA Economie ind$/\t\tDEA\tÉconomie/;
+  s/\t\t\tMSc General Management$/\t\tMSc\tGeneral Management/;
+  s/\t\t\tAgrégation de Mathématiques$/\t\tAgr.\tMathématiques/;
+  s/\t\t\tDocten Math Appliquées$/\t\tPhD\tMathématiques appliquées/;
 
   # Both diploma and university missing
   s/\t\t\tDipl Expert Compt$/\t\t\tExpertise comptable/;
@@ -1622,10 +1778,40 @@ while (<FILE>)
   #s/^.*\tFO\t\w{8}\t\t\tInst Auguste Comte$//;
   #s/^.*\tFO\t\w{8}\t\t\tUSMC Command & Staff College$//;
   #s/^.*\tFO\t\w{8}\t\t\tISNSE Argunne National Laboratory USA$//;
-  ## # Formatted stuff.
+  # # Formatted stuff.
   #s/^.*\tFO\t\w{8}((\t|\t\t)[a-zA-Z1-9'\.éèêùüàäïîşńÉÈÊÙÀÜÄÏÎŞŃ \-\(\)]+)\t.*//;
   # # Removes empty lines.
   s/^\n//;
+
+  print OUT $_;
+}
+
+close(FILE);
+close(OUT);
+
+$path = $0;
+$path =~ s/modules\/fusionax\/formation\.pl//;
+$path .= "spool/fusionax/";
+$in = $path . "Formations_MD.txt";
+$out = $path . "Formations_MD_out.txt";
+open(FILE, "<:encoding(UTF-8)", $in) || die ("Formations_MD.txt failed to open.");
+open(OUT, ">:encoding(UTF-8)", $out) || die ("Formations_MD_out.txt failed to open.");
+
+while (<FILE>)
+{
+  # Dates removal.
+  s/\r$//;
+  s/^(FO\t\w{8}\t(\w|\.|'|&| )+)\t.*$/\1/;
+  # Trailing tab, spaces and dot removal.
+  s/(\t| )*$//;
+  s/( \t|\t )/\t/g;
+  s/ +/ /g;
+
+  # Removes diploma
+  s/Doct. de l'Ec. polytechnique//;
+  s/Doct. de l'Ec. Polytechnique//;
+  s/Etudiante en Master de l'Ec. polytechnique//;
+  s/Etudiant en Master de l'Ec. polytechnique//;
 
   print OUT $_;
 }

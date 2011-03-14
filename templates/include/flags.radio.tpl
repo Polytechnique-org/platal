@@ -23,6 +23,7 @@
 <a href="Xorg/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ?</a>
 {/if}
 {if !t($val)}{assign var=val value='ax'}{/if}
+{if t($disabled)}<input type="hidden" name="{$name}" value="private" />{/if}
 <label><input type="radio" name="{$name}" value="public"{if $val eq 'public'} checked="checked"{/if}
        {if t($disabled)}disabled="disabled"{/if}{if t($mainField)} onchange="updatePublicity('{$mainField}','{$mainId}','{$subField}','{$subId}')"{/if} />
 {icon name="flag_green" title="site public"}

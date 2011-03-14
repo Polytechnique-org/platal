@@ -27,7 +27,7 @@ class CarnetFeedIterator implements PlIterator
     private $notifs;
     private $it;
 
-    public function __construct(PlUser &$owner)
+    public function __construct(PlUser $owner)
     {
         $notifs = Watch::getEvents($owner);
         $infos  = array();
@@ -90,7 +90,7 @@ class CarnetFeed extends PlFeed
                             'carnet/rss.tpl');
     }
 
-    protected function fetch(PlUser &$user)
+    protected function fetch(PlUser $user)
     {
         return new CarnetFeedIterator($user);
     }

@@ -31,7 +31,7 @@
  */
 abstract class UserFilterCondition implements PlFilterCondition
 {
-    const OP_EQUALS     = '==';
+    const OP_EQUALS     = '=';
     const OP_GREATER    = '>';
     const OP_NOTGREATER = '<=';
     const OP_LESSER     = '<';
@@ -166,7 +166,15 @@ abstract class UserFilterCondition implements PlFilterCondition
             $cond = new $class($values);
             break;
 
+          case 'school_id':
+            $values = $export->v('values', array());
+            $school_type = $export->s('school_type');
+            $cond = new UFC_SchoolId($school_type, $values);
+            break;
+
           case 'has_profile':
+          case 'has_email_redirect':
+          case 'has_valid_email':
             $class = 'ufc_' . str_replace('_', '', $type);
             $cond = new $class();
             break;
@@ -324,6 +332,43 @@ class UFC_Hrpid extends UserFilterCondition
     }
 }
 // }}}
+// {{{ class UFC_HasEmailRedirect
+/** Filters users, keeping only those with a valid email redirection (only X.org accounts).
+ */
+class UFC_HasEmailRedirect extends UserFilterCondition
+{
+    public function buildCondition(PlFilter $uf)
+    {
+        $sub_redirect = $uf->addEmailRedirectFilter();
+        return 'ra' . $sub_redirect . '.flags = \'active\'';
+    }
+
+    public function export()
+    {
+        $export = $this->buildExport('has_email_redirect');
+        return $export;
+    }
+}
+// }}}
+// {{{ class UFC_HasValidEmail
+/** Filters users, keeping only those with a valid email address (all accounts).
+ */
+class UFC_HasValidEmail extends UserFilterCondition
+{
+    public function buildCondition(PlFilter $uf)
+    {
+        $sub_redirect = $uf->addEmailRedirectFilter();
+        $uf->requireAccounts();
+        return 'ra' . $sub_redirect . '.flags = \'active\' OR a.email IS NOT NULL';
+    }
+
+    public function export()
+    {
+        $export = $this->buildExport('has_valid_email');
+        return $export;
+    }
+}
+// }}}
 // {{{ class UFC_Ip
 /** Filters users based on one of their last IPs
  * @param $ip IP from which connection are checked
@@ -418,6 +463,7 @@ class UFC_Promo extends UserFilterCondition
 
     public function export()
     {
+        $export = $this->buildExport('promo');
         $export['comparison'] = $this->comparison;
         if ($this->grade != UserFilter::DISPLAY) {
             $export['grade'] = $this->grade;
@@ -472,6 +518,14 @@ class UFC_SchoolId extends UserFilterCondition
             $ids  = array_map(array('Profile', 'getXorgId'), $ids);
         }
         return XDB::format('p.' . $type . '_id IN {?}', $ids);
+    }
+
+    public function export()
+    {
+        $export = $this->buildExport('school_id');
+        $export['school_type'] = $this->type;
+        $export['values'] = $this->ids;
+        return $export;
     }
 }
 // }}}
@@ -801,6 +855,28 @@ class UFC_Sex extends UserFilterCondition
     }
 }
 // }}}
+// {{{ class UFC_NLSubscribed
+/** Filters users based on NL subscription
+ * @param $nlid NL whose subscribers we are selecting
+ * @param $issue Select only subscribers who have not yet received that issue
+ */
+class UFC_NLSubscribed extends UserFilterCondition
+{
+    private $nlid;
+    private $issue_id;
+    public function __construct($nlid, $issue_id)
+    {
+        $this->nlid = $nlid;
+        $this->issue_id = $issue_id;
+    }
+
+    public function buildCondition(PlFilter $uf)
+    {
+        $sub = $uf->addNewsLetterFilter($this->nlid);
+        return XDB::format($sub . '.last < {?}', $this->issue_id);
+    }
+}
+// }}}
 // {{{ class UFC_Group
 /** Filters users based on group membership
  * @param $group Group whose members we are selecting
@@ -894,9 +970,8 @@ class UFC_Email extends UserFilterCondition
     public function buildCondition(PlFilter $uf)
     {
         $foreign = array();
-        $virtual = array();
-        $aliases = array();
-        $cond = array();
+        $local   = array();
+        $cond    = array();
 
         if (count($this->emails) == 0) {
             return PlFilterCondition::COND_TRUE;
@@ -905,25 +980,19 @@ class UFC_Email extends UserFilterCondition
         foreach ($this->emails as $entry) {
             if (User::isForeignEmailAddress($entry)) {
                 $foreign[] = $entry;
-            } else if (User::isVirtualEmailAddress($entry)) {
-                $virtual[] = $entry;
             } else {
-                @list($user, $domain) = explode('@', $entry);
-                $aliases[] = $user;
+                list($local_part, ) = explode('@', $entry);
+                $local[] = $local_part;
             }
         }
 
         if (count($foreign) > 0) {
             $sub = $uf->addEmailRedirectFilter($foreign);
-            $cond[] = XDB::format('e' . $sub . '.email IS NOT NULL OR a.email IN {?}', $foreign);
+            $cond[] = XDB::format('ra' . $sub . '.redirect IS NOT NULL OR ra.redirect IN {?}', $foreign);
         }
-        if (count($virtual) > 0) {
-            $sub = $uf->addVirtualEmailFilter($virtual);
-            $cond[] = 'vr' . $sub . '.redirect IS NOT NULL';
-        }
-        if (count($aliases) > 0) {
-            $sub = $uf->addAliasFilter($aliases);
-            $cond[] = 'al' . $sub . '.alias IS NOT NULL';
+        if (count($local) > 0) {
+            $sub = $uf->addAliasFilter($local);
+            $cond[] = 'sa' . $sub . '.email IS NOT NULL';
         }
         return '(' . implode(') OR (', $cond) . ')';
     }
@@ -1344,7 +1413,7 @@ class UFC_Phone extends UserFilterCondition
     {
         $phone = new Phone(array('display' => $number));
         $phone->format();
-        $this->number = $phone->search;
+        $this->number = $phone->search();
         $this->num_type = $num_type;
         $this->phone_type = $phone_type;
     }
@@ -1489,7 +1558,7 @@ class UFC_Mentor_Terms extends UserFilterCondition
 abstract class UFC_UserRelated extends UserFilterCondition
 {
     protected $user;
-    public function __construct(PlUser &$user)
+    public function __construct(PlUser $user)
     {
         $this->user =& $user;
     }
@@ -1534,7 +1603,7 @@ class UFC_WatchRegistration extends UFC_UserRelated
 class UFC_WatchPromo extends UFC_UserRelated
 {
     private $grade;
-    public function __construct(PlUser &$user, $grade = UserFilter::GRADE_ING)
+    public function __construct(PlUser $user, $grade = UserFilter::GRADE_ING)
     {
         parent::__construct($user);
         $this->grade = $grade;

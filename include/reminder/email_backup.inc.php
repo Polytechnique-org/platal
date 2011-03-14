@@ -25,9 +25,7 @@ class ReminderEmailBackup extends Reminder
     {
         if ($action == 'yes') {
             require_once 'emails.inc.php';
-            $storage = new EmailStorage($this->user, 'imap');
-            $storage->activate();
-
+            Email::activate_storage($this->user, 'imap');
             $this->UpdateOnYes();
         }
 
@@ -55,18 +53,18 @@ class ReminderEmailBackup extends Reminder
         return 'Xorg/IMAP';
     }
 
-    public static function IsCandidate(User &$user, $candidate)
+    public static function IsCandidate(User $user, $candidate)
     {
         if (!$user->checkPerms(User::PERM_MAIL)) {
             return false;
         }
 
         require_once 'emails.inc.php';
-        $storage  = new EmailStorage($user, 'imap');
-        if ($storage->active) {
+        $active = Email::is_active_storage($user, 'imap');
+        if ($active) {
             Reminder::MarkCandidateAsAccepted($user->id(), $candidate);
         }
-        return !$storage->active;
+        return !$active;
     }
 }
 

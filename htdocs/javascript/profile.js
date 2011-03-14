@@ -37,11 +37,10 @@ function wizPage_onLoad(id)
         updateGroupSubLink();
         break;
       case 'deco':
-        for (var i in names) {
-            if ($('#medal_' + i).length != 0) {
-                getMedalName(i);
-                buildGrade(i, $('#medal_' + i).find('[name*=medal_' + i + '_grade]').val());
-            }
+        var i = 0;
+        while ($('#medal_' + i).length != 0) {
+            prepareMedal(i);
+            ++i;
         }
         break;
       case 'emploi':
@@ -57,6 +56,7 @@ var educationDegreeAll;
 var educationDegreeName;
 var subgrades;
 var names;
+var multiples;
 
 // Publicity follows the following ordering: private < ax < public.
 var publicity = [];
@@ -211,7 +211,7 @@ function addEdu()
     i++;
     $('#edu_add').addClass(prefix + i);
     i--;
-    $.get(platal_baseurl + 'profile/ajax/edu/' + i + '/' + class_parity,
+    $.xget('profile/ajax/edu/' + i + '/' + class_parity,
           function(data) {
               $('#edu_add').before(data);
               prepareType(i);
@@ -437,10 +437,17 @@ function updateGroupSubLink()
 
 // {{{1 Medals
 
+function prepareMedal(i)
+{
+    getMedalName($('#medal_' + i).find('[name="medals[' + i + '][id]"]').val());
+    buildGrade(i);
+}
+
 function updateMedal()
 {
     var val = $('#medals').find('[name*=medal_sel]').val();
-    if (val && ($('#medal_' + val).length == 0)) {
+
+    if ((multiple[val] && subgrades[val]) || $('.medal_name_' + val).length == 0) {
         $('#medal_add').show();
     } else {
         $('#medal_add').hide();
@@ -449,53 +456,78 @@ function updateMedal()
 
 function getMedalName(id)
 {
-    $('#medal_name_' + id).html(names[id]);
+    $('.medal_name_' + id).html(names[id]);
 }
 
-function buildGrade(id, current)
+function buildGrade(i)
 {
-    var grade;
-    var subg = subgrades[id];
-    var obj  = $('#medal_grade_' + id);
+    var id      = $('#medal_' + i).find('[name="medals[' + i + '][id]"]').val();
+    var current = $('#medal_' + i).find('[name="medals_' + i + '_grade"]').val();
+    var subg    = subgrades[id];
+    var obj     = $('#medal_grade_' + i);
     if (!subg) {
-        obj.prepend('<input type="hidden" name="medals[' + id + '][grade]" value="0" />');
+        obj.prepend('<input type="hidden" name="medals[' + i + '][grade]" value="0" />');
     } else {
-        var html = 'Agrafe : <select name="medals[' + id + '][grade]">';
+        var html = 'Agrafe : <select name="medals[' + i + '][grade]">';
         html += '<option value="0">Non précisée</option>';
-        for (grade = 0 ; grade < subg.length ; grade++) {
+        for (var grade = 0; grade < subg.length; ++grade) {
             html += '<option value="' + subg[grade][0] + '"';
             if (subg[grade][0] == current) {
                 html += ' selected="selected"';
             }
             html += '>' + subg[grade][1] + '</option>';
         }
-
         html += '</select>';
         obj.prepend(html);
     }
 }
 
-function makeAddProcess(id)
+function makeAddProcess(i, id)
 {
     return function(data)
     {
         $('#medals').after(data);
         updateMedal();
         getMedalName(id);
-        buildGrade(id, 0);
+        buildGrade(i, 0);
     };
 }
 
 function addMedal()
 {
+    var i = 0;
+    while ($('#medal_' + i).length != 0) {
+        ++i;
+    }
+
     var id = $('#medals').find('[name=medal_sel]').val();
-    $.get(platal_baseurl + 'profile/ajax/medal/' + id, makeAddProcess(id));
+    $.xget('profile/ajax/medal/' + i + '/' + id, makeAddProcess(i, id));
 }
 
 function removeMedal(id)
 {
-    $("#medal_" + id).remove();
+    var total = 0;
+    while ($('#medal_' + total).length != 0) {
+        ++total;
+    }
+    $('#medal_' + id).remove();
+    for (var i = parseInt(id) + 1; i < total; ++i) {
+        renumberMedal(i);
+    }
     updateMedal();
+}
+
+function renumberMedal(i)
+{
+    var new_i = i - 1;
+
+    $('#medal_' + i).attr('id', 'medal_' + new_i);
+    $('#medal_grade_' + i).attr('id', 'medal_grade_' + new_i);
+    $('#medal_grade_' + new_i).find("[name='medals_" + i + "_grade']").attr('name', 'medals_' + new_i + '_grade');
+    $('#medal_grade_' + new_i).find("[name='medals[" + i + "][id]']").attr('name', 'medals[' + new_i + '][id]');
+    $('#medal_grade_' + new_i).find("[name='medals[" + i + "][valid]']").attr('name', 'medals[' + new_i + '][valid]');
+    $('#medal_grade_' + new_i).find("[name='medals[" + i + "][grade]']").attr('name', 'medals[' + new_i + '][grade]');
+    $('#medal_' + new_i).find('a.removeMedal').attr('href', 'javascript:removeMedal(' + new_i + ')');
 }
 
 // Jobs {{{1
@@ -532,7 +564,7 @@ function addJob()
     while ($('#jobs_' + i).length != 0) {
         ++i;
     }
-    $.get(platal_baseurl + 'profile/ajax/job/' + i, makeAddJob(i));
+    $.xget('profile/ajax/job/' + i, makeAddJob(i));
 }
 
 function addEntreprise(id)
@@ -638,6 +670,8 @@ function selectJobTerm(li)
  */
 function toggleJobTermsTree(jobid, textfilter)
 {
+    $('#term_tree_comment').toggle();
+
     var treepath;
     if (jobid < 0) {
         treepath = '';
@@ -671,7 +705,7 @@ function addSkill(cat)
 {
     var val  = $('#' + cat + '_table').find('[name=' + cat + '_sel]').val();
     var text = $('#' + cat + '_table').find('[name=' + cat + '_sel] :selected').text();
-    $.get(platal_baseurl + 'profile/ajax/skill/' + cat + '/' + val,
+    $.xget('profile/ajax/skill/' + cat + '/' + val,
           function(data) {
               $('#' + cat).append(data);
               $('#' + cat + '_' + val + '_title').text(text);
@@ -701,7 +735,7 @@ function registerEnterpriseAutocomplete(id)
     $(".enterpriseName").each(
       function() {
         if (id == -1 || this.name == "jobs[" + id + "][name]") {
-            $(this).autocomplete(platal_baseurl + "search/autocomplete/entreprise",
+            $(this).autocomplete($.plURL("search/autocomplete/entreprise"),
                                  {
                                      selectOnly:1,
                                      field:this.name,
@@ -714,7 +748,7 @@ function registerEnterpriseAutocomplete(id)
     $(".sectorName").each(
       function() {
         if (id == -1 || this.name == "jobs[" + id + "][subSubSectorName]") {
-            $(this).autocomplete(platal_baseurl + "search/autocomplete/subSubSector",
+            $(this).autocomplete($.plURL("search/autocomplete/subSubSector"),
                                  {
                                      selectOnly:1,
                                      field:this.name,

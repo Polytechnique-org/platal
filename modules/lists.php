@@ -47,7 +47,7 @@ class ListsModule extends PLModule
         );
     }
 
-    function prepare_client(&$page, $user = null)
+    function prepare_client($page, $user = null)
     {
         global $globals;
 
@@ -76,7 +76,7 @@ class ListsModule extends PLModule
         return array($subs, $mails);
     }
 
-    function handler_lists(&$page)
+    function handler_lists($page)
     {
         function filter_owner($list)
         {
@@ -132,7 +132,7 @@ class ListsModule extends PLModule
         }
     }
 
-    function handler_ajax(&$page, $list = null)
+    function handler_ajax($page, $list = null)
     {
         pl_content_headers("text/html");
         $domain = $this->prepare_client($page);
@@ -162,7 +162,7 @@ class ListsModule extends PLModule
         $page->assign_by_ref('liste', $liste);
     }
 
-    function handler_create(&$page)
+    function handler_create($page)
     {
         global $globals;
 
@@ -239,17 +239,17 @@ class ListsModule extends PLModule
             S::assert_xsrf_token();
         }
 
-        $asso = Post::v('asso');
-        $liste = Post::v('liste');
+        $asso = Post::t('asso');
+        $list = strtolower(Post::t('liste'));
 
-        if (empty($liste)) {
+        if (empty($list)) {
             $page->trigError('Le champ «&nbsp;adresse souhaitée&nbsp;» est vide.');
         }
-        if (!preg_match("/^[a-zA-Z0-9\-]*$/", $liste)) {
+        if (!preg_match("/^[a-zA-Z0-9\-]*$/", $list)) {
             $page->trigError('Le nom de la liste ne doit contenir que des lettres non accentuées, chiffres et tirets.');
         }
 
-        if (($asso == "binet") || ($asso == "alias")) {
+        if (($asso == 'binet') || ($asso == 'alias')) {
             $promo = Post::i('promo');
             $domain = $promo . '.' . $globals->mail->domain;
 
@@ -257,35 +257,25 @@ class ListsModule extends PLModule
                 $page->trigError('La promotion est mal renseignée, elle doit être du type&nbsp;: 2004.');
             }
 
-            $new = $liste . '@' . $domain;
-            $res = XDB::query('SELECT COUNT(*) FROM virtual WHERE alias={?}', $new);
-
-        } else {
-            if ($asso == "groupex") {
-                $groupex_name = Post::v('groupex_name');
-
-                $res_groupe = XDB::query('SELECT mail_domain FROM groups WHERE nom={?}', $groupex_name);
-                $domain = $res_groupe->fetchOneCell();
+        } elseif ($asso == 'groupex') {
+                $domain = XDB::fetchOneCell('SELECT  mail_domain
+                                               FROM  groups
+                                              WHERE  nom = {?}',
+                                            Post::t('groupex_name'));
 
                 if (!$domain) {
                     $page->trigError('Il n\'y a aucun groupe de ce nom sur Polytechnique.net.');
                 }
-
-                $new = $liste . '@' . $domain;
-                $res = XDB::query('SELECT COUNT(*) FROM virtual WHERE alias={?}', $new);
-            } else {
-                $res = XDB::query("SELECT COUNT(*) FROM aliases WHERE alias={?}", $liste);
-                $domain = $globals->mail->domain;
-            }
+        } else {
+            $domain = $globals->mail->domain;
         }
 
-        $n = $res->fetchOneCell();
-
-        if ($n) {
+        require_once 'emails.inc.php';
+        if (list_exist($list, $domain)) {
             $page->trigError("L'«&nbsp;adresse souhaitée&nbsp;» est déjà prise.");
         }
 
-        if (!Post::v('desc')) {
+        if (!Post::t('desc')) {
             $page->trigError('Le sujet est vide.');
         }
 
@@ -293,22 +283,22 @@ class ListsModule extends PLModule
             $page->trigError('Il n\'y a pas de gestionnaire.');
         }
 
-        if (count($members)<4) {
+        if (count($members) < 4) {
             $page->trigError('Il n\'y a pas assez de membres.');
         }
 
         if (!$page->nb_errs()) {
             $page->trigSuccess('Demande de création envoyée&nbsp;!');
             $page->assign('created', true);
-            $req = new ListeReq(S::user(), $asso, $liste, $domain,
-                                Post::v('desc'), Post::i('advertise'),
+            $req = new ListeReq(S::user(), $asso, $list, $domain,
+                                Post::t('desc'), Post::i('advertise'),
                                 Post::i('modlevel'), Post::i('inslevel'),
                                 $owners, $members);
             $req->submit();
         }
     }
 
-    function handler_members(&$page, $liste = null)
+    function handler_members($page, $liste = null)
     {
         if (is_null($liste)) {
             return PL_NOT_FOUND;
@@ -347,7 +337,7 @@ class ListsModule extends PLModule
         }
     }
 
-    function handler_csv(PlPage &$page, $liste = null)
+    function handler_csv(PlPage $page, $liste = null)
     {
         if (is_null($liste)) {
             return PL_NOT_FOUND;
@@ -355,14 +345,14 @@ class ListsModule extends PLModule
         $this->prepare_client($page);
         $members = $this->client->get_members($liste);
         $list = list_fetch_basic_info(list_extract_members($members[1]));
-        pl_content_headers("text/x-csv");
+        pl_cached_content_headers('text/x-csv', 1);
 
         echo "email,nom,promo\n";
         echo implode("\n", $list);
         exit;
     }
 
-    function handler_annu(&$page, $liste = null, $action = null, $subaction = null)
+    function handler_annu($page, $liste = null, $action = null, $subaction = null)
     {
         if (is_null($liste)) {
             return PL_NOT_FOUND;
@@ -411,7 +401,7 @@ class ListsModule extends PLModule
         $page->assign_by_ref('owners',  $moderos);
     }
 
-    function handler_archives(&$page, $liste = null, $action = null, $artid = null)
+    function handler_archives($page, $liste = null, $action = null, $artid = null)
     {
         global $globals;
 
@@ -440,7 +430,7 @@ class ListsModule extends PLModule
         }
     }
 
-    function handler_rss(&$page, $liste = null, $alias = null, $hash = null)
+    function handler_rss($page, $liste = null, $alias = null, $hash = null)
     {
         if (!$liste) {
             return PL_NOT_FOUND;
@@ -480,7 +470,7 @@ class ListsModule extends PLModule
                             $liste, $domain, $mid, S::i('uid'), $action, Post::v('reason'));
     }
 
-    function handler_moderate(&$page, $liste = null)
+    function handler_moderate($page, $liste = null)
     {
         if (is_null($liste)) {
              return PL_NOT_FOUND;
@@ -581,7 +571,7 @@ class ListsModule extends PLModule
 
     static public function no_login_callback($login)
     {
-        global $list_unregistered, $globals;
+        global $list_unregistered;
 
         $users = User::getPendingAccounts($login, true);
         if ($users && $users->total()) {
@@ -590,14 +580,14 @@ class ListsModule extends PLModule
             }
             $list_unregistered[$login] = $users;
         } else {
-            list($name, $dom) = @explode('@', $login);
-            if ($dom == $globals->mail->domain || $dom == $globals->mail->domain2) {
+            list($name, $domain) = @explode('@', $login);
+            if (User::isMainMailDomain($domain)) {
                 User::_default_user_callback($login);
             }
         }
     }
 
-    function handler_admin(&$page, $liste = null)
+    function handler_admin($page, $liste = null)
     {
         global $globals;
 
@@ -678,8 +668,9 @@ class ListsModule extends PLModule
             S::assert_xsrf_token();
 
             if (strpos(Env::v('del_member'), '@') === false) {
-                $this->client->mass_unsubscribe(
-                    $liste, array(Env::v('del_member').'@'.$globals->mail->domain));
+                if ($del_member = User::getSilent(Env::t('del_member'))) {
+                    $this->client->mass_unsubscribe($liste, array($del_member->forlifeEmail()));
+                }
             } else {
                 $this->client->mass_unsubscribe($liste, array(Env::v('del_member')));
             }
@@ -703,7 +694,9 @@ class ListsModule extends PLModule
             S::assert_xsrf_token();
 
             if (strpos(Env::v('del_owner'), '@') === false) {
-                $this->client->del_owner($liste, Env::v('del_owner').'@'.$globals->mail->domain);
+                if ($del_owner = User::getSilent(Env::t('del_owner'))) {
+                    $this->client->mass_unsubscribe($liste, array($del_owner->forlifeEmail()));
+                }
             } else {
                 $this->client->del_owner($liste, Env::v('del_owner'));
             }
@@ -730,7 +723,7 @@ class ListsModule extends PLModule
         }
     }
 
-    function handler_options(&$page, $liste = null)
+    function handler_options($page, $liste = null)
     {
         if (is_null($liste)) {
             return PL_NOT_FOUND;
@@ -797,7 +790,7 @@ class ListsModule extends PLModule
         }
     }
 
-    function handler_delete(&$page, $liste = null)
+    function handler_delete($page, $liste = null)
     {
         global $globals;
         if (is_null($liste)) {
@@ -805,26 +798,14 @@ class ListsModule extends PLModule
         }
 
         $domain = $this->prepare_client($page);
-        if ($domain == $globals->mail->domain || $domain == $globals->mail->domain2) {
-            $domain = '';
-            $table  = 'aliases';
-            $type   = 'liste';
-        } else {
-            $domain = '@' . $domain;
-            $table  = 'virtual';
-            $type   = 'list';
-        }
-
         $page->changeTpl('lists/delete.tpl');
         if (Post::v('valid') == 'OUI') {
             S::assert_xsrf_token();
 
             if ($this->client->delete_list($liste, Post::b('del_archive'))) {
-                foreach (array('', '-owner', '-admin', '-bounces', '-unsubscribe') as $app) {
-                    XDB::execute("DELETE FROM  $table
-                                        WHERE  type={?} AND alias={?}",
-                                 $type, $liste.$app.$domain);
-                }
+                require_once 'emails.inc.php';
+
+                delete_list($liste, $domain);
                 $page->assign('deleted', true);
                 $page->trigSuccess('La liste a été détruite&nbsp;!');
             } else {
@@ -844,7 +825,7 @@ class ListsModule extends PLModule
         }
     }
 
-    function handler_soptions(&$page, $liste = null)
+    function handler_soptions($page, $liste = null)
     {
         if (is_null($liste)) {
             return PL_NOT_FOUND;
@@ -873,7 +854,7 @@ class ListsModule extends PLModule
         }
     }
 
-    function handler_check(&$page, $liste = null)
+    function handler_check($page, $liste = null)
     {
         if (is_null($liste)) {
             return PL_NOT_FOUND;
@@ -896,7 +877,7 @@ class ListsModule extends PLModule
         }
     }
 
-    function handler_admin_all(&$page)
+    function handler_admin_all($page)
     {
         $page->changeTpl('lists/admin_all.tpl');
         $page->setTitle('Administration - Mailing lists');

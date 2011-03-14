@@ -42,8 +42,8 @@ class ListeReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct(User &$_user, $_asso, $_liste, $_domain, $_desc, $_advertise,
-                                $_modlevel, $_inslevel, $_owners, $_members, $_stamp=0)
+    public function __construct(User $_user, $_asso, $_liste, $_domain, $_desc, $_advertise,
+                                $_modlevel, $_inslevel, $_owners, $_members, $_stamp = 0)
     {
         parent::__construct($_user, false, 'liste', $_stamp);
 
@@ -82,16 +82,22 @@ class ListeReq extends Validate
         global $globals;
 
         if (Env::has('listname')) {
-            $this->liste = trim(Env::v('listname'));
+            $this->liste = Post::t('listname');
         }
         if (Env::has('domainname')) {
-            $this->domain = trim(Env::v('domainname'));
+            $this->domain = Post::t('domainname');
         }
         if (Env::has('assotype')) {
-            $this->asso = trim(Env::v('assotype'));
+            $this->asso = Post::t('assotype');
         }
         if (!$this->asso) {
             $this->domain = $globals->mail->domain;
+        }
+        foreach ($this->owners as $key => &$email) {
+            $email = Post::t('owners_' . $key);
+        }
+        foreach ($this->members as $key => &$email) {
+            $email = Post::t('members_' . $key);
         }
         return true;
     }
@@ -121,49 +127,23 @@ class ListeReq extends Validate
 
     public function commit()
     {
-        global $globals;
+        require_once 'emails.inc.php';
 
-        if ($this->asso == "alias") {
-            $new = $this->liste . '@' . $this->domain;
-            XDB::query('INSERT INTO virtual (alias, type) VALUES({?}, "user")', $new);
+        if ($this->asso == 'alias') {
             foreach ($this->members as $member) {
                 $user = User::get($member);
-                if ($user != null) {
-                    XDB::query(
-                        "INSERT INTO  virtual_redirect (vid, redirect)
-                              SELECT  vid, {?}
-                                FROM  virtual
-                               WHERE  alias = {?}", $user->forlifeEmail(), $new);
-                }
+                add_to_list_alias($user, $this->liste, $this->domain);
             }
-            return 1;
+        } else {
+            $list = new MMList(S::user(), $this->domain);
+            $success = $list->create_list($this->liste, utf8_decode($this->desc), $this->advertise,
+                                          $this->modlevel, $this->inslevel,
+                                          $this->owners, $this->members);
+            if ($success) {
+                create_list($this->liste, $this->domain);
+            }
+            return $success;
         }
-
-        $list = new MMList(S::user(), $this->domain);
-        $ret = $list->create_list($this->liste, utf8_decode($this->desc), $this->advertise,
-                                  $this->modlevel, $this->inslevel,
-                                  $this->owners, $this->members);
-        $liste = strtolower($this->liste);
-        if ($ret && !$this->asso) {
-            foreach(Array($liste, $liste . "-owner", $liste . "-admin", $liste . "-bounces", $liste . "-unsubscribe") as $l) {
-                XDB::execute("INSERT INTO aliases (alias, type) VALUES({?}, 'liste')", $l);
-            }
-        } elseif ($ret) {
-            foreach (Array('', 'owner', 'admin', 'bounces', 'unsubscribe') as $app) {
-                $mdir = $app == '' ? '+post' : '+' . $app;
-                if (!empty($app)) {
-                    $app  = '-' . $app;
-                }
-                $red = $this->domain . '_' . $liste;
-                XDB::execute('INSERT INTO virtual (alias, type)
-                                        VALUES({?}, {?})', $liste . $app . '@' . $this->domain, 'list');
-                XDB::execute('INSERT INTO virtual_redirect (vid, redirect)
-                                        VALUES ({?}, {?})', XDB::insertId(),
-                                       $red . $mdir . '@listes.polytechnique.org');
-                $list->mass_subscribe($liste, join(' ', $this->members));
-            }
-        }
-        return $ret;
     }
 
     // }}}

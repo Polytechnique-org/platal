@@ -29,7 +29,7 @@
     <link rel="apple-touch-icon" href="images/logo.png" type="image/png" />
 
     <link rel="stylesheet" type="text/css" href="css/base.css" media="all"/>
-    <link rel="stylesheet" type="text/css" href="css/print.css" media="print"/>
+    <link rel="stylesheet" type="text/css" href="css/bandeau.css" />
 
     <link rel="index"  href="index" />
     <link rel="author" href="changelog" />

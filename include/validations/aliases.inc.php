@@ -24,10 +24,10 @@ class AliasReq extends Validate
 {
     // properties {{{2
     public $alias;
-    public $raison;
+    public $reason;
     public $unique = true;
 
-    public $old    = '';
+    public $old;
     public $public = 'private';
 
     public $rules = "Interdire ce qui peut nous servir (virus@, postmaster@&hellip;),
@@ -35,17 +35,14 @@ class AliasReq extends Validate
                   Pas de contrainte pour les tirets ou les points, en revanche le souligné (_) est interdit.";
 
     // constructor {{{2
-    public function __construct(User &$_user, $_alias, $_raison, $_public, $_stamp=0)
+    public function __construct(User $_user, $_alias, $_reason, $_public, $_old, $_stamp = 0)
     {
         global $globals;
         parent::__construct($_user, true, 'alias', $_stamp);
-        $this->alias  = $_alias.'@'.$globals->mail->alias_dom;
-        $this->raison = $_raison;
+        $this->alias  = $_alias;
+        $this->reason = $_reason;
         $this->public = $_public;
-        $this->old    = $_user->emailAlias();
-        if (empty($this->old)) {
-            unset($this->old);
-        }
+        $this->old    = $_old;
     }
 
     // function get_request() {{{2
@@ -63,17 +60,19 @@ class AliasReq extends Validate
     // function _mail_subj {{{2
     protected function _mail_subj()
     {
-        return "[Polytechnique.org/MELIX] Demande de l'alias {$this->alias}";
+        global $globals;
+        return "[Polytechnique.org/MELIX] Demande de l'alias {$this->alias}@{$globals->mail->alias_dom}";
     }
 
     // function _mail_body {{{2
     protected function _mail_body($isok)
     {
+        global $globals;
         if ($isok) {
-            return "  L'adresse email {$this->alias} que tu avais demandée vient d'être créée, tu peux désormais l'utiliser à ta convenance."
+            return "  L'adresse email {$this->alias}@{$globals->mail->alias_dom} que tu avais demandée vient d'être créée, tu peux désormais l'utiliser à ta convenance."
                  . ($this->public == 'public' ? ' À ta demande, cette adresse apparaît maintenant sur ta fiche.' : '');
         } else {
-            return "  La demande que tu avais faite pour l'alias {$this->alias} a été refusée.";
+            return "  La demande que tu avais faite pour l'alias {$this->alias}@{$globals->mail->alias_dom} a été refusée.";
         }
     }
 
@@ -88,19 +87,19 @@ class AliasReq extends Validate
         }
 
         if ($this->old) {
-            return XDB::execute('UPDATE  virtual
-                                    SET  alias = {?}
-                                  WHERE  alias = {?}',
-                                $this->alias, $this->old);
+            $success = XDB::execute('UPDATE  email_source_account
+                                        SET  email = {?}
+                                      WHERE  uid = {?} AND type = \'alias_aux\'',
+                                    $this->alias, $this->user->id());
         } else {
-            XDB::execute('INSERT INTO  virtual
-                                  SET  alias = {?}, type=\'user\'',
-                         $this->alias);
-            $vid = XDB::insertId();
-            return XDB::execute('INSERT INTO  virtual_redirect (vid, redirect)
-                                      VALUES  ({?}, {?})',
-                                $vid, $this->user->forlifeEmail());
+            $success = XDB::execute('INSERT INTO  email_source_account (email, uid, domain, type, flags)
+                                          SELECT  {?}, {?}, id, \'alias_aux\', \'\'
+                                            FROM  email_virtual_domains
+                                           WHERE  name = {?}',
+                                     $this->alias, $this->user->id(), Platal::globals()->mail->alias_dom);
         }
+
+        return $success;
     }
 }
 

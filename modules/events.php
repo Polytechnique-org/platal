@@ -81,7 +81,7 @@ class EventsModule extends PLModule
         return $res->fetchOneAssoc();
     }
 
-    private function upload_image(PlPage &$page, PlUpload &$upload)
+    private function upload_image(PlPage $page, PlUpload $upload)
     {
         if (@!$_FILES['image']['tmp_name'] && !Env::v('image_url')) {
             return true;
@@ -100,7 +100,7 @@ class EventsModule extends PLModule
         return true;
     }
 
-    function handler_ev(&$page, $action = 'list', $eid = null, $pound = null)
+    function handler_ev($page, $action = 'list', $eid = null, $pound = null)
     {
         $page->changeTpl('events/index.tpl');
 
@@ -197,7 +197,7 @@ class EventsModule extends PLModule
         $page->assign_by_ref('events', $array);
     }
 
-    function handler_photo(&$page, $eid = null, $valid = null)
+    function handler_photo($page, $eid = null, $valid = null)
     {
         if ($eid && $eid != 'valid') {
             $res = XDB::query("SELECT * FROM announce_photos WHERE eid = {?}", $eid);
@@ -228,14 +228,14 @@ class EventsModule extends PLModule
         exit;
     }
 
-    function handler_rss(PlPage& $page, PlPage& $user)
+    function handler_rss(PlPage $page, PlUser $user)
     {
         $this->load('feed.inc.php');
         $feed = new EventFeed();
         return $feed->run($page, $user);
     }
 
-    function handler_preview(&$page)
+    function handler_preview($page)
     {
         $page->changeTpl('events/preview.tpl', NO_SKIN);
         $texte = Get::v('texte');
@@ -251,7 +251,7 @@ class EventsModule extends PLModule
         pl_content_headers("text/html");
     }
 
-    function handler_ev_submit(&$page)
+    function handler_ev_submit($page)
     {
         $page->changeTpl('events/submit.tpl');
 
@@ -302,14 +302,14 @@ class EventsModule extends PLModule
         }
     }
 
-    function handler_tips(&$page, $tips = null)
+    function handler_tips($page, $tips = null)
     {
         pl_content_headers("text/html");
         $page->changeTpl('include/tips.tpl', NO_SKIN);
         $page->assign('tips', $this->get_tips($tips));
     }
 
-    function handler_admin_tips(&$page, $action = 'list', $id = null)
+    function handler_admin_tips($page, $action = 'list', $id = null)
     {
         $page->setTitle('Administration - Astuces');
         $page->assign('title', 'Gestion des Astuces');
@@ -328,7 +328,7 @@ class EventsModule extends PLModule
         }
     }
 
-    function handler_admin_events(&$page, $action = 'list', $eid = null)
+    function handler_admin_events($page, $action = 'list', $eid = null)
     {
         $page->changeTpl('events/admin.tpl');
         $page->setTitle('Administration - Evenements');

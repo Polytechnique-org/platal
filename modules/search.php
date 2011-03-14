@@ -36,7 +36,7 @@ class SearchModule extends PLModule
         );
     }
 
-    function handler_redir_advanced(&$page, $mode = null)
+    function handler_redir_advanced($page, $mode = null)
     {
         pl_redirect('search/adv');
         exit;
@@ -51,7 +51,7 @@ class SearchModule extends PLModule
      * $model: The way of presenting the results: minifiche, trombi, geoloc.
      * $byletter: Show only names beginning with this letter
      */
-    function handler_quick(&$page, $model = null, $byletter = null)
+    function handler_quick($page, $model = null, $byletter = null)
     {
         global $globals;
 
@@ -96,8 +96,7 @@ class SearchModule extends PLModule
                 if ($user) {
                     pl_redirect($base . $user->login());
                 }
-                $_REQUEST['quick'] = $login;
-                $_GET['quick'] = $login;
+                Get::set('quick', $login);
             } elseif (strpos($quick, 'doc:') === 0) {
                 $url = 'Docs/Recherche?';
                 $url .= 'action=search&q=' . urlencode(substr($quick, 4));
@@ -147,11 +146,10 @@ class SearchModule extends PLModule
 
     /** $model is the way of presenting the results: minifiche, trombi, geoloc.
      */
-    function handler_advanced(&$page, $model = null, $byletter = null)
+    function handler_advanced($page, $model = null, $byletter = null)
     {
         global $globals;
         $page->assign('advanced',1);
-        $page->addJsLink('jquery.autocomplete.js');
 
         $networks = DirEnum::getOptions(DirEnum::NETWORKS);
         $networks[-1] = 'Tous types';
@@ -202,7 +200,7 @@ class SearchModule extends PLModule
         $page->assign('public_directory',0);
     }
 
-    function handler_autocomplete(&$page, $type = null)
+    function handler_autocomplete($page, $type = null)
     {
         // Autocompletion : according to type required, return
         // a list of results matching with the number of matches.
@@ -280,7 +278,7 @@ class SearchModule extends PLModule
         exit();
     }
 
-    function handler_list(&$page, $type = null, $idVal = null)
+    function handler_list($page, $type = null, $idVal = null)
     {
         $page->assign('name', $type);
         $page->assign('with_text_value', true);
@@ -337,7 +335,7 @@ class SearchModule extends PLModule
             break;
           case 'jobterm':
             if (Env::has('jtid')) {
-                JobTerms::ajaxGetBranch(&$page, JobTerms::ONLY_JOBS);
+                JobTerms::ajaxGetBranch($page, JobTerms::ONLY_JOBS);
                 return;
             } else {
                 pl_content_headers('text/xml');
@@ -363,7 +361,7 @@ class SearchModule extends PLModule
         $page->assign('list', $ids);
     }
 
-    function handler_referent(&$page, $action = null, $subaction = null)
+    function handler_referent($page, $action = null, $subaction = null)
     {
         global $globals;
 
@@ -375,8 +373,6 @@ class SearchModule extends PLModule
         // Count mentors
         $res = XDB::query("SELECT count(distinct pid) FROM profile_mentor_term");
         $page->assign('mentors_number', $res->fetchOneCell());
-
-        $page->addJsLink('jquery.autocomplete.js');
 
         // Search for mentors matching filters
         require_once 'ufbuilder.inc.php';
@@ -406,7 +402,7 @@ class SearchModule extends PLModule
      * know about. Only referents linked to term (jtid) are displayed.
      * @param $jtid id of job term to restrict referents
      */
-    function handler_referent_countries(&$page, $jtid = null)
+    function handler_referent_countries($page, $jtid = null)
     {
         pl_content_headers("text/xml");
         $page->changeTpl('include/field.select.tpl', NO_SKIN);
@@ -417,8 +413,8 @@ class SearchModule extends PLModule
                          INNER JOIN  profile_mentor_term    AS mt ON (mt.pid = mp.pid)
                          INNER JOIN  profile_job_term_relation AS jtr ON (jtr.jtid_2 = mt.jtid)
                               WHERE  jtr.jtid_1 = {?}
-                           GROUP BY  iso_3166_1_a2
-                           ORDER BY  country", $jtid);
+                           GROUP BY  gc.iso_3166_1_a2
+                           ORDER BY  gc.country", $jtid);
         $page->assign('list', $it);
     }
 }

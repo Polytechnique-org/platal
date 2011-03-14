@@ -54,7 +54,7 @@ class XnetListsModule extends ListsModule
         );
     }
 
-    function prepare_client(&$page, $user = null)
+    function prepare_client($page, $user = null)
     {
         global $globals;
         Platal::load('lists', 'lists.inc.php');
@@ -70,9 +70,10 @@ class XnetListsModule extends ListsModule
         return $globals->asso('mail_domain');
     }
 
-    function handler_lists(&$page)
+    function handler_lists($page)
     {
         global $globals;
+        require_once 'emails.inc.php';
 
         if (!$globals->asso('mail_domain')) {
             return PL_NOT_FOUND;
@@ -94,28 +95,15 @@ class XnetListsModule extends ListsModule
         if (Post::has('del_alias') && may_update()) {
             S::assert_xsrf_token();
 
-            $alias = Post::v('del_alias');
-            // prevent group admin from erasing aliases from other groups
-            $alias = substr($alias, 0, strpos($alias, '@')).'@'.$globals->asso('mail_domain');
-            XDB::query(
-                    'DELETE FROM  r, v
-                           USING  virtual AS v
-                       LEFT JOIN  virtual_redirect AS r USING(vid)
-                           WHERE  v.alias={?}', $alias);
-            $page->trigSuccess(Post::v('del_alias')." supprimé&nbsp;!");
+            $alias = Post::t('del_alias');
+            list($local_part, ) = explode('@', $alias);
+            delete_list_alias($local_part, $globals->asso('mail_domain'));
+            $page->trigSuccess($alias . ' supprimé&nbsp;!');
         }
 
         $listes = $this->client->get_lists();
         $page->assign('listes', $listes);
-
-        $alias  = XDB::iterator(
-                'SELECT  alias,type
-                   FROM  virtual
-                  WHERE  alias
-                   LIKE  {?} AND type="user"
-               ORDER BY  alias', '%@'.$globals->asso('mail_domain'));
-        $page->assign('alias', $alias);
-
+        $page->assign('aliases', iterate_list_alias($globals->asso('mail_domain')));
         $page->assign('may_update', may_update());
 
         if (count($listes) > 0 && !$globals->asso('has_ml')) {
@@ -126,7 +114,7 @@ class XnetListsModule extends ListsModule
         }
     }
 
-    function handler_create(&$page)
+    function handler_create($page)
     {
         global $globals;
 
@@ -142,64 +130,47 @@ class XnetListsModule extends ListsModule
             S::assert_xsrf_token();
         }
 
-        if (!Post::has('liste') || !Post::v('liste')) {
+        if (!Post::has('liste') || !Post::t('liste')) {
             $page->trigError('Le champs «&nbsp;adresse souhaitée&nbsp;» est vide.');
             return;
         }
 
-        $liste = strtolower(Post::v('liste'));
-
-        if (!preg_match("/^[a-zA-Z0-9\-]*$/", $liste)) {
+        $list = strtolower(Post::t('liste'));
+        if (!preg_match("/^[a-zA-Z0-9\-]*$/", $list)) {
             $page->trigError('le nom de la liste ne doit contenir que des lettres non accentuées, chiffres et tirets');
             return;
         }
 
-        $new = $liste.'@'.$globals->asso('mail_domain');
-        $res = XDB::query('SELECT alias FROM virtual WHERE alias={?}', $new);
-
-        if ($res->numRows()) {
-            $page->trigError('cet alias est déjà pris');
+        require_once 'emails.inc.php';
+        if (list_exist($list, $globals->asso('mail_domain'))) {
+            $page->trigError('Cet alias est déjà pris.');
             return;
         }
-        if (!Post::v('desc')) {
-            $page->trigError('le sujet est vide');
+        if (!Post::t('desc')) {
+            $page->trigError('Le sujet est vide.');
             return;
         }
 
-        $ret = $this->client->create_list(
-                    $liste, utf8_decode(Post::v('desc')), Post::v('advertise'),
-                    Post::v('modlevel'), Post::v('inslevel'),
-                    array(S::user()->forlifeEmail()), array(S::user()->forlifeEmail()));
+        $success = $this->client->create_list($list, utf8_decode(Post::t('desc')), Post::t('advertise'),
+                                              Post::t('modlevel'), Post::t('inslevel'),
+                                              array(S::user()->forlifeEmail()), array(S::user()->forlifeEmail()));
 
-        $dom = strtolower($globals->asso("mail_domain"));
-        $red = $dom.'_'.$liste;
-
-        if (!$ret) {
+        if (!$success) {
             $page->kill("Un problème est survenu, contacter "
                         ."<a href='mailto:support@m4x.org'>support@m4x.org</a>");
             return;
         }
-        foreach (array('', 'owner', 'admin', 'bounces', 'unsubscribe') as $app) {
-            $mdir = $app == '' ? '+post' : '+' . $app;
-            if (!empty($app)) {
-                $app  = '-' . $app;
-            }
-            XDB::execute('INSERT INTO virtual (alias,type)
-                                    VALUES({?},{?})', $liste. $app . '@'.$dom, 'list');
-            XDB::execute('INSERT INTO virtual_redirect (vid,redirect)
-                                    VALUES ({?}, {?})', XDB::insertId(),
-                                   $red . $mdir . '@listes.polytechnique.org');
-        }
+        create_list($list, $globals->asso('mail_domain'));
 
         XDB::execute("UPDATE  groups
                          SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'has_ml')
                        WHERE  id = {?}",
                      $globals->asso('id'));
 
-        pl_redirect('lists/admin/'.$liste);
+        pl_redirect('lists/admin/' . $list);
     }
 
-    function handler_sync(&$page, $liste = null)
+    function handler_sync($page, $liste = null)
     {
         global $globals;
 
@@ -233,7 +204,7 @@ class XnetListsModule extends ListsModule
         $page->assign('not_in_list', $not_in_list);
     }
 
-    function handler_aadmin(&$page, $lfull = null)
+    function handler_aadmin($page, $lfull = null)
     {
         global $globals;
 
@@ -242,56 +213,33 @@ class XnetListsModule extends ListsModule
         }
         $page->changeTpl('xnetlists/alias-admin.tpl');
 
+        require_once 'emails.inc.php';
+        list($local_part, $domain) = explode('@', $lfull);
         if (Env::has('add_member')) {
             S::assert_xsrf_token();
 
-            $add = Env::t('add_member');
-            $user = User::getSilent($add);
+            $email = Env::t('add_member');
+            $user = User::getSilent($email);
             if ($user) {
-                $add = $user->forlifeEmail();
-            } else if (!User::isForeignEmailAddress($add)) {
-                $add = null;
-            }
-            if (!empty($add)) {
-                XDB::execute('INSERT INTO  virtual_redirect (vid, redirect)
-                                   SELECT  vid, {?}
-                                     FROM  virtual
-                                    WHERE  alias = {?}', strtolower($add), $lfull);
-                $page->trigSuccess($add . ' ajouté.');
+                add_to_list_alias($user, $local_part, $domain);
+                $page->trigSuccess($email . ' ajouté.');
             } else {
-                $page->trigError($add . " n'existe pas.");
+                $page->trigError($email . " n'existe pas.");
             }
         }
 
         if (Env::has('del_member')) {
             S::assert_xsrf_token();
-            XDB::query(
-                    "DELETE FROM  virtual_redirect
-                           USING  virtual_redirect
-                      INNER JOIN  virtual USING(vid)
-                           WHERE  redirect={?} AND alias={?}", Env::v('del_member'), $lfull);
-            pl_redirect('alias/admin/'.$lfull);
+
+            $user = User::getSilent(Env::t('del_member'));
+            delete_from_list_alias($user, $local_part, $domain);
+            $page->trigSuccess($user->fullName() . ' supprimé.');
         }
 
-        global $globals;
-        $emails = XDB::fetchColumn('SELECT  redirect
-                                      FROM  virtual_redirect AS vr
-                                INNER JOIN  virtual          AS v  USING(vid)
-                                     WHERE  v.alias = {?}
-                                  ORDER BY  redirect', $lfull);
-        $mem = array();
-        foreach ($emails as $email) {
-            $user = User::getSilent($email);
-            if ($user) {
-                $mem[] = array('user' => $user, 'email' => $email);
-            } else {
-                $mem[] = array('email' => $email);
-            }
-        }
-        $page->assign('mem', $mem);
+        $page->assign('members', list_alias_members($local_part, $domain));
     }
 
-    function handler_acreate(&$page)
+    function handler_acreate($page)
     {
         global $globals;
 
@@ -310,27 +258,24 @@ class XnetListsModule extends ListsModule
             $page->trigError('Le champs «&nbsp;adresse souhaitée&nbsp;» est vide.');
             return;
         }
-        $liste = Post::v('liste');
-        if (!preg_match("/^[a-zA-Z0-9\-\.]*$/", $liste)) {
-            $page->trigError('le nom de l\'alias ne doit contenir que des lettres,'
-                            .' chiffres, tirets et points');
+        $list = Post::v('liste');
+        if (!preg_match("/^[a-zA-Z0-9\-\.]*$/", $list)) {
+            $page->trigError('Le nom de l\'alias ne doit contenir que des lettres,'
+                            .' chiffres, tirets et points.');
             return;
         }
 
-        $new = $liste.'@'.$globals->asso('mail_domain');
-        $res = XDB::query('SELECT COUNT(*) FROM virtual WHERE alias = {?}', $new);
-        $n   = $res->fetchOneCell();
-        if ($n) {
-            $page->trigError('cet alias est déjà pris');
+        require_once 'emails.inc.php';
+        if (list_exist($list, $globals->asso('mail_domain'))) {
+            $page->trigError('Cet alias est déjà pris.');
             return;
         }
 
-        XDB::query('INSERT INTO virtual (alias,type) VALUES({?}, "user")', $new);
-
-        pl_redirect("alias/admin/$new");
+        add_to_list_alias(S::user(), $list, $globals->asso('mail_domain'));
+        pl_redirect('alias/admin/' . $list . '@' . $globals->asso('mail_domain'));
     }
 
-    function handler_profile(&$page, $user = null)
+    function handler_profile($page, $user = null)
     {
         http_redirect('https://www.polytechnique.org/profile/'.$user);
     }

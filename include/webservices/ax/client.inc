@@ -1,6 +1,6 @@
 <?php
 
-function ax_load_object(&$obj, $from)
+function ax_load_object($obj, $from)
 {
     foreach ($from as $k=>$v) {
         if (property_exists($obj, $k)) {

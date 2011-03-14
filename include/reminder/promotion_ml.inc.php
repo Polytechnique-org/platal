@@ -60,7 +60,7 @@ class ReminderPromotionMl extends Reminder
         return "Inscription à la liste de diffusion de ta promotion";
     }
 
-    public static function IsCandidate(User &$user, $candidate)
+    public static function IsCandidate(User $user, $candidate)
     {
         $profile = $user->profile();
         if (!$profile) {
@@ -79,7 +79,16 @@ class ReminderPromotionMl extends Reminder
         if ($mlCount) {
             Reminder::MarkCandidateAsAccepted($user->id(), $candidate);
         }
-        return ($mlCount == 0);
+        if ($mlCount == 0) {
+            $mmlist = new MMList($user);
+            try {
+                $mmlist->get_members_limit('promo' + $user->profile()->yearPromo(),
+                                           0, 0);
+            } catch (Exception $e) {
+                return false;
+            }
+        }
+        return false;
     }
 }
 

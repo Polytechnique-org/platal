@@ -39,7 +39,7 @@ class XnetModule extends PLModule
         );
     }
 
-    function handler_photo(&$page, $x = null)
+    function handler_photo($page, $x = null)
     {
         if (!$x || !($profile = Profile::get($x))) {
             return PL_NOT_FOUND;
@@ -52,20 +52,20 @@ class XnetModule extends PLModule
         $photo->send();
     }
 
-    function handler_index(&$page)
+    function handler_index($page)
     {
         $page->nomenu = true;
         $page->changeTpl('xnet/index.tpl');
     }
 
-    function handler_exit(&$page)
+    function handler_exit($page)
     {
         Platal::session()->stopSUID();
         Platal::session()->destroy();
         $page->changeTpl('xnet/deconnexion.tpl');
     }
 
-    function handler_admin(&$page)
+    function handler_admin($page)
     {
         $page->changeTpl('xnet/admin.tpl');
 
@@ -82,10 +82,13 @@ class XnetModule extends PLModule
                 $page->trigSuccess('membres supprimés');
 
                 if ($domain) {
-                    XDB::query('DELETE FROM  virtual_domains WHERE domain={?}', $domain);
-                    XDB::query('DELETE FROM  virtual, virtual_redirect
-                                                USING  virtual INNER JOIN virtual_redirect USING (vid)
-                                                WHERE  alias LIKE {?}', '%@'.$domain);
+                    XDB::execute('DELETE  v
+                                    FROM  email_virtual         AS v
+                              INNER JOIN  email_virtual_domains AS d ON (v.domain = d.id)
+                                   WHERE  d.name = {?}',
+                                 $domain);
+                    XDB::execute('DELETE FROM  email_virtual_domains
+                                        WHERE  name = {?}', $domain);
                     $page->trigSuccess('suppression des alias mails');
 
                     $mmlist = new MMList(S::v('uid'), S::v('password'), $domain);
@@ -130,7 +133,7 @@ class XnetModule extends PLModule
         $page->assign('assos', $res->fetchAllAssoc());
     }
 
-    function handler_plan(&$page)
+    function handler_plan($page)
     {
         $page->changeTpl('xnet/plan.tpl');
 
@@ -171,15 +174,15 @@ class XnetModule extends PLModule
         $page->assign('inst', $res);
     }
 
-    function handler_groups2(&$page)
+    function handler_groups2($page)
     {
-        $this->handler_groups(&$page, Get::v('cat'), Get::v('dom'));
+        $this->handler_groups($page, Get::v('cat'), Get::v('dom'));
     }
 
-    function handler_groups(&$page, $cat = null, $dom = null)
+    function handler_groups($page, $cat = null, $dom = null)
     {
         if (!$cat) {
-            $this->handler_index(&$page);
+            $this->handler_index($page);
         }
 
         $cat = mb_strtolower($cat);
@@ -212,7 +215,7 @@ class XnetModule extends PLModule
         $page->setType($cat);
     }
 
-    function handler_autologin(&$page)
+    function handler_autologin($page)
     {
         $allkeys = func_get_args();
         unset($allkeys[0]);

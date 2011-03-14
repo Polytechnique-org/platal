@@ -24,7 +24,7 @@ class Xnet extends Platal
     public function __construct()
     {
         parent::__construct('xnet', 'xnetgrp', 'xnetlists', 'xnetevents',
-                            'payment', 'bandeau');
+                            'payment', 'bandeau', 'xnetnl');
     }
 
     public function hook_map($name)
@@ -45,7 +45,7 @@ class Xnet extends Platal
         return $ans;
     }
 
-    public function force_login(PlPage &$page)
+    public function force_login(PlPage $page)
     {
         $redirect = S::v('loginX');
         if (!$redirect) {

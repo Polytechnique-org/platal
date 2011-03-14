@@ -148,14 +148,14 @@ class Company
         }
     }
 
-    public function setPhone(Phone &$phone)
+    public function setPhone(Phone $phone)
     {
         if ($phone->link_type == Phone::LINK_COMPANY && $phone->link_id == $this->id) {
             $this->phone = $phone;
         }
     }
 
-    public function setAddress(Address &$address)
+    public function setAddress(Address $address)
     {
         if ($address->type == Address::LINK_COMPANY && $address->jobid == $this->id) {
             $this->address = $address;
@@ -221,7 +221,7 @@ class Job
         return $this->address;
     }
 
-    public function addPhone(Phone &$phone)
+    public function addPhone(Phone $phone)
     {
         if ($phone->link_type == Phone::LINK_JOB && $phone->link_id == $this->id && $phone->pid == $this->pid) {
             $this->phones[$phone->uniqueId()] = $phone;
@@ -235,7 +235,7 @@ class Job
         }
     }
 
-    public function addTerm(JobTerm &$term)
+    public function addTerm(JobTerm $term)
     {
         $this->terms[$term->jtid] = $term;
     }
@@ -662,7 +662,7 @@ class ProfileJobs extends ProfileField
         $terms = $jobterms->get();
         foreach ($terms as $term) {
             if ($this->pid == $term->pid && array_key_exists($term->jid, $this->jobs)) {
-                $this->jobs[$term->jid]->addTerm(&$term);
+                $this->jobs[$term->jid]->addTerm($term);
             }
         }
     }

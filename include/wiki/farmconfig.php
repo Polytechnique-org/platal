@@ -20,7 +20,7 @@ $Skin             = 'empty';
 
 @include_once("$FarmD/cookbook/e-protect.php");
 include_once($FarmD.'/scripts/xlpage-utf-8.php');
-ResolvePageName();
+$pagename = ResolvePageName($pagename);
 
 if ($action == 'rss'  || $action == 'atom' || $action == 'rdf'  || $action == 'dc') {
     $FmtPV['$MarkupExcerpt'] = '$page["text"]';
@@ -98,6 +98,9 @@ function doPlatalLink($link, $text)
 {
     if (strlen(trim($text)) == 0) {
         $profile = Profile::get($link);
+        if (!$profile) {
+            return '##Utilisateur inconnu##' . $text . '##';
+        }
         $text = $profile->fullName();
     }
     return '<a href="profile/' . $link . '" class="popup2">' . $text . '</a>';

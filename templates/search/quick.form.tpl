@@ -66,7 +66,7 @@
 {if $show_js}
 {literal}
 <script type="text/javascript">
-  $(document).ready(function() {
+  $(function() {
     $("#quick_form input[name='quick']").focus();
   });
 </script>

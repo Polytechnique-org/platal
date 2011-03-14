@@ -25,7 +25,7 @@
 {literal}
 <script type="text/javascript">
   //<![CDATA[
-  $(document).ready(function() {
+  $(function() {
       var url = '{/literal}{$globals->baseurl}/emails/best/{literal}';
       var tok = '{/literal}{xsrf_token}{literal}';
       var msg = "Le changement a bien été effectué.";
@@ -44,10 +44,12 @@
     Tes adresses polytechniciennes sont&nbsp;:<br />
     <div>
       {iterate from=$aliases item=a}
-      <label><input type='radio' {if $a.best}checked="checked"{/if} name='best' value='{$a.alias}' />
-      {if $a.a_vie}(**){/if}{if $a.cent_ans}(*){/if} <strong>{$a.alias}</strong>@{#globals.mail.domain#} et
-      @{#globals.mail.domain2#}</label>
+      <label>
+        <input type='radio' {if $a.bestalias}checked="checked"{/if} name='best' value='{$a.email}' />
+        <strong>{$a.email}</strong>
+      </label>&nbsp;{if $a.forlife}(**){/if}{if $a.hundred_year}(*){/if}
       {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
+      {if $a.alias}<a href="emails/alias">(changer ou supprimer mon alias melix)</a>{/if}
       <br />
       {/iterate}
     </div>
@@ -56,21 +58,14 @@
     <br />Coche une autre case pour en changer&nbsp;!
     </p>
 
-    <div id="bestalias-msg" style="position:absolute;"></div>
-    <br />
-    {if $melix}
-    <div>
-    Tu dispose également de l'alias&nbsp;: <strong>{$melix}</strong>
-    (<a href="emails/alias">changer ou supprimer mon alias melix</a>)
-    </div>
-    {/if}
+    <p id="bestalias-msg" class="center"></p>
   </div>
   <hr />
   <div>
     (M4X signifie <em>mail for X</em>, son intérêt est de te doter d'une adresse à vie
-    moins "voyante" que l'adresse @{#globals.mail.domain#}).
-    {if !$melix}
-    Tu peux ouvrir en supplément une adresse synonyme de ton adresse @{#globals.mail.domain#},
+    moins "voyante" que l'adresse {$main_email_domain}).
+    {if !$alias}
+    Tu peux ouvrir en supplément une adresse synonyme de ton adresse @{$main_email_domain},
     sur les domaines @{#globals.mail.alias_dom#} et @{#globals.mail.alias_dom2#} (melix = Mél X).<br />
     <div class="center"><a href="emails/alias">Créer un alias melix</a></div>
     {/if}
@@ -79,19 +74,19 @@
 
 <p class="smaller">
 {assign var="profile" value=$smarty.session.user->profile()}
-(*) cette adresse email t'est réservée pour une période 100 ans après ton entrée à l'X (dans ton cas, jusqu'en {$profile->yearpromo()+100}).
+(*) ces adresses email te sont réservées pour une période 100 ans après ton entrée à l'X (dans ton cas, jusqu'en {$profile->yearpromo()+100}).
 </p>
 <p class="smaller">
-(**) cette adresse email t'est réservée à vie.
+(**) ces adresses email te sont réservées à vie.
 </p>
 <p class="smaller">
 {if $homonyme}
-Tu as un homonyme X donc tu ne peux pas profiter de l'alias {$homonyme}@{#globals.mail.domain#}. Si quelqu'un essaie
+Tu as un homonyme donc tu ne peux pas profiter de l'alias {$homonyme}@{$main_email_domain}. Si quelqu'un essaie
 d'envoyer un email à cette adresse par mégarde il recevra une réponse d'un robot lui expliquant l'ambiguité et lui
 proposant les adresses des différents homonymes.
 {else}
-Si tu venais à avoir un homonyme X, l'alias «prenom.nom»@{#globals.mail.domain#} sera désactivé. Si bien que
-ton homonyme et toi-même ne disposeraient plus que des adresses de la forme «prenom.nom.promo»@{#globals.mail.domain#}.
+Si tu venais à avoir un homonyme, l'alias «prenom.nom»@{$main_email_domain} sera désactivé. Si bien que
+ton homonyme et toi-même ne disposeraient plus que des adresses de la forme «prenom.nom.promo»@{$main_email_domain}.
 {/if}
 </p>
 

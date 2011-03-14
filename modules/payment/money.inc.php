@@ -70,7 +70,7 @@ class Payment
     // }}}
     // {{{ function init()
 
-    function init($val, &$meth)
+    function init($val, $meth)
     {
         require_once dirname(__FILE__).'/money/'.$meth->inc;
         $this->api = new $api($val);

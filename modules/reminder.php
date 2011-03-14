@@ -28,7 +28,7 @@ class ReminderModule extends PLModule
         );
     }
 
-    function handler_reminder(&$page, $reminder_name = null, $action = null)
+    function handler_reminder($page, $reminder_name = null, $action = null)
     {
         require_once 'reminder.inc.php';
         $user = S::user();

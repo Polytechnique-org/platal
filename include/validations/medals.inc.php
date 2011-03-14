@@ -31,7 +31,7 @@ class MedalReq extends ProfileValidate
     // }}}
     // {{{ constructor
 
-    public function __construct(User &$_user, Profile &$_profile, $_idmedal, $_subidmedal, $_stamp = 0)
+    public function __construct(User $_user, Profile $_profile, $_idmedal, $_subidmedal, $_stamp = 0)
     {
         parent::__construct($_user, $_profile, false, 'medal', $_stamp);
         $this->mid = $_idmedal;
@@ -74,10 +74,17 @@ class MedalReq extends ProfileValidate
 
     public function medal_name()
     {
-        $res = XDB::query('SELECT  m.text
-                             FROM  profile_medal_enum AS m
-                            WHERE  m.id = {?}', $this->mid);
-        return $res->fetchOneCell();
+        $name = XDB::fetchOneCell('SELECT  text
+                                     FROM  profile_medal_enum
+                                    WHERE  id = {?}', $this->mid);
+        $grade = XDB::fetchOneCell('SELECT  text
+                                      FROM  profile_medal_grade_enum
+                                     WHERE  mid = {?} AND gid = {?}',
+                                   $this->mid, $this->gid);
+        if (is_null($grade)) {
+            return $name;
+        }
+        return $name . ' (' . $grade . ')';
     }
 
     // }}}
@@ -110,11 +117,11 @@ class MedalReq extends ProfileValidate
     // }}}
     // {{{ function get_request($medal)
 
-    static public function get_request($pid, $type)
+    static public function get_request($pid, $type, $grade)
     {
         $reqs = parent::get_typed_requests($pid, 'medal');
         foreach ($reqs as &$req) {
-            if ($req->mid == $type) {
+            if ($req->mid == $type && $req->gid == $grade) {
                 return $req;
             }
         }

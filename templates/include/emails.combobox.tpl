@@ -44,21 +44,8 @@
       {/if}
       {if $name eq "email_directory"}
       <optgroup label="Emails polytechniciens">
-        {if $melix}
-        <option value="{$melix}@{#globals.mail.alias_dom#}" {if
-                $val eq $melix|cat:'@'|cat:#globals.mail.alias_dom#}selected="selected"{/if}>
-          {$melix}@{#globals.mail.alias_dom#}</option>
-        <option value="{$melix}@{#globals.mail.alias_dom2#}" {if
-                $val eq $melix|cat:'@'|cat:#globals.mail.alias_dom2#}selected="selected"{/if}>
-          {$melix}@{#globals.mail.alias_dom2#}</option>
-        {/if}
         {foreach from=$list_email_X item=email}
-        <option value="{$email.alias}@{#globals.mail.domain#}" {if
-                $val eq $email.alias|cat:'@'|cat:#globals.mail.domain#}selected="selected"{/if}>
-          {$email.alias}@{#globals.mail.domain#}</option>
-        <option value="{$email.alias}@{#globals.mail.domain2#}" {if
-                $val eq $email.alias|cat:'@'|cat:#globals.mail.domain2#}selected="selected"{/if}>
-          {$email.alias}@{#globals.mail.domain2#}</option>
+        <option value="{$email.email}" {if $val eq $email.email}selected="selected"{/if}>{$email.email}</option>
         {/foreach}
       </optgroup>
       {/if}

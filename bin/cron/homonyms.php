@@ -26,20 +26,19 @@
  */
 require 'connect.db.inc.php';
 
-$resRobot = XDB::iterator("SELECT  uid, alias, expire
-                             FROM  aliases
-                            WHERE  (expire = NOW() + INTERVAL 7 DAY OR expire <= NOW())
-                                   AND type = 'alias'");
+$resRobot = XDB::iterator("SELECT  uid, email, expire
+                             FROM  email_source_account
+                            WHERE  (expire = NOW() + INTERVAL 7 DAY OR expire <= NOW())");
 while ($old = $resRobot->next()) {
     $res = XDB::query('SELECT  a.hruid
-                         FROM  homonyms AS h
-                   INNER JOIN  accounts AS a ON (h.uid = a.uid)
-                        WHERE  homonyme_id = {?}',
-                      $old['id']);
+                         FROM  homonyms_list AS h
+                   INNER JOIN  accounts      AS a ON (h.uid = a.uid)
+                        WHERE  h.hrmid = {?}',
+                      User::makeHomonymHrmid($old['email']);
     $hruids = $res->fetchColumn();
 
-    $homonym = User::getSilent($old['id']);
-    $req = new HomonymeReq($homonym, $old['alias'], $hruids, $old['expire'] > date("Y-m-d"));
+    $homonym = User::getSilent($old['uid']);
+    $req = new HomonymeReq($homonym, $old['email'], $hruids, $old['expire'] > date("Y-m-d"));
     $req->submit();
 }
 

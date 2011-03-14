@@ -93,7 +93,7 @@ function ban_read()
     document.forms.bans.read_perm.value = "!xorg.*";
 }
 
-$(document).ready(function() {
+$(function() {
   $('#tabs').tabs();
   $('.ui-tabs-nav li').width('24%')
     .click(function() { $(this).children('a').click() });
@@ -110,7 +110,6 @@ $(document).ready(function() {
     <li><a href="#authext"><span>OpenID</span></a></li>
     <li><a href="#forums"><span>Forums</span></a></li>
   </ul>
-</div>
 
 <div id="account">
 <form id="auth" method="post" action="admin/user/{$user->login()}#account">
@@ -140,7 +139,7 @@ $(document).ready(function() {
     <tr>
       <td class="titre">Nom complet<br />
         <span class="smaller">Prénom NOM</span>
-      </br></td>
+      </td>
       <td>{if $hasProfile}{$user->fullName()}{else}<input type="text" name="full_name" maxlength="255" value="{$user->fullName()}" />{/if}</td>
     </tr>
     <tr>
@@ -343,24 +342,24 @@ $(document).ready(function() {
     {iterate from=$aliases item=a}
     <tr class="{cycle values="impair,pair"}">
       <td>
-        <input type="radio" name='best' {if $a.best}checked="checked"{/if} value='{$a.alias}' onclick="this.form.submit()" />
+        <input type="radio" name='best' {if $a.bestalias}checked="checked"{/if} value='{$a.email}' onclick="this.form.submit()" />
       </td>
       <td>
-        {if $a.for_life}<strong>{$a.alias}</strong>{else}{$a.alias}{/if}
+        {if $a.forlife}<strong>{$a.email}</strong>{elseif $a.alias}<em>{$a.email}</em>{else}{$a.email}{/if}
         {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
       </td>
-      {if $a.for_life}
+      {if $a.forlife}
       <td>garanti à vie*</td>
       {else}
       <td class="action">
-        <a href="javascript:del_alias('{$a.alias}')">{icon name=cross}</a>
+        <a href="javascript:del_alias('{$a.email}')">{icon name=cross}</a>
       </td>
       {/if}
     </tr>
     {/iterate}
     <tr class="{cycle values="impair,pair"}">
       <td colspan="2" class="detail">
-        <input type="text" name="email" size="29" maxlength="60" value="" />
+        <input type="text" name="email" size="29" maxlength="255" value="" />
       </td>
       <td class="action">
         <input type="hidden" name="uid" value="{$user->id()}" />
@@ -382,7 +381,7 @@ $(document).ready(function() {
   {xsrf_token_field}
   <table class="bicol" cellpadding="2" cellspacing="0">
     <tr>
-      <th colspan="4">
+      <th colspan="5">
         Redirections
       </th>
     </tr>
@@ -415,18 +414,21 @@ $(document).ready(function() {
         {if $mail->email == 'googleapps'}</a>{/if}
         {if $mail->broken}<em> (en panne)</em></span>{/if}
       </td>
+      <td>
+        {if $mail->type != 'imap'}<span class="smaller">(niveau {$mail->filter_level} : {$mail->action})</span>{/if}
+      </td>
       <td class="action">
         {if $mail->is_removable()}
         <a href="javascript:del_fwd('{$mail->email}')">{icon name=cross}</a>
         {/if}
       </td>
     </tr>
-    {if $mail->panne && $mail->panne neq "0000-00-00"}
+    {if $mail->broken && $mail->broken_date neq "0000-00-00"}
     <tr class="{$class}">
-      <td colspan="3" class="smaller" style="color: #f00">
+      <td colspan="4" class="smaller" style="color: #f00">
         {icon name=error title="Panne"}
-        Panne de {$mail->display_email} le {$mail->panne|date_format}
-        {if $mail->panne neq $mail->last}confirmée le {$mail->last|date_format}{/if}
+        Panne de {$mail->display_email} le {$mail->broken_date|date_format}
+        {if $mail->broken_date neq $mail->last}confirmée le {$mail->last|date_format}{/if}
       </td>
       <td class="action">
         <a href="javascript:clean_fwd('{$mail->email}')">effacer les pannes</a>
@@ -439,8 +441,8 @@ $(document).ready(function() {
       <td class="titre" colspan="2">
         Ajouter une adresse
       </td>
-      <td>
-        <input type="text" name="email" size="29" maxlength="60" value="" />
+      <td colspan="2">
+        <input type="text" name="email" size="29" maxlength="255" value="" />
       </td>
       <td class="action">
         <input type="hidden" name="uid" value="{$user->id()}" />
@@ -452,7 +454,7 @@ $(document).ready(function() {
       </td>
     </tr>
     <tr class="{$class}">
-      <td colspan="4" class="center">
+      <td colspan="5" class="center">
         {if $actives}
         <input type="submit" name="disable_fwd" value="Désactiver la redirection des emails" />
         {/if}
@@ -492,7 +494,7 @@ $(document).ready(function() {
 <br />
 <table class="bicol">
   <tr>
-    <th>Virtual aliases auquel l'utilisateur appartient</th>
+    <th>Alias de groupe auquel l'utilisateur appartient</th>
   </tr>
   {foreach from=$virtuals item=virtual}
   <tr class="{cycle values="impair,pair"}">
@@ -571,6 +573,7 @@ $(document).ready(function() {
     </tr>
   </table>
 </form>
+</div>
 </div>
 {/if}
 

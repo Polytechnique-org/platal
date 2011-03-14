@@ -62,11 +62,10 @@ function gpex_make($chlg, $privkey, $datafields, $charset)
         } else if (isset($personnal_data[$val])) {
             $params .= gpex_prepare_param($val, $personnal_data[$val], $tohash, $charset);
         } else if ($val == 'username') {
-            $res = XDB::query("SELECT  alias
-                                 FROM  aliases
-                                WHERE  uid = {?} AND FIND_IN_SET('bestalias', flags)",
-                              S::i('uid'));
-            $min_username = $res->fetchOneCell();
+            $min_username = $XDB::fetchOneCell('SELECT  email
+                                                  FROM  email_source_account
+                                                 WHERE  uid = {?} FIND_IN_SET(\'bestalias\', flags)',
+                                               S::i('uid'));
             $params      .= gpex_prepare_param($val, $min_username, $tohash, $charset);
         } else if ($val == 'grpauth') {
             if (isset($_GET['group'])) {

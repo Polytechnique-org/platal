@@ -20,6 +20,10 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<script type="text/javascript">
+  $($.closeOnEsc);
+</script>
+
 {assign var=terms value=$profile->getMentoringTerms()}
 {assign var=countries value=$profile->getMentoringCountries()}
 <div id="fiche">
@@ -32,13 +36,13 @@
   </div>
   <div class="spacer"></div>
 
-  {if $profile->expertise != '' || $terms|count || $countries|count }
+  {if $profile->mentor_expertise != '' || $terms|count || $countries|count }
   <div id="part">
     <h2>Informations de référent&nbsp;:</h2>
-    {if $profile->expertise}
+    {if $profile->mentor_expertise}
     <div class="rubrique_referent">
       <em>Expertise&nbsp;: </em><br />
-      <span>{$profile->expertise|nl2br}</span>
+      <span>{$profile->mentor_expertise|nl2br}</span>
     </div>
     {/if}
     {if $terms|count}

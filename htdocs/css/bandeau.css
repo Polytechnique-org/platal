@@ -18,11 +18,13 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-#bandeau-X a        { vertical-align: middle; }
-#bandeau-X a:link, #bandeau-X a:visited    { text-decoration: none ; color: #505050; }
-#bandeau-X a:hover   { text-decoration: underline; color: black; }
-#bandeau-X a:active  { color: #CCCCCC ; background: #505050 ; }
-body {margin:0px;}
-#bandeau-X {
-background:#CCCCCC;color:#505050;font-size:10px;font-family:Verdana, Arial, Helvetica, sans-serif;height:15px;border:none;padding:0;margin:0 }
-#bandeau-X img { vertical-align:middle;border:0;padding:0;margin:0 }
+@media screen {
+    #bandeau-X a        { vertical-align: middle; }
+    #bandeau-X a:link, #bandeau-X a:visited    { text-decoration: none ; color: #505050; }
+    #bandeau-X a:hover   { text-decoration: underline; color: black; }
+    #bandeau-X a:active  { color: #CCCCCC ; background: #505050 ; }
+    body {margin:0px;}
+    #bandeau-X {
+    background:#CCCCCC;color:#505050;font-size:10px;font-family:Verdana, Arial, Helvetica, sans-serif;height:15px;border:none;padding:0;margin:0 }
+    #bandeau-X img { vertical-align:middle;border:0;padding:0;margin:0 }
+}

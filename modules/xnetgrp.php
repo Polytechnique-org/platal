@@ -56,7 +56,7 @@ class XnetGrpModule extends PLModule
         );
     }
 
-    function handler_index(&$page, $arg = null)
+    function handler_index($page, $arg = null)
     {
         global $globals, $platal;
         if (!is_null($arg)) {
@@ -136,13 +136,13 @@ class XnetGrpModule extends PLModule
         $page->assign('articles', $arts);
     }
 
-    function handler_logo(&$page)
+    function handler_logo($page)
     {
         global $globals;
         $globals->asso()->getLogo()->send();
     }
 
-    function handler_site(&$page)
+    function handler_site($page)
     {
         global $globals;
         $site = $globals->asso('site');
@@ -154,7 +154,7 @@ class XnetGrpModule extends PLModule
         exit;
     }
 
-    function handler_edit(&$page)
+    function handler_edit($page)
     {
         global $globals;
         $page->changeTpl('xnetgrp/edit.tpl');
@@ -208,8 +208,13 @@ class XnetGrpModule extends PLModule
                       Post::v('unsub_url'), $flags, Post::t('welcome_msg'),
                       $globals->asso('id'));
                 if (Post::v('mail_domain')) {
-                    XDB::execute('INSERT IGNORE INTO virtual_domains (domain) VALUES({?})',
-                                           Post::v('mail_domain'));
+                    XDB::execute('INSERT IGNORE INTO  email_virtual_domains (name)
+                                              VALUES  ({?})',
+                                 Post::t('mail_domain'));
+                    XDB::execute('UPDATE  email_virtual_domains
+                                     SET  aliasing = id
+                                   WHERE  name = {?}',
+                                 Post::t('mail_domain'));
                 }
             } else {
                 XDB::execute(
@@ -226,6 +231,16 @@ class XnetGrpModule extends PLModule
                       $globals->asso('id'));
             }
 
+            Phone::deletePhones(0, Phone::LINK_GROUP, $globals->asso('id'));
+            $phone = new Phone(array('link_type' => 'group', 'link_id' => $globals->asso('id'), 'id' => 0,
+                                     'type' => 'fixed', 'display' => Post::v('phone'), 'pub' => 'public'));
+            $fax   = new Phone(array('link_type' => 'group', 'link_id' => $globals->asso('id'), 'id' => 1,
+                                     'type' => 'fax', 'display' => Post::v('fax'), 'pub' => 'public'));
+            $phone->save();
+            $fax->save();
+            Address::deleteAddresses(null, Address::LINK_GROUP, null, $globals->asso('id'));
+            $address = new Address(array('groupid' => $globals->asso('id'), 'type' => Address::LINK_GROUP, 'text' => Post::v('address')));
+            $address->save();
 
             if ($_FILES['logo']['name']) {
                 $upload = PlUpload::get($_FILES['logo'], $globals->asso('id'), 'asso.logo', true);
@@ -252,7 +267,7 @@ class XnetGrpModule extends PLModule
         }
     }
 
-    function handler_mail(&$page)
+    function handler_mail($page)
     {
         global $globals;
 
@@ -289,7 +304,7 @@ class XnetGrpModule extends PLModule
         }
     }
 
-    function handler_forum(&$page, $group = null, $artid = null)
+    function handler_forum($page, $group = null, $artid = null)
     {
         global $globals;
         $page->changeTpl('xnetgrp/forum.tpl');
@@ -302,7 +317,7 @@ class XnetGrpModule extends PLModule
         run_banana($page, 'ForumsBanana', $get);
     }
 
-    function handler_annuaire(&$page, $action = null, $subaction = null)
+    function handler_annuaire($page, $action = null, $subaction = null)
     {
         global $globals;
 
@@ -355,32 +370,32 @@ class XnetGrpModule extends PLModule
         $page->assign('only_admin', Env::b('admin'));
     }
 
-    function handler_trombi(&$page)
+    function handler_trombi($page)
     {
         pl_redirect('annuaire/trombi');
     }
 
-    function handler_geoloc(&$page)
+    function handler_geoloc($page)
     {
         pl_redirect('annuaire/geoloc');
     }
 
-    function handler_vcard(&$page, $photos = null)
+    function handler_vcard($page, $photos = null)
     {
         global $globals;
         $vcard = new VCard($photos == 'photos', 'Membre du groupe ' . $globals->asso('nom'));
-        $vcard->addProfiles($globals->asso()->getMembersFilter()->getProfiles());
+        $vcard->addProfiles($globals->asso()->getMembersFilter()->getProfiles(null, Profile::FETCH_ALL));
         $vcard->show();
     }
 
-    function handler_csv(&$page, $filename = null)
+    function handler_csv($page, $filename = null)
     {
         global $globals;
         if (is_null($filename)) {
             $filename = $globals->asso('diminutif') . '.csv';
         }
         $users = $globals->asso()->getMembersFilter(null, new UFO_Name('directory_name'))->getUsers();
-        pl_content_headers("text/x-csv");
+        pl_cached_content_headers('text/x-csv', 1);
         $page->changeTpl('xnetgrp/annuaire-csv.tpl', NO_SKIN);
         $page->assign('users', $users);
     }
@@ -393,7 +408,7 @@ class XnetGrpModule extends PLModule
                      $globals->asso('id'), $uid);
     }
 
-    private function validSubscription(User &$user)
+    private function validSubscription(User $user)
     {
         global $globals;
         $this->removeSubscriptionRequest($user->id());
@@ -419,7 +434,7 @@ class XnetGrpModule extends PLModule
         }
     }
 
-    function handler_subscribe(&$page, $u = null)
+    function handler_subscribe($page, $u = null)
     {
         global $globals;
         $page->changeTpl('xnetgrp/inscrire.tpl');
@@ -500,9 +515,9 @@ class XnetGrpModule extends PLModule
             $uf = New UserFilter(New UFC_Group($globals->asso('id'), true));
             $admins = $uf->iterUsers();
             $admin = $admins->next();
-            $to = $admin->bestalias;
+            $to = $admin->bestEmail();
             while ($admin = $admins->next()) {
-                $to .= ', ' . $admin->bestalias;
+                $to .= ', ' . $admin->bestEmail();
             }
 
             $append = "\n"
@@ -534,7 +549,7 @@ class XnetGrpModule extends PLModule
         }
     }
 
-    function handler_subscribe_valid(&$page)
+    function handler_subscribe_valid($page)
     {
         global $globals;
 
@@ -563,7 +578,7 @@ class XnetGrpModule extends PLModule
         $page->assign('valid', $it);
     }
 
-    function handler_change_rights(&$page)
+    function handler_change_rights($page)
     {
         if (Env::has('right') && (may_update() || S::suid())) {
             switch (Env::v('right')) {
@@ -590,7 +605,7 @@ class XnetGrpModule extends PLModule
         http_redirect($_SERVER['HTTP_REFERER']);
     }
 
-    function handler_admin_annuaire(&$page)
+    function handler_admin_annuaire($page)
     {
         global $globals;
 
@@ -630,7 +645,7 @@ class XnetGrpModule extends PLModule
         $page->assign('lists', $lists);
     }
 
-    function handler_admin_member_new(&$page, $email = null)
+    function handler_admin_member_new($page, $email = null)
     {
         global $globals;
 
@@ -714,7 +729,7 @@ class XnetGrpModule extends PLModule
         }
     }
 
-    function handler_admin_member_new_ajax(&$page)
+    function handler_admin_member_new_ajax($page)
     {
         pl_content_headers("text/html");
         $page->changeTpl('xnetgrp/membres-new-search.tpl', NO_SKIN);
@@ -747,7 +762,7 @@ class XnetGrpModule extends PLModule
         $page->assign('users', $users);
     }
 
-    function unsubscribe(PlUser &$user)
+    function unsubscribe(PlUser $user)
     {
         global $globals;
         XDB::execute("DELETE FROM  group_members
@@ -793,15 +808,15 @@ class XnetGrpModule extends PLModule
             }
         }
 
-        XDB::execute("DELETE FROM  virtual_redirect
-                            USING  virtual_redirect
-                       INNER JOIN  virtual USING(vid)
-                            WHERE  redirect={?} AND alias LIKE {?}",
-                       $user->forlifeEmail(), '%@'.$domain);
+        XDB::execute('DELETE  v
+                        FROM  email_virtual         AS v
+                  INNER JOIN  email_virtual_domains AS d ON (v.domain = d.id)
+                       WHERE  v.redirect = {?} AND d.name = {?}',
+                     $user->forlifeEmail(), $domain);
         return !$warning;
     }
 
-    function handler_unsubscribe(&$page)
+    function handler_unsubscribe($page)
     {
         $page->changeTpl('xnetgrp/membres-del.tpl');
         $user = S::user();
@@ -833,7 +848,7 @@ class XnetGrpModule extends PLModule
         $page->assign('is_member', is_member(true));
     }
 
-    function handler_admin_member_del(&$page, $user = null)
+    function handler_admin_member_del($page, $user = null)
     {
         $page->changeTpl('xnetgrp/membres-del.tpl');
         $user = User::getSilent($user);
@@ -911,7 +926,7 @@ class XnetGrpModule extends PLModule
         return $user->login();
     }
 
-    function handler_admin_member(&$page, $user)
+    function handler_admin_member($page, $user)
     {
         global $globals;
 
@@ -942,7 +957,7 @@ class XnetGrpModule extends PLModule
             // Update user info
             $email_changed = (!$user->profile() && strtolower($user->forlifeEmail()) != strtolower(Post::v('email')));
             $from_email = $user->forlifeEmail();
-            if (!$user->profile()) {
+            if ($user->type == 'virtual' || $user->type == 'xnet') {
                 XDB::query('UPDATE  accounts
                                SET  full_name = {?}, directory_name = {?}, display_name = {?},
                                     sex = {?}, email = {?}, type = {?}
@@ -1022,26 +1037,18 @@ class XnetGrpModule extends PLModule
 
             // Change subscriptioin to aliases
             foreach (Env::v('ml3', array()) as $ml => $state) {
+                require_once 'emails.inc.php';
                 $ask = !empty($_REQUEST['ml4'][$ml]);
                 if($state == $ask) {
                     if ($state && $email_changed) {
-                        XDB::query("UPDATE  virtual_redirect AS vr, virtual AS v
-                                       SET  vr.redirect = {?}
-                                     WHERE  vr.vid = v.vid AND v.alias = {?} AND vr.redirect = {?}",
-                                     $user->forlifeEmail(), $ml, $from_email);
+                        update_list_alias($user, $from_email, $ml, $globals->asso('mail_domain'));
                         $page->trigSuccess("L'abonnement de {$user->fullName()} à $ml a été mis à jour.");
                     }
                 } else if($ask) {
-                    XDB::query("INSERT INTO  virtual_redirect (vid,redirect)
-                                     SELECT  vid,{?} FROM virtual WHERE alias={?}",
-                               $user->forlifeEmail(), $ml);
+                    add_to_list_alias($user, $ml, $globals->asso('mail_domain'));
                     $page->trigSuccess("{$user->fullName()} a été abonné à $ml.");
                 } else {
-                    XDB::query("DELETE FROM  virtual_redirect
-                                      USING  virtual_redirect
-                                 INNER JOIN  virtual USING(vid)
-                                      WHERE  redirect={?} AND alias={?}",
-                               $from_email, $ml);
+                    delete_from_list_alias($user, $ml, $globals->asso('mail_domain'));
                     $page->trigSuccess("{$user->fullName()} a été désabonné de $ml.");
                 }
             }
@@ -1054,11 +1061,11 @@ class XnetGrpModule extends PLModule
         $page->assign('onlyGroup', ($user->groupCount() == 1));
         $page->assign('user', $user);
         $page->assign('listes', $mmlist->get_lists($user->forlifeEmail()));
-        $page->assign('alias', $user->emailAliases($globals->asso('mail_domain'), 'user', true));
+        $page->assign('alias', $user->emailGroupAliases($globals->asso('mail_domain')));
         $page->assign('positions', explode(',', $positions));
     }
 
-    function handler_rss(PlPage& $page, PlUser& $user)
+    function handler_rss(PlPage $page, PlUser $user)
     {
         global $globals;
         $page->assign('asso', $globals->asso());
@@ -1068,7 +1075,7 @@ class XnetGrpModule extends PLModule
         return $feed->run($page, $user, false);
     }
 
-    private function upload_image(PlPage &$page, PlUpload &$upload)
+    private function upload_image(PlPage $page, PlUpload $upload)
     {
         if (@!$_FILES['image']['tmp_name'] && !Env::v('image_url')) {
             return true;
@@ -1087,7 +1094,7 @@ class XnetGrpModule extends PLModule
         return true;
     }
 
-    function handler_photo_announce(&$page, $eid = null) {
+    function handler_photo_announce($page, $eid = null) {
         if ($eid) {
             $res = XDB::query('SELECT  *
                                  FROM  group_announces_photo
@@ -1112,7 +1119,7 @@ class XnetGrpModule extends PLModule
         exit;
     }
 
-    function handler_edit_announce(&$page, $aid = null)
+    function handler_edit_announce($page, $aid = null)
     {
         global $globals, $platal;
         $page->changeTpl('xnetgrp/announce-edit.tpl');
@@ -1277,7 +1284,7 @@ class XnetGrpModule extends PLModule
         $page->assign_by_ref('upload', $upload);
     }
 
-    function handler_admin_announce(&$page)
+    function handler_admin_announce($page)
     {
         global $globals;
         $page->changeTpl('xnetgrp/announce-admin.tpl');

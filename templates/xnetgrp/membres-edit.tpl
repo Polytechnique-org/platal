@@ -90,7 +90,7 @@
         </select>
       </td>
     </tr>
-    {if !$user->profile()}
+    {if $user->type eq 'virtual' || $user->type eq 'xnet'}
     <tr class="impair">
       <td class="titre">
         Type d'utilisateur&nbsp;:
@@ -137,8 +137,7 @@
         </select>
       </td>
     </tr>
-    {/if}
-    {if !$user->profile() || !$user->perms}
+    {if !$user->perms}
     <tr class="impair">
       <td class="titre">
         Email&nbsp;:
@@ -147,6 +146,7 @@
         <input type="text" value="{$user->forlifeEmail()}" name="email" size="40" />
       </td>
     </tr>
+    {/if}
     {/if}
     <tr class="impair">
       <td class="titre">

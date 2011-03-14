@@ -30,6 +30,7 @@ class NamesReq extends ProfileValidate
     public $sn_old;
     public $sn_new;
     public $display_names;
+    public $mail_domain;
     public $old_alias;
     public $new_alias;
     public $sn_types;
@@ -39,7 +40,7 @@ class NamesReq extends ProfileValidate
     // }}}
     // {{{ constructor
 
-    public function __construct(User &$_user, Profile &$_profile, $_search_names, $_private_name_end)
+    public function __construct(User $_user, Profile $_profile, $_search_names, $_private_name_end)
     {
         parent::__construct($_user, $_profile, true, 'usage');
         require_once 'name.func.inc.php';
@@ -49,6 +50,7 @@ class NamesReq extends ProfileValidate
         $this->sn_new    = $_search_names;
         $this->new_alias = true;
         $this->display_names = array();
+        $this->mail_domain = $this->profileOwner->mainEmailDomain();
 
         build_display_names($this->display_names, $_search_names,
                             $this->profile->isFemale(), $_private_name_end, $this->new_alias);
@@ -59,17 +61,16 @@ class NamesReq extends ProfileValidate
         }
 
         if (!is_null($this->profileOwner)) {
-            $res = XDB::query("SELECT  alias
-                                 FROM  aliases
-                                WHERE  uid = {?} AND type = 'alias' AND FIND_IN_SET('usage', flags)",
-                              $this->profileOwner->id());
-            $this->old_alias  = $res->fetchOneCell();
+            $this->old_alias = XDB::fetchOneCell('SELECT  email
+                                                    FROM  email_source_account
+                                                   WHERE  uid = {?} AND type = \'alias\' AND FIND_IN_SET(\'usage\', flags)',
+                                                 $this->profileOwner->id());
             if ($this->old_alias != $this->new_alias) {
-                $res = XDB::query("SELECT  uid
-                                     FROM  aliases
-                                    WHERE  alias = {?}",
-                                  $this->new_alias);
-                if ($res->fetchOneCell()) {
+                $used = XDB::fetchOneCell('SELECT  COUNT(uid)
+                                             FROM  email_source_account
+                                            WHERE  email = {?} AND type != \'alias_aux\'',
+                                          $this->new_alias);
+                if ($used) {
                     $this->new_alias = null;
                 }
             }
@@ -97,16 +98,15 @@ class NamesReq extends ProfileValidate
 
     protected function _mail_body($isok)
     {
-        global $globals;
         if ($isok) {
             $res = "  Le changement de nom que tu as demandé vient d'être effectué.";
             if (!is_null($this->profileOwner)) {
                 if ($this->old_alias != $this->new_alias) {
                     if ($this->old_alias) {
-                        $res .= "\n\n  Les alias {$this->old_alias}@{$globals->mail->domain} et @{$globals->mail->domain2} ont été supprimés.";
+                        $res .= "\n\n  L'alias {$this->old_alias}@{$this->mail_domain} a été supprimé.";
                     }
                     if ($this->new_alias) {
-                        $res .= "\n\n  Les alias {$this->new_alias}@{$globals->mail->domain} et @{$globals->mail->domain2} sont maintenant à ta disposition !";
+                        $res .= "\n\n  L'alias {$this->new_alias}@{$this->mail_domain} est maintenant à ta disposition !";
                     }
                 }
                 if ($globals->mailstorage->googleapps_domain) {
@@ -134,7 +134,7 @@ class NamesReq extends ProfileValidate
 
         if (!is_null($this->profileOwner)) {
             set_alias_names($this->sn_new, $this->sn_old, $this->profile->id(),
-                            $this->profileOwner->id(), true, $this->new_alias);
+                            $this->profileOwner, true, $this->new_alias);
 
             // Update the local User object, to pick up the new bestalias.
             $this->profileOwner = User::getSilentWithUID($this->profileOwner->id());

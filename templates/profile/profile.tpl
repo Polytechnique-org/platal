@@ -24,7 +24,7 @@
 <script type="text/javascript">//<![CDATA[
 function chgMainWinLoc(strPage)
 {
-  strPage = platal_baseurl + strPage;
+  strPage = $.plURL(strPage);
   if (parent.opener) {
     try {
       parent.opener.document.location = strPage;
@@ -36,6 +36,9 @@ function chgMainWinLoc(strPage)
     document.location = strPage;
   }
 }
+
+$($.closeOnEsc);
+
 //]]></script>
 {/literal}
 
@@ -56,7 +59,10 @@ function chgMainWinLoc(strPage)
         {assign var=groups value=$owner->groups(true,true)}
         {if $groups|@count}<div><em class="intitule">Groupe{if count($groups) > 1}s{/if} et institution{if count($groups) > 1}s{/if} X&nbsp;: </em>
         <span><br/>
-        {foreach from=$groups item=group name=groups}{if !$smarty.foreach.groups.first}, {/if}<span title="{$group.nom}"><a href="{$group.site}">{$group.nom}</a></span>{/foreach}
+        {foreach from=$groups item=group name=groups}
+          {if !$smarty.foreach.groups.first}, {/if}
+          <span title="{$group.nom}"><a href="{if $group.site}{$group.site}{else}http://www.polytechnique.net/{$group.nom}{/if}">{$group.nom}</a></span>
+        {/foreach}
         </span></div>{/if}
       {/if}
 

@@ -23,7 +23,7 @@ class UserFilterIterator implements PlIterator
 {
     private $it;
     private $user;
-    public function __construct(PlIterator &$it, PlUser &$user)
+    public function __construct(PlIterator $it, PlUser $user)
     {
         $this->it =& $it;
         $this->user =& $user;
@@ -70,7 +70,7 @@ class XnetGrpEventFeed extends PlFeed
                             'xnetgrp/announce-rss.tpl');
     }
 
-    protected function fetch(PlUser &$user)
+    protected function fetch(PlUser $user)
     {
         global $globals;
         if (!is_null($user)) {

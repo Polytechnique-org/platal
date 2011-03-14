@@ -31,9 +31,13 @@ class ProfileVisibility
 
     private $level;
 
-    public function __construct($level = null)
+    public function __construct($level = null, $force = false)
     {
-        $this->setLevel($level);
+        if ($force) {
+            $this->forceLevel($level);
+        } else {
+            $this->setLevel($level);
+        }
     }
 
     public function setLevel($level = self::VIS_PUBLIC)
@@ -62,6 +66,15 @@ class ProfileVisibility
         }
     }
 
+    public function forceLevel($level)
+    {
+        if ($level != self::VIS_PRIVATE && $level != self::VIS_AX && $level != self::VIS_PUBLIC) {
+            Platal::page()->kill('Invalid visibility: ' . $level);
+        }
+
+        $this->level = $level;
+    }
+
     public function level()
     {
         if ($this->level == null) {
@@ -79,6 +92,14 @@ class ProfileVisibility
     public function isVisible($visibility)
     {
         return in_array($visibility, $this->levels());
+    }
+
+    static public function comparePublicity($a, $b)
+    {
+        $a_pub = new ProfileVisibility($a['pub'], true);
+        $b_pub = new ProfileVisibility($b['pub'], true);
+
+        return !$a_pub->isVisible($b_pub->level());
     }
 }
 

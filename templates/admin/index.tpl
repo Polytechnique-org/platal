@@ -180,34 +180,28 @@
     </td>
   </tr>
   <tr class="pair">
-    <td class="titre">Newsletter</td>
+    <td class="titre">Newsletters</td>
     <td>
-      <a href="admin/newsletter">Liste</a>
+      <a href="admin/nls">Liste des NLs groupes</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/newsletter/categories">Catégories</a>
+      <a href="admin/newsletter/">NL de X.org</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/url">Raccourcisseur d'url</a>
     </td>
   </tr>
   <tr class="impair">
-    <td class="titre">AX-Letter</td>
-    <td>
-      <a href="ax/edit">Édition</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/axletter">Inscriptions et permissions</a>
-    </td>
-  </tr>
-  <tr class="pair">
     <td class="titre">Wiki</td>
     <td>
       <a href="admin/wiki">Pages et permissions</a>
     </td>
   </tr>
-  <tr class="impair">
+  <tr class="pair">
     <td class="titre">Sondages</td>
     <td>
       <a href="survey/admin">Gestion des sondages</a>
     </td>
   </tr>
-  <tr class="pair">
+  <tr class="impair">
     <td class="titre">Validations</td>
     <td>
       <a href="admin/validate/answers">Réponses automatiques</a>

@@ -36,8 +36,9 @@ EOF;
 }
 
 $id = intval($opt['i']);
-$nl = new NewsLetter($id);
-$nl->sendToAll();
+$nl = NewsLetter::forGroup(NewsLetter::GROUP_XORG);
+$issue = $nl->getIssue($id);
+$issue->sendToAll();
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

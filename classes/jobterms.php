@@ -94,7 +94,7 @@ class JobTerms {
      * subbranches, keeping only the one containing this text in its title or in the title of one of
      * its subbranches.
      */
-    static public function ajaxGetBranch(&$page, $filter = self::ALL) {
+    static public function ajaxGetBranch($page, $filter = self::ALL) {
         pl_content_headers('application/json');
         $page->changeTpl('include/jobterms.branch.tpl', NO_SKIN);
         $subTerms = self::getSubTerms(Env::v('jtid'), $filter, Env::v('text_filter'));
@@ -117,9 +117,9 @@ class JobTerms {
         return '$("'.addslashes($domElement).'").jstree({
             "core" : {"strings":{"loading":"Chargement ..."}},
             "plugins" : ["themes","json_data"],
-            "themes" : { "url" : platal_baseurl + "css/jstree.css" },
+            "themes" : { "url" : $.plURL("css/jstree.css") },
             "json_data" : { "ajax" : {
-                "url" : platal_baseurl + "'.addslashes($platalpage).'",
+                "url" : $.plURL("'.addslashes($platalpage).'"),
                 "data" : function(nod) {
                     var jtid = 0;
                     if (nod != -1) {

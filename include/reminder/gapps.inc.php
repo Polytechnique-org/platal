@@ -52,7 +52,7 @@ class ReminderGapps extends Reminder
         return 'Xorg/GoogleApps';
     }
 
-    public static function IsCandidate(User &$user, $candidate)
+    public static function IsCandidate(User $user, $candidate)
     {
         if (!$user->checkPerms(User::PERM_MAIL)) {
             return false;

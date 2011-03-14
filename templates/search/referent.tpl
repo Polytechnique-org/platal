@@ -37,7 +37,7 @@ Actuellement, {$mentors_number} mentors et référents se sont déclarés sur {#
 {javascript name=jobtermstree}
 <script type="text/javascript">//<![CDATA[
 
-var baseurl = platal_baseurl + "referent/";
+var baseurl = $.plURL("referent/");
 {literal}
 
 /** Hides or display tree of all job terms */
@@ -81,7 +81,7 @@ function updateJobTerm(jtid, country)
   $('#jobterm').val(jtid);
   $('#country_chg').closest('tr').show();
   $('#keywords').show();
-  $('#country_chg').load(platal_baseurl + 'search/referent/countries/' + jtid, function(response, status, xhr) {
+  $('#country_chg').load($.plURL('search/referent/countries/' + jtid), function(response, status, xhr) {
     if (country) {
       if (status != "error") {
         $('#country_chg select').val(country);

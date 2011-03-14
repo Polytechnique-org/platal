@@ -65,7 +65,7 @@
     for (var i = 0 ; i < form['cc_contacts[]'].length ; ++i) {
       ccc += form['cc_contacts[]'].options[i].value + ";";
     }
-    $.post(platal_baseurl + "emails/send",
+    $.xpost("emails/send",
            { save: true,
              token: '{xsrf_token}',
              from: form.from.value,
@@ -150,7 +150,7 @@
       saveMessage();
       return true;
     });
-  $(document).ready(
+  $(
     function() {
       // Remove empty options in select (they were added only for HTML
       // compatibility).
@@ -158,7 +158,7 @@
       $('#cc_contacts option[value=""]').remove();
     });
 
-    $(document).ready(function() {
+    $(function() {
       $("[name='to']").focus();
     });
   {/literal}

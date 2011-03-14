@@ -46,7 +46,7 @@ class MLBanana extends Banana
     static public $domain;
     private $user;
 
-    function __construct(User &$user, $params = null)
+    function __construct(User $user, $params = null)
     {
         global $globals;
         $this->user = &$user;

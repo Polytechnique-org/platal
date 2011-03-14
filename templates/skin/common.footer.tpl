@@ -42,4 +42,14 @@
   -->
 </div>
 
+<script type="text/javascript">//<![CDATA[
+  {literal}
+  (function($) {
+    $.extend({
+      xsrf_token: {/literal}'{$smarty.session.xsrf_token}'{literal}
+    });
+  }(jQuery));
+  {/literal}
+//]]></script>
+
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

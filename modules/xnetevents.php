@@ -35,7 +35,7 @@ class XnetEventsModule extends PLModule
         );
     }
 
-    function handler_events(&$page, $archive = null)
+    function handler_events($page, $archive = null)
     {
         global $globals;
 
@@ -73,10 +73,9 @@ class XnetEventsModule extends PLModule
         if ($action == 'del') {
             // deletes the event mailing aliases
             if ($tmp[1]) {
-                foreach (array('-absents@', '-participants@', '-paye@', '-participants-non-paye@') as $v) {
-                    XDB::execute("DELETE FROM  virtual
-                                        WHERE  type = 'evt' AND alias LIKE {?}",
-                                 $tmp[1] . $v . '%');
+                require_once 'emails.inc.php';
+                foreach (explode(',', $globals->xnet->event_lists) as $suffix) {
+                    delete_list_alias($tmp[1] . $suffix, $globals->xnet->evts_domain, 'event');
                 }
             }
 
@@ -175,7 +174,7 @@ class XnetEventsModule extends PLModule
         $page->assign('undisplayed_events', $undisplayed_events);
     }
 
-    function handler_sub(&$page, $eid = null)
+    function handler_sub($page, $eid = null)
     {
         $this->load('xnetevents.inc.php');
         $page->changeTpl('xnetevents/subscribe.tpl');
@@ -266,7 +265,7 @@ class XnetEventsModule extends PLModule
         }
         if ($updated !== false) {
             $page->trigSuccess('Ton inscription à l\'événement a été mise à jour avec succès.');
-            subscribe_lists_event(S::i('uid'), $evt, ($total > 0 ? 1 : 0), 0);
+            subscribe_lists_event(S::i('uid'), $evt['short_name'], ($total > 0 ? 1 : 0), 0);
 
             if ($evt['subscription_notification'] != 'nobody') {
                 $mailer = new PlMailer('xnetevents/subscription-notif.mail.tpl');
@@ -290,7 +289,7 @@ class XnetEventsModule extends PLModule
         $page->assign('event', get_event_detail($eid));
     }
 
-    function handler_csv(&$page, $eid = null, $item_id = null)
+    function handler_csv($page, $eid = null, $item_id = null)
     {
         $this->load('xnetevents.inc.php');
 
@@ -303,7 +302,7 @@ class XnetEventsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        pl_content_headers("text/x-csv");
+        pl_cached_content_headers('text/x-csv', 1);
         $page->changeTpl('xnetevents/csv.tpl', NO_SKIN);
 
         $admin = may_update();
@@ -320,7 +319,7 @@ class XnetEventsModule extends PLModule
         $page->assign('tout', !Env::v('item_id', false));
     }
 
-    function handler_ical(&$page, $eid = null)
+    function handler_ical($page, $eid = null)
     {
         global $globals;
 
@@ -352,7 +351,7 @@ class XnetEventsModule extends PLModule
         pl_content_headers("text/calendar");
     }
 
-    function handler_edit(&$page, $eid = null)
+    function handler_edit($page, $eid = null)
     {
         global $globals;
 
@@ -535,7 +534,7 @@ class XnetEventsModule extends PLModule
         $page->assign('url_ref', $eid);
     }
 
-    function handler_admin(&$page, $eid = null, $item_id = null)
+    function handler_admin($page, $eid = null, $item_id = null)
     {
         global $globals;
 
@@ -566,7 +565,7 @@ class XnetEventsModule extends PLModule
                                  SET paid = paid + {?}
                                WHERE uid = {?} AND eid = {?} AND item_id = 1",
                              $amount, $member->uid, $evt['eid']);
-                subscribe_lists_event($member->uid, $evt, 1, $amount);
+                subscribe_lists_event($member->uid, $evt['short_name'], 1, $amount);
             }
 
             // change the number of personns coming with a participant
@@ -598,10 +597,10 @@ class XnetEventsModule extends PLModule
                                         WHERE uid = {?} AND eid = {?}",
                                     $member->uid, $evt['eid']);
                     $u = 0;
-                    subscribe_lists_event($member->uid, $evt, -1, $paid);
+                    subscribe_lists_event($member->uid, $evt['short_name'], -1, $paid);
                 } else {
                     $u = $u['cnt'] ? $u['nb'] : null;
-                    subscribe_lists_event($member->uid, $evt, ($u > 0 ? 1 : 0), $paid);
+                    subscribe_lists_event($member->uid, $evt['short_name'], ($u > 0 ? 1 : 0), $paid);
                 }
             }
 

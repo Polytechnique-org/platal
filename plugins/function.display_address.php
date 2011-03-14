@@ -36,7 +36,7 @@ function display_address_isIdentity($idt, $value, $test_reverse = true)
     return false;
 }
 
-function smarty_function_display_address($param, &$smarty)
+function smarty_function_display_address($param, $smarty)
 {
     $adr = $param['adr'];
     $txtad = $adr->text;

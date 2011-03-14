@@ -6,7 +6,6 @@ ALTER TABLE geoloc_countries CHANGE COLUMN country countryEn VARCHAR(255) DEFAUL
 ALTER TABLE geoloc_countries CHANGE COLUMN countryFR country VARCHAR(255) DEFAULT NULL;
 ALTER TABLE geoloc_countries CHANGE COLUMN nationality nationalityEn VARCHAR(255) DEFAULT NULL;
 ALTER TABLE geoloc_countries CHANGE COLUMN nationalityFR nationality VARCHAR(255) DEFAULT NULL;
-ALTER TABLE geoloc_countries ADD COLUMN countryLocal VARCHAR(255) DEFAULT NULL;
 ALTER TABLE geoloc_countries ADD COLUMN countryPlain VARCHAR(255) DEFAULT NULL;
 
 INSERT INTO  geoloc_countries (iso_3166_1_a2, iso_3166_1_a3, iso_3166_1_num, worldRegion,

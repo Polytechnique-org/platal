@@ -26,14 +26,10 @@
 <p class="center"><strong>Voulez-vous télécharger le <a href="{$globals->baseurl}/search/adv/addresses{$plset_args}">tableau des adresses postales</a> pour la recette précédente&nbsp;?</strong></p>
 {/if}
 
-{javascript name=jquery.form}
-
 <script type="text/javascript">// <!--
-  var baseurl = platal_baseurl + "search/";
+  var baseurl = $.plURL("search/");
   {literal}
-  String.prototype.htmlEntities = function () {
-    return this.replace(/&/g,'&amp;').replace(new RegExp('<','g'),'&lt;').replace(/>/g,'&gt;');
-  };
+
   // display an autocomplete row : blabla (nb of found matches)
   function make_format_autocomplete(block) {
     return function(row) {
@@ -117,6 +113,15 @@
       });
   }
 
+  // when checking/unchecking "only_referent", disable/enable some fields
+  function changeOnlyReferent() {
+    if ($("#only_referent").is(':checked')) {
+      $("input[name='entreprise']").attr('disabled', true);
+    } else {
+      $("input[name='entreprise']").removeAttr('disabled');
+    }
+  }
+
   // when choosing a job term in tree, hide tree and set job term field
   function searchForJobTerm(treeid, jtid, full_name) {
     $(".term_tree").remove();
@@ -174,7 +179,7 @@
       }
     }
 
-  $(document).ready(function() {
+  $(function() {
       $(".autocompleteTarget").hide();
       $(".autocomplete").show().each(function() {
         targeted = $("../.autocompleteTarget",this)[0];
@@ -228,6 +233,10 @@
           // to ensure that, we unset it
           $(this).parent().find('.autocompleteTarget').val('');
         });
+
+      $("#only_referent").change(function() { changeOnlyReferent(); });
+      changeOnlyReferent();
+
     });
 /** Regexps to wipe out from search queries */
 var default_form_values = [ /&woman=0(&|$)/, /&subscriber=0(&|$)/, /&alive=0(&|$)/, /&egal[12]=[^&]*&promo[12]=(&|$)/g, /&networking_type=0(&|$)/, /&[^&=]+=(&|$)/g ];
@@ -285,7 +294,7 @@ function cleanForm(f) {
               f.egal2.value = '>=';
             }
           }
-          $(document).ready(function() { updatepromofields($('select[name=egal1]')[0]); });
+          $(function() { updatepromofields($('select[name=egal1]')[0]); });
           {/literal}
         /*]]>*/</script>
         <select name="egal1" onchange="updatepromofields(this)" style="text-align:center">
@@ -524,6 +533,7 @@ function cleanForm(f) {
       </td>
         {/if}
         {if $smarty.session.auth ge AUTH_COOKIE}
+    </tr>
     <tr>
       <td colspan="2">
           <input type='checkbox' name='order' value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} id="order"/>

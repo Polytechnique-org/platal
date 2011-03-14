@@ -214,7 +214,7 @@ class UserFilter extends PlFilter
         return $groups;
     }
 
-    private function getUIDList($uids = null, PlLimit &$limit)
+    private function getUIDList($uids = null, PlLimit $limit)
     {
         $this->requireAccounts();
         $this->buildQuery();
@@ -232,7 +232,7 @@ class UserFilter extends PlFilter
         return $fetched;
     }
 
-    private function getPIDList($pids = null, PlLimit &$limit)
+    private function getPIDList($pids = null, PlLimit $limit)
     {
         $this->requireProfiles();
         $this->buildQuery();
@@ -260,7 +260,7 @@ class UserFilter extends PlFilter
 
     /** Check that the user match the given rule.
      */
-    public function checkUser(PlUser &$user)
+    public function checkUser(PlUser $user)
     {
         $this->requireAccounts();
         $this->buildQuery();
@@ -272,7 +272,7 @@ class UserFilter extends PlFilter
 
     /** Check that the profile match the given rule.
      */
-    public function checkProfile(Profile &$profile)
+    public function checkProfile(Profile $profile)
     {
         $this->requireProfiles();
         $this->buildQuery();
@@ -863,6 +863,26 @@ class UserFilter extends PlFilter
         return $joins;
     }
 
+    /** NLS
+     */
+    private $nls = array();
+    public function addNewsLetterFilter($nlid)
+    {
+        $this->requireAccounts();
+        $sub = 'nl_' . $nlid;
+        $this->nls[$nlid] = $sub;
+        return $sub;
+    }
+
+    protected function newsLetterJoins()
+    {
+        $joins = array();
+        foreach ($this->nls as $key => $sub) {
+            $joins[$sub] = PlSqlJoin::left('newsletter_ins', '$ME.nlid = {?} AND $ME.uid = $UID', $key);
+        }
+        return $joins;
+    }
+
     /** BINETS
      */
 
@@ -894,74 +914,65 @@ class UserFilter extends PlFilter
 
     /** EMAILS
      */
-    private $e = array();
+    private $ra = array();
+    /** Allows filtering by redirection.
+     * @param $email If null, enable a left join on the email redirection table
+     *  (email_redirect_account); otherwise, perform a left join on users having
+     *  that email as a redirection.
+     * @return Suffix to use to access the adequate table.
+     */
     public function addEmailRedirectFilter($email = null)
     {
         $this->requireAccounts();
-        return $this->register_optional($this->e, $email);
+        return $this->register_optional($this->ra, $email);
     }
 
-    private $ve = array();
-    public function addVirtualEmailFilter($email = null)
-    {
-        $this->addAliasFilter(self::ALIAS_FORLIFE);
-        return $this->register_optional($this->ve, $email);
-    }
-
-    const ALIAS_BEST    = 'bestalias';
-    const ALIAS_FORLIFE = 'forlife';
-    private $al = array();
-    public function addAliasFilter($alias = null)
+    const ALIAS_BEST      = 'bestalias';
+    const ALIAS_FORLIFE   = 'forlife';
+    const ALIAS_AUXILIARY = 'alias_aux';
+    private $sa = array();
+    /** Allows filtering by source email.
+     * @param $email If null, enable a left join on the email source table
+     *  (email_source_account); otherwise, perform a left join on users having
+     *  that email as a source email.
+     * @return Suffix to use to access the adequate table.
+     */
+     public function addAliasFilter($email = null)
     {
         $this->requireAccounts();
-        return $this->register_optional($this->al, $alias);
+        return $this->register_optional($this->sa, $email);
     }
 
     protected function emailJoins()
     {
         global $globals;
         $joins = array();
-        foreach ($this->e as $sub=>$key) {
-            if (is_null($key)) {
-                $joins['e' . $sub] = PlSqlJoin::left('emails', '$ME.uid = $UID AND $ME.flags != \'filter\'');
+        foreach ($this->ra as $sub => $redirections) {
+            if (is_null($redirections)) {
+                $joins['ra' . $sub] = PlSqlJoin::left('email_redirect_account', '$ME.uid = $UID AND $ME.type != \'imap\'');
             } else {
-                if (!is_array($key)) {
-                    $key = array($key);
+                if (!is_array($redirections)) {
+                    $key = array($redirections);
                 }
-                $joins['e' . $sub] = PlSqlJoin::left('emails', '$ME.uid = $UID AND $ME.flags != \'filter\'
-                                                               AND $ME.email IN {?}', $key);
+                $joins['ra' . $sub] = PlSqlJoin::left('email_redriect_account', '$ME.uid = $UID AND $ME.type != \'imap\'
+                                                                                 AND $ME.redirect IN {?}', $redirections);
             }
         }
-        foreach ($this->al as $sub=>$key) {
-            if (is_null($key)) {
-                $joins['al' . $sub] = PlSqlJoin::left('aliases', '$ME.uid = $UID AND $ME.type IN (\'alias\', \'a_vie\')');
+        foreach ($this->sa as $sub => $emails) {
+            if (is_null($emails)) {
+                $joins['sa' . $sub] = PlSqlJoin::left('email_source_account', '$ME.uid = $UID');
             } else if ($key == self::ALIAS_BEST) {
-                $joins['al' . $sub] = PlSqlJoin::left('aliases', '$ME.uid = $UID AND $ME.type IN (\'alias\', \'a_vie\') AND  FIND_IN_SET(\'bestalias\', $ME.flags)');
+                $joins['sa' . $sub] = PlSqlJoin::left('email_source_account', '$ME.uid = $UID AND FIND_IN_SET(\'bestalias\', $ME.flags)');
             } else if ($key == self::ALIAS_FORLIFE) {
-                $joins['al' . $sub] = PlSqlJoin::left('aliases', '$ME.uid = $UID AND $ME.type = \'a_vie\'');
+                $joins['sa' . $sub] = PlSqlJoin::left('email_source_account', '$ME.uid = $UID AND $ME.type = \'forlife\'');
+            } else if ($key == self::ALIAS_AUXILiIARY) {
+                $joins['sa' . $sub] = PlSqlJoin::left('email_source_account', '$ME.uid = $UID AND $ME.type = \'alias_aux\'');
             } else {
-                if (!is_array($key)) {
-                    $key = array($key);
+                if (!is_array($emails)) {
+                    $key = array($emails);
                 }
-                $joins['al' . $sub] = PlSqlJoin::left('aliases', '$ME.uid = $UID AND $ME.type IN (\'alias\', \'a_vie\')
-                                                                  AND $ME.alias IN {?}', $key);
+                $joins['sa' . $sub] = PlSqlJoin::left('email_source_account', '$ME.uid = $UID AND $ME.email IN {?}', $emails);
             }
-        }
-        foreach ($this->ve as $sub=>$key) {
-            if (is_null($key)) {
-                $joins['v' . $sub] = PlSqlJoin::left('virtual', '$ME.type = \'user\'');
-            } else {
-                if (!is_array($key)) {
-                    $key = array($key);
-                }
-                $joins['v' . $sub] = PlSqlJoin::left('virtual', '$ME.type = \'user\' AND $ME.alias IN {?}', $key);
-            }
-            $joins['vr' . $sub] = PlSqlJoin::left('virtual_redirect',
-                                                  '$ME.vid = v' . $sub . '.vid
-                                                   AND ($ME.redirect IN (CONCAT(al_forlife.alias, \'@\', {?}),
-                                                                         CONCAT(al_forlife.alias, \'@\', {?}),
-                                                                         a.email))',
-                                                  $globals->mail->domain, $globals->mail->domain2);
         }
         return $joins;
     }

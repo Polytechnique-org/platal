@@ -37,7 +37,7 @@ Pour toute information complémentaire, n'hésite pas à écrire à
   <tr>
     <td class="skigauche">
       <input type="radio" name="newskin" value="{$skin.id}" {if $skin_id eq $skin.id}checked="checked"{/if}
-        onclick="dynpostkv('prefs/skin', 'newskin', {$skin.id})" />
+        onclick="$.dynPost('prefs/skin', 'newskin', {$skin.id})" />
     </td>
     <td class="skimilieu">
       <strong>{$skin.name}</strong>

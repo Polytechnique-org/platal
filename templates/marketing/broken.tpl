@@ -39,7 +39,7 @@
   Recherche d'adresses pour {$user->fullName("promo")}.
 </h1>
 
-{if !$user->email}
+{if !$user->active_email}
 <p>
   Avec le temps, toutes les adresses de redirection de notre camarade sont devenues invalides et produisent
   des erreurs lorsqu'on lui envoie un email. Nous sommes donc à la recherche d'adresses valides où nous pourrions
@@ -74,10 +74,10 @@
     <tr class="pair">
       <td>Adresse email&nbsp;:</td>
       <td>
-        <input type="text" name="mail" size="30" maxlength="50" value="{$smarty.post.mail}" />
+        <input type="text" name="mail" size="30" maxlength="255" value="{$smarty.post.mail}" />
       </td>
     </tr>
-    {if $user->email}
+    {if $user->active_email}
     <tr class="impair">
       <td>Explication&nbsp;:</td>
       <td><textarea name="comment" cols="50" rows="4">{$smarty.post.comment}</textarea></td>

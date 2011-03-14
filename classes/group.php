@@ -116,9 +116,15 @@ class Group
         }
         $res = XDB::query('SELECT  a.*, d.nom AS domnom,
                                    FIND_IN_SET(\'wiki_desc\', a.flags) AS wiki_desc,
-                                   FIND_IN_SET(\'notif_unsub\', a.flags) AS notif_unsub
+                                   FIND_IN_SET(\'notif_unsub\', a.flags) AS notif_unsub,
+                                   (nls.id IS NOT NULL) AS has_nl, ad.text AS address,
+                                   p.display_tel AS phone, f.display_tel AS fax
                              FROM  groups AS a
                         LEFT JOIN  group_dom  AS d ON d.id = a.dom
+                        LEFT JOIN  newsletters AS nls ON (nls.group_id = a.id)
+                        LEFT JOIN  profile_phones AS p ON (p.link_type = \'group\' AND p.link_id = a.id AND p.tel_id = 0)
+                        LEFT JOIN  profile_phones AS f ON (f.link_type = \'group\' AND f.link_id = a.id AND f.tel_id = 1)
+                        LEFT JOIN  profile_addresses AS ad ON (ad.type = \'group\' AND ad.groupid = a.id)
                             WHERE  ' . $where);
         if ($res->numRows() != 1) {
             if ($can_be_shortname && (is_int($id) || ctype_digit($id))) {

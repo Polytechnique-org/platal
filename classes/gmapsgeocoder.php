@@ -36,7 +36,7 @@ class GMapsGeocoder extends Geocoder {
     // Maximum levenshtein distance authorized between input and geocoded text in the whole text.
     const MAX_TOTAL_DISTANCE = 6;
 
-    public function getGeocodedAddress(Address &$address, $defaultLanguage = null, $forceLanguage = false) {
+    public function getGeocodedAddress(Address $address, $defaultLanguage = null, $forceLanguage = false) {
         $this->prepareAddress($address);
         $textAddress = $this->getTextToGeocode($address->text);
         if (is_null($defaultLanguage)) {
@@ -65,7 +65,7 @@ class GMapsGeocoder extends Geocoder {
         }
     }
 
-    public function stripGeocodingFromAddress(Address &$address) {
+    public function stripGeocodingFromAddress(Address $address) {
         $address->geocodedText = null;
         $address->geoloc_choice = null;
         $address->countryId = null;
@@ -80,7 +80,7 @@ class GMapsGeocoder extends Geocoder {
 
     // Updates the address with the geocoded information from Google Maps. Also
     // cleans up the final informations.
-    private function getUpdatedAddress(Address &$address, array $geocodedData, $extraLines, $forceLanguage) {
+    private function getUpdatedAddress(Address $address, array $geocodedData, $extraLines, $forceLanguage) {
         $this->fillAddressWithGeocoding($address, $geocodedData, false);
         $this->formatAddress($address, $extraLines, $forceLanguage);
     }
@@ -96,7 +96,7 @@ class GMapsGeocoder extends Geocoder {
     }
 
     // Prepares address to be geocoded
-    private function prepareAddress(Address &$address) {
+    private function prepareAddress(Address $address) {
         $address->text = preg_replace('/\s*\n\s*/m', "\n", trim($address->text));
     }
 
@@ -181,7 +181,7 @@ class GMapsGeocoder extends Geocoder {
     }
 
     // Fills the address with the geocoded data
-    private function fillAddressWithGeocoding(Address &$address, $geocodedData, $isLocal) {
+    private function fillAddressWithGeocoding(Address $address, $geocodedData, $isLocal) {
         // The geocoded address three is
         // Country -> AdministrativeArea -> SubAdministrativeArea -> Locality -> Thoroughfare
         // with all the possible shortcuts
@@ -282,7 +282,7 @@ class GMapsGeocoder extends Geocoder {
     // Formats the text of the geocoded address using the unused data and
     // compares it to the given address. If they are too different, the user
     // will be asked to choose between them.
-    private function formatAddress(Address &$address, $extraLines, $forceLanguage)
+    private function formatAddress(Address $address, $extraLines, $forceLanguage)
     {
         if ($extraLines) {
             $address->geocodedText = $extraLines . "\n" . $address->geocodedText;

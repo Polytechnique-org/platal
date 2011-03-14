@@ -21,8 +21,6 @@
 
 function smarty_insert_getUsername()
 {
-    global $globals;
-
     $id = Cookie::i('uid', -1);
     $id = S::v('uid', $id);
 
@@ -31,27 +29,16 @@ function smarty_insert_getUsername()
     }
 
     if (Cookie::v('domain', 'login') != 'alias') {
-        $res = XDB::query("SELECT  alias
-                             FROM  aliases
-                            WHERE  uid = {?} AND (type IN ('a_vie', 'alias') AND FIND_IN_SET('bestalias', flags))",
-                          $id);
-        return $res->fetchOneCell();
+        return XDB::fetchOneCell('SELECT  email
+                                    FROM  email_source_account
+                                   WHERE  uid = {?} AND type != \'alias_aux\' AND FIND_IN_SET(\'bestalias\', flags)',
+                                 $id);
     } else {
-        $res = XDB::query("
-            SELECT  v.alias
-              FROM  virtual AS v
-        INNER JOIN  virtual_redirect USING (vid)
-        INNER JOIN  aliases AS a ON (uid = {?} AND a.type = 'a_vie')
-             WHERE  redirect = CONCAT(a.alias, {?}) OR redirect = CONCAT(a.alias, {?})",
-            $id, '@' . $globals->mail->domain, '@' . $globals->mail->domain2);
-        $aliases = $res->fetchAllAssoc();
-        foreach ($aliases as $alias) {
-            list($login, $domain) = explode('@', $alias['alias']);
-            if ($domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2) {
-                return $login;
-            }
-        }
-     }
+        return XDB::fetchOneCell('SELECT  email
+                                    FROM  email_source_account
+                                   WHERE  uid = {?} AND type = \'alias_aux\'',
+                                 $id);
+    }
 
      return '';
 }

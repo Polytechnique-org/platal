@@ -41,7 +41,7 @@ class ProfileSettingSearchNames implements ProfileSetting
         return name_to_basename($value);
     }
 
-    private function prepare(ProfilePage &$page, $field, $value, $init, &$success)
+    private function prepare(ProfilePage $page, $field, $value, $init, &$success)
     {
         $success = true;
         $ini     = $this->prepareField($init);
@@ -78,7 +78,7 @@ class ProfileSettingSearchNames implements ProfileSetting
         return $value;
     }
 
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         $success     = true;
         $success_tmp = true;
@@ -149,7 +149,7 @@ class ProfileSettingSearchNames implements ProfileSetting
             $this->search_names = array();
             foreach ($value as &$sn) {
                 $sn['name'] = trim($sn['name']);
-                if (S::user()->isMe($this->owner) && ($sn['type'] == 'firstname' || $sn['type'] == 'lastname')) {
+                if (S::user()->isMe($page->owner) && ($sn['type'] == 'firstname' || $sn['type'] == 'lastname')) {
                     $sn['name'] = $this->prepare($page, $sn['type'], $sn['name'],
                                                  $initial[$sn['type']], $success_tmp);
                     $success = $success && $success_tmp;
@@ -207,7 +207,7 @@ class ProfileSettingSearchNames implements ProfileSetting
         return $value;
     }
 
-    public function save(ProfilePage &$page, $field, $value)
+    public function save(ProfilePage $page, $field, $value)
     {
         require_once 'name.func.inc.php';
 
@@ -217,7 +217,7 @@ class ProfileSettingSearchNames implements ProfileSetting
                        INNER JOIN  profile_name_enum AS e ON (s.typeid = e.id)
                             WHERE  s.pid = {?} AND NOT FIND_IN_SET('not_displayed', e.flags)",
                      $page->pid());
-        $has_new = set_alias_names($this->search_names, $sn_old, $page->pid(), $page->owner->id());
+        $has_new = set_alias_names($this->search_names, $sn_old, $page->pid(), $page->owner);
 
         // Only requires validation if modification in public names
         if ($has_new) {
@@ -258,7 +258,7 @@ class ProfileSettingEdu implements ProfileSetting
         return ($a < $b) ? -1 : 1;
     }
 
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         $success = true;
         if (is_null($value)) {
@@ -293,7 +293,7 @@ class ProfileSettingEdu implements ProfileSetting
         return $value;
     }
 
-    public function save(ProfilePage &$page, $field, $value)
+    public function save(ProfilePage $page, $field, $value)
     {
         XDB::execute("DELETE FROM  profile_education
                             WHERE  pid = {?} AND !FIND_IN_SET('primary', flags)",
@@ -349,9 +349,9 @@ class ProfileSettingEdu implements ProfileSetting
 class ProfileSettingEmailDirectory implements ProfileSetting
 {
     public function __construct(){}
-    public function save(ProfilePage &$page, $field, $value){}
+    public function save(ProfilePage $page, $field, $value){}
 
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         $p = Platal::page();
 
@@ -390,7 +390,7 @@ class ProfileSettingNetworking implements ProfileSetting
         $this->number = new ProfileSettingNumber();
     }
 
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         if (is_null($value)) {
             $value = XDB::fetchAllAssoc("SELECT  n.address, n.pub, n.nwid AS type
@@ -431,7 +431,7 @@ class ProfileSettingNetworking implements ProfileSetting
         return $value;
     }
 
-    public function save(ProfilePage &$page, $field, $value)
+    public function save(ProfilePage $page, $field, $value)
     {
         XDB::execute("DELETE FROM profile_networking
                             WHERE pid = {?}",
@@ -461,7 +461,7 @@ class ProfileSettingPromo implements ProfileSetting
 {
     public function __construct(){}
 
-    public function save(ProfilePage &$page, $field, $value)
+    public function save(ProfilePage $page, $field, $value)
     {
         $gradYearNew = $value;
         if ($page->profile->mainEducation() == 'X') {
@@ -486,7 +486,7 @@ class ProfileSettingPromo implements ProfileSetting
         }
     }
 
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         $entryYear = $page->profile->entry_year;
         $gradYear  = $page->profile->grad_year;
@@ -537,7 +537,7 @@ class ProfilePageGeneral extends ProfilePage
 {
     protected $pg_template = 'profile/general.tpl';
 
-    public function __construct(PlWizard &$wiz)
+    public function __construct(PlWizard $wiz)
     {
         parent::__construct($wiz);
         $this->settings['search_names']
@@ -707,7 +707,7 @@ class ProfilePageGeneral extends ProfilePage
         }
     }
 
-    public function _prepare(PlPage &$page, $id)
+    public function _prepare(PlPage $page, $id)
     {
         require_once "education.func.inc.php";
 

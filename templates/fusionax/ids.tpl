@@ -66,7 +66,7 @@ trouver une correspondance entre les personnes renseignés dans ces annuaires.<b
 <script type="text/javascript">
 {literal}
 //<!--
-$(document).ready(function() {
+$(function() {
     $('#autolink a.fusion-action').click(function(a){
         $.get(a.currentTarget.href,{},function(){
             $(a.currentTarget).hide();

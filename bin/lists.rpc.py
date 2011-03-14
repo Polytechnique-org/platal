@@ -127,12 +127,12 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
             self.end_headers()
 
     def getUser(self, uid, md5, vhost):
-        res = mysql_fetchone ("""SELECT  a.full_name, IF(aa.alias IS NULL, a.email, CONCAT(aa.alias, '@%s')),
+        res = mysql_fetchone ("""SELECT  a.full_name, IF(s.email IS NULL, a.email, CONCAT(s.email, '@%s')),
                                          IF (a.is_admin, 'admin',
                                                          IF(FIND_IN_SET('lists', at.perms) OR FIND_IN_SET('lists', a.user_perms), 'lists', NULL))
                                    FROM  accounts AS a
                              INNER JOIN  account_types AS at ON (at.type = a.type)
-                              LEFT JOIN  aliases  AS aa ON (a.uid = aa.uid AND aa.type = 'a_vie')
+                              LEFT JOIN  email_source_account AS s ON (s.uid = a.uid AND s.type = 'forlife')
                                   WHERE  a.uid = '%s' AND a.password = '%s' AND a.state = 'active'
                                   LIMIT  1""" \
                               % (PLATAL_DOMAIN, uid, md5))
@@ -167,6 +167,7 @@ def connectDB():
             passwd=MYSQL_PASS,
             unix_socket='/var/run/mysqld/mysqld.sock')
     db.ping()
+    db.autocommit(True)
     return db.cursor()
 
 def mysql_fetchone(query):
@@ -201,9 +202,8 @@ def to_forlife(email):
     if ( fqdn == PLATAL_DOMAIN ) or ( fqdn == PLATAL_DOMAIN2 ):
         res = mysql_fetchone("""SELECT  CONCAT(f.alias, '@%s'), a.full_name
                                   FROM  accounts AS a
-                            INNER JOIN  aliases  AS f  ON (f.uid = a.uid AND f.type = 'a_vie')
-                            INNER JOIN  aliases  AS aa ON (aa.uid = a.uid AND aa.alias = '%s'
-                                                           AND a.type != 'homonyme')
+                            INNER JOIN  email_source_account AS s1 ON (a.uid = s1.uid AND s1.type = 'forlife')
+                            INNER JOIN  email_source_account AS s2 ON (a.uid = s2.uid AND s2.email = '%s')
                                  WHERE  a.state = 'active'
                                  LIMIT  1""" \
                               % (PLATAL_DOMAIN, mbox))
@@ -463,6 +463,8 @@ def mass_subscribe(userdesc, perms, mlist, users):
             @edit
             @admin
     """
+    if not isinstance(users, list):
+        raise Exception("userlist must be a list")
     members = mlist.getRegularMemberKeys()
     added = []
     for user in users:
@@ -884,14 +886,18 @@ def create_list(userdesc, perms, vhost, listname, desc, advertise, modlevel, ins
     """
     name = vhost.lower() + VHOST_SEP + listname.lower();
     if Utils.list_exists(name):
+        print >> sys.stderr, "List ", name, " already exists"
         return 0
 
     owner = []
     for o in owners:
-        email = to_forlife(o)[0]
+        email = to_forlife(o)
+        print >> sys.stderr, "owner in list", o, email
+        email = email[0]
         if email is not None:
             owner.append(email)
     if len(owner) is 0:
+        print >> sys.stderr, "No owner found in ", owners
         return 0
 
     mlist = MailList.MailList()

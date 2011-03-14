@@ -244,7 +244,7 @@ class ContactsPDF extends FPDF
         return $count;
     }
 
-    public static function AddContact(ContactsPDF $self, Profile &$profile, $wp = true)
+    public static function AddContact(ContactsPDF $self, Profile $profile, $wp = true)
     {
         /* infamous hack :
            1- we store the current state.
@@ -265,23 +265,27 @@ class ContactsPDF extends FPDF
         if ($wp) {
             $photo = $profile->getPhoto(false, true);
             if ($photo) {
-                $old2  = clone $self;
-                $width = $photo->width() * 20 / $photo->height();
-                $_x = $self->getX();
-                $_y = $self->getY();
-                $self->Cell(0, 20, '', '', 0, '', 1);
-                error_reporting(0);
-                $self->Image($photo->path(), $_x, $_y, $width, 20, $photo->mimeType());
-                error_reporting($self->report);
+                list(, $type) = explode('/', $photo->mimeType());
+                $type = ($type == 'jpeg') ? 'jpg' : $type;
+                if (method_exists($self, '_parse' . $type)) {
+                    $old2  = clone $self;
+                    $width = $photo->width() * 20 / $photo->height();
+                    $_x = $self->getX();
+                    $_y = $self->getY();
+                    $self->Cell(0, 20, '', '', 0, '', 1);
+                    error_reporting(0);
+                    $self->Image($photo->path(), $_x, $_y, $width, 20, $type);
+                    error_reporting($self->report);
 
-                if ($self->error) {
-                    $self = clone $old2;
-                } else {
-                    $self->setX($_x);
-                    $self->Cell($width, 20, '', "T");
-                    $h = 20 / $self->wordwrap($nom, 90 - $width);
-                    $self->MultiCell(0, $h, $nom, 'T', 'C');
-                    $ok = true;
+                    if ($self->error) {
+                        $self = clone $old2;
+                    } else {
+                        $self->setX($_x);
+                        $self->Cell($width, 20, '', "T");
+                        $h = 20 / $self->wordwrap($nom, 90 - $width);
+                        $self->MultiCell(0, $h, $nom, 'T', 'C');
+                        $ok = true;
+                    }
                 }
             }
         }

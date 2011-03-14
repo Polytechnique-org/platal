@@ -131,7 +131,7 @@ class ProfileSettingJob implements ProfileSetting
         return $jobs;
     }
 
-    private function cleanJob(ProfilePage &$page, $jobid, array &$job, &$success, $maxPublicity)
+    private function cleanJob(ProfilePage $page, $jobid, array &$job, &$success, $maxPublicity)
     {
         if ($job['w_email'] == "new@example.org") {
             $job['w_email'] = $job['w_email_new'];
@@ -172,11 +172,7 @@ class ProfileSettingJob implements ProfileSetting
                                 WHERE  name = {?}",
                               $job['name']);
             if ($res->numRows() != 1) {
-                $req = new EntrReq(S::user(), $page->profile, $jobid, $job['name'], $job['hq_acronym'], $job['hq_url'],
-                                   $job['hq_email'], $job['hq_fixed'], $job['hq_fax'], $job['hq_address']);
-                $req->submit();
                 $job['jobid'] = null;
-                sleep(1);
             } else {
                 $job['jobid'] = $res->fetchOneCell();
             }
@@ -193,7 +189,7 @@ class ProfileSettingJob implements ProfileSetting
 
 
 
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         $entreprise = ProfileValidate::get_typed_requests($page->pid(), 'entreprise');
         $entr_val = 0;
@@ -224,11 +220,16 @@ class ProfileSettingJob implements ProfileSetting
             }
 
             if (isset($job['removed']) && $job['removed']) {
-                if ($job['name'] == '' && $entreprise) {
-                    $entreprise[$entr_val - 1]->clean();
+                if (!S::user()->checkPerms('directory_private')
+                    && (Phone::hasPrivate($job['w_phone']) || Address::hasPrivate($job['w_address']) || $job['w_email_pub'] == 'private')) {
+                    Platal::page()->trigWarning("L'entreprise ne peut être supprimée car elle contient des informations pour lesquelles vous n'avez pas le droit d'édition.");
+                } else {
+                    if ($job['name'] == '' && $entreprise && isset($entreprise[$entr_val - 1])) {
+                        $entreprise[$entr_val - 1]->clean();
+                    }
+                    unset($value[$key]);
+                    continue;
                 }
-                unset($value[$key]);
-                continue;
             }
             if (!isset($job['pub']) || !$job['pub']) {
                 $job['pub'] = 'private';
@@ -248,22 +249,28 @@ class ProfileSettingJob implements ProfileSetting
                 $success = ($success && $s);
             }
         }
+        usort($value, 'ProfileVisibility::comparePublicity');
         return $value;
     }
 
-    public function save(ProfilePage &$page, $field, $value)
+    public function save(ProfilePage $page, $field, $value)
     {
+
         $deletePrivate = S::user()->isMe($page->owner) || S::admin();
         XDB::execute('DELETE FROM  pj, pjt
                             USING  profile_job      AS pj
                         LEFT JOIN  profile_job_term AS pjt ON (pj.pid = pjt.pid AND pj.id = pjt.jid)
                             WHERE  pj.pid = {?}' . (($deletePrivate) ? '' : ' AND pj.pub IN (\'public\', \'ax\')'),
                      $page->pid());
-        Address::deleteAddresses($page->pid(), Address::LINK_JOB, null, $deletePrivate);
+        Address::deleteAddresses($page->pid(), Address::LINK_JOB, null, null, $deletePrivate);
         Phone::deletePhones($page->pid(), Phone::LINK_JOB, null, $deletePrivate);
+        $previous_requests = EntrReq::get_typed_requests($page->pid(), 'entreprise');
+        foreach ($previous_requests as $request) {
+            $request->clean();
+        }
         $terms_values = array();
         foreach ($value as $id => &$job) {
-            if (isset($job['name']) && $job['name']) {
+            if (($job['pub'] != 'private' || $deletePrivate) && (isset($job['name']) && $job['name'])) {
                 if (isset($job['jobid']) && $job['jobid']) {
                     XDB::execute('INSERT INTO  profile_job (pid, id, description, email,
                                                             url, pub, email_pub, jobid)
@@ -276,6 +283,10 @@ class ProfileSettingJob implements ProfileSetting
                                        VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
                                  $page->pid(), $id, $job['description'], $job['w_email'],
                                  $job['w_url'], $job['pub'], $job['w_email_pub']);
+                    $request = new EntrReq(S::user(), $page->profile, $id, $job['name'], $job['hq_acronym'], $job['hq_url'],
+                                           $job['hq_email'], $job['hq_fixed'], $job['hq_fax'], $job['hq_address']);
+                    $request->submit();
+                    sleep(1);
                 }
                 $address = new Address(array_merge($job['w_address'],
                                                    array('pid' => $page->pid(),
@@ -295,6 +306,9 @@ class ProfileSettingJob implements ProfileSetting
             XDB::rawExecute('INSERT INTO  profile_job_term (pid, jid, jtid, computed)
                                   VALUES  ' . implode(', ', $terms_values) . '
                  ON DUPLICATE KEY UPDATE  computed = VALUES(computed)');
+        }
+        if (S::user()->isMe($page->owner) && count($value) > 1) {
+            Platal::page()->trigWarning('Attention, tu as plusieurs emplois sur ton profil. Pense à supprimer ceux qui sont obsolètes.');
         }
     }
 
@@ -335,7 +349,7 @@ class ProfileSettingJob implements ProfileSetting
 
 class ProfileSettingCorps implements ProfileSetting
 {
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    public function value(ProfilePage $page, $field, $value, &$success)
     {
         $success = true;
         if (is_null($value)) {
@@ -350,7 +364,7 @@ class ProfileSettingCorps implements ProfileSetting
         return $value;
     }
 
-    public function save(ProfilePage &$page, $field, $value)
+    public function save(ProfilePage $page, $field, $value)
     {
         if (!S::user()->isMe($page->owner)) {
             XDB::execute('INSERT INTO  profile_corps (original_corpsid, current_corpsid, rankid, corps_pub, pid)
@@ -381,7 +395,7 @@ class ProfilePageJobs extends ProfilePage
 {
     protected $pg_template = 'profile/jobs.tpl';
 
-    public function __construct(PlWizard &$wiz)
+    public function __construct(PlWizard $wiz)
     {
         parent::__construct($wiz);
         if (S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE)) {
@@ -416,7 +430,7 @@ class ProfilePageJobs extends ProfilePage
         }
     }
 
-    public function _prepare(PlPage &$page, $id)
+    public function _prepare(PlPage $page, $id)
     {
         require_once 'emails.combobox.inc.php';
         fill_email_combobox($page, $this->owner);

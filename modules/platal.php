@@ -21,7 +21,7 @@
 
 function bugize($list)
 {
-    $list = split(',', $list);
+    $list = preg_split('/,/', Env::s('libs'), -1, PREG_SPLIT_NO_EMPTY);
     $ans  = array();
 
     foreach ($list as $bug) {
@@ -59,7 +59,7 @@ class PlatalModule extends PLModule
         );
     }
 
-    function handler_index(&$page)
+    function handler_index($page)
     {
         // Include X-XRDS-Location response-header for Yadis discovery
         global $globals;
@@ -73,14 +73,14 @@ class PlatalModule extends PLModule
         }
     }
 
-    function handler_cacert(&$page)
+    function handler_cacert($page)
     {
         pl_cached_content_headers("application/x-x509-ca-cert");
         readfile("/etc/ssl/xorgCA/cacert.pem");
         exit;
     }
 
-    function handler_changelog(&$page, $core = null)
+    function handler_changelog($page, $core = null)
     {
         $page->changeTpl('platal/changeLog.tpl');
 
@@ -129,7 +129,7 @@ class PlatalModule extends PLModule
         }
     }
 
-    function handler_prefs(&$page)
+    function handler_prefs($page)
     {
         $page->changeTpl('platal/preferences.tpl');
         $page->setTitle('Mes préférences');
@@ -146,7 +146,7 @@ class PlatalModule extends PLModule
         }
     }
 
-    function handler_webredir(&$page)
+    function handler_webredir($page)
     {
         $page->changeTpl('platal/webredirect.tpl');
         $page->setTitle('Redirection de page WEB');
@@ -178,14 +178,14 @@ class PlatalModule extends PLModule
 
         # FIXME: this code is not multi-domain compatible. We should decide how
         # carva will extend to users not in the main domain.
-        $res = XDB::query("SELECT  alias
-                             FROM  aliases
-                            WHERE  uid = {?} AND FIND_IN_SET('bestalias', flags)",
-                          S::user()->id());
-        $page->assign('bestalias', $res->fetchOneCell());
+        $best = XDB::fetchOneCell('SELECT  email
+                                     FROM  email_source_account
+                                    WHERE  uid = {?} AND FIND_IN_SET(\'bestalias\', flags)',
+                                  S::user()->id());
+        $page->assign('bestalias', $best);
     }
 
-    function handler_prefs_rss(&$page)
+    function handler_prefs_rss($page)
     {
         $page->changeTpl('platal/filrss.tpl');
 
@@ -197,7 +197,7 @@ class PlatalModule extends PLModule
         }
     }
 
-    function handler_password(&$page)
+    function handler_password($page)
     {
         global $globals;
 
@@ -228,11 +228,10 @@ class PlatalModule extends PLModule
         }
 
         $page->changeTpl('platal/password.tpl');
-        $page->addJsLink('password.js');
         $page->setTitle('Mon mot de passe');
     }
 
-    function handler_smtppass(&$page)
+    function handler_smtppass($page)
     {
         $page->changeTpl('platal/acces_smtp.tpl');
         $page->setTitle('Acces SMTP/NNTP');
@@ -266,7 +265,7 @@ class PlatalModule extends PLModule
         $page->assign('actif', $res->fetchOneCell());
     }
 
-    function handler_recovery(&$page)
+    function handler_recovery($page)
     {
         global $globals;
 
@@ -301,35 +300,35 @@ class PlatalModule extends PLModule
             return;
         }
 
-        $res = XDB::query("SELECT  COUNT(*)
-                             FROM  emails
-                            WHERE  uid = {?} AND flags != 'panne' AND flags != 'filter'", $user->id());
-        $count = intval($res->fetchOneCell());
-        if ($count == 0) {
+        if ($user->lost) {
             $page->assign('no_addr', true);
             return;
         }
 
         $page->assign('ok', true);
 
-        $url   = rand_url_id();
+        $url = rand_url_id();
         XDB::execute('INSERT INTO  account_lost_passwords (certificat,uid,created)
                            VALUES  ({?},{?},NOW())', $url, $user->id());
-        $res   = XDB::query('SELECT  email
-                               FROM  emails
-                              WHERE  uid = {?} AND email = {?}',
-                            $user->id(), Post::v('email'));
-        if ($res->numRows()) {
-            $mails = $res->fetchOneCell();
-        } else {
-            $res   = XDB::query("SELECT  email
-                                   FROM  emails
-                                  WHERE  uid = {?} AND NOT FIND_IN_SET('filter', flags)", $user->id());
-            $mails = implode(', ', $res->fetchColumn());
+        $to = XDB::fetchOneCell('SELECT  redirect
+                                   FROM  email_redirect_account
+                                  WHERE  uid = {?} AND redirect = {?}',
+                                $user->id(), Post::t('email'));
+        if (is_null($to)) {
+            $emails = XDB::fetchColumn('SELECT  redirect
+                                          FROM  email_redirect_account
+                                         WHERE  uid = {?} AND flags = \'inactive\' AND type = \'smtp\'',
+                                       $user->id());
+            $inactives_to = implode(', ', $emails);
         }
         $mymail = new PlMailer();
         $mymail->setFrom('"Gestion des mots de passe" <support+password@' . $globals->mail->domain . '>');
-        $mymail->addTo($mails);
+        if (is_null($to)) {
+            $mymail->addTo($user);
+            $mymail->addTo($inactives_to);
+        } else {
+            $mymail->addTo($to);
+        }
         $mymail->setSubject("Ton certificat d'authentification");
         $mymail->setTxtBody("Visite la page suivante qui expire dans six heures :
 {$globals->baseurl}/tmpPWD/$url
@@ -348,7 +347,7 @@ Adresse de secours : " . Post::v('email') : ""));
         S::logger($user->id())->log('recovery', $mails);
     }
 
-    function handler_tmpPWD(&$page, $certif = null)
+    function handler_tmpPWD($page, $certif = null)
     {
         global $globals;
         // XXX: recovery requires data from the profile
@@ -387,11 +386,10 @@ Adresse de secours : " . Post::v('email') : ""));
             $page->changeTpl('platal/tmpPWD.success.tpl');
         } else {
             $page->changeTpl('platal/password.tpl');
-            $page->addJsLink('password.js');
         }
     }
 
-    function handler_skin(&$page)
+    function handler_skin($page)
     {
         global $globals;
 
@@ -420,7 +418,7 @@ Adresse de secours : " . Post::v('email') : ""));
         $page->assign('skins', XDB::iterator($sql));
     }
 
-    function handler_exit(&$page, $level = null)
+    function handler_exit($page, $level = null)
     {
         if (S::suid()) {
             $old = S::user()->login();
@@ -454,7 +452,7 @@ Adresse de secours : " . Post::v('email') : ""));
         }
     }
 
-    function handler_review(&$page, $action = null, $mode = null)
+    function handler_review($page, $action = null, $mode = null)
     {
         // Include X-XRDS-Location response-header for Yadis discovery
         global $globals;

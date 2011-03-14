@@ -65,7 +65,7 @@
       <select name="countries_sel" onchange="updateElement('countries')">
         <option value="">&nbsp;</option>
         {iterate from=$countryList item=country}
-        <option value="{$country.iso_3166_1_a2}">{$country.countryFR|default:"&nbsp;"}</option>
+        <option value="{$country.iso_3166_1_a2}">{$country.country|default:"&nbsp;"}</option>
         {/iterate}
       </select>
     </td>
@@ -101,11 +101,11 @@
       Il est préférable de mentionner des notions précises : <em>Pizzaïolo</em> plutôt que <em>Hôtellerie</em>.
       En effet Les recherches sur le mot-clef <em>Hôtellerie</em> te trouveront dans les deux cas mais une
       recherche sur <em>Production culinaire</em> ou <em>Pizzaïolo</em> non.
-    <td/>
+    </td>
   </tr>
   <tr>
     <td class="titre" style="width:30%">Mots-clefs</td>
-    <td class="job_terms">
+    <td class="jobs_terms">
       <input type="text" class="term_search" size="35"/>
       <a href="javascript:toggleJobTermsTree(-1)">{icon name="table" title="Tous les mots-clefs"}</a>
       <script type="text/javascript">
@@ -114,7 +114,7 @@
         {foreach from=$terms item=term}
         addJobTerm(-1, "{$term.jtid}", "{$term.full_name|replace:'"':'\\"'}");
         {/foreach}
-        $('.term_search').autocomplete(platal_baseurl + 'profile/jobterms',
+        $('.term_search').autocomplete($.plURL('profile/jobterms'),
           {ldelim}
             "formatItem" : displayJobTerm,
             "extraParams" : {ldelim} "jobid" : "-1" {rdelim},

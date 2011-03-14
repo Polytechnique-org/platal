@@ -46,19 +46,19 @@ abstract class WatchOperation
 
     abstract protected function buildCondition(Watch $watch);
     abstract public function getOrder();
-    abstract public function getDate(PlUser &$user);
+    abstract public function getDate(PlUser $user);
 
-    public function publicationDate(PlUser &$user)
+    public function publicationDate(PlUser $user)
     {
         return $this->getDate($user);
     }
 
-    public function seen(PlUser &$user, $last)
+    public function seen(PlUser $user, $last)
     {
         return strtotime($this->getDate($user)) > $last;
     }
 
-    public function getData(PlUser &$user)
+    public function getData(PlUser $user)
     {
         return null;
     }
@@ -72,7 +72,7 @@ class WatchProfileUpdate extends WatchOperation
     public $title = 'Mise$s à jour de fiche';
     private $date = null;
 
-    public static function register(Profile &$profile, $field)
+    public static function register(Profile $profile, $field)
     {
         XDB::execute('INSERT INTO  watch_profile (pid, ts, field)
                            VALUES  ({?}, NOW(), {?})
@@ -95,12 +95,12 @@ class WatchProfileUpdate extends WatchOperation
         return self::$order;
     }
 
-    public function getDate(PlUser &$user)
+    public function getDate(PlUser $user)
     {
         return $user->profile()->last_change;
     }
 
-    public function getData(PlUser &$user)
+    public function getData(PlUser $user)
     {
         $data = XDB::fetchColumn("SELECT  field
                                     FROM  watch_profile
@@ -141,7 +141,7 @@ class WatchRegistration extends WatchOperation
         return self::$order;
     }
 
-    public function getDate(PlUser &$user)
+    public function getDate(PlUser $user)
     {
         return $user->registration_date;
     }
@@ -169,17 +169,17 @@ class WatchDeath extends WatchOperation
         return self::$order;
     }
 
-    public function getDate(PlUser &$user)
+    public function getDate(PlUser $user)
     {
         return $user->profile()->deathdate;
     }
 
-    public function publicationDate(PlUser &$user)
+    public function publicationDate(PlUser $user)
     {
         return $user->profile()->deathdate_rec;
     }
 
-    public function seen(PlUser &$user, $last)
+    public function seen(PlUser $user, $last)
     {
         return strtotime($user->profile()->deathdate_rec) > $last;
     }
@@ -218,17 +218,17 @@ class WatchBirthday extends WatchOperation
         return self::$order;
     }
 
-    public function getDate(PlUser &$user)
+    public function getDate(PlUser $user)
     {
         return $user->profile()->next_birthday;
     }
 
-    public function publicationDate(PlUser &$user)
+    public function publicationDate(PlUser $user)
     {
         return date('Y-m-d', strtotime($user->profile()->next_birthday) - self::WATCH_LIMIT);
     }
 
-    public function seen(PlUser &$user, $last)
+    public function seen(PlUser $user, $last)
     {
         $birthday = strtotime($user->profile()->next_birthday);
         return $birthday >  $last + self::WATCH_LIMIT
@@ -346,7 +346,7 @@ class Watch
     }
 
 
-    private static function getDate(PlUser &$user, $date)
+    private static function getDate(PlUser $user, $date)
     {
         if (is_null($date)) {
             $date = $user->watchLast();
@@ -358,13 +358,13 @@ class Watch
         return $date;
     }
 
-    public static function getCount(PlUser &$user, $date = null)
+    public static function getCount(PlUser $user, $date = null)
     {
         $watch = new Watch($user, $date);
         return $watch->count();
     }
 
-    public static function getEvents(PlUser &$user, $date = null)
+    public static function getEvents(PlUser $user, $date = null)
     {
         $watch = new Watch($user, $date);
         return $watch->events();

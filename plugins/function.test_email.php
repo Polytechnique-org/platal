@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function smarty_function_test_email($params, &$smarty) {
+function smarty_function_test_email($params, $smarty) {
     $label = isset($params['title']) ? $params['title'] : 'Envoyer un email de test';
     $token = "'" . S::v('xsrf_token') . (isset($params['hruid']) ? "', " : "'");
     $hruid = isset($params['hruid']) ? "'" . $params['hruid'] . "'" : '';

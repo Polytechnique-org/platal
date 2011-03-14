@@ -36,7 +36,7 @@ class MarketingModule extends PLModule
         );
     }
 
-    function handler_marketing(&$page)
+    function handler_marketing($page)
     {
         $page->changeTpl('marketing/index.tpl');
         $page->setTitle('Marketing');
@@ -97,7 +97,7 @@ class MarketingModule extends PLModule
         $page->assign('marketings', $marketings);
     }
 
-    function handler_private(&$page, $hruid = null,
+    function handler_private($page, $hruid = null,
                              $action = null, $value = null)
     {
         global $globals;
@@ -174,9 +174,9 @@ class MarketingModule extends PLModule
 
         // Retrieves and display the existing marketing attempts.
         $res = XDB::iterator(
-                "SELECT  r.*, a.alias
-                   FROM  register_marketing AS r
-              LEFT JOIN  aliases            AS a ON (r.sender = a.uid AND a.type = 'a_vie')
+                "SELECT  r.*, s.email AS alias
+                   FROM  register_marketing   AS r
+              LEFT JOIN  email_source_account AS s ON (r.sender = s.uid AND s.type = 'forlife')
                   WHERE  r.uid = {?}
                ORDER BY  date", $user->id());
         $page->assign('addr', $res);
@@ -191,7 +191,7 @@ class MarketingModule extends PLModule
         $page->assign('path', 'marketing/private/' . $user->login());
     }
 
-    function handler_broken(&$page, $uid = null)
+    function handler_broken($page, $uid = null)
     {
         $page->changeTpl('marketing/broken.tpl');
 
@@ -206,15 +206,14 @@ class MarketingModule extends PLModule
             pl_redirect('emails/redirect');
         }
 
-        $res = XDB::query('SELECT  p.deathdate IS NULL AS alive, e.last,
-                                   IF(e.email IS NOT NULL, e.email,
-                                         IF(FIND_IN_SET(\'googleapps\', eo.storage), \'googleapps\', NULL)) AS email
-                             FROM  email_options AS eo
-                        LEFT JOIN  account_profiles AS ap ON (ap.uid = eo.uid AND FIND_IN_SET(\'owner\', ap.perms))
-                        LEFT JOIN  profiles AS p ON (p.pid = ap.pid)
-                        LEFT JOIN  emails        AS e ON (e.flags = \'active\' AND e.uid = eo.uid)
-                            WHERE  eo.uid = {?}
-                         ORDER BY  e.panne_level, e.last', $user->id());
+        $res = XDB::query('SELECT  p.deathdate IS NULL AS alive, r.last, IF(r.type = \'googleapps\', \'googleapps\', r.redirect) AS active_email
+                             FROM  accounts               AS a
+                        LEFT JOIN  email_redirect_account AS r  ON (a.uid = r.uid AND r.type IN (\'smtp\', \'googleapps\') AND r.flags = \'active\')
+                        LEFT JOIN  account_profiles       AS ap ON (ap.uid = r.uid AND FIND_IN_SET(\'owner\', ap.perms))
+                        LEFT JOIN  profiles               AS p  ON (p.pid = ap.pid)
+                            WHERE  a.uid = {?}
+                         ORDER BY  r.broken_level, r.last',
+                          $user->id());
         if (!$res->numRows()) {
             return PL_NOT_FOUND;
         }
@@ -231,15 +230,15 @@ class MarketingModule extends PLModule
 
             // security stuff
             check_email($email, "Proposition d'une adresse surveillee pour " . $user->login() . " par " . S::user()->login());
-            $res = XDB::query("SELECT  flags
-                                 FROM  emails
-                                WHERE  email = {?} AND uid = {?}", $email, $user->id());
-            $state = $res->numRows() ? $res->fetchOneCell() : null;
-            if ($state == 'panne') {
+            $state = XDB::fetchOneCell('SELECT  flags
+                                          FROM  email_redirect_account
+                                         WHERE  redirect = {?} AND uid = {?}',
+                                       $email, $user->id());
+            if ($state == 'broken') {
                 $page->trigWarning("L'adresse que tu as fournie est l'adresse actuelle de {$user->fullName()} et est en panne.");
             } elseif ($state == 'active') {
                 $page->trigWarning("L'adresse que tu as fournie est l'adresse actuelle de {$user->fullName()}");
-            } elseif ($user->email && !trim(Post::v('comment'))) {
+            } elseif ($user->email && !Post::t('comment')) {
                 $page->trigError("Il faut que tu ajoutes un commentaire à ta proposition pour justifier le "
                                . "besoin de changer la redirection de {$user->fullName()}.");
             } else {
@@ -248,11 +247,11 @@ class MarketingModule extends PLModule
                 $page->assign('sent', true);
             }
         } elseif ($email) {
-            $page->trigError("L'adresse proposée n'est pas une adresse acceptable pour une redirection");
+            $page->trigError("L'adresse proposée n'est pas une adresse acceptable pour une redirection.");
         }
     }
 
-    function handler_promo(&$page, $promo = null)
+    function handler_promo($page, $promo = null)
     {
         $page->changeTpl('marketing/promo.tpl');
 
@@ -268,7 +267,7 @@ class MarketingModule extends PLModule
         $page->assign('nonins', $users);
     }
 
-    function handler_public(&$page, $hruid = null)
+    function handler_public($page, $hruid = null)
     {
         $page->changeTpl('marketing/public.tpl');
 
@@ -316,8 +315,8 @@ class MarketingModule extends PLModule
             $market = new AnnuaireMarketing(null, true);
             $text = $market->getText(array(
                 'sexe'           => $user->isFemale(),
-                'forlife_email'  => $user->login() . '@' . $globals->mail->domain,
-                'forlife_email2' => $user->login() . '@' . $globals->mail->domain2
+                'forlife_email'  => $user->forlifeEmail(),
+                'forlife_email2' => $user->forlifeEmailAlternate()
             ));
             $text = str_replace('%%hash%%', '', $text);
             $text = str_replace('%%personal_notes%%', '<em id="personal_notes_display"></em>', $text);
@@ -329,7 +328,7 @@ class MarketingModule extends PLModule
         }
     }
 
-    function handler_week(&$page, $sorting = 'per_promo')
+    function handler_week($page, $sorting = 'per_promo')
     {
         $page->changeTpl('marketing/this_week.tpl');
 
@@ -339,7 +338,7 @@ class MarketingModule extends PLModule
         $page->assign('users', $uf->getUsers());
     }
 
-    function handler_volontaire(&$page, $promo = null)
+    function handler_volontaire($page, $promo = null)
     {
         $page->changeTpl('marketing/volontaire.tpl');
 
@@ -353,18 +352,18 @@ class MarketingModule extends PLModule
 
 
         if (!is_null($promo)) {
-            $it = XDB::iterator('SELECT  m.uid, m.email, s.alias AS forlife
+            $it = XDB::iterator('SELECT  m.uid, m.email, s.email AS forlife
                                    FROM  register_marketing AS m
                              INNER JOIN  account_profiles AS ap ON (m.uid = ap.uid AND FIND_IN_SET(\'owner\', ap.perms))
                              INNER JOIN  profile_display AS pd ON (pd.pid = ap.pid)
-                              LEFT JOIN  aliases AS s ON (m.sender = s.uid AND s.type = \'a_vie\')
+                              LEFT JOIN  email_source_account AS s ON (m.sender = s.uid AND s.type = \'forlife\')
                                   WHERE  pd.promo = {?}
                                ORDER BY  pd.sort_name', $promo);
             $page->assign('addr', $it);
         }
     }
 
-    function handler_relance(&$page)
+    function handler_relance($page)
     {
         $page->changeTpl('marketing/relance.tpl');
 

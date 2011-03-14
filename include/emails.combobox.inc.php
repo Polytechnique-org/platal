@@ -19,10 +19,8 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function fill_email_combobox(PlPage& $page, $user = null, $profile = null)
+function fill_email_combobox(PlPage $page, $user = null, $profile = null)
 {
-    global $globals;
-
     if (is_null($user)) {
         $user = S::user();
     }
@@ -30,24 +28,15 @@ function fill_email_combobox(PlPage& $page, $user = null, $profile = null)
         /* Always refetch the profile. */
         $profile = $user->profile(true);
     }
-    $email_type = "directory";
+    $email_type = 'directory';
 
     if ($profile) {
         $email_directory = $profile->email_directory;
-        if ($email_directory) {
-            $page->assign('email_directory', $email_directory);
-            list($alias, $domain) = explode('@', $email_directory);
-        } else {
-            $page->assign('email_directory', '');
-            $email_type = NULL;
-            $alias = $domain = '';
-        }
+        $page->assign('email_directory', $email_directory);
 
-        $res = XDB::query(
-                "SELECT  email
-                   FROM  profile_job
-                  WHERE  pid = {?}", $profile->id());
-        $res = $res->fetchAllAssoc();
+        $res = XDB::fetchAllAssoc('SELECT  email
+                                     FROM  profile_job
+                                    WHERE  pid = {?}', $profile->id());
         $pro = array();
         foreach ($res as $res_it) {
             if ($res_it['email'] != '') {
@@ -61,26 +50,16 @@ function fill_email_combobox(PlPage& $page, $user = null, $profile = null)
     }
 
     if ($user) {
-        $melix = $user->emailAlias();
-        if ($melix) {
-            list($melix) = explode('@', $melix);
-            $page->assign('melix', $melix);
-            if (($domain == $globals->mail->alias_dom) || ($domain == $globals->mail->alias_dom2)) {
-                $email_type = "melix";
-            }
-        }
-
-        $res = XDB::query(
-                "SELECT  alias
-                   FROM  aliases
-                  WHERE  uid={?} AND (type='a_vie' OR type='alias')", $user->id());
-        $res = $res->fetchAllAssoc();
+        $res = XDB::fetchAllAssoc('SELECT  CONCAT(s.email, \'@\', d.name)
+                                     FROM  email_source_account  AS s
+                               INNER JOIN  email_virtual_domains AS m ON (s.domain = m.id)
+                               INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
+                                    WHERE  s.uid = {?}
+                                 ORDER BY  s.email, d.name', $user->id());
         $page->assign('list_email_X', $res);
-        if (($domain == $globals->mail->domain) || ($domain == $globals->mail->domain2)) {
-            foreach ($res as $res_it) {
-                if ($alias == $res_it['alias']) {
-                    $email_type = "X";
-                }
+        foreach ($res as $res_it) {
+            if ($email_directory == $res_it) {
+                $email_type = 'X';
             }
         }
 
@@ -88,10 +67,10 @@ function fill_email_combobox(PlPage& $page, $user = null, $profile = null)
         $redirect = new Redirect($user);
         $redir    = array();
         foreach ($redirect->emails as $redirect_it) {
-            if ($redirect_it instanceof EmailRedirection) {
+            if ($redirect_it->is_redirection()) {
                 $redir[] = $redirect_it->email;
                 if ($email_directory == $redirect_it->email) {
-                    $email_type = "redir";
+                    $email_type = 'redir';
                 }
             }
         }

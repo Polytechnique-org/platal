@@ -36,7 +36,7 @@ function init_igoogle_html($template, $auth = AUTH_PUBLIC)
 
     // Adds external JavaScript libraries provided by iGoogle to the page.
     if (Env::has('libs')) {
-        $libs = split(',', Env::s('libs'));
+        $libs = preg_split('/,/', Env::s('libs'), -1, PREG_SPLIT_NO_EMPTY);
         foreach ($libs as $lib) {
             if (preg_match('@^[a-z0-9/._-]+$@i', $lib) && !preg_match('@([.][.])|([.]/)|(//)@', $lib)) {
                 $page->append('gadget_js', 'https://www.google.com/ig/f/' . $lib);
