@@ -21,18 +21,6 @@
 
 Platal::load('newsletter');
 
-<<<<<<< HEAD:htdocs/javascript/password.js
-    if (pw1 == '********') {
-        return true;
-    }
-    if (hasConfirmation) {
-        pw2 = $('[name=' + password2 + ']').val();
-        if (pw1 != pw2) {
-            alert("\nErreur : les deux champs ne sont pas identiques !");
-            return false;
-        }
-        $('[name=' + password2 + ']').val('');
-=======
 class XnetNlModule extends NewsletterModule
 {
     function handlers()
@@ -47,7 +35,6 @@ class XnetNlModule extends NewsletterModule
             '%grp/admin/nl/edit/valid'  => $this->make_hook('admin_nl_valid',        AUTH_MDP,    'groupadmin'),
             '%grp/admin/nl/categories'  => $this->make_hook('admin_nl_cat',          AUTH_MDP,    'groupadmin'),
         );
->>>>>>> xorg/master:modules/xnetnl.php
     }
 
     protected function getNl()
