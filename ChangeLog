@@ -4,6 +4,7 @@ VERSION 1.1.0                                                         XX XX XXXX
 Bug/Wish:
 
     * Admin:
+        - #1042: Implements a url-shortener                                -JAC
         - #1315: Displays antispam level in users email admin pages        -JAC
         - #1399: Displays all similar entreprises only on demand           -JAC
         - #1403: Displays grade if any in medal validation process         -JAC
