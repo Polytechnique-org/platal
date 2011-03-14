@@ -185,6 +185,8 @@
       <a href="admin/nls">Liste des NLs groupes</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/newsletter/">NL de X.org</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/url">Raccourcisseur d'url</a>
     </td>
   </tr>
   <tr class="impair">
