@@ -413,7 +413,7 @@ function cleanForm(f) {
     </tr>
     <tr>
       <td>Description</td>
-      <td><input type="text" class="autocomplete" name="description" size="32" value="{$smarty.request.description}" /></td>
+      <td><input type="text" class="autocomplete" name="jobdescription" size="32" value="{$smarty.request.jobdescription}" /></td>
     </tr>
     <tr>
       <td>Mots-clefs</td>

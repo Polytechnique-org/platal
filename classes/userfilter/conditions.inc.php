@@ -924,7 +924,7 @@ class UFC_Binet extends UserFilterCondition
     {
         // Binets are private.
         if ($uf->getVisibilityLevel() != ProfileVisibility::VIS_PRIVATE) {
-            return self::CONF_TRUE;
+            return self::COND_TRUE;
         }
         $sub = $uf->addBinetsFilter();
         return XDB::format($sub . '.binet_id IN {?}', $this->val);
@@ -948,7 +948,7 @@ class UFC_Section extends UserFilterCondition
     {
         // Sections are private.
         if ($uf->getVisibilityLevel() != ProfileVisibility::VIS_PRIVATE) {
-            return self::CONF_TRUE;
+            return self::COND_TRUE;
         }
         $uf->requireProfiles();
         return XDB::format('p.section IN {?}', $this->section);
@@ -1341,12 +1341,9 @@ class UFC_Job_Description extends UserFilterCondition
         // don't do anything. Otherwise restrict to standard job visibility.
         if ($this->fields == UserFilter::JOB_CV) {
            if ($uf->getVisibilityLevel() != ProfileVisibility::VIS_PRIVATE) {
-               return self::CONF_TRUE;
+               return self::COND_TRUE;
            }
-        } else {
-            $conds[] = $uf->getVisibilityCondition($jsub . '.pub');
         }
-
         if ($this->fields & UserFilter::JOB_USERDEFINED) {
             $conds[] = $jsub . '.description ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description);
         }
@@ -1354,7 +1351,10 @@ class UFC_Job_Description extends UserFilterCondition
             $uf->requireProfiles();
             $conds[] = 'p.cv ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description);
         }
-        return implode(' OR ', $conds);
+        if (count($conds) == 0) {
+            return self::COND_TRUE;
+        }
+        return $uf->getVisibilityCondition($jsub . '.pub') . ' AND ( ' . implode(' OR ', $conds) . ' )';
     }
 }
 // }}}
