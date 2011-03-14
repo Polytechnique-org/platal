@@ -88,14 +88,8 @@
     </tr>
     <tr>
       <td colspan="2">
-      <table width="100%"><tr>
-      <td>
-        <a href="recovery">Mot de passe perdu&nbsp;?</a>
-      </td>
-      <td class="right">
-        <input type="submit" name="submitbtn" value="Me connecter" />
-      </td>
-      </tr></table>
+        <a href="recovery" style="float: left">Mot de passe perdu&nbsp;?</a>
+        <input type="submit" name="submitbtn" value="Me connecter" style="float: right" />
       </td>
     </tr>
   </table>
