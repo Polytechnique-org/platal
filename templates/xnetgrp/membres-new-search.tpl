@@ -22,7 +22,7 @@
 
   {if t($too_many)}
   Les critères de recherche ne sont pas assez précis.
-  {elseif $users|@count eq 0}
+  {elseif !t($users) || $users|@count eq 0}
   Aucun camarade non-inscrit ne correspond aux informations fournies.
   {else}
   Camarades correspondants&nbsp;:
