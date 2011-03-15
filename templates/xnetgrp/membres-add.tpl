@@ -98,7 +98,7 @@ function searchX()
     </tr>
     <tr id="xsearch" style="display: none" class="pair">
       <td colspan="2" id="search_result">
-        {include file="xnet/groupe/membres-new-search.tpl"}
+        {include file="xnetgrp/membres-new-search.tpl"}
       </td>
     </tr>
   </table>
