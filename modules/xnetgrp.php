@@ -47,6 +47,7 @@ class XnetGrpModule extends PLModule
             '%grp/member/new'      => $this->make_hook('admin_member_new',      AUTH_MDP,    'groupadmin'),
             '%grp/member/new/ajax' => $this->make_hook('admin_member_new_ajax', AUTH_MDP,    'user', NO_AUTH),
             '%grp/member/del'      => $this->make_hook('admin_member_del',      AUTH_MDP,    'groupadmin'),
+            '%grp/member/suggest'  => $this->make_hook('admin_member_suggest',  AUTH_MDP,    'groupadmin'),
 
             '%grp/rss'             => $this->make_token_hook('rss',             AUTH_PUBLIC),
             '%grp/announce/new'    => $this->make_hook('edit_announce',         AUTH_MDP,    'groupadmin'),
@@ -656,6 +657,7 @@ class XnetGrpModule extends PLModule
         }
 
         S::assert_xsrf_token();
+        $suggest_account_activation = false;
 
         // Finds or creates account: first cases are for users with an account.
         if (!User::isForeignEmailAddress($email)) {
@@ -694,7 +696,15 @@ class XnetGrpModule extends PLModule
                 }
             }
         } else {
-            // User is of type xnet.
+            // User is of type xnet. There are 3 possible cases:
+            //  * the email is not known yet: we create a new account and
+            //      propose to send an email to the user so he can activate
+            //      his account,
+            //  * the email is known but the user was not contacted in order to
+            //      activate yet: we propose to send an email to the user so he
+            //      can activate his account,
+            //  * the email is known and the user was already contacted or has
+            //      an active account: nothing to be done.
             list($mbox, $domain) = explode('@', strtolower($email));
             $hruid = User::makeHrid($mbox, $domain, 'ext');
             // User might already have an account (in another group for example).
@@ -718,6 +728,21 @@ class XnetGrpModule extends PLModule
                              $hruid, $display_name, $full_name, $directory_name, $email);
                 $user = User::get($hruid);
             }
+
+            // Check if the user is has a pending or active account.
+            $active = XDB::fetchOneCell('SELECT  state = \'active\'
+                                           FROM  accounts
+                                          WHERE  uid = {?}',
+                                        $user->id());
+            $pending = XDB::fetchOneCell('SELECT  uid
+                                            FROM  register_pending_xnet
+                                           WHERE  uid = {?}',
+                                         $user->id());
+            $requested = AccountReq::isPending($user->id());
+
+            if (!($active || $pending || $requested)) {
+                $suggest_account_activation = true;
+            }
         }
 
         if ($user) {
@@ -725,8 +750,32 @@ class XnetGrpModule extends PLModule
                                       VALUES  ({?}, {?})',
                          $user->id(), $globals->asso('id'));
             $this->removeSubscriptionRequest($user->id());
-            pl_redirect('member/' . $user->login());
+            if ($suggest_account_activation) {
+                pl_redirect('member/suggest/' . $user->login() . '/' . $email . '/' . $globals->asso('nom'));
+            } else {
+                pl_redirect('member/' . $user->login());
+            }
         }
+    }
+
+    function handler_admin_member_suggest($page, $hruid, $email)
+    {
+        $page->changeTpl('xnetgrp/membres-suggest.tpl');
+
+        if (Post::has('suggest')) {
+            if (Post::t('suggest') == 'yes') {
+                $user = S::user();
+                $group = Platal::globals()->asso('nom');
+                $request = new AccountReq($user, $hruid, $email, $group);
+                $request->submit();
+                $page->trigSuccessRedirect('Un email va bien être envoyé à ' . $email . ' pour l\'activation de son compte.',
+                                           $group . '/member/' . $hruid);
+            } else {
+                pl_redirect('member/' . $hruid);
+            }
+        }
+        $page->assign('email', $email);
+        $page->assign('hruid', $hruid);
     }
 
     function handler_admin_member_new_ajax($page)
