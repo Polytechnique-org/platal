@@ -575,7 +575,7 @@ def handle_request(userdesc, perms, mlist, id, value, comment):
     # Mailman will use internally
     # LC_DESCRIPTIONS is a dict of lang => (name, charset, direction) tuples.
     encoding = mm_cfg.LC_DESCRIPTIONS['fr'][1]
-    comment = comment.encode(encoding)
+    comment = comment.encode(encoding, 'replace')
     mlist.HandleRequest(int(id), int(value), comment)
     return 1
 
