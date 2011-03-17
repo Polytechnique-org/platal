@@ -590,7 +590,7 @@ function hashResponse(password1, password2, hasConfirmation) {
         return false;
     }
 
-    alert("Le mot de passe que tu as rentré va être chiffré avant de nous parvenir par Internet ! Ainsi il ne circulera pas en clair.");
+    alert("Le mot de passe va être chiffré avant de nous parvenir par Internet ! Ainsi il ne circulera pas en clair.");
     $('[name=' + password1 + ']').val('');
     $('[name=pwhash]').val(hash_encrypt(pw1));
     return true;

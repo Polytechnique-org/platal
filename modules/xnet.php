@@ -34,6 +34,7 @@ class XnetModule extends PLModule
             'photo'       => $this->make_hook('photo',     AUTH_MDP),
             'autologin'   => $this->make_hook('autologin', AUTH_MDP),
             'login/ext'   => $this->make_hook('login_ext', AUTH_PUBLIC),
+            'register/ext' => $this->make_hook('register_ext', AUTH_PUBLIC),
             'edit'        => $this->make_hook('edit',      AUTH_MDP, 'user'),
 
             'Xnet'        => $this->make_wiki_hook(),
@@ -232,6 +233,37 @@ class XnetModule extends PLModule
             $page->changeTpl('xnet/login.tpl');
         } else {
             pl_redirect('');
+        }
+    }
+
+    function handler_register_ext($page, $hash = null)
+    {
+        XDB::execute('DELETE FROM  register_pending_xnet
+                            WHERE  DATE_SUB(NOW(), INTERVAL 1 MONTH) > date');
+        $res = XDB::fetchOneAssoc('SELECT  uid, hruid
+                                     FROM  register_pending_xnet
+                                    WHERE  hash = {?}',
+                                  $hash);
+
+        if (is_null($hash) || is_null($res)) {
+            $page->trigErrorRedirect('Cette adresse n\'existe pas ou n\'existe plus sur le serveur.', '');
+        }
+
+        if (Post::has('pwhash') && Post::t('pwhash')) {
+            XDB::query('UPDATE  accounts
+                           SET  password = {?}, state = \'active\'
+                         WHERE  uid = {?} AND state = \'pending\' AND type = \'xnet\'',
+                       Post::t('pwhash'), $res['uid']);
+            XDB::query('DELETE FROM  register_pending_xnet
+                              WHERE  uid = {?}',
+                       $res['uid']);
+
+            S::logger($res['uid'])->log('passwd', '');
+            $page->changeTpl('xnet/register.success.tpl');
+            $page->assign('hruid', $res['hruid']);
+        } else {
+            $page->changeTpl('platal/password.tpl');
+            $page->assign('xnet', true);
         }
     }
 

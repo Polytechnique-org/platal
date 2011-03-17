@@ -20,29 +20,17 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{config_load file="mails.conf" section="xnet_registration"}
-{if $mail_part eq 'head'}
-{subject text=#subject#}
-{from full=#from#}
-{cc full=#cc#}
-{to addr="$to"}
-{elseif $mail_part eq 'text'}
-Bonjour,
+<h1>Activation du compte et création du mot de passe</h1>
 
-{$user->fullName()} nous a demandé de vous créer un compte pour que vous puissiez disposer pleinement de toutes les fonctionnalités liées au groupe {$group}.
+<p>
+<strong>Mot de passe enregistré le {$smarty.now|date_format}</strong>
+</p>
+<p>
+  Votre compte est maintenant activé et votre passe créé. Vous pouvez donc
+  profiter dès à présent des multiples fonctionnalités de Polytechnique.net.
+</p>
+<p>
+  Pour rappel, votre identifiant est&nbsp;: <strong>{$hruid}</strong>
+</p>
 
-Après activation, vos paramètres de connexion seront :
-
-identifiant  : {$hruid}
-mot de passe : celui que vous choisirez
-
-Vous pouvez, dès à présent et pendant une période d'un mois, activer votre compte en cliquant sur le lien suivant :
-
-http://www.polytechnique.net/register/ext/{$hash}
-
-Si le lien ne fonctionne pas, copiez intégralement ce lien dans la barre d'adresse de votre navigateur.
-
-Nous espérons que vous profiterez pleinement des services en ligne de Polytechnique.net.
-{include file="include/signature.mail.tpl"}
-{/if}
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
