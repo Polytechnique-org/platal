@@ -22,6 +22,8 @@
 import base64, MySQLdb, os, getopt, sys, sha, signal, re, shutil, ConfigParser
 import MySQLdb.converters
 import SocketServer
+import errno
+import traceback
 
 sys.path.append('/usr/lib/mailman/bin')
 
@@ -275,6 +277,7 @@ def list_call_locked(method, userdesc, perms, mlist, edit, *arg):
         mlist.Unlock()
         return ret
     except Exception, e:
+        traceback.print_exc(file=sys.stderr)
         sys.stderr.write('Exception in locked call %s: %s\n' % (method.__name__, str(e)))
         mlist.Unlock()
         return 0
@@ -568,6 +571,11 @@ def handle_request(userdesc, perms, mlist, id, value, comment):
             @edit
             @admin
     """
+    # Force encoding to mailman's default for french, since this is what
+    # Mailman will use internally
+    # LC_DESCRIPTIONS is a dict of lang => (name, charset, direction) tuples.
+    encoding = mm_cfg.LC_DESCRIPTIONS['fr'][1]
+    comment = comment.encode(encoding)
     mlist.HandleRequest(int(id), int(value), comment)
     return 1
 
