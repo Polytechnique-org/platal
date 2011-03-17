@@ -132,7 +132,7 @@
     </tr>
     <tr class="impair">
       <td class="center">
-        <input type="submit" name="submitn" value="Continuer" onclick="return hashResponse('password1', 'password2', true);" />
+        <input type="submit" name="submitn" value="Continuer" onclick="return hashResponse('password1', 'password2', true, false);" />
       </td>
     </tr>
   </table>

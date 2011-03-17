@@ -37,7 +37,7 @@
 <br />
 <fieldset style="width: 70%; margin-left: 15%">
   <legend>{icon name=lock} Saisie du {if !t($xnet)}nouveau {/if}mot de passe</legend>
-  <form action="{$smarty.server.REQUEST_URI}" method="post">
+  <form action="{$smarty.server.REQUEST_URI}" method="post" id="login">
   {xsrf_token_field}
     <table style="width: 100%">
       <tr>
@@ -65,14 +65,41 @@
         </td>
       </tr>
       <tr>
+        <td>
+          <input type="hidden" name="username" value="{$hruid}" />
+          <input type="hidden" name="password" value="" />
+          <input type="hidden" name="domain" value="ax" />
+        </td>
+        <td {popup caption='Connexion permanente' width='300' text='Décocher cette case pour que le site oublie ce navigateur.<br />
+          Il est conseillé de décocher la case si cette machine n\'est pas <b>strictement</b> personnelle'} colspan="2">
+          <label><input type="checkbox" name="remember" checked="checked" />
+            Garder l'accès aux services après déconnexion.
+          </label>
+        </td>
+      </tr>
+      <tr>
         <td colspan="2" class="center">
           <input type="hidden" name="pwhash" value="" />
-          <input type="submit" value="{if t($xnet)}Créer{else}Changer{/if}" name="submitn" onclick="return hashResponse('new1', 'new2', true);" />
+          <input type="submit" value="{if t($xnet)}Créer{else}Changer{/if}" name="submitn" onclick="return hashResponse('new1', 'new2', true, true);" />
         </td>
       </tr>
     </table>
   </form>
 </fieldset>
+
+<form action="{$smarty.server.REQUEST_URI}" method="post" id="loginsub">
+  <div>
+    <input type="hidden" name="challenge" value="{$smarty.session.challenge}" />
+    <input type="hidden" name="username"  value="" />
+    <input type="hidden" name="remember"  value="" />
+    <input type="hidden" name="response"  value="" />
+    <input type="hidden" name="xorpass"   value="" />
+    <input type="hidden" name="domain"    value="" />
+    <input type="hidden" name="auth_type" value="{if t($xnet)}xnet{/if}" />
+    <input type="hidden" name="pwhash"    value="" />
+    {if t($xnet)}<input type="hidden" name="wait" />{/if}
+  </div>
+</form>
 
 {if !t($xnet)}
 <p>

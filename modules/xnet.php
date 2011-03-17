@@ -259,11 +259,18 @@ class XnetModule extends PLModule
                        $res['uid']);
 
             S::logger($res['uid'])->log('passwd', '');
+
+            // Try to start a session (so the user don't have to log in); we will use
+            // the password available in Post:: to authenticate the user.
+            Post::kill('wait');
+            Platal::session()->startAvailableAuth();
+
             $page->changeTpl('xnet/register.success.tpl');
             $page->assign('hruid', $res['hruid']);
         } else {
             $page->changeTpl('platal/password.tpl');
             $page->assign('xnet', true);
+            $page->assign('hruid', $res['hruid']);
         }
     }
 

@@ -119,7 +119,7 @@ function add_user_to_url(f) {
         <tr>
           <td colspan="2" class="center">
             <input type="submit" name="create_account" value="Créer le compte"
-                   onclick="return hashResponse('password', false, false);" />
+                   onclick="return hashResponse('password', false, false, false);" />
           </td>
         </tr>
       </table>

@@ -34,7 +34,7 @@ class XnetSession extends XorgSession
             }
         }
 
-        if (!S::logged() && Post::has('auth_type') && Post::v('auth_type') == 'xnet') {
+        if (!S::logged() && Post::has('auth_type') && Post::v('auth_type') == 'xnet' && !Post::has('wait')) {
             $type = XDB::fetchOneCell('SELECT  type
                                          FROM  accounts
                                         WHERE  hruid = {?}',

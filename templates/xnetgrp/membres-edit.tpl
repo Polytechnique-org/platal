@@ -243,7 +243,7 @@
 
   <div class="center">
     <br />
-    <input type="submit" name='change' value="Valider ces changements" onclick="return hashResponse('new_plain_password', false, false);" />
+    <input type="submit" name='change' value="Valider ces changements" onclick="return hashResponse('new_plain_password', false, false, false);" />
     &nbsp;
     <input type="reset" value="Annuler ces changements" />
   </div>
