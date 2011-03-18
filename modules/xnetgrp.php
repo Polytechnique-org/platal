@@ -1006,7 +1006,7 @@ class XnetGrpModule extends PLModule
             // Update user info
             $email_changed = (!$user->profile() && strtolower($user->forlifeEmail()) != strtolower(Post::v('email')));
             $from_email = $user->forlifeEmail();
-            if ($user->type == 'virtual' || $user->type == 'xnet') {
+            if ($user->type == 'virtual' || ($user->type == 'xnet' && !$user->perms)) {
                 XDB::query('UPDATE  accounts
                                SET  full_name = {?}, directory_name = {?}, display_name = {?},
                                     sex = {?}, email = {?}, type = {?}

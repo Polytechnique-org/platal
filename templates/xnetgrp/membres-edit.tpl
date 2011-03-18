@@ -90,7 +90,7 @@
         </select>
       </td>
     </tr>
-    {if $user->type eq 'virtual' || $user->type eq 'xnet'}
+    {if $user->type eq 'virtual' || ($user->type eq 'xnet' && !$user->perms)}
     <tr class="impair">
       <td class="titre">
         Type d'utilisateur&nbsp;:
