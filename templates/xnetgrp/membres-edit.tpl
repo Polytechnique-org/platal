@@ -158,25 +158,6 @@
       </td>
     </tr>
     {if $user->type eq 'xnet'}
-    <tr class="impair" id="password">
-      <td class="titre">Mot de passe&nbsp;:</td>
-      <td>
-        <div style="float: left">
-          <input type="text" name="new_plain_password" size="10" maxlength="256" value="********" />
-          <input type="hidden" name="pwhash" value="" />
-        </div>
-        <div style="float: left; margin-top: 5px;">
-          {checkpasswd prompt="new_plain_password" submit="dummy_none"}
-        </div>
-        {if !$onlyGroup}
-        <div style="clear: both">
-          <small class="error">
-            Attention, cet utilisateur est inscrit à d'autres groupes, changer son mot de passe modifiera aussi ses accès aux autres groupes.
-          </small>
-        </div>
-        {/if}
-      </td>
-    </tr>
     <tr id="make_X">
       <td colspan="2">
         <span id="make_X_cb">
