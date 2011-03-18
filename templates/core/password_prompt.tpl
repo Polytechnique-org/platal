@@ -56,7 +56,7 @@
           <option value="alias" {if t($smarty.cookies.ORGdomain) && $smarty.cookies.ORGdomain eq "alias"}selected="selected"{/if}>
             @ {#globals.mail.alias_dom#} / {#globals.mail.alias_dom2#}
           </option>
-          <option value="ax" {if t($smarty.cookies.ORGdomain) && $smarty.cookies.ORGdomain eq "ax"}selected="selected"{/if}>
+          <option value="hruid" {if t($smarty.cookies.ORGdomain) && $smarty.cookies.ORGdomain eq "ax"}selected="selected"{/if}>
             Identifiant
           </option>
         </select>

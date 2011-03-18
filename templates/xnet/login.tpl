@@ -28,7 +28,7 @@
       <td class="titre">Identifiant&nbsp;:</td>
       <td>
         <input type="text" name="username" />
-        <input type="hidden" name="domain" value="ax" />
+        <input type="hidden" name="domain" value="hruid" />
       </td>
     </tr>
     <tr>
