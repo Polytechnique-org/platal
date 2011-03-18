@@ -163,7 +163,7 @@ class User extends PlUser
                                       IF(ef.email IS NULL, NULL, CONCAT(ef.email, \'@\', mf.name)) AS forlife,
                                       IF(ef.email IS NULL, NULL, CONCAT(ef.email, \'@\', df.name)) AS forlife_alternate,
                                       IF(eb.email IS NULL, NULL, CONCAT(eb.email, \'@\', mb.name)) AS bestalias,
-                                      (er.redirect IS NULL AND a.state = \'active\') AS lost,
+                                      (er.redirect IS NULL AND a.state = \'active\' AND FIND_IN_SET(\'mail\', at.perms)) AS lost,
                                       a.email, a.full_name, a.directory_name, a.display_name, a.sex = \'female\' AS gender,
                                       IF(a.state = \'active\', CONCAT(at.perms, \',\', IF(a.user_perms IS NULL, \'\', a.user_perms)), \'\') AS perms,
                                       a.user_perms, a.email_format, a.is_admin, a.state, a.type, at.description AS type_description, a.skin,
