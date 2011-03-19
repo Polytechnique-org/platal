@@ -106,6 +106,8 @@
     <td>
       <a href="admin/dead-but-active">Décédés actifs</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/xnet_without_group">Comptes xnet sans groupe</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/account/watch">Administrateurs/Désactivations</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/googleapps">Google Apps</a>

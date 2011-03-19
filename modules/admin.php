@@ -51,6 +51,7 @@ class AdminModule extends PLModule
             'admin/accounts'               => $this->make_hook('accounts',               AUTH_MDP, 'admin'),
             'admin/account/watch'          => $this->make_hook('account_watch',          AUTH_MDP, 'admin'),
             'admin/account/types'          => $this->make_hook('account_types',          AUTH_MDP, 'admin'),
+            'admin/xnet_without_group'     => $this->make_hook('xnet_without_group',     AUTH_MDP, 'admin'),
             'admin/jobs'                   => $this->make_hook('jobs',                   AUTH_MDP, 'admin,edit_directory'),
             'admin/profile'                => $this->make_hook('profile',                AUTH_MDP, 'admin,edit_directory')
         );
@@ -1696,6 +1697,16 @@ class AdminModule extends PLModule
                                                  FROM  accounts AS a
                                                 WHERE  a.is_admin
                                              ORDER BY  a.hruid'));
+    }
+
+    function handler_xnet_without_group($page)
+    {
+        $page->changeTpl('admin/xnet_without_group.tpl');
+        $page->assign('accounts', XDB::iterator('SELECT  a.hruid, a.state
+                                                   FROM  accounts      AS a
+                                              LEFT JOIN  group_members AS m ON (a.uid = m.uid)
+                                                  WHERE  a.type = \'xnet\' AND m.uid IS NULL
+                                               ORDER BY  a.state, a.hruid'));
     }
 
     function handler_jobs($page, $id = -1)
