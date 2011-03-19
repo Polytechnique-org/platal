@@ -888,11 +888,10 @@ class XnetGrpModule extends PLModule
         } else {
             $page->trigWarning('Tu as été désinscrit du groupe, mais des erreurs se sont produites lors des désinscriptions des alias et des listes de diffusion.');
         }
-        if ($user->type == 'xnet' && $hasSingleGroup && Post::has('accountDeletion')) {
-            XDB::execute('DELETE FROM  acounts
-                                WHERE  uid = {?}',
-                         $user->id());
-            $page->trigSuccess('Ton compte a bien été supprimé.');
+
+        // If user is of type xnet account and this was her last group, disable the account.
+        if ($user->type == 'xnet' && $hasSingleGroup) {
+            $user->clear(true);
         }
         $page->assign('is_member', is_member(true));
     }
@@ -928,24 +927,9 @@ class XnetGrpModule extends PLModule
             $page->trigWarning("{$user->fullName()} a été désinscrit du groupe, mais des erreurs subsistent&nbsp;!");
         }
 
-        // Either deletes or notifies site administrators if it was the last group
-        // of a xnet account.
+        // If user is of type xnet account and this was her last group, disable the account.
         if ($user->type == 'xnet' && $hasSingleGroup) {
-            if ($user->state == 'pending') {
-                // If the user has never logged in the site, we delete her account.
-                XDB::execute('DELETE FROM  acounts
-                                    WHERE  uid = {?}',
-                             $user->id());
-            } else {
-                // It the user has already logged in the site, we notify site
-                // administrators that there is a new xnet account without any
-                // group.
-                $mailer = new PlMailer('xnetgrp/unsubscription.mail.tpl');
-                $mailer->assign('user', $user);
-                $mailer->assign('groupId', $globals->asso('id'));
-                $mailer->assign('groupName', $globals->asso('nom'));
-                $mailer->send();
-            }
+            $user->clear(true);
         }
     }
 
