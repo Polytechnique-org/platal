@@ -274,7 +274,7 @@ class XnetModule extends PLModule
         }
     }
 
-    function handler_edit(&$page)
+    function handler_edit($page)
     {
         global $globals;
 

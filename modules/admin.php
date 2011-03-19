@@ -1265,7 +1265,7 @@ class AdminModule extends PLModule
 
     private static function updateLanguage(array $item) {}
 
-    function handler_geocoding(&$page, $category = null, $action = null, $id = null)
+    function handler_geocoding($page, $category = null, $action = null, $id = null)
     {
         // Warning, this handler requires the following packages:
         //  * pkg-isocodes

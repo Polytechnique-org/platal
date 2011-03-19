@@ -933,7 +933,7 @@ class XnetGrpModule extends PLModule
         }
     }
 
-    private function changeLogin(PlPage &$page, PlUser &$user, $login)
+    private function changeLogin(PlPage $page, PlUser $user, $login)
     {
         // Search the user's uid.
         $xuser = User::getSilent($login);
