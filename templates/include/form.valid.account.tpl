@@ -21,8 +21,12 @@
 {**************************************************************************}
 
 <tr class="pair">
-  <td class="titre">Groupe&nbsp;:</td>
+  <td class="titre">Groupe demandeur&nbsp;:</td>
   <td>{$valid->group}</td>
+</tr>
+<tr class="pair">
+  <td class="titre">Tous les groupes&nbsp;:</td>
+  <td>{$valid->groups}</td>
 </tr>
 <tr class="pair">
   <td class="titre">Adresse email&nbsp;:</td>

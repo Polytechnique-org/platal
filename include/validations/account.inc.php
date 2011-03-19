@@ -28,6 +28,7 @@ class AccountReq extends Validate
     public $hruid;
     public $email;
     public $group;
+    public $groups;
 
     public $rules = "Accepter si l'adresse email parait correcte, et pas absurde
         (ou si le demandeur est de confiance). Si le demandeur marque sa propre
@@ -46,6 +47,12 @@ class AccountReq extends Validate
                                           FROM  accounts
                                          WHERE  hruid = {?}',
                                        $hruid);
+        $this->groups = implode(',', XDB::fetchColumn('SELECT  g.nom
+                                                         FROM  groups AS g
+                                                   INNER JOIN  group_members AS m ON (g.id = m.asso_id)
+                                                        WHERE  m.uid = {?}
+                                                     ORDER BY  g.nom',
+                                                      $this->uid));
     }
 
     // }}}
