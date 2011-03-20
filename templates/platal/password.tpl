@@ -31,8 +31,9 @@
   Attention au type de clavier que tu utilises (qwerty&nbsp;?) et aux majuscules/minuscules.
 </p>
 <p>
-  Pour une sécurité optimale, le mot de passe circule de manière chiffrée (https) et est
-  stocké chiffré irréversiblement sur nos serveurs.
+  Pour une sécurité optimale, le mot de passe
+  {if !t($xnet)}{if !t($xnet_reset)} circule de manière chiffrée (https) et{/if}{/if}
+  est stocké chiffré irréversiblement sur nos serveurs.
 </p>
 <br />
 <fieldset style="width: 70%; margin-left: 15%">
@@ -80,7 +81,7 @@
       <tr>
         <td colspan="2" class="center">
           <input type="hidden" name="pwhash" value="" />
-          <input type="submit" value="{if t($xnet)}Créer{else}Changer{/if}" name="submitn" onclick="return hashResponse('new1', 'new2', true, true);" />
+          <input type="submit" value="{if t($xnet)}Créer{else}Changer{/if}" name="submitn" onclick="return hashResponse('new1', 'new2', true, {$do_auth});" />
         </td>
       </tr>
     </table>
@@ -101,7 +102,7 @@
   </div>
 </form>
 
-{if !t($xnet)}
+{if !t($xnet)}{if !t($xnet_reset)}
 <p>
   Note bien qu'il s'agit là du mot de passe te permettant de t'authentifier sur le site {#globals.core.sitename#}&nbsp;;
   le mot de passe te permettant d'utiliser le serveur <a
@@ -110,6 +111,6 @@
   de {#globals.core.sitename#} (si tu as <a href="./password/smtp">activé l'accès SMTP et NNTP</a>)
   est indépendant de celui-ci et tu peux le modifier <a href="./password/smtp">ici</a>.
 </p>
-{/if}
+{/if}{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

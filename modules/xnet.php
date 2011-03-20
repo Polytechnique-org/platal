@@ -36,6 +36,7 @@ class XnetModule extends PLModule
             'login/ext'   => $this->make_hook('login_ext', AUTH_PUBLIC),
             'register/ext' => $this->make_hook('register_ext', AUTH_PUBLIC),
             'edit'        => $this->make_hook('edit',      AUTH_MDP, 'user'),
+            'password'    => $this->make_hook('password',  AUTH_MDP, 'user'),
 
             'Xnet'        => $this->make_wiki_hook(),
         );
@@ -271,6 +272,7 @@ class XnetModule extends PLModule
             $page->changeTpl('platal/password.tpl');
             $page->assign('xnet', true);
             $page->assign('hruid', $res['hruid']);
+            $page->assign('do_auth', true);
         }
     }
 
@@ -290,13 +292,6 @@ class XnetModule extends PLModule
         if (Post::has('change')) {
             S::assert_xsrf_token();
 
-            if ($user->groupCount() == 0 && Post::t('delete') == 'OUI') {
-                XDB::execute('DELETE FROM  accounts
-                                    WHERE  uid = {?}',
-                             $user->id());
-                pl_redirect('index');
-            }
-
             // Convert user status to X
             if (!Post::blank('login_X')) {
                 $forlife = $this->changeLogin($page, $user, Post::t('login_X'));
@@ -312,13 +307,6 @@ class XnetModule extends PLModule
                          WHERE  uid = {?}',
                        Post::t('full_name'), Post::t('directory_name'), Post::t('display_name'),
                        (Post::t('sex') == 'male') ? 'male' : 'female', Post::t('email'), $user->id());
-            // If user is of type xnet and new password is given.
-            if (!Post::blank('pwhash')) {
-                XDB::query('UPDATE  accounts
-                               SET  password = {?}
-                             WHERE  uid = {?}',
-                           Post::t('pwhash'), $user->id());
-            }
             if (XDB::affectedRows()) {
                 $page->trigSuccess('Données mises à jour.');
             }
@@ -326,6 +314,27 @@ class XnetModule extends PLModule
 
         $page->addJsLink('password.js');
         $page->assign('user', $user);
+    }
+
+    function handler_password ($page)
+    {
+        if (Post::has('pwhash') && Post::t('pwhash'))  {
+            S::assert_xsrf_token();
+
+            S::set('password', $password = Post::t('pwhash'));
+            XDB::execute('UPDATE  accounts
+                             SET  password = {?}
+                           WHERE  uid={?}', $password,
+                         S::i('uid'));
+            S::logger()->log('passwd');
+            Platal::session()->setAccessCookie(true);
+            $page->changeTpl('platal/password.success.tpl');
+            $page->run();
+        }
+
+        $page->changeTpl('platal/password.tpl');
+        $page->assign('xnet_reset', true);
+        $page->assign('do_auth', false);
     }
 }
 

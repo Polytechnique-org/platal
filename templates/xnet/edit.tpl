@@ -71,22 +71,6 @@
       </td>
     </tr>
     <tr class="impair">
-      <td class="titre">Mot de passe&nbsp;:</td>
-      <td>
-        <input type="text" name="password1" size="10" maxlength="256" value="********" />
-        <input type="hidden" name="pwhash" value="" />
-      </td>
-    </tr>
-    <tr class="impair">
-      <td class="titre">Retape-le une fois&nbsp;:</td>
-      <td>
-        <input type="text" name="password2" size="10" maxlength="256" value="" />
-      </td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>{checkpasswd prompt="password1" submit="dummy_none"}</td>
-    </tr>
     <tr id="make_X">
       <td colspan="2">
         <span id="make_X_cb">
@@ -100,12 +84,6 @@
       </td>
     </tr>
   </table>
-  {if $user->groupCount() eq 0}
-  <p>
-    Supprimer mon compte&nbsp;:&nbsp;<input type="text" name="delete" value="NON" size="3" maxlength="3" /><br />
-    <small>(Écrire « OUI » en majuscule pour que la suppression soit prise en compte.)</small>
-  </p>
-  {/if}
 
   <div class="center">
     <br />

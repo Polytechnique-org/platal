@@ -229,6 +229,7 @@ class PlatalModule extends PLModule
 
         $page->changeTpl('platal/password.tpl');
         $page->setTitle('Mon mot de passe');
+        $page->assign('do_auth', false);
     }
 
     function handler_smtppass($page)
@@ -396,6 +397,7 @@ Adresse de secours : " . Post::v('email') : ""));
                                        $uid);
             $page->changeTpl('platal/password.tpl');
             $page->assign('hruid', $hruid);
+            $page->assign('do_auth', true);
         }
     }
 
