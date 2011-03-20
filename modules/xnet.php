@@ -308,6 +308,8 @@ class XnetModule extends PLModule
                        Post::t('full_name'), Post::t('directory_name'), Post::t('display_name'),
                        (Post::t('sex') == 'male') ? 'male' : 'female', Post::t('email'), $user->id());
             if (XDB::affectedRows()) {
+                $user = User::getWithUID($user->id());
+                S::set('user', $user);
                 $page->trigSuccess('Données mises à jour.');
             }
         }
