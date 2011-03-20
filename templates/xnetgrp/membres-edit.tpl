@@ -171,6 +171,19 @@
       </td>
     </tr>
     {/if}
+    {if $user->type eq 'xnet' && $suggest}
+    <tr>
+      <td colspan="2">
+        <label>
+          <input type="checkbox" name="suggest" />
+          coche cette case si tu souhaites qu'un compte « Extérieur » soit créé
+          pour cette personne et que nous lui envoyions un email afin qu'il ait
+          accès aux nombreuses fonctionnalités de Polytechnique.net (inscription
+          aux évènements, télépaiement, modération des listes de diffusion&hellip;)
+        </label>
+      </td>
+    </tr>
+    {/if}
   </table>
 
   <h2>Abonnement aux listes</h2>

@@ -729,20 +729,7 @@ class XnetGrpModule extends PLModule
                 $user = User::get($hruid);
             }
 
-            // Check if the user is has a pending or active account.
-            $active = XDB::fetchOneCell('SELECT  state = \'active\'
-                                           FROM  accounts
-                                          WHERE  uid = {?}',
-                                        $user->id());
-            $pending = XDB::fetchOneCell('SELECT  uid
-                                            FROM  register_pending_xnet
-                                           WHERE  uid = {?}',
-                                         $user->id());
-            $requested = AccountReq::isPending($user->id());
-
-            if (!($active || $pending || $requested)) {
-                $suggest_account_activation = true;
-            }
+            $suggest_account_activation = $this->suggest($user);
         }
 
         if ($user) {
@@ -756,6 +743,25 @@ class XnetGrpModule extends PLModule
                 pl_redirect('member/' . $user->login());
             }
         }
+    }
+
+    // Check if the user has a pending or active account, and thus if we should her account's activation.
+    private function suggest(PlUser $user)
+    {
+        $active = XDB::fetchOneCell('SELECT  state = \'active\'
+                                       FROM  accounts
+                                      WHERE  uid = {?}',
+                                    $user->id());
+        $pending = XDB::fetchOneCell('SELECT  uid
+                                        FROM  register_pending_xnet
+                                       WHERE  uid = {?}',
+                                     $user->id());
+        $requested = AccountReq::isPending($user->id());
+
+        if ($active || $pending || $requested) {
+            return false;
+        }
+        return true;
     }
 
     function handler_admin_member_suggest($page, $hruid, $email)
@@ -1008,6 +1014,12 @@ class XnetGrpModule extends PLModule
                 $page->trigSuccess('Données de l\'utilisateur mises à jour.');
             }
 
+            if (($user->type == 'xnet' && !$user->perms) && Post::b('suggest')) {
+                $request = new AccountReq(S::user(), $user->hruid, Post::t('email'), $globals->asso('nom'));
+                $request->submit();
+                $page->trigSuccess('Le compte va bientôt être activé.');
+            }
+
             // Update group params for user
             $perms = Post::v('group_perms');
             $comm  = Post::t('comm');
@@ -1084,6 +1096,7 @@ class XnetGrpModule extends PLModule
         $positions = str_replace(array('enum(', ')', '\''), '', $res[0]['Type']);
 
         $page->assign('user', $user);
+        $page->assign('suggest', $this->suggest($user));
         $page->assign('listes', $mmlist->get_lists($user->forlifeEmail()));
         $page->assign('alias', $user->emailGroupAliases($globals->asso('mail_domain')));
         $page->assign('positions', explode(',', $positions));
