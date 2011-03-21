@@ -106,13 +106,11 @@ class PaymentModule extends PLModule
     {
         return array(
             'payment'                      => $this->make_hook('payment',          AUTH_MDP,    'payment'),
-            'payment/cyber_return'         => $this->make_hook('cyber_return',     AUTH_PUBLIC, 'user', NO_HTTPS),
             'payment/cyber2_return'        => $this->make_hook('cyber2_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
             'payment/paypal_return'        => $this->make_hook('paypal_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
             '%grp/paiement'                => $this->make_hook('xnet_payment',     AUTH_MDP),
             '%grp/payment'                 => $this->make_hook('xnet_payment',     AUTH_MDP),
             '%grp/payment/csv'             => $this->make_hook('payment_csv',      AUTH_MDP,    'groupadmin'),
-            '%grp/payment/cyber_return'    => $this->make_hook('cyber_return',     AUTH_PUBLIC, 'user', NO_HTTPS),
             '%grp/payment/cyber2_return'   => $this->make_hook('cyber2_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
             '%grp/payment/paypal_return'   => $this->make_hook('paypal_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
             'admin/payments'               => $this->make_hook('admin',            AUTH_MDP,    'admin'),
@@ -184,104 +182,6 @@ class PaymentModule extends PLModule
         $page->assign('pay', $pay);
         $page->assign('evtlink', $pay->event());
         $page->assign('sex', S::user()->isFemale());
-    }
-
-    function handler_cyber_return($page, $uid = null)
-    {
-        /* reference banque (numero de transaction) */
-        $champ901 = Env::s('CHAMP901');
-        /* cle d'acceptation */
-        $champ905 = Env::s('CHAMP905');
-        /* code retour */
-        $champ906 = Env::s('CHAMP906');
-        /* email renvoye par la banque */
-        $champ104 = Env::s('CHAMP104');
-        /* reference complete de la commande */
-        $champ200 = Env::s('CHAMP200');
-        /* montant de la transaction */
-        $champ201 = Env::s('CHAMP201');
-        /* devise */
-        $champ202 = Env::s('CHAMP202');
-        $montant = "$champ201 $champ202";
-
-        /* on extrait les informations sur l'utilisateur */
-        $user = User::get($uid);
-        if (!$user) {
-            cb_erreur("uid invalide");
-        }
-
-
-        /* on extrait la reference de la commande */
-        if (!ereg('-xorg-([0-9]+)$', $champ200, $matches)) {
-            cb_erreur("référence de commande invalide");
-        }
-
-        echo ($ref = $matches[1]);
-        $res = XDB::query('SELECT  mail, text, confirmation
-                             FROM  payments
-                            WHERE  id = {?}', $ref);
-        if (!list($conf_mail, $conf_title, $conf_text) = $res->fetchOneRow()) {
-            cb_erreur("référence de commande inconnue");
-        }
-
-        /* on extrait le code de retour */
-        if ($champ906 != "0000") {
-            $res = XDB::query('SELECT  rcb.text, c.id, c.text
-                                 FROM  payment_codeRCB AS rcb
-                            LEFT JOIN  payment_codeC   AS c ON (rcb.codeC = c.id)
-                                WHERE  rcb.id = {?}', $champ906);
-            if (list($rcb_text, $c_id, $c_text) = $res->fetchOneRow()) {
-                cb_erreur("erreur lors du paiement : $c_text ($c_id)");
-            } else{
-                cb_erreur("erreur inconnue lors du paiement");
-            }
-        }
-
-        /* on fait l'insertion en base de donnees */
-        XDB::execute('INSERT INTO  payment_transactions (id, uid, ref, fullref, amount, pkey, comment)
-                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                     $champ901, $user->id(), $ref, $champ200, $montant, $champ905, Env::v('comment'));
-
-        // We check if it is an Xnet payment and then update the related ML.
-        $res = XDB::query('SELECT  eid
-                             FROM  group_events
-                            WHERE  paiement_id = {?}', $ref);
-        if ($eid = $res->fetchOneCell()) {
-            require_once dirname(__FILE__) . '/xnetevents/xnetevents.inc.php';
-            $evt = get_event_detail($eid);
-            subscribe_lists_event($uid, $evt['short_name'], 1, $montant, true);
-        }
-
-        /* on genere le mail de confirmation */
-        $conf_text = str_replace(
-            array('<prenom>', '<nom>', '<promo>', '<montant>', '<salutation>', '<cher>', '<comment>'),
-            array($user->firstName(), $user->lastName(), $user->promo(), $montant,
-                  $user->isFemale() ? 'Chère' : 'Cher', $user->isFemale() ? 'Chère' : 'Cher',
-                  Env::v('comment')), $conf_text);
-
-        global $globals;
-        $mymail = new PlMailer();
-        $mymail->setFrom($conf_mail);
-        $mymail->addCc($conf_mail);
-        $mymail->setSubject($conf_title);
-        $mymail->setWikiBody($conf_text);
-        $mymail->sendTo($user);
-
-        /* on envoie les details de la transaction à telepaiement@ */
-        $mymail = new PlMailer();
-        $mymail->setFrom("webmaster@" . $globals->mail->domain);
-        $mymail->addTo($globals->money->email);
-        $mymail->setSubject($conf_title);
-        $msg = 'utilisateur : ' . $user->login() . ' (' . $user->id() . ')' . "\n" .
-               'mail : ' . $user->forlifeEmail() . "\n\n" .
-               "paiement : $conf_title ($conf_mail)\n".
-               "reference : $champ200\n".
-               "montant : $montant\n\n".
-               "dump de REQUEST:\n".
-               var_export($_REQUEST,true);
-        $mymail->setTxtBody($msg);
-        $mymail->send();
-        exit;
     }
 
     function handler_cyber2_return($page, $uid = null)
