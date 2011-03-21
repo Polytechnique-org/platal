@@ -29,7 +29,7 @@ Bug/Wish:
         - #1401: Main addresses are displayed before secondary addresses   -JAC
 
     * Xnet:
-        - #1211: Adds login page for xnet users                            -JAC
+        - Accounts for xnet only users                                     -JAC
 
     * XnetGrp:
         - #907: Adds more info about groups (address, phones, positions)   -JAC
