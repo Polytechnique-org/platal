@@ -894,9 +894,9 @@ class UFC_Group extends UserFilterCondition
 
     public function buildCondition(PlFilter $uf)
     {
-        // Groups have AX visibility.
-        if ($uf->getVisibilityLevel() == ProfileVisibility::VIS_PUBLIC) {
-            return self::COND_TRUE;
+        // Groups are only visible for users with perm 'groups'.
+        if (!S::user()->checkPerms(User::PERM_GROUPS)) {
+            return self::COND_FALSE;
         }
         $sub = $uf->addGroupFilter($this->group);
         $where = 'gpm' . $sub . '.perms IS NOT NULL';
