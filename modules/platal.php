@@ -276,7 +276,7 @@ class PlatalModule extends PLModule
             return;
         }
 
-        if (!ereg('[0-3][0-9][0-1][0-9][1][9]([0-9]{2})', Env::v('birth'))) {
+        if (!preg_match('/^[0-3][0-9][0-1][0-9][1][9]([0-9]{2})$/', Env::v('birth'))) {
             $page->trigError('Date de naissance incorrecte ou incohérente');
             return;
         }
