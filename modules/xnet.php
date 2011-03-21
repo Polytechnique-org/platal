@@ -35,6 +35,8 @@ class XnetModule extends PLModule
             'autologin'   => $this->make_hook('autologin', AUTH_MDP),
             'login/ext'   => $this->make_hook('login_ext', AUTH_PUBLIC),
             'register/ext' => $this->make_hook('register_ext', AUTH_PUBLIC),
+            'recovery/ext' => $this->make_hook('recovery_ext', AUTH_PUBLIC),
+            'tmpPWD/ext'  => $this->make_hook('tmpPWD_ext', AUTH_PUBLIC),
             'edit'        => $this->make_hook('edit',      AUTH_MDP, 'user'),
             'password'    => $this->make_hook('password',  AUTH_MDP, 'user'),
 
@@ -275,6 +277,98 @@ class XnetModule extends PLModule
             $page->assign('do_auth', true);
         }
     }
+
+    function handler_recovery_ext($page)
+    {
+        $page->changeTpl('xnet/recovery.tpl');
+
+        if (!Post::has('login')) {
+            return;
+        }
+
+        $user = User::getSilent(Post::t('login'));
+        if (is_null($user)) {
+            $page->trigError('Le compte n\'existe pas.');
+            return;
+        }
+        if ($user->state != 'active') {
+            $page->trigError('Ton compte n\'est pas activé.');
+            return;
+        }
+
+        $page->assign('ok', true);
+
+        $hash = rand_url_id();
+        XDB::execute('INSERT INTO  account_xnet_lost_passwords (uid, date, hash)
+                           VALUES  ({?}, NOW(), {?})',
+                     $user->id(), $hash);
+
+        $mymail = new PlMailer();
+        $mymail->setFrom('"Gestion des mots de passe" <support+password@' . Platal::globals()->mail->domain . '>');
+        $mymail->addTo($user);
+        $mymail->setSubject("Votre certificat d'authentification");
+        $mymail->setTxtBody("Visitez la page suivante qui expire dans six heures :
+http://polytechnique.net/tmpPWD/$hash
+
+Si en cliquant dessus vous n'y arrivez pas, copiez intégralement l'adresse dans la barre de votre navigateur. Si vous n'avez pas utilisé ce lien dans six heures, vous pouvez tout simplement recommencer cette procédure.
+
+--
+Polytechnique.org
+\"Le portail des élèves & anciens élèves de l'École polytechnique\"
+
+Email envoyé à " . Post::t('login'));
+        $mymail->send();
+
+        S::logger($user->id())->log('recovery', $user->bestEmail());
+    }
+
+    function handler_tmpPWD_ext($page, $hash = null)
+    {
+        global $globals;
+        XDB::execute('DELETE FROM  account_xnet_lost_passwords
+                            WHERE  DATE_SUB(NOW(), INTERVAL 380 MINUTE) > date');
+
+        $uid = XDB::fetchOneCell('SELECT  uid
+                                    FROM  account_xnet_lost_passwords
+                                   WHERE  hash = {?}',
+                                 $hash);
+        if (is_null($uid)) {
+            $page->trigErrorRedirect("Cette adresse n'existe pas ou n'existe plus sur le serveur.", '');
+        }
+
+        $hruid = XDB::fetchOneCell('SELECT  hruid
+                                      FROM  accounts
+                                     WHERE  uid = {?}',
+                                   $uid);
+
+        if (Post::has('pwhash') && Post::t('pwhash')) {
+            $password = Post::t('pwhash');
+            XDB::query('UPDATE  accounts
+                           SET  password = {?}
+                         WHERE  uid = {?} AND state = \'active\'',
+                       $password, $uid);
+            XDB::query('DELETE FROM  account_xnet_lost_passwords
+                              WHERE  hash = {?}',
+                       $hash);
+
+            S::logger($uid)->log('passwd', '');
+
+            // Try to start a session (so the user don't have to log in); we will use
+            // the password available in Post:: to authenticate the user.
+            Post::kill('wait');
+            Platal::session()->startAvailableAuth();
+
+            $page->changeTpl('xnet/register.success.tpl');
+            $page->assign('hruid', $hruid);
+        } else {
+            $page->changeTpl('platal/password.tpl');
+            $page->assign('xnet_reset', true);
+            $page->assign('hruid', $hruid);
+            $page->assign('do_auth', true);
+        }
+    }
+
+
 
     function handler_edit($page)
     {

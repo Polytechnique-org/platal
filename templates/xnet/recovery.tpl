@@ -20,47 +20,58 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Identification</h1>
 
-<form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit='doChallengeResponse(); return false;'>
-  <table class="bicol">
+<h1>Perte du mot de passe</h1>
+
+
+{if $ok}
+
+<p>
+<strong>Un certificat d'authentification</strong> vient de vous être attribué et envoyé.
+Ce certificat permet d'accéder à un formulaire de changement de mot de passe.
+<span class="erreur"> Il expire dans six heures.</span> Vous devez donc <strong>consulter vos emails avant son
+expiration</strong> et utiliser le certificat comme expliqué dans l'email pour changer votre mot de passe.
+</p>
+<p>
+Si vous n'accéder pas à cet email dans les 6 heures, sollicitez un nouveau certificat sur cette page.
+</p>
+
+{else}
+
+<form action="{$platal->ns}recovery/ext" method="post">
+  <p>
+  Il est impossible de récupérer le mot de passe perdu car nous n'avons que le résultat après un
+  chiffrement irréversible de votre mot de passe. La procédure suivante va vous permettre de choisir un
+  nouveau mot de passe.
+  </p>
+  <p>
+  Après avoir complété les informations suivantes, vous recevrez un
+  email vous permettant de choisir un nouveau mot de passe.  </p>
+  <p>
+  Si vous ne recevez pas cet email, n'hésitez pas à contacter
+  <a href="mailto:support@{#globals.mail.domain#}">le support technique</a>.
+  </p>
+  <table class="tinybicol" cellpadding="3" cellspacing="0" summary="Récupération du mot de passe">
     <tr>
-      <td class="titre">Identifiant&nbsp;:</td>
+      <th colspan="2">
+        Perte de mot de passe
+      </th>
+    </tr>
+    <tr>
+      <td class="titre">
+        Identifiant&nbsp;:
+      </td>
       <td>
-        <input type="text" name="username" />
-        <input type="hidden" name="domain" value="hruid" />
+        <input type="text" size="20" maxlength="255" name="login" />
       </td>
     </tr>
     <tr>
-      <td class="titre">Mot de passe&nbsp;:</td>
-      <td><input type="password" name="password" size="10" maxlength="256" /></td>
-    </tr>
-    <tr>
-      <td {popup caption='Connexion permanente' width='300' text='Décocher cette case pour que le site oublie ce navigateur.<br />
-        Il est conseillé de décocher la case si cette machine n\'est pas <b>strictement</b> personnelle'} colspan="2">
-        <label><input type="checkbox" name="remember" checked="checked" />
-          Garder l'accès aux services après déconnexion.
-        </label>
-        <br />
-        <a href="recovery/ext">Mot de passe perdu&nbsp;?</a>
+      <td colspan="2" class="center">
+        <input type="submit" value="Continuer" name="submit" />
       </td>
-    </tr>
-    <tr>
-      <td colspan="2" class="center"><input  type="submit" name="submitbtn" value="Envoyer" /></td>
     </tr>
   </table>
 </form>
-
-<form action="{$smarty.server.REQUEST_URI}" method="post" id="loginsub">
-  <div>
-    <input type="hidden" name="challenge" value="{$smarty.session.challenge}" />
-    <input type="hidden" name="username"  value="" />
-    <input type="hidden" name="remember"  value="" />
-    <input type="hidden" name="response"  value="" />
-    <input type="hidden" name="xorpass"   value="" /> 
-    <input type="hidden" name="domain"    value="" />
-    <input type="hidden" name="auth_type" value="xnet" />
-  </div>
-</form>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
