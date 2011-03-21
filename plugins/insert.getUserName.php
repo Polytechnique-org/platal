@@ -43,7 +43,7 @@ function smarty_insert_getUsername()
         return XDB::fetchOneCell('SELECT  email
                                     FROM  email_source_account
                                    WHERE  uid = {?} AND type != \'alias_aux\'
-                                ORDER BY  NOT FIND_IN_SET(\'bestalias\', flags), MIN(email)',
+                                ORDER BY  NOT FIND_IN_SET(\'bestalias\', flags), CHAR_LENGTH(email)',
                                  $id);
     }
 
