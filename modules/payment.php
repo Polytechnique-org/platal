@@ -354,7 +354,7 @@ class PaymentModule extends PLModule
             array('<prenom>', '<nom>', '<promo>', '<montant>', '<salutation>', '<cher>', '<comment>'),
             array($user->firstName(), $user->lastName(), $user->promo(), $montant,
                   $user->isFemale() ? 'Chère' : 'Cher', $user->isFemale() ? 'Chère' : 'Cher',
-                  Env::v('comment')), $conf_text);
+                  Env::v('vads_order_info')), $conf_text);
 
         global $globals;
         $mymail = new PlMailer();
