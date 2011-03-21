@@ -47,7 +47,7 @@ function add_user_to_url(f) {
   </form>
 </fieldset>
 
-{if $users->total() > 0}
+{if t($users) && $users->total() > 0}
 <fieldset>
   <legend>Liste des comptes manuels</legend>
 
@@ -68,63 +68,61 @@ function add_user_to_url(f) {
     <li><a href="admin/add_accounts">Ajout d'un ensemble d'utilisateurs</a></li>
     <li>Ajouter un compte manuel :</li>
   </ul>
-  <p>
-    <form action="admin/accounts" method="post">
-      {xsrf_token_field}
-      <table style="width: 75%; margin-left: auto; margin-right: auto">
-        <tr>
-          <td class="titre">Type de compte</td>
-          <td>
-            <select name="type">
-              <option value="ax">Personnel de l'AX</option>
-              <option value="fx">Personnel de la FX</option>
-              <option value="school">Personnel de l'Ecole</option>
-            </select>
-            <a href="admin/account/types">Détail des permissions associées</a>
-          </td>
-        </tr>
-        <tr>
-          <td class="titre">Nom</td>
-          <td><input type="text" name="lastname" size=60 maxlength="255" value="" /></td>
-        </tr>
-        <tr>
-          <td class="titre">Prénom</td>
-          <td><input type="text" name="firstname" size=60" maxlength="255" value="" /></td>
-        </tr>
-        <tr>
-          <td class="titre">Sexe</td>
-          <td>
-            <select name="sex">
-              <option value="female">Femme</option>
-              <option value="male">Homme</option>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td class="titre">Email</td>
-          <td><input type="text" name="email" size="60" maxlength="255" value="" /></td>
-        </tr>
-        <tr>
-          <td class="titre">Mot de passe</td>
-          <td>
-            <div style="float: left">
-              <input type="password" name="password" size="10" maxlength="256" />
-              <input type="hidden" name="pwhash" value="" />
-            </div>
-            <div style="float: left; margin-top: 5px">
-              {checkpasswd prompt="password" submit="create_account" text="Créer le compte"}
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="2" class="center">
-            <input type="submit" name="create_account" value="Créer le compte"
-                   onclick="return hashResponse('password', false, false);" />
-          </td>
-        </tr>
-      </table>
-    </form>
-  </p>
+  <form action="admin/accounts" method="post">
+    {xsrf_token_field}
+    <table style="width: 75%; margin-left: auto; margin-right: auto">
+      <tr>
+        <td class="titre">Type de compte</td>
+        <td>
+          <select name="type">
+            <option value="ax">Personnel de l'AX</option>
+            <option value="fx">Personnel de la FX</option>
+            <option value="school">Personnel de l'Ecole</option>
+          </select>
+          <a href="admin/account/types">Détail des permissions associées</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="titre">Nom</td>
+        <td><input type="text" name="lastname" size="60" maxlength="255" value="" /></td>
+      </tr>
+      <tr>
+        <td class="titre">Prénom</td>
+        <td><input type="text" name="firstname" size="60" maxlength="255" value="" /></td>
+      </tr>
+      <tr>
+        <td class="titre">Sexe</td>
+        <td>
+          <select name="sex">
+            <option value="female">Femme</option>
+            <option value="male">Homme</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td class="titre">Email</td>
+        <td><input type="text" name="email" size="60" maxlength="255" value="" /></td>
+      </tr>
+      <tr>
+        <td class="titre">Mot de passe</td>
+        <td>
+          <div style="float: left">
+            <input type="password" name="password" size="10" maxlength="256" />
+            <input type="hidden" name="pwhash" value="" />
+          </div>
+          <div style="float: left; margin-top: 5px">
+            {checkpasswd prompt="password" submit="create_account" text="Créer le compte"}
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="center">
+          <input type="submit" name="create_account" value="Créer le compte"
+                 onclick="return hashResponse('password', false, false, false);" />
+        </td>
+      </tr>
+    </table>
+  </form>
 </fieldset>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

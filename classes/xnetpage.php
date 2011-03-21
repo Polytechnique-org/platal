@@ -81,6 +81,10 @@ class XnetPage extends PlPage
         $sub = array();
         $sub['tous les groupes'] = 'plan';
         $sub['documentation']     = 'Xnet';
+        if (S::user()->type == 'xnet') {
+            $sub['mon compte'] = 'edit';
+            $sub['mon mot de passe'] = 'password';
+        }
         $sub['signaler un bug']   = array('href' => 'send_bug/'.$_SERVER['REQUEST_URI'], 'class' => 'popup_840x600');
         $menu["no_title"]   = $sub;
 

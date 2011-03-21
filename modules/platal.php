@@ -229,6 +229,7 @@ class PlatalModule extends PLModule
 
         $page->changeTpl('platal/password.tpl');
         $page->setTitle('Mon mot de passe');
+        $page->assign('do_auth', false);
     }
 
     function handler_smtppass($page)
@@ -383,9 +384,20 @@ Adresse de secours : " . Post::v('email') : ""));
             }
 
             S::logger($uid)->log("passwd", "");
+
+            // Try to start a session (so the user don't have to log in); we will use
+            // the password available in Post:: to authenticate the user.
+            Platal::session()->start(AUTH_MDP);
+
             $page->changeTpl('platal/tmpPWD.success.tpl');
         } else {
+            $hruid = XDB::fetchOneCell('SELECT  hruid
+                                          FROM  accounts
+                                         WHERE  uid = {?}',
+                                       $uid);
             $page->changeTpl('platal/password.tpl');
+            $page->assign('hruid', $hruid);
+            $page->assign('do_auth', true);
         }
     }
 

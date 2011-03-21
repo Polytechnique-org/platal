@@ -20,42 +20,58 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if t($smarty.post.confirm)}
 
-<p class="descr">
-{if !$self}
-<a href="{$platal->ns}annuaire">retour à l'annuaire</a>
-{else}
-<a href="">retour à l'accueil</a>
-{/if}
+<h1>Perte du mot de passe</h1>
+
+
+{if $ok}
+
+<p>
+<strong>Un certificat d'authentification</strong> vient de vous être attribué et envoyé.
+Ce certificat permet d'accéder à un formulaire de changement de mot de passe.
+<span class="erreur"> Il expire dans six heures.</span> Vous devez donc <strong>consulter vos emails avant son
+expiration</strong> et utiliser le certificat comme expliqué dans l'email pour changer votre mot de passe.
+</p>
+<p>
+Si vous n'accéder pas à cet email dans les 6 heures, sollicitez un nouveau certificat sur cette page.
 </p>
 
 {else}
 
-<h1>{$asso->nom}&nbsp;: gestion des membres</h1>
-
-<h2>
-  Suppression du membre&nbsp;: {profile user=$user groupperms=false sex=false promo=true}
-</h2>
-
-
-<form method="post" action="{$platal->pl_self()}">
-  {xsrf_token_field}
-  <div class="center">
-    <p class="descr">
-    {if $self}
-    Êtes-vous sûr de vouloir vous désinscrire du groupe {$asso->nom} et de toutes
-    les listes de diffusion associées&nbsp;?
-    {else}
-    Êtes-vous sûr de vouloir supprimer {$user->fullName()} du groupe,
-    lui retirer tous les droits associés à son statut de membre
-    et le désabonner de toutes les listes de diffusion du groupe&nbsp;?
-    {/if}
-    </p>
-    <input type="submit" name="confirm" value="Oui, je {if $self}me{else}le{/if} désinscris complètement du groupe !" />
-  </div>
+<form action="{$platal->ns}recovery/ext" method="post">
+  <p>
+  Il est impossible de récupérer le mot de passe perdu car nous n'avons que le résultat après un
+  chiffrement irréversible de votre mot de passe. La procédure suivante va vous permettre de choisir un
+  nouveau mot de passe.
+  </p>
+  <p>
+  Après avoir complété les informations suivantes, vous recevrez un
+  email vous permettant de choisir un nouveau mot de passe.  </p>
+  <p>
+  Si vous ne recevez pas cet email, n'hésitez pas à contacter
+  <a href="mailto:support@{#globals.mail.domain#}">le support technique</a>.
+  </p>
+  <table class="tinybicol" cellpadding="3" cellspacing="0" summary="Récupération du mot de passe">
+    <tr>
+      <th colspan="2">
+        Perte de mot de passe
+      </th>
+    </tr>
+    <tr>
+      <td class="titre">
+        Identifiant&nbsp;:
+      </td>
+      <td>
+        <input type="text" size="20" maxlength="255" name="login" />
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" class="center">
+        <input type="submit" value="Continuer" name="submit" />
+      </td>
+    </tr>
+  </table>
 </form>
-
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

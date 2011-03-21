@@ -20,42 +20,47 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if t($smarty.post.confirm)}
+<h1>Identification</h1>
 
-<p class="descr">
-{if !$self}
-<a href="{$platal->ns}annuaire">retour à l'annuaire</a>
-{else}
-<a href="">retour à l'accueil</a>
-{/if}
-</p>
-
-{else}
-
-<h1>{$asso->nom}&nbsp;: gestion des membres</h1>
-
-<h2>
-  Suppression du membre&nbsp;: {profile user=$user groupperms=false sex=false promo=true}
-</h2>
-
-
-<form method="post" action="{$platal->pl_self()}">
-  {xsrf_token_field}
-  <div class="center">
-    <p class="descr">
-    {if $self}
-    Êtes-vous sûr de vouloir vous désinscrire du groupe {$asso->nom} et de toutes
-    les listes de diffusion associées&nbsp;?
-    {else}
-    Êtes-vous sûr de vouloir supprimer {$user->fullName()} du groupe,
-    lui retirer tous les droits associés à son statut de membre
-    et le désabonner de toutes les listes de diffusion du groupe&nbsp;?
-    {/if}
-    </p>
-    <input type="submit" name="confirm" value="Oui, je {if $self}me{else}le{/if} désinscris complètement du groupe !" />
-  </div>
+<form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit='doChallengeResponse(); return false;'>
+  <table class="bicol">
+    <tr>
+      <td class="titre">Identifiant&nbsp;:</td>
+      <td>
+        <input type="text" name="username" />
+        <input type="hidden" name="domain" value="hruid" />
+      </td>
+    </tr>
+    <tr>
+      <td class="titre">Mot de passe&nbsp;:</td>
+      <td><input type="password" name="password" size="10" maxlength="256" /></td>
+    </tr>
+    <tr>
+      <td {popup caption='Connexion permanente' width='300' text='Décocher cette case pour que le site oublie ce navigateur.<br />
+        Il est conseillé de décocher la case si cette machine n\'est pas <b>strictement</b> personnelle'} colspan="2">
+        <label><input type="checkbox" name="remember" checked="checked" />
+          Garder l'accès aux services après déconnexion.
+        </label>
+        <br />
+        <a href="recovery/ext">Mot de passe perdu&nbsp;?</a>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" class="center"><input  type="submit" name="submitbtn" value="Envoyer" /></td>
+    </tr>
+  </table>
 </form>
 
-{/if}
+<form action="{$smarty.server.REQUEST_URI}" method="post" id="loginsub">
+  <div>
+    <input type="hidden" name="challenge" value="{$smarty.session.challenge}" />
+    <input type="hidden" name="username"  value="" />
+    <input type="hidden" name="remember"  value="" />
+    <input type="hidden" name="response"  value="" />
+    <input type="hidden" name="xorpass"   value="" /> 
+    <input type="hidden" name="domain"    value="" />
+    <input type="hidden" name="auth_type" value="xnet" />
+  </div>
+</form>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

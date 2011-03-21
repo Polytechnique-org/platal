@@ -20,42 +20,23 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if t($smarty.post.confirm)}
+<h1>{$asso->nom}&nbsp;: Ajout d'un membre (suite)</h1>
 
-<p class="descr">
-{if !$self}
-<a href="{$platal->ns}annuaire">retour à l'annuaire</a>
-{else}
-<a href="">retour à l'accueil</a>
-{/if}
+<p>
+  L'adresse email <strong>{$email}</strong> ne correspond actuellement à aucun
+  compte. Souhaites-tu qu'un compte « Extérieur » soit créé pour lui et que nous
+  lui envoyions un email afin qu'il ait accès aux nombreuses fonctionnalités de
+  Polytechnique.net (inscription aux évènements, télépaiement, modération des
+  listes de diffusion&hellip;)&nbsp;?
 </p>
-
-{else}
-
-<h1>{$asso->nom}&nbsp;: gestion des membres</h1>
-
-<h2>
-  Suppression du membre&nbsp;: {profile user=$user groupperms=false sex=false promo=true}
-</h2>
-
-
-<form method="post" action="{$platal->pl_self()}">
+<form action="{$platal->ns}member/suggest/{$hruid}/{$email}" method="post" class="center">
   {xsrf_token_field}
-  <div class="center">
-    <p class="descr">
-    {if $self}
-    Êtes-vous sûr de vouloir vous désinscrire du groupe {$asso->nom} et de toutes
-    les listes de diffusion associées&nbsp;?
-    {else}
-    Êtes-vous sûr de vouloir supprimer {$user->fullName()} du groupe,
-    lui retirer tous les droits associés à son statut de membre
-    et le désabonner de toutes les listes de diffusion du groupe&nbsp;?
-    {/if}
-    </p>
-    <input type="submit" name="confirm" value="Oui, je {if $self}me{else}le{/if} désinscris complètement du groupe !" />
-  </div>
+  <p>
+    <label>Oui&nbsp;<input type="radio" name="suggest" value="yes" checked="checked" /></label>
+    &nbsp;-&nbsp;
+    <label><input type="radio" name="suggest" value="no" />&nbsp;Non</label>
+  </p>
+  <p><input type="submit" value="continuer" /></p>
 </form>
-
-{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

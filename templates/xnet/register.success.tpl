@@ -20,42 +20,17 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if t($smarty.post.confirm)}
+<h1>Activation du compte et création du mot de passe</h1>
 
-<p class="descr">
-{if !$self}
-<a href="{$platal->ns}annuaire">retour à l'annuaire</a>
-{else}
-<a href="">retour à l'accueil</a>
-{/if}
+<p>
+<strong>Mot de passe enregistré le {$smarty.now|date_format}</strong>
 </p>
-
-{else}
-
-<h1>{$asso->nom}&nbsp;: gestion des membres</h1>
-
-<h2>
-  Suppression du membre&nbsp;: {profile user=$user groupperms=false sex=false promo=true}
-</h2>
-
-
-<form method="post" action="{$platal->pl_self()}">
-  {xsrf_token_field}
-  <div class="center">
-    <p class="descr">
-    {if $self}
-    Êtes-vous sûr de vouloir vous désinscrire du groupe {$asso->nom} et de toutes
-    les listes de diffusion associées&nbsp;?
-    {else}
-    Êtes-vous sûr de vouloir supprimer {$user->fullName()} du groupe,
-    lui retirer tous les droits associés à son statut de membre
-    et le désabonner de toutes les listes de diffusion du groupe&nbsp;?
-    {/if}
-    </p>
-    <input type="submit" name="confirm" value="Oui, je {if $self}me{else}le{/if} désinscris complètement du groupe !" />
-  </div>
-</form>
-
-{/if}
+<p>
+  Votre compte est maintenant activé et votre passe créé. Vous pouvez donc
+  profiter dès à présent des multiples fonctionnalités de Polytechnique.net.
+</p>
+<p>
+  Pour rappel, votre identifiant est&nbsp;: <strong>{$hruid}</strong>
+</p>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

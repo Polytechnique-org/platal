@@ -252,7 +252,7 @@ $(function() {
     </tr>
     <tr class="impair">
       <td colspan="2" class="center">
-        <input type="submit" name="update_account" value="Mettre à jour" onclick="return hashResponse('new_plain_password', false, false);" />
+        <input type="submit" name="update_account" value="Mettre à jour" onclick="return hashResponse('new_plain_password', false, false, false);" />
         <input type="submit" name="su_account" value="Prendre l'identité" />
         <input type="submit" name="log_account" value="Consulter les logs" />
         {if $user->state neq 'pending'}

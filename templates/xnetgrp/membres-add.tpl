@@ -71,7 +71,7 @@ function searchX()
   <table class="tinybicol">
     <tr>
       <td class="center" colspan="2">
-        <input type="text" id="email" name="email" size="40" value="{$platal->argv[1]}" />
+        <input type="text" id="email" name="email" size="40" value="{if t($platal->argv[1])}{$platal->argv[1]}{/if}" />
         <input type='submit' value='Ajouter'
           onclick='this.form.action += this.form.email.value' />
       </td>
@@ -98,7 +98,7 @@ function searchX()
     </tr>
     <tr id="xsearch" style="display: none" class="pair">
       <td colspan="2" id="search_result">
-        {include file="xnet/groupe/membres-new-search.tpl"}
+        {include file="xnetgrp/membres-new-search.tpl"}
       </td>
     </tr>
   </table>

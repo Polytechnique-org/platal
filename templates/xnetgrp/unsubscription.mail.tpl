@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2011 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,42 +20,14 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if t($smarty.post.confirm)}
+{config_load file="mails.conf" section="xnet_unsubscription_account"}
+{if $mail_part eq 'head'}
+{from full=#from#}
+{to full=#to#}
+{subject text="Nouveau compte xnet sans groupe."}
+{elseif $mail_part eq 'wiki'}
+Bonjour,
 
-<p class="descr">
-{if !$self}
-<a href="{$platal->ns}annuaire">retour à l'annuaire</a>
-{else}
-<a href="">retour à l'accueil</a>
-{/if}
-</p>
+{$user->fullName()} (hruid : {$user->hruid}) vient d'être désinscrit du groupe {$groupName} (id : {$groupName}). Son compte a été conservé bien qu'il ne soit plus inscrit à aucun groupe.
 
-{else}
-
-<h1>{$asso->nom}&nbsp;: gestion des membres</h1>
-
-<h2>
-  Suppression du membre&nbsp;: {profile user=$user groupperms=false sex=false promo=true}
-</h2>
-
-
-<form method="post" action="{$platal->pl_self()}">
-  {xsrf_token_field}
-  <div class="center">
-    <p class="descr">
-    {if $self}
-    Êtes-vous sûr de vouloir vous désinscrire du groupe {$asso->nom} et de toutes
-    les listes de diffusion associées&nbsp;?
-    {else}
-    Êtes-vous sûr de vouloir supprimer {$user->fullName()} du groupe,
-    lui retirer tous les droits associés à son statut de membre
-    et le désabonner de toutes les listes de diffusion du groupe&nbsp;?
-    {/if}
-    </p>
-    <input type="submit" name="confirm" value="Oui, je {if $self}me{else}le{/if} désinscris complètement du groupe !" />
-  </div>
-</form>
-
-{/if}
-
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2: *}

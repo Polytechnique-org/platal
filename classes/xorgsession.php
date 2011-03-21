@@ -148,7 +148,7 @@ class XorgSession extends PlSession
                                              WHERE  email = {?} AND type = \'alias_aux\'',
                                            $uname);
                 $loginType = 'uid';
-            } else if (Post::s('domain') == "ax") {
+            } else if (Post::s('domain') == 'hruid') {
                 $login = $uname;
                 $loginType = 'hruid';
             } else {

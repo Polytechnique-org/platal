@@ -47,6 +47,7 @@ class XnetGrpModule extends PLModule
             '%grp/member/new'      => $this->make_hook('admin_member_new',      AUTH_MDP,    'groupadmin'),
             '%grp/member/new/ajax' => $this->make_hook('admin_member_new_ajax', AUTH_MDP,    'user', NO_AUTH),
             '%grp/member/del'      => $this->make_hook('admin_member_del',      AUTH_MDP,    'groupadmin'),
+            '%grp/member/suggest'  => $this->make_hook('admin_member_suggest',  AUTH_MDP,    'groupadmin'),
 
             '%grp/rss'             => $this->make_token_hook('rss',             AUTH_PUBLIC),
             '%grp/announce/new'    => $this->make_hook('edit_announce',         AUTH_MDP,    'groupadmin'),
@@ -656,6 +657,7 @@ class XnetGrpModule extends PLModule
         }
 
         S::assert_xsrf_token();
+        $suggest_account_activation = false;
 
         // Finds or creates account: first cases are for users with an account.
         if (!User::isForeignEmailAddress($email)) {
@@ -694,7 +696,15 @@ class XnetGrpModule extends PLModule
                 }
             }
         } else {
-            // User is of type xnet.
+            // User is of type xnet. There are 3 possible cases:
+            //  * the email is not known yet: we create a new account and
+            //      propose to send an email to the user so he can activate
+            //      his account,
+            //  * the email is known but the user was not contacted in order to
+            //      activate yet: we propose to send an email to the user so he
+            //      can activate his account,
+            //  * the email is known and the user was already contacted or has
+            //      an active account: nothing to be done.
             list($mbox, $domain) = explode('@', strtolower($email));
             $hruid = User::makeHrid($mbox, $domain, 'ext');
             // User might already have an account (in another group for example).
@@ -718,6 +728,8 @@ class XnetGrpModule extends PLModule
                              $hruid, $display_name, $full_name, $directory_name, $email);
                 $user = User::get($hruid);
             }
+
+            $suggest_account_activation = $this->suggest($user);
         }
 
         if ($user) {
@@ -725,8 +737,51 @@ class XnetGrpModule extends PLModule
                                       VALUES  ({?}, {?})',
                          $user->id(), $globals->asso('id'));
             $this->removeSubscriptionRequest($user->id());
-            pl_redirect('member/' . $user->login());
+            if ($suggest_account_activation) {
+                pl_redirect('member/suggest/' . $user->login() . '/' . $email . '/' . $globals->asso('nom'));
+            } else {
+                pl_redirect('member/' . $user->login());
+            }
         }
+    }
+
+    // Check if the user has a pending or active account, and thus if we should her account's activation.
+    private function suggest(PlUser $user)
+    {
+        $active = XDB::fetchOneCell('SELECT  state = \'active\'
+                                       FROM  accounts
+                                      WHERE  uid = {?}',
+                                    $user->id());
+        $pending = XDB::fetchOneCell('SELECT  uid
+                                        FROM  register_pending_xnet
+                                       WHERE  uid = {?}',
+                                     $user->id());
+        $requested = AccountReq::isPending($user->id());
+
+        if ($active || $pending || $requested) {
+            return false;
+        }
+        return true;
+    }
+
+    function handler_admin_member_suggest($page, $hruid, $email)
+    {
+        $page->changeTpl('xnetgrp/membres-suggest.tpl');
+
+        if (Post::has('suggest')) {
+            if (Post::t('suggest') == 'yes') {
+                $user = S::user();
+                $group = Platal::globals()->asso('nom');
+                $request = new AccountReq($user, $hruid, $email, $group);
+                $request->submit();
+                $page->trigSuccessRedirect('Un email va bien être envoyé à ' . $email . ' pour l\'activation de son compte.',
+                                           $group . '/member/' . $hruid);
+            } else {
+                pl_redirect('member/' . $hruid);
+            }
+        }
+        $page->assign('email', $email);
+        $page->assign('hruid', $hruid);
     }
 
     function handler_admin_member_new_ajax($page)
@@ -820,12 +875,11 @@ class XnetGrpModule extends PLModule
     {
         $page->changeTpl('xnetgrp/membres-del.tpl');
         $user = S::user();
-        $uid  = S::user()->id();
-        if (empty($uid)) {
+        if (empty($user)) {
             return PL_NOT_FOUND;
         }
         $page->assign('self', true);
-        $page->assign('user', $uid);
+        $page->assign('user', $user);
 
         if (!Post::has('confirm')) {
             return;
@@ -833,10 +887,17 @@ class XnetGrpModule extends PLModule
             S::assert_xsrf_token();
         }
 
+        $hasSingleGroup = ($user->groupCount() == 1);
+
         if ($this->unsubscribe($user)) {
-            $page->trigSuccess('Vous avez été désinscrit du groupe avec succès.');
+            $page->trigSuccess('Tu as été désinscrit du groupe avec succès.');
         } else {
-            $page->trigWarning('Vous avez été désinscrit du groupe, mais des erreurs se sont produites lors des désinscriptions des alias et des listes de diffusion.');
+            $page->trigWarning('Tu as été désinscrit du groupe, mais des erreurs se sont produites lors des désinscriptions des alias et des listes de diffusion.');
+        }
+
+        // If user is of type xnet account and this was her last group, disable the account.
+        if ($user->type == 'xnet' && $hasSingleGroup) {
+            $user->clear(true);
         }
         $page->assign('is_member', is_member(true));
     }
@@ -848,6 +909,14 @@ class XnetGrpModule extends PLModule
         if (empty($user)) {
             return PL_NOT_FOUND;
         }
+
+        global $globals;
+
+        if (!$user->inGroup($globals->asso('id'))) {
+            pl_redirect('annuaire');
+        }
+
+        $page->assign('self', false);
         $page->assign('user', $user);
 
         if (!Post::has('confirm')) {
@@ -856,14 +925,21 @@ class XnetGrpModule extends PLModule
             S::assert_xsrf_token();
         }
 
+        $hasSingleGroup = ($user->groupCount() == 1);
+
         if ($this->unsubscribe($user)) {
             $page->trigSuccess("{$user->fullName()} a été désinscrit du groupe&nbsp;!");
         } else {
             $page->trigWarning("{$user->fullName()} a été désinscrit du groupe, mais des erreurs subsistent&nbsp;!");
         }
+
+        // If user is of type xnet account and this was her last group, disable the account.
+        if ($user->type == 'xnet' && $hasSingleGroup) {
+            $user->clear(true);
+        }
     }
 
-    private function changeLogin(PlPage $page, PlUser $user, MMList $mmlist, $login)
+    private function changeLogin(PlPage $page, PlUser $user, $login)
     {
         // Search the user's uid.
         $xuser = User::getSilent($login);
@@ -893,12 +969,16 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
 
-        $page->changeTpl('xnetgrp/membres-edit.tpl');
-
         $user = User::getSilent($user);
         if (empty($user)) {
             return PL_NOT_FOUND;
         }
+
+        if (!$user->inGroup($globals->asso('id'))) {
+            pl_redirect('annuaire');
+        }
+
+        $page->changeTpl('xnetgrp/membres-edit.tpl');
 
         $mmlist = new MMList(S::user(), $globals->asso('mail_domain'));
 
@@ -907,7 +987,7 @@ class XnetGrpModule extends PLModule
 
             // Convert user status to X
             if (!Post::blank('login_X')) {
-                $forlife = $this->changeLogin($page, $user, $mmlist, Post::t('login_X'));
+                $forlife = $this->changeLogin($page, $user, Post::t('login_X'));
                 if ($forlife) {
                     pl_redirect('member/' . $forlife);
                 }
@@ -916,7 +996,7 @@ class XnetGrpModule extends PLModule
             // Update user info
             $email_changed = (!$user->profile() && strtolower($user->forlifeEmail()) != strtolower(Post::v('email')));
             $from_email = $user->forlifeEmail();
-            if ($user->type == 'virtual' || $user->type == 'xnet') {
+            if ($user->type == 'virtual' || ($user->type == 'xnet' && !$user->perms)) {
                 XDB::query('UPDATE  accounts
                                SET  full_name = {?}, directory_name = {?}, display_name = {?},
                                     sex = {?}, email = {?}, type = {?}
@@ -931,7 +1011,13 @@ class XnetGrpModule extends PLModule
                            Post::t('email'), $user->id());
             }
             if (XDB::affectedRows()) {
-                $page->trigSuccess('Données de l\'utilisateur mise à jour.');
+                $page->trigSuccess('Données de l\'utilisateur mises à jour.');
+            }
+
+            if (($user->type == 'xnet' && !$user->perms) && Post::b('suggest')) {
+                $request = new AccountReq(S::user(), $user->hruid, Post::t('email'), $globals->asso('nom'));
+                $request->submit();
+                $page->trigSuccess('Le compte va bientôt être activé.');
             }
 
             // Update group params for user
@@ -1010,6 +1096,7 @@ class XnetGrpModule extends PLModule
         $positions = str_replace(array('enum(', ')', '\''), '', $res[0]['Type']);
 
         $page->assign('user', $user);
+        $page->assign('suggest', $this->suggest($user));
         $page->assign('listes', $mmlist->get_lists($user->forlifeEmail()));
         $page->assign('alias', $user->emailGroupAliases($globals->asso('mail_domain')));
         $page->assign('positions', explode(',', $positions));

@@ -28,6 +28,7 @@
       document.getElementById('prenom').style.display = state;
       document.getElementById('sexe').style.display = state;
       document.getElementById('make_X').style.display = state;
+      document.getElementById('password').style.display = state;
   }
 
   function showXInput(box)
@@ -89,7 +90,7 @@
         </select>
       </td>
     </tr>
-    {if $user->type eq 'virtual' || $user->type eq 'xnet'}
+    {if $user->type eq 'virtual' || ($user->type eq 'xnet' && !$user->perms)}
     <tr class="impair">
       <td class="titre">
         Type d'utilisateur&nbsp;:
@@ -170,6 +171,19 @@
       </td>
     </tr>
     {/if}
+    {if $user->type eq 'xnet' && $suggest}
+    <tr>
+      <td colspan="2">
+        <label>
+          <input type="checkbox" name="suggest" />
+          coche cette case si tu souhaites qu'un compte « Extérieur » soit créé
+          pour cette personne et que nous lui envoyions un email afin qu'il ait
+          accès aux nombreuses fonctionnalités de Polytechnique.net (inscription
+          aux évènements, télépaiement, modération des listes de diffusion&hellip;)
+        </label>
+      </td>
+    </tr>
+    {/if}
   </table>
 
   <h2>Abonnement aux listes</h2>
@@ -223,7 +237,7 @@
 
   <div class="center">
     <br />
-    <input type="submit" name='change' value="Valider ces changements" />
+    <input type="submit" name='change' value="Valider ces changements" onclick="return hashResponse('new_plain_password', false, false, false);" />
     &nbsp;
     <input type="reset" value="Annuler ces changements" />
   </div>

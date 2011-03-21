@@ -566,7 +566,7 @@ function checkPassword(box, okLabel) {
     }
 }
 
-function hashResponse(password1, password2, hasConfirmation) {
+function hashResponse(password1, password2, hasConfirmation, doAuth) {
     var pw1 = $('[name=' + password1 + ']').val();
     var pw2;
 
@@ -590,9 +590,15 @@ function hashResponse(password1, password2, hasConfirmation) {
         return false;
     }
 
-    alert("Le mot de passe que tu as rentré va être chiffré avant de nous parvenir par Internet ! Ainsi il ne circulera pas en clair.");
+    alert("Le mot de passe va être chiffré avant de nous parvenir par Internet ! Ainsi il ne circulera pas en clair.");
     $('[name=' + password1 + ']').val('');
     $('[name=pwhash]').val(hash_encrypt(pw1));
+
+    if (doAuth) {
+        $('[name=password]').val(pw1);
+        doChallengeResponse();
+    }
+
     return true;
 }
 

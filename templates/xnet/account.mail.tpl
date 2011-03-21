@@ -20,42 +20,29 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if t($smarty.post.confirm)}
+{config_load file="mails.conf" section="xnet_registration"}
+{if $mail_part eq 'head'}
+{subject text=#subject#}
+{from full=#from#}
+{cc full=#cc#}
+{to addr="$to"}
+{elseif $mail_part eq 'text'}
+Bonjour,
 
-<p class="descr">
-{if !$self}
-<a href="{$platal->ns}annuaire">retour à l'annuaire</a>
-{else}
-<a href="">retour à l'accueil</a>
+{$user->fullName()} nous a demandé de vous créer un compte pour que vous puissiez disposer pleinement de toutes les fonctionnalités liées au groupe {$group}.
+
+Après activation, vos paramètres de connexion seront :
+
+identifiant  : {$hruid}
+mot de passe : celui que vous choisirez
+
+Vous pouvez, dès à présent et pendant une période d'un mois, activer votre compte en cliquant sur le lien suivant :
+
+http://www.polytechnique.net/register/ext/{$hash}
+
+Si le lien ne fonctionne pas, copiez intégralement ce lien dans la barre d'adresse de votre navigateur.
+
+Nous espérons que vous profiterez pleinement des services en ligne de Polytechnique.net.
+{include file="include/signature.mail.tpl"}
 {/if}
-</p>
-
-{else}
-
-<h1>{$asso->nom}&nbsp;: gestion des membres</h1>
-
-<h2>
-  Suppression du membre&nbsp;: {profile user=$user groupperms=false sex=false promo=true}
-</h2>
-
-
-<form method="post" action="{$platal->pl_self()}">
-  {xsrf_token_field}
-  <div class="center">
-    <p class="descr">
-    {if $self}
-    Êtes-vous sûr de vouloir vous désinscrire du groupe {$asso->nom} et de toutes
-    les listes de diffusion associées&nbsp;?
-    {else}
-    Êtes-vous sûr de vouloir supprimer {$user->fullName()} du groupe,
-    lui retirer tous les droits associés à son statut de membre
-    et le désabonner de toutes les listes de diffusion du groupe&nbsp;?
-    {/if}
-    </p>
-    <input type="submit" name="confirm" value="Oui, je {if $self}me{else}le{/if} désinscris complètement du groupe !" />
-  </div>
-</form>
-
-{/if}
-
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
