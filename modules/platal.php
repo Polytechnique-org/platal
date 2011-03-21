@@ -344,8 +344,7 @@ Email envoyé à ".Env::v('login') . (Post::has('email') ? "
 Adresse de secours : " . Post::v('email') : ""));
         $mymail->send();
 
-        // on cree un objet logger et on log l'evenement
-        S::logger($user->id())->log('recovery', $mails);
+        S::logger($user->id())->log('recovery', is_null($to) ? $inactives_to . ', ' . $user->bestEmail() : $to);
     }
 
     function handler_tmpPWD($page, $certif = null)
