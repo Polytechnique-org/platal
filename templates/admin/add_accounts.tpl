@@ -22,7 +22,7 @@
 
 <h1>Mise à jour de l'annuaire</h1>
 
-{if $newAccounts}
+{if t($newAccounts)}
 <p>
   Les comptes suivants ont été ajoutés&nbsp;:
   <ul>
@@ -33,7 +33,7 @@
 </p>
 {/if}
 
-{if !$add_type}
+{if !t($add_type)}
 <form action="{$platal->pl_self()}" method="post">
 <table class="tinybicol">
   <tr>
