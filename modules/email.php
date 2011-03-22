@@ -833,9 +833,10 @@ class EmailModule extends PLModule
 
                 foreach ($broken_list as $email) {
                     if ($user = mark_broken_email($email, true)) {
-                        if ($user['nb_mails'] > 0) {
+                        if ($user['nb_mails'] > 0 && $user['notify']) {
                             $mail = new PlMailer('emails/broken.mail.tpl');
-                            $mail->addTo($user);
+                            $dest = User::getSilentWithUID($user['uid']);
+                            $mail->setTo($dest);
                             $mail->assign('user', $user);
                             $mail->assign('email', $email);
                             $mail->send();

@@ -140,7 +140,8 @@ function mark_broken_email($email, $admin = false)
         return;
     }
 
-    $user = XDB::fetchOneAssoc('SELECT  r1.uid, r1.broken_level != 0 AS broken, a.hruid, COUNT(r2.uid) AS nb_mails, a.full_name, s.email AS alias
+    $user = XDB::fetchOneAssoc('SELECT  r1.uid, r1.broken_level != 0 AS broken, COUNT(r2.uid) AS nb_mails,
+                                        s.email AS alias, DATE_ADD(r1.last, INTERVAL 14 DAY) < CURDATE() as notify
                                   FROM  email_redirect_account AS r1
                             INNER JOIN  accounts               AS a  ON (a.uid = r1.uid)
                             INNER JOIN  email_source_account   AS s  ON (a.uid = s.uid AND s.flags = \'bestalias\')
