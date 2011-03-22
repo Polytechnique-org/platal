@@ -426,7 +426,7 @@ abstract class PlUser implements PlUserInterface
     public static function makeHrid($firstname, $lastname, $category)
     {
         $cat = self::stripBadChars($category);
-        if (!cat) {
+        if (!$cat) {
             Platal::page()->kill("$category is not a suitable category.");
         }
 
