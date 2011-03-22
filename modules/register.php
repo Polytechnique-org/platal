@@ -41,8 +41,8 @@ class RegisterModule extends PLModule
         }
         if (Get::has('back') && Get::i('back') < $subState->i('step')) {
             $subState->set('step', max(0, Get::i('back')));
-            $subState->v('back')->set($subState->v('back')->count() + 1, $subState->dict());
-            $subState->v('back')->kill('back');
+            $subState->v('backs')->set($subState->v('backs')->count() + 1, $subState->dict());
+            $subState->v('backs')->kill('backs');
             if ($subState->v('backs')->count() == 3) {
                 $alert .= "Tentative d'inscription très hésitante - ";
             }
