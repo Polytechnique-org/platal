@@ -4,6 +4,7 @@
 
 ###########################################################
 [ "$DATABASE" != "x4dat" ] || die "Cannot target x4dat"
+[ "$SOURCE_DATABASE" != "" ] || die "Copy required for this release"
 copy_db
 
 confirm "* Running database upgrade scripts"
