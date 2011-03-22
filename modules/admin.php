@@ -849,8 +849,10 @@ class AdminModule extends PLModule
                             $birthDate = self::formatBirthDate($infos[2]);
                             if ($type == 'x') {
                                 $xorgId = Profile::getXorgId($infos[4]);
-                            } else {
+                            } elseif (isset($infos[4])) {
                                 $xorgId = trim($infos[4]);
+                            } else {
+                                $xorgId = 0;
                             }
                             if (is_null($xorgId)) {
                                 $page->trigError("La ligne $line n'a pas été ajoutée car le matricule École est mal renseigné.");
@@ -859,7 +861,7 @@ class AdminModule extends PLModule
 
                             XDB::execute('INSERT INTO  profiles (hrpid, xorg_id, ax_id, birthdate_ref, sex)
                                                VALUES  ({?}, {?}, {?}, {?}, {?})',
-                                         $infos['hrid'], $xorgId, $infos[5], $birthDate, $sex);
+                                         $infos['hrid'], $xorgId, (isset($infos[5]) ? $infos[5] : null), $birthDate, $sex);
                             $pid = XDB::insertId();
                             XDB::execute('INSERT INTO  profile_name (pid, name, typeid)
                                                VALUES  ({?}, {?}, {?}),
