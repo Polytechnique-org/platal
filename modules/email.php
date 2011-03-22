@@ -827,7 +827,10 @@ class EmailModule extends PLModule
             if ($list == '') {
                 $page->trigError('La liste est vide.');
             } else {
+                require_once 'notifs.inc.php';
+
                 $broken_user_list = array();
+                $broken_user_email_count = array();
                 $broken_list = explode("\n", $list);
                 sort($broken_list);
 
@@ -840,13 +843,17 @@ class EmailModule extends PLModule
                             $mail->assign('user', $user);
                             $mail->assign('email', $email);
                             $mail->send();
+                        } else {
+                            $profile = Profile::get($user['alias']);
+                            WatchProfileUpdate::register($profile, 'broken');
                         }
 
-                        if (!isset($broken_user_list[$user['alias']])) {
-                            $broken_user_list[$user['alias']] = array($email);
+                        if (!isset($broken_user_list[$user['uid']])) {
+                            $broken_user_list[$user['uid']] = array($email);
                         } else {
-                            $broken_user_list[$user['alias']][] = $email;
+                            $broken_user_list[$user['uid']][] = $email;
                         }
+                        $broken_user_email_count[$user['uid']] = $user['nb_mails'];
                     }
                 }
 
@@ -861,42 +868,28 @@ class EmailModule extends PLModule
 
                 // Output the list of users with recently broken addresses,
                 // along with the count of valid redirections.
-                require_once 'notifs.inc.php';
                 pl_cached_content_headers('text/x-csv', 1);
 
                 $csv = fopen('php://output', 'w');
-                fputcsv($csv, array('nom', 'promo', 'alias', 'bounce', 'nbmails', 'url', 'corps', 'job', 'networking'), ';');
-                foreach ($broken_user_list as $alias => $mails) {
-                    $sel = Xdb::query(
-                        'SELECT  a.uid, count(DISTINCT(r.redirect)) AS nb_mails,
-                                 IFNULL(pd.public_name, a.full_name) AS fullname,
-                                 IFNULL(pd.promo, 0) AS promo, IFNULL(pce.name, \'Aucun\') AS corps,
-                                 IFNULL(pje.name, \'Aucun\') AS job, GROUP_CONCAT(pn.address SEPARATOR \', \') AS networking
-                           FROM  email_source_account   AS s
-                     INNER JOIN  accounts               AS a   ON (s.uid = a.uid)
-                      LEFT JOIN  email_redirect_account AS r   ON (a.uid = r.uid AND r.broken_level = 0 AND r.flags = \'active\' AND
-                                                                   (r.type = \'smtp\' OR r.type = \'googleapps\'))
-                      LEFT JOIN  account_profiles       AS ap  ON (a.uid = ap.uid AND FIND_IN_SET(\'owner\', ap.perms))
-                      LEFT JOIN  profile_display        AS pd  ON (pd.pid = ap.pid)
-                      LEFT JOIN  profile_corps          AS pc  ON (pc.pid = ap.pid)
-                      LEFT JOIN  profile_corps_enum     AS pce ON (pc.current_corpsid = pce.id)
-                      LEFT JOIN  profile_job            AS pj  ON (pj.pid = ap.pid)
-                      LEFT JOIN  profile_job_enum       AS pje ON (pj.jobid = pje.id)
-                      LEFT JOIN  profile_networking     AS pn  ON (pn.pid = ap.pid)
-                          WHERE  s.email = {?}
-                       GROUP BY  a.uid', $alias);
-
-                    if ($x = $sel->fetchOneAssoc()) {
-                        if ($x['nb_mails'] == 0) {
-                            $user = User::getSilentWithUID($x['uid']);
-                            $profile = $user->profile();
-                            WatchProfileUpdate::register($profile, 'broken');
-                        }
-                        fputcsv($csv, array($x['fullname'], $x['promo'], $alias,
-                                            join(',', $mails), $x['nb_mails'],
-                                            'https://www.polytechnique.org/marketing/broken/' . $alias,
-                                            $x['corps'], $x['job'], $x['networking']), ';');
+                fputcsv($csv, array('nom', 'promo', 'bounces', 'nbmails', 'url', 'corps', 'job', 'networking'), ';');
+                foreach ($broken_user_list as $uid => $mails) {
+                    $profile = Profile::get($uid);
+                    $corps = $profile->getCorps();
+                    $current_corps = ($corps && $corps->current) ? $corps->current : '';
+                    $jobs = $profile->getJobs();
+                    $companies = array();
+                    foreach ($jobs as $job) {
+                        $companies[] = $job->company->name;
                     }
+                    $networkings = $profile->getNetworking(Profile::NETWORKING_ALL);
+                    $networking_list = array();
+                    foreach ($networkings as $networking) {
+                        $networking_list[] = $networking['address'];
+                    }
+                    fputcsv($csv, array($profile->fullName(), $profile->promo(),
+                                        join(',', $mails), $broken_user_email_count[$uid],
+                                        'https://www.polytechnique.org/marketing/broken/' . $profile->hrid(),
+                                        $current_corps, implode(',', $companies), implode(',', $networking_list)), ';');
                 }
                 fclose($csv);
                 exit;
