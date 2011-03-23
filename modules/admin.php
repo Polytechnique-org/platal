@@ -53,7 +53,8 @@ class AdminModule extends PLModule
             'admin/account/types'          => $this->make_hook('account_types',          AUTH_MDP, 'admin'),
             'admin/xnet_without_group'     => $this->make_hook('xnet_without_group',     AUTH_MDP, 'admin'),
             'admin/jobs'                   => $this->make_hook('jobs',                   AUTH_MDP, 'admin,edit_directory'),
-            'admin/profile'                => $this->make_hook('profile',                AUTH_MDP, 'admin,edit_directory')
+            'admin/profile'                => $this->make_hook('profile',                AUTH_MDP, 'admin,edit_directory'),
+            'admin/phd'                    => $this->make_hook('phd',                    AUTH_MDP, 'admin')
         );
     }
 
@@ -831,12 +832,12 @@ class AdminModule extends PLModule
                     $degreeid = $eduDegrees[Profile::DEGREE_D];
                     $grad_year = $promotion;
                     $entry_year = $promotion - 3;
-                    $promo = 'D' . $promotion;
+                    $promo = 'D (en cours)';
                     $hrpromo = $promo;
                     $type = 'phd';
                     break;
                   default:
-                    $page->killError("La formation n'est pas reconnue:" . Env::t('edu_type') . '.');
+                    $page->killError("La formation n'est pas reconnue : " . Env::t('edu_type') . '.');
                 }
 
                 XDB::startTransaction();
@@ -1823,6 +1824,61 @@ class AdminModule extends PLModule
                             GROUP BY  pd.directory_name
                             ORDER BY  pd.directory_name');
         $page->assign('updates', $res);
+    }
+
+    function handler_phd($page, $promo = null, $validate = false)
+    {
+        $page->changeTpl('admin/phd.tpl');
+        $eduDegrees = DirEnum::getOptions(DirEnum::EDUDEGREES);
+        $eduDegrees = array_flip($eduDegrees);
+
+        if (is_null($promo)) {
+            $promo_list = XDB::fetchColumn('SELECT  DISTINCT(grad_year)
+                                              FROM  profile_education
+                                             WHERE  FIND_IN_SET(\'primary\', flags) AND NOT FIND_IN_SET(\'completed\', flags) AND degreeid = {?}
+                                          ORDER BY  grad_year',
+                                           $eduDegrees[Profile::DEGREE_D]);
+            $page->assign('promo_list', $promo_list);
+            $page->assign('nothing', count($promo_list) == 0);
+            return;
+        }
+
+        if ($validate) {
+            S::assert_xsrf_token();
+
+            $list = XDB::iterator('SELECT  pe.pid, pd.directory_name
+                                     FROM  profile_education AS pe
+                               INNER JOIN  profile_display   AS pd ON (pe.pid = pd.pid)
+                                    WHERE  FIND_IN_SET(\'primary\', pe.flags) AND NOT FIND_IN_SET(\'completed\', pe.flags)
+                                           AND pe.degreeid = {?} AND pe.grad_year = {?}',
+                                  $eduDegrees[Profile::DEGREE_D], $promo);
+            while ($res = $list->next()) {
+                $pid = $res['pid'];
+                $name = $res['directory_name'];
+                if (Post::b('completed_' . $pid)) {
+                    $grad_year = Post::t('grad_year_' . $pid);
+                    XDB::execute('UPDATE  profile_education
+                                     SET  flags = \'primary,completed\', grad_year = {?}
+                                   WHERE  FIND_IN_SET(\'primary\', flags) AND pid = {?}',
+                                 $grad_year, $pid);
+                    XDB::execute('UPDATE  profile_display
+                                     SET  promo = {?}
+                                   WHERE  pid = {?}',
+                                 'D' . $grad_year, $pid);
+                    $page->trigSuccess("Promotion de $name validée.");
+                }
+            }
+        }
+
+        $list = XDB::iterator('SELECT  pe.pid, pd.directory_name
+                                 FROM  profile_education AS pe
+                           INNER JOIN  profile_display   AS pd ON (pe.pid = pd.pid)
+                                WHERE  FIND_IN_SET(\'primary\', pe.flags) AND NOT FIND_IN_SET(\'completed\', pe.flags)
+                                       AND pe.degreeid = {?} AND pe.grad_year = {?}
+                             ORDER BY  pd.directory_name',
+                              $eduDegrees[Profile::DEGREE_D], $promo);
+        $page->assign('list', $list);
+        $page->assign('promo', $promo);
     }
 }
 

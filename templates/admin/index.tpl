@@ -113,6 +113,12 @@
       <a href="admin/googleapps">Google Apps</a>
     </td>
   </tr>
+  <tr class="impair">
+    <td class="titre">Promotions</td>
+    <td>
+      <a href="admin/phd">Doctorants</a>
+    </td>
+  </tr>
 
   <tr><th colspan="2">{icon name=user_gray} Champs</th></tr>
   <tr class="impair">
