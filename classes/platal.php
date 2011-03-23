@@ -322,16 +322,18 @@ class PlHookTree
                 $nearest_sdx = 50;
                 $match = null;
                 foreach ($this->children as $path=>$hook) {
-                    $lev = levenshtein($next, $path);
-                    if ($lev <= $nearest_lev
-                        && ($lev < strlen($next) / 2 || strpos($next, $path) !== false
-                            || strpos($path, $next) !== false)) {
-                        $sdx = levenshtein(soundex($next), soundex($path));
-                        if ($lev == $nearest_lev || $sdx < $nearest_sdx) {
-                            $child = $hook;
-                            $nearest_lev = $lev;
-                            $nearest_sdx = $sdx;
-                            $match = $path;
+                    if ($path) {
+                        $lev = levenshtein($next, $path);
+                        if ($lev <= $nearest_lev
+                            && ($lev < strlen($next) / 2 || strpos($next, $path) !== false
+                                || strpos($path, $next) !== false)) {
+                            $sdx = levenshtein(soundex($next), soundex($path));
+                            if ($lev == $nearest_lev || $sdx < $nearest_sdx) {
+                                $child = $hook;
+                                $nearest_lev = $lev;
+                                $nearest_sdx = $sdx;
+                                $match = $path;
+                            }
                         }
                     }
                 }
