@@ -26,9 +26,9 @@ class PoisonModule extends PLModule
     function handlers()
     {
         return array(
-            'pe'          => $this->make_hook('poison', AUTH_PUBLIC, 'user', NO_HTTPS),
-            'pem'         => $this->make_hook('mailto', AUTH_PUBLIC, 'user', NO_HTTPS),
-            'pet'         => $this->make_hook('tags',   AUTH_PUBLIC, 'user', NO_HTTPS),
+            'pe'  => $this->make_hook('poison', AUTH_PUBLIC, 'user', NO_HTTPS),
+            'pem' => $this->make_hook('mailto', AUTH_PUBLIC, 'user', NO_HTTPS),
+            'pet' => $this->make_hook('tags',   AUTH_PUBLIC, 'user', NO_HTTPS),
             // 'per'         => $this->make_hook('rand', AUTH_PUBLIC, 'user', NO_HTTPS),
         );
     }

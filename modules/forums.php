@@ -24,9 +24,9 @@ class ForumsModule extends PLModule
     function handlers()
     {
         return array(
-            'banana'         => $this->make_hook('banana',      AUTH_COOKIE, 'forums'),
-            'banana/rss'     => $this->make_hook('rss',         AUTH_PUBLIC, 'forums', NO_HTTPS),
-            'admin/forums'   => $this->make_hook('forums_bans', AUTH_MDP,    'admin'),
+            'banana'       => $this->make_hook('banana',      AUTH_COOKIE, 'forums'),
+            'banana/rss'   => $this->make_hook('rss',         AUTH_PUBLIC, 'forums', NO_HTTPS),
+            'admin/forums' => $this->make_hook('forums_bans', AUTH_MDP,    'admin'),
         );
     }
 

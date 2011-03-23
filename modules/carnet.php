@@ -24,18 +24,18 @@ class CarnetModule extends PLModule
     function handlers()
     {
         return array(
-            'carnet'                => $this->make_hook('index',      AUTH_COOKIE, 'directory_private'),
-            'carnet/panel'          => $this->make_hook('panel',      AUTH_COOKIE, 'directory_private'),
-            'carnet/notifs'         => $this->make_hook('notifs',     AUTH_COOKIE, 'directory_private'),
+            'carnet'                       => $this->make_hook('index',              AUTH_COOKIE, 'directory_private'),
+            'carnet/panel'                 => $this->make_hook('panel',              AUTH_COOKIE, 'directory_private'),
+            'carnet/notifs'                => $this->make_hook('notifs',             AUTH_COOKIE, 'directory_private'),
 
-            'carnet/contacts'       => $this->make_hook('contacts',   AUTH_COOKIE, 'directory_private'),
-            'carnet/contacts/pdf'   => $this->make_hook('pdf',        AUTH_COOKIE, 'directory_private'),
-            'carnet/contacts/vcard' => $this->make_hook('vcard',      AUTH_COOKIE, 'directory_private'),
-            'carnet/contacts/ical'  => $this->make_token_hook('ical', AUTH_COOKIE, 'directory_private'),
-            'carnet/contacts/csv'   => $this->make_token_hook('csv',  AUTH_COOKIE, 'directory_private'),
+            'carnet/contacts'              => $this->make_hook('contacts',           AUTH_COOKIE, 'directory_private'),
+            'carnet/contacts/pdf'          => $this->make_hook('pdf',                AUTH_COOKIE, 'directory_private'),
+            'carnet/contacts/vcard'        => $this->make_hook('vcard',              AUTH_COOKIE, 'directory_private'),
+            'carnet/contacts/ical'         => $this->make_token_hook('ical',         AUTH_COOKIE, 'directory_private'),
+            'carnet/contacts/csv'          => $this->make_token_hook('csv',          AUTH_COOKIE, 'directory_private'),
             'carnet/contacts/csv/birthday' => $this->make_token_hook('csv_birthday', AUTH_COOKIE, 'directory_private'),
 
-            'carnet/rss'            => $this->make_token_hook('rss',  AUTH_COOKIE, 'directory_private'),
+            'carnet/rss'                   => $this->make_token_hook('rss',          AUTH_COOKIE, 'directory_private'),
         );
     }
 

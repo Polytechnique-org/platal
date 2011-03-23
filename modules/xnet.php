@@ -24,23 +24,23 @@ class XnetModule extends PLModule
     function handlers()
     {
         return array(
-            'index'       => $this->make_hook('index',     AUTH_PUBLIC),
-            'exit'        => $this->make_hook('exit',      AUTH_PUBLIC),
+            'index'        => $this->make_hook('index',        AUTH_PUBLIC),
+            'exit'         => $this->make_hook('exit',         AUTH_PUBLIC),
 
-            'admin'       => $this->make_hook('admin',     AUTH_MDP, 'admin'),
-            'groups'      => $this->make_hook('groups',    AUTH_PUBLIC),
-            'groupes.php' => $this->make_hook('groups2',   AUTH_PUBLIC),
-            'plan'        => $this->make_hook('plan',      AUTH_PUBLIC),
-            'photo'       => $this->make_hook('photo',     AUTH_MDP),
-            'autologin'   => $this->make_hook('autologin', AUTH_MDP),
-            'login/ext'   => $this->make_hook('login_ext', AUTH_PUBLIC),
+            'admin'        => $this->make_hook('admin',        AUTH_MDP, 'admin'),
+            'groups'       => $this->make_hook('groups',       AUTH_PUBLIC),
+            'groupes.php'  => $this->make_hook('groups2',      AUTH_PUBLIC),
+            'plan'         => $this->make_hook('plan',         AUTH_PUBLIC),
+            'photo'        => $this->make_hook('photo',        AUTH_MDP),
+            'autologin'    => $this->make_hook('autologin',    AUTH_MDP),
+            'login/ext'    => $this->make_hook('login_ext',    AUTH_PUBLIC),
             'register/ext' => $this->make_hook('register_ext', AUTH_PUBLIC),
             'recovery/ext' => $this->make_hook('recovery_ext', AUTH_PUBLIC),
-            'tmpPWD/ext'  => $this->make_hook('tmpPWD_ext', AUTH_PUBLIC),
-            'edit'        => $this->make_hook('edit',      AUTH_MDP, 'user'),
-            'password'    => $this->make_hook('password',  AUTH_MDP, 'user'),
+            'tmpPWD/ext'   => $this->make_hook('tmpPWD_ext',   AUTH_PUBLIC),
+            'edit'         => $this->make_hook('edit',         AUTH_MDP, 'user'),
+            'password'     => $this->make_hook('password',     AUTH_MDP, 'user'),
 
-            'Xnet'        => $this->make_wiki_hook(),
+            'Xnet'         => $this->make_wiki_hook(),
         );
     }
 

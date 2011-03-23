@@ -25,15 +25,15 @@ class SurveyModule extends PLModule
     function handlers()
     {
         return array(
-            'survey'              => $this->make_hook('index',         AUTH_PUBLIC),
-            'survey/vote'         => $this->make_hook('vote',          AUTH_PUBLIC),
-            'survey/result'       => $this->make_hook('result',        AUTH_PUBLIC),
-            'survey/edit'         => $this->make_hook('edit',          AUTH_COOKIE),
-            'survey/ajax'         => $this->make_hook('ajax',          AUTH_COOKIE),
-            'survey/admin'        => $this->make_hook('admin',         AUTH_MDP, 'admin'),
-            'survey/admin/edit'   => $this->make_hook('adminEdit',     AUTH_MDP, 'admin'),
-            'survey/admin/valid'  => $this->make_hook('adminValidate', AUTH_MDP, 'admin'),
-            'survey/admin/del'    => $this->make_hook('adminDelete',   AUTH_MDP, 'admin'),
+            'survey'             => $this->make_hook('index',         AUTH_PUBLIC),
+            'survey/vote'        => $this->make_hook('vote',          AUTH_PUBLIC),
+            'survey/result'      => $this->make_hook('result',        AUTH_PUBLIC),
+            'survey/edit'        => $this->make_hook('edit',          AUTH_COOKIE),
+            'survey/ajax'        => $this->make_hook('ajax',          AUTH_COOKIE),
+            'survey/admin'       => $this->make_hook('admin',         AUTH_MDP, 'admin'),
+            'survey/admin/edit'  => $this->make_hook('adminEdit',     AUTH_MDP, 'admin'),
+            'survey/admin/valid' => $this->make_hook('adminValidate', AUTH_MDP, 'admin'),
+            'survey/admin/del'   => $this->make_hook('adminDelete',   AUTH_MDP, 'admin'),
         );
     }
     // }}}
