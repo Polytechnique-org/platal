@@ -403,7 +403,7 @@ abstract class PlUser implements PlUserInterface
 
     private static function stripBadChars($text)
     {
-        return str_replace(array(' ', "'"), array('-', ''),
+        return str_replace(array(' ', "'", '+'), array('-', '', '_'),
                            strtolower(stripslashes(replace_accent(trim($text)))));
     }
 
