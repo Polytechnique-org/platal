@@ -659,6 +659,11 @@ class XnetGrpModule extends PLModule
         S::assert_xsrf_token();
         $suggest_account_activation = false;
 
+        // FS#703 : $_GET is urldecoded twice, hence
+        // + (the data) => %2B (in the url) => + (first decoding) => ' ' (second decoding)
+        // Since there can be no spaces in emails, we can fix this with :
+        $email = str_replace(' ', '+', $email);
+
         // Finds or creates account: first cases are for users with an account.
         if (!User::isForeignEmailAddress($email)) {
             // Standard account
@@ -767,6 +772,11 @@ class XnetGrpModule extends PLModule
     function handler_admin_member_suggest($page, $hruid, $email)
     {
         $page->changeTpl('xnetgrp/membres-suggest.tpl');
+
+        // FS#703 : $_GET is urldecoded twice, hence
+        // + (the data) => %2B (in the url) => + (first decoding) => ' ' (second decoding)
+        // Since there can be no spaces in emails, we can fix this with :
+        $email = str_replace(' ', '+', $email);
 
         if (Post::has('suggest')) {
             if (Post::t('suggest') == 'yes') {
