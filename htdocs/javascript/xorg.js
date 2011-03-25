@@ -691,7 +691,7 @@ function sendTestEmail(token, hruid)
     } else {
         msg += " sur ton addresse.";
     }
-    $('#mail_sent').successMessage($url + '?token=' + token, msg);
+    $('#mail_sent').successMessage(url + '?token=' + token, msg);
     return false;
 }
 
