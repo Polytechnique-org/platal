@@ -1,4 +1,15 @@
 ================================================================================
+VERSION 1.1.3                                                         26 03 2011
+
+New:
+    * Add RSS feed for site_errors                                          -FRU
+    * Enable PHP natives assertion in debug                                 -FRU
+    * Allow POST/GET/REQUEST overriding                                     -XEL
+
+================================================================================
+VERSION 1.1.2                                                         30 01 2011
+
+================================================================================
 VERSION 1.1.1                                                         26 10 2010
 
 New:
@@ -8,7 +19,7 @@ New:
     * Add support for SQL transaction in XDB                                -FRU
     * Add Iterable interface compatible with PHP's native iterators         -FRU
     * Add XDBFormat interface for object with a specific db serialization   -FRU
-    * Add grouping feature to PlFilter                                      -Xel
+    * Add grouping feature to PlFilter                                      -XEL
 
 Bug:
 
@@ -26,7 +37,7 @@ New:
 
     * Add tools based on iterators                                      -FRU/XEL
     * Provide basic framework to write unit tests for plat/al               -FRU
-    * Add PlFilter infrastructure in plat/al core                           -Xel
+    * Add PlFilter infrastructure in plat/al core                           -XEL
     * XDB natively handles arrays                                           -FRU
     * Partially split Platal class to allow unit testing of the engine      -FRU
 
@@ -81,7 +92,7 @@ ACRONYMS:
     * THD: Thomas Deniau        (Totom)     <thomas.deniau@m4x.org>
     * VP : Vincent Palatin                  <vincent.palatin@m4x.org>
     * XdX: Alexandre Hô         (XandreX)   <alexandre.ho@m4x.org>
-    * XEL: Raphaël Barrois      (Xelnor)    <raphael.barrois@m4x.org>
+    * XEL: Raphaël Barrois      (XELnor)    <raphael.barrois@m4x.org>
     * VZA: Vincent Zanotti      (vinZ2)     <vincent.zanotti@m4x.org>
 
 ================================================================================
