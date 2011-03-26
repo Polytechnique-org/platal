@@ -9,12 +9,14 @@ $globals->debug = 0; // Do not store backtraces.
 
 print "Tries to geocode addresses (due a bug in the previous release, all addresses must run once again).\n";
 $time = XDB::fetchOneCell('SELECT  COUNT(distinct(pid), jobid)
-                             FROM  profile_addresses');
+                             FROM  profile_addresses
+                            WHERE  accuracy IS NOT NULL AND accuracy > 0');
 $time = ceil($time / 60 / 24);
 print "It will approximately take $time days.\n";
 
 $it = XDB::rawIterator('SELECT  *
                           FROM  profile_addresses
+                         WHERE  accuracy IS NOT NULL AND accuracy > 0
                       ORDER BY  pid, jobid, type, id');
 $total = $it->total();
 $i = 0;
