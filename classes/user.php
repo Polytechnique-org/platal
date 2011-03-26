@@ -178,7 +178,7 @@ class User extends PlUser
                            LEFT JOIN  email_virtual_domains  AS mf ON (ef.domain = mf.id)
                            LEFT JOIN  email_virtual_domains  AS df ON (df.aliasing = mf.id AND
                                                                        df.name LIKE CONCAT(\'%\', {?}) AND df.name NOT LIKE \'alumni.%\')
-                           LEFT JOIN  email_source_account   AS eb ON (eb.uid = a.uid AND eb.flags = \'bestalias\')
+                           LEFT JOIN  email_source_account   AS eb ON (eb.uid = a.uid AND FIND_IN_SET(\'bestalias\',eb.flags))
                            LEFT JOIN  email_virtual_domains  AS mb ON (a.best_domain = mb.id)
                            LEFT JOIN  email_redirect_account AS er ON (er.uid = a.uid AND er.flags = \'active\' AND er.broken_level < 3
                                                                        AND er.type != \'imap\' AND er.type != \'homonym\')
