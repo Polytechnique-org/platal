@@ -64,7 +64,7 @@ function gpex_make($chlg, $privkey, $datafields, $charset)
         } else if ($val == 'username') {
             $min_username = XDB::fetchOneCell('SELECT  email
                                                  FROM  email_source_account
-                                                WHERE  uid = {?} FIND_IN_SET(\'bestalias\', flags)',
+                                                WHERE  uid = {?} AND FIND_IN_SET(\'bestalias\', flags)',
                                               S::i('uid'));
             $params      .= gpex_prepare_param($val, $min_username, $tohash, $charset);
         } else if ($val == 'grpauth') {
