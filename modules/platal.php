@@ -21,7 +21,7 @@
 
 function bugize($list)
 {
-    $list = preg_split('/,/', Env::s('libs'), -1, PREG_SPLIT_NO_EMPTY);
+    $list = preg_split('/,/', $list, -1, PREG_SPLIT_NO_EMPTY);
     $ans  = array();
 
     foreach ($list as $bug) {
