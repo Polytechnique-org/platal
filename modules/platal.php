@@ -97,7 +97,7 @@ class PlatalModule extends PLModule
                 '\\1<a href="http://www.\\2">www.\\2</a>',
                 '<a href="mailto:\\0">\\0</a>'),
               $clog);
-            $clog = preg_replace('!\(#[0-9]+(,[0-9]+)*\)!e', 'bugize("\1")', $clog);
+            $clog = preg_replace('!(#[0-9]+(,[0-9]+)*)!e', 'bugize("\1")', $clog);
             $clog = preg_replace('!vim:.*$!', '', $clog);
             return preg_replace("!(<hr />(\\s|\n)*)?<pre>(\s|\n)*</pre>((\\s|\n)*<hr />)?!m", "", "<pre>$clog</pre>");
         }
