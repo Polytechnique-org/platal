@@ -1049,7 +1049,7 @@ function sendTestEmail(token, hruid)
                 queryParams:       {
                     offset: 0,
                     count:  10,
-                    allow_special: true,
+                    allow_special: true
                 },
                 loadingClassLeft:  'ac_loading',
                 loadingClassRight: 'ac_loading_left',

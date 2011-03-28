@@ -48,12 +48,12 @@
   </td>
   <td>
     <input type="text" name="search_names[{$i}][name]" value="{$sn.name}"
-      {if $sn.has_particle}title="Coche la case en bout de ligne si ton nom commence par une particle."{/if}
+      {if $sn.has_particle}title="Coche la case en bout de ligne si ton nom commence par une particule."{/if}
       {if t($sn.error)} class="error"{/if} size="25" onkeyup="updateNameDisplay({$isFemale});"/>
   </td>
   <td>
     {if $sn.has_particle}<input type="checkbox"{if $sn.particle neq ''} checked="checked"{/if}
-      title="Coche cette case si ton nom commence par une particle." onchange="toggleParticle({$i});"/>
+      title="Coche cette case si ton nom commence par une particule." onchange="toggleParticle({$i});"/>
     {/if}
     <input type="hidden"  name="search_names[{$i}][particle]" value="{$sn.particle}"/>
     {if !$sn.always_displayed}<a href="javascript:removeSearchName({$i},{$isFemale})">
