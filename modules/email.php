@@ -740,7 +740,7 @@ class EmailModule extends PLModule
                                   FROM  email_watch            AS w
                             INNER JOIN  email_redirect_account AS r ON (w.email = r.redirect)
                             INNER JOIN  email_source_account   AS s ON (s.uid = r.uid AND s.type = \'forlife\')
-                            INNER JOIN  accounts               AS a ON (w.uid = a.uid)
+                            INNER JOIN  accounts               AS a ON (r.uid = a.uid)
                                  WHERE  w.email = {?}
                               ORDER BY  s.email',
                                $email);
