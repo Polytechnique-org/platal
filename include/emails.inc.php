@@ -348,7 +348,8 @@ class Bogo
         $this->user = &$user;
         $res = XDB::fetchOneAssoc('SELECT  COUNT(DISTINCT(action)) AS action_count, COUNT(redirect) AS redirect_count, action
                                      FROM  email_redirect_account
-                                    WHERE  uid = {?} AND (type = \'smtp\' OR type = \'googleapps\') AND flags = \'active\'',
+                                    WHERE  uid = {?} AND (type = \'smtp\' OR type = \'googleapps\') AND flags = \'active\'
+                                 GROUP BY  uid',
                                   $user->id());
         if ($res['redirect_count'] == 0) {
             return;
