@@ -620,6 +620,7 @@ class NLIssue
             $this->nl = new NewsLetter($issue['nlid']);
         }
         $this->id = $id;
+        $this->nlid        = $issue['nlid'];
         $this->shortname   = $issue['short_name'];
         $this->date        = $issue['date'];
         $this->send_before = $issue['send_before'];
