@@ -34,7 +34,7 @@ while ($old = $resRobot->next()) {
                          FROM  homonyms_list AS h
                    INNER JOIN  accounts      AS a ON (h.uid = a.uid)
                         WHERE  h.hrmid = {?}',
-                      User::makeHomonymHrmid($old['email']);
+                      User::makeHomonymHrmid($old['email']));
     $hruids = $res->fetchColumn();
 
     $homonym = User::getSilent($old['uid']);
