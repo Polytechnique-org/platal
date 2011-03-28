@@ -90,7 +90,7 @@ function iterate_list_alias($domain)
     return XDB::fetchColumn('SELECT  CONCAT(v.email, \'@\', m.name)
                                FROM  email_virtual         AS v
                          INNER JOIN  email_virtual_domains AS m ON (v.domain = m.id)
-                              WHERE  m.name = {?} AND v.type = \'alias\'
+                              WHERE  m.name = {?} AND v.type = \'\'
                            GROUP BY  v.email',
                             $domain);
 }
