@@ -238,6 +238,7 @@ class NewsletterModule extends PLModule
         $error_msgs = array(
             NLIssue::ERROR_INVALID_SHORTNAME => "Le nom court est invalide ou vide.",
             NLIssue::ERROR_INVALID_UFC => "Le filtre des destinataires est invalide.",
+            NLIssue::ERROR_TOO_LONG_UFC => "Le nombre de matricules AX renseigné est trop élevé."
             NLIssue::ERROR_SQL_SAVE => "Une erreur est survenue en tentant de sauvegarder la lettre, merci de réessayer.",
         );
 

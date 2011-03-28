@@ -829,6 +829,7 @@ class NLIssue
 
     const ERROR_INVALID_SHORTNAME = 'invalid_shortname';
     const ERROR_INVALID_UFC = 'invalid_ufc';
+    const ERROR_TOO_LONG_UFC = 'too_long_ufc';
     const ERROR_SQL_SAVE = 'sql_error';
 
     /** Save the global properties of this NL issue (title&co).
@@ -854,6 +855,11 @@ class NLIssue
             }
             if ($this->sufb->isValid() || $this->sufb->isEmpty()) {
                 $fields['sufb_json'] = json_encode($this->sufb->export()->dict());
+                // If sufb_json is too long to be store, we do not store a truncated json and notify the user.
+                // The limit is LONGTEXT's one, ie 2^32 = 4294967296.
+                if (strlen($fields['sufb_json']) > 4294967295) {
+                    $errors[] = self::ERROR_TOO_LONG_UFC;
+                }
             } else {
                 $errors[] = self::ERROR_INVALID_UFC;
             }
