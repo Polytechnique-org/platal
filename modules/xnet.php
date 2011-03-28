@@ -274,7 +274,7 @@ class XnetModule extends PLModule
             $page->changeTpl('platal/password.tpl');
             $page->assign('xnet', true);
             $page->assign('hruid', $res['hruid']);
-            $page->assign('do_auth', true);
+            $page->assign('do_auth', 1);
         }
     }
 
@@ -364,7 +364,7 @@ Email envoyé à " . Post::t('login'));
             $page->changeTpl('platal/password.tpl');
             $page->assign('xnet_reset', true);
             $page->assign('hruid', $hruid);
-            $page->assign('do_auth', true);
+            $page->assign('do_auth', 1);
         }
     }
 
@@ -430,7 +430,7 @@ Email envoyé à " . Post::t('login'));
 
         $page->changeTpl('platal/password.tpl');
         $page->assign('xnet_reset', true);
-        $page->assign('do_auth', false);
+        $page->assign('do_auth', 0);
     }
 }
 
