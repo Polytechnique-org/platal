@@ -954,7 +954,7 @@ class UserFilter extends PlFilter
                 if (!is_array($redirections)) {
                     $key = array($redirections);
                 }
-                $joins['ra' . $sub] = PlSqlJoin::left('email_redriect_account', '$ME.uid = $UID AND $ME.type != \'imap\'
+                $joins['ra' . $sub] = PlSqlJoin::left('email_redirect_account', '$ME.uid = $UID AND $ME.type != \'imap\'
                                                                                  AND $ME.redirect IN {?}', $redirections);
             }
         }

@@ -287,7 +287,7 @@ function event_change_shortname($page, $eid, $old, $new)
         foreach (array($globals->xnet->participant_list, $globals->xnet->payed_list, $globals->xnet->unpayed_list) as $suffix) {
             $uids = XDB::fetchColumn('SELECT  uid
                                         FROM  group_event_participants
-                                       WHERE  eid = {?} AND ' . $where,
+                                       WHERE  eid = {?} AND ' . $where[$suffix],
                                      $eid);
             $users = User::getBulkUsersWithUIDs($uids, null, null, false);
             foreach ($users as $user) {
