@@ -76,13 +76,17 @@ htdocs/.htaccess: htdocs/.htaccess.in Makefile
 ##
 ## static content
 ##
-static: htdocs/javascript/core.js htdocs/javascript@VERSION
+static: htdocs/javascript/core.js htdocs/javascript@VERSION htdocs/javascript/json2.js
 
 htdocs/javascript/core.js:
 	cd htdocs/javascript/ && ln -s ../../core/htdocs/javascript/core.js
 
 %@VERSION: % Makefile ChangeLog
 	cd $< && rm -f $(VERSION) && ln -sf . $(VERSION)
+
+htdocs/javascript/json2.js: DOWNLOAD_SRC = https://github.com/douglascrockford/JSON-js/raw/master/json2.js --no-check-certificate
+htdocs/javascript/json2.js:
+	@$(download)
 
 ##
 ## wiki

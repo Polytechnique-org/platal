@@ -41,6 +41,9 @@ class XnetPage extends PlPage
             $this->assign('is_admin', may_update());
             $this->assign('is_member', is_member());
         }
+        if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false) {
+            $this->addJsLink('json2.js');
+        }
         $this->addJsLink('jquery.xorg.js');
         $this->addJsLink('overlib.js');
         $this->addJsLink('core.js');

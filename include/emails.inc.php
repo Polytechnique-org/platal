@@ -26,7 +26,7 @@ define('ERROR_LOOP_EMAIL', 4);
 
 function add_to_list_alias(User $user, $local_part, $domain, $type = 'alias')
 {
-    Platal::assert($user !== null);
+    Platal::assert($user !== null, 'User should not be null.');
 
     XDB::execute('INSERT IGNORE INTO  email_virtual (email, domain, redirect, type)
                               SELECT  {?}, id, {?}, {?}
@@ -37,7 +37,7 @@ function add_to_list_alias(User $user, $local_part, $domain, $type = 'alias')
 
 function delete_from_list_alias(User $user, $local_part, $domain, $type = 'alias')
 {
-    Platal::assert($user !== null);
+    Platal::assert($user !== null, 'User should not be null.');
 
     XDB::execute('DELETE  v
                     FROM  email_virtual         AS v
@@ -49,7 +49,7 @@ function delete_from_list_alias(User $user, $local_part, $domain, $type = 'alias
 
 function update_list_alias(User $user, $former_email, $local_part, $domain, $type = 'alias')
 {
-    Platal::assert($user !== null);
+    Platal::assert($user !== null, 'User should not be null.');
 
     XDB::execute('UPDATE  email_virtual         AS v
               INNER JOIN  email_virtual_domains AS d ON (v.domain = d.id)
@@ -591,7 +591,7 @@ class Email
 
     static public function activate_storage(User $user, $storage)
     {
-        Platal::assert(in_array($storage, self::get_allowed_storages($user)));
+        Platal::assert(in_array($storage, self::get_allowed_storages($user)), 'Unknown storage.');
 
         if (!self::is_active_storage($user, $storage)) {
             global $globals;
