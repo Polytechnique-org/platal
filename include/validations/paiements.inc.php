@@ -195,13 +195,12 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
                 $topay = $u['montant'] - $u['paid'];
                 if ($topay > 0) {
                     $mailer = new PlMailer('xnetevents/newpayment.mail.tpl');
-                    $user = User::getSilentWithUID($u['user']);
-                    $mail->addTo($user);
+                    $mailer->addTo($u['user']);
                     $mailer->assign('asso', $nom);
                     $mailer->assign('diminutif', $diminutif);
                     $mailer->assign('evt', $evt);
                     $mailer->assign('payment', $id);
-                    $mailer->assign('prenom', $user->firstName());
+                    $mailer->assign('prenom', $u['user']->firstName());
                     $mailer->assign('topay', $topay);
                     $mailer->send();
                 }
