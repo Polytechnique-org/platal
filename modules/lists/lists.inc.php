@@ -48,7 +48,7 @@ function list_sort_owners($members, $tri_promo = true)
 
     ksort($membres);
     foreach($membres as &$membre)  {
-        uksort($membre, strcasecmp);
+        uksort($membre, 'strcasecmp');
     }
     return $membres;
 }
