@@ -4,4 +4,5 @@
 # jQuery and its plugins are downloaded by the Makefile
 /jquery*.*js
 /core.js
+/json2.js
 !/jquery.autocomplete.js

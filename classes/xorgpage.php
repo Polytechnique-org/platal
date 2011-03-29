@@ -27,6 +27,9 @@ class XorgPage extends PlPage
 
         // Set the default page
         $this->changeTpl('platal/index.tpl');
+        if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false) {
+            $this->addJsLink('json2.js');
+        }
         $this->addJsLink('jquery.xorg.js');
         $this->addJsLink('overlib.js');
         $this->addJsLink('core.js');
