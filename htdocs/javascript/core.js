@@ -177,7 +177,7 @@
                     }).appendTo(form);
                 }
             }
-            $('body').appendTo(form);
+            $('body').append(form);
             form.submit();
         },
 
