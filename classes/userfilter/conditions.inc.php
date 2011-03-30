@@ -988,7 +988,7 @@ class UFC_Email extends UserFilterCondition
 
         if (count($foreign) > 0) {
             $sub = $uf->addEmailRedirectFilter($foreign);
-            $cond[] = XDB::format('ra' . $sub . '.redirect IS NOT NULL OR ra.redirect IN {?}', $foreign);
+            $cond[] = XDB::format('ra' . $sub . '.redirect IS NOT NULL OR ra' . $sub . '.redirect IN {?}', $foreign);
         }
         if (count($local) > 0) {
             $sub = $uf->addAliasFilter($local);
