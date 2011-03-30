@@ -202,7 +202,7 @@ def to_forlife(email):
         mbox = email
         fqdn = PLATAL_DOMAIN
     if ( fqdn == PLATAL_DOMAIN ) or ( fqdn == PLATAL_DOMAIN2 ):
-        res = mysql_fetchone("""SELECT  CONCAT(f.alias, '@%s'), a.full_name
+        res = mysql_fetchone("""SELECT  CONCAT(s1.email, '@%s'), a.full_name
                                   FROM  accounts AS a
                             INNER JOIN  email_source_account AS s1 ON (a.uid = s1.uid AND s1.type = 'forlife')
                             INNER JOIN  email_source_account AS s2 ON (a.uid = s2.uid AND s2.email = '%s')
