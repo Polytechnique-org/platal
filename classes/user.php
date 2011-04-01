@@ -701,7 +701,7 @@ class User extends PlUser
             }
 
             $tables = array('account_auth_openid', 'announce_read', 'contacts',
-                            'email_send_save', 'email_virtual',
+                            'email_send_save',
                             'forum_innd', 'forum_profiles', 'forum_subs',
                             'group_announces_read', 'group_members',
                             'group_member_sub_requests', 'reminder', 'requests',
@@ -714,6 +714,9 @@ class User extends PlUser
             XDB::execute('DELETE FROM  email_redirect_account
                                 WHERE  uid = {?} AND type != \'homonym\'',
                          $this->id());
+            XDB::execute('DELETE FROM  email_virtual
+                                WHERE  redirect = {?}',
+                         $this->forlifeEmail());
 
             foreach (array('gapps_accounts', 'gapps_nicknames') as $t) {
                 XDB::execute('DELETE FROM  ' . $t . '
