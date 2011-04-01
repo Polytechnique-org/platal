@@ -223,22 +223,21 @@ class XnetListsModule extends ListsModule
         if (Env::has('add_member')) {
             S::assert_xsrf_token();
 
-            $email = Env::t('add_member');
-            $user = User::getSilent($email);
-            if ($user) {
-                add_to_list_alias($user, $local_part, $domain);
-                $page->trigSuccess($email . ' ajouté.');
+            if (add_to_list_alias(Env::t('add_member'), $local_part, $domain)) {
+                $page->trigSuccess('Ajout réussit.');
             } else {
-                $page->trigError($email . " n'existe pas.");
+                $page->trigError('Ajout infructueux.');
             }
         }
 
         if (Env::has('del_member')) {
             S::assert_xsrf_token();
 
-            $user = User::getSilent(Env::t('del_member'));
-            delete_from_list_alias($user, $local_part, $domain);
-            $page->trigSuccess($user->fullName() . ' supprimé.');
+            if (delete_from_list_alias(Env::t('del_member'), $local_part, $domain)) {
+                $page->trigSuccess('Suppression réussie.');
+            } else {
+                $page->trigError('Suppression infructueuse.');
+            }
         }
 
         $page->assign('members', list_alias_members($local_part, $domain));
@@ -276,7 +275,7 @@ class XnetListsModule extends ListsModule
             return;
         }
 
-        add_to_list_alias(S::user(), $list, $globals->asso('mail_domain'));
+        add_to_list_alias(S::uid(), $list, $globals->asso('mail_domain'));
         pl_redirect('alias/admin/' . $list . '@' . $globals->asso('mail_domain'));
     }
 
