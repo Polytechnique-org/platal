@@ -215,6 +215,11 @@ class XnetListsModule extends ListsModule
 
         require_once 'emails.inc.php';
         list($local_part, $domain) = explode('@', $lfull);
+        if ($globals->asso('mail_domain') != $domain || !preg_match("/^[a-zA-Z0-9\-\.]*$/", $local_part)) {
+            $page->trigErrorRedirect('Le nom de l\'alias est erroné.', $globals->asso('diminutif') . '/lists');
+        }
+
+
         if (Env::has('add_member')) {
             S::assert_xsrf_token();
 
