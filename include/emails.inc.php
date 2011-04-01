@@ -67,12 +67,20 @@ function list_alias_members($local_part, $domain)
                                  WHERE  v.email = {?} AND d.name = {?} AND type = \'alias\'',
                                $local_part, $domain);
 
-    $members = array();
+    $users = array();
+    $nonusers = array();
     foreach ($emails as $email) {
-        $members[] = User::getSilent($email);
+        if ($user = User::getSilent($email)) {
+            $users[] = $user;
+        } else {
+            $nonusers[] = $email;
+        }
     }
 
-    return $members;
+    return array(
+        'users'    => $users,
+        'nonusers' => $nonusers
+    );
 }
 
 function delete_list_alias($local_part, $domain)
