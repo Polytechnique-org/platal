@@ -257,6 +257,7 @@
 {/if}
 
 {if #globals.mailstorage.googleapps_active# or hasPerm('admin') or $googleapps}
+{if hasPerm('gapps')}
 <br />
 <p id="googleapps">
   Grâce à un partenariat avec Google, Polytechnique.org te propose également un compte
@@ -293,6 +294,7 @@
     {/if}
   </tr>
 </table>
+{/if}
 {/if}
 
 {if $eleve}
