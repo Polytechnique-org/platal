@@ -51,6 +51,8 @@
     <td>
       <a href="admin/lists">MLs</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/aliases">aliases</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/mx/broken">MX défaillants</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/emails/lost">Perdus de vue</a>

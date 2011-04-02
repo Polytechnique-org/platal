@@ -44,6 +44,7 @@ class ListsModule extends PLModule
             'lists/soptions'     => $this->make_hook('soptions',  AUTH_MDP),
             'lists/check'        => $this->make_hook('check',     AUTH_MDP),
             'admin/lists'        => $this->make_hook('admin_all', AUTH_MDP,    'admin'),
+            'admin/aliases'      => $this->make_hook('aaliases',  AUTH_MDP,    'admin')
         );
     }
 
@@ -885,6 +886,62 @@ class ListsModule extends PLModule
         $this->prepare_client($page);
         $listes = $this->client->get_all_lists();
         $page->assign_by_ref('listes', $listes);
+    }
+
+    function handler_aaliases($page, $alias = null)
+    {
+        global $globals;
+        require_once 'emails.inc.php';
+        $page->setTitle('Administration - Aliases');
+
+        if (Post::has('new_alias')) {
+            pl_redirect('admin/aliases/' . Post::t('new_alias') . '@' . $globals->mail->domain);
+        }
+
+        // If no alias, list them all.
+        if (is_null($alias)) {
+            $page->changeTpl('lists/admin_aliases.tpl');
+            $page->assign('aliases', array_merge(iterate_list_alias($globals->mail->domain), iterate_list_alias($globals->mail->domain2)));
+            return;
+        }
+
+        list($local_part, $domain) = explode('@', $alias);
+        if (!($globals->mail->domain == $domain || $globals->mail->domain2 == $domain)
+              || !preg_match("/^[a-zA-Z0-9\-\.]*$/", $local_part)) {
+            $page->trigErrorRedirect('Le nom de l\'alias est erroné.', $globals->asso('diminutif') . 'admin/aliases');
+        }
+
+        // Now we can perform the action.
+        if (Post::has('del_alias')) {
+            S::assert_xsrf_token();
+
+            delete_list_alias($local_part, $domain);
+            $page->trigSuccessRedirect($alias . ' supprimé.', 'admin/aliases');
+        }
+
+        if (Post::has('add_member')) {
+            S::assert_xsrf_token();
+
+            if (add_to_list_alias(Post::t('add_member'), $local_part, $domain)) {
+                $page->trigSuccess('Ajout réussit.');
+            } else {
+                $page->trigError('Ajout infructueux.');
+            }
+        }
+
+        if (Get::has('del_member')) {
+            S::assert_xsrf_token();
+
+            if (delete_from_list_alias(Get::t('del_member'), $local_part, $domain)) {
+                $page->trigSuccess('Suppression réussie.');
+            } else {
+                $page->trigError('Suppression infructueuse.');
+            }
+        }
+
+        $page->changeTpl('lists/admin_edit_alias.tpl');
+        $page->assign('members', list_alias_members($local_part, $domain));
+        $page->assign('alias', $alias);
     }
 }
 

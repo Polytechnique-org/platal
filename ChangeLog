@@ -1,6 +1,11 @@
 ================================================================================
 VERSION 1.1.1                                                         XX XX XXXX
 
+Bug/Wish:
+
+    * Emails:
+        - #1459: Lists and administrates aliases on main domain            -JAC
+
 From 1.1.0 branch:
 
     * Search:
