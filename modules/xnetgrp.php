@@ -1087,16 +1087,17 @@ class XnetGrpModule extends PLModule
             foreach (Env::v('ml3', array()) as $ml => $state) {
                 require_once 'emails.inc.php';
                 $ask = !empty($_REQUEST['ml4'][$ml]);
+                list($local_part, ) = explode('@', $ml);
                 if($state == $ask) {
                     if ($state && $email_changed) {
-                        update_list_alias($user, $from_email, $ml, $globals->asso('mail_domain'));
+                        update_list_alias($user->id(), $from_email, $local_part, $globals->asso('mail_domain'));
                         $page->trigSuccess("L'abonnement de {$user->fullName()} à $ml a été mis à jour.");
                     }
                 } else if($ask) {
-                    add_to_list_alias($user, $ml, $globals->asso('mail_domain'));
+                    add_to_list_alias($user->id(), $local_part, $globals->asso('mail_domain'));
                     $page->trigSuccess("{$user->fullName()} a été abonné à $ml.");
                 } else {
-                    delete_from_list_alias($user, $ml, $globals->asso('mail_domain'));
+                    delete_from_list_alias($user->id(), $local_part, $globals->asso('mail_domain'));
                     $page->trigSuccess("{$user->fullName()} a été désabonné de $ml.");
                 }
             }

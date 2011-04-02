@@ -24,38 +24,61 @@ define('ERROR_INACTIVE_REDIRECTION', 2);
 define('ERROR_INVALID_EMAIL', 3);
 define('ERROR_LOOP_EMAIL', 4);
 
-function add_to_list_alias(User $user, $local_part, $domain, $type = 'alias')
+function format_email_alias($email)
 {
-    Platal::assert($user !== null, 'User should not be null.');
+    if ($user = User::getSilent($email)) {
+        return $user->forlifeEmail();
+    }
+    if (isvalid_email($email)) {
+        return $email;
+    }
+    return null;
+}
+
+function add_to_list_alias($email, $local_part, $domain, $type = 'alias')
+{
+    $email = format_email_alias($email);
+    if (is_null($email)) {
+        return false;
+    }
 
     XDB::execute('INSERT IGNORE INTO  email_virtual (email, domain, redirect, type)
                               SELECT  {?}, id, {?}, {?}
                                 FROM  email_virtual_domains
                                WHERE  name = {?}',
-                 $local_part, $user->forlifeEmail(), $type, $domain);
+                 $local_part, $email, $type, $domain);
+    return true;
 }
 
-function delete_from_list_alias(User $user, $local_part, $domain, $type = 'alias')
+function delete_from_list_alias($email, $local_part, $domain, $type = 'alias')
 {
-    Platal::assert($user !== null, 'User should not be null.');
+    $email = format_email_alias($email);
+    if (is_null($email)) {
+        return false;
+    }
 
     XDB::execute('DELETE  v
                     FROM  email_virtual         AS v
               INNER JOIN  email_virtual_domains AS m ON (v.domain = m.id)
               INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
                    WHERE  v.email = {?} AND d.name = {?} AND v.redirect = {?} AND type = {?}',
-                 $local_part, $domain, $user->forlifeEmail(), $type);
+                 $local_part, $domain, $email, $type);
+    return true;
 }
 
-function update_list_alias(User $user, $former_email, $local_part, $domain, $type = 'alias')
+function update_list_alias($email, $former_email, $local_part, $domain, $type = 'alias')
 {
-    Platal::assert($user !== null, 'User should not be null.');
+    $email = format_email_alias($email);
+    if (is_null($email)) {
+        return false;
+    }
 
     XDB::execute('UPDATE  email_virtual         AS v
               INNER JOIN  email_virtual_domains AS d ON (v.domain = d.id)
                      SET  v.redirect = {?}
                    WHERE  v.redirect = {?} AND d.name = {?} AND v.email = {?} AND v.type = {?}',
-                 $user->forlifeEmail(), $former_email, $domain, $local_part, $type);
+                 $email, $former_email, $domain, $local_part, $type);
+    return true;
 }
 
 function list_alias_members($local_part, $domain)
@@ -67,12 +90,20 @@ function list_alias_members($local_part, $domain)
                                  WHERE  v.email = {?} AND d.name = {?} AND type = \'alias\'',
                                $local_part, $domain);
 
-    $members = array();
+    $users = array();
+    $nonusers = array();
     foreach ($emails as $email) {
-        $members[] = User::getSilent($email);
+        if ($user = User::getSilent($email)) {
+            $users[] = $user;
+        } else {
+            $nonusers[] = $email;
+        }
     }
 
-    return $members;
+    return array(
+        'users'    => $users,
+        'nonusers' => $nonusers
+    );
 }
 
 function delete_list_alias($local_part, $domain)
