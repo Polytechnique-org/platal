@@ -119,8 +119,8 @@
         {/if}
       </td>
     </tr>
-  </table><br />
-</form>
+  </table>
+</form><br />
 
 <table class="bicol" style="text-align: center">
   <tr>
