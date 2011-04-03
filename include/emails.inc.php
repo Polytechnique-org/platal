@@ -606,7 +606,8 @@ class Email
 
         // Google Apps storage is available for users with valid Google Apps account.
         require_once 'googleapps.inc.php';
-        if ($globals->mailstorage->googleapps_domain &&
+        if ($user->checkPerms('gapps') &&
+            $globals->mailstorage->googleapps_domain &&
             GoogleAppsAccount::account_status($user->id()) == 'active') {
             $storages[] = 'googleapps';
         }

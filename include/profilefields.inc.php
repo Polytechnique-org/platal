@@ -644,7 +644,7 @@ class ProfileJobs extends ProfileField
     {
         $a = $addresses->get(Profile::ADDRESS_PRO);
         foreach ($a as $address) {
-            if ($address->type == Address::LINK_JOB && array_key_exists($address->jobid, $this->jobs)) {
+            if ($address->type == Address::LINK_JOB && array_key_exists($address->id, $this->jobs)) {
                 $this->jobs[$address->id]->setAddress($address);
             }
         }
