@@ -275,7 +275,7 @@ class XnetListsModule extends ListsModule
             return;
         }
 
-        add_to_list_alias(S::uid(), $list, $globals->asso('mail_domain'));
+        add_to_list_alias(S::i('uid'), $list, $globals->asso('mail_domain'));
         pl_redirect('alias/admin/' . $list . '@' . $globals->asso('mail_domain'));
     }
 

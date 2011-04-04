@@ -147,8 +147,8 @@ function delete_list($local_part, $domain)
 
     $redirect = $domain . '_' . $local_part . '+';
     foreach(array('post', 'owner', 'admin', 'bounces', 'unsubscribe') as $suffix) {
-        XDB::execute('DELETE  email_virtual
-                       WHERE  redirect = {?} AND type = \'list\'',
+        XDB::execute('DELETE FROM  email_virtual
+                            WHERE  redirect = {?} AND type = \'list\'',
                      $redirect . $suffix . '@' . $globals->lists->redirect_domain);
     }
 }
