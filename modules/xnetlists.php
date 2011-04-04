@@ -105,6 +105,9 @@ class XnetListsModule extends ListsModule
         $page->assign('listes', $listes);
         $page->assign('aliases', iterate_list_alias($globals->asso('mail_domain')));
         $page->assign('may_update', may_update());
+        if (S::suid()) {
+            $page->trigWarning("Attention&nbsp;: l'affichage des listes de diffusion ne tient pas compte de l'option « Voir le site comme&hellip; ».");
+        }
 
         if (count($listes) > 0 && !$globals->asso('has_ml')) {
             XDB::execute("UPDATE  groups
