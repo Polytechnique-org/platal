@@ -993,6 +993,7 @@ class XnetGrpModule extends PLModule
         $mmlist = new MMList(S::user(), $globals->asso('mail_domain'));
 
         if (Post::has('change')) {
+            require_once 'emails.inc.php';
             S::assert_xsrf_token();
 
             // Convert user status to X
@@ -1019,6 +1020,11 @@ class XnetGrpModule extends PLModule
                                SET  email = {?}
                              WHERE  uid = {?}',
                            Post::t('email'), $user->id());
+            }
+            if (require_email_update($user, Post::t('email'))) {
+                $listClient = new MMList(S::user());
+                $listClient->change_user_email($user->forlifeEmail(), Post::t('email'));
+                update_alias_user($user->forlifeEmail(), Post::t('email'));
             }
             if (XDB::affectedRows()) {
                 $page->trigSuccess('Données de l\'utilisateur mises à jour.');

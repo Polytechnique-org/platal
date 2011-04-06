@@ -24,6 +24,15 @@ define('ERROR_INACTIVE_REDIRECTION', 2);
 define('ERROR_INVALID_EMAIL', 3);
 define('ERROR_LOOP_EMAIL', 4);
 
+// Checks if an email update is required in MLs and aliases.
+// This occurs when the user don't have email permissions and her email has changed.
+function require_email_update(User $user, $new_email)
+{
+    Platal::assert(!is_null($user), 'User cannot be null.');
+
+    return !$user->checkPerms(User::PERM_MAIL) && $new_email != $user->forlifeEmail();
+}
+
 function format_email_alias($email)
 {
     if ($user = User::getSilent($email)) {
@@ -79,6 +88,15 @@ function update_list_alias($email, $former_email, $local_part, $domain, $type = 
                    WHERE  v.redirect = {?} AND d.name = {?} AND v.email = {?} AND v.type = {?}',
                  $email, $former_email, $domain, $local_part, $type);
     return true;
+}
+
+// Updates an email in all aliases (groups and events).
+function update_alias_user($former_email, $new_email)
+{
+    XDB::execute('UPDATE  email_virtual
+                     SET  redirect = {?}
+                   WHERE  redirect = {?} AND (type = \'alias\' OR type = \'event\')',
+                 $new_email, $former_email);
 }
 
 function list_alias_members($local_part, $domain)

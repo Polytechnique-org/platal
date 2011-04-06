@@ -444,6 +444,7 @@ class AdminModule extends PLModule
         }
 
         // Account Form {{{
+        require_once 'emails.inc.php';
         $to_update = array();
         if (Post::has('disable_weak_access')) {
             $to_update['weak_password'] = null;
@@ -504,9 +505,10 @@ class AdminModule extends PLModule
             if (Post::t('comment') != $user->comment) {
                 $to_update['comment'] = Post::blank('comment') ? null : Post::t('comment');
             }
-            if (!$user->checkPerms(User::PERM_MAIL) && Post::t('email') != $user->forlifeEmail()) {
+            if (require_email_update($user, Post::t('email'))) {
                 $to_update['email'] = Post::t('email');
                 $listClient->change_user_email($user->forlifeEmail(), Post::t('email'));
+                update_alias_user($user->forlifeEmail(), Post::t('email'));
             }
         }
         if (!empty($to_update)) {
@@ -574,7 +576,6 @@ class AdminModule extends PLModule
         // }}}
 
         // Email forwards form {{{
-        require_once("emails.inc.php");
         $redirect = ($registered ? new Redirect($user) : null);
         if (Post::has('add_fwd')) {
             $email = Post::t('email');

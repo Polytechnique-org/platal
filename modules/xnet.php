@@ -402,6 +402,12 @@ Email envoyé à " . Post::t('login'));
                        Post::t('full_name'), Post::t('directory_name'), Post::t('display_name'),
                        (Post::t('sex') == 'male') ? 'male' : 'female', Post::t('email'), $user->id());
             if (XDB::affectedRows()) {
+                require_once 'emails.inc.php';
+                if (require_email_update($user, Post::t('email'))) {
+                    $listClient = new MMList(S::user());
+                    $listClient->change_user_email($user->forlifeEmail(), Post::t('email'));
+                    update_alias_user($user->forlifeEmail(), Post::t('email'));
+                }
                 $user = User::getWithUID($user->id());
                 S::set('user', $user);
                 $page->trigSuccess('Données mises à jour.');
