@@ -1,0 +1,29 @@
+Deps
+====
+
+Debian
+------
+* php5-cli
+* php5-tidy
+* php5-mysql
+* php5-xmlrpc
+* php5-curl
+* php5-gd
+* php-date
+* php-fpdf
+* php-mail
+* php-mail-mime
+* smarty
+* apache2
+* libapache2-mod-php5
+* python
+* mysql-server
+* mysql-client
+* phpunit
+
+Recommended
+-----------
+* php5-xdebug
+* php5-xcache
+
+// vim:ft=asciidoc:
