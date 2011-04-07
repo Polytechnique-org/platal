@@ -1,0 +1,3 @@
+The following variable should be set:
+[Core]
+baseurl_shortener = "http://u.w4x.org/"

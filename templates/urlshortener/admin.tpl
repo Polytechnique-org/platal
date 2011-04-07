@@ -30,14 +30,27 @@
       <td><input type="text" name="url" value="{if t($url)}{$url}{/if}" /></td>
     </tr>
     <tr>
-      <th>Alias (6 caractères, optionnel)&nbsp;:</th>
+      <th>Alias (optionnel)&nbsp;:</th>
       <td>
-        <input type="text" name="alias" size="6" maxlength="6" value="{if t($alias)}{$alias}{/if}" />
-        <small>(peut contenir lettres, chiffres et tirets)</small>
+        <input type="text" name="alias" size="42" maxlength="255" value="{if t($alias)}{$alias}{/if}" />
+        <small>(peut contenir lettres, chiffres, tirets et /)</small>
       </td>
     </tr>
   </table>
   <p class="center"><input type="submit" value="Raccourcir" /></p>
 </form>
+
+<h3>Explications</h3>
+<p>
+  L'alias peut être demandé. Dans ce cas, sa longueur maximal autorisée est
+  de 255 lettres, chiffres, tirets ou /. Ce dernier permet de définir des
+  domaines pour regrouper des raccourcis liés. Par exemple, « nl-04-04/ »
+  pourrait être utilisé comme base pour les urls de la lettre mensuelle d'avril
+  2004.<br />
+  Si aucun alias n'est fournit, le site en génère un de 6 caractères aléatoires
+  accolés à la la base «&nbsp;a/&nbsp;» (par exemple&nbsp;: « a/azerty ». Ce
+  préfixe «&nbsp;a/&nbsp;» et réservé à cet usage et ne peut être utilisé pour
+  former une url choisie.
+</p>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

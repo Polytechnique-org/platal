@@ -24,22 +24,14 @@ class UrlShortenerModule extends PLModule
     function handlers()
     {
         return array(
-            'url'       => $this->make_hook('url',       AUTH_COOKIE),
+            'url'       => $this->make_hook('url',       AUTH_PUBLIC),
             'admin/url' => $this->make_hook('admin_url', AUTH_MDP, 'admin')
         );
     }
 
     function handler_url($page, $alias)
     {
-        $url = XDB::fetchOneCell('SELECT  url
-                                    FROM  url_shortener
-                                   WHERE  alias = {?}',
-                                 $alias);
-
-        if (is_null($url)) {
-            return PL_NOT_FOUND;
-        }
-        http_redirect($url);
+        http_redirect(Platal::globals()->core->base_url_shortener . $alias);
     }
 
     function handler_admin_url($page)
@@ -54,15 +46,19 @@ class UrlShortenerModule extends PLModule
         $alias = Post::t('alias');
 
         $url_regex = '{^(https?|ftp)://[a-zA-Z0-9._%#+/?=&~-]+$}i';
-        if (!preg_match($url_regex, $url)) {
+        if (strlen($url) > 255 || !preg_match($url_regex, $url)) {
             $page->trigError("L'url donnée n'est pas valide.");
             return;
         }
         $page->assign('url', $url);
 
         if ($alias != '') {
-            if (!preg_match('/^[a-zA-Z0-9\-]{6}$/i', $alias)) {
+            if (!preg_match('/^[a-zA-Z0-9\-\/]+$/i', $alias)) {
                 $page->trigError("L'alias proposé n'est pas valide.");
+                return;
+            }
+            if (preg_match('/^a\//i', $alias)) {
+                $page->trigError("L'alias commence par le préfixe 'a/' qui est réservé et donc non autorisé.");
                 return;
             }
             $page->assign('alias', $alias);
@@ -77,7 +73,7 @@ class UrlShortenerModule extends PLModule
             }
         } else {
             do {
-                $alias = rand_token(6);
+                $alias = 'a/' . rand_token(6);
                 $used = XDB::fetchOneCell('SELECT  COUNT(*)
                                              FROM  url_shortener
                                             WHERE  alias = {?}',
@@ -89,7 +85,7 @@ class UrlShortenerModule extends PLModule
         XDB::execute('INSERT INTO  url_shortener (url, alias)
                            VALUES  ({?}, {?})',
                      $url, $alias);
-        $page->trigSuccess("L'url « " . $url . ' » est maintenant accessible depuis « ' . Platal::globals()->baseurl . '/url/' . $alias . ' ».');
+        $page->trigSuccess("L'url « " . $url . ' » est maintenant accessible depuis « http://u.w4x.org/' . $alias . ' ».');
     }
 }
 
