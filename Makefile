@@ -139,25 +139,8 @@ get-wiki:
 ## openid
 ##
 
-openid: get-openid spool/openid/store
-
-# There is no obvious way to automatically use the latest version
-OPENID_VERSION = 2.2.2
-OPENID_COMMIT  = 782224d
-get-openid:
-	@if ! test -d include/Auth; then                                  \
-		wget --no-check-certificate                                   \
-			https://github.com/openid/php-openid/tarball/$(OPENID_VERSION) \
-			-O php-openid-$(OPENID_VERSION).tar.gz; \
-		tar -xzf php-openid-$(OPENID_VERSION).tar.gz;                \
-		mv openid-php-openid-$(OPENID_COMMIT)/Auth include/;                \
-		rm php-openid-$(OPENID_VERSION).tar.gz;                      \
-		rm -r openid-php-openid-$(OPENID_COMMIT);                           \
-	fi
-
-spool/openid/store:
-	mkdir -p $@
-	chmod o+w $@
+openid:
+	-rm -rf include/Auth
 
 ##
 ## banana
