@@ -67,6 +67,7 @@ function pl_autoload($cls, array $pathes = array())
     return false;
 }
 pl_autoload('Env');
+pl_autoload('PlBacktrace');
 
 function pl_core_include($file)
 {
@@ -107,7 +108,6 @@ function pl_error_handler($errno, $errstr, $errfile, $errline)
     $type = isset($errortype[$errno]) ? $errortype[$errno] : $errno;
     $error = strpos($type, 'Warning') !== false || strpos($type, 'Error') !==false;
 
-    pl_autoload('PlBacktrace');
     if (!isset(PlBacktrace::$bt['PHP Errors'])) {
         new PlBacktrace('PHP Errors');
     }
