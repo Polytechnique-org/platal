@@ -26,4 +26,9 @@ Recommended
 * php5-xdebug
 * php5-xcache
 
+Languages and countries administration
+--------------------------------------
+* pkg-isocodes
+* isoquery
+
 // vim:ft=asciidoc:
