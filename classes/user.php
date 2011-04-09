@@ -860,7 +860,7 @@ class User extends PlUser
 
         $is_main_domain = false;
         foreach (self::$sub_mail_domains as $sub_domain) {
-            $is_main_domain = $is_main_domain || $domain == ($sub_domain . $globals->mail->domain) && $domain == ($sub_domain . $globals->mail->domain2);
+            $is_main_domain = $is_main_domain || $domain == ($sub_domain . $globals->mail->domain) || $domain == ($sub_domain . $globals->mail->domain2);
         }
         return $is_main_domain;
     }
