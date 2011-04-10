@@ -65,10 +65,11 @@ class SurveyReq extends Validate
 
     protected function _mail_body($isok)
     {
+        $you_have = ($this->formal ? 'vous aviez' : 'tu avais');
         if ($isok) {
-            return "  Le sondage que tu avais proposé vient d'être validé.";
+            return "  Le sondage que $you_have proposé vient d'être validé.";
         } else {
-            return "  Le sondage que tu avais proposé a été refusé.";
+            return "  Le sondage que $you_have proposé a été refusé.";
         }
     }
 

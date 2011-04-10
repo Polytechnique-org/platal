@@ -31,6 +31,7 @@ abstract class Validate
     // {{{ properties
 
     public $user;
+    public $formal;
 
     public $stamp;
     public $unique;
@@ -56,6 +57,7 @@ abstract class Validate
     public function __construct(User $_user, $_unique, $_type)
     {
         $this->user   = &$_user;
+        $this->formal = !$this->user->hasProfile();
         $this->stamp  = date('YmdHis');
         $this->unique = $_unique;
         $this->type   = $_type;
@@ -221,8 +223,13 @@ abstract class Validate
         $mailer->addTo("\"{$this->user->fullName()}\" <{$this->user->bestEmail()}>");
         $mailer->addCc("validation+{$this->type}@{$globals->mail->domain}");
 
-        $body = ($this->user->isFemale() ? "Chère camarade,\n\n" : "Cher camarade,\n\n")
-              . $this->_mail_body($isok)
+        // If the user has no profile, we should be more formal as if she has one.
+        if ($this->formal) {
+            $body = ($this->user->isFemale() ? 'Bonjour Madame' : 'Bonjour Monsieur');
+        } else {
+            $body = ($this->user->isFemale() ? 'Chère camarade' : 'Cher camarade');
+        }
+        $body .= ",\n\n" . $this->_mail_body($isok)
               . (Env::has('comm') ? "\n\n" . Env::v('comm') : '')
               . "\n\nCordialement,\n-- \nL'équipe de Polytechnique.org\n"
               . $this->_mail_ps($isok);

@@ -66,15 +66,16 @@ class BrokenReq extends Validate
 
     protected function _mail_body($isok)
     {
+        $your = ($this->formal ? 'votre' : 'ta');
         if ($isok && !$this->m_reactive) {
             return "  Un email de contact vient d'être envoyé à {$this->m_user->fullName()}"
                 . " ({$this->m_user->promo()})  pour confirmer sa volonté de"
                 . " mettre à jour sa redirection Polytechnique.org !\n\n"
-                . "Merci de ta participation !\n";
+                . "Merci de $your participation !\n";
         } elseif ($isok) {
             return "  L'adresse de redirection {$this->m_email} de {$this->m_user->fullName()} ({$this->m_user->promo()}) "
                 ."vient d'être réactivée. Un email lui a été envoyé pour l'en informer.\n\n"
-                ."Merci de ta participation !\n";
+                ."Merci de $your participation !\n";
         } else {
             return "  Nous n'utiliserons pas cette adresse pour contacter {$this->m_user->fullName()} ({$this->m_user->promo()}).";
         }

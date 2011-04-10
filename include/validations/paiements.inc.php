@@ -154,9 +154,9 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
     protected function _mail_body($isok)
     {
         if ($isok) {
-            return "  Le paiement que tu avais demandé pour {$this->titre} vient d'être créé.".($this->evt?" Il a bien été associé à la gestion de l'événement du groupe":"");
+            return "  Le paiement demandé pour {$this->titre} vient d'être créé.".($this->evt?" Il a bien été associé à la gestion de l'événement du groupe":"");
         } else {
-            return "  La demande que tu avais faite pour le paiement de {$this->intitule} a été refusée.";
+            return "  La demande faite pour le paiement de {$this->intitule} a été refusée.";
         }
     }
 
