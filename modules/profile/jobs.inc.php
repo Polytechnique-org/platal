@@ -68,7 +68,7 @@ class ProfileSettingJob implements ProfileSetting
         $jobs  = XDB::fetchAllAssoc('SELECT  j.id, j.jobid, je.name,
                                              j.description, j.email AS w_email,
                                              j.email_pub AS w_email_pub,
-                                             j.url AS w_url, j.pub
+                                             j.url AS w_url, j.pub, j.entry_year AS w_entry_year
                                        FROM  profile_job      AS j
                                   LEFT JOIN  profile_job_enum AS je ON (j.jobid = je.id)
                                       WHERE  j.pid = {?}
@@ -183,6 +183,11 @@ class ProfileSettingJob implements ProfileSetting
         }
         $job['w_phone'] = Phone::formatFormArray($job['w_phone'], $s, $maxPublicity);
 
+        if ($job['w_entry_year'] && strlen($job['w_entry_year']) != 4) {
+            $job['w_entry_year_error'] = true;
+            $success = false;
+        }
+
         unset($job['removed']);
         unset($job['new']);
     }
@@ -272,16 +277,16 @@ class ProfileSettingJob implements ProfileSetting
         foreach ($value as $id => &$job) {
             if (($job['pub'] != 'private' || $deletePrivate) && (isset($job['name']) && $job['name'])) {
                 if (isset($job['jobid']) && $job['jobid']) {
-                    XDB::execute('INSERT INTO  profile_job (pid, id, description, email,
+                    XDB::execute('INSERT INTO  profile_job (pid, id, description, email, entry_year,
                                                             url, pub, email_pub, jobid)
-                                       VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                                 $page->pid(), $id, $job['description'], $job['w_email'],
+                                       VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                                 $page->pid(), $id, $job['description'], $job['w_email'], $job['w_entry_year'],
                                  $job['w_url'], $job['pub'], $job['w_email_pub'], $job['jobid']);
                 } else {
-                    XDB::execute('INSERT INTO  profile_job (pid, id, description, email,
+                    XDB::execute('INSERT INTO  profile_job (pid, id, description, email, entry_year,
                                                             url, pub, email_pub)
-                                       VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                                 $page->pid(), $id, $job['description'], $job['w_email'],
+                                       VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                                 $page->pid(), $id, $job['description'], $job['w_email'], $job['w_entry_year'],
                                  $job['w_url'], $job['pub'], $job['w_email_pub']);
                     $request = new EntrReq(S::user(), $page->profile, $id, $job['name'], $job['hq_acronym'], $job['hq_url'],
                                            $job['hq_email'], $job['hq_fixed'], $job['hq_fax'], $job['hq_address']);

@@ -175,6 +175,14 @@
                  name="{$jobpref}[w_url]" value="{$job.w_url}" />
       </td>
     </tr>
+    <tr class="pair" {if $hiddenjob}style="display: none"{/if}>
+      <td class="titre">Année&nbsp;d'entrée</td>
+      <td>
+          <input type="text" size="4" maxlength="4" {if t($job.w_entry_year_error)}class="error"{/if}
+                 name="{$jobpref}[w_entry_year]" value="{$job.w_entry_year}" />
+          <small>(avec 4 chiffres, par exemple 1983)</small>
+      </td>
+    </tr>
     <tr id="{$jobid}_w_address" class="pair" {if $hiddenjob || $hiddenaddr}style="display: none"{/if}>
       <td colspan="2">
         <div style="float: left">
