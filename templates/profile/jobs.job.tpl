@@ -171,7 +171,7 @@
     <tr class="pair" {if $hiddenjob}style="display: none"{/if}>
       <td class="titre">Page&nbsp;perso</td>
       <td>
-          <input type="text" size="35" maxlength="255" {if t($job.w_rul)}class="error"{/if}
+          <input type="text" size="35" maxlength="255" {if t($job.w_url_error)}class="error"{/if}
                  name="{$jobpref}[w_url]" value="{$job.w_url}" />
       </td>
     </tr>
