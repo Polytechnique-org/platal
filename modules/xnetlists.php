@@ -70,7 +70,7 @@ class XnetListsModule extends ListsModule
         return $globals->asso('mail_domain');
     }
 
-    function handler_lists($page)
+    function handler_lists($page, $order_by = null, $order = null)
     {
         global $globals;
         require_once 'emails.inc.php';
@@ -102,7 +102,39 @@ class XnetListsModule extends ListsModule
         }
 
         $listes = $this->client->get_lists();
+        // Default ordering is by ascending names.
+        if (is_null($order_by) || is_null($order)
+            || !in_array($order_by, array('list', 'desc', 'nbsub'))
+            || !in_array($order, array('asc', 'desc'))) {
+            $order_by = 'list';
+            $order = 'asc';
+        }
+
+        $compare = function ($a, $b) use ($order_by, $order)
+        {
+            switch ($order_by) {
+              case 'desc':
+                $a[$order_by] = replace_accent($a[$order_by]);
+                $b[$order_by] = replace_accent($b[$order_by]);
+              case 'list':
+                $res = strcasecmp($a[$order_by], $b[$order_by]);
+                break;
+              case 'nbsub':
+                $res = $a[$order_by] - $b[$order_by];
+                break;
+              default:
+                $res = 0;
+            }
+
+            if ($order == 'asc') {
+                return $res;
+            }
+            return $res * -1;
+        };
+        usort($listes, $compare);
         $page->assign('listes', $listes);
+        $page->assign('order_by', $order_by);
+        $page->assign('order', $order);
         $page->assign('aliases', iterate_list_alias($globals->asso('mail_domain')));
         $page->assign('may_update', may_update());
         if (S::suid()) {

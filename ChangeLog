@@ -9,6 +9,9 @@ Bug/Wish:
     * Profile:
         - #1445: Add job entry year                                        -JAC
 
+    * XnetList:
+        - #957: Allows xnet list sorting by description and members count  -JAC
+
 From 1.1.0 branch:
 
     * Search:

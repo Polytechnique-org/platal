@@ -52,11 +52,44 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscrip
 
 <table cellpadding="0" cellspacing="0" class='large'>
   <tr>
-    <th colspan="2">Liste</th>
-    <th>Description</th>
+    <th colspan="2">
+      <a href="{$platal->ns}lists/list/{if $order_by eq 'list' && $order eq 'asc'}desc{else}asc{/if}">
+        {if $order_by eq 'list'}
+        {if $order eq 'desc'}
+          <img src="{$platal->baseurl}images/up.png" alt="" title="Tri décroissant" />
+        {else}
+          <img src="{$platal->baseurl}images/dn.png" alt="" title="Tri croissant" />
+        {/if}
+        {/if}
+        Liste
+      </a>
+    </th>
+    <th>
+      <a href="{$platal->ns}lists/desc/{if $order_by eq 'desc' && $order eq 'asc'}desc{else}asc{/if}">
+        {if $order_by eq 'desc'}
+        {if $order eq 'desc'}
+          <img src="{$platal->baseurl}images/up.png" alt="" title="Tri décroissant" />
+        {else}
+          <img src="{$platal->baseurl}images/dn.png" alt="" title="Tri croissant" />
+        {/if}
+        {/if}
+        Description
+      </a>
+    </th>
     <th>Diffusion</th>
     <th>Inscription</th>
-    <th>Nb</th>
+    <th>
+      <a href="{$platal->ns}lists/nbsub/{if $order_by eq 'nbsub' && $order eq 'asc'}desc{else}asc{/if}">
+        {if $order_by eq 'nbsub'}
+        {if $order eq 'desc'}
+          <img src="{$platal->baseurl}images/up.png" alt="" title="Tri décroissant" />
+        {else}
+          <img src="{$platal->baseurl}images/dn.png" alt="" title="Tri croissant" />
+        {/if}
+        {/if}
+        Nb
+      </a>
+    </th>
     <th>&nbsp;</th>
   </tr>
   {foreach from=$listes item=l}
