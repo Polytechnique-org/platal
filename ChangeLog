@@ -1,6 +1,9 @@
 ================================================================================
 VERSION 1.1.4                                                         XX XX XXXX
 
+New:
+    * #1204: Add smarty prefilter to allow access to const field of classes -JAC
+
 From branch 1.1.3:
 
     * #1451: Fix dynPost                                                    -FRU

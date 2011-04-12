@@ -60,6 +60,7 @@ abstract class PlPage extends Smarty
                              . " actuellement désactivée, en particulier aucune donnée ne sera sauvegardée");
         }
         $this->register_prefilter('at_to_globals');
+        $this->register_prefilter('get_class_constants');
     }
 
     // }}}
@@ -456,6 +457,27 @@ function _to_globals($s) {
 function at_to_globals($tpl_source, $smarty)
 {
     return preg_replace('/#globals\.([a-zA-Z0-9_.]+?)#/e', '_to_globals(\'\\1\')', $tpl_source);
+}
+
+// }}}
+// {{{ function get_class_constants()
+
+/**
+ * helper
+ */
+
+function _get_class_const($class, $const)
+{
+    return var_export(constant($class . '::' . $const), true);
+}
+
+/**
+ * Compilation plugin used to import class constants through calls to #Class::CONSTANT#
+ */
+
+function get_class_constants($tpl_source, $smarty)
+{
+    return preg_replace('/#([a-zA-Z0-9_]+)::([A-Z0-9_]+)#/e', '_get_class_const(\'\\1\',\'\\2\')', $tpl_source);
 }
 
 // }}}
