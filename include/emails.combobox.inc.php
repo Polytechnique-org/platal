@@ -50,7 +50,7 @@ function fill_email_combobox(PlPage $page, $user = null, $profile = null)
     }
 
     if ($user) {
-        $res = XDB::fetchAllAssoc('SELECT  CONCAT(s.email, \'@\', d.name)
+        $res = XDB::fetchAllAssoc('SELECT  CONCAT(s.email, \'@\', d.name) AS email
                                      FROM  email_source_account  AS s
                                INNER JOIN  email_virtual_domains AS m ON (s.domain = m.id)
                                INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
