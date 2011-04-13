@@ -717,7 +717,7 @@ class ProfilePageGeneral extends ProfilePage
         $page->assign('edu_fields', $res->fetchAllAssoc());
 
         require_once "emails.combobox.inc.php";
-        fill_email_combobox($page, $this->owner);
+        fill_email_combobox($page, array('source', 'redirect', 'job', 'directory'), $this->owner);
 
         $res = XDB::query("SELECT  nw.nwid AS type, nw.name
                              FROM  profile_networking_enum AS nw

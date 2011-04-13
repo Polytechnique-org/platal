@@ -19,68 +19,81 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function fill_email_combobox(PlPage $page, $user = null, $profile = null)
+function fill_email_combobox(PlPage $page, array $retrieve, $user = null)
 {
+    require_once 'emails.inc.php';
     if (is_null($user)) {
         $user = S::user();
     }
-    if (is_null($profile)) {
-        /* Always refetch the profile. */
-        $profile = $user->profile(true);
-    }
-    $email_type = 'directory';
+    /* Always refetch the profile. */
+    $profile = $user->profile(true);
 
-    if ($profile) {
-        $email_directory = $profile->email_directory;
-        $page->assign('email_directory', $email_directory);
-
-        $res = XDB::fetchAllAssoc('SELECT  email
-                                     FROM  profile_job
-                                    WHERE  pid = {?}', $profile->id());
-        $pro = array();
-        foreach ($res as $res_it) {
-            if ($res_it['email'] != '') {
-                $pro[] = $res_it['email'];
-                if ($email_directory == $res_it['email']) {
-                    $email_type = "pro";
-                }
-            }
-        }
-        $page->assign('list_email_pro', $pro);
+    $emails = array();
+    if (in_array('source', $retrieve)) {
+        $emails['Emails polytechniciens'] = XDB::fetchColumn('SELECT  CONCAT(s.email, \'@\', d.name)
+                                                                FROM  email_source_account  AS s
+                                                          INNER JOIN  email_virtual_domains AS m ON (s.domain = m.id)
+                                                          INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
+                                                               WHERE  s.uid = {?}
+                                                            ORDER BY  s.email, d.name',
+                                                             $user->id());
     }
 
-    if ($user) {
-        $res = XDB::fetchAllAssoc('SELECT  CONCAT(s.email, \'@\', d.name) AS email
-                                     FROM  email_source_account  AS s
-                               INNER JOIN  email_virtual_domains AS m ON (s.domain = m.id)
-                               INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
-                                    WHERE  s.uid = {?}
-                                 ORDER BY  s.email, d.name', $user->id());
-        $page->assign('list_email_X', $res);
-        foreach ($res as $res_it) {
-            if ($email_directory == $res_it) {
-                $email_type = 'X';
-            }
-        }
-
-        require_once 'emails.inc.php';
+    if (in_array('redirect', $retrieve)) {
         $redirect = new Redirect($user);
-        $redir    = array();
+        $emails['Redirections'] = array();
         foreach ($redirect->emails as $redirect_it) {
             if ($redirect_it->is_redirection()) {
-                $redir[] = $redirect_it->email;
-                if ($email_directory == $redirect_it->email) {
-                    $email_type = 'redir';
+                $emails['Redirections'] = $redirect_it->email;
+            }
+        }
+    }
+
+    if ($profile) {
+        if (in_array('job', $retrieve)) {
+            $emails['Emails professionels'] = XDB::fetchColumn('SELECT  email
+                                                                  FROM  profile_job
+                                                                 WHERE  pid = {?} AND email IS NOT NULL AND email != \'\'',
+                                                               $profile->id());
+        }
+
+        if ($profile->email_directory) {
+            if (in_array('directory', $retrieve)) {
+                foreach ($emails as &$email_list) {
+                    foreach ($email_list as $key => $email) {
+                        if ($profile->email_directory == $email) {
+                            unset($email_list[$key]);
+                        }
+                    }
+                }
+                $emails['Email annuaire AX'] = array($profile->email_directory);
+            } elseif (in_array('stripped_directory', $retrieve)) {
+                if (User::isForeignEmailAddress($profile->email_directory)) {
+                    $is_redirect = XDB::fecthOneCell('SELECT  COUNT(*)
+                                                        FROM  email_redirect_account
+                                                       WHERE  uid = {?} AND redirect = {?}',
+                                                     $user->id(), $profile->email_directory);
+                    if ($is_redirect == 0) {
+                        $emails['Email annuaire AX'] = array($profile->email_directory);
+                    }
                 }
             }
         }
-        $page->assign('list_email_redir', $redir);
-        $page->assign('email_type', $email_type);
-    } else {
-        $page->assign('list_email_X', array());
-        $page->assign('list_email_redir', array());
-        $page->assign('list_email_pro', array());
+
+        if (isset($emails['Emails professionels']) && isset($emails['Redirections'])) {
+            $intersect = array_intersect($emails['Emails professionels'], $emails['Redirections']);
+            foreach ($intersect as $key => $email) {
+                unset($emails['Emails professionels'][$key]);
+            }
+        }
     }
+
+    $emails_count = 0;
+    foreach ($emails as $email_list) {
+        $emails_count += count($email_list);
+    }
+    $page->assign('emails_count', $emails_count);
+    $page->assign('email_lists', $emails);
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

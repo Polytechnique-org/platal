@@ -443,7 +443,7 @@ class ProfileModule extends PLModule
         $page->assign('job', array());
         $page->assign('new', true);
         require_once "emails.combobox.inc.php";
-        fill_email_combobox($page);
+        fill_email_combobox($page, array('redirect', 'job', 'stripped_directory'));
     }
 
     /**

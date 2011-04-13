@@ -438,7 +438,7 @@ class ProfilePageJobs extends ProfilePage
     public function _prepare(PlPage $page, $id)
     {
         require_once 'emails.combobox.inc.php';
-        fill_email_combobox($page, $this->owner);
+        fill_email_combobox($page, array('redirect', 'job', 'stripped_directory'), $this->owner);
 
         if (!S::user()->isMe($this->owner)) {
             $res = XDB::iterator('SELECT  id, name

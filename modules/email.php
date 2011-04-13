@@ -307,7 +307,7 @@ class EmailModule extends PLModule
         $page->assign('googleapps', GoogleAppsAccount::account_status($user->id()));
 
         require_once 'emails.combobox.inc.php';
-        fill_email_combobox($page);
+        fill_email_combobox($page, array('job', 'stripped_directory'));
     }
 
     function handler_antispam($page, $filter_status = null, $redirection = null)
