@@ -943,6 +943,16 @@ class UserFilter extends PlFilter
         return $this->register_optional($this->sa, $email);
     }
 
+    private $with_rf = false;
+    /** Allows filtering by active redirection.
+     * @return Suffix to use to access the adequate table.
+     */
+    public function addActiveEmailRedirectFilter($email = null)
+    {
+        $this->requireAccounts();
+        $this->with_rf = true;
+    }
+
     protected function emailJoins()
     {
         global $globals;
@@ -973,6 +983,9 @@ class UserFilter extends PlFilter
                 }
                 $joins['sa' . $sub] = PlSqlJoin::left('email_source_account', '$ME.uid = $UID AND $ME.email IN {?}', $emails);
             }
+        }
+        if ($this->with_rf) {
+            $joins['rf'] = PlSqlJoin::left('email_redirect_account', '$ME.uid = $UID AND $ME.type != \'imap\' AND $ME.flags = \'active\'');;
         }
         return $joins;
     }

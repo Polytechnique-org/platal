@@ -339,8 +339,8 @@ class UFC_HasEmailRedirect extends UserFilterCondition
 {
     public function buildCondition(PlFilter $uf)
     {
-        $sub_redirect = $uf->addEmailRedirectFilter();
-        return 'ra' . $sub_redirect . '.flags = \'active\'';
+        $sub_redirect = $uf->addActiveEmailRedirectFilter();
+        return 'rf.redirect IS NOT NULL';
     }
 
     public function export()
