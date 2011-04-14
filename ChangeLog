@@ -10,6 +10,9 @@ Bug/Wish:
     * Profile:
         - #1445: Add job entry year                                        -JAC
 
+    * Search:
+        - #990: Adds search on broken redirections                         -JAC
+
     * XnetList:
         - #957: Allows xnet list sorting by description and members count  -JAC
 

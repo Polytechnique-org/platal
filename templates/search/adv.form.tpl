@@ -345,6 +345,27 @@ function cleanForm(f) {
       </td>
     </tr>
     <tr>
+      <td>A une redirection active</td>
+      <td>
+        <table>
+          <tr>
+            <td style="width:100px">
+              <input type="radio" name="has_email_redirect" value="0" {if !$smarty.request.has_email_redirect}checked="checked"{/if}
+                id="has_email_redirect0" /><label for="has_email_redirect0">indifférent</label>
+            </td>
+            <td style="width:100px">
+              <input type="radio" name="has_email_redirect" value="1" {if $smarty.request.has_email_redirect eq 1}checked="checked"{/if}
+                id="has_email_redirect1" /><label for="has_email_redirect1">oui</label>
+            </td>
+            <td style="width:100px">
+              <input type="radio" name="has_email_redirect" value="2" {if $smarty.request.has_email_redirect eq 2}checked="checked"{/if}
+                id="has_email_redirect2" /><label for="has_email_redirect2">non</label>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
       <td>En vie</td>
       <td>
         <table>

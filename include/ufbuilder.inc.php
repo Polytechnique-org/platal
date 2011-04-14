@@ -344,6 +344,7 @@ class UFB_AdvancedSearch extends UserFilterBuilder
             new UFBF_Promo('promo2', 'Promotion', 'egal2'),
             new UFBF_Sex('woman', 'Sexe'),
             new UFBF_Registered('subscriber', 'Inscrit'),
+            new UFBF_HasEmailRedirect('has_email_redirect', 'A une redirection active'),
             new UFBF_Dead('alive', 'En vie'),
 
             new UFBF_Town('city', 'Ville / Code Postal'),
@@ -951,6 +952,25 @@ class UFBF_Registered extends UFBF_Enum
             return new UFC_Registered();
         } else if ($this->val == 2) {
             return new PFC_Not(new UFC_Registered());
+        }
+    }
+}
+// }}}
+
+// {{{ class UFBF_HasEmailRedirect
+class UFBF_HasEmailRedirect extends UFBF_Enum
+{
+    public function __construct($envfield, $formtext = '')
+    {
+        parent::__construct($envfield, $formtext, array(1, 2));
+    }
+
+    protected function buildUFC(UserFilterBuilder $ufb)
+    {
+        if ($this->val == 1) {
+            return new UFC_HasEmailRedirect();
+        } else if ($this->val == 2) {
+            return new PFC_Not(new UFC_HasEmailRedirect());
         }
     }
 }
