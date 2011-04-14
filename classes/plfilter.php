@@ -123,6 +123,16 @@ abstract class PlFilterGroupableOrder extends PlFilterOrder
     {
         return $this->_tokens;
     }
+
+    /** This function is called when trying to restrict to one of the
+     * specific values of the group token.
+     *
+     * @return A PlFilterCondition.
+     */
+    public function getCondition($group_value)
+    {
+        return null;
+    }
 }
 // }}}
 

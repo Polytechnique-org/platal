@@ -31,6 +31,10 @@ abstract class PlSet
     protected $limit   = null;
 
     protected $count   = null;
+    protected $groups = false;
+
+    // Handle the "restrict to values of the current order"
+    protected $restrict_to = null;
 
     // A list of available views
     private $mods      = array();
@@ -95,14 +99,22 @@ abstract class PlSet
         $this->conds->addChild($cond);
     }
 
+    /** Restricts a PlFilter to values of a given PlFilterOrder
+     */
+    public function restrictTo($value)
+    {
+        $this->restrict_to = $value;
+    }
+
     /** This function builds the right kind of PlFilter from given data
      * @param $cond The PlFilterCondition for the filter
      * @param $orders An array of PlFilterOrder for the filter
+     * @return a PlFilter
      */
     abstract protected function buildFilter(PlFilterCondition $cond, $orders);
 
     /** This function returns the results of the given filter
-     * wihtin $limit; can be use to replace the default $pf->get call.
+     * within $limit; can be use to replace the default $pf->get call.
      * @param $pf The filter
      * @param $limit The PlLimit
      * @return The results of the filter
@@ -117,14 +129,20 @@ abstract class PlSet
      * @param $orders Additional orders to use before the default ones.
      * @return A newly created PlFilter.
      */
-    private function buildFilterHelper($orders = array())
+    private function buildFilterHelper($orders = array(), $extra_cond=null)
     {
         if (!is_array($orders)) {
             $orders = array($orders);
         }
         $orders = array_merge($orders, $this->orders);
 
-        return $this->buildFilter($this->conds, $orders);
+        if ($extra_cond != null) {
+            $conds = clone $this->conds;
+            $conds->addChild($extra_cond);
+        } else {
+            $conds = $this->conds;
+        }
+        return $this->buildFilter($conds, $orders);
     }
 
     /** This function returns the values of the set, and sets $count with the
@@ -138,9 +156,23 @@ abstract class PlSet
         if (is_null($limit)) {
             $limit = new PlLimit(self::DEFAULT_MAX_RES, 0);
         }
-        $pf = $this->buildFilterHelper($orders);
-        $it = $this->getFilterResults($pf, $limit);
-        $this->count = $pf->getTotalCount();
+        $pf_res = $this->buildFilterHelper($orders);
+        $pf_groups = $pf_res;
+        if ($this->restrict_to != null
+            && count($this->orders)
+            && $this->orders[0] instanceof PlFilterGroupableOrder)
+        {
+            $main_order = $this->orders[0];
+            $pf_res = $this->buildFilterHelper($orders, $main_order->getCondition($this->restrict_to));
+        }
+
+        $it = $this->getFilterResults($pf_res, $limit);
+        $this->count = $pf_res->getTotalCount();
+        if ($pf_groups->hasGroups()) {
+            $this->groups = $pf_groups->getGroups();
+        } else {
+            $this->groups = null;
+        }
         return $it;
     }
 
@@ -243,6 +275,8 @@ abstract class PlSet
         }
         $page->assign('plset_content', $view->apply($page));
         $page->assign('plset_count', $this->count);
+        $page->assign('plset_has_groups', $this->groups != null);
+        $page->assign('plset_groups', $this->groups);
         return true;
     }
 }
@@ -303,6 +337,7 @@ abstract class MultipageView implements PlView
 
     public $pages  = 1;
     public $page   = 1;
+    public $restrict = null;
     public $offset = 0;
 
     protected $entriesPerPage = 20;
@@ -321,6 +356,7 @@ abstract class MultipageView implements PlView
     {
         $this->set   =& $set;
         $this->page   = Env::i('page', 1);
+        $this->restrict = Env::s('restrict', null);
         $this->offset = $this->entriesPerPage * ($this->page - 1);
         $this->params = $params;
     }
@@ -389,6 +425,9 @@ abstract class MultipageView implements PlView
                 $this->set->addSort($order);
             }
         }
+        if ($this->restrict != null) {
+            $this->set->restrictTo($this->restrict);
+        }
         $res = $this->set->get($this->limit());
 
         $show_bounds = $this->bounds();
@@ -409,6 +448,7 @@ abstract class MultipageView implements PlView
         $page->assign('show_bounds', $show_bounds);
         $page->assign('order', Env::v('order', $this->defaultkey));
         $page->assign('orders', $this->sortkeys);
+        $page->assign('restrict', $this->restrict);
         $page->assign_by_ref('plview', $this);
         if (is_array($res)) {
             $page->assign('set_keys', array_keys($res));
@@ -427,6 +467,7 @@ abstract class MultipageView implements PlView
         $list = $this->set->args();
         unset($list['page']);
         unset($list['order']);
+        unset($list['restrict']);
         return $list;
     }
 }

@@ -25,8 +25,8 @@
   {if $show_bounds}<div style="float: right"><small><strong>[{$first} - {$last}]&nbsp;</strong></small></div>{/if}
 <div class="center pages" style="float: left">
   {if $plview->page neq 1}
-  <a href="{$platal->pl_self()}{$plset_args}order={$order}&amp;page=1#pl_set_top">{icon name=resultset_first title="Première page"}</a>{*
-  *}<a href="{$platal->pl_self()}{$plset_args}order={$order}&amp;page={$plview->page-1}#pl_set_top">{icon name=resultset_previous title="Page précédente"}</a>
+  <a href="{$platal->pl_self()}{$plset_args}order={$order}&amp;restrict={$restrict}&amp;page=1#pl_set_top">{icon name=resultset_first title="Première page"}</a>{*
+  *}<a href="{$platal->pl_self()}{$plset_args}order={$order}&amp;restrict={$restrict}&amp;page={$plview->page-1}#pl_set_top">{icon name=resultset_previous title="Page précédente"}</a>
   {else}
   {icon name=null title=""}{icon name=null title=""}
   {/if}
@@ -34,12 +34,12 @@
   {if $smarty.section.page.index eq $plview->page}
   <span style="color: red">{$plview->page}</span>
   {else}
-  <a href="{$platal->pl_self()}{$plset_args}order={$order}&amp;page={$smarty.section.page.index}#pl_set_top">{$smarty.section.page.index}</a>
+  <a href="{$platal->pl_self()}{$plset_args}order={$order}&amp;restrict={$restrict}&amp;page={$smarty.section.page.index}#pl_set_top">{$smarty.section.page.index}</a>
   {/if}
   {/section}
   {if $plview->page neq $plview->pages}
-  <a href="{$platal->pl_self()}{$plset_args}order={$order}&amp;page={$plview->page+1}#pl_set_top">{icon name=resultset_next title="Page suivante"}</a>{*
-  *}<a href="{$platal->pl_self()}{$plset_args}order={$order}&amp;page={$plview->pages}#pl_set_top">{icon name=resultset_last title="Dernière page"}</a>
+  <a href="{$platal->pl_self()}{$plset_args}order={$order}&amp;restrict={$restrict}&amp;page={$plview->page+1}#pl_set_top">{icon name=resultset_next title="Page suivante"}</a>{*
+  *}<a href="{$platal->pl_self()}{$plset_args}order={$order}&amp;restrict={$restrict}&amp;page={$plview->pages}#pl_set_top">{icon name=resultset_last title="Dernière page"}</a>
   {else}
   {icon name=null title=""}{icon name=null title=""}
   {/if}
@@ -68,7 +68,30 @@
 {/if}
 {/capture}
 
+{capture name=groups}
+{if $plset_has_groups}
+<div style="clear: both">
+  Restreindre à&nbsp;: [
+  {foreach from=$plset_groups key=group item=amount name=groups}
+  {if $amount > 0}
+    {if $group eq $restrict}
+    <em title="{$amount} résultats">{$group}</em>
+    {else}
+    <a href="{$platal->pl_self()}{$plset_args}order={$order}&restrict={$group}#pl_set_top" title="{$amount} résultats">{$group}</a>
+    {/if}
+    {if !$smarty.foreach.groups.last}
+    &nbsp;
+    {/if}
+  {/if}
+  {/foreach}
+  ]
+</div>
+{/if}
+{/capture}
+
 {$smarty.capture.order|smarty:nodefaults}
+
+{$smarty.capture.groups|smarty:nodefaults}
 
 {$smarty.capture.pages|smarty:nodefaults}
 
