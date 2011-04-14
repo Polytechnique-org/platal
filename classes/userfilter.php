@@ -937,7 +937,7 @@ class UserFilter extends PlFilter
      *  that email as a source email.
      * @return Suffix to use to access the adequate table.
      */
-     public function addAliasFilter($email = null)
+    public function addAliasFilter($email = null)
     {
         $this->requireAccounts();
         return $this->register_optional($this->sa, $email);
