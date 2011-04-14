@@ -831,7 +831,9 @@ class UFBF_Name extends UFBF_Text
             return false;
         }
 
-        $this->val = preg_split('/[[:space:]]/', $this->val);
+        require_once 'name.func.inc.php';
+
+        $this->val = split_name_for_search($this->val);
         if (count($this->val) == 0) {
             $this->empty = true;
         }

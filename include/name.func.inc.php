@@ -228,6 +228,14 @@ function build_sn_pub($pid)
     return $sn_old;
 }
 
+/** Splits a name into tokens, as used in search_name.
+ * Used for search_name rebuilding and for queries.
+ */
+function split_name_for_search($name) {
+    return preg_split('/[[:space:]\'\-]+/', strtolower(replace_accent($name)),
+                      -1, PREG_SPLIT_NO_EMPTY);
+}
+
 /** Transform a name to its canonical value so it can be compared
  * to another form (different case, with accents or with - instead
  * of blanks).

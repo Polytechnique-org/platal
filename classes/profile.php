@@ -1087,8 +1087,8 @@ class Profile implements PlExportable
                 continue;
             }
             $pid   = $key['pid'];
-            $toks  = preg_split('/[ \'\-]+/', strtolower(replace_accent($key['name'])),
-                                -1, PREG_SPLIT_NO_EMPTY);
+            require_once 'name.func.inc.php';
+            $toks = split_name_for_search($key['name']);
             $toks = array_reverse($toks);
 
             /* Split the score between the tokens to avoid the user to be over-rated.
