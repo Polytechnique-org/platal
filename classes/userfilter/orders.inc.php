@@ -89,6 +89,11 @@ class UFO_Promo extends PlFilterGroupableOrder
         }
     }
 
+    public function getCondition($promo)
+    {
+        return new UFC_Promo(UserFilterCondition::OP_EQUALS, $this->grade, $promo);
+    }
+
     public function export()
     {
         $export = $this->buildExport('promo');
@@ -106,7 +111,7 @@ class UFO_Promo extends PlFilterGroupableOrder
  * @param $particle Set to true if particles should be included in the sorting order
  * @param $desc If sort order should be descending
  */
-class UFO_Name extends PlFilterOrder
+class UFO_Name extends PlFilterGroupableOrder
 {
     private $type;
     private $variant;
@@ -139,6 +144,28 @@ class UFO_Name extends PlFilterOrder
                 return 'pn' . $sub . '.name';
             }
         }
+    }
+
+    public function getGroupToken(PlFilter $pf)
+    {
+        return 'SUBSTRING(' . $this->_tokens . ', 1, 1)';
+    }
+
+    public function getCondition($initial)
+    {
+        if (Profile::isDisplayName($this->type)) {
+            switch ($this->type) {
+            case Profile::DN_PRIVATE:
+            case Profile::DN_SHORT:
+            case Profile::DN_YOURSELF:
+                $type = Profile::FIRSTNAME;
+            default:
+                $type = Profile::LASTNAME;
+            }
+        } else {
+            $type = $this->type;
+        }
+        return new UFC_Name($type, $initial, UFC_Name::PREFIX);
     }
 
     public function export()
