@@ -1253,13 +1253,13 @@ class XnetGrpModule extends PLModule
                 if (!empty($art['contact_html'])) {
                     $fulltext .= "\n\n'''Contacts :'''\\\\\n" . $art['contact_html'];
                 }
-                $post = null;/*
+                $post = null;
                 if ($globals->asso('forum')) {
                     require_once 'banana/forum.inc.php';
                     $banana = new ForumsBanana(S::user());
                     $post = $banana->post($globals->asso('forum'), null,
                                           $art['titre'], MiniWiki::wikiToText($fulltext, false, 0, 80));
-                }*/
+                }
                 XDB::query('INSERT INTO  group_announces (uid, asso_id, create_date, titre, texte, contacts,
                                                           expiration, promo_min, promo_max, flags, post_id)
                                  VALUES  ({?}, {?}, NOW(), {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
