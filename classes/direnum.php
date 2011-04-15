@@ -40,7 +40,8 @@ class DirEnum
     const EDUDEGREES     = 'educationdegrees';
     const EDUFIELDS      = 'educationfields';
 
-    const CORPS          = 'corps';
+    const CURRENTCORPS   = 'currentcorps';
+    const ORIGINCORPS    = 'origincorps';
     const CORPSRANKS     = 'corpsranks';
 
     const NATIONALITIES  = 'nationalities';
@@ -533,8 +534,22 @@ class DE_EducationFields extends DirEnumeration
 }
 // }}}
 
-// {{{ class DE_Corps
-class DE_Corps extends DirEnumeration
+// {{{ class DE_CurrentCorps
+class DE_CurrentCorps extends DirEnumeration
+{
+    protected $idfield   = 'profile_corps_enum.id';
+    protected $valfield  = 'profile_corps_enum.name';
+    protected $valfield2 = 'profile_corps_enum.abbrev';
+    protected $from      = 'profile_corps_enum';
+    protected $where     = 'WHERE profile_corps_enum.still_exists = 1';
+
+    protected $ac_unique = 'profile_corps.pid';
+    protected $ac_join   = 'INNER JOIN profile_corps ON (profile_corps.current_corpsid = profile_corps_enum.id)';
+}
+// }}}
+//
+// {{{ class DE_OriginCorps
+class DE_OriginCorps extends DirEnumeration
 {
     protected $idfield   = 'profile_corps_enum.id';
     protected $valfield  = 'profile_corps_enum.name';
@@ -542,7 +557,7 @@ class DE_Corps extends DirEnumeration
     protected $from      = 'profile_corps_enum';
 
     protected $ac_unique = 'profile_corps.pid';
-    protected $ac_join   = 'INNER JOIN profile_corps ON (profile_corps.current_corpsid = profile_corps_enum.id)';
+    protected $ac_join   = 'INNER JOIN profile_corps ON (profile_corps.original_corpsid = profile_corps_enum.id)';
 }
 // }}}
 

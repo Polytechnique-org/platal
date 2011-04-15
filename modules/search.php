@@ -156,6 +156,18 @@ class SearchModule extends PLModule
         $networks[0] = '-';
         ksort($networks);
         $page->assign('networking_types', $networks);
+        $origin_corps_list = DirEnum::getOptions(DirEnum::CURRENTCORPS);
+        $current_corps_list = DirEnum::getOptions(DirEnum::ORIGINCORPS);
+        $corps_rank_list = DirEnum::getOptions(DirEnum::CORPSRANKS);
+        $origin_corps_list[0] = '-';
+        $current_corps_list[0] = '-';
+        $corps_rank_list[0] = '-';
+        ksort($origin_corps_list);
+        ksort($current_corps_list);
+        ksort($corps_rank_list);
+        $page->assign('origin_corps_list', $origin_corps_list);
+        $page->assign('current_corps_list', $current_corps_list);
+        $page->assign('corps_rank_list', $corps_rank_list);
 
         if (!Env::has('rechercher') && $model != 'geoloc') {
             $this->form_prepare();

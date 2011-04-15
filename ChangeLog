@@ -11,6 +11,7 @@ Bug/Wish:
         - #1445: Add job entry year                                        -JAC
 
     * Search:
+        - #911: Adds search on corps                                       -JAC
         - #990: Adds search on broken redirections                         -JAC
 
     * XnetList:

@@ -357,6 +357,10 @@ class UFB_AdvancedSearch extends UserFilterBuilder
             new UFBF_JobCv('cv', 'CV'),
             new UFBF_JobTerms('jobterm', 'Mots-clefs'),
 
+            new UFBF_OriginCorps('origin_corps', 'Corps d\'origine'),
+            new UFBF_CurrentCorps('current_corps', 'Corps actuel'),
+            new UFBF_CorpsRank('corps_rank', 'Grade'),
+
             new UFBF_Nationality('nationaliteTxt', 'nationalite', 'Nationalité'),
             new UFBF_Binet('binetTxt', 'binet', 'Binet'),
             new UFBF_Group('groupexTxt', 'groupex', 'Groupe X'),
@@ -1327,6 +1331,42 @@ class UFBF_EducationField extends UFBF_Mixed
     protected function buildUFC(UserFilterBuilder $ufb)
     {
         return new UFC_EducationField($this->val);
+    }
+}
+// }}}
+
+// {{{ class UFBF_OriginCorps
+class UFBF_OriginCorps extends UFBF_Index
+{
+    protected $direnum = DirEnum::ORIGINCORPS;
+
+    protected function buildUFC(UserFilterBuilder $ufb)
+    {
+        return new UFC_Corps(null, $this->val, UFC_Corps::ORIGIN);
+    }
+}
+// }}}
+
+// {{{ class UFBF_CurrentCorps
+class UFBF_CurrentCorps extends UFBF_Index
+{
+    protected $direnum = DirEnum::CURRENTCORPS;
+
+    protected function buildUFC(UserFilterBuilder $ufb)
+    {
+        return new UFC_Corps(null, $this->val, UFC_Corps::CURRENT);
+    }
+}
+// }}}
+
+// {{{ class UFBF_CorpsRank
+class UFBF_CorpsRank extends UFBF_Index
+{
+    protected $direnum = DirEnum::CORPSRANKS;
+
+    protected function buildUFC(UserFilterBuilder $ufb)
+    {
+        return new UFC_Corps_Rank(null, $this->val);
     }
 }
 // }}}

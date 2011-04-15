@@ -1198,11 +1198,13 @@ class UFC_Corps extends UserFilterCondition
     const ORIGIN    = 2;
 
     private $corps;
+    private $id;
     private $type;
 
-    public function __construct($corps, $type = self::CURRENT)
+    public function __construct($corps, $id = null, $type = self::CURRENT)
     {
         $this->corps = $corps;
+        $this->id    = $id;
         $this->type  = $type;
     }
 
@@ -1214,8 +1216,14 @@ class UFC_Corps extends UserFilterCondition
          * pcec for profile_corps_enum - current
          */
         $sub = $uf->addCorpsFilter($this->type);
-        $cond = $sub . '.abbreviation = ' . $corps;
-        $cond .= ' AND ' . $uf->getVisibilityCondition($sub . '.corps_pub');
+        if (is_null($this->id)) {
+            $cond = $sub . '.abbreviation = ' . $this->corps;
+        } else {
+            $cond = $sub . '.id = ' . $this->id;
+        }
+        // XXX(x2006barrois): find a way to get rid of that hardcoded
+        // reference to 'pc'.
+        $cond .= ' AND ' . $uf->getVisibilityCondition('pc.corps_pub');
         return $cond;
     }
 }
@@ -1227,9 +1235,12 @@ class UFC_Corps extends UserFilterCondition
 class UFC_Corps_Rank extends UserFilterCondition
 {
     private $rank;
-    public function __construct($rank)
+    private $id;
+
+    public function __construct($rank, $id = null)
     {
         $this->rank = $rank;
+        $this->id   = $id;
     }
 
     public function buildCondition(PlFilter $uf)
@@ -1239,7 +1250,11 @@ class UFC_Corps_Rank extends UserFilterCondition
          * pcr for profile_corps_rank
          */
         $sub = $uf->addCorpsRankFilter();
-        $cond = $sub . '.abbreviation = ' . $rank;
+        if (is_null($this->id)) {
+            $cond = $sub . '.abbreviation = ' . $this->rank;
+        } else {
+            $cond = $sub . '.id = ' . $this->id;
+        }
         // XXX(x2006barrois): find a way to get rid of that hardcoded
         // reference to 'pc'.
         $cond .= ' AND ' . $uf->getVisibilityCondition('pc.corps_pub');

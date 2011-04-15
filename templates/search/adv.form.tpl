@@ -516,6 +516,36 @@ function cleanForm(f) {
       </td>
     </tr>
     <tr>
+      <td>Corps d'origine</td>
+      <td>
+        <select name="origin_corps">
+        {foreach from=$origin_corps_list key=id item=corps}
+          <option value="{$id}" {if $smarty.request.origin_corps eq $id}selected="selected"{/if}>{$corps}</option>
+        {/foreach}
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>Corps actuel</td>
+      <td>
+        <select name="current_corps">
+        {foreach from=$current_corps_list key=id item=corps}
+          <option value="{$id}" {if $smarty.request.current_corps eq $id}selected="selected"{/if}>{$corps}</option>
+        {/foreach}
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>Grade</td>
+      <td>
+        <select name="corps_rank">
+        {foreach from=$corps_rank_list key=id item=corps}
+          <option value="{$id}" {if $smarty.request.corps_rank eq $id}selected="selected"{/if}>{$corps}</option>
+        {/foreach}
+        </select>
+      </td>
+    </tr>
+    <tr>
       <td>Commentaire contient</td>
       <td><input type="text" name="free" size="32" value="{$smarty.request.free}" /></td>
     </tr>

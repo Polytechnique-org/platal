@@ -1046,10 +1046,10 @@ class UserFilter extends PlFilter
         $this->requireProfiles();
         $this->pc = true;
         if ($type == UFC_Corps::CURRENT) {
-            $pce['pcec'] = 'current_corpsid';
+            $this->pce['pcec'] = 'current_corpsid';
             return 'pcec';
         } else if ($type == UFC_Corps::ORIGIN) {
-            $pce['pceo'] = 'original_corpsid';
+            $this->pce['pceo'] = 'original_corpsid';
             return 'pceo';
         }
     }
