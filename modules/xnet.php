@@ -308,7 +308,7 @@ class XnetModule extends PLModule
         $mymail->addTo($user);
         $mymail->setSubject("Votre certificat d'authentification");
         $mymail->setTxtBody("Visitez la page suivante qui expire dans six heures :
-http://polytechnique.net/tmpPWD/$hash
+http://polytechnique.net/tmpPWD/ext/$hash
 
 Si en cliquant dessus vous n'y arrivez pas, copiez intégralement l'adresse dans la barre de votre navigateur. Si vous n'avez pas utilisé ce lien dans six heures, vous pouvez tout simplement recommencer cette procédure.
 
