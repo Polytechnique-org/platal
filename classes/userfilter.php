@@ -975,7 +975,7 @@ class UserFilter extends PlFilter
                 $joins['sa' . $sub] = PlSqlJoin::left('email_source_account', '$ME.uid = $UID AND FIND_IN_SET(\'bestalias\', $ME.flags)');
             } else if ($key == self::ALIAS_FORLIFE) {
                 $joins['sa' . $sub] = PlSqlJoin::left('email_source_account', '$ME.uid = $UID AND $ME.type = \'forlife\'');
-            } else if ($key == self::ALIAS_AUXILiIARY) {
+            } else if ($key == self::ALIAS_AUXILIARY) {
                 $joins['sa' . $sub] = PlSqlJoin::left('email_source_account', '$ME.uid = $UID AND $ME.type = \'alias_aux\'');
             } else {
                 if (!is_array($emails)) {
