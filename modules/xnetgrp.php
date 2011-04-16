@@ -727,9 +727,8 @@ class XnetGrpModule extends PLModule
                     $full_name = "$firstname $lastname";
                     $directory_name = strtoupper($lastname) . " " . $firstname;
                 }
-                XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, directory_name,
-                                           email, type)
-                                   VALUES  ({?}, {?}, {?}, {?}, {?}, \'xnet\')',
+                XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, directory_name, email, type, state)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, \'xnet\', \'disabled\')',
                              $hruid, $display_name, $full_name, $directory_name, $email);
                 $user = User::get($hruid);
             }
