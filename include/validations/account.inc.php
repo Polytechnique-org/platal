@@ -89,6 +89,10 @@ class AccountReq extends Validate
     public function commit()
     {
         $hash = rand_url_id(12);
+        XDB::execute('UPDATE  accounts
+                         SET  state = \'pending\'
+                       WHERE  uid = {?}',
+                     $this->uid);
         XDB::execute('INSERT INTO  register_pending_xnet (uid, hruid, email, date, hash)
                            VALUES  ({?}, {?}, {?}, NOW(), {?})',
                      $this->uid, $this->hruid, $this->email, $hash);
