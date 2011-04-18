@@ -600,6 +600,7 @@ class DE_Countries extends DirEnumeration
 
     protected $ac_join   = 'INNER JOIN profile_addresses ON (geoloc_countries.iso_3166_1_a2 = profile_addresses.countryId)';
     protected $ac_unique = 'profile_addresses.pid';
+    protected $ac_where  = 'profile_addresses.type = \'home\'';
 }
 // }}}
 
