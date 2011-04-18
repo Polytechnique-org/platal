@@ -719,7 +719,8 @@ class XnetGrpModule extends PLModule
             if (empty($user)) {
                 $parts = explode('.', $mbox);
                 if (count($parts) == 1) {
-                    $display_name = $full_name = $directory_name = ucfirst($mbox);
+                    $lastname = $display_name = $full_name = $directory_name = ucfirst($mbox);
+                    $firstname = '';
                 } else {
                     $firstname = ucfirst($parts[0]);
                     $lastname = ucwords(implode(' ', array_slice($parts, 1)));
@@ -727,9 +728,9 @@ class XnetGrpModule extends PLModule
                     $full_name = "$firstname $lastname";
                     $directory_name = strtoupper($lastname) . " " . $firstname;
                 }
-                XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, directory_name, email, type, state)
+                XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, directory_name, firstname, lastname, email, type, state)
                                    VALUES  ({?}, {?}, {?}, {?}, {?}, \'xnet\', \'disabled\')',
-                             $hruid, $display_name, $full_name, $directory_name, $email);
+                             $hruid, $display_name, $full_name, $directory_name, $firstname, $lastname, $email);
                 $user = User::get($hruid);
             }
 
@@ -1007,11 +1008,21 @@ class XnetGrpModule extends PLModule
             $email_changed = (!$user->profile() && strtolower($user->forlifeEmail()) != strtolower(Post::v('email')));
             $from_email = $user->forlifeEmail();
             if ($user->type == 'virtual' || ($user->type == 'xnet' && !$user->perms)) {
+                $lastname = Post::s('lastname');
+                if (Post::s('type') != 'virtual') {
+                    $firstname = Post::s('firstname');
+                    $full_name = $firstname . ' ' . $lastname;
+                    $directory_name = mb_strtoupper($lastname) . ' ' . $firstname;
+                } else {
+                    $firstname = '';
+                    $full_name = $lastname;
+                    $directory_name = mb_strtoupper($lastname);
+                }
                 XDB::query('UPDATE  accounts
                                SET  full_name = {?}, directory_name = {?}, display_name = {?},
-                                    sex = {?}, email = {?}, type = {?}
+                                    firstname = {?}, lastname = {?}, sex = {?}, email = {?}, type = {?}
                              WHERE  uid = {?}',
-                           Post::t('full_name'), Post::t('directory_name'), Post::t('display_name'),
+                           $full_name, $directory_name, Post::t('display_name'), $firstname, $lastname,
                            (Post::t('sex') == 'male') ? 'male' : 'female', Post::t('email'),
                            (Post::t('type') == 'xnet') ? 'xnet' : 'virtual', $user->id());
             } else if (!$user->perms) {

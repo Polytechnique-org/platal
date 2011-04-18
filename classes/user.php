@@ -159,7 +159,7 @@ class User extends PlUser
 
         $uids = array_map(array('XDB', 'escape'), $uids);
 
-        return XDB::iterator('SELECT  a.uid, a.hruid, a.registration_date, h.uid IS NOT NULL AS homonym,
+        return XDB::iterator('SELECT  a.uid, a.hruid, a.registration_date, h.uid IS NOT NULL AS homonym, a.firstname, a.lastname,
                                       IF(ef.email IS NULL, NULL, CONCAT(ef.email, \'@\', mf.name)) AS forlife,
                                       IF(ef.email IS NULL, NULL, CONCAT(ef.email, \'@\', df.name)) AS forlife_alternate,
                                       IF(eb.email IS NULL, NULL, CONCAT(eb.email, \'@\', mb.name)) AS bestalias,

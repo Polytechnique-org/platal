@@ -450,14 +450,26 @@ class AdminModule extends PLModule
             $to_update['weak_password'] = null;
         } else if (Post::has('update_account')) {
             if (!$user->hasProfile()) {
-                if (Post::s('full_name') != $user->fullName()) {
-                    $to_update['full_name'] = Post::s('full_name');
+                $name_update = false;
+                if (Post::s('lastname') != $user->lastname) {
+                    $to_update['lastname'] = Post::s('lastname');
+                    $name_update = true;
+                }
+                if (Post::s('type') != 'virtual' && Post::s('firstname') != $user->firstname) {
+                    $to_update['firstname'] = Post::s('firstname');
+                    $name_update = true;
+                }
+                if ($name_update) {
+                    if (Post::s('type') != 'virtual') {
+                        $to_update['full_name'] = Post::s('firstname') . ' ' . Post::s('lastname');
+                        $to_update['directory_name'] = mb_strtoupper(Post::s('lastname')) . ' ' . Post::s('firstname');
+                    } else {
+                        $to_update['full_name'] = Post::s('lastname');
+                        $to_update['directory_name'] = mb_strtoupper(Post::s('lastname'));
+                    }
                 }
                 if (Post::s('display_name') != $user->displayName()) {
                     $to_update['display_name'] = Post::s('display_name');
-                }
-                if (Post::s('directory_name') != $user->directoryName()) {
-                    $to_update['directory_name'] = Post::s('directory_name');
                 }
             }
             if (Post::s('sex') != ($user->isFemale() ? 'female' : 'male')) {

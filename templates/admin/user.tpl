@@ -137,21 +137,31 @@ $(function() {
       </th>
     </tr>
     <tr>
-      <td class="titre">Nom complet<br />
-        <span class="smaller">Prénom NOM</span>
-      </td>
-      <td>{if $hasProfile}{$user->fullName()}{else}<input type="text" name="full_name" maxlength="255" value="{$user->fullName()}" />{/if}</td>
+      <td class="titre">Nom complet</td>
+      <td>{$user->fullName()}</td>
     </tr>
     <tr>
-      <td class="titre">Nom annuaire<br />
-        <span class="smaller">NOM Prénom</span>
-      </td>
-      <td>{if $hasProfile}{$user->directoryName()}{else}<input type="text" name="directory_name" maxlength="255" value="{$user->directoryName()}" />{/if}</td>
+      <td class="titre">Nom annuaire</td>
+      <td>{$user->directoryName()}</td>
     </tr>
+    {if !$hasProfile}
+    <tr>
+      <td class="titre">Nom</td>
+      <td><input type="text" name="lastname" maxlength="255" value="{$user->lastname}" /></td>
+    </tr>
+    {if $user->type neq 'virtual'}
+    <tr>
+      <td class="titre">Prénom</td>
+      <td><input type="text" name="firstname" maxlength="255" value="{$user->firstname}" /></td>
+    </tr>
+    {/if}
+    {/if}
+    {if $user->type neq 'virtual'}
     <tr>
       <td class="titre">Nom affiché</td>
       <td>{if $hasProfile}{$user->displayName()}{else}<input type="text" name="display_name" maxlength="255" value="{$user->displayName()}" />{/if}</td>
     </tr>
+    {/if}
     <tr>
       <td class="titre">Sexe</td>
       <td>

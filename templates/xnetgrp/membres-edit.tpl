@@ -102,30 +102,34 @@
         </select>
       </td>
     </tr>
-      <tr id="prenom" class="impair" {if $user->type eq "virtual"}style="display: none"{/if}>
-      <td class="titre">
-        Nom affiché&nbsp;:
+    <tr class="impair">
+      <td class="titre">Nom complet&nbsp;:</td>
+      <td>{$user->fullName()}</td>
+    </tr>
+    <tr class="impair">
+      <td class="titre">Nom annuaire&nbsp;:</td>
+      <td>{$user->directoryName()}</td>
+    </tr>
+    <tr class="impair">
+      <td class="titre">Nom&nbsp;:</td>
+      <td>
+        <input type="text" value="{$user->lastname}" name="lastname" size="40" />
       </td>
+    </tr>
+    {if $user->type neq "virtual"}
+    <tr class="impair">
+      <td class="titre">Prénom&nbsp;:</td>
+      <td>
+        <input type="text" value="{$user->firstname}" name="firstname" size="40" />
+      </td>
+    </tr>
+    <tr class="impair">
+      <td class="titre">Nom affiché&nbsp;:</td>
       <td>
         <input type="text" value="{$user->displayName()}" name="display_name" size="40" />
       </td>
     </tr>
-    <tr class="impair">
-      <td class="titre">
-        Nom complet&nbsp;:
-      </td>
-      <td>
-        <input type="text" value="{$user->fullName()}" name="full_name" size="40" />
-      </td>
-    </tr>
-    <tr class="impair">
-      <td class="titre">
-        Nom annuaire&nbsp;:
-      </td>
-      <td>
-        <input type="text" value="{$user->directoryName()}" name="directory_name" size="40" />
-      </td>
-    </tr>
+    {/if}
     <tr id="sexe" class="impair" {if $user->type eq "virtual"}style="display: none"{/if}>
       <td class="titre">
         Sexe&nbsp;:

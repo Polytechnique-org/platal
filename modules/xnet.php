@@ -395,11 +395,14 @@ Email envoyé à " . Post::t('login'));
             }
 
             // Update user info
+            $full_name = Post::t('firstname') . ' ' . Post::t('lastname');
+            $directory_name = mb_strtoupper(Post::t('lastname')) . ' ' . Post::t('firstname');
             XDB::query('UPDATE  accounts
                            SET  full_name = {?}, directory_name = {?}, display_name = {?},
-                                sex = {?}, email = {?}
+                                firstname = {?}, lastname = {?}, sex = {?}, email = {?}
                          WHERE  uid = {?}',
-                       Post::t('full_name'), Post::t('directory_name'), Post::t('display_name'),
+                       $full_name, $directory_name, Post::t('display_name'),
+                       Post::t('firstname'), Post::t('lastname'),
                        (Post::t('sex') == 'male') ? 'male' : 'female', Post::t('email'), $user->id());
             if (XDB::affectedRows()) {
                 require_once 'emails.inc.php';
