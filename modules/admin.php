@@ -893,9 +893,11 @@ class AdminModule extends PLModule
                             XDB::execute('INSERT INTO  profile_education (id, pid, eduid, degreeid, entry_year, grad_year, flags)
                                                VALUES  (100, {?}, {?}, {?}, {?}, {?}, \'primary\')',
                                          $pid, $eduSchools[Profile::EDU_X], $degreeid, $entry_year, $grad_year);
-                            XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, full_name, directory_name, display_name, sex)
-                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                                         $infos['hrid'], $type, 0, 'pending', $fullName, $directoryName, $infos[1], $sex);
+                            XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, full_name, directory_name,
+                                                                 display_name, lastname, firstname, sex)
+                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                                         $infos['hrid'], $type, 0, 'pending', $fullName, $directoryName,
+                                         $infos[1], $infos[0], $infos[1], $sex);
                             $uid = XDB::insertId();
                             XDB::execute('INSERT INTO  account_profiles (uid, pid, perms)
                                                VALUES  ({?}, {?}, {?})',
@@ -914,14 +916,11 @@ class AdminModule extends PLModule
                         if (!is_null($sex)) {
                             $fullName = $infos[1] . ' ' . $infos[0];
                             $directoryName = $infos[0] . ' ' . $infos[1];
-                            XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state,
-                                                                 email, full_name, directory_name,
-                                                                 display_name, sex)
-                                               VALUES  ({?}, {?}, {?}, {?},
-                                                        {?}, {?}, {?}, {?}, {?})',
-                                         $infos['hrid'], $type, 0, 'pending',
-                                         $infos[2], $fullName, $directoryName, 
-                                         $infos[1], $sex);
+                            XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, email, full_name, directory_name,
+                                                                 display_name, lastname, firstname, sex)
+                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                                         $infos['hrid'], $type, 0, 'pending', $infos[2], $fullName, $directoryName,
+                                         $infos[1], $infos[0], $infos[1], $sex);
                             $newAccounts[$infos['hrid']] = $infos[1] . ' ' . $infos[0];
                         }
                     }
@@ -1472,7 +1471,7 @@ class AdminModule extends PLModule
         if (Post::has('create_account')) {
             S::assert_xsrf_token();
             $firstname = Post::t('firstname');
-            $lastname = strtoupper(Post::t('lastname'));
+            $lastname = mb_strtoupper(Post::t('lastname'));
             $sex = Post::s('sex');
             $email = Post::t('email');
             $type = Post::s('type');
@@ -1486,10 +1485,11 @@ class AdminModule extends PLModule
                 $directory_name = $lastname . ' ' . $firstname;
                 XDB::execute("INSERT INTO  accounts (hruid, type, state, password,
                                                      registration_date, email, full_name,
-                                                     display_name, sex, directory_name)
-                                   VALUES  ({?}, {?}, 'active', {?}, NOW(), {?}, {?}, {?}, {?}, {?})",
+                                                     display_name, sex, directory_name,
+                                                     lastname, firstname)
+                                   VALUES  ({?}, {?}, 'active', {?}, NOW(), {?}, {?}, {?}, {?}, {?}, {?}, {?})",
                              $login, $type, Post::s('pwhash'), $email, $full_name, $full_name, $sex,
-                             $directory_name);
+                             $directory_name, $lastname, $firstname);
             }
         }
 
