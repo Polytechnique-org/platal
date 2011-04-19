@@ -846,7 +846,7 @@ class AdminModule extends PLModule
                     $grad_year = $promotion;
                     $entry_year = $promotion - 3;
                     $promo = 'D (en cours)';
-                    $hrpromo = $promo;
+                    $hrpromo = 'D' . $promotion;
                     $type = 'phd';
                     break;
                   default:
