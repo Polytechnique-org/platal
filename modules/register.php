@@ -51,12 +51,14 @@ class RegisterModule extends PLModule
         if ($hash) {
             $nameTypes = DirEnum::getOptions(DirEnum::NAMETYPES);
             $nameTypes = array_flip($nameTypes);
-            $res = XDB::query("SELECT  a.uid, a.hruid, pnl.name AS lastname, pnf.name AS firstname, p.xorg_id AS xorgid,
+            $res = XDB::query("SELECT  a.uid, a.hruid, pnl.name AS lastname, pnf.name AS firstname, p.xorg_id AS xorgid, pd.promo, pe.promo_year AS yearpromo
                                        p.birthdate_ref AS birthdateRef, FIND_IN_SET('watch', a.flags) AS watch, m.hash, a.type
                                  FROM  register_marketing AS m
                            INNER JOIN  accounts           AS a   ON (m.uid = a.uid)
                            INNER JOIN  account_profiles   AS ap  ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
                            INNER JOIN  profiles           AS p   ON (p.pid = ap.pid)
+                           INNER JOIN  profile_display    AS pd  ON (p.pid = pd.pid)
+                           INNER JOIN  profile_education  AS pe  ON (pe.pid = p.pid AND FIND_IN_SET('primary', pe.flags))
                            INNER JOIN  profile_name       AS pnl ON (p.pid = pnl.pid AND pnl.typeid = {?})
                            INNER JOIN  profile_name       AS pnf ON (p.pid = pnf.pid AND pnf.typeid = {?})
                                 WHERE  m.hash = {?} AND a.state = 'pending'",
@@ -65,7 +67,6 @@ class RegisterModule extends PLModule
             if ($res->numRows() == 1) {
                 $subState->merge($res->fetchOneRow());
                 $subState->set('main_mail_domain', User::$sub_mail_domains[$subState->v('type')]);
-                $subState->set('yearpromo', substr($subState->s('hruid'), -4));
 
                 XDB::execute('INSERT INTO  register_mstats (uid, sender, success)
                                    SELECT  m.uid, m.sender, 0
@@ -95,13 +96,12 @@ class RegisterModule extends PLModule
                     $edu_type = Post::t('edu_type');
                     $yearpromo = Post::i('yearpromo');
                     $promo = $edu_type . $yearpromo;
-                    $year = ($edu_type == 'X') ? 'entry_year' : 'grad_year';
                     $res = XDB::query("SELECT  COUNT(*)
                                          FROM  accounts         AS a
                                    INNER JOIN  account_profiles AS ap ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
                                    INNER JOIN  profiles         AS p  ON (p.pid = ap.pid)
                                    INNER JOIN  profile_education AS pe ON (pe.pid = p.pid AND FIND_IN_SET('primary', pe.flags))
-                                        WHERE  a.state = 'pending' AND p.deathdate IS NULL AND pe.$year = {?}",
+                                        WHERE  a.state = 'pending' AND p.deathdate IS NULL AND pe.promo_year = {?}",
                                       $yearpromo);
 
                     if (!$res->fetchOneCell()) {
@@ -169,8 +169,7 @@ class RegisterModule extends PLModule
                             $birth[2] += 1900;
                         }
                         $year  = $birth[2];
-                        $promo = $subState->i('yearpromo');
-                        if ($year > $promo - 15 || $year < $promo - 30) {
+                        if ($year > $subState->i('yearpromo') - 15 || $subState->i('yearpromo') < $promo - 30) {
                             $error[] = "La 'Date de naissance' n'est pas correcte.";
                             $alert = "Date de naissance incorrecte à l'inscription - ";
                             $subState->set('wrong_birthdate', $birth);
@@ -282,7 +281,7 @@ class RegisterModule extends PLModule
         // authentication token.
         $res = XDB::query("SELECT  r.uid, p.pid, r.forlife, r.bestalias, r.mailorg2,
                                    r.password, r.email, r.services, r.naissance,
-                                   pnl.name AS lastname, pnf.name AS firstname,
+                                   pnl.name AS lastname, pnf.name AS firstname, pe.promo_year AS yearpromo,
                                    pd.promo, p.sex, p.birthdate_ref, a.type AS eduType
                              FROM  register_pending AS r
                        INNER JOIN  accounts         AS a   ON (r.uid = a.uid)
@@ -291,6 +290,7 @@ class RegisterModule extends PLModule
                        INNER JOIN  profile_name     AS pnl ON (p.pid = pnl.pid AND pnl.typeid = {?})
                        INNER JOIN  profile_name     AS pnf ON (p.pid = pnf.pid AND pnf.typeid = {?})
                        INNER JOIN  profile_display  AS pd  ON (p.pid = pd.pid)
+                       INNER JOIN  profile_education AS pe ON (pe.pid = p.pid AND FIND_IN_SET('primary', pe.flags))
                             WHERE  hash = {?} AND hash != 'INSCRIT' AND a.state = 'pending'",
                           $nameTypes['name_ini'], $nameTypes['firstname_ini'], $hash);
         if (!$hash || $res->numRows() == 0) {
@@ -311,7 +311,7 @@ class RegisterModule extends PLModule
         list($uid, $pid, $forlife, $bestalias, $emailXorg2, $password, $email, $services,
              $birthdate, $lastname, $firstname, $promo, $sex, $birthdate_ref, $eduType) = $res->fetchOneRow();
         $isX = ($eduType == 'x');
-        $yearpromo = substr($forlife, -4);
+        // We need the expected promotion here. Thus we remove pending display.
         $promo = str_replace(' (en cours)', $yearpromo, $promo);
         $mail_domain = User::$sub_mail_domains[$eduType] . $globals->mail->domain;
 

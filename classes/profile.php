@@ -188,7 +188,7 @@ class Profile implements PlExportable
 
     public function yearpromo()
     {
-        return intval(substr($this->promo, 1, 4));
+        return $this->promo_year;
     }
 
     /** Check if user is an orange (associated with several promos)
@@ -880,7 +880,7 @@ class Profile implements PlExportable
                                      IF ({?}, p.cv, NULL) AS cv, p.medals_pub, p.alias_pub, p.email_directory,
                                      p.last_change, p.nationality1, p.nationality2, p.nationality3,
                                      IF (p.freetext_pub IN {?}, p.freetext, NULL) AS freetext,
-                                     pe.entry_year, pe.grad_year,
+                                     pe.entry_year, pe.grad_year, pe.promo_year,
                                      IF ({?}, pse.text, NULL) AS section,
                                      pn_f.name AS firstname, pn_l.name AS lastname,
                                      IF( {?}, pn_n.name, NULL) AS nickname,

@@ -490,10 +490,7 @@ class ProfileSettingPromo implements ProfileSetting
     {
         $entryYear = $page->profile->entry_year;
         $gradYear  = $page->profile->grad_year;
-        $yearpromo = $page->profile->grad_year;
-        if ($page->profile->mainEducation() == 'X') {
-            $yearpromo -= $page->profile->mainEducationDuration();
-        }
+        $yearpromo = $page->profile->yearpromo();
         $success   = true;
         if (is_null($value) || $value == $yearpromo) {
             if ($gradYear != $entryYear + $page->profile->mainEducationDuration()) {
@@ -675,14 +672,18 @@ class ProfilePageGeneral extends ProfilePage
         }
         if ($this->changed['promo_display']) {
             if ($this->values['promo_display']{0} == $this->profile->mainEducation()) {
-                if (($this->profile->mainEducation() == 'X'
-                     && intval(substr($this->values['promo_display'], 1, 4)) >= $this->profile->entry_year)
+                $yearpromo = intval(substr($this->values['promo_display'], 1, 4));
+                if (($this->profile->mainEducation() == 'X' && $yearpromo >= $this->profile->entry_year)
                     || ($this->profile->mainEducation() != 'X'
-                        && intval(substr($this->values['promo_display'], 1, 4)) >= $this->profile->entry_year + $this->profile->mainEducationDuration())) {
+                        && $yearpromo >= $this->profile->entry_year + $this->profile->mainEducationDuration())) {
                     XDB::execute('UPDATE  profile_display
                                      SET  promo = {?}
                                    WHERE  pid = {?}',
                                  $this->values['promo_display'], $this->pid());
+                    XDB::execute('UPDATE  profile_education
+                                     SET  promo_year = {?}
+                                   WHERE  pid = {?} AND FIND_IN_SET(\'primary\', flags)',
+                                 $yearpromo, $this->pid());
                 }
             }
         }
