@@ -64,16 +64,17 @@ function checkOldId($subState)
             new UFC_Promo('=', UserFilter::DISPLAY, $subState->s('promo')),
             new PFC_Not(new UFC_Registered(true))
     ));
-    $it = $uf->iterProfiles();
-    while ($profile = $it->next()) {
-        if ($profile->compareNames($subState->s('firstname'), $subState->s('lastname'))) {
-            $subState->set('lastname', $profile->lastName());
-            $subState->set('firstname', $profile->firstName());
-            $subState->set('uid', $profile->owner()->id());
-            $subState->set('watch', $profile->owner()->watch);
-            $subState->set('birthdateRef', $profile->__get('birthdate_ref'));
-            $subState->set('xorgid', $profile->__get('xorg_id'));
-            return true;
+    if ($it = $uf->iterProfiles()) {
+        while ($profile = $it->next()) {
+            if ($profile->compareNames($subState->s('firstname'), $subState->s('lastname'))) {
+                $subState->set('lastname', $profile->lastName());
+                $subState->set('firstname', $profile->firstName());
+                $subState->set('uid', $profile->owner()->id());
+                $subState->set('watch', $profile->owner()->watch);
+                $subState->set('birthdateRef', $profile->__get('birthdate_ref'));
+                $subState->set('xorgid', $profile->__get('xorg_id'));
+                return true;
+            }
         }
     }
 
@@ -82,14 +83,15 @@ function checkOldId($subState)
             new UFC_Promo('=', UserFilter::DISPLAY, $subState->s('promo')),
             new UFC_Registered(true)
     ));
-    $it = $uf->iterProfiles();
-    while ($profile = $it->next()) {
-        if ($profile->compareNames($subState->s('firstname'), $subState->s('lastname'))) {
-            $subState->set('uid', $profile->owner()->id());
-            $subState->set('watch', $profile->owner()->watch);
-            $subState->set('birthdateRef', $profile->__get('birthdate_ref'));
-            $subState->set('xorgid', $profile->__get('xorg_id'));
-            return 'Tu es vraisemblablement déjà inscrit !';
+    if ($it = $uf->iterProfiles()) {
+        while ($profile = $it->next()) {
+            if ($profile->compareNames($subState->s('firstname'), $subState->s('lastname'))) {
+                $subState->set('uid', $profile->owner()->id());
+                $subState->set('watch', $profile->owner()->watch);
+                $subState->set('birthdateRef', $profile->__get('birthdate_ref'));
+                $subState->set('xorgid', $profile->__get('xorg_id'));
+                return 'Tu es vraisemblablement déjà inscrit !';
+            }
         }
     }
     return 'Erreur : vérifie que tu as bien orthographié ton nom !';
