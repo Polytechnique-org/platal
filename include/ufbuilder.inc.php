@@ -340,8 +340,8 @@ class UFB_AdvancedSearch extends UserFilterBuilder
     {
         $fields = array(
             new UFBF_Name('name', 'Nom'),
-            new UFBF_Promo('promo1', 'Promotion', 'egal1'),
-            new UFBF_Promo('promo2', 'Promotion', 'egal2'),
+            new UFBF_Promo('promo1', 'Promotion', 'egal1', 'edu_type'),
+            new UFBF_Promo('promo2', 'Promotion', 'egal2', 'edu_type'),
             new UFBF_Sex('woman', 'Sexe'),
             new UFBF_Registered('subscriber', 'Inscrit'),
             new UFBF_HasEmailRedirect('has_email_redirect', 'A une redirection active'),
@@ -856,24 +856,33 @@ class UFBF_Name extends UFBF_Text
 class UFBF_Promo extends UFB_Field
 {
     private static $validcomps = array('<', '<=', '=', '>=', '>');
+    private static $validtypes = array(UserFilter::GRADE_ING, UserFilter::GRADE_PHD, UserFilter::GRADE_MST);
     private $comp;
+    private $type;
     private $envfieldcomp;
+    private $envfieldtype;
 
-    public function __construct($envfield, $formtext = '', $envfieldcomp)
+    public function __construct($envfield, $formtext = '', $envfieldcomp, $envfieldtype)
     {
         parent::__construct($envfield, $formtext);
         $this->envfieldcomp = $envfieldcomp;
+        $this->envfieldtype = $envfieldtype;
     }
 
     protected function check(UserFilterBuilder $ufb)
     {
-        if ($ufb->blank($this->envfield) || $ufb->blank($this->envfieldcomp)) {
+        if ($ufb->blank($this->envfield) || $ufb->blank($this->envfieldcomp) || $ufb->blank($this->envfieldtype)) {
             $this->empty = true;
             return true;
         }
 
         $this->val  = $ufb->i($this->envfield);
         $this->comp = $ufb->v($this->envfieldcomp);
+        $this->type = $ufb->v($this->envfieldtype);
+
+        if (!in_array($this->type, self::$validtypes)) {
+            return $this->raise("Le critère {$this->type} n'est pas valide pour le champ %s");
+        }
 
         if (!in_array($this->comp, self::$validcomps)) {
             return $this->raise("Le critère {$this->comp} n'est pas valide pour le champ %s");
@@ -889,12 +898,12 @@ class UFBF_Promo extends UFB_Field
     }
 
     protected function buildUFC(UserFilterBuilder $ufb) {
-        return new UFC_Promo($this->comp, UserFilter::GRADE_ING, $this->val);
+        return new UFC_Promo($this->comp, $this->type, $this->val);
     }
 
     public function getEnvFieldNames()
     {
-        return array($this->envfield, $this->envfieldcomp);
+        return array($this->envfield, $this->envfieldcomp, $this->envfieldtype);
     }
 }
 // }}}
