@@ -387,18 +387,20 @@ class RegisterModule extends PLModule
                     Email::activate_storage($user, 'imap');
                     break;
                 case 'ml_promo':
-                    $r = XDB::query('SELECT id FROM groups WHERE diminutif = {?}', $yearpromo);
-                    if ($r->numRows()) {
-                        $asso_id = $r->fetchOneCell();
-                        XDB::execute('INSERT IGNORE INTO  group_members (uid, asso_id)
-                                                  VALUES  ({?}, {?})',
-                                     $uid, $asso_id);
-                        try {
-                            $mmlist = new MMList($user);
-                            $mmlist->subscribe("promo" . $yearpromo);
-                        } catch (Exception $e) {
-                            PlErrorReport::report($e);
-                            $page->trigError("L'inscription à la liste promo" . $yearpromo . " a échouée.");
+                    if ($isX) {
+                        $r = XDB::query('SELECT id FROM groups WHERE diminutif = {?}', $yearpromo);
+                        if ($r->numRows()) {
+                            $asso_id = $r->fetchOneCell();
+                            XDB::execute('INSERT IGNORE INTO  group_members (uid, asso_id)
+                                                      VALUES  ({?}, {?})',
+                                         $uid, $asso_id);
+                            try {
+                                $mmlist = new MMList($user);
+                                $mmlist->subscribe("promo" . $yearpromo);
+                            } catch (Exception $e) {
+                                PlErrorReport::report($e);
+                                $page->trigError("L'inscription à la liste promo" . $yearpromo . " a échouée.");
+                            }
                         }
                     }
                     break;

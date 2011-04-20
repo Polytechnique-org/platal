@@ -115,11 +115,13 @@
           <dd>
             de recevoir les informations importantes de l'AX.
           </dd>
+          {if $smarty.session.subState.edu_type eq 'X'}
           <dt><label><input type="checkbox" checked="checked" name="ml_promo" /> ta promotion</label></dt>
           <dd>
             de recevoir les informations plus spécifiques de ta promotion pour pouvoir participer plus facilement aux événements
             qu'elle organise. Nous t'inscrivons donc dans le groupe de la promotion {$smarty.session.subState.promo}.
           </dd>
+          {/if}
           <dt><label><input type="checkbox" checked="checked" name="imap" />sauvegardes d'emails</label></dt>
           <dd>
             d'avoir un accès de secours aux 30 derniers jours d'emails reçus sur ton adresse Polytechnique.org.
