@@ -113,6 +113,7 @@ class Profile implements PlExportable
         'networking'      => 'Messageries…',
         'tels'            => 'Téléphones',
         'edus'            => 'Formations',
+        'main_edus'       => 'Formations à l\'X',
         'promo'           => 'Promotion de sortie',
         'birthdate'       => 'Date de naissance',
         'yourself'        => 'Nom affiché',

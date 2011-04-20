@@ -346,6 +346,75 @@ class ProfileSettingEdu implements ProfileSetting
     }
 }
 
+class ProfileSettingMainEdu implements ProfileSetting
+{
+    private $cycles;
+
+    public function __construct()
+    {
+        $eduDegrees = DirEnum::getOptions(DirEnum::EDUDEGREES);
+        $eduDegrees = array_flip($eduDegrees);
+        $this->cycles = array(
+            $eduDegrees[Profile::DEGREE_X] => 'Cycle polytechnicien',
+            $eduDegrees[Profile::DEGREE_M] => 'Cycle master',
+            $eduDegrees[Profile::DEGREE_D] => 'Cycle doctoral'
+        );
+    }
+
+    public function value(ProfilePage $page, $field, $value, &$success)
+    {
+        $success = true;
+        if (is_null($value)) {
+            $value = array();
+            $value = XDB::fetchAllAssoc("SELECT  degreeid, fieldid, promo_year, program
+                                           FROM  profile_education
+                                          WHERE  pid = {?} AND FIND_IN_SET('primary', flags)
+                                       ORDER BY  degreeid",
+                                        $page->pid());
+
+            foreach ($value as &$item) {
+                $item['cycle'] = $this->cycles[$item['degreeid']];
+            }
+        } elseif (!is_array($value)) {
+            $value = array();
+        } else {
+            foreach ($value as $key => $item) {
+                if (!isset($item['degreeid'])) {
+                    unset($value[$key]);
+                }
+            }
+        }
+
+        return $value;
+    }
+
+    public function save(ProfilePage $page, $field, $value)
+    {
+        foreach ($value as $item) {
+            $fieldId = ($item['fieldid'] == 0) ? null : $item['fieldid'];
+            XDB::execute("UPDATE  profile_education
+                             SET  fieldid = {?}, program = {?}
+                           WHERE  pid = {?} AND FIND_IN_SET('primary', flags) AND degreeid = {?}",
+                         $fieldId, $item['program'], $page->pid(), $item['degreeid']);
+        }
+    }
+
+    public function getText($value) {
+        $fieldsList = DirEnum::getOptions(DirEnum::EDUFIELDS);
+        $educations = array();
+        foreach ($value as $item) {
+            $details = array($this->cycles[$item['degreeid']]);
+            if ($education['program']) {
+                $details[] = '« ' . $education['program'] . ' »';
+            }
+            if ($education['fieldid']) {
+                $details[] = $fieldsList[$education['fieldid']];
+            }
+        }
+        return implode(', ', $educations);
+    }
+}
+
 class ProfileSettingEmailDirectory implements ProfileSetting
 {
     public function __construct(){}
@@ -551,6 +620,7 @@ class ProfilePageGeneral extends ProfilePage
         $this->settings['networking'] = new ProfileSettingNetworking();
         $this->settings['tels']   = new ProfileSettingPhones();
         $this->settings['edus']   = new ProfileSettingEdu();
+        $this->settings['main_edus'] = new ProfileSettingMainEdu();
         $this->settings['promo']  = new ProfileSettingPromo();
         $this->watched= array('tels' => true,
                               'networking' => true, 'edus' => true,

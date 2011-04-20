@@ -181,6 +181,48 @@
   </tr>
 </table>
 
+<table class="bicol" style="margin-bottom: 1em" summary="Profil&nbsp;: Formations à l'X">
+  <tr>
+    <th colspan="2">
+      <div class="flags" style="float: left">
+        <input type="checkbox" disabled="disabled" checked="checked" />
+        {icon name="flag_green" title="site public"}
+      </div>
+      Formations à l'École polytechnique
+    </th>
+  </tr>
+  {foreach from=$main_edus key=eduid item=main_edu}
+  {cycle values="impair, pair" assign=class}
+  <tr class="{$class}">
+    <td><span class="titre">Cycle&nbsp;:</span></td>
+    <td>{$main_edu.cycle}</td>
+  </tr>
+  <tr class="{$class}">
+    <td><span class="titre">Promotion&nbsp;:</span></td>
+    <td>{$main_edu.promo_year}</td>
+  </tr>
+  <tr class="{$class}">
+    <td><span class="titre">Domaine de formation&nbsp;:</span></td>
+    <td>
+      <select name="main_edus[{$main_edu.degreeid}][fieldid]">
+        <option value="">&nbsp;</option>
+        {foreach from=$edu_fields item=field}
+        <option value="{$field.id}" {if $field.id eq $main_edu.fieldid}selected="selected"{/if}>{$field.field}</option>
+        {/foreach}
+      </select>
+    </td>
+  </tr>
+  <tr class="{$class}">
+    <td><span class="titre">Description de la formation&nbsp;:</span></td>
+    <td>
+      <input type="text" name="main_edus[{$main_edu.degreeid}][program]" value="{$main_edu.program}" size="30" maxlength="255" />
+      <input type="hidden" name="main_edus[{$main_edu.degreeid}][degreeid]" value="{$main_edu.degreeid}" />
+      <input type="hidden" name="main_edus[{$main_edu.degreeid}][cycle]" value="{$main_edu.cycle}" />
+    </td>
+  </tr>
+  {/foreach}
+</table>
+
 <table class="bicol" style="margin-bottom: 1em" summary="Profil&nbsp;: Formations">
   <tr>
     <th colspan="2">
