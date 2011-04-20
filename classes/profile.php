@@ -182,8 +182,20 @@ class Profile implements PlExportable
         return false;
     }
 
-    public function promo()
+    public function promo($details = false)
     {
+        if ($details && ($this->program || $this->fieldid)) {
+            $text = array();
+            if ($this->program) {
+                $text[] = $this->program;
+            }
+            if ($this->fieldid) {
+                $fieldsList = DirEnum::getOptions(DirEnum::EDUFIELDS);
+                $text[] = $fieldsList[$this->fieldid];
+            }
+            return $this->promo . ' (' . implode(', ', $text) . ')';
+        }
+
         return $this->promo;
     }
 
@@ -881,7 +893,7 @@ class Profile implements PlExportable
                                      IF ({?}, p.cv, NULL) AS cv, p.medals_pub, p.alias_pub, p.email_directory,
                                      p.last_change, p.nationality1, p.nationality2, p.nationality3,
                                      IF (p.freetext_pub IN {?}, p.freetext, NULL) AS freetext,
-                                     pe.entry_year, pe.grad_year, pe.promo_year,
+                                     pe.entry_year, pe.grad_year, pe.promo_year, pe.program, pe.fieldid,
                                      IF ({?}, pse.text, NULL) AS section,
                                      pn_f.name AS firstname, pn_l.name AS lastname,
                                      IF( {?}, pn_n.name, NULL) AS nickname,

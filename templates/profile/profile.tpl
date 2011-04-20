@@ -170,7 +170,7 @@ $($.closeOnEsc);
       <img src='images/flags/{$code}.gif' alt='{$code}' height='11' title='{$country}' />&nbsp;
       {/foreach}
 
-      {$profile->promo()}
+      {$profile->promo('details')}
 
       {if $logged && $profile->mentor_expertise}
       [<a href="referent/{$profile->hrid()}" class='popup2'>Ma fiche référent</a>]
@@ -178,7 +178,6 @@ $($.closeOnEsc);
 
       {assign var=educations value=$profile->getEducations(32)}
       {if count($educations) > 0}
-        &nbsp;-&nbsp;Formation&nbsp;:
         <ul>
         {foreach from=$educations item=edu}
           <li>{display_education edu=$edu profile=$profile full=true}</li>
