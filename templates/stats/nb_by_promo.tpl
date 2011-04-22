@@ -27,12 +27,13 @@ Voici le nombre d'inscrits par promotion&nbsp;:
 </p>
 
 <table class="bicol" cellpadding="3" cellspacing="0" summary="Statistiques">
+  {foreach from=$nbs key=cycle item=nb_cycle}
   <tr>
-    <th></th>
+    <th>{$cycle}</th>
     <th>0</th><th>1</th><th>2</th><th>3</th><th>4</th>
     <th>5</th><th>6</th><th>7</th><th>8</th><th>9</th>
   </tr>
-  {foreach item=nb10 key=lustre from=$nbs}
+  {foreach item=nb10 key=lustre from=$nb_cycle}
   <tr>
     <th>{$lustre}</th>
     {foreach item=nb from=$nb10}
@@ -47,6 +48,7 @@ Voici le nombre d'inscrits par promotion&nbsp;:
     </td>
     {/foreach}
   </tr>
+  {/foreach}
   {/foreach}
 </table>
 

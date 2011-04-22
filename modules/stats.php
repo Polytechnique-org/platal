@@ -241,6 +241,7 @@ EOF2;
     function handler_promos($page, $required_promo = null)
     {
         $page->changeTpl('stats/nb_by_promo.tpl');
+        $cycles = array('X' => 'Polytechniciens', 'M' => 'Masters', 'D' => 'Docteurs');
 
         $res = XDB::iterRow('SELECT  pd.promo, COUNT(*)
                                FROM  accounts         AS a
@@ -255,10 +256,10 @@ EOF2;
         while (list($promo, $count) = $res->next()) {
             $prefix = substr($promo, 0, 4) . '-';
             $unit = substr($promo, -1);
-            if(!isset($nbpromo[$prefix])) {
-                $nbpromo[$prefix] = array('', '', '', '', '', '', '', '', '', ''); // Empty array containing 10 cells.
+            if(!isset($nbpromo[$cycles[$promo{0}]][$prefix])) {
+                $nbpromo[$cycles[$promo{0}]][$prefix] = array('', '', '', '', '', '', '', '', '', ''); // Empty array containing 10 cells.
             }
-            $nbpromo[$prefix][$unit] = array('promo' => $promo, 'nb' => $count);
+            $nbpromo[$cycles[$promo{0}]][$prefix][$unit] = array('promo' => $promo, 'nb' => $count);
         }
 
         $count = XDB::fetchOneCell('SELECT  COUNT(*)
@@ -267,7 +268,7 @@ EOF2;
                                 INNER JOIN  profiles         AS p  ON (p.pid = ap.pid)
                                 INNER JOIN  profile_display  AS pd ON (pd.pid = ap.pid)
                                      WHERE  a.state = \'active\' AND p.deathdate IS NULL AND pd.promo = \'D (en cours)\'');
-        $nbpromo['D (en cours)'][0] = array('promo' => 'D (en cours)', 'nb' => $count);
+        $nbpromo[$cycles['D']]['D (en cours)'][0] = array('promo' => 'D (en cours)', 'nb' => $count);
 
         $page->assign_by_ref('nbs', $nbpromo);
         $page->assign('promo', $required_promo);
