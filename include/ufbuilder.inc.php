@@ -718,7 +718,12 @@ class UFBF_Quick extends UFB_Field
         /** Name
          */
         $s = preg_replace('!\d+!', ' ', $s);
-        $strings = preg_split("![^a-zA-Z%]+!",$s, -1, PREG_SPLIT_NO_EMPTY);
+        $strings = preg_split("![^a-zA-Z%]+!", $s, -1, PREG_SPLIT_NO_EMPTY);
+        foreach ($strings as $key => $string) {
+            if (strlen($string) < 2) {
+                unset($strings[$key]);
+            }
+        }
         if (count($strings) > 5) {
             Platal::page()->trigWarning("Tu as indiqué trop d'éléments dans ta recherche, seuls les 5 premiers seront pris en compte");
             $strings = array_slice($strings, 0, 5);
