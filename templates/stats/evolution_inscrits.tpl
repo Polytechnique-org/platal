@@ -20,32 +20,32 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Evolution du nombre d'inscrits au site polytechnique.org</h1>
+<h1>Évolution du nombre d'inscrits au site polytechnique.org</h1>
 
 <div class="center">
-{if $jours eq 1825}
+{if $days eq 1825}
 [<strong>depuis 5 ans</strong>]
 {else}
 [<a href="stats/evolution/1825">depuis 5 ans</a>]
 {/if}
-{if $jours eq 730}
+{if $days eq 730}
 [<strong>depuis 2 ans</strong>]
 {else}
 [<a href="stats/evolution/730">depuis 2 ans</a>]
 {/if}
-{if $jours eq 365}
+{if $days eq 365}
 [<strong>depuis un an</strong>]
 {else}
 [<a href="stats/evolution/365">depuis un an</a>]
 {/if}
-{if $jours eq 30}
+{if $days eq 30}
 [<strong>depuis un mois</strong>]
 {else}
 [<a href="stats/evolution/30">depuis 1 mois</a>]
 {/if}
 </div>
 <div class="center">
-  <img src="stats/graph/evolution/{$jours}" alt=" [ INSCRITS ] " />
+  <img src="stats/graph/evolution/{$days}" alt=" [ INSCRITS ] " />
 </div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

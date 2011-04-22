@@ -48,6 +48,12 @@ class Profile implements PlExportable
     const DEGREE_M = 'Master';
     const DEGREE_D = 'Doctorat';
 
+    static public $cycles = array(
+        self::DEGREE_X => 'polytechnicien',
+        self::DEGREE_M => 'master',
+        self::DEGREE_D => 'docteur'
+    );
+
     static public $name_variants = array(
             self::LASTNAME => array(self::VN_MARITAL, self::VN_ORDINARY),
             self::FIRSTNAME => array(self::VN_ORDINARY, self::VN_INI, self::VN_OTHER)

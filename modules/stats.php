@@ -51,53 +51,54 @@ class StatsModule extends PLModule
         $page->changeTpl('stats/index.tpl');
     }
 
-    function handler_evolution($page, $jours = 365)
+    function handler_evolution($page, $days = 365)
     {
         $page->changeTpl('stats/evolution_inscrits.tpl');
-        $page->assign('jours', $jours);
+        $page->assign('days', $days);
     }
 
-    function handler_graph_evo($page, $jours = 365)
+    function handler_graph_evo($page, $days = 365)
     {
-        define('DUREEJOUR', 24 * 3600);
+        $day_length = 24 * 3600;
 
-        //recupere le nombre d'inscriptions par jour sur la plage concernée
+        // Retrieve the registration count per days during the given date range.
         $res = XDB::iterRow('SELECT  IF(registration_date > DATE_SUB(NOW(), INTERVAL {?} DAY),
                                         TO_DAYS(registration_date) - TO_DAYS(NOW()),
-                                        -{?}) AS jour,
+                                        - {?}) AS day,
                                      COUNT(a.uid) AS nb
-                               FROM  accounts AS a
-                          LEFT JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET(\'owner\', ap.perms))
-                          LEFT JOIN  profiles AS p ON (ap.pid = p.pid)
-                              WHERE  state = \'active\' AND p.deathdate IS NULL
-                           GROUP BY  jour', (int)$jours, 1 + (int)$jours);
+                               FROM  accounts         AS a
+                         INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET(\'owner\', ap.perms))
+                         INNER JOIN  profiles         AS p  ON (ap.pid = p.pid)
+                              WHERE  a.state = \'active\' AND p.deathdate IS NULL
+                           GROUP BY  day',
+                            (int)$days, 1 + (int)$days);
 
-        //genere des donnees compatibles avec GNUPLOT
-        $inscrits='';
+        // The first contains the registration count before the starting date (J - $days)
+        list(, $init_nb) = $res->next();
+        $total   = $init_nb;
+        $num_day = - $days - 1;
 
-        // la première ligne contient le total des inscrits avant la date de départ (J - $jours)
-        list(,$init_nb) = $res->next();
-        $total    = $init_nb;
-        $numjour = - $jours - 1;
-
-        for ($i = -$jours; $i<=0; $i++) {
-            if ($numjour<$i) {
-                if(!list($numjour, $nb) = $res->next()) {
-                    $numjour = 0;
+        $registered = '';
+        for ($i = -$days; $i <= 0; ++$i) {
+            if ($num_day < $i) {
+                if(!list($num_day, $nb) = $res->next()) {
+                    $num_day = 0;
                     $nb = 0;
                 }
             }
-            if ($numjour==$i) $total+=$nb;
-            $inscrits .= date('d/m/y',$i*DUREEJOUR+time())." ".$total."\n";
+            if ($num_day == $i) {
+                $total += $nb;
+            }
+            $registered .= date('d/m/y', $i * $day_length + time()) . ' ' . $total . "\n";
         }
 
         //Genere le graphique à la volée avec GNUPLOT
         pl_cached_dynamic_content_headers("image/png");
 
-        $delt = ($total - $init_nb)/10;
+        $delt = ($total - $init_nb) / 10;
         $delt = $delt ? $delt : 5;
-        $ymin = round($init_nb - $delt,0);
-        $ymax = round($total   + $delt,0);
+        $ymin = round($init_nb - $delt, 0);
+        $ymax = round($total   + $delt, 0);
 
         $gnuplot = <<<EOF2
 gnuplot <<EOF
@@ -113,7 +114,7 @@ set yr [$ymin:$ymax]
 set title "Nombre d'inscrits"
 
 plot "-" using 1:2 title 'inscrits' with lines;
-{$inscrits}
+{$registered}
 EOF
 EOF2;
 
@@ -123,39 +124,28 @@ EOF2;
 
     function handler_graph($page, $promo = null)
     {
-        if ($promo == 'all') {
-            // date de départ
-            $depart = 1930;
+        if (in_array($promo, array(Profile::DEGREE_X, Profile::DEGREE_M, Profile::DEGREE_D))) {
+            $cycle = Profile::$cycles[$promo] . 's';
+            $res = XDB::iterRow("SELECT  pe.promo_year, SUM(a.state = 'active') / COUNT(*) * 100
+                                   FROM  accounts                      AS a
+                             INNER JOIN  account_profiles              AS ap  ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
+                             INNER JOIN  profiles                      AS p   ON (p.pid = ap.pid)
+                             INNER JOIN  profile_education             AS pe  ON (pe.pid = ap.pid AND FIND_IN_SET('primary', pe.flags))
+                             INNER JOIN  profile_education_degree_enum AS ped ON (pe.degreeid = ped.id)
+                                  WHERE  p.deathdate IS NULL AND ped.degree = {?}
+                               GROUP BY  pe.promo_year",
+                                $promo);
 
-            //recupere le nombre d'inscriptions par jour sur la plage concernée
-            $res = XDB::iterRow("SELECT  pe.entry_year AS promo, SUM(state = 'active') / COUNT(*) * 100
-                                   FROM  accounts AS a
-                             INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
-                             INNER JOIN  profiles AS p ON (p.pid = ap.pid)
-                             INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET('primary', pe.flags))
-                                  WHERE  pe.entry_year >= {?} AND p.deathdate IS NULL
-                               GROUP BY  promo", $depart);
-
-            //genere des donnees compatibles avec GNUPLOT
-            $inscrits='';
-
-            // la première ligne contient le total des inscrits avant la date de départ
-            list($annee, $nb) = $res->next();
-
-            for ($i = $depart; $i <= date("Y"); $i++) {
-                if ($annee < $i) {
-                    if(!list($annee, $nb) = $res->next()) {
-                        $annee = 0;
-                        $nb = 0;
-                    }
-                }
-                if ($nb > 0 || $i < date('Y'))
-                    $inscrits .= $i.' '.$nb."\n";
+            list($promo, $count) = $res->next();
+            $first = $promo;
+            $registered = $promo . ' ' . $count . "\n";
+            while ($next = $res->next()) {
+                list($promo, $count) = $next;
+                $registered .= $promo . ' ' . $count . "\n";
             }
+            $last = $promo + 2;
 
-            //Genere le graphique à la volée avec GNUPLOT
-            $fin = $i+2;
-
+            // Generate drawing thanks to Gnuplot.
             $gnuplot = <<<EOF2
 gnuplot <<EOF
 
@@ -163,64 +153,65 @@ set term png small color
 set size 640/480
 set timefmt "%d/%m/%y"
 
-set xr [$depart:$fin]
+set xr [$first:$last]
 set yr [0:100]
 
-set title "Proportion d'inscrits par promotion depuis $depart, en %."
+set title "Proportion de $cycle inscrits par promotion, en %."
 
 plot "-" using 1:2 title 'inscrits' with boxes;
-{$inscrits}
+{$registered}
 EOF
 EOF2;
 
         } else {
-            //nombre de jours sur le graph
-            $jours = 365;
-            define('DUREEJOUR', 24 * 3600);
+            $day_length = 24 * 3600;
+            $days = 365;
 
             $res = XDB::query("SELECT  MIN(TO_DAYS(a.registration_date) - TO_DAYS(NOW()))
-                                 FROM  accounts AS a
+                                 FROM  accounts         AS a
                            INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
-                           INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET('primary', pe.flags))
-                                WHERE  pe.entry_year = {?} AND a.state = 'active'", (int)$promo);
-            $jours = -$res->fetchOneCell();
+                           INNER JOIN  profile_display  AS pd ON (ap.pid = pd.pid)
+                                WHERE  pd.promo = {?} AND a.state = 'active'",
+                              $promo);
+            $days = -$res->fetchOneCell();
 
-            //recupere le nombre d'inscriptions par jour sur la plage concernée
+            // Retrieve the registration count per days during the given date range.
             $res = XDB::iterRow("SELECT  IF(a.registration_date > DATE_SUB(NOW(), INTERVAL {?} DAY),
                                             TO_DAYS(a.registration_date) - TO_DAYS(NOW()),
-                                            -{?}) AS jour,
+                                            - {?}) AS day,
                                          COUNT(a.uid) AS nb
-                                   FROM  accounts AS a
+                                   FROM  accounts         AS a
                              INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
-                             INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET('primary', pe.flags))
-                                  WHERE  pe.entry_year = {?} AND a.state = 'active'
-                               GROUP BY  jour", (int)$jours, 1 + (int)$jours, (int)$promo);
+                             INNER JOIN  profile_display  AS pd ON (ap.pid = pd.pid)
+                                  WHERE  pd.promo = {?} AND a.state = 'active'
+                               GROUP BY  day",
+                                (int)$days, 1 + (int)$days, $promo);
 
-            //genere des donnees compatibles avec GNUPLOT
-            $inscrits='';
-
-            // la première ligne contient le total des inscrits avant la date de départ (J - $jours)
-            list(,$init_nb) = $res->next();
+            // The first line contains the registration count before starting date (D - $days).
+            list(, $init_nb) = $res->next();
             $total = $init_nb;
+            $registered = '';
 
-            list($numjour, $nb) = $res->next();
+            list($num_day, $nb) = $res->next();
 
-            for ($i = -$jours;$i<=0;$i++) {
-                if ($numjour<$i) {
-                    if(!list($numjour, $nb) = $res->next()) {
-                        $numjour = 0;
+            for ($i = -$days; $i <= 0; ++$i) {
+                if ($num_day < $i) {
+                    if(!list($num_day, $nb) = $res->next()) {
+                        $num_day = 0;
                         $nb = 0;
                     }
                 }
-                if ($numjour==$i) $total+=$nb;
-                $inscrits .= date('d/m/y',$i*DUREEJOUR+time())." ".$total."\n";
+                if ($num_day == $i) {
+                    $total += $nb;
+                }
+                $registered .= date('d/m/y', $i * $day_length + time()) . ' ' . $total . "\n";
             }
 
-            //Genere le graphique à la volée avec GNUPLOT
+            // Generate drawing thanks to Gnuplot.
             $delt = ($total - $init_nb) / 10;
             $delt += ($delt < 1);
-            $ymin = round($init_nb - $delt,0);
-            $ymax = round($total   + $delt,0);
+            $ymin = round($init_nb - $delt, 0);
+            $ymax = round($total   + $delt, 0);
 
             $gnuplot = <<<EOF2
 gnuplot <<EOF
@@ -236,7 +227,7 @@ set yr [$ymin:$ymax]
 set title "Nombre d'inscrits de la promotion $promo."
 
 plot "-" using 1:2 title 'inscrits' with lines;
-{$inscrits}e
+{$registered}e
 EOF
 EOF2;
         }
@@ -246,31 +237,39 @@ EOF2;
         exit;
     }
 
-    function handler_promos($page, $promo = null)
+    function handler_promos($page, $required_promo = null)
     {
         $page->changeTpl('stats/nb_by_promo.tpl');
 
-        $res = XDB::iterRow('SELECT  pe.entry_year AS promo, COUNT(*)
-                               FROM  accounts AS a
+        $res = XDB::iterRow('SELECT  pd.promo, COUNT(*)
+                               FROM  accounts         AS a
                          INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET(\'owner\', ap.perms))
-                         INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'primary\', pe.flags))
-                              WHERE  pe.entry_year >= 1900  AND a.state = \'active\'
-                           GROUP BY  promo
-                           ORDER BY  promo');
-        $max=0; $min=3000;
+                         INNER JOIN  profiles         AS p  ON (p.pid = ap.pid)
+                         INNER JOIN  profile_display  AS pd ON (pd.pid = ap.pid)
+                              WHERE  a.state = \'active\' AND p.deathdate IS NULL AND pd.promo != \'D (en cours)\'
+                           GROUP BY  pd.promo
+                           ORDER BY  pd.promo LIKE \'D%\', pd.promo LIKE \'M%\', pd.promo LIKE \'X%\', pd.promo');
 
-        while (list($p,$nb) = $res->next()) {
-            $p = intval($p);
-            if(!isset($nbpromo[$p/10])) {
-                $nbpromo[$p/10] = Array('','','','','','','','','',''); // tableau de 10 cases vides
+        $nbpromo = array();
+        while (list($promo, $count) = $res->next()) {
+            $prefix = substr($promo, 0, 4) . '-';
+            $unit = substr($promo, -1);
+            if(!isset($nbpromo[$prefix])) {
+                $nbpromo[$prefix] = array('', '', '', '', '', '', '', '', '', ''); // Empty array containing 10 cells.
             }
-            $nbpromo[$p/10][$p%10]=Array('promo' => $p, 'nb' => $nb);
+            $nbpromo[$prefix][$unit] = array('promo' => $promo, 'nb' => $count);
         }
 
+        $count = XDB::fetchOneCell('SELECT  COUNT(*)
+                                      FROM  accounts         AS a
+                                INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET(\'owner\', ap.perms))
+                                INNER JOIN  profiles         AS p  ON (p.pid = ap.pid)
+                                INNER JOIN  profile_display  AS pd ON (pd.pid = ap.pid)
+                                     WHERE  a.state = \'active\' AND p.deathdate IS NULL AND pd.promo = \'D (en cours)\'');
+        $nbpromo['D (en cours)'][0] = array('promo' => 'D (en cours)', 'nb' => $count);
+
         $page->assign_by_ref('nbs', $nbpromo);
-        $page->assign('min', $min-$min % 10);
-        $page->assign('max', $max+10-$max%10);
-        $page->assign('promo', $promo);
+        $page->assign('promo', $required_promo);
     }
 
     function handler_coupures($page, $cp_id = null)

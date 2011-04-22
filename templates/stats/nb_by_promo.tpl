@@ -23,7 +23,7 @@
 <h1>Inscrits par promo</h1>
 
 <p>
-Voici le nombre d'inscrits par promo&nbsp;:
+Voici le nombre d'inscrits par promotion&nbsp;:
 </p>
 
 <table class="bicol" cellpadding="3" cellspacing="0" summary="Statistiques">
@@ -34,7 +34,7 @@ Voici le nombre d'inscrits par promo&nbsp;:
   </tr>
   {foreach item=nb10 key=lustre from=$nbs}
   <tr>
-    <th>{$lustre}-</th>
+    <th>{$lustre}</th>
     {foreach item=nb from=$nb10}
     <td class="center">
       {if $nb && $nb.promo eq $promo}
@@ -67,7 +67,15 @@ Voici le nombre d'inscrits par promo&nbsp;:
 <h1>Inscrits par promo en (%)</h1>
 
 <div class="center">
-  <img src="stats/graph/all" alt="[graphe du nombre d'inscrits par promo]" />
+  <img src="stats/graph/{#Profile::DEGREE_X#}" alt="[graphe du nombre d'inscrits par promotion pour les X]" />
+</div>
+
+<div class="center">
+  <img src="stats/graph/{#Profile::DEGREE_M#}" alt="[graphe du nombre d'inscrits par promotion pour les masters]" />
+</div>
+
+<div class="center">
+  <img src="stats/graph/{#Profile::DEGREE_D#}" alt="[graphe du nombre d'inscrits par promotion pour les docteurs]" />
 </div>
 
 {/if}

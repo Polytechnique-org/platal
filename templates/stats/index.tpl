@@ -33,7 +33,7 @@ Quelques statistiques sur l'utilisation des services de Polytechnique.org ainsi 
 <li><a href="stats/evolution">Nombre d'inscrits au cours du temps</a></li>
 {assign var="profile" value=$smarty.session.user->profile()}
 {if $profile}
-<li><a href="stats/promos/{$profile->yearpromo()}">Nombre d'inscrits dans ta promotion</a></li>
+<li><a href="stats/promos/{$profile->promo()}">Nombre d'inscrits dans ta promotion</a></li>
 {/if}
 <li><a href="stats/promos">Nombre d'inscrits par promotion</a></li>
 </ul>
