@@ -115,7 +115,7 @@
           <dd>
             de recevoir les informations importantes de l'AX.
           </dd>
-          {if $smarty.session.subState.edu_type eq 'X'}
+          {if $smarty.session.subState.edu_type eq #Profile::DEGREE_X#}
           <dt><label><input type="checkbox" checked="checked" name="ml_promo" /> ta promotion</label></dt>
           <dd>
             de recevoir les informations plus spécifiques de ta promotion pour pouvoir participer plus facilement aux événements

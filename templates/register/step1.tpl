@@ -48,9 +48,9 @@
       </td>
       <td>
         <select name="edu_type">
-          <option value="X" selected="selected">polytechnicienne</option>
-          <option value="M">master</option>
-          <option value="D">doctorat</option>
+          <option value="{#Profile::DEGREE_X#}" selected="selected">polytechnicienne</option>
+          <option value="{#Profile::DEGREE_M#}">master</option>
+          <option value="{#Profile::DEGREE_D#}">doctorat</option>
         </select>
       </td>
     </tr>

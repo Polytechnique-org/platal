@@ -30,8 +30,7 @@
 
 <form action="register" method="post">
   <table class="bicol" summary="Identification" cellpadding="3">
-    {if $smarty.session.subState.edu_type neq 'X' || $smarty.session.subState.yearpromo >= 1996}
-    {assign var="promo" value=$smarty.session.subState.yearpromo}
+    {if t($smarty.session.subState.schoolid)}
     <tr>
       <th colspan="2">Matricule</th>
     </tr>
@@ -45,24 +44,12 @@
       </td>
     </tr>
     <tr class="pair">
-      {if $smarty.session.subState.edu_type eq 'X'}
       <td></td>
       <td>
-        6 chiffres terminant par le numéro d'entrée (ex&nbsp;:
-        {if $promo < 2000}
-        {math equation="promo % 100" promo=$promo}0532)<br />
-        {else}
-        {math equation="(promo % 100) + 100" promo=$promo}532)<br />
-        {/if}
-        Voir sur le GU ou un bulletin de solde pour trouver cette information<br /><br />
-        Pour les élèves étrangers voie 2, il peut être aussi du type&nbsp;:
-        {if $promo < 1999}
-        {math equation="(promo + 1) % 100" promo=$promo}0XXX
-        {else}
-        {math equation="((promo + 1) % 100) + 100" promo=$promo}XXX
-        {/if}
+        6 chiffres terminant par le numéro d'entrée (ex&nbsp;: {$smarty.session.subState.schoolid_exemple}).
+        Voir sur le GU ou un bulletin de solde pour trouver cette information.<br /><br />
+        Pour les élèves étrangers voie 2, il peut être aussi du type&nbsp;: {$smarty.session.subState.schoolid_exemple_ev2}.
       </td>
-      {/if}
     </tr>
     {/if}
     <tr>

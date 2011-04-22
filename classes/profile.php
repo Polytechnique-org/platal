@@ -53,6 +53,11 @@ class Profile implements PlExportable
         self::DEGREE_M => 'master',
         self::DEGREE_D => 'docteur'
     );
+    static public $cycle_prefixes = array(
+        self::DEGREE_X => 'X',
+        self::DEGREE_M => 'M',
+        self::DEGREE_D => 'D'
+    );
 
     static public $name_variants = array(
             self::LASTNAME => array(self::VN_MARITAL, self::VN_ORDINARY),

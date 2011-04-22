@@ -51,7 +51,8 @@ class RegisterModule extends PLModule
         if ($hash) {
             $nameTypes = DirEnum::getOptions(DirEnum::NAMETYPES);
             $nameTypes = array_flip($nameTypes);
-            $res = XDB::query("SELECT  a.uid, a.hruid, pnl.name AS lastname, pnf.name AS firstname, p.xorg_id AS xorgid, pd.promo, pe.promo_year AS yearpromo
+            $res = XDB::query("SELECT  a.uid, a.hruid, pnl.name AS lastname, pnf.name AS firstname, p.xorg_id AS xorgid,
+                                       pd.promo, pe.promo_year AS yearpromo, pde.degree AS edu_type,
                                        p.birthdate_ref AS birthdateRef, FIND_IN_SET('watch', a.flags) AS watch, m.hash, a.type
                                  FROM  register_marketing AS m
                            INNER JOIN  accounts           AS a   ON (m.uid = a.uid)
@@ -59,6 +60,7 @@ class RegisterModule extends PLModule
                            INNER JOIN  profiles           AS p   ON (p.pid = ap.pid)
                            INNER JOIN  profile_display    AS pd  ON (p.pid = pd.pid)
                            INNER JOIN  profile_education  AS pe  ON (pe.pid = p.pid AND FIND_IN_SET('primary', pe.flags))
+                           INNER JOIN  profile_education_degree_enum AS pde ON (pde.id = pe.degreeid)
                            INNER JOIN  profile_name       AS pnl ON (p.pid = pnl.pid AND pnl.typeid = {?})
                            INNER JOIN  profile_name       AS pnf ON (p.pid = pnf.pid AND pnf.typeid = {?})
                                 WHERE  m.hash = {?} AND a.state = 'pending'",
@@ -95,8 +97,7 @@ class RegisterModule extends PLModule
                 if (Post::has('yearpromo')) {
                     $edu_type = Post::t('edu_type');
                     $yearpromo = Post::i('yearpromo');
-                    $promo = $edu_type . $yearpromo;
-                    $year = ($edu_type == 'X') ? 'entry_year' : 'grad_year';
+                    $promo = Profile::$cycle_prefixes[$edu_type] . $yearpromo;
                     $res = XDB::query("SELECT  COUNT(*)
                                          FROM  accounts         AS a
                                    INNER JOIN  account_profiles AS ap ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
@@ -112,14 +113,16 @@ class RegisterModule extends PLModule
                         $subState->set('promo', $promo);
                         $subState->set('yearpromo', $yearpromo);
                         $subState->set('edu_type', $edu_type);
-                        if ($edu_type == 'X') {
+                        if ($edu_type == Profile::DEGREE_X) {
                             if ($yearpromo >= 1996 && $yearpromo < 2000) {
                                 $subState->set('schoolid', ($yearpromo % 100) * 10 . '???');
+                                $subState->set('schoolid_exemple', ($yearpromo % 100) * 10000 + 532);
+                                $subState->set('schoolid_exemple_ev2', (($yearpromo + 1) % 100) * 10000 + 532);
                             } elseif($yearpromo >= 2000) {
                                 $subState->set('schoolid', 100 + ($yearpromo % 100) . '???');
+                                $subState->set('schoolid_exemple', (100 + ($yearpromo % 100)) * 1000 + 532);
+                                $subState->set('schoolid_exemple_ev2', (100 + (($yearpromo + 1) % 100)) * 1000 + 532);
                             }
-                        } else {
-                            $subState->set('schoolid', '');
                         }
                     }
                 }
@@ -130,7 +133,9 @@ class RegisterModule extends PLModule
                     $this->load('register.inc.php');
                     $subState->set('firstname', Post::t('firstname'));
                     $subState->set('lastname', Post::t('lastname'));
-                    $subState->set('schoolid', Post::i('schoolid'));
+                    if (Post::has('schoolid')) {
+                        $subState->set('schoolid', Post::i('schoolid'));
+                    }
                     $error = checkNewUser($subState);
 
                     if ($error !== true) {
@@ -169,8 +174,9 @@ class RegisterModule extends PLModule
                         if ($birth[2] < 100) {
                             $birth[2] += 1900;
                         }
-                        $year  = $birth[2];
-                        if ($year > $subState->i('yearpromo') - 15 || $subState->i('yearpromo') < $promo - 30) {
+                        $year = $birth[2];
+                        $ref_year = substr($subState->v('birthdateRef'), 0, 4);
+                        if (abs($ref_year - $year) > 2) {
                             $error[] = "La 'Date de naissance' n'est pas correcte.";
                             $alert = "Date de naissance incorrecte à l'inscription - ";
                             $subState->set('wrong_birthdate', $birth);
