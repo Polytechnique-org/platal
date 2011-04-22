@@ -157,6 +157,7 @@ set xr [$first:$last]
 set yr [0:100]
 
 set title "Proportion de $cycle inscrits par promotion, en %."
+set key left top
 
 plot "-" using 1:2 title 'inscrits' with boxes;
 {$registered}
