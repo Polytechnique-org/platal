@@ -718,7 +718,7 @@ class UFBF_Quick extends UFB_Field
         /** Name
          */
         $s = preg_replace('!\d+!', ' ', $s);
-        $strings = preg_split("![^a-zA-Z%]+!", $s, -1, PREG_SPLIT_NO_EMPTY);
+        $strings = preg_split("![^a-z%]+!i", $s, -1, PREG_SPLIT_NO_EMPTY);
         foreach ($strings as $key => $string) {
             if (strlen($string) < 2) {
                 unset($strings[$key]);
@@ -745,34 +745,32 @@ class UFBF_Quick extends UFB_Field
          */
         $s = preg_replace('! *- *!', '-', $r);
         $s = preg_replace('!([<>]) *!', ' \1', $s);
-        $s = preg_replace('![^0-9xmdXMD\-><]!', ' ', $s);
+        $s = preg_replace('![^0-9xmd\-><]!i', ' ', $s);
         $s = preg_replace('![<>\-] !', '', $s);
         $ranges = preg_split('! +!', strtolower($s), -1, PREG_SPLIT_NO_EMPTY);
         $grades = array('' => UserFilter::GRADE_ING, 'x' => UserFilter::GRADE_ING, 'm' => UserFilter::GRADE_MST, 'd' => UserFilter::GRADE_PHD);
         foreach ($ranges as $r) {
-            if (preg_match('!^(|x|m|d)(\d{4})$!', $r, $matches)) {
+            if (preg_match('!^([xmd]?)(\d{4})$!', $r, $matches)) {
                 $conds->addChild(new UFC_Promo('=', $grades[$matches[1]], $matches[2]));
-            } elseif (preg_match('!^(|x|m|d)(\d{4})-(|x|m|d)(\d{4})$!', $r, $matches)) {
-                if ($matches[1] == $matches[3]) {
-                    $p1 = min(intval($matches[2]), intval($matches[4]));
-                    $p2 = max(intval($matches[2]), intval($matches[4]));
-                    $conds->addChild(new PFC_And(
-                        new UFC_Promo('>=', $grades[$matches[1]], $p1),
-                        new UFC_Promo('<=', $grades[$matches[1]], $p2)
-                    ));
-                }
-            } elseif (preg_match('!^<(|x|m|d)(\d{4})!', $r, $matches)) {
+            } elseif (preg_match('!^([xmd]?)(\d{4})-\1(\d{4})$!', $r, $matches)) {
+                $p1 = min(intval($matches[2]), intval($matches[3]));
+                $p2 = max(intval($matches[2]), intval($matches[3]));
+                $conds->addChild(new PFC_And(
+                    new UFC_Promo('>=', $grades[$matches[1]], $p1),
+                    new UFC_Promo('<=', $grades[$matches[1]], $p2)
+                ));
+            } elseif (preg_match('!^<([xmd]?)(\d{4})!', $r, $matches)) {
                 $conds->addChild(new UFC_Promo('<=', $grades[$matches[1]], $matches[2]));
-            } elseif (preg_match('!^>(|x|m|d)(\d{4})!', $r, $matches)) {
+            } elseif (preg_match('!^>([xmd]?)(\d{4})!', $r, $matches)) {
                 $conds->addChild(new UFC_Promo('>=', $grades[$matches[1]], $matches[2]));
             }
         }
 
         /** Phone number
          */
-        $t = preg_replace('!(\d{4}-\d{4}|>\d{4}|<\d{4})!', '', $s);
+        $t = preg_replace('!([xmd]?\d{4}-|>|<|)[xmd]?\d{4}!i', '', $s);
         $t = preg_replace('![<>\- ]!', '', $t);
-        if (strlen($t) > 5) {
+        if (strlen($t) > 4) {
             $conds->addChild(new UFC_Phone($t));
         }
 
