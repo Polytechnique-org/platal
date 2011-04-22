@@ -108,7 +108,7 @@ set size 640/480
 set xdata time
 set timefmt "%d/%m/%y"
 
-set format x "%m/%y"
+set format x "%d/%m\\n%Y"
 set yr [$ymin:$ymax]
 
 set title "Nombre d'inscrits"
