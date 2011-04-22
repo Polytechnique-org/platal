@@ -764,9 +764,9 @@ class UserFilter extends PlFilter
 
     /** EDUCATION
      */
-    const GRADE_ING = 'Ing.';
-    const GRADE_PHD = 'PhD';
-    const GRADE_MST = 'M%';
+    const GRADE_ING = Profile::DEGREE_X;
+    const GRADE_PHD = Profile::DEGREE_D;
+    const GRADE_MST = Profile::DEGREE_M;
     static public function isGrade($grade)
     {
         return ($grade !== 0) && ($grade == self::GRADE_ING || $grade == self::GRADE_PHD || $grade == self::GRADE_MST);
@@ -813,7 +813,7 @@ class UserFilter extends PlFilter
         foreach ($this->pepe as $grade => $sub) {
             if ($this->isGrade($grade)) {
                 $joins['pe' . $sub] = PlSqlJoin::left('profile_education', '$ME.eduid = pee.id AND $ME.pid = $PID');
-                $joins['pede' . $sub] = PlSqlJoin::inner('profile_education_degree_enum', '$ME.id = pe' . $sub . '.degreeid AND $ME.abbreviation LIKE {?}', $grade);
+                $joins['pede' . $sub] = PlSqlJoin::inner('profile_education_degree_enum', '$ME.id = pe' . $sub . '.degreeid AND $ME.degree LIKE {?}', $grade);
             } else {
                 $joins['pe' . $sub] = PlSqlJoin::left('profile_education', '$ME.pid = $PID');
                 $joins['pee' . $sub] = PlSqlJoin::inner('profile_education_enum', '$ME.id = pe' . $sub . '.eduid');
