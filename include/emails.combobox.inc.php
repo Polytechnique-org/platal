@@ -44,7 +44,7 @@ function fill_email_combobox(PlPage $page, array $retrieve, $user = null)
         $emails['Redirections'] = array();
         foreach ($redirect->emails as $redirect_it) {
             if ($redirect_it->is_redirection()) {
-                $emails['Redirections'] = $redirect_it->email;
+                $emails['Redirections'][] = $redirect_it->email;
             }
         }
     }
