@@ -122,7 +122,7 @@ $($.closeOnEsc);
       {/if}
     </div>
 
-    {if $logged && $view eq 'private'}
+    {if $logged && $view eq 'private' && $owner && $owner->state eq 'active'}
     <div class='maj'>
       Fiche mise à jour<br />
       le {$profile->last_change|date_format}
