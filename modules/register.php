@@ -96,6 +96,7 @@ class RegisterModule extends PLModule
                     $edu_type = Post::t('edu_type');
                     $yearpromo = Post::i('yearpromo');
                     $promo = $edu_type . $yearpromo;
+                    $year = ($edu_type == 'X') ? 'entry_year' : 'grad_year';
                     $res = XDB::query("SELECT  COUNT(*)
                                          FROM  accounts         AS a
                                    INNER JOIN  account_profiles AS ap ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
@@ -387,18 +388,20 @@ class RegisterModule extends PLModule
                     Email::activate_storage($user, 'imap');
                     break;
                 case 'ml_promo':
-                    $r = XDB::query('SELECT id FROM groups WHERE diminutif = {?}', $yearpromo);
-                    if ($r->numRows()) {
-                        $asso_id = $r->fetchOneCell();
-                        XDB::execute('INSERT IGNORE INTO  group_members (uid, asso_id)
-                                                  VALUES  ({?}, {?})',
-                                     $uid, $asso_id);
-                        try {
-                            $mmlist = new MMList($user);
-                            $mmlist->subscribe("promo" . $yearpromo);
-                        } catch (Exception $e) {
-                            PlErrorReport::report($e);
-                            $page->trigError("L'inscription à la liste promo" . $yearpromo . " a échouée.");
+                    if ($isX) {
+                        $r = XDB::query('SELECT id FROM groups WHERE diminutif = {?}', $yearpromo);
+                        if ($r->numRows()) {
+                            $asso_id = $r->fetchOneCell();
+                            XDB::execute('INSERT IGNORE INTO  group_members (uid, asso_id)
+                                                      VALUES  ({?}, {?})',
+                                         $uid, $asso_id);
+                            try {
+                                $mmlist = new MMList($user);
+                                $mmlist->subscribe("promo" . $yearpromo);
+                            } catch (Exception $e) {
+                                PlErrorReport::report($e);
+                                $page->trigError("L'inscription à la liste promo" . $yearpromo . " a échouée.");
+                            }
                         }
                     }
                     break;
