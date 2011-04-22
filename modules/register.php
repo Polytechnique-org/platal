@@ -288,8 +288,8 @@ class RegisterModule extends PLModule
         // authentication token.
         $res = XDB::query("SELECT  r.uid, p.pid, r.forlife, r.bestalias, r.mailorg2,
                                    r.password, r.email, r.services, r.naissance,
-                                   pnl.name AS lastname, pnf.name AS firstname, pe.promo_year AS yearpromo,
-                                   pd.promo, p.sex, p.birthdate_ref, a.type AS eduType
+                                   pnl.name AS lastname, pnf.name AS firstname, pe.promo_year,
+                                   pd.promo, p.sex, p.birthdate_ref, a.type
                              FROM  register_pending AS r
                        INNER JOIN  accounts         AS a   ON (r.uid = a.uid)
                        INNER JOIN  account_profiles AS ap  ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
@@ -316,11 +316,9 @@ class RegisterModule extends PLModule
         }
 
         list($uid, $pid, $forlife, $bestalias, $emailXorg2, $password, $email, $services,
-             $birthdate, $lastname, $firstname, $promo, $sex, $birthdate_ref, $eduType) = $res->fetchOneRow();
-        $isX = ($eduType == 'x');
-        // We need the expected promotion here. Thus we remove pending display.
-        $promo = str_replace(' (en cours)', $yearpromo, $promo);
-        $mail_domain = User::$sub_mail_domains[$eduType] . $globals->mail->domain;
+             $birthdate, $lastname, $firstname, $promo, $yearpromo, $sex, $birthdate_ref, $type) = $res->fetchOneRow();
+        $isX = ($type == 'x');
+        $mail_domain = User::$sub_mail_domains[$type] . $globals->mail->domain;
 
         // Prepare the template for display.
         $page->changeTpl('register/end.tpl');
@@ -381,8 +379,8 @@ class RegisterModule extends PLModule
         Platal::session()->start(AUTH_MDP);
 
         // Subscribe the user to the services she did request at registration time.
+        require_once 'newsletter.inc.php';
         foreach (explode(',', $services) as $service) {
-            require_once 'newsletter.inc.php';
             switch ($service) {
                 case 'ax_letter':
                     NewsLetter::forGroup(NewsLetter::GROUP_AX)->subscribe($user);
@@ -445,17 +443,17 @@ class RegisterModule extends PLModule
         Platal::session()->updateNbNotifs();
 
         // Forcibly register the new user on default forums.
-        $promoForum = 'xorg.promo.' . strtolower($promo);
-        $registeredForums = array('xorg.general', 'xorg.pa.divers', 'xorg.pa.logements', $promoForum);
-        foreach ($registeredForums as $forum) {
-            XDB::execute("INSERT INTO  forum_subs (fid, uid)
-                               SELECT  fid, {?}
-                                 FROM  forums
-                                WHERE  name = {?}",
-                         $uid, $val);
+        $registeredForums = array('xorg.general', 'xorg.pa.divers', 'xorg.pa.logements');
 
-            // Notify the newsgroup admin of the promotion forum needs be created.
-            if (XDB::affectedRows() == 0 && $forum == $promoForum) {
+        if ($isX) {
+            $promoForum = 'xorg.promo.' . strtolower($promo);
+            $exists = XDB::fetchOneCell('SELECT  COUNT(*)
+                                           FROM  forums
+                                          WHERE  name = {?}',
+                                        $promoForum);
+
+            if ($exists == 0) {
+                // Notify the newsgroup admin of the promotion forum needs be created.
                 $promoFull = new UserFilter(new UFC_Promo('=', UserFilter::DISPLAY, $promo));
                 $promoRegistered = new UserFilter(new PFC_And(
                         new UFC_Promo('=', UserFilter::DISPLAY, $promo),
@@ -467,7 +465,17 @@ class RegisterModule extends PLModule
                     $mymail->assign('promo', $promo);
                     $mymail->send();
                 }
+            } else {
+                $registeredForums[] = $promoForum;
             }
+        }
+
+        foreach ($registeredForums as $forum) {
+            XDB::execute("INSERT INTO  forum_subs (fid, uid)
+                               SELECT  fid, {?}
+                                 FROM  forums
+                                WHERE  name = {?}",
+                         $uid, $val);
         }
 
         // Update the global registration count stats.
