@@ -745,23 +745,26 @@ class UFBF_Quick extends UFB_Field
          */
         $s = preg_replace('! *- *!', '-', $r);
         $s = preg_replace('!([<>]) *!', ' \1', $s);
-        $s = preg_replace('![^0-9\-><]!', ' ', $s);
+        $s = preg_replace('![^0-9xmdXMD\-><]!', ' ', $s);
         $s = preg_replace('![<>\-] !', '', $s);
-        $ranges = preg_split('! +!', $s, -1, PREG_SPLIT_NO_EMPTY);
+        $ranges = preg_split('! +!', strtolower($s), -1, PREG_SPLIT_NO_EMPTY);
+        $grades = array('' => UserFilter::GRADE_ING, 'x' => UserFilter::GRADE_ING, 'm' => UserFilter::GRADE_MST, 'd' => UserFilter::GRADE_PHD);
         foreach ($ranges as $r) {
-            if (preg_match('!^\d{4}$!', $r)) {
-                $conds->addChild(new UFC_Promo('=', UserFilter::DISPLAY, 'X' . $r));
-            } elseif (preg_match('!^(\d{4})-(\d{4})$!', $r, $matches)) {
-                $p1=min(intval($matches[1]), intval($matches[2]));
-                $p2=max(intval($matches[1]), intval($matches[2]));
-                $conds->addChild(new PFC_And(
-                    new UFC_Promo('>=', UserFilter::DISPLAY, 'X' . $p1),
-                    new UFC_Promo('<=', UserFilter::DISPLAY, 'X' . $p2)
-                ));
-            } elseif (preg_match('!^<(\d{4})!', $r, $matches)) {
-                $conds->addChild(new UFC_Promo('<=', UserFilter::DISPLAY, 'X' . $matches[1]));
-            } elseif (preg_match('!^>(\d{4})!', $r, $matches)) {
-                $conds->addChild(new UFC_Promo('>=', UserFilter::DISPLAY, 'X' . $matches[1]));
+            if (preg_match('!^(|x|m|d)(\d{4})$!', $r, $matches)) {
+                $conds->addChild(new UFC_Promo('=', $grades[$matches[1]], $matches[2]));
+            } elseif (preg_match('!^(|x|m|d)(\d{4})-(|x|m|d)(\d{4})$!', $r, $matches)) {
+                if ($matches[1] == $matches[3]) {
+                    $p1 = min(intval($matches[2]), intval($matches[4]));
+                    $p2 = max(intval($matches[2]), intval($matches[4]));
+                    $conds->addChild(new PFC_And(
+                        new UFC_Promo('>=', $grades[$matches[1]], $p1),
+                        new UFC_Promo('<=', $grades[$matches[1]], $p2)
+                    ));
+                }
+            } elseif (preg_match('!^<(|x|m|d)(\d{4})!', $r, $matches)) {
+                $conds->addChild(new UFC_Promo('<=', $grades[$matches[1]], $matches[2]));
+            } elseif (preg_match('!^>(|x|m|d)(\d{4})!', $r, $matches)) {
+                $conds->addChild(new UFC_Promo('>=', $grades[$matches[1]], $matches[2]));
             }
         }
 
@@ -769,7 +772,7 @@ class UFBF_Quick extends UFB_Field
          */
         $t = preg_replace('!(\d{4}-\d{4}|>\d{4}|<\d{4})!', '', $s);
         $t = preg_replace('![<>\- ]!', '', $t);
-        if (strlen($t) > 4) {
+        if (strlen($t) > 5) {
             $conds->addChild(new UFC_Phone($t));
         }
 
