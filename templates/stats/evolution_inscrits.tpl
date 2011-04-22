@@ -23,6 +23,11 @@
 <h1>Évolution du nombre d'inscrits au site polytechnique.org</h1>
 
 <div class="center">
+{if $days eq 3650}
+[<strong>depuis 10 ans</strong>]
+{else}
+[<a href="stats/evolution/3650">depuis 10 ans</a>]
+{/if}
 {if $days eq 1825}
 [<strong>depuis 5 ans</strong>]
 {else}
