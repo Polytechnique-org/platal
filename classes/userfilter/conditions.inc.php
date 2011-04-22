@@ -1428,7 +1428,7 @@ class UFC_Phone extends UserFilterCondition
     {
         $phone = new Phone(array('display' => $number));
         $phone->format();
-        $this->number = $phone->search();
+        $this->number = $phone->search;
         $this->num_type = $num_type;
         $this->phone_type = $phone_type;
     }
