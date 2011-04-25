@@ -5,6 +5,7 @@ Bug/Wish:
 
     * Auth:
         - #1474: Provides accounts data for accounts without profile       -JAC
+        - #1476: Logs last use of Auth-Groupe-X keys                       -JAC
 
     * Emails:
         - #1110: Improves email combobox                                   -JAC
