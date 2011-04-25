@@ -48,7 +48,12 @@ function gpex_make($chlg, $privkey, $datafields, $charset)
         $personnal_data['prenom'] = $personnal_data['firstname'];
         $personnal_data['flags'] = $user->profile()->isFemale() ? 'femme' : '';
     } else {
-        $personnal_data = array();
+        // Missing fields: promo, entry_year, grad_year, ax_id, xorg_id, forlife
+        $personnal_data = array(
+            'lastname' => $user->lastname,
+            'firstname' => $user->firstname,
+            'sex' => $user->gender
+        );
     }
 
     foreach ($fieldarr as $val) {
@@ -66,7 +71,7 @@ function gpex_make($chlg, $privkey, $datafields, $charset)
                                                  FROM  email_source_account
                                                 WHERE  uid = {?} AND FIND_IN_SET(\'bestalias\', flags)',
                                               S::i('uid'));
-            $params      .= gpex_prepare_param($val, $min_username, $tohash, $charset);
+            $params .= gpex_prepare_param($val, (is_null($min_username) ? '', $min_username), $tohash, $charset);
         } else if ($val == 'grpauth') {
             if (isset($_GET['group'])) {
                 $res = XDB::query("SELECT  perms

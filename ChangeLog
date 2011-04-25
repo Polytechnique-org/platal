@@ -3,6 +3,9 @@ VERSION 1.1.1                                                         XX XX XXXX
 
 Bug/Wish:
 
+    * Auth:
+        - #1474: Provides accounts data for accounts without profile       -JAC
+
     * Emails:
         - #1110: Improves email combobox                                   -JAC
         - #1459: Lists and administrates aliases on main domain            -JAC
