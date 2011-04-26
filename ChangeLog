@@ -17,6 +17,7 @@ Bug/Wish:
     * Search:
         - #911: Adds search on corps                                       -JAC
         - #990: Adds search on broken redirections                         -JAC
+        - #1469: Adds search on firstname/lastname/nickname                -JAC
         - #1470: Fixes autocomplete on countries                           -JAC
 
     * XnetList:

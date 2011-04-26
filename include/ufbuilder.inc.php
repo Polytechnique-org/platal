@@ -339,7 +339,7 @@ class UFB_AdvancedSearch extends UserFilterBuilder
     public function __construct($include_admin = false, $include_ax = false, $envprefix = '')
     {
         $fields = array(
-            new UFBF_Name('name', 'Nom'),
+            new UFBF_Name('name', 'Nom', 'name_type'),
             new UFBF_Promo('promo1', 'Promotion', 'egal1', 'edu_type'),
             new UFBF_Promo('promo2', 'Promotion', 'egal2', 'edu_type'),
             new UFBF_Sex('woman', 'Sexe'),
@@ -836,6 +836,15 @@ class UFBF_SchoolIds extends UFB_Field
 // {{{ class UFBF_Name
 class UFBF_Name extends UFBF_Text
 {
+    private $envfieldtype;
+    private $type;
+
+    public function __construct($envfield, $formtext = '', $envfieldtype)
+    {
+        parent::__construct($envfield, $formtext);
+        $this->envfieldtype = $envfieldtype;
+    }
+
     protected function check(UserFilterBuilder $ufb)
     {
         if (!parent::check($ufb)) {
@@ -848,12 +857,21 @@ class UFBF_Name extends UFBF_Text
         if (count($this->val) == 0) {
             $this->empty = true;
         }
+        $this->type = $ufb->v($this->envfieldtype);
+        if (!in_array($this->type, array('', 'lastname', 'firstname', 'nickname'))) {
+            return $this->raise("Le critère {$this->type} n'est pas valide pour le champ %s");
+        }
         return true;
     }
 
     protected function buildUFC(UserFilterBuilder $ufb)
     {
-        return new UFC_NameTokens($this->val, array(), $ufb->b('with_soundex'), $ufb->b('exact'));
+        return new UFC_NameTokens($this->val, array(), $ufb->b('with_soundex'), $ufb->b('exact'), $this->type);
+    }
+
+    public function getEnvFieldNames()
+    {
+        return array($this->envfield, $this->envfieldtype);
     }
 }
 // }}}

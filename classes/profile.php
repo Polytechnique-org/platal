@@ -1092,13 +1092,13 @@ class Profile implements PlExportable
         if (!is_array($pids)) {
             $pids = array($pids);
         }
-        $keys = XDB::iterator("(SELECT  n.pid AS pid, n.name AS name, e.score AS score,
+        $keys = XDB::iterator("(SELECT  n.pid AS pid, n.name AS name, e.score AS score, e.general_type,
                                         IF(FIND_IN_SET('public', e.flags), 'public', '') AS public
                                   FROM  profile_name      AS n
                             INNER JOIN  profile_name_enum AS e ON (n.typeid = e.id)
                                  WHERE  n.pid IN {?} AND NOT FIND_IN_SET('not_displayed', e.flags))
                                  UNION
-                                (SELECT  n.pid AS pid, n.particle AS name, 0 AS score,
+                                (SELECT  n.pid AS pid, n.particle AS name, 0 AS score, e.general_type,
                                          IF(FIND_IN_SET('public', e.flags), 'public', '') AS public
                                    FROM  profile_name      AS n
                              INNER JOIN  profile_name_enum AS e ON (n.typeid = e.id)
@@ -1124,9 +1124,9 @@ class Profile implements PlExportable
             $token = '';
             foreach ($toks as $tok) {
                 $token = $tok . $token;
-                $names["$pid-$token"] = XDB::format('({?}, {?}, {?}, {?}, {?})',
+                $names["$pid-$token"] = XDB::format('({?}, {?}, {?}, {?}, {?}, {?})',
                                                     $token, $pid, soundex_fr($token),
-                                                    $eltScore, $key['public']);
+                                                    $eltScore, $key['public'], $key['general_type']);
             }
         }
         if ($transaction) {
@@ -1136,7 +1136,7 @@ class Profile implements PlExportable
                             WHERE  pid IN {?}',
                      $pids);
         if (count($names) > 0) {
-            XDB::rawExecute('INSERT INTO  search_name (token, pid, soundex, score, flags)
+            XDB::rawExecute('INSERT INTO  search_name (token, pid, soundex, score, flags, general_type)
                                   VALUES  ' . implode(', ', $names));
         }
         if ($transaction) {

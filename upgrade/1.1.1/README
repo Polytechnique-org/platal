@@ -1,3 +1,5 @@
 The following variable should be set:
 [Core]
 baseurl_shortener = "http://u.w4x.org/"
+
+Run bin/search.rebuild_db.php after release to enable search on firstname/lastname/nickname.

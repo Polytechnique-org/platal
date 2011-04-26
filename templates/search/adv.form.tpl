@@ -277,6 +277,12 @@ function cleanForm(f) {
         <input type="hidden" name="rechercher" value="Chercher"/>
         <input type="submit" style="display:none"/>
         <input type="text" name="name" size="32" value="{$smarty.request.name}" />
+        <select name="name_type">
+          <option value="" {if $smarty.request.name_type eq ''}selected="selected"{/if}>&nbsp;-&nbsp;</option>
+          <option value="lastname" {if $smarty.request.name_type eq 'lastname'}selected="selected"{/if}>nom</option>
+          <option value="firstname" {if $smarty.request.name_type eq 'firstname'}selected="selected"{/if}>prénom</option>
+          <option value="nickname" {if $smarty.request.name_type eq 'nickname'}selected="selected"{/if}>surnom</option>
+        </select>
       </td>
     </tr>
     <tr>

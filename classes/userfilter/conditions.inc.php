@@ -663,8 +663,9 @@ class UFC_NameTokens extends UserFilterCondition
     private $flags;
     private $soundex;
     private $exact;
+    private $general_type;
 
-    public function __construct($tokens, $flags = array(), $soundex = false, $exact = false)
+    public function __construct($tokens, $flags = array(), $soundex = false, $exact = false, $general_type = '')
     {
         if (is_array($tokens)) {
             $this->tokens = $tokens;
@@ -678,6 +679,7 @@ class UFC_NameTokens extends UserFilterCondition
         }
         $this->soundex = $soundex;
         $this->exact = $exact;
+        $this->general_type = $general_type;
     }
 
     public function buildCondition(PlFilter $uf)
@@ -694,6 +696,9 @@ class UFC_NameTokens extends UserFilterCondition
             }
             if ($this->flags != null) {
                 $c .= XDB::format(' AND ' . $sub . '.flags IN {?}', $this->flags);
+            }
+            if ($this->general_type) {
+                $c .= XDB::format(' AND ' . $sub . '.general_type = {?}', $this->general_type);
             }
             $conds[] = $c;
         }
