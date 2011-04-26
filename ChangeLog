@@ -11,6 +11,9 @@ Bug/Wish:
         - #1110: Improves email combobox                                   -JAC
         - #1459: Lists and administrates aliases on main domain            -JAC
 
+    * Events:
+        - #1475: Fixes date storage for next reminder                      -JAC
+
     * Profile:
         - #1445: Add job entry year                                        -JAC
 
