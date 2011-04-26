@@ -368,6 +368,7 @@ class RegisterModule extends PLModule
         $user = User::getSilentWithUID($uid);
         $redirect = new Redirect($user);
         $redirect->add_email($email);
+        fix_bestalias($user);
 
         // Try to start a session (so the user don't have to log in); we will use
         // the password available in Post:: to authenticate the user.
