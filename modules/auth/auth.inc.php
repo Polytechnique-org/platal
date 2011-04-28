@@ -71,7 +71,7 @@ function gpex_make($chlg, $privkey, $datafields, $charset)
                                                  FROM  email_source_account
                                                 WHERE  uid = {?} AND FIND_IN_SET(\'bestalias\', flags)',
                                               S::i('uid'));
-            $params .= gpex_prepare_param($val, (is_null($min_username) ? '', $min_username), $tohash, $charset);
+            $params .= gpex_prepare_param($val, (is_null($min_username) ? '' : $min_username), $tohash, $charset);
         } else if ($val == 'grpauth') {
             if (isset($_GET['group'])) {
                 $res = XDB::query("SELECT  perms
