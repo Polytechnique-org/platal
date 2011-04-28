@@ -775,17 +775,17 @@ class XnetGrpModule extends PLModule
         // Finds or creates account: first cases are for users with an account.
         if (!User::isForeignEmailAddress($email)) {
             // Standard account
-            $user = User::get($email);
+            $user = User::getSilent($email);
         } else if (!isvalid_email($email)) {
             // email might not be a regular email but an alias or a hruid
-            $user = User::get($email);
+            $user = User::getSilent($email);
             if (!$user) {
                 // need a valid email address
                 $page->trigError('«&nbsp;<strong>' . $email . '</strong>&nbsp;» n\'est pas une adresse email valide.');
                 return;
             }
         } else if (Env::v('x') && Env::i('userid')) {
-            $user = User::getWithUID(Env::i('userid'));
+            $user = User::getSilentWithUID(Env::i('userid'));
             if (!$user) {
                 $page->trigError('Utilisateur invalide.');
                 return;
@@ -821,7 +821,7 @@ class XnetGrpModule extends PLModule
             list($mbox, $domain) = explode('@', strtolower($email));
             $hruid = User::makeHrid($mbox, $domain, 'ext');
             // User might already have an account (in another group for example).
-            $user = User::get($hruid);
+            $user = User::getSilent($hruid);
 
             // If the user has no account yet, creates new account: build names from email address.
             if (empty($user)) {
@@ -837,9 +837,9 @@ class XnetGrpModule extends PLModule
                     $directory_name = strtoupper($lastname) . " " . $firstname;
                 }
                 XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, directory_name, firstname, lastname, email, type, state)
-                                   VALUES  ({?}, {?}, {?}, {?}, {?}, \'xnet\', \'disabled\')',
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, \'xnet\', \'disabled\')',
                              $hruid, $display_name, $full_name, $directory_name, $firstname, $lastname, $email);
-                $user = User::get($hruid);
+                $user = User::getSilent($hruid);
             }
 
             $suggest_account_activation = $this->suggest($user);
