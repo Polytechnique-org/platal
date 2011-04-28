@@ -35,6 +35,7 @@ class XnetGrpModule extends PLModule
             '%grp/annuaire'        => $this->make_hook('annuaire',              AUTH_MDP, 'groupannu'),
             '%grp/annuaire/vcard'  => $this->make_hook('vcard',                 AUTH_MDP, 'groupmember:groupannu'),
             '%grp/annuaire/csv'    => $this->make_hook('csv',                   AUTH_MDP, 'groupmember:groupannu'),
+            '%grp/directory/sync'  => $this->make_hook('directory_sync',        AUTH_MDP, 'groupadmin'),
             '%grp/trombi'          => $this->make_hook('trombi',                AUTH_MDP, 'groupannu'),
             '%grp/geoloc'          => $this->make_hook('geoloc',                AUTH_MDP, 'groupannu'),
             '%grp/subscribe'       => $this->make_hook('subscribe',             AUTH_MDP),
@@ -399,6 +400,113 @@ class XnetGrpModule extends PLModule
         pl_cached_content_headers('text/x-csv', 1);
         $page->changeTpl('xnetgrp/annuaire-csv.tpl', NO_SKIN);
         $page->assign('users', $users);
+    }
+
+    function handler_directory_sync($page)
+    {
+        global $globals;
+        require_once 'emails.inc.php';
+
+        $page->changeTpl('xnetgrp/sync.tpl');
+        Platal::load('lists', 'lists.inc.php');
+
+        if (Env::has('add_users')) {
+            S::assert_xsrf_token();
+
+            $users = array_keys(Env::v('add_users'));
+            $data = array();
+            foreach ($users as $uid) {
+                $data[] = XDB::format('({?}, {?})', $globals->asso('id'), $uid);
+            }
+            XDB::rawExecute('INSERT INTO  group_members (asso_id, uid)
+                                  VALUES  ' . implode(',', $data));
+        }
+
+        if (Env::has('add_nonusers')) {
+            S::assert_xsrf_token();
+
+            $nonusers = array_keys(Env::v('add_nonusers'));
+            foreach ($nonusers as $email) {
+                if ($user = User::getSilent($email) || !isvalid_email($email)) {
+                    continue;
+                }
+
+                list($local_part, $domain) = explode('@', strtolower($email));
+                $hruid = User::makeHrid($local_part, $domain, 'ext');
+                if ($user = User::getSilent($hruid)) {
+                    continue;
+                }
+
+                $parts = explode('.', $local_part);
+                if (count($parts) == 1) {
+                    $lastname = $display_name = $full_name = $directory_name = ucfirst($local_part);
+                    $firstname = '';
+                } else {
+                    $firstname = ucfirst($parts[0]);
+                    $lastname = ucwords(implode(' ', array_slice($parts, 1)));
+                    $display_name = $firstname;
+                    $full_name = $firstname . ' ' . $lastname;
+                    $directory_name = strtoupper($lastname) . ' ' . $firstname;
+                }
+                XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, directory_name, firstname, lastname, email, type, state)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, \'xnet\', \'disabled\')',
+                             $hruid, $display_name, $full_name, $directory_name, $firstname, $lastname, $email);
+                $uid = XDB::insertId();
+                XDB::execute('INSERT INTO  group_members (asso_id, uid)
+                                   VALUES  ({?}, {?})',
+                             $globals->asso('id'), $uid);
+            }
+        }
+
+        if (Env::has('add_users') || Env::has('add_nonusers')) {
+            $page->trigSuccess('Ajouts réalisés avec succès.');
+        }
+
+        $user = S::user();
+        $client = new MMList($user, $globals->asso('mail_domain'));
+        $lists = $client->get_lists();
+        $members = array();
+        foreach ($lists as $list) {
+            $details = $client->get_members($list['list']);
+            $members = array_merge($members, list_extract_members($details[1]));
+        }
+        $members = array_unique($members);
+        $uids = array();
+        $users = array();
+        $nonusers = array();
+        foreach ($members as $email) {
+            if ($user = User::getSilent($email)) {
+                $uids[] = $user->id();
+            } else {
+                $nonusers[] = $email;
+            }
+        }
+
+        $aliases = iterate_list_alias($globals->asso('mail_domain'));
+        foreach ($aliases as $alias) {
+            list($local_part, $domain) = explode('@', $alias);
+            $aliases_members = list_alias_members($local_part, $domain);
+            $users = array_merge($users, $aliases_members['users']);
+            $nonusers = array_merge($nonusers, $aliases_members['nonusers']);
+        }
+        foreach ($users as $user) {
+            $uids[] = $user->id();
+        }
+        $nonusers = array_unique($nonusers);
+        $uids = array_unique($uids);
+        $uids = XDB::fetchColumn('SELECT  a.uid
+                                    FROM  accounts AS a
+                                   WHERE  a.uid IN {?} AND NOT EXISTS (SELECT  *
+                                                                         FROM  group_members AS g
+                                                                        WHERE  a.uid = g.uid AND g.asso_id = {?})',
+                                 $uids, $globals->asso('id'));
+
+        $users = User::getBulkUsersWithUIDs($uids);
+        usort($users, 'User::compareDirectoryName');
+        sort($nonusers);
+
+        $page->assign('users', $users);
+        $page->assign('nonusers', $nonusers);
     }
 
     private function removeSubscriptionRequest($uid)

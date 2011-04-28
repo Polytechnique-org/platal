@@ -34,6 +34,12 @@ Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
       Ajouter un membre
     </a>
   </li>
+  <li>
+    <a href="{$platal->ns}directory/sync">
+      {icon name=arrow_refresh title="Synchroniser avec les listes"}
+      Synchroniser avec les listes
+    </a>
+  </li>
   {if $asso->has_ml}
   <li>
     <a href="{$platal->ns}admin/annuaire">

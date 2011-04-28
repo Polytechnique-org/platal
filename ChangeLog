@@ -23,6 +23,9 @@ Bug/Wish:
         - #1469: Adds search on firstname/lastname/nickname                -JAC
         - #1470: Fixes autocomplete on countries                           -JAC
 
+    * XnetGrp:
+        - #1473: Enables group filling from its MLs and aliases            -JAC
+
     * XnetList:
         - #957: Allows xnet list sorting by description and members count  -JAC
 

@@ -300,6 +300,11 @@ class User extends PlUser
         return $this->profile()->directory_name;
     }
 
+    static public function compareDirectoryName($a, $b)
+    {
+        return strcasecmp(replace_accent($a->directoryName()), replace_accent($b->directoryName()));
+    }
+
     /** Return the main profile attached with this account if any.
      */
     public function profile($forceFetch = false, $fields = 0x0000, $visibility = null)
