@@ -78,7 +78,7 @@
       <td colspan="2">
         <span id="make_X_cb">
           <input type="checkbox" name="is_x" id="is_x" onclick="$('#make_X_cb').hide(); $('#make_X_login').show()" />
-          <label for="is_x">cochez cette case si vous êtes en fait un X</label>
+          <label for="is_x">cochez cette case si vous êtes en fait un X ou un master ou doctorant de l'X</label>
         </span>
         <span id="make_X_login" style="display: none">
           <span class="titre">Identifiant (prenom.nom.promo)&nbsp;:</span>

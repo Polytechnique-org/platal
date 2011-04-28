@@ -80,7 +80,7 @@ function searchX()
       <td colspan="2">
         <input type="checkbox" id="x" name="x" onchange="xStateChange(this);" />
         {* TODO: adapts text for masters and doctorates when required. *}
-        <label for="x">Coche cette case s'il s'agit d'un X non inscrit à Polytechnique.org.</label>
+        <label for="x">Coche cette case s'il s'agit d'un X ou un master ou doctorant de l'X non inscrit à Polytechnique.org.</label>
       </td>
     </tr>
     <tr id="xnom" style="display: none">
