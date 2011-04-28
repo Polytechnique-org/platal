@@ -872,10 +872,11 @@ class EmailModule extends PLModule
 
                 $csv = fopen('php://output', 'w');
                 fputcsv($csv, array('nom', 'promo', 'bounces', 'nbmails', 'url', 'corps', 'job', 'networking'), ';');
+                $corpsList = DirEnum::getOptions(DirEnum::CURRENTCORPS);
                 foreach ($broken_user_list as $uid => $mails) {
                     $profile = Profile::get($uid);
                     $corps = $profile->getCorps();
-                    $current_corps = ($corps && $corps->current) ? $corps->current : '';
+                    $current_corps = ($corps && $corps->current) ? $corpsList[$corps->current] : '';
                     $jobs = $profile->getJobs();
                     $companies = array();
                     foreach ($jobs as $job) {
