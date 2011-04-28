@@ -389,7 +389,7 @@ class ProfileSettingCorps implements ProfileSetting
     public function getText($value)
     {
         static $pubs = array('public' => 'publique', 'ax' => 'annuaire AX', 'private' => 'privé');
-        $corpsList = DirEnum::getOptions(DirEnum::CORPS);
+        $corpsList = DirEnum::getOptions(DirEnum::ORIGINCORPS);
         $rankList  = DirEnum::getOptions(DirEnum::CORPSRANKS);
         return $corpsList[$value['current']] . ', ' . $corpsList[$value['rank']] . ' ('
             . 'corps d\'origine : ' . $corpsList[$value['original']] . ', affichage ' . $pubs[$value['pub']] . ')';
