@@ -25,17 +25,19 @@ class VCard extends PlVCard
     private $count     = 0;
     private $freetext  = null;
     private $photos    = true;
+    private $visibility;
 
     public function __construct($photos = true, $freetext = null)
     {
         PlVCard::$folding = false;
+        $this->visibility = new ProfileVisibility(ProfileVisibility::VIS_PRIVATE);
         $this->freetext = $freetext;
         $this->photos   = $photos;
     }
 
     public function addProfile($profile)
     {
-        $profile = Profile::get($profile, Profile::FETCH_ALL);
+        $profile = Profile::get($profile, Profile::FETCH_ALL, $this->visibility);
         if ($profile) {
             $this->profile_list[] = $profile;
             $this->count++;
@@ -182,8 +184,9 @@ class VCard extends PlVCard
         if ($this->photos) {
             $res = XDB::query(
                     "SELECT  attach, attachmime
-                       FROM  profile_photos AS p
-                      WHERE  p.pid = {?}", $pf->id());
+                       FROM  profile_photos
+                      WHERE  pid = {?} AND pub IN ('public', {?})",
+                    $pf->id(), $this->visibility->level());
             if ($res->numRows()) {
                 list($data, $type) = $res->fetchOneRow();
                 $entry->setPhoto($data, strtoupper($type));

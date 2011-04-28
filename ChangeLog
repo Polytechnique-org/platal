@@ -16,6 +16,7 @@ Bug/Wish:
 
     * Profile:
         - #1445: Add job entry year                                        -JAC
+        - #1478: Uses user's visibility limitations to display vcards      -JAC
 
     * Search:
         - #911: Adds search on corps                                       -JAC
