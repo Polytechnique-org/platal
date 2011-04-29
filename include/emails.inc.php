@@ -469,6 +469,7 @@ class Email
 
     // Basic email properties; $sufficient indicates if the email can be used as
     // an unique redirection; $redirect contains the delivery email address.
+    public $id;
     public $type;
     public $sufficient;
     public $email;
@@ -510,6 +511,11 @@ class Email
         }
         $this->sufficient = ($this->type == 'smtp' || $this->type == 'googleapps');
         $this->filter_level = ($this->type == 'imap') ? null : array_search($this->action, Bogo::$states);
+        if (array_key_exists($this->type , self::$storage_domains)) {
+            $this->id = $this->type;
+        } else {
+            $this->id = str_replace('@', '_at_', $this->email);
+        }
         $this->user = &$user;
     }
 

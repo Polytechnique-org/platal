@@ -136,7 +136,7 @@
         <th>&nbsp;</th>
       </tr>
       {foreach from=$emails item=e name=redirect}
-      <tr class="{cycle values="pair,impair"}" id="line_{$e->email|replace:'@':'_at_'}">
+      <tr class="{cycle values="pair,impair"}" id="line_{$e->id}">
         <td>
           <strong>
             {if $e->broken}<span class="erreur">{assign var="error" value="1"}{/if}
@@ -171,7 +171,7 @@
           </a>
           {else}
           {if $e->sufficient}<span class="remove_email"><span style="display:none">&nbsp;</span></span>{/if}
-          <a href="emails/redirect#{$e->email}">{icon name=information title="Plus d'informations"}</a>
+          <a href="emails/redirect#{$e->type}">{icon name=information title="Plus d'informations"}</a>
           {/if}
         </td>
       </tr>
