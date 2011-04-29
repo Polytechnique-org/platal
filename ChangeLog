@@ -10,6 +10,7 @@ Bug/Wish:
     * Emails:
         - #1110: Improves email combobox                                   -JAC
         - #1459: Lists and administrates aliases on main domain            -JAC
+        - #1477: Fixes display and (de)activation of email storages        -JAC
 
     * Events:
         - #1475: Fixes date storage for next reminder                      -JAC

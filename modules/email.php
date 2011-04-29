@@ -615,12 +615,12 @@ class EmailModule extends PLModule
         require_once 'emails.inc.php';
         $page->assign('ok', false);
         if (S::logged() && (is_null($user) || $user->id() == S::i('uid'))) {
-            Email::activate_storage(S::user(), 'imap');
+            Email::activate_storage(S::user(), 'imap', Bogo::IMAP_DEFAULT);
             $page->assign('ok', true);
             $page->assign('yourself', S::user()->displayName());
             $page->assign('sexe', S::user()->isFemale());
         } else if (!S::logged() && $user) {
-            Email::activate_storage($user, 'imap');
+            Email::activate_storage($user, 'imap', Bogo::IMAP_DEFAULT);
             $page->assign('ok', true);
             $page->assign('yourself', $user->displayName());
             $page->assign('sexe', $user->isFemale());

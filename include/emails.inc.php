@@ -374,6 +374,9 @@ function ids_from_mails(array $emails)
 // The Bogo class represents a spam filtering level in plat/al architecture.
 class Bogo
 {
+    const MAIN_DEFAULT = 'default';
+    const IMAP_DEFAULT = 'let_spams';
+
     public static $states = array(
         0 => 'default',
         1 => 'let_spams',
@@ -514,10 +517,14 @@ class Email
     public function activate()
     {
         if ($this->inactive) {
-            XDB::execute('UPDATE  email_redirect_account
-                             SET  broken_level = IF(flags = \'broken\', broken_level - 1, broken_level), flags = \'active\'
-                           WHERE  uid = {?} AND redirect = {?}',
-                         $this->user->id(), $this->email);
+            if ($is_storage = in_array($this->type, self::get_allowed_storages($this->user))) {
+                self::activate_storage($this->user, $this->type, $this->action);
+            } else {
+                XDB::execute('UPDATE  email_redirect_account
+                                 SET  broken_level = IF(flags = \'broken\', broken_level - 1, broken_level), flags = \'active\'
+                               WHERE  uid = {?} AND redirect = {?}',
+                             $this->user->id(), $this->email);
+            }
             S::logger()->log('email_on', $this->email . ($this->user->id() != S::v('uid') ? "(admin on {$this->user->login()})" : ''));
             $this->inactive = false;
             $this->active   = true;
@@ -528,10 +535,14 @@ class Email
     public function deactivate()
     {
         if ($this->active) {
-            XDB::execute('UPDATE  email_redirect_account
-                             SET  flags = \'inactive\'
-                           WHERE  uid = {?} AND redirect = {?}',
-                         $this->user->id(), $this->email);
+            if ($is_storage = in_array($this->type, self::get_allowed_storages($this->user))) {
+                self::deactivate_storage($this->user, $this->type);
+            } else {
+                XDB::execute('UPDATE  email_redirect_account
+                                 SET  flags = \'inactive\'
+                               WHERE  uid = {?} AND redirect = {?}',
+                             $this->user->id(), $this->email);
+            }
             S::logger()->log('email_off', $this->email . ($this->user->id() != S::v('uid') ? "(admin on {$this->user->login()})" : "") );
             $this->inactive = true;
             $this->active   = false;
@@ -617,7 +628,7 @@ class Email
     }
 
     // Returns the list of allowed storages for the @p user.
-    static private function get_allowed_storages(User $user)
+    static public function get_allowed_storages(User $user)
     {
         global $globals;
         $storages = array();
@@ -639,23 +650,33 @@ class Email
         return $storages;
     }
 
-    static public function activate_storage(User $user, $storage)
+    static public function make_storage_redirection(User $user, $storage)
+    {
+        return $user->hruid . '@' . self::$storage_domains[$storage] . '.' . Platal::globals()->mail->domain;
+    }
+
+    static public function activate_storage(User $user, $storage, $action = null)
     {
         Platal::assert(in_array($storage, self::get_allowed_storages($user)), 'Unknown storage.');
 
-        if (!self::is_active_storage($user, $storage)) {
-            global $globals;
+        // We first need to retrieve the value for the antispam filter if not
+        // provided: it is either the user's redirections common value, or if
+        // they differ, our default value.
+        if (is_null($action)) {
+            $bogo = new Bogo($user);
+            $action = ($bogo->single_state ? Bogo::$states[$bogo->state] : Bogo::MAIN_DEFAULT);
+        }
 
-            XDB::execute('INSERT INTO  email_redirect_account (uid, type, redirect, flags)
-                               VALUES  ({?}, {?}, {?}, \'active\')',
-                         $user->id(), $storage,
-                         $user->hruid . '@' . self::$storage_domains[$storage] . '.' . $globals->mail->domain);
+        if (!self::is_active_storage($user, $storage)) {
+            XDB::execute('INSERT INTO  email_redirect_account (uid, type, action, redirect, flags)
+                               VALUES  ({?}, {?}, {?}, {?}, \'active\')',
+                         $user->id(), $storage, $action, self::make_storage_redirection($user, $storage));
         }
     }
 
     static public function deactivate_storage(User $user, $storage)
     {
-        if (in_array($storage, self::$storage_domains)) {
+        if (in_array($storage, self::get_allowed_storages($user))) {
             XDB::execute('DELETE FROM  email_redirect_account
                                 WHERE  uid = {?} AND type = {?}',
                          $user->id(), $storage);
@@ -664,7 +685,7 @@ class Email
 
     static public function is_active_storage(User $user, $storage)
     {
-        if (!in_array($storage, self::$storage_domains)) {
+        if (!in_array($storage, self::get_allowed_storages($user))) {
             return false;
         }
         $res = XDB::fetchOneCell('SELECT  COUNT(*)
@@ -696,6 +717,30 @@ class Redirect
         $this->emails = array();
         while ($row = $res->next()) {
             $this->emails[] = new Email($user, $row);
+        }
+
+        if ($storages = Email::get_allowed_storages($user)) {
+            // We first need to retrieve the value for the antispam filter: it is
+            // either the user's redirections common value, or if they differ, our
+            // default value.
+            $bogo = new Bogo($user);
+            $filter = ($bogo->single_state ? Bogo::$states[$bogo->state] : Bogo::MAIN_DEFAULT);
+
+            foreach ($storages as $storage) {
+                if (!Email::is_active_storage($user, $storage)) {
+                    $this->emails[] = new Email($user, array(
+                            'redirect'      => Email::make_storage_redirection($user, $storage),
+                            'rewrite'       => '',
+                            'type'          => $storage,
+                            'action'        => $filter,
+                            'broken_date'   => 0,
+                            'broken_level'  => '0000-00-00',
+                            'last'          => '0000-00-00',
+                            'flags'         => 'inactive',
+                            'hash'          => '',
+                            'allow_rewrite' => 0));
+                }
+            }
         }
     }
 
@@ -741,7 +786,7 @@ class Redirect
         // either the user's redirections common value, or if they differ, our
         // default value.
         $bogo = new Bogo($this->user);
-        $filter = ($bogo->single_state ? Bogo::$states[$bogo->state] : Bogo::$states[0]);
+        $filter = ($bogo->single_state ? Bogo::$states[$bogo->state] : Bogo::MAIN_DEFAULT);
         // If the email was already present for this user, we reset it to the default values, we thus use REPLACE INTO.
         XDB::execute('REPLACE INTO  email_redirect_account (uid, redirect, flags, action)
                             VALUES  ({?}, {?}, \'active\', {?})',

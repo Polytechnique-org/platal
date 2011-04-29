@@ -389,7 +389,7 @@ class RegisterModule extends PLModule
                     NewsLetter::forGroup(NewsLetter::GROUP_XORG)->subscribe($user);
                     break;
                 case 'imap':
-                    Email::activate_storage($user, 'imap');
+                    Email::activate_storage($user, 'imap', Bogo::IMAP_DEFAULT);
                     break;
                 case 'ml_promo':
                     if ($isX) {
