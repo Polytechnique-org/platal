@@ -20,29 +20,60 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{config_load file="mails.conf" section="xnet_registration"}
-{if $mail_part eq 'head'}
-{subject text=#subject#}
-{from full=#from#}
-{cc full=#cc#}
-{to addr="$to"}
-{elseif $mail_part eq 'text'}
-Bonjour,
+{if $users|@count}
+<form action="{$platal->ns}directory/unact" method="post">
+  {xsrf_token_field}
+  <table cellspacing="2" cellpadding="0" class="tiny">
+    <tr>
+      <th>Nom</th>
+      <th>Email</th>
+      <th>
+        <a href="javascript:toggleAll()">{icon name="arrow_refresh" title="Tout (dé)cocher"}</a>
+      </th>
+    </tr>
+    {foreach from=$users item=user}
+    <tr>
+      <td class="checkboxToggle">{profile user=$user promo=true}</td>
+      <td class="checkboxToggle">{$user->email}</td>
+      <td class="checkboxToggle"><input type="checkbox" class="moderate_email" name="enable_accounts[{$user->id()}]" /></td>
+    </tr>
+    {/foreach}
+    <tr>
+      <td colspan="3" class="center">
+        <input type="submit" value="Inscrire au groupe" />
+      </td>
+    </tr>
+  </table>
 
-{$sender_name} nous a demandé de vous créer un compte pour que vous puissiez disposer pleinement de toutes les fonctionnalités liées au groupe {$group}.
+  <script type="text/javascript">//<![CDATA[
+  {literal}
+  var toggleState = false;
+  function toggleAll() {
+    toggleState = !toggleState;
+    var boxes = $(':checkbox.moderate_email');
+    if (toggleState) {
+      boxes.attr('checked', 'checked');
+    } else {
+      boxes.removeAttr('checked');
+    }
+  }
 
-Après activation, vos paramètres de connexion seront :
+  $('.checkboxToggle').click(function (event) {
+    // Don't uncheck the checkbox when clicking it
+    if (event.target.tagName === 'INPUT') {
+      return;
+    }
 
-identifiant  : {$hruid}
-mot de passe : celui que vous choisirez
+    var checkbox = $(this).parent().find(':checkbox');
+    checkbox = checkbox.attr('checked', !checkbox.attr('checked'));
+    event.stopPropagation();
+  });
+  {/literal}
+  //]]></script>
 
-Vous pouvez, dès à présent et pendant une période d'un mois, activer votre compte en cliquant sur le lien suivant :
-
-http://www.polytechnique.net/register/ext/{$hash}
-
-Si le lien ne fonctionne pas, copiez intégralement ce lien dans la barre d'adresse de votre navigateur.
-
-Nous espérons que vous profiterez pleinement des services en ligne de Polytechnique.net.
-{include file="include/signature.mail.tpl"}
+</form>
+{else}
+<p>Tous les inscrits au groupe ont un compte leur permettant d'accéder aux pages du groupe.</p>
 {/if}
+
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

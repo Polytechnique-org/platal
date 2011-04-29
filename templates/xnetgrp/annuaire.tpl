@@ -40,6 +40,12 @@ Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
       Synchroniser avec les listes
     </a>
   </li>
+  <li>
+    <a href="{$platal->ns}directory/unact">
+      {icon name=group_gear title="Lister les membres du groupe sans compte actif"}
+      Lister les membres du groupe sans compte actif
+    </a>
+  </li>
   {if $asso->has_ml}
   <li>
     <a href="{$platal->ns}admin/annuaire">

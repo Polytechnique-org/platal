@@ -20,39 +20,27 @@
  ***************************************************************************/
 
 
-class AccountReq extends Validate
+class BulkAccountsReq extends Validate
 {
     // {{{ properties
 
-    public $uid;
-    public $hruid;
-    public $email;
+    private $limit = 50;
+    public $users;
     public $group;
-    public $groups;
 
-    public $rules = "Accepter si l'adresse email parait correcte, et pas absurde
-        (ou si le demandeur est de confiance). Si le demandeur marque sa propre
-        adresse email, refuser dans tous les cas. Sauf abus flagrant, il n'y a
-        pas de raison de refuser des marketing perso répétés.";
+    public $rules = "Accepter si les adresses email paraissent correctes, et pas
+        absurdes et si le demandeur est de confiance.";
     // }}}
     // {{{ constructor
 
-    public function __construct(User $user, $hruid, $email, $group)
+    public function __construct(User $user, array $uids, $group)
     {
-        parent::__construct($user, false, 'account');
-        $this->hruid = $hruid;
-        $this->email = $email;
+        parent::__construct($user, false, 'bulkaccounts');
         $this->group = $group;
-        $this->uid = XDB::fetchOneCell('SELECT  uid
-                                          FROM  accounts
-                                         WHERE  hruid = {?}',
-                                       $hruid);
-        $this->groups = implode(',', XDB::fetchColumn('SELECT  g.nom
-                                                         FROM  groups AS g
-                                                   INNER JOIN  group_members AS m ON (g.id = m.asso_id)
-                                                        WHERE  m.uid = {?}
-                                                     ORDER BY  g.nom',
-                                                      $this->uid));
+        $this->users = XDB::fetchAllAssoc('SELECT  uid, hruid, email
+                                             FROM  accounts
+                                            WHERE  uid IN {?}',
+                                          $uids);
     }
 
     // }}}
@@ -60,7 +48,7 @@ class AccountReq extends Validate
 
     public function formu()
     {
-        return 'include/form.valid.account.tpl';
+        return 'include/form.valid.bulk_accounts.tpl';
     }
 
     // }}}
@@ -68,7 +56,7 @@ class AccountReq extends Validate
 
     protected function _mail_subj()
     {
-        return "[Polytechnique.org] Création d'un compte Polytechnique.net";
+        return "[Polytechnique.org] Création de comptes Polytechnique.net";
     }
 
     // }}}
@@ -77,9 +65,9 @@ class AccountReq extends Validate
     protected function _mail_body($isok)
     {
         if ($isok) {
-            return "  Un email vient d'être envoyé à {$this->email} pour qu'il puisse activer son compte sur Polytechnique.net.";
+            return "  Un email vient d'être envoyé aux personnes concernées pour qu'elles puissent activer leur compte sur Polytechnique.net.";
         } else {
-            return "  Nous n'avons pas jugé bon d'envoyer d'email à {$this->email} pour qu'il puisse activer son compte sur Polytechnique.net.";
+            return "  Nous n'avons pas jugé bon d'activer les comptes Polytechnique.net demandés.";
         }
     }
 
@@ -88,10 +76,23 @@ class AccountReq extends Validate
 
     public function commit()
     {
-        $hash = rand_url_id(12);
-        XDB::execute('INSERT INTO  register_pending_xnet (uid, hruid, email, date, hash, sender_name, group_name)
-                           VALUES  ({?}, {?}, {?}, NOW(), {?}, {?}, {?})',
-                     $this->uid, $this->hruid, $this->email, $hash, $this->user->fullName(), $this->group);
+        $values = array();
+        $i = 0;
+        foreach ($this->users as $user) {
+            $values[] = XDB::format('({?}, {?}, {?}, NOW(), {?}, {?}, {?})',
+                                    $user['uid'], $user['hruid'], $user['email'], rand_url_id(12), $this->user->fullName(), $this->group);
+
+            if ($i == $this->limit) {
+                XDB::rawExecute('INSERT INTO  register_pending_xnet (uid, hruid, email, date, hash, sender_name, group_name)
+                                      VALUES  ' . implode(', ', $values));
+                $i = 0;
+                $values = array();
+            } else {
+                ++$i;
+            }
+        }
+        XDB::rawExecute('INSERT INTO  register_pending_xnet (uid, hruid, email, date, hash, sender_name, group_name)
+                              VALUES  ' . implode(', ', $values));
 
         return true;
     }
@@ -103,13 +104,15 @@ class AccountReq extends Validate
     {
         $res = XDB::iterRow('SELECT  data
                                FROM  requests
-                              WHERE  type = \'account\'
+                              WHERE  type = \'bulk_accounts\'
                            ORDER BY  stamp');
 
         while (list($data) = $res->next()) {
             $request = Validate::unserialize($data);
-            if ($request->uid == $uid) {
-                return true;
+            foreach ($request->users as $user) {
+                if ($user['uid'] == $uid) {
+                    return true;
+                }
             }
         }
         return false;

@@ -36,6 +36,7 @@ class XnetGrpModule extends PLModule
             '%grp/annuaire/vcard'  => $this->make_hook('vcard',                 AUTH_MDP, 'groupmember:groupannu'),
             '%grp/annuaire/csv'    => $this->make_hook('csv',                   AUTH_MDP, 'groupmember:groupannu'),
             '%grp/directory/sync'  => $this->make_hook('directory_sync',        AUTH_MDP, 'groupadmin'),
+            '%grp/directory/unact' => $this->make_hook('non_active',            AUTH_MDP, 'groupadmin'),
             '%grp/trombi'          => $this->make_hook('trombi',                AUTH_MDP, 'groupannu'),
             '%grp/geoloc'          => $this->make_hook('geoloc',                AUTH_MDP, 'groupannu'),
             '%grp/subscribe'       => $this->make_hook('subscribe',             AUTH_MDP),
@@ -509,6 +510,45 @@ class XnetGrpModule extends PLModule
         $page->assign('nonusers', $nonusers);
     }
 
+    function handler_non_active($page)
+    {
+        global $globals;
+        $page->changeTpl('xnetgrp/non_active.tpl');
+
+        $uids = XDB::fetchColumn('SELECT  g.uid
+                                    FROM  group_members         AS g
+                              INNER JOIN  accounts              AS a ON (a.uid = g.uid)
+                               LEFT JOIN  register_pending_xnet AS p ON (p.uid = g.uid)
+                                   WHERE  a.uid = g.uid AND g.asso_id = {?} AND a.type = \'xnet\' AND a.state = \'disabled\' AND p.uid IS NULL',
+                                 $globals->asso('id'));
+        foreach ($uids as $key => $uid) {
+            if (AccountReq::isPending($uid) || BulkAccountsReq::isPending($uid)) {
+                unset($uids[$key]);
+            }
+        }
+
+        if (Post::has('enable_accounts')) {
+            S::assert_xsrf_token();
+
+            $uids_to_enable = array_intersect(array_keys(Post::v('enable_accounts')), $uids);
+
+            $user = S::user();
+            $group = Platal::globals()->asso('nom');
+            $request = new BulkAccountsReq($user, $uids_to_enable, $group);
+            $request->submit();
+            $page->trigSuccess('Un email va bientôt être envoyé aux personnes sélectionnées pour l\'activation de leur compte.');
+
+            foreach ($uids as $key => $uid) {
+                if (in_array($uid, $uids_to_enable)) {
+                    unset($uids[$key]);
+                }
+            }
+        }
+
+        $users = User::getBulkUsersWithUIDs($uids);
+        $page->assign('users', $users);
+    }
+
     private function removeSubscriptionRequest($uid)
     {
         global $globals;
@@ -869,7 +909,7 @@ class XnetGrpModule extends PLModule
                                         FROM  register_pending_xnet
                                        WHERE  uid = {?}',
                                      $user->id());
-        $requested = AccountReq::isPending($user->id());
+        $requested = AccountReq::isPending($user->id()) || BulkAccountsReq::isPending($user->id());
 
         if ($active || $pending || $requested) {
             return false;

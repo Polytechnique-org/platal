@@ -41,4 +41,7 @@ WD=/home/web/prod/platal/bin/cron
 # Clean-up of our logging tables
 45 0 1 * *	web	cd $WD; ./compliance.php | mail -e -s "Logging compliance" br@staff.m4x.org
 
+# xnet accounts creation
+0 * * * *	web	cd $WD; ./cron_xnet_accounts.php
+
 # vim:set noet syntax=crontab ts=8 sw=8 sts=8 enc=utf-8:

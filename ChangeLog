@@ -1,6 +1,11 @@
 ================================================================================
 VERSION 1.1.1                                                         XX XX XXXX
 
+New:
+
+    * XnetGrp:
+        - Enables creation of multiple Xnet accounts for groups            -JAC
+
 Bug/Wish:
 
     * Auth:
