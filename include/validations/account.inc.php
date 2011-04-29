@@ -98,7 +98,7 @@ class AccountReq extends Validate
                      $this->uid, $this->hruid, $this->email, $hash);
 
         $mailer = new PlMailer('xnet/account.mail.tpl');
-        $mailer->addTo($this->email);
+        $mailer->setTo($this->email);
         $mailer->assign('hash', $hash);
         $mailer->assign('hruid', $this->hruid);
         $mailer->assign('group', $this->group);
@@ -118,12 +118,13 @@ class AccountReq extends Validate
                               WHERE  type = \'account\'
                            ORDER BY  stamp');
 
-        $is_pending = false;
         while (list($data) = $res->next()) {
             $request = Validate::unserialize($data);
-            $is_pending = ($is_pending || ($request->uid == $uid));
+            if ($request->uid == $uid) {
+                return true;
+            }
         }
-        return $is_pending;
+        return false;
     }
 
     // }}}
