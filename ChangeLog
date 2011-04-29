@@ -15,6 +15,9 @@ Bug/Wish:
     * Events:
         - #1475: Fixes date storage for next reminder                      -JAC
 
+    * Newsletter:
+        - #1394: Links nl unsubscribtions to the issues that caused them   -JAC
+
     * Profile:
         - #1445: Add job entry year                                        -JAC
         - #1478: Uses user's visibility limitations to display vcards      -JAC

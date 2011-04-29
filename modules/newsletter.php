@@ -48,7 +48,7 @@ class NewsletterModule extends PLModule
         return NewsLetter::forGroup(NewsLetter::GROUP_XORG);
     }
 
-    function handler_nl($page, $action = null, $hash = null)
+    function handler_nl($page, $action = null, $hash = null, $issue_id = null)
     {
         $nl = $this->getNl();
         if (!$nl) {
@@ -58,8 +58,9 @@ class NewsletterModule extends PLModule
         $page->changeTpl('newsletter/index.tpl');
         $page->setTitle('Lettres mensuelles');
 
+        $hash = ($hash == 'nohash') ? null : $hash;
         switch ($action) {
-          case 'out': $nl->unsubscribe($hash, $hash != null); break;
+          case 'out': $nl->unsubscribe($issue_id, $hash, $hash != null); break;
           case 'in':  $nl->subscribe(); break;
           default: ;
         }

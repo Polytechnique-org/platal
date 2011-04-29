@@ -321,7 +321,7 @@ class NewsLetter
      * @p $hash True if the uid is actually a hash.
      * @return True if the user was successfully unsubscribed.
      */
-    public function unsubscribe($uid = null, $hash = false)
+    public function unsubscribe($issue_id = null, $uid = null, $hash = false)
     {
         if (is_null($uid) && $hash) {
             // Unable to unsubscribe from an empty hash
@@ -342,6 +342,12 @@ class NewsLetter
         XDB::execute('DELETE FROM  newsletter_ins
                             WHERE  nlid = {?} AND uid = {?}',
                             $this->id, $user);
+        if (!is_null($issue_id)) {
+            XDB::execute('UPDATE  newsletter_issues
+                             SET  unsubscribe = unsubscribe + 1
+                           WHERE  id = {?}',
+                         $id);
+        }
         return true;
     }
 
