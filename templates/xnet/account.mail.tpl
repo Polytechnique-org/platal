@@ -24,7 +24,6 @@
 {if $mail_part eq 'head'}
 {subject text=#subject#}
 {from full=#from#}
-{cc full=#cc#}
 {to addr="$to"}
 {elseif $mail_part eq 'text'}
 Bonjour,

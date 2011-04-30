@@ -31,6 +31,7 @@ $users = XDB::fetchAllAssoc('SELECT  a.uid, a.hruid, r.hash, r.group_name, r.sen
                            ORDER BY  r.date, a.uid');
 
 $mailer = new PlMailer('xnet/account.mail.tpl');
+$mailer->addCc('validation+xnet_account@polytechnique.org');
 
 $i = 0;
 foreach ($users as $user) {
