@@ -523,7 +523,7 @@ class Email
     public function activate()
     {
         if ($this->inactive) {
-            if ($is_storage = in_array($this->type, self::get_allowed_storages($this->user))) {
+            if (in_array($this->type, self::get_allowed_storages($this->user))) {
                 self::activate_storage($this->user, $this->type, $this->action);
             } else {
                 XDB::execute('UPDATE  email_redirect_account
@@ -541,7 +541,7 @@ class Email
     public function deactivate()
     {
         if ($this->active) {
-            if ($is_storage = in_array($this->type, self::get_allowed_storages($this->user))) {
+            if (in_array($this->type, self::get_allowed_storages($this->user))) {
                 self::deactivate_storage($this->user, $this->type);
             } else {
                 XDB::execute('UPDATE  email_redirect_account
