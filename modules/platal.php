@@ -340,8 +340,8 @@ Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la
 Polytechnique.org
 \"Le portail des élèves & anciens élèves de l'École polytechnique\"
 
-Email envoyé à ".Env::v('login') . (Post::has('email') ? "
-Adresse de secours : " . Post::v('email') : ""));
+Email envoyé à ".Env::v('login') . (is_null($to) ? '' : '
+Adresse de secours : ' . $to));
         $mymail->send();
 
         S::logger($user->id())->log('recovery', is_null($to) ? $inactives_to . ', ' . $user->bestEmail() : $to);
