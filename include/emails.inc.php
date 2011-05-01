@@ -514,7 +514,7 @@ class Email
         if (array_key_exists($this->type , self::$storage_domains)) {
             $this->id = $this->type;
         } else {
-            $this->id = str_replace('@', '_at_', $this->email);
+            $this->id = str_replace(array('@', '.'), array('_at_', '_dot_'), $this->email);
         }
         $this->user = &$user;
     }

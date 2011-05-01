@@ -84,7 +84,7 @@
     {
         if (confirm("Supprimer l'adresse " + email + " ?")) {
           $.get(link.href, {},function() {
-            $('#line_' + email.replace('@', '_at_').replace('.', '\\.')).remove();
+            $('#line_' + email.replace('@', '_at_').replace(/\./g, '_dot_')).remove();
             showRemove();
             activeEnable();
           });
