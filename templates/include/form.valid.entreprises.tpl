@@ -29,14 +29,20 @@
   <td class="titre">Noms similaires existants&nbsp;:</td>
   <td>
     <span id="{$valid->type}_{$valid->profile->id()}_{$valid->stamp}_truncated"
-          onclick="$('#{$valid->type}_{$valid->profile->id()}_{$valid->stamp}_truncated').toggle();
-                   $('#{$valid->type}_{$valid->profile->id()}_{$valid->stamp}_full').toggle()">
+          onclick="$('#{$valid->type}_{$valid->profile->id()}_{$valid->stamp}_truncated').hide();
+                   $('#{$valid->type}_{$valid->profile->id()}_{$valid->stamp}_full').show()">
       {$valid->suggestions|truncate:200:"&hellip; <strong><small>(cliquez pour tout afficher)</small></strong>"}
     </span>
-    <span id="{$valid->type}_{$valid->profile->id()}_{$valid->stamp}_full" style="display: none"
-          onclick="$('#{$valid->type}_{$valid->profile->id()}_{$valid->stamp}_truncated').toggle();
-                   $('#{$valid->type}_{$valid->profile->id()}_{$valid->stamp}_full').toggle()">
+    <span id="{$valid->type}_{$valid->profile->id()}_{$valid->stamp}_full" style="display: none" >
+      <span onclick="$('#{$valid->type}_{$valid->profile->id()}_{$valid->stamp}_truncated').show();
+                     $('#{$valid->type}_{$valid->profile->id()}_{$valid->stamp}_full').hide();">
+        {icon name=delete title="Cacher les suggestions"}
+      </span>
       {$valid->suggestions}
+      <span onclick="$('#{$valid->type}_{$valid->profile->id()}_{$valid->stamp}_truncated').show();
+                     $('#{$valid->type}_{$valid->profile->id()}_{$valid->stamp}_full').hide();">
+        {icon name=delete title="Cacher les suggestions"}
+      </span>
     </span>
   </td>
 </tr>
