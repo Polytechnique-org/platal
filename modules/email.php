@@ -72,9 +72,10 @@ class EmailModule extends PLModule
                            WHERE  uid = {?} AND email = {?}", $user->id(), $email);
             XDB::execute('UPDATE  accounts              AS a
                       INNER JOIN  email_virtual_domains AS d ON (d.name = {?})
+                      INNER JOIN  email_virtual_domains AS m ON (d.aliasing = m.id)
                              SET  a.best_domain = d.id
-                           WHERE  a.uid = {?}',
-                         $domain, $user->id());
+                           WHERE  a.uid = {?} AND m.name = {?}',
+                         $domain, $user->id(), $user->mainEmailDomain());
 
             // As having a non-null bestalias value is critical in
             // plat/al's code, we do an a posteriori check on the
