@@ -34,7 +34,7 @@
                       document.location = myUrl;
                     },
              success: function(data) {
-                        if ({/literal}{if !$wiz_animated}true || {/if}{literal}is_IE) {
+                        if ({/literal}{if !$wiz_animated}true || {/if}{literal}$.browser.msie) {
                           $(".wiz_tab").removeClass("active");
                           $("#wiz_tab_" + id).addClass("active");
                           $(".wiz_content").html(data);
