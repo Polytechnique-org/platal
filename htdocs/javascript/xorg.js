@@ -179,7 +179,7 @@ function auto_links() {
         }
         if ((!href.contains(fqdn) && !this.className.contains('popup')) || node.hasClass('popup')) {
             node.click(function () {
-                window.open(href);
+                window.open(this.href);
                 return false;
             });
         }
