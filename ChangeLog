@@ -12,10 +12,14 @@ Bug/Wish:
         - #1474: Provides accounts data for accounts without profile       -JAC
         - #1476: Logs last use of Auth-Groupe-X keys                       -JAC
 
+    * Core:
+        - #1484: Fix reference to is_IE that does not exist anymore        -FRU
+
     * Emails:
         - #1110: Improves email combobox                                   -JAC
         - #1459: Lists and administrates aliases on main domain            -JAC
         - #1477: Fixes display and (de)activation of email storages        -JAC
+        - #1479: Fixes display of corps in bounce list                     -JAC
 
     * Events:
         - #1475: Fixes date storage for next reminder                      -JAC
