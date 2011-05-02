@@ -280,7 +280,7 @@ class CarnetModule extends PLModule
         }
         switch (Env::v('action')) {
             case 'retirer':
-                if (($contact = User::get(Env::v('user')))) {
+                if (($contact = Profile::get(Env::v('user')))) {
                     if (XDB::execute("DELETE FROM  contacts
                                             WHERE  uid = {?} AND contact = {?}",
                                      $uid, $contact->id())) {
@@ -291,7 +291,7 @@ class CarnetModule extends PLModule
                 break;
 
             case 'ajouter':
-                if (($contact = User::get(Env::v('user')))) {
+                if (($contact = Profile::get(Env::v('user')))) {
                     XDB::execute('INSERT IGNORE INTO  contacts (uid, contact)
                                               VALUES  ({?}, {?})',
                                  $uid, $contact->id());
