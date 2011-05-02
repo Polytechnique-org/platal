@@ -2,7 +2,12 @@
 VERSION 1.1.4                                                         XX XX XXXX
 
 New:
+
     * #1204: Add smarty prefilter to allow access to const field of classes -JAC
+
+Bug:
+
+    * #1482: Open the current href instead of the href the intial markup    -FRU
 
 From branch 1.1.3:
 
