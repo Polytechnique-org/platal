@@ -114,7 +114,7 @@ class ProfilePageGroups extends ProfilePage
                                                    FROM  groups    AS a
                                              INNER JOIN  group_members AS m ON (m.asso_id = a.id)
                                                   WHERE  m.uid = {?} AND (a.cat = 'GroupesX' OR a.cat = 'Institutions')",
-                                                $this->pid()));
+                                                $this->owner->id()));
         $page->assign('listgroups', XDB::iterator("SELECT  a.nom, a.diminutif, a.sub_url,
                                                            IF (a.cat = 'Institutions', a.cat, d.nom) AS dom
                                                      FROM  groups  AS a
