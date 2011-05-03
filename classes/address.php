@@ -316,8 +316,6 @@ class Address
     public $south = null;
     public $east = null;
     public $west = null;
-    public $geocodedText = null;
-    public $geocodeChosen = null;
 
     // Database's field required for both 'home' and 'job' addresses.
     public $pub = 'ax';
@@ -580,17 +578,8 @@ class Address
         $this->postalText = $text;
     }
 
-    public function format(array $format = array())
+    public function format()
     {
-        if (empty($format)) {
-            $format['requireGeocoding'] = false;
-            $format['stripGeocoding'] = false;
-            $format['postalText'] = false;
-        } else {
-            foreach (array('requireGeocoding', 'stripGeocoding', 'postalText') as $type) {
-                $format[$type] = (isset($format[$type])) ? $format[$type] : false;
-            }
-        }
         $this->text = trim($this->text);
         $this->phones = Phone::formatFormArray($this->phones, $this->error, new ProfileVisibility($this->pub));
         if ($this->removed == 1) {
@@ -602,30 +591,19 @@ class Address
             }
         }
 
-        if ($format['requireGeocoding'] || $this->changed == 1) {
+        $this->formatPostalAddress();
+        if ($this->changed == 1) {
             $gmapsGeocoder = new GMapsGeocoder();
             $gmapsGeocoder->getGeocodedAddress($this);
-            $this->changed = 0;
-            $this->error = !empty($this->geocodedText);
         }
-        if ($format['stripGeocoding'] || ($this->type == self::LINK_COMPANY && $this->error) || $this->geocodeChosen === '0') {
-            if ($this->geocodeChosen === '0') {
-                $mailer = new PlMailer('profile/geocoding.mail.tpl');
-                $mailer->assign('text', $this->text);
-                $mailer->assign('geoloc', $this->geocodedText);
-                $mailer->send();
-            }
-            $gmapsGeocoder = new GMapsGeocoder();
-            $gmapsGeocoder->stripGeocodingFromAddress($this);
+        foreach (array('administrativeArea', 'subAdministrativeArea', 'locality') as $area) {
+            Geocoder::getAreaId($this, $area);
         }
         if ($this->countryId == '') {
             $this->countryId = null;
         }
-        $this->geocodeChosen = null;
-        if ($format['postalText']) {
-            $this->formatPostalAddress();
-        }
-        return !$this->error;
+
+        return true;
     }
 
     public function toFormArray()
@@ -655,10 +633,6 @@ class Address
             'changed'                        => $this->changed,
             'removed'                        => $this->removed,
         );
-        if (!is_null($this->geocodedText)) {
-            $address['geocodedText'] = $this->geocodedText;
-            $address['geocodeChosen'] = $this->geocodeChosen;
-        }
 
         if ($this->type == self::LINK_PROFILE || $this->type == self::LINK_JOB) {
             $address['pub'] = $this->pub;
@@ -723,14 +697,7 @@ class Address
 
     public function save()
     {
-        static $areas = array('administrativeArea', 'subAdministrativeArea', 'locality');
-
-        $this->format(array('postalText' => true));
         if (!$this->isEmpty()) {
-            foreach ($areas as $area) {
-                Geocoder::getAreaId($this, $area);
-            }
-
             XDB::execute('INSERT IGNORE INTO  profile_addresses (pid, jobid, groupid, type, id, flags, accuracy,
                                                                  text, postalText, postalCode, localityId,
                                                                  subAdministrativeAreaId, administrativeAreaId,

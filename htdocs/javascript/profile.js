@@ -333,20 +333,6 @@ function addressChanged(prefid)
     $('#' + prefid + '_cont').find('[name*=changed]').val("1");
 }
 
-function validGeoloc(prefid, id, geoloc)
-{
-    if (geoloc == 1) {
-        $('#' + prefid + '_cont').find('[name*=text]').val($('#' + prefid + '_cont').find('[name*=geocodedText]').val());
-        $('#' + prefid + '_cont').find('[name*=postalText]').val('');
-    }
-    if (geoloc > 0) {
-        $('#' + prefid + '_cont').find("[name*='[geocodedText]']").remove();
-    }
-    $('#' + prefid + '_cont').find('[name*=text]').removeClass('error');
-    $('#' + prefid + '_cont').find('[name*=geocodeChosen]').val(geoloc);
-    $('.' + prefid + '_geoloc').remove();
-}
-
 // {{{1 Phones
 
 function addTel(prefid, prefname, subField, mainField, mainId)

@@ -20,33 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if t($address.geocodedText)}
-<div class="erreur center {$prefid}_geoloc">
-  Le géocodage n'a pas donné un résultat certain&nbsp;! Tu as le choix entre&nbsp;:
-</div>
-<div class="{$prefid}_geoloc">
-  <ul>
-    <li><a href="javascript:validGeoloc('{$prefid}','{$id}',2)"
-           title="Garder le texte de l'adresse que tu as renseignée tout en utilisant les informations trouvées par le géocodage pour te localiser sur le planisphère et dans lors d'une recherche dans l'annuaire.">
-      le texte de ton adresse localisé à l'endroit que nous te suggérons</a>.</li>
-    <li><a href="javascript:validGeoloc('{$prefid}','{$id}',0)" style="color: red">ton adresse (à gauche)</a>&nbsp;;</li>
-    <li><a href="javascript:validGeoloc('{$prefid}','{$id}',1)" style="color: green">notre suggestion (à droite)</a>&nbsp;;</li>
-  </ul>
-</div>
-{/if}
-
-<div>
-  <textarea name="{$prefname}[text]" cols="30" rows="4" onkeyup="addressChanged('{$prefid}')"
-            {if t($address.geocodedText)}class="error"{/if}>{$address.text}</textarea>
-{if t($address.geocodedText)}
-  <textarea cols="30" rows="4" class="valid {$prefid}_geoloc">{$address.geocodedText}</textarea>
-{/if}
-</div>
-{if !$isMe}<div><small><strong>Adress postale&nbsp;:</strong><br />{$address.postalText|nl2br}</small></div>{/if}
-{if t($address.geocodedText)}
-<input type="hidden" name="{$prefname}[geocodeChosen]" value="1" />
-<input type="hidden" name="{$prefname}[geocodedText]" value="{$address.geocodedText}" />
-{/if}
+<div><textarea name="{$prefname}[text]" cols="30" rows="4" onkeyup="addressChanged('{$prefid}')">{$address.text}</textarea></div>
 <input type="hidden" name="{$prefname}[accuracy]" value="{$address.accuracy}" />
 <input type="hidden" name="{$prefname}[postalText]" value="{$address.postalText}" />
 <input type="hidden" name="{$prefname}[postalCode]" value="{$address.postalCode}" />
