@@ -283,6 +283,25 @@ class Profile implements PlExportable
         return 0;
     }
 
+    // Returns the profile's color.
+    public function promoColor()
+    {
+        switch ($this->mainEducation()) {
+          case 'X':
+            if (($this->yearpromo() % 2) === 0) {
+                return 'red';
+            } else {
+                return 'yellow';
+            }
+          case 'M':
+            return 'green';
+          case 'D':
+            return 'blue';
+          default:
+            return 'gray';
+        }
+    }
+
     /** Print a name with the given formatting:
      * %s = • for women
      * %f = firstname
