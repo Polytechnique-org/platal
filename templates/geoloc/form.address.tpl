@@ -41,8 +41,10 @@
   </td>
   <td>
   {if t($address.latitude)}
-    <img src="https://maps.googleapis.com/maps/api/staticmap?size=300x80&amp;markers=color:{$profile->promoColor()}%7C{$address.longitude},{$address.latitude}&amp;zoom=10&amp;sensor=false"
+    <img src="https://maps.googleapis.com/maps/api/staticmap?size=300x100&amp;markers=color:{$profile->promoColor()}%7C{$address.longitude},{$address.latitude}&amp;zoom=12&amp;sensor=false"
          alt="Position de l'adresse" />
+    <br />
+    <small><a href="javascript:deleteGeocoding()">{icon name=cross title="Adresse mal localisée"} Signaler que le repère est mal placé</a></small>
   {/if}
   </td>
 </tr>
