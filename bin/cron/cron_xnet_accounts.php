@@ -37,7 +37,7 @@ $i = 0;
 foreach ($users as $user) {
     $mailer->setTo($user['email']);
     $mailer->assign('hash', $user['hash']);
-    $mailer->assign('hruid', $user['hruid']);
+    $mailer->assign('email', $user['email']);
     $mailer->assign('group', $user['group_name']);
     $mailer->assign('sender_name', $user['sender_name']);
     $mailer->send();

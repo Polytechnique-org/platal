@@ -32,7 +32,7 @@ Bonjour,
 
 Après activation, vos paramètres de connexion seront :
 
-identifiant  : {$hruid}
+identifiant  : {$email}
 mot de passe : celui que vous choisirez
 
 Vous pouvez, dès à présent et pendant une période d'un mois, activer votre compte en cliquant sur le lien suivant :

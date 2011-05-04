@@ -35,11 +35,12 @@ class XnetSession extends XorgSession
         }
 
         if (!S::logged() && Post::has('auth_type') && Post::v('auth_type') == 'xnet' && !Post::has('wait')) {
+            $email = Post::v('username');
             $type = XDB::fetchOneCell('SELECT  type
                                          FROM  accounts
-                                        WHERE  hruid = {?}',
-                                      Post::v('username'));
-            if (!is_null($type) && $type != 'xnet') {
+                                        WHERE  email = {?}',
+                                      $email);
+            if ((!is_null($type) && $type != 'xnet') || !User::isForeignEmailAddress($email)) {
                 Platal::page()->trigErrorRedirect('Ce formulaire d\'authentification est réservé aux extérieurs à la communauté polytechnicienne.', '');
             }
 

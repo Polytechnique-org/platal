@@ -269,7 +269,7 @@ class XnetModule extends PLModule
             Platal::session()->startAvailableAuth();
 
             $page->changeTpl('xnet/register.success.tpl');
-            $page->assign('hruid', $res['hruid']);
+            $page->assign('email', $res['email']);
         } else {
             $page->changeTpl('platal/password.tpl');
             $page->assign('xnet', true);
@@ -336,7 +336,7 @@ Email envoyé à " . Post::t('login'));
             $page->trigErrorRedirect("Cette adresse n'existe pas ou n'existe plus sur le serveur.", '');
         }
 
-        $hruid = XDB::fetchOneCell('SELECT  hruid
+        $email = XDB::fetchOneCell('SELECT  email
                                       FROM  accounts
                                      WHERE  uid = {?}',
                                    $uid);
@@ -359,11 +359,11 @@ Email envoyé à " . Post::t('login'));
             Platal::session()->startAvailableAuth();
 
             $page->changeTpl('xnet/register.success.tpl');
-            $page->assign('hruid', $hruid);
+            $page->assign('email', $email);
         } else {
             $page->changeTpl('platal/password.tpl');
             $page->assign('xnet_reset', true);
-            $page->assign('hruid', $hruid);
+            $page->assign('email', $email);
             $page->assign('do_auth', 1);
         }
     }

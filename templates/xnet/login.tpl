@@ -25,10 +25,10 @@
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit='doChallengeResponse(); return false;'>
   <table class="bicol">
     <tr>
-      <td class="titre">Identifiant&nbsp;:</td>
+      <td class="titre">Identifiant (adresse email)&nbsp;:</td>
       <td>
         <input type="text" name="username" />
-        <input type="hidden" name="domain" value="hruid" />
+        <input type="hidden" name="domain" value="email" />
       </td>
     </tr>
     <tr>
