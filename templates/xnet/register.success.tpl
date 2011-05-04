@@ -30,7 +30,7 @@
   profiter dès à présent des multiples fonctionnalités de Polytechnique.net.
 </p>
 <p>
-  Pour rappel, votre identifiant est&nbsp;: <strong>{$hruid}</strong>
+  Pour rappel, votre identifiant est&nbsp;: <strong>{$email}</strong>
 </p>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

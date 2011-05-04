@@ -67,9 +67,9 @@
       </tr>
       <tr>
         <td>
-          <input type="hidden" name="username" value="{$hruid}" />
+          <input type="hidden" name="username" value="{$email}" />
           <input type="hidden" name="password" value="" />
-          <input type="hidden" name="domain" value="hruid" />
+          <input type="hidden" name="domain" value="email" />
         </td>
         <td {popup caption='Connexion permanente' width='300' text='Décocher cette case pour que le site oublie ce navigateur.<br />
           Il est conseillé de décocher la case si cette machine n\'est pas <b>strictement</b> personnelle'} colspan="2">

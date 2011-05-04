@@ -59,7 +59,7 @@ Si vous n'accéder pas à cet email dans les 6 heures, sollicitez un nouveau cer
     </tr>
     <tr>
       <td class="titre">
-        Identifiant&nbsp;:
+        Identifiant (adresse email)&nbsp;:
       </td>
       <td>
         <input type="text" size="20" maxlength="255" name="login" />
