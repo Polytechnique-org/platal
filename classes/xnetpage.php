@@ -128,6 +128,9 @@ class XnetPage extends PlPage
                 $sub['créer une liste']     = "$dim/lists/create";
                 $sub['créer un alias']      = "$dim/alias/create";
             }
+            if (!$globals->asso('has_nl')) {
+                $sub['créer la newsletter'] = "$dim/admin/nl/enable";
+            }
             if (S::admin()) {
                 $sub['gérer les groupes'] = array('href' => 'admin', 'style' => 'color: gray;');
                 $sub['clear cache'] = array('href' => 'purge_cache?token=' . S::v('xsrf_token'), 'style' => 'color: gray;');

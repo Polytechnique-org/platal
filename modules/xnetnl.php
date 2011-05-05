@@ -30,6 +30,7 @@ class XnetNlModule extends NewsletterModule
             '%grp/nl/show'              => $this->make_hook('nl_show',         AUTH_MDP),
             '%grp/nl/search'            => $this->make_hook('nl_search',       AUTH_MDP),
             '%grp/admin/nl'             => $this->make_hook('admin_nl',        AUTH_MDP, 'groupadmin'),
+            '%grp/admin/nl/enable'      => $this->make_hook('admin_nl_enable', AUTH_MDP, 'groupadmin'),
             '%grp/admin/nl/edit'        => $this->make_hook('admin_nl_edit',   AUTH_MDP, 'groupadmin'),
             '%grp/admin/nl/edit/cancel' => $this->make_hook('admin_nl_cancel', AUTH_MDP, 'groupadmin'),
             '%grp/admin/nl/edit/valid'  => $this->make_hook('admin_nl_valid',  AUTH_MDP, 'groupadmin'),
@@ -42,6 +43,36 @@ class XnetNlModule extends NewsletterModule
        global $globals;
        $group = $globals->asso('shortname');
        return NewsLetter::forGroup($group);
+    }
+
+    public function handler_admin_nl_enable($page)
+    {
+        global $globals;
+        $nl = $this->getNl();
+        if ($nl) {
+            return PL_FORBIDDEN;
+        }
+
+        if (Post::has('title')) {
+            if (!S::has_xsrf_token()) {
+                return PL_FORBIDDEN;
+            }
+
+            XDB::execute('INSERT INTO  newsletters
+                                  SET  group_id = {?}, name = {?}',
+                                  $globals->asso('id'), Post::s('title'));
+
+            $mailer = new PlMailer();
+            $mailer->assign('group', $globals->asso('nom'));
+            $mailer->assign('user', S::user());
+            $mailer->send();
+
+            $page->trigSuccessRedirect("La lettre d'informations du groupe " .
+                                       $globals->asso('nom') . " a bien été créée",
+                                       $globals->asso('shortname') . '/admin/nl');
+        }
+        $page->setTitle('Activation de la newsletter');
+        $page->changeTpl('newsletter/enable.tpl');
     }
 }
 
