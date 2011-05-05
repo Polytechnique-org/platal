@@ -116,7 +116,7 @@
         {/if}
       </th>
     </tr>
-    {foreach from=$t->vars item=myval}{assign var="myfield" value=$myval.Field}{if ($myfield neq $t->idfield) or ($t->idfield_editable)}
+    {foreach from=$t->vars item=myval}{assign var="myfield" value=$myval.Field}{if (($myfield neq $t->idfield) or ($t->idfield_editable)) and $myval.display}
     <tr class="{cycle values="pair,impair"}">
       <td>
         <strong>{$myval.desc}</strong>

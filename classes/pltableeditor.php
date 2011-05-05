@@ -54,6 +54,17 @@ class PLTableEditor
     public $nbfields;
     // a where clause to restrict table
     public $whereclause;
+    /** Forced values
+     * This is an associative array of (field, value) to enforce.
+     * Only rows where each of the fields has the specified value will
+     * be selected; and added values will use these values for these fields:
+     *
+     * $forced_values = array('foo', 'bar')
+     * => Selects rows with WHERE foo = 'bar'
+     * => Insertions are done with SET foo = 'bar'
+     */
+    public $forced_values = array();
+
     // the field for sorting entries
     public $sortfield;
     public $sortdesc = false;
@@ -157,6 +168,9 @@ class PLTableEditor
                 $ip = long2ip($ip);
             }
         }
+        foreach ($this->forced_values as $field => $value) {
+            $entry[$field] = $value;
+        }
         return $entry;
     }
 
@@ -216,6 +230,12 @@ class PLTableEditor
         }
     }
 
+    // force the value of a field in select and add
+    public function force_field_value($field, $value)
+    {
+        $this->forced_values[$field] = $value;
+    }
+
     // add a where clause to limit table listing
     public function set_where_clause($whereclause="1")
     {
@@ -227,6 +247,25 @@ class PLTableEditor
     {
         $this->delete_action = $action;
         $this->delete_message = $message;
+    }
+
+    /** Retrieve the 'WHERE' clause to use for this PlTableEditor.
+     * Takes into account $this->whereclause and $this->forced_values.
+     *
+     * @param $extra_clause optional extra clause to add to the WHERE
+     * @return The WHERE clause to use
+     */
+    protected function get_where_clause($extra_clause=null)
+    {
+        $parts = array();
+        $parts[] = $this->whereclause;
+        if ($extra_clause !== null) {
+            $parts[] = $extra_clause;
+        }
+        foreach ($this->forced_values as $field => $val) {
+            $parts[] = XDB::format("$field = {?}", $val);
+        }
+        return implode(' AND ', $parts);
     }
 
     // call when done
@@ -244,7 +283,7 @@ class PLTableEditor
                 if ($this->idfield2) {
                     $where .= XDB::format(" AND {$this->idfield2} = {?}", $id2);
                 }
-                XDB::rawExecute("DELETE FROM {$this->table} WHERE " . $where);
+                XDB::rawExecute("DELETE FROM {$this->table} WHERE " . $this->get_where_clause($where));
                 $page->trigSuccess("L'entrée " . $id . (($id2) ? '-' . $id2 : '') . ' a été supprimée.');
             } else if ($this->delete_action) {
                 XDB::execute($this->delete_action, $id);
@@ -258,7 +297,7 @@ class PLTableEditor
             }
         }
         if ($action == 'edit' && $id !== false) {
-            $r = XDB::query("SELECT * FROM {$this->table} WHERE {$this->idfield} = {?} AND {$this->whereclause}",$id);
+            $r = XDB::query("SELECT * FROM {$this->table} WHERE {$this->idfield} = {?} AND " . $this->get_where_clause(), $id);
             $entry = $r->fetchOneAssoc();
             $page->assign('entry', $this->prepare_edit($entry));
             $page->assign('id', $id);
@@ -272,6 +311,9 @@ class PLTableEditor
                     $fields[] = $field;
                     $importer->describe($field, @$descr['desc']);
                 }
+            }
+            foreach ($this->forced_values as $field => $value) {
+                $importer->forceValue($field, $value);
             }
             $page->assign('massadd', true);
             $importer->apply($page, $this->pl . '/massadd', $fields);
@@ -299,6 +341,8 @@ class PLTableEditor
                     } else {
                         continue;
                     }
+                } elseif (array_key_exists($field, $this->forced_values)) {
+                    $val = $this->forced_values[$field];
                 } elseif ($descr['Type'] == 'set') {
                     $val = new PlFlagset();
                     if (Post::has($field)) {
@@ -333,7 +377,7 @@ class PLTableEditor
                     XDB::rawExecute("UPDATE {$this->table}
                                         SET {$update}
                                       WHERE {$this->idfield} = " . XDB::escape($id) . "
-                                            AND {$this->whereclause}");
+                                      AND " . $this->get_where_clause());
                 } else {
                     $fields = implode(', ', array_keys($values));
                     $values = implode(', ', $values);
@@ -411,7 +455,7 @@ class PLTableEditor
             foreach ($this->otables as $tablename => $jointclause) {
                 $optional_joints .= ' LEFT JOIN '.$tablename.' ON ('.$jointclause.')';
             }
-            $it = XDB::iterator("SELECT t.* {$optional_fields} FROM {$this->table} AS t {$optional_joints} WHERE {$this->whereclause} $sort");
+            $it = XDB::iterator("SELECT t.* {$optional_fields} FROM {$this->table} AS t {$optional_joints} WHERE " . $this->get_where_clause() . " $sort");
             $this->nbfields = 0;
             foreach ($this->vars as $field => $descr)
                 if ($descr['display']) $this->nbfields++;
