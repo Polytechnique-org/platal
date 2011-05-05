@@ -25,6 +25,10 @@
   {$nl->name}
 </h1>
 
+<h3>
+  <a href="{$nl->adminPrefix()}/categories">Gérer les catégories d'articles</a>
+</h3>
+
 <table class="bicol" cellpadding="3" cellspacing="0" summary="liste des NL">
   <tr>
     <th>Date</th>
