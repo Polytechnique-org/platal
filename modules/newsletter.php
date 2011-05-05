@@ -431,11 +431,30 @@ class NewsletterModule extends PLModule
     }
 
     function handler_admin_nl_cat($page, $action = 'list', $id = null) {
+        $nl = $this->getNl();
+        if (!$nl) {
+            return PL_NOT_FOUND;
+        }
+
+        if (!$nl->mayEdit()) {
+            return PL_FORBIDDEN;
+        }
+
         $page->setTitle('Administration - Newsletter : Catégories');
         $page->assign('title', 'Gestion des catégories de la newsletter');
-        $table_editor = new PLTableEditor('admin/newsletter/categories','newsletter_cat','cid');
+        $table_editor = new PLTableEditor($nl->adminPrefix() . '/categories', 'newsletter_cat','cid');
         $table_editor->describe('title','intitulé',true);
         $table_editor->describe('pos','position',true);
+        if ($nl->group == Newsletter::GROUP_XORG) {
+            $table_editor->add_option_table('newsletters', 'newsletters.id = t.nlid');
+            $table_editor->add_option_field('newsletters.name', 'newsletter_name', 'Newsletter', null, 'nlid');
+            $table_editor->describe('nlid', 'ID NL', true);
+        } else {
+            $table_editor->force_field_value('nlid', $nl->id);
+            $table_editor->describe('nlid', 'nlid', false);
+        }
+        // Prevent deletion.
+        $table_editor->on_delete(null, null);
         $table_editor->apply($page, $action, $id);
     }
 }

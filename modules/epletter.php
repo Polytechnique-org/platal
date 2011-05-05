@@ -35,6 +35,7 @@ class EPLetterModule extends NewsletterModule
             'epletter/admin/edit/valid'  => $this->make_hook('admin_nl_valid',  AUTH_MDP),
             'epletter/admin/edit/cancel' => $this->make_hook('admin_nl_cancel', AUTH_MDP),
             'epletter/admin/edit/delete' => $this->make_hook('admin_nl_delete', AUTH_MDP),
+            'epletter/admin/categories'  => $this->make_hook('admin_nl_cat',    AUTH_MDP),
         );
     }
 
