@@ -1006,17 +1006,20 @@ class UFC_Email extends UserFilterCondition
 // {{{ class UFC_Address
 abstract class UFC_Address extends UserFilterCondition
 {
-    /** Valid address type ('hq' is reserved for company addresses)
+    /** Valid address type
      */
-    const TYPE_HOME = 1;
-    const TYPE_PRO  = 2;
-    const TYPE_ANY  = 3;
+    const TYPE_HOME     = 1;
+    const TYPE_PRO      = 2;
+    const TYPE_NON_HQ   = 3;
+    const TYPE_HQ       = 4;
+    const TYPE_ANY      = 7;
 
     /** Text for these types
      */
     protected static $typetexts = array(
         self::TYPE_HOME => 'home',
         self::TYPE_PRO  => 'pro',
+        self::TYPE_HQ   => 'hq',
     );
 
     protected $type;
@@ -1061,74 +1064,19 @@ abstract class UFC_Address extends UserFilterCondition
             }
         }
         if (count($types)) {
-            $conds[] = XDB::format($sub . '.type IN {?}', $types);
+            $conds[] = XDB::format('pa' . $sub . '.type IN {?}', $types);
         }
 
         if ($this->flags != self::FLAG_ANY) {
             foreach(self::$flagtexts as $flag => $text) {
                 if ($flag & $this->flags) {
-                    $conds[] = 'FIND_IN_SET(' . XDB::format('{?}', $text) . ', ' . $sub . '.flags)';
+                    $conds[] = 'FIND_IN_SET(' . XDB::format('{?}', $text) . ', pa' . $sub . '.flags)';
                 }
             }
         }
         return $conds;
     }
 
-}
-// }}}
-// {{{ class UFC_AddressText
-/** Select users based on their address, using full text search
- * @param $text Text for filter in fulltext search
- * @param $textSearchMode Mode for search (one of XDB::WILDCARD_*)
- * @param $type Filter on address type
- * @param $flags Filter on address flags
- * @param $country Filter on address country
- * @param $locality Filter on address locality
- */
-class UFC_AddressText extends UFC_Address
-{
-
-    private $text;
-    private $textSearchMode;
-
-    public function __construct($text = null, $textSearchMode = XDB::WILDCARD_CONTAINS,
-        $type = null, $flags = self::FLAG_ANY, $country = null, $locality = null)
-    {
-        parent::__construct($type, $flags);
-        $this->text           = $text;
-        $this->textSearchMode = $textSearchMode;
-        $this->country        = $country;
-        $this->locality       = $locality;
-    }
-
-    private function mkMatch($txt)
-    {
-        return XDB::formatWildcards($this->textSearchMode, $txt);
-    }
-
-    public function buildCondition(PlFilter $uf)
-    {
-        $sub = $uf->addAddressFilter();
-        $conds = $this->initConds($sub, $uf->getVisibilityCondition($sub . '.pub'));
-        if ($this->text != null) {
-            $conds[] = $sub . '.text' . $this->mkMatch($this->text);
-        }
-
-        if ($this->country != null) {
-            $subc = $uf->addAddressCountryFilter();
-            $subconds = array();
-            $subconds[] = $subc . '.country' . $this->mkMatch($this->country);
-            $subconds[] = $subc . '.countryFR' . $this->mkMatch($this->country);
-            $conds[] = implode(' OR ', $subconds);
-        }
-
-        if ($this->locality != null) {
-            $subl = $uf->addAddressLocalityFilter();
-            $conds[] = $subl . '.name' . $this->mkMatch($this->locality);
-        }
-
-        return implode(' AND ', $conds);
-    }
 }
 // }}}
 // {{{ class UFC_AddressField
@@ -1138,55 +1086,36 @@ class UFC_AddressText extends UFC_Address
  * @param $type Filter on address type
  * @param $flags Filter on address flags
  */
-class UFC_AddressField extends UFC_Address
+class UFC_AddressComponent extends UFC_Address
 {
-    const FIELD_COUNTRY    = 1;
-    const FIELD_ADMAREA    = 2;
-    const FIELD_SUBADMAREA = 3;
-    const FIELD_LOCALITY   = 4;
-    const FIELD_ZIPCODE    = 5;
+    static $components = array('sublocality', 'locality', 'administrative_area_level_3', 'administrative_area_level_2', 'administrative_area_level_1', 'country');
 
     /** Data of the filter
      */
     private $val;
     private $fieldtype;
+    private $exact;
 
-    public function __construct($val, $fieldtype, $type = null, $flags = self::FLAG_ANY)
+    public function __construct($val, $fieldtype, $exact = true, $type = null, $flags = self::FLAG_ANY)
     {
-        parent::__construct($type, $flags);
+        if (!in_array($fieldtype, self::$components)) {
+            Platal::page()->killError('Invalid address field type: ' . $this->fieldtype);
+        }
 
+        parent::__construct($type, $flags);
         if (!is_array($val)) {
             $val = array($val);
         }
         $this->val       = $val;
         $this->fieldtype = $fieldtype;
+        $this->exact     = $exact;
     }
 
     public function buildCondition(PlFilter $uf)
     {
-        $sub = $uf->addAddressFilter();
-        $conds = $this->initConds($sub, $uf->getVisibilityCondition($sub . '.pub'));
-
-        switch ($this->fieldtype) {
-        case self::FIELD_COUNTRY:
-            $field = 'countryId';
-            break;
-        case self::FIELD_ADMAREA:
-            $field = 'administrativeAreaId';
-            break;
-        case self::FIELD_SUBADMAREA:
-            $field = 'subAdministrativeAreaId';
-            break;
-        case self::FIELD_LOCALITY:
-            $field = 'localityId';
-            break;
-        case self::FIELD_ZIPCODE:
-            $field = 'postalCode';
-            break;
-        default:
-            Platal::page()->killError('Invalid address field type: ' . $this->fieldtype);
-        }
-        $conds[] = XDB::format($sub . '.' . $field . ' IN {?}', $this->val);
+        $sub = $uf->addAddressFilter($this->fieldtype);
+        $conds = $this->initConds($sub, $uf->getVisibilityCondition('pa' . $sub . '.pub'));
+        $conds[] = XDB::format('pace' . $sub . '.short_name IN {?}', $this->val);
 
         return implode(' AND ', $conds);
     }

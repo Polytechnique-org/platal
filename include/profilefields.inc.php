@@ -735,8 +735,7 @@ class CompanyList
         }
 
         $it = XDB::iterator('SELECT  pje.id, pje.name, pje.acronym, pje.url,
-                                     pa.flags, pa.text, pa.postalCode, pa.countryId,
-                                     pa.type, pa.pub
+                                     pa.flags, pa.text, pa.type, pa.pub
                                FROM  profile_job_enum AS pje
                           LEFT JOIN  profile_addresses AS pa ON (pje.id = pa.jobid AND pa.type = \'hq\')
                                   ' . $join . '

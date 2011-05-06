@@ -404,8 +404,8 @@ function cleanForm(f) {
       <th colspan="2">Géographie</th>
     </tr>
     <tr>
-      <td>Ville ou code postal</td>
-      <td><input type="text" class="autocomplete" name="city" size="32" value="{$smarty.request.city}" /></td>
+      <td>Ville</td>
+      <td><input type="text" class="autocomplete" name="locality" size="32" value="{$smarty.request.locality}" /></td>
     </tr>
     <tr>
       <td>Pays</td>
@@ -414,18 +414,6 @@ function cleanForm(f) {
                value="{$smarty.request.countryTxt}"/>
         <input name="country" class="autocompleteTarget" type="hidden" value="{$smarty.request.country}"/>
         <a href="country" class="autocompleteToSelect">{icon name="table" title="Tous les pays"}</a>
-      </td>
-    </tr>
-    <tr id="administrativearea_list">
-      <td>Région, province, état&hellip;</td>
-      <td>
-        <input name="administrativearea" type="hidden" size="32" value="{$smarty.request.administrativearea}" />
-      </td>
-    </tr>
-    <tr id="subadministrativearea_list">
-      <td>Département, comté&hellip;</td>
-      <td>
-        <input name="subadministrativearea" type="hidden" size="32" value="{$smarty.request.subadministrativearea}" />
       </td>
     </tr>
     <tr>

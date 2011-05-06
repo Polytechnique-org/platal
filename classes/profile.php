@@ -397,15 +397,15 @@ class Profile implements PlExportable
     public function nationalities()
     {
         $nats = array();
-        $countries = DirEnum::getOptions(DirEnum::COUNTRIES);
+        $nationalities = DirEnum::getOptions(DirEnum::NATIONALITIES);
         if ($this->nationality1) {
-            $nats[$this->nationality1] = $countries[$this->nationality1];
+            $nats[$this->nationality1] = $nationalities[$this->nationality1];
         }
         if ($this->nationality2) {
-            $nats[$this->nationality2] = $countries[$this->nationality2];
+            $nats[$this->nationality2] = $nationalities[$this->nationality2];
         }
         if ($this->nationality3) {
-            $nats[$this->nationality3] = $countries[$this->nationality3];
+            $nats[$this->nationality3] = $nationalities[$this->nationality3];
         }
         return $nats;
     }
