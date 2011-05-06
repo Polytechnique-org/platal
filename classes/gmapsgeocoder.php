@@ -19,28 +19,22 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// Implementation of a Geocoder using the Google Maps API. Please refer to
-// the following links for details:
-// http://code.google.com/apis/maps/documentation/services.html#Geocoding
-// http://code.google.com/intl/en/apis/maps/documentation/geocoding/
-// http://code.google.com/apis/maps/documentation/reference.html#GGeoAddressAccuracy
+// Implementation of a Geocoder using the Google Maps API v3. Please refer
+// to the following link for details:
+// http://code.google.com/apis/maps/documentation/geocoding/
 //
-// It requires the properties gmaps_key and gmaps_url to be defined in section
-// Geocoder in plat/al's configuration (platal.ini & platal.conf).
+// It requires the properties gmaps_url to be defined in section Geocoder
+// in plat/al's configuration (platal.ini & platal.conf).
 class GMapsGeocoder extends Geocoder {
 
     // Maximum number of Geocoding calls to the Google Maps API.
     const MAX_GMAPS_RPC_CALLS = 5;
-    // Maximum levenshtein distance authorized between input and geocoded text in a single line.
-    const MAX_LINE_DISTANCE = 5;
-    // Maximum levenshtein distance authorized between input and geocoded text in the whole text.
-    const MAX_TOTAL_DISTANCE = 6;
 
     public function getGeocodedAddress(Address $address, $defaultLanguage = null, $forceLanguage = false) {
         $this->prepareAddress($address);
         $textAddress = $this->getTextToGeocode($address->text);
         if (is_null($defaultLanguage)) {
-            $defaultLanguage = Platal::globals()->geocoder->gmaps_hl;
+            $defaultLanguage = Platal::globals()->geocoder->gmaps_language;
         }
 
         // Try to geocode the full address.
@@ -66,16 +60,16 @@ class GMapsGeocoder extends Geocoder {
     }
 
     public function stripGeocodingFromAddress(Address $address) {
-        $address->geocodedText = null;
-        $address->geoloc_choice = null;
-        $address->countryId = null;
-        $address->country = null;
-        $address->administrativeAreaName = null;
-        $address->subAdministrativeAreaName = null;
-        $address->localityName = null;
-        $address->thoroughfareName = null;
-        $address->postalCode = null;
-        $address->accuracy = 0;
+        $address->formatted_address = '';
+        $address->types = '';
+        $address->latitude = null;
+        $address->longitude = null;
+        $address->southwest_latitude = null;
+        $address->southwest_longitude = null;
+        $address->northeast_latitude = null;
+        $address->northeast_longitude = null;
+        $address->location_type = null;
+        $address->partial_match = false;
     }
 
     // Updates the address with the geocoded information from Google Maps. Also
@@ -92,7 +86,7 @@ class GMapsGeocoder extends Geocoder {
         $url     = $this->getGeocodingUrl($address, $defaultLanguage);
         $geoData = $this->getGeoJsonFromUrl($url);
 
-        return ($geoData ? $this->getPlacemarkFromJson($geoData) : null);
+        return ($geoData ? $this->getPlacemarkFromJson($geoData, $url) : null);
     }
 
     // Prepares address to be geocoded
@@ -106,16 +100,13 @@ class GMapsGeocoder extends Geocoder {
         global $globals;
 
         $parameters = array(
-            'key'    => $globals->geocoder->gmaps_key,
-            'sensor' => 'false',   // The queried address wasn't obtained from a GPS sensor.
-            'hl'     => $defaultLanguage,
-            'oe'     => 'utf8',    // Output encoding.
-            'output' => 'json',    // Output format.
-            'gl'     => $globals->geocoder->gmaps_gl,
-            'q'      => $address,  // The queries address.
+            'language' => $defaultLanguage,
+            'region'   => $globals->geocoder->gmaps_region,
+            'sensor'   => 'false',  // The queried address wasn't obtained from a GPS sensor.
+            'address'  => $address, // The queries address.
         );
 
-        return $globals->geocoder->gmaps_url . '?' . http_build_query($parameters);
+        return $globals->geocoder->gmaps_url . 'json?' . http_build_query($parameters);
     }
 
     // Fetches JSON-encoded data from a Google Maps API url, and decode them.
@@ -152,131 +143,43 @@ class GMapsGeocoder extends Geocoder {
     }
 
     // Extracts the most appropriate placemark from the JSON data fetched from
-    // Google Maps. Returns a Placemark array on success, and null otherwise. See
-    // http://code.google.com/apis/maps/documentation/services.html#Geocoding_Structured
-    // for details on the Placemark structure.
-    private function getPlacemarkFromJson(array $data) {
-        // Check for geocoding failures.
-        if (!isset($data['Status']['code']) || $data['Status']['code'] != 200) {
-            // TODO: handle non-200 codes in a better way, since the code might
-            // indicate a temporary error on Google's side.
+    // Google Maps. Returns a Placemark array on success, and null otherwise.
+    // http://code.google.com/apis/maps/documentation/geocoding/#StatusCodes
+    private function getPlacemarkFromJson(array $data, $url) {
+        // Check for geocoding status.
+        $status = $data['status'];
+
+        // If no result, return null.
+        if ($status == 'ZERO_RESULTS') {
             return null;
         }
 
-        // Check that at least one placemark was found.
-        if (count($data['Placemark']) == 0) {
-            return null;
+        // If there are results return the first one.
+        if ($status == 'OK') {
+            return $data['results'][0];
         }
 
-        // Extract the placemark with the best accuracy. This is not always the
-        // best result (since the same address may yield two different placemarks).
-        $result = $data['Placemark'][0];
-        foreach ($data['Placemark'] as $place) {
-            if ($place['AddressDetails']['Accuracy'] > $result['AddressDetails']['Accuracy']) {
-                $result = $place;
-            }
-        }
-
-        return $result;
+        // Report the error.
+        $mailer = new PlMailer('profile/geocoding.mail.tpl');
+        $mailer->assign('status', $status);
+        $mailer->assign('url', $url);
+        $mailer->send();
+        return null;
     }
 
     // Fills the address with the geocoded data
     private function fillAddressWithGeocoding(Address $address, $geocodedData, $isLocal) {
-        // The geocoded address three is
-        // Country -> AdministrativeArea -> SubAdministrativeArea -> Locality -> Thoroughfare
-        // with all the possible shortcuts
-        // The address is formatted as xAL, or eXtensible Address Language, an international
-        // standard for address formatting.
-        // xAL documentation: http://www.oasis-open.org/committees/ciq/ciq.html#6
-        if ($isLocal) {
-            $ext = 'Local';
-        } else {
-            $ext = ucfirst(Platal::globals()->geocoder->gmaps_hl);
-            $address->geocodedText = str_replace(', ', "\n", $geocodedData['address']);
-        }
-
-        if (isset($geocodedData['AddressDetails']['Accuracy'])) {
-            $address->accuracy = $geocodedData['AddressDetails']['Accuracy'];
-        }
-
-        $currentPosition = $geocodedData['AddressDetails'];
-        if (isset($currentPosition['Country'])) {
-            $country = 'country' . $ext;
-            $currentPosition    = $currentPosition['Country'];
-            $address->countryId = $currentPosition['CountryNameCode'];
-            $address->$country  = $currentPosition['CountryName'];
-        }
-        if (isset($currentPosition['AdministrativeArea'])) {
-            $administrativeAreaName = 'administrativeAreaName' . $ext;
-            $currentPosition                  = $currentPosition['AdministrativeArea'];
-            $address->$administrativeAreaName = $currentPosition['AdministrativeAreaName'];
-        }
-        if (isset($currentPosition['SubAdministrativeArea'])) {
-            $subAdministrativeAreaName = 'subAdministrativeAreaName' . $ext;
-            $currentPosition                     = $currentPosition['SubAdministrativeArea'];
-            $address->$subAdministrativeAreaName = $currentPosition['SubAdministrativeAreaName'];
-        }
-        if (isset($currentPosition['Locality'])) {
-            $localityName = 'localityName' . $ext;
-            $currentPosition        = $currentPosition['Locality'];
-            $address->$localityName = $currentPosition['LocalityName'];
-        }
-        if (isset($currentPosition['PostalCode'])) {
-            $address->postalCode = $currentPosition['PostalCode']['PostalCodeNumber'];
-        }
-
-        // Gets coordinates.
-        if (isset($geocodedData['Point']['coordinates'][0])) {
-            $address->latitude = $geocodedData['Point']['coordinates'][0];
-        }
-        if (isset($geocodedData['Point']['coordinates'][1])) {
-            $address->longitude = $geocodedData['Point']['coordinates'][1];
-        }
-        if (isset($geocodedData['ExtendedData']['LatLonBox']['north'])) {
-            $address->north = $geocodedData['ExtendedData']['LatLonBox']['north'];
-        }
-        if (isset($geocodedData['ExtendedData']['LatLonBox']['south'])) {
-            $address->south = $geocodedData['ExtendedData']['LatLonBox']['south'];
-        }
-        if (isset($geocodedData['ExtendedData']['LatLonBox']['east'])) {
-            $address->east = $geocodedData['ExtendedData']['LatLonBox']['east'];
-        }
-        if (isset($geocodedData['ExtendedData']['LatLonBox']['west'])) {
-            $address->west = $geocodedData['ExtendedData']['LatLonBox']['west'];
-        }
-    }
-
-    // Compares the geocoded address with the given address and returns true
-    // iff their are close enough to be considered as equals or not.
-    private function compareAddress($address)
-    {
-        $same = true;
-        $geoloc = strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"),
-                                          array('', "\n"), $address->geocodedText));
-        $text   = strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"),
-                                          array('', "\n"), $address->text));
-        $arrayGeoloc = explode("\n", $geoloc);
-        $arrayText   = explode("\n", $text);
-        $countGeoloc = count($arrayGeoloc);
-        $countText   = count($arrayText);
-
-        $totalDistance = 0;
-        if (($countText > $countGeoloc) || ($countText < $countGeoloc - 1)
-            || (($countText == $countGeoloc - 1)
-                && ($arrayText[$countText - 1] == strtoupper($address->country)))) {
-            $same = false;
-        } else {
-            for ($i = 0; $i < $countGeoloc && $i < $countText; ++$i) {
-                $lineDistance = levenshtein($arrayText[$i], trim($arrayGeoloc[$i]));
-                $totalDistance += $lineDistance;
-                if ($lineDistance > self::MAX_LINE_DISTANCE || $totalDistance > self::MAX_TOTAL_DISTANCE) {
-                    $same = false;
-                    break;
-                }
-            }
-        }
-
-        return $same;
+        $address->types               = implode(',', $geocodedData['types']);
+        $address->formatted_address   = $geocodedData['formatted_address'];
+        $address->components          = $geocodedData['address_components'];
+        $address->latitude            = $geocodedData['geometry']['location']['lat'];
+        $address->longitude           = $geocodedData['geometry']['location']['lng'];
+        $address->southwest_latitude  = $geocodedData['geometry']['viewport']['southwest']['lat'];
+        $address->southwest_longitude = $geocodedData['geometry']['viewport']['southwest']['lng'];
+        $address->northeast_latitude  = $geocodedData['geometry']['viewport']['northeast']['lat'];
+        $address->northeast_longitude = $geocodedData['geometry']['viewport']['northeast']['lng'];
+        $address->location_type       = $geocodedData['geometry']['location_type'];
+        $address->partial_match       = isset($geocodedData['partial_match']) ? true : false;
     }
 
     // Formats the text of the geocoded address using the unused data and
@@ -284,13 +187,8 @@ class GMapsGeocoder extends Geocoder {
     // will be asked to choose between them.
     private function formatAddress(Address $address, $extraLines, $forceLanguage)
     {
-        if ($extraLines) {
-            $address->geocodedText = $extraLines . "\n" . $address->geocodedText;
-        }
-
-        if ($this->compareAddress($address)) {
-            $address->geocodedText = null;
-        } elseif (!$forceLanguage) {
+        /* XXX: Check how to integrate this in the new geocoding system.
+        if (!$forceLanguage) {
             $languages = XDB::fetchOneCell('SELECT  IF(ISNULL(gc1.belongsTo), gl1.language, gl2.language)
                                               FROM  geoloc_countries AS gc1
                                         INNER JOIN  geoloc_languages AS gl1 ON (gc1.iso_3166_1_a2 = gl1.iso_3166_1_a2)
@@ -300,21 +198,13 @@ class GMapsGeocoder extends Geocoder {
                                            $address->countryId);
             $toGeocode = substr($address->text, strlen($extraLines));
             foreach (explode(',', $languages) as $language) {
-                if ($language != Platal::globals()->geocoder->gmaps_hl) {
+                if ($language != Platal::globals()->geocoder->gmaps_language) {
                     $geocodedData = $this->getPlacemarkForAddress($toGeocode, $language);
-                    $address->geocodedText = str_replace(', ', "\n", $geocodedData['address']);
-                    if ($extraLines) {
-                        $address->geocodedText = $extraLines . "\n" . $address->geocodedText;
-                    }
-                    if ($this->compareAddress($address)) {
-                        $this->fillAddressWithGeocoding($address, $geocodedData, true);
-                        $address->geocodedText = null;
-                        break;
-                    }
+                    $this->fillAddressWithGeocoding($address, $geocodedData, true);
+                    break;
                 }
             }
-            $address->geocodedText = str_replace("\n", "\r\n", $address->geocodedText);
-        }
+        }*/
         $address->text = str_replace("\n", "\r\n", $address->text);
     }
 
