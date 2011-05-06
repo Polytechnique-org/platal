@@ -324,53 +324,22 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
 
+        __autoload('userset');
+        $admins = false;
         if ($action == 'trombi') {
-            __autoload('userset');
-            if ($action == 'trombi') {
-                $view = new ProfileSet(new UFC_Group($globals->asso('id')));
-            } else {
-                $view = new UserSet(new UFC_Group($globals->asso('id')));
+            $view = new ProfileSet(new UFC_Group($globals->asso('id')));
+        } else {
+            if ($action == 'admins') {
+                $admins = true;
+                $action = $subaction;
             }
-            $view->addMod('trombi', 'Trombinoscope');
-            $view->apply('annuaire', $page, $action, $subaction);
-            $page->changeTpl('xnetgrp/annuaire.tpl');
-            $count = XDB::fetchOneCell('SELECT  COUNT(*)
-                                          FROM  group_members
-                                         WHERE  asso_id = {?}',
-                                       $globals->asso('id'));
-            $page->assign('nb_tot', $count);
-            return;
+            $view = new UserSet(new UFC_Group($globals->asso('id'), $admins));
         }
-
+        $view->addMod('xnetfiche', 'Annuaire');
+        $view->addMod('trombi', 'Trombinoscope');
+        $view->apply('annuaire', $page, $action);
+        $page->assign('only_admin', $admins);
         $page->changeTpl('xnetgrp/annuaire.tpl');
-        $sort = Env::s('order', 'directory_name');
-        $ofs  = Env::i('offset');
-        if ($ofs < 0) {
-            $ofs = 0;
-        }
-
-        $sdesc = $sort{0} == '-';
-        $sf    = $sdesc ? substr($sort, 1) : $sort;
-        if ($sf == 'promo') {
-            $se = new UFO_Promo(null, $sdesc);
-        } else {
-            $se = new UFO_Name($sf, null, null, $sdesc);
-        }
-
-        if (Env::b('admin')) {
-            $uf = $globals->asso()->getAdminsFilter(null, $se);
-        } else {
-            $uf = $globals->asso()->getMembersFilter(null, $se);
-        }
-        $users = $uf->getUsers(new PlLimit(NB_PER_PAGE, $ofs * NB_PER_PAGE));
-        $count = $uf->getTotalCount();
-
-        $page->assign('nb_tot', $count);
-        $page->assign('pages', floor(($count + NB_PER_PAGE - 1) / NB_PER_PAGE));
-        $page->assign('current', $ofs);
-        $page->assign('order', $sort);
-        $page->assign('users', $users);
-        $page->assign('only_admin', Env::b('admin'));
     }
 
     function handler_trombi($page)

@@ -302,6 +302,68 @@ class TrombiView extends ProfileView
     }
 }
 
+/** A multipage view for users
+ * Allows the display of bounds when sorting by name or promo.
+ */
+abstract class UserView extends MultipageView
+{
+    protected function getBoundValue($user)
+    {
+        if ($user instanceof User) {
+            switch ($this->bound_field) {
+            case 'name':
+                $name = $user->lastName();
+                return strtoupper($name);
+            case 'promo':
+                if ($user->hasProfile()) {
+                    return $user->profile()->promo();
+                } else {
+                    return null;
+                }
+            default:
+                return null;
+            }
+        }
+        return null;
+    }
+
+    public function bounds()
+    {
+        $order = Env::v('order', $this->defaultkey);
+        $show_bounds = 0;
+        if (($order == "name") || ($order == "-name")) {
+            $this->bound_field = "name";
+            $show_bounds = 1;
+        } elseif (($order == "promo") || ($order == "-promo")) {
+            $this->bound_field = "promo";
+            $show_bounds = -1;
+        }
+        if ($order{0} == '-') {
+            $show_bounds = -$show_bounds;
+        }
+        return $show_bounds;
+    }
+}
+
+class XnetFicheView extends UserView
+{
+    public function __construct(PlSet $set, array $params)
+    {
+        $this->entriesPerPage = 20;
+        $this->addSort(new PlViewOrder('name', array(new UFO_Name(Profile::DN_SORT)), 'nom'));
+        $this->addSort(new PlViewOrder('promo', array(
+                    new UFO_Promo(UserFilter::DISPLAY, true),
+                    new UFO_Name(Profile::DN_SORT),
+                ), 'promotion'));
+        parent::__construct($set, $params);
+    }
+
+    public function templateName()
+    {
+        return 'include/plview.xnetuser.tpl';
+    }
+}
+
 class GadgetView implements PlView
 {
     public function __construct(PlSet $set, array $params)
