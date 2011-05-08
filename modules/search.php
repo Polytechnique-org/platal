@@ -29,6 +29,7 @@ class SearchModule extends PLModule
             'advanced_search.php'       => $this->make_hook('redir_advanced',     AUTH_PUBLIC),
             'search/autocomplete'       => $this->make_hook('autocomplete',       AUTH_COOKIE, 'directory_ax', NO_AUTH),
             'search/list'               => $this->make_hook('list',               AUTH_COOKIE, 'directory_ax', NO_AUTH),
+            'search/list/count'         => $this->make_hook('list_count',         AUTH_COOKIE, 'directory_ax', NO_AUTH),
             'jobs'                      => $this->make_hook('referent',           AUTH_COOKIE),
             'emploi'                    => $this->make_hook('referent',           AUTH_COOKIE),
             'referent/search'           => $this->make_hook('referent',           AUTH_COOKIE),
@@ -247,7 +248,7 @@ class SearchModule extends PLModule
             'groupexTxt'         => DirEnum::GROUPESX,
             'sectionTxt'         => DirEnum::SECTIONS,
             'networking_typeTxt' => DirEnum::NETWORKS,
-            'city'               => DirEnum::LOCALITIES,
+            'localityTxt'        => DirEnum::LOCALITIES,
             'countryTxt'         => DirEnum::COUNTRIES,
             'entreprise'         => DirEnum::COMPANIES,
             'jobtermTxt'         => DirEnum::JOBTERMS,
@@ -308,7 +309,23 @@ class SearchModule extends PLModule
             break;
           case 'country':
             $ids = DirEnum::getOptionsIter(DirEnum::COUNTRIES);
-            $page->assign('onchange', 'changeCountry(this.value)');
+            $page->assign('onchange', 'changeAddressComponents(\'' . $type . '\', this.value)');
+            break;
+          case 'administrative_area_level_1':
+          case 'administrative_area_level_2':
+          case 'administrative_area_level_3':
+          case 'locality':
+            $page->assign('onchange', 'changeAddressComponents(\'' . $type . '\', this.value)');
+          case 'sublocality':
+            $ids = XDB::iterator("SELECT  pace1.id, pace1.long_name AS field
+                                    FROM  profile_addresses_components_enum AS pace1
+                              INNER JOIN  profile_addresses_components      AS pac1  ON (pac1.component_id = pace1.id)
+                              INNER JOIN  profile_addresses_components      AS pac2  ON (pac1.pid = pac2.pid AND pac1.jobid = pac2.jobid AND pac1.id = pac2.id
+                                                                                         AND pac1.groupid = pac2.groupid AND pac1.type = pac2.type)
+                              INNER JOIN  profile_addresses_components_enum AS pace2 ON (pac2.component_id = pace2.id AND FIND_IN_SET({?}, pace2.types))
+                                   WHERE  pace2.id = {?} AND FIND_IN_SET({?}, pace1.types)
+                                GROUP BY  pace1.long_name",
+                                 Env::v('previous'), Env::v('value'), $type);
             break;
           case 'diploma':
             if (Env::has('school') && Env::i('school') != 0) {
@@ -322,21 +339,6 @@ class SearchModule extends PLModule
             break;
           case 'nationalite':
             $ids = DirEnum::getOptionsIter(DirEnum::NATIONALITIES);
-            break;
-          case 'administrativearea':
-            if (Env::has('country')) {
-                $ids = DirEnum::getOptionsIter(DirEnum::ADMINAREAS, Env::v('country'));
-            } else {
-                $ids = DirEnum::getOptionsIter(DirEnum::ADMINAREAS);
-            }
-            $page->assign('onchange', 'changeAdministrativeArea(this.value)');
-            break;
-          case 'subadministrativearea':
-            if (Env::has('administrativearea')) {
-                $ids = DirEnum::getOptionsIter(DirEnum::SUBADMINAREAS, Env::v('administrativearea'));
-            } else {
-                $ids = DirEnum::getOptionsIter(DirEnum::SUBADMINAREAS);
-            }
             break;
           case 'school':
             $ids = DirEnum::getOptionsIter(DirEnum::EDUSCHOOLS);

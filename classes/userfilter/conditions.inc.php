@@ -1115,7 +1115,7 @@ class UFC_AddressComponent extends UFC_Address
     {
         $sub = $uf->addAddressFilter($this->fieldtype);
         $conds = $this->initConds($sub, $uf->getVisibilityCondition('pa' . $sub . '.pub'));
-        $conds[] = XDB::format('pace' . $sub . '.short_name IN {?}', $this->val);
+        $conds[] = XDB::format('pace' . $sub . '.id IN {?}', $this->val);
 
         return implode(' AND ', $conds);
     }
