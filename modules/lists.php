@@ -377,29 +377,37 @@ class ListsModule extends PLModule
             $page->kill("La liste n'existe pas ou tu n'as pas le droit d'en voir les détails.");
         }
 
-        global $platal;
         list(,$members) = $this->client->get_members($liste);
+
+        if ($action == 'moderators') {
+            $members = $owners;
+            $show_moderators = true;
+            $action = $subaction;
+            $subaction = '';
+        } else {
+            $show_moderators = false;
+        }
         $users = array();
         foreach ($members as $m) {
             $users[] = $m[1];
         }
+
         require_once 'userset.inc.php';
-        $view = new ArraySet($users);
-        $view->addMod('trombi', 'Trombinoscope', true, array('with_promo' => true));
-        if (empty($GLOBALS['IS_XNET_SITE'])) {
-            $view->addMod('minifiche', 'Mini-fiches', false);
+        if ($action == 'listmember' || $action == '') {
+            $view = new UserArraySet($users);
+        } else {
+            $view = new ProfileArraySet($users);
         }
+        $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true));
+        $view->addMod('minifiche', 'Mini-fiches', false);
+        $view->addMod('listmember', 'Annuaire', true);
         // TODO: Reactivate when the new map is completed.
         // $view->addMod('geoloc', 'Planisphère');
         $view->apply("lists/annu/$liste", $page, $action, $subaction);
-        if ($action == 'geoloc' && $subaction) {
-            return;
-        }
 
         $page->changeTpl('lists/annu.tpl');
-        $moderos = list_sort_owners($owners[1]);
         $page->assign_by_ref('details', $owners[0]);
-        $page->assign_by_ref('owners',  $moderos);
+        $page->assign('show_moderators', $show_moderators);
     }
 
     function handler_archives($page, $liste = null, $action = null, $artid = null)
