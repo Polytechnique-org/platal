@@ -32,23 +32,23 @@
   {assign var=key_cur  value=$set_keys[trombi]}
   {assign var=key_next value=$set_keys[trombi.index_next]}
   <tr>
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_prev] photo=true}
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_cur] photo=true}
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_next] photo=true}
+    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_prev]->profile() photo=true}
+    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_cur]->profile() photo=true}
+    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_next]->profile() photo=true}
   </tr>
   <tr>
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_prev] photo=false}
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_cur] photo=false}
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_next] photo=false}
+    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_prev]->profile() photo=false}
+    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_cur]->profile() photo=false}
+    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_next]->profile() photo=false}
   </tr>
   {elseif ($smarty.section.trombi.index % 3 == 0) && ($smarty.section.trombi.last)}
   {assign var=key_cur  value=$set_keys[trombi]}
   <tr>
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_cur] photo=true}
+    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_cur]->profile() photo=true}
     <td></td><td></td>
   </tr>
   <tr style="margin-top: 0; padding-top: 0">
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_cur] photo=false}
+    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_cur]->profile() photo=false}
     <td></td><td></td>
   </tr>
   {/if}

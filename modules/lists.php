@@ -380,26 +380,21 @@ class ListsModule extends PLModule
         list(,$members) = $this->client->get_members($liste);
 
         if ($action == 'moderators') {
-            $members = $owners;
+            $users = $owners;
             $show_moderators = true;
             $action = $subaction;
             $subaction = '';
         } else {
             $show_moderators = false;
-        }
-        $users = array();
-        foreach ($members as $m) {
-            $users[] = $m[1];
+            $users = array();
+            foreach ($members as $m) {
+                $users[] = $m[1];
+            }
         }
 
         require_once 'userset.inc.php';
-        if ($action == 'listmember' || $action == '') {
-            $view = new UserArraySet($users);
-        } else {
-            $view = new ProfileArraySet($users);
-        }
+        $view = new UserArraySet($users);
         $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true));
-        $view->addMod('minifiche', 'Mini-fiches', false);
         $view->addMod('listmember', 'Annuaire', true);
         // TODO: Reactivate when the new map is completed.
         // $view->addMod('geoloc', 'Planisphère');

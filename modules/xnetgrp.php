@@ -326,16 +326,12 @@ class XnetGrpModule extends PLModule
 
         __autoload('userset');
         $admins = false;
-        if ($action == 'trombi') {
-            $view = new ProfileSet(new UFC_Group($globals->asso('id')));
-        } else {
-            if ($action == 'admins') {
-                $admins = true;
-                $action = $subaction;
-            }
-            $view = new UserSet(new UFC_Group($globals->asso('id'), $admins));
+        if ($action == 'admins') {
+            $admins = true;
+            $action = $subaction;
         }
-        $view->addMod('xnetfiche', 'Annuaire');
+        $view = new UserSet(new UFC_Group($globals->asso('id'), $admins));
+        $view->addMod('groupmember', 'Annuaire');
         $view->addMod('trombi', 'Trombinoscope');
         $view->apply('annuaire', $page, $action);
         $page->assign('only_admin', $admins);

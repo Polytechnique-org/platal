@@ -269,44 +269,6 @@ class MentorView extends ProfileView
     }
 }
 
-class TrombiView extends ProfileView
-{
-    public function __construct(PlSet $set, array $params)
-    {
-        $this->entriesPerPage = 24;
-        $this->defaultkey = 'name';
-        if (@$params['with_score']) {
-            $this->addSort(new PlViewOrder('score', array(
-                            new UFO_Score(true),
-                            new UFO_ProfileUpdate(true),
-                            new UFO_Promo(UserFilter::DISPLAY, true),
-                            new UFO_Name(Profile::DN_SORT),
-            ), 'pertinence'));
-        }
-        $set->addCond(new UFC_Photo());
-        $this->addSort(new PlViewOrder('name', array(new UFO_Name(Profile::DN_SORT)), 'nom'));
-        $this->addSort(new PlViewOrder('promo', array(
-                        new UFO_Promo(UserFilter::DISPLAY, true),
-                        new UFO_Name(Profile::DN_SORT),
-                    ), 'promotion'));
-        parent::__construct($set, $params);
-    }
-
-    public function templateName()
-    {
-        return 'include/plview.trombi.tpl';
-    }
-
-    public function apply(PlPage $page)
-    {
-        if (!empty($GLOBALS['IS_XNET_SITE'])) {
-            global $globals;
-            $page->assign('mainsiteurl', 'https://' . $globals->core->secure_domain . '/');
-        }
-        return parent::apply($page);
-    }
-}
-
 /** A multipage view for users
  * Allows the display of bounds when sorting by name or promo.
  */
@@ -385,6 +347,44 @@ class ListMemberView extends UserView
     public function templateName()
     {
         return 'include/plview.listmember.tpl';
+    }
+}
+
+class TrombiView extends UserView
+{
+    public function __construct(PlSet $set, array $params)
+    {
+        $this->entriesPerPage = 24;
+        $this->defaultkey = 'name';
+        if (@$params['with_score']) {
+            $this->addSort(new PlViewOrder('score', array(
+                            new UFO_Score(true),
+                            new UFO_ProfileUpdate(true),
+                            new UFO_Promo(UserFilter::DISPLAY, true),
+                            new UFO_Name(Profile::DN_SORT),
+            ), 'pertinence'));
+        }
+        $set->addCond(new UFC_Photo());
+        $this->addSort(new PlViewOrder('name', array(new UFO_Name(Profile::DN_SORT)), 'nom'));
+        $this->addSort(new PlViewOrder('promo', array(
+                        new UFO_Promo(UserFilter::DISPLAY, true),
+                        new UFO_Name(Profile::DN_SORT),
+                    ), 'promotion'));
+        parent::__construct($set, $params);
+    }
+
+    public function templateName()
+    {
+        return 'include/plview.trombi.tpl';
+    }
+
+    public function apply(PlPage $page)
+    {
+        if (!empty($GLOBALS['IS_XNET_SITE'])) {
+            global $globals;
+            $page->assign('mainsiteurl', 'https://' . $globals->core->secure_domain . '/');
+        }
+        return parent::apply($page);
     }
 }
 
