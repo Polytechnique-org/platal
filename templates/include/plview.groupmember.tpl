@@ -33,7 +33,7 @@
   {assign var=lostUsers value=false}
   {foreach from=$set item=user}
     {if $user->lost}{assign var=lostUsers value=true}{/if}
-    {include file="include/plview.groupmember.entry.tpl" user=$user}
+    {include file="include/plview.groupmember.entry.tpl" user=$user|get_user}
   {/foreach}
 </table>
 
