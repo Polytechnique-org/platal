@@ -21,19 +21,51 @@
 {**************************************************************************}
 
 
-<table summary="membres du groupe" class="bicol">
+<table summary="abonnés à la liste" class="bicol" cellpadding="0" cellspacing="0">
+  {if $details.own || hasPerms('admin,groupadmin')}
+  <tr><td colspan="2">
+  <a href="{$platal->ns}lists/csv/{$platal->argv[1]}/{$platal->argv[1]}.csv">
+    {icon name="page_excel" title="Télécharger la liste des membres"}
+    Télécharger la liste des membres au format Excel
+  </a>
+  </td></tr>
+  {/if}
+
+  {assign var=current_key value=''}
+  {foreach from=$set item=user}
   <tr>
-    <th>Nom</th>
-    <th>Promo</th>
-    <th colspan="2">Infos</th>
-    {if $is_admin}
-      <th>Actions</th>
+    <td class="titre" style="width: 20%">
+      {if $order eq 'promo'}
+        {assign var=user_key value=$user->promo()}
+      {elseif $order eq 'name'}
+        {assign var=user_key value=$user->lastName()|string_format:'%.1s'|upper}
+      {else}
+        {assign var=user_key value=''}
+      {/if}
+      {if $user_key neq $current_key}
+        {assign var=current_key value=$user_key}
+        {$user_key}
+      {/if}
+    </td>
+    <td>
+      {if $user->hasProfile()}
+        {if $user->lost}{assign var=lostUsers value=true}{/if}
+        {profile user=$user}
+      {else}
+        {$user->displayName()}
+      {/if}
+    </td>
+    {if t($delete)}
+      <td class="center">
+        {if t($user.uid)}
+          <a href="{$platal->ns}member/{$user.uid}">{icon name=user_edit title='Éditer'}</a>&nbsp;
+        {else}
+          {icon name=null}&nbsp;
+        {/if}
+        <a href='{$platal->pl_self(1)}?{$delete}={$user.email}&amp;token={xsrf_token}'>{icon name=cross title='Retirer'}</a>
+      </td>
     {/if}
   </tr>
-  {assign var=lostUsers value=false}
-  {foreach from=$set item=user}
-    {if $user->lost}{assign var=lostUsers value=true}{/if}
-    {include file="include/plview.xnetuser.entry.tpl" user=$user}
   {/foreach}
 </table>
 

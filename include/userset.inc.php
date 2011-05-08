@@ -123,21 +123,26 @@ class AdvancedSearchSet extends SearchSet
     }
 }
 
-/** Simple set based on an array of User objects
+/** Simple set based on an array of User emails
  */
-class ArraySet extends ProfileSet
+class UserArraySet extends UserSet
 {
-    public function __construct(array $users)
+    public function __construct(array $emails)
     {
-        $hruids = User::getBulkHruid($users, array('User', '_silent_user_callback'));
-        if (is_null($hruids) || count($hruids) == 0) {
-            $cond = new PFC_False();
-        } else {
-            $cond = new UFC_Hruid($hruids);
-        }
-        parent::__construct($cond);
+        parent::__construct(new UFC_Email($emails));
     }
 }
+
+/** Simple set based on an array of Profile emails
+ */
+class ProfileArraySet extends ProfileSet
+{
+    public function __construct(array $emails)
+    {
+        parent::__construct(new UFC_Email($emails));
+    }
+}
+
 
 /** A multipage view for profiles
  * Allows the display of bounds when sorting by name or promo.
@@ -345,7 +350,7 @@ abstract class UserView extends MultipageView
     }
 }
 
-class XnetFicheView extends UserView
+class GroupMemberView extends UserView
 {
     public function __construct(PlSet $set, array $params)
     {
@@ -360,7 +365,26 @@ class XnetFicheView extends UserView
 
     public function templateName()
     {
-        return 'include/plview.xnetuser.tpl';
+        return 'include/plview.groupmember.tpl';
+    }
+}
+
+class ListMemberView extends UserView
+{
+    public function __construct(PlSet $set, array $params)
+    {
+        $this->entriesPerPage = 100;
+        $this->addSort(new PlViewOrder('name', array(new UFO_Name(Profile::DN_SORT)), 'nom'));
+        $this->addSort(new PlViewOrder('promo', array(
+                    new UFO_Promo(UserFilter::DISPLAY, true),
+                    new UFO_Name(Profile::DN_SORT),
+                ), 'promotion'));
+        parent::__construct($set, $params);
+    }
+
+    public function templateName()
+    {
+        return 'include/plview.listmember.tpl';
     }
 }
 
