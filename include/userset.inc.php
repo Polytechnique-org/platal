@@ -144,10 +144,10 @@ class ProfileArraySet extends ProfileSet
 }
 
 
-/** A multipage view for profiles
+/** A multipage view for profiles or users
  * Allows the display of bounds when sorting by name or promo.
  */
-abstract class ProfileView extends MultipageView
+abstract class MixedView extends MultipageView
 {
     protected function getBoundValue($obj)
     {
@@ -158,6 +158,20 @@ abstract class ProfileView extends MultipageView
                 return strtoupper($name);
             case 'promo':
                 return $obj->promo();
+            default:
+                return null;
+            }
+        } elseif ($obj instanceof User) {
+            switch ($this->bound_field) {
+            case 'name':
+                $name = $obj->lastName();
+                return strtoupper($name);
+            case 'promo':
+                if ($obj->hasProfile()) {
+                    return $obj->profile()->promo();
+                } else {
+                    return 'ext';
+                }
             default:
                 return null;
             }
@@ -194,7 +208,7 @@ abstract class ProfileView extends MultipageView
  * - with_score: whether to allow ordering by score (set only for a quick search)
  * - starts_with: show only names beginning with the given letter
  */
-class MinificheView extends ProfileView
+class MinificheView extends MixedView
 {
     public function __construct(PlSet $set, array $params)
     {
@@ -244,7 +258,7 @@ class MinificheView extends ProfileView
     }
 }
 
-class MentorView extends ProfileView
+class MentorView extends MixedView
 {
     public function __construct(PlSet $set, array $params)
     {
@@ -269,50 +283,7 @@ class MentorView extends ProfileView
     }
 }
 
-/** A multipage view for users
- * Allows the display of bounds when sorting by name or promo.
- */
-abstract class UserView extends MultipageView
-{
-    protected function getBoundValue($user)
-    {
-        if ($user instanceof User) {
-            switch ($this->bound_field) {
-            case 'name':
-                $name = $user->lastName();
-                return strtoupper($name);
-            case 'promo':
-                if ($user->hasProfile()) {
-                    return $user->profile()->promo();
-                } else {
-                    return null;
-                }
-            default:
-                return null;
-            }
-        }
-        return null;
-    }
-
-    public function bounds()
-    {
-        $order = Env::v('order', $this->defaultkey);
-        $show_bounds = 0;
-        if (($order == "name") || ($order == "-name")) {
-            $this->bound_field = "name";
-            $show_bounds = 1;
-        } elseif (($order == "promo") || ($order == "-promo")) {
-            $this->bound_field = "promo";
-            $show_bounds = -1;
-        }
-        if ($order{0} == '-') {
-            $show_bounds = -$show_bounds;
-        }
-        return $show_bounds;
-    }
-}
-
-class GroupMemberView extends UserView
+class GroupMemberView extends MixedView
 {
     public function __construct(PlSet $set, array $params)
     {
@@ -331,7 +302,7 @@ class GroupMemberView extends UserView
     }
 }
 
-class ListMemberView extends UserView
+class ListMemberView extends MixedView
 {
     public function __construct(PlSet $set, array $params)
     {
@@ -350,7 +321,7 @@ class ListMemberView extends UserView
     }
 }
 
-class TrombiView extends UserView
+class TrombiView extends MixedView
 {
     public function __construct(PlSet $set, array $params)
     {
