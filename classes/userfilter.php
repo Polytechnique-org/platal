@@ -971,11 +971,11 @@ class UserFilter extends PlFilter
         foreach ($this->sa as $sub => $emails) {
             if (is_null($emails)) {
                 $joins['sa' . $sub] = PlSqlJoin::left('email_source_account', '$ME.uid = $UID');
-            } else if ($key == self::ALIAS_BEST) {
+            } else if ($sub == self::ALIAS_BEST) {
                 $joins['sa' . $sub] = PlSqlJoin::left('email_source_account', '$ME.uid = $UID AND FIND_IN_SET(\'bestalias\', $ME.flags)');
-            } else if ($key == self::ALIAS_FORLIFE) {
+            } else if ($sub == self::ALIAS_FORLIFE) {
                 $joins['sa' . $sub] = PlSqlJoin::left('email_source_account', '$ME.uid = $UID AND $ME.type = \'forlife\'');
-            } else if ($key == self::ALIAS_AUXILIARY) {
+            } else if ($sub == self::ALIAS_AUXILIARY) {
                 $joins['sa' . $sub] = PlSqlJoin::left('email_source_account', '$ME.uid = $UID AND $ME.type = \'alias_aux\'');
             } else {
                 if (!is_array($emails)) {
