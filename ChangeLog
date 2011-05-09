@@ -44,6 +44,7 @@ Bug/Wish:
         - #1470: Fixes autocomplete on countries                           -JAC
 
     * XnetGrp:
+        - Enables NLs filling from group members                           -JAC
         - #1179: Adds alphabetic choices for group directories             -XEL
         - #1460: Enables NLs creation for groups                           -XEL
         - #1473: Enables group filling from its MLs and aliases            -JAC

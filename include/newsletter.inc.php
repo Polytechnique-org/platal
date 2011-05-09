@@ -567,6 +567,18 @@ class NewsLetter
         return $this->custom_css;
     }
 
+    public function canSyncWithGroup()
+    {
+        switch ($this->group) {
+          case self::GROUP_XORG:
+          case self::GROUP_AX:
+          case self::GROUP_EP:
+            return false;
+          default:
+            return true;
+        }
+    }
+
     // }}}
 }
 

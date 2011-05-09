@@ -30,6 +30,7 @@ class XnetNlModule extends NewsletterModule
             '%grp/nl/show'              => $this->make_hook('nl_show',         AUTH_MDP),
             '%grp/nl/search'            => $this->make_hook('nl_search',       AUTH_MDP),
             '%grp/admin/nl'             => $this->make_hook('admin_nl',        AUTH_MDP, 'groupadmin'),
+            '%grp/admin/nl/sync'        => $this->make_hook('admin_nl_sync',   AUTH_MDP, 'groupadmin'),
             '%grp/admin/nl/enable'      => $this->make_hook('admin_nl_enable', AUTH_MDP, 'groupadmin'),
             '%grp/admin/nl/edit'        => $this->make_hook('admin_nl_edit',   AUTH_MDP, 'groupadmin'),
             '%grp/admin/nl/edit/cancel' => $this->make_hook('admin_nl_cancel', AUTH_MDP, 'groupadmin'),
@@ -43,6 +44,43 @@ class XnetNlModule extends NewsletterModule
        global $globals;
        $group = $globals->asso('shortname');
        return NewsLetter::forGroup($group);
+    }
+
+    public function handler_admin_nl_sync($page)
+    {
+        global $globals;
+        $nl = $this->getNl();
+        if (!$nl) {
+            return PL_FORBIDDEN;
+        }
+
+        if (Env::has('add_users')) {
+            S::assert_xsrf_token();
+
+            XDB::execute('INSERT IGNORE INTO  newsletter_ins (uid, nlid)
+                                      SELECT  g.uid, n.id
+                                        FROM  group_members AS g
+                                  INNER JOIN  newsletters   AS n  ON (n.group_id = g.asso_id)
+                                       WHERE  g.uid IN {?} AND g.asso_id = {?}',
+                         array_keys(Env::v('add_users')), $globals->asso('id'));
+
+            $page->trigSuccess('Ajouts réalisés avec succès.');
+        }
+
+        $uids = XDB::fetchColumn('SELECT  DISTINCT(g.uid)
+                                    FROM  group_members AS g
+                                   WHERE  g.asso_id = {?} AND NOT EXISTS (SELECT  ni.*
+                                                                            FROM  newsletter_ins AS ni
+                                                                      INNER JOIN  newsletters    AS n  ON (ni.nlid = n.id)
+                                                                           WHERE  g.uid = ni.uid AND n.group_id = g.asso_id)',
+                                 $globals->asso('id'));
+
+        $users = User::getBulkUsersWithUIDs($uids);
+        usort($users, 'User::compareDirectoryName');
+
+        $page->setTitle('Synchronisation de la newsletter');
+        $page->changeTpl('newsletter/sync.tpl');
+        $page->assign('users', $users);
     }
 
     public function handler_admin_nl_enable($page)
