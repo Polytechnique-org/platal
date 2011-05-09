@@ -292,6 +292,14 @@ class User extends PlUser
         return $this->profile()->fullName($with_promo);
     }
 
+    public function shortName($with_promo = false)
+    {
+        if (!$this->hasProfile()) {
+            return $this->full_name;
+        }
+        return $this->profile()->shortName($with_promo);
+    }
+
     public function directoryName()
     {
         if (!$this->hasProfile()) {

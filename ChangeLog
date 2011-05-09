@@ -30,6 +30,9 @@ Bug/Wish:
     * Newsletter:
         - #1394: Links nl unsubscribtions to the issues that caused them   -JAC
 
+    * Paiement:
+        - #1485: Properly formats name and comment field in paiements      -JAC
+
     * Profile:
         - #1445: Add job entry year                                        -JAC
         - #1478: Uses user's visibility limitations to display vcards      -JAC
