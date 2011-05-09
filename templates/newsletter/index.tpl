@@ -37,9 +37,11 @@
 <h2>Ton statut</h2>
 
 {if $nl->subscriptionState()}
+{if $smarty.session.user->type != 'xnet'}
 <p>
-Tu es actuellement inscrit à la {$nl->name} (pour choisir le format HTML ou texte, rends toi sur la page <a href='prefs'>des préférences</a>).
+Tu es actuellement inscrit à la {$nl->name} (pour choisir le format HTML ou texte, rends toi sur la page <a href="https://{$globals->core->secure_domain}/prefs">des préférences</a>).
 </p>
+{/if}
 <div class='center'>
   [<a href='{$nl->prefix()}/out'>{icon name=delete} me désinscrire de la {$nl->name}</a>]
 </div>
