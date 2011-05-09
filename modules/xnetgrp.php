@@ -1264,7 +1264,7 @@ class XnetGrpModule extends PLModule
             $page->trigError('Le fichier n\'est pas une image valide au format JPEG, GIF ou PNG.');
             $upload->rm();
             return false;
-        } elseif (!$upload->resizeImage(200, 300, 100, 100, 32284)) {
+        } elseif (!$upload->resizeImage(80, 100, 100, 100, 32284)) {
             $page->trigError('Impossible de retraiter l\'image');
             return false;
         }
