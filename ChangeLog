@@ -12,6 +12,9 @@ Bug/Wish:
         - #1474: Provides accounts data for accounts without profile       -JAC
         - #1476: Logs last use of Auth-Groupe-X keys                       -JAC
 
+    * Carnet:
+        - #1486: Allows deletion of deceased contact/watched user          -JAC
+
     * Core:
         - #1484: Fix reference to is_IE that does not exist anymore        -FRU
 
