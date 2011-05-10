@@ -777,7 +777,7 @@ class User extends PlUser
                              $this->forlifeEmail(), $newuser->id());
 
                 // Reftech new user so its forlifeEmail will be correct.
-                $newuser = getSilentWithUID($newuser->id());
+                $newuser = self::getSilentWithUID($newuser->id());
             }
 
             // Change email used in mailing lists.
