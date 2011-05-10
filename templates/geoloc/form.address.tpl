@@ -20,8 +20,12 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{if t($validation)}
+<div style="float: left">
+{else}
 <tr{if t($class)} class="{$class}"{/if}>
   <td>
+{/if}
     <textarea name="{$prefname}[text]" cols="30" rows="4" onkeyup="addressChanged('{$prefid}')">{$address.text}</textarea>
     <input type="hidden" name="{$prefname}[postalText]" value="{$address.postalText}" />
     <input type="hidden" name="{$prefname}[types]" value="{$address.types}" />
@@ -37,15 +41,35 @@
     <input type="hidden" name="{$prefname}[componentsIds]" value="{$address.componentsIds}" />
     <input type="hidden" name="{$prefname}[changed]" value="0" />
     <input type="hidden" name="{$prefname}[removed]" value="0" />
+{if t($validation)}
+    <br />
+    <label><input type="checkbox" name="{$prefname}[modified]"{if $valid->modified} checked="checked"{/if} />Utiliser la version modifiée</label>
+</div>
+<div style="float: right">
+{else}
   </td>
   <td>
+{/if}
   {if t($address.latitude)}
     <img src="https://maps.googleapis.com/maps/api/staticmap?size=300x100&amp;markers=color:{$profile->promoColor()}%7C{$address.latitude},{$address.longitude}&amp;zoom=12&amp;sensor=false"
          alt="Position de l'adresse" />
+    {if t($geocoding_removal)}
     <br />
-    <small><a href="javascript:deleteGeocoding()">{icon name=cross title="Adresse mal localisée"} Signaler que le repère est mal placé</a></small>
+    <small id="{$prefid}_geocoding_removal">
+    {if !t($address.request)}
+      <a href="javascript:deleteGeocoding('{$prefid}', '{$hrpid}')">{icon name=cross title="Adresse mal localisée"} Signaler que le repère est mal placé</a>
+    {else}
+    Localisation en attente de validation.
+    {/if}
+    </small>
+    {/if}
   {/if}
+{if t($validation)}
+</div>
+<div style="clear: both"></div>
+{else}
   </td>
 </tr>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

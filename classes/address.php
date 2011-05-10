@@ -310,6 +310,7 @@ class Address
     public $location_type = '';
     public $partial_match = false;
     public $componentsIds = '';
+    public $request = false;
 
     // Database's field required for both 'home' and 'job' addresses.
     public $pub = 'ax';
@@ -352,6 +353,7 @@ class Address
                                                                                array('', "\n"), $this->text)), 'CEDEX')) !== false);
             }
         }
+        $this->request = !is_null(AddressReq::get_request($this->pid, $this->jobid, $this->groupid, $this->type, $this->text));
     }
 
     public function setId($id)
@@ -611,7 +613,8 @@ class Address
             'northeast_longitude' => $this->northeast_longitude,
             'location_type'       => $this->location_type,
             'partial_match'       => $this->partial_match,
-            'componentsIds'       => $this->componentsIds
+            'componentsIds'       => $this->componentsIds,
+            'request'             => $this->request
         );
 
         if ($this->type == self::LINK_PROFILE || $this->type == self::LINK_JOB) {
@@ -696,6 +699,44 @@ class Address
 
             if ($this->type == self::LINK_PROFILE) {
                 Phone::savePhones($this->phones, $this->pid, Phone::LINK_ADDRESS, $this->id);
+            }
+        }
+    }
+
+    public function updateGeocoding($text)
+    {
+        $id = null;
+        $texts = XDB::fetchAllAssoc('id', 'SELECT  id, text
+                                   FROM  profile_addresses
+                                  WHERE  pid = {?} AND jobid = {?} AND groupid = {?} AND type = {?}',
+                                $this->pid, $this->jobid, $this->groupid, $this->type);
+        $text = preg_replace('/\s+/', ' ', $text);
+        foreach ($texts as $key => $value) {
+            if (strcmp($text, preg_replace('/\s+/', ' ', $value)) == 0) {
+                $id = $key;
+                break;
+            }
+        }
+        if (!is_null($id)) {
+            XDB::execute('UPDATE  profile_addresses
+                             SET  text = {?}, postalText = {?}, types = {?}, formatted_address = {?},
+                                  location_type = {?}, partial_match = {?}, latitude = {?}, longitude = {?},
+                                  southwest_latitude = {?}, southwest_longitude = {?}, northeast_latitude = {?}, northeast_longitude = {?}
+                           WHERE  pid = {?} AND jobid = {?} AND groupid = {?} AND type = {?} AND id = {?}',
+                         $this->text, $this->postalText, $this->types, $this->formatted_address,
+                         $this->location_type, $this->partial_match, $this->latitude, $this->longitude,
+                         $this->southwest_latitude, $this->southwest_longitude, $this->northeast_latitude, $this->northeast_longitude,
+                         $this->pid, $this->jobid, $this->groupid, $this->type, $id);
+
+            XDB::execute('DELETE FROM  profile_addresses_components
+                                WHERE  pid = {?} AND jobid = {?} AND groupid = {?} AND type = {?} AND id = {?}',
+                         $this->pid, $this->jobid, $this->groupid, $this->type, $id);
+            if ($this->componentsIds) {
+                foreach (explode(',', $this->componentsIds) as $component_id) {
+                    XDB::execute('INSERT IGNORE INTO  profile_addresses_components (pid, jobid, groupid, type, id, component_id)
+                                              VALUES  ({?}, {?}, {?}, {?}, {?}, {?})',
+                                 $this->pid, $this->jobid, $this->groupid, $this->type, $id, $component_id);
+                }
             }
         }
     }

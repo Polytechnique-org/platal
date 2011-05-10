@@ -333,18 +333,21 @@ function addressChanged(prefid)
     $('#' + prefid + '_cont').find('[name*=changed]').val("1");
 }
 
-function deleteGeocoding()
+function deleteGeocoding(prefid, hrpid)
 {
     var confirmation = confirm(
         "La localisation de l'adresse sert à deux choses : te placer dans "
         + "le planisphère et te faire apparaître dans la recherche avancée par "
-        + "pays, région, département, ville. La supprimer t'en fera disparaître. "
+        + "pays, région, département, ville... La supprimer t'en fera disparaître. "
         + "\nIl ne faut le faire que si cette localisation "
         + "est réellement erronée. Avant de supprimer cette localisation, l'équipe de "
         + "Polytechnique.org tentera de la réparer.\n\nConfirmes-tu ta "
         + "demande de suppression de cette localisation ?");
+
     if (confirmation) {
-        alert('Warning: not implemented yet.');
+        var address = $('#' + prefid).find("[name*='[text]']").val();
+        $.xpost('profile/ajax/address/del/' + hrpid, { address:address });
+        $('#' + prefid + '_geocoding_removal').html('Localisation en attente de validation.');
     }
 }
 

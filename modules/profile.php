@@ -33,6 +33,7 @@ class ProfileModule extends PLModule
             'profile/ax'                 => $this->make_hook('ax',                         AUTH_COOKIE, 'admin,edit_directory'),
             'profile/edit'               => $this->make_hook('p_edit',                     AUTH_MDP),
             'profile/ajax/address'       => $this->make_hook('ajax_address',               AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/address/del'   => $this->make_hook('ajax_address_del',           AUTH_MDP),
             'profile/ajax/tel'           => $this->make_hook('ajax_tel',                   AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/edu'           => $this->make_hook('ajax_edu',                   AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/medal'         => $this->make_hook('ajax_medal',                 AUTH_COOKIE, 'user', NO_AUTH),
@@ -355,6 +356,7 @@ class ProfileModule extends PLModule
         }
 
        $page->setTitle('Mon Profil');
+       $page->assign('hrpid', $profile->hrid());
        if (isset($success) && $success) {
            $page->trigSuccess('Ton profil a bien été mis à jour.');
        }
@@ -396,6 +398,20 @@ class ProfileModule extends PLModule
         $page->changeTpl('profile/adresses.address.tpl', NO_SKIN);
         $page->assign('i', $id);
         $page->assign('address', array());
+    }
+
+    function handler_ajax_address_del($page, $hrpid)
+    {
+        if ($profile = Profile::get($hrpid)) {
+            if (S::user()->canEdit($profile)) {
+                $address = Post::t('address');
+                if (is_null(AddressReq::get_request($profile->id(), 0, 0, Address::LINK_PROFILE, $address))) {
+                    $req = new AddressReq(S::user(), $profile, $address, $profile->id(), 0, 0, Address::LINK_PROFILE);
+                    $req->submit();
+                }
+            }
+        }
+        exit();
     }
 
     function handler_ajax_tel($page, $prefid, $prefname, $telid, $subField, $mainField, $mainId)

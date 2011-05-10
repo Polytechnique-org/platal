@@ -624,6 +624,25 @@ abstract class ProfileValidate extends Validate
     }
 
     // }}}
+    // {{{ function get_all_typed_requests()
+
+    /** Same as get_typed_request() but return an array of objects.
+     */
+    static public function get_all_typed_requests($type)
+    {
+        $res = XDB::iterRow('SELECT  data
+                               FROM  requests
+                              WHERE  type = {?}
+                           ORDER BY  stamp',
+                            $type);
+        $array = array();
+        while (list($data) = $res->next()) {
+            $array[] = Validate::unserialize($data);
+        }
+        return $array;
+    }
+
+    // }}}
     // {{{ function get_typed_requests_count()
 
     /** Same as get_typed_requests() but returns the count of available requests.
