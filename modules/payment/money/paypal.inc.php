@@ -67,15 +67,23 @@ class PayPal
         );
 
         if ($user->hasProfile()) {
-            $res = XDB::query("SELECT  pa.text, gl.name AS city, pa.postalCode AS zip, pa.countryId AS country,
+            $res = XDB::query("SELECT  pa.text, pace2.short_name AS city, pace3.short_name AS zip, pace1.short_name AS country,
                                        IF(pp1.display_tel != '', pp1.display_tel, pp2.display_tel) AS night_phone_b
-                                 FROM  profile_addresses AS pa
-                            LEFT JOIN  profile_phones    AS pp1 ON (pp1.pid = pa.pid AND pp1.link_type = 'address'
-                                                                    AND pp1.link_id = pa.id)
-                            LEFT JOIN  profile_phones    AS pp2 ON (pp2.pid = pa.pid AND pp2.link_type = 'user'
-                                                                    AND pp2.link_id = 0)
-                            LEFT JOIN  geoloc_localities AS gl  ON (gl.id = pa.localityId)
+                                 FROM  profile_addresses                 AS pa
+                            LEFT JOIN  profile_phones                    AS pp1   ON (pp1.pid = pa.pid AND pp1.link_type = 'address' AND pp1.link_id = pa.id)
+                            LEFT JOIN  profile_phones                    AS pp2   ON (pp2.pid = pa.pid AND pp2.link_type = 'user' AND pp2.link_id = 0)
+                            LEFT JOIN  profile_addresses_components_enum AS pace1 ON (FIND_IN_SET('country', pace1.types))
+                            LEFT JOIN  profile_addresses_components_enum AS pace2 ON (FIND_IN_SET('locality', pace2.types))
+                            LEFT JOIN  profile_addresses_components_enum AS pace3 ON (FIND_IN_SET('postal_code', pace3.types))
+                            LEFT JOIN  profile_addresses_components      AS pac1  ON (pa.pid = pac1.pid AND pa.jobid = pac1.jobid AND pa.groupid = pac1.groupid
+                                                                                      AND pa.id = pac1.id AND pa.type = pac1.type AND pace1.id = pac1.component_id)
+                            LEFT JOIN  profile_addresses_components      AS pac2  ON (pa.pid = pac2.pid AND pa.jobid = pac2.jobid AND pa.groupid = pac2.groupid
+                                                                                      AND pa.id = pac2.id AND pa.type = pac2.type AND pace2.id = pac2.component_id)
+                            LEFT JOIN  profile_addresses_components      AS pac3  ON (pa.pid = pac3.pid AND pa.jobid = pac3.jobid AND pa.groupid = pac3.groupid
+                                                                                      AND pa.id = pac3.id AND pa.type = pac3.type AND pace3.id = pac3.component_id)
+
                                 WHERE  pa.pid = {?} AND FIND_IN_SET('current', pa.flags)
+                             GROUP BY  pa.pid, pa.jobid, pa.groupid, pa.id, pa.type
                                 LIMIT  1",
                               $user->profile()->id());
             $this->infos['client'] = array_map('replace_accent', array_merge($info_client, $res->fetchOneAssoc()));

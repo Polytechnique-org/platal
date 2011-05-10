@@ -38,15 +38,23 @@ function get_annuaire_infos($method, $params) {
                                 $params[1]);
             $array = $res->next();
         } else {
-            $res = XDB::iterRow("SELECT  p.birthdate, pa.text, pa.postalCode
-                                         gl.name, pa.countryId, p.pid, pa.id
-                                   FROM  profiles          AS p
-                              LEFT JOIN  profile_addresses AS pa ON (pa.pid = p.pid)
-                              LEFT JOIN  geoloc_localities AS gl ON (pl.id = pa.localityId)
+            $res = XDB::iterRow("SELECT  p.birthdate, pa.text, pace3.short_name, pace2.short_name, pace1.short_name, p.pid, pa.id
+                                   FROM  profiles                          AS p
+                              LEFT JOIN  profile_addresses                 AS pa    ON (pa.pid = p.pid)
+                              LEFT JOIN  profile_addresses_components_enum AS pace1 ON (FIND_IN_SET('country', pace1.types))
+                              LEFT JOIN  profile_addresses_components_enum AS pace2 ON (FIND_IN_SET('locality', pace2.types))
+                              LEFT JOIN  profile_addresses_components_enum AS pace3 ON (FIND_IN_SET('postal_code', pace3.types))
+                              LEFT JOIN  profile_addresses_components      AS pac1  ON (pa.pid = pac1.pid AND pa.jobid = pac1.jobid AND pa.groupid = pac1.groupid
+                                                                                        AND pa.id = pac1.id AND pa.type = pac1.type AND pace1.id = pac1.component_id)
+                              LEFT JOIN  profile_addresses_components      AS pac2  ON (pa.pid = pac2.pid AND pa.jobid = pac2.jobid AND pa.groupid = pac2.groupid
+                                                                                        AND pa.id = pac2.id AND pa.type = pac2.type AND pace2.id = pac2.component_id)
+                              LEFT JOIN  profile_addresses_components      AS pac3  ON (pa.pid = pac3.pid AND pa.jobid = pac3.jobid AND pa.groupid = pac3.groupid
+                                                                                        AND pa.id = pac3.id AND pa.type = pac3.type AND pace3.id = pac3.component_id)
                                   WHERE  p.xorg_id = {?} AND NOT FIND_IN_SET('job', pa.flags)
                                ORDER BY  NOT FIND_IN_SET('current', pa.flags),
                                          FIND_IN_SET('secondary', pa.flags),
-                                         NOT FIND_IN_SET('mail', pa.flags)",
+                                         NOT FIND_IN_SET('mail', pa.flags)
+                               GROUP BY  pa.pid, pa.jobid, pa.groupid, pa.id, pa.type",
                                 $params[1]);
             // Process the addresses we got.
             if(list($age, $text, $adr['cp'], $adr['ville'],
