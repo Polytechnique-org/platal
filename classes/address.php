@@ -901,10 +901,24 @@ class AddressIterator implements PlIterator
         $sql = 'SELECT  pa.pid, pa.jobid, pa.groupid, pa.type, pa.id, pa.flags, pa.text, pa.postalText, pa.pub, pa.comment,
                         pa.types, pa.formatted_address, pa.location_type, pa.partial_match, pa.latitude, pa.longitude,
                         pa.southwest_latitude, pa.southwest_longitude, pa.northeast_latitude, pa.northeast_longitude,
-                        GROUP_CONCAT(DISTINCT pc.component_id SEPARATOR \',\') AS componentsIds
-                  FROM  profile_addresses            AS pa
-             LEFT JOIN  profile_addresses_components AS pc ON (pa.pid = pc.pid AND pa.jobid = pc.jobid AND pa.groupid = pc.groupid
-                                                               AND pa.type = pc.type AND pa.id = pc.id)
+                        GROUP_CONCAT(DISTINCT pc.component_id SEPARATOR \',\') AS componentsIds,
+                        pace1.long_name AS postalCode, pace2.long_name AS locality, pace3.long_name AS administrativeArea, pace4.long_name AS country
+                  FROM  profile_addresses                 AS pa
+             LEFT JOIN  profile_addresses_components      AS pc    ON (pa.pid = pc.pid AND pa.jobid = pc.jobid AND pa.groupid = pc.groupid
+                                                                       AND pa.type = pc.type AND pa.id = pc.id)
+             LEFT JOIN  profile_addresses_components_enum AS pace1 ON (FIND_IN_SET(\'postal_code\', pace1.types))
+             LEFT JOIN  profile_addresses_components_enum AS pace2 ON (FIND_IN_SET(\'locality\', pace2.types))
+             LEFT JOIN  profile_addresses_components_enum AS pace3 ON (FIND_IN_SET(\'administrative_area_level_1\', pace3.types))
+             LEFT JOIN  profile_addresses_components_enum AS pace4 ON (FIND_IN_SET(\'country\', pace4.types))
+             LEFT JOIN  profile_addresses_components      AS pac1  ON (pa.pid = pac1.pid AND pa.jobid = pac1.jobid AND pa.groupid = pac1.groupid
+                                                                       AND pa.id = pac1.id AND pa.type = pac1.type AND pace1.id = pac1.component_id)
+             LEFT JOIN  profile_addresses_components      AS pac2  ON (pa.pid = pac2.pid AND pa.jobid = pac2.jobid AND pa.groupid = pac2.groupid
+                                                                       AND pa.id = pac2.id AND pa.type = pac2.type AND pace2.id = pac2.component_id)
+             LEFT JOIN  profile_addresses_components      AS pac3  ON (pa.pid = pac3.pid AND pa.jobid = pac3.jobid AND pa.groupid = pac3.groupid
+                                                                       AND pa.id = pac3.id AND pa.type = pac3.type AND pace3.id = pac3.component_id)
+             LEFT JOIN  profile_addresses_components      AS pac4  ON (pa.pid = pac4.pid AND pa.jobid = pac4.jobid AND pa.groupid = pac4.groupid
+                                                                       AND pa.id = pac4.id AND pa.type = pac4.type AND pace4.id = pac4.component_id)
+
                  ' . ((count($where) > 0) ? 'WHERE  ' . implode(' AND ', $where) : '') . '
               GROUP BY  pa.pid, pa.jobid, pa.groupid, pa.type, pa.id
               ORDER BY  pa.pid, pa.jobid, pa.id';
