@@ -316,7 +316,7 @@ class RegisterModule extends PLModule
         }
 
         list($uid, $pid, $forlife, $bestalias, $emailXorg2, $password, $email, $services,
-             $birthdate, $lastname, $firstname, $promo, $yearpromo, $sex, $birthdate_ref, $type) = $res->fetchOneRow();
+             $birthdate, $lastname, $firstname, $yearpromo, $promo, $sex, $birthdate_ref, $type) = $res->fetchOneRow();
         $isX = ($type == 'x');
         $mail_domain = User::$sub_mail_domains[$type] . $globals->mail->domain;
 
@@ -502,7 +502,7 @@ class RegisterModule extends PLModule
             $market[] = " - par {$sender->fullName()} sur $maketingEmails (le plus récemment le $lastDate)";
             $mymail = new PlMailer('register/marketer.mail.tpl');
             $mymail->setSubject("$firstname $lastname s'est inscrit à Polytechnique.org !");
-            $mymail->addTo($sender);
+            $mymail->setTo($sender);
             $mymail->assign('sender', $sender);
             $mymail->assign('firstname', $firstname);
             $mymail->assign('lastname', $lastname);
