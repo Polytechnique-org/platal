@@ -81,7 +81,7 @@ class BPLCCyberPlus
         $this->infos['client'] = Array(
             'vads_cust_email' => S::user()->bestEmail(),
             'vads_cust_id' => S::v('uid'),
-            'vads_cust_name' => substr(self::replaceNonAlpha(replace_accent(S::user()->shortName())), 0, 127);
+            'vads_cust_name' => substr(self::replaceNonAlpha(replace_accent(S::user()->shortName())), 0, 127));
         $this->infos['commande'] = Array(
             'vads_amount' => $this->val,
             'vads_currency' => '978', # Euro
@@ -89,7 +89,7 @@ class BPLCCyberPlus
             'vads_trans_date' => $trans_date,
             'vads_trans_id' => $trans_id,
             'vads_order_id' => $fullref,
-            'vads_order_info' => substr(self::replaceNonAlpha(replace_accent(Env::v('comment'))), 0, 255);
+            'vads_order_info' => substr(self::replaceNonAlpha(replace_accent(Env::v('comment'))), 0, 255));
         $this->infos['divers'] = Array(
             'vads_version' => 'V2',
             'vads_ctx_mode' => $globals->money->cyperplus_prod,
