@@ -460,15 +460,19 @@ class XnetGrpModule extends PLModule
         }
         $nonusers = array_unique($nonusers);
         $uids = array_unique($uids);
-        $uids = XDB::fetchColumn('SELECT  a.uid
-                                    FROM  accounts AS a
-                                   WHERE  a.uid IN {?} AND NOT EXISTS (SELECT  *
-                                                                         FROM  group_members AS g
-                                                                        WHERE  a.uid = g.uid AND g.asso_id = {?})',
-                                 $uids, $globals->asso('id'));
+        if (count($uids)) {
+            $uids = XDB::fetchColumn('SELECT  a.uid
+                                        FROM  accounts AS a
+                                       WHERE  a.uid IN {?} AND NOT EXISTS (SELECT  *
+                                                                             FROM  group_members AS g
+                                                                            WHERE  a.uid = g.uid AND g.asso_id = {?})',
+                                     $uids, $globals->asso('id'));
 
-        $users = User::getBulkUsersWithUIDs($uids);
-        usort($users, 'User::compareDirectoryName');
+            $users = User::getBulkUsersWithUIDs($uids);
+            usort($users, 'User::compareDirectoryName');
+        } else {
+            $users = array();
+        }
         sort($nonusers);
 
         $page->assign('users', $users);
