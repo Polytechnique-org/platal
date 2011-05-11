@@ -172,7 +172,7 @@ $($.closeOnEsc);
 
       {$profile->promo('details')}
 
-      {if $logged && $profile->mentor_expertise}
+      {if $logged && $view eq 'private' && $profile->mentor_expertise}
       [<a href="referent/{$profile->hrid()}" class='popup2'>Ma fiche référent</a>]
       {/if}
 
