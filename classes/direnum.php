@@ -499,6 +499,7 @@ class DE_GroupesX extends DirEnumeration
 // {{{ class DE_EducationSchools
 class DE_EducationSchools extends DirEnumeration
 {
+    protected $ac_beginwith = false;
     protected $idfield   = 'profile_education_enum.id';
     protected $valfield  = 'profile_education_enum.name';
     protected $valfield2 = 'profile_education_enum.abbreviation';
