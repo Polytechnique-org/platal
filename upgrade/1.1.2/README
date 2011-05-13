@@ -1,0 +1,2 @@
+Once all sql/php scripts have be run, run retrieve_address_tables.sh and finally xx_retrieve_geocoding.sql.
+Then "./formatAddresses.php -g -t g -r e" will format the last ungeocoded addresses.
