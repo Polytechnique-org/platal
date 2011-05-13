@@ -69,7 +69,7 @@ function fill_email_combobox(PlPage $page, array $retrieve, $user = null)
                 $emails['Email annuaire AX'] = array($profile->email_directory);
             } elseif (in_array('stripped_directory', $retrieve)) {
                 if (User::isForeignEmailAddress($profile->email_directory)) {
-                    $is_redirect = XDB::fecthOneCell('SELECT  COUNT(*)
+                    $is_redirect = XDB::fetchOneCell('SELECT  COUNT(*)
                                                         FROM  email_redirect_account
                                                        WHERE  uid = {?} AND redirect = {?}',
                                                      $user->id(), $profile->email_directory);
