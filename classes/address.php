@@ -749,9 +749,14 @@ class Address
 
     public function delete()
     {
+        XDB::execute('DELETE FROM  profile_addresses_components
+                            WHERE  pid = {?} AND jobid = {?} AND groupid = {?} AND type = {?} AND id = {?}',
+                     $this->pid, $this->jobid, $this->groupid, $this->type, $this->id);
         XDB::execute('DELETE FROM  profile_addresses
                             WHERE  pid = {?} AND jobid = {?} AND groupid = {?} AND type = {?} AND id = {?}',
                      $this->pid, $this->jobid, $this->groupid, $this->type, $this->id);
+
+        return XDB::affectedRows();
     }
 
     static public function deleteAddresses($pid, $type, $jobid = null, $groupid = null, $deletePrivate = true)
