@@ -66,42 +66,11 @@
   </tr>
 </table>
 
+<p class="center">
+[<a href="{$platal->ns}{$plset_base}/{$plset_mod}{$plset_args}" {if !$show_moderators}class="erreur"{/if}>membres</a>]
+[<a href="{$platal->ns}{$plset_base}/moderators/{$plset_mod}{$plset_args}" {if $show_moderators}class="erreur"{/if}>modérateurs</a>]
+</p>
+
 {include core=plset.tpl}
-
-<h1>
-  modérateurs de la liste
-</h1>
-
-<table cellpadding="8" cellspacing="2" style="width:100%;">
-  {foreach from=$owners item=xs key=promo}
-    {foreach from=$xs item=x}
-      {if $promo}
-      {cycle values="1,2,3,4" assign="loop"}
-      {if $loop eq "1"}<tr>{/if}
-        <td class='center'>
-          <img src="photo/{$x.l}" width="80" alt=" [ PHOTO ] " />
-          <br />
-          <a href="profile/{$x.l}" class="popup2">
-            {$x.n} ({$promo})
-          </a>
-        </td>
-      {if $loop eq "4"}</tr>{/if}
-      {/if}
-    {/foreach}
-  {/foreach}
-  {if $loop eq "1"}
-    {cycle values="1,2,3" assign="loop"}
-    {cycle values="1,2,3" assign="loop"}
-    {cycle values="1,2,3" assign="loop"}
-    <td></td><td></td><td></td></tr>
-  {elseif $loop eq "2"}
-    {cycle values="1,2,3" assign="loop"}
-    {cycle values="1,2,3" assign="loop"}
-    <td></td><td></td></tr>
-  {elseif $loop eq "3"}
-    {cycle values="1,2,3" assign="loop"}
-    <td></td></tr>
-  {/if}
-</table>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -19,42 +19,18 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-Platal::load('newsletter');
-
-class EPLetterModule extends NewsletterModule
+function smarty_modifier_get_user($obj)
 {
-    function handlers()
-    {
-        return array(
-            'epletter'                   => $this->make_hook('nl',              AUTH_COOKIE),
-            'epletter/out'               => $this->make_hook('out',             AUTH_PUBLIC),
-            'epletter/show'              => $this->make_hook('nl_show',         AUTH_COOKIE),
-            'epletter/search'            => $this->make_hook('nl_search',       AUTH_COOKIE),
-            'epletter/admin'             => $this->make_hook('admin_nl',        AUTH_MDP),
-            'epletter/admin/edit'        => $this->make_hook('admin_nl_edit',   AUTH_MDP),
-            'epletter/admin/edit/valid'  => $this->make_hook('admin_nl_valid',  AUTH_MDP),
-            'epletter/admin/edit/cancel' => $this->make_hook('admin_nl_cancel', AUTH_MDP),
-            'epletter/admin/edit/delete' => $this->make_hook('admin_nl_delete', AUTH_MDP),
-            'epletter/admin/categories'  => $this->make_hook('admin_nl_cat',    AUTH_MDP),
-        );
-    }
-
-    protected function getNl()
-    {
-        require_once 'newsletter.inc.php';
-        return NewsLetter::forGroup(NewsLetter::GROUP_EP);
-    }
-
-    function handler_out($page, $hash = null)
-    {
-        if (!$hash) {
-            if (!S::logged()) {
-                return PL_DO_AUTH;
-            }
-        }
-        return $this->handler_nl($page, 'out', $hash);
-    }
+  if ($obj instanceof User) {
+    return $obj;
+  } elseif ($obj instanceof Profile) {
+    return $obj->owner();
+  } else {
+    return null;
+  }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
+
+

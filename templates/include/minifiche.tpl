@@ -103,6 +103,16 @@
         {/if}
       {/if}
     </div>
+    {elseif hasPerm('directory_private') && $hasowner && $dead}
+    <div>
+      {if $smarty.session.user->isWatchedUser($profile)}
+      <a href="carnet/notifs/del_nonins/{$user->login()}?token={xsrf_token}">{*
+      *}{icon name=cross title="Retirer de la liste de mes surveillances"}</a>
+      {elseif $smarty.session.user->isContact($profile)}
+      <a href="carnet/contacts?action=retirer&amp;user={$profile->hrid()}&amp;token={xsrf_token}">{*
+      *}{icon name=cross title="Retirer de mes contacts"}</a>
+      {/if}
+    </div>
     {/if}
 
     {if hasPerm('admin') || ($smarty.session.user->canEdit($profile) && !$smarty.session.user->isMe($user))}

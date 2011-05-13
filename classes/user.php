@@ -292,6 +292,14 @@ class User extends PlUser
         return $this->profile()->fullName($with_promo);
     }
 
+    public function shortName($with_promo = false)
+    {
+        if (!$this->hasProfile()) {
+            return $this->full_name;
+        }
+        return $this->profile()->shortName($with_promo);
+    }
+
     public function directoryName()
     {
         if (!$this->hasProfile()) {
@@ -769,7 +777,7 @@ class User extends PlUser
                              $this->forlifeEmail(), $newuser->id());
 
                 // Reftech new user so its forlifeEmail will be correct.
-                $newuser = getSilentWithUID($newuser->id());
+                $newuser = self::getSilentWithUID($newuser->id());
             }
 
             // Change email used in mailing lists.

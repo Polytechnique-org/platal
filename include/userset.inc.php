@@ -123,26 +123,31 @@ class AdvancedSearchSet extends SearchSet
     }
 }
 
-/** Simple set based on an array of User objects
+/** Simple set based on an array of User emails
  */
-class ArraySet extends ProfileSet
+class UserArraySet extends UserSet
 {
-    public function __construct(array $users)
+    public function __construct(array $emails)
     {
-        $hruids = User::getBulkHruid($users, array('User', '_silent_user_callback'));
-        if (is_null($hruids) || count($hruids) == 0) {
-            $cond = new PFC_False();
-        } else {
-            $cond = new UFC_Hruid($hruids);
-        }
-        parent::__construct($cond);
+        parent::__construct(new UFC_Email($emails));
     }
 }
 
-/** A multipage view for profiles
+/** Simple set based on an array of Profile emails
+ */
+class ProfileArraySet extends ProfileSet
+{
+    public function __construct(array $emails)
+    {
+        parent::__construct(new UFC_Email($emails));
+    }
+}
+
+
+/** A multipage view for profiles or users
  * Allows the display of bounds when sorting by name or promo.
  */
-abstract class ProfileView extends MultipageView
+abstract class MixedView extends MultipageView
 {
     protected function getBoundValue($obj)
     {
@@ -153,6 +158,20 @@ abstract class ProfileView extends MultipageView
                 return strtoupper($name);
             case 'promo':
                 return $obj->promo();
+            default:
+                return null;
+            }
+        } elseif ($obj instanceof User) {
+            switch ($this->bound_field) {
+            case 'name':
+                $name = $obj->lastName();
+                return strtoupper($name);
+            case 'promo':
+                if ($obj->hasProfile()) {
+                    return $obj->profile()->promo();
+                } else {
+                    return 'ext';
+                }
             default:
                 return null;
             }
@@ -189,7 +208,7 @@ abstract class ProfileView extends MultipageView
  * - with_score: whether to allow ordering by score (set only for a quick search)
  * - starts_with: show only names beginning with the given letter
  */
-class MinificheView extends ProfileView
+class MinificheView extends MixedView
 {
     public function __construct(PlSet $set, array $params)
     {
@@ -239,7 +258,7 @@ class MinificheView extends ProfileView
     }
 }
 
-class MentorView extends ProfileView
+class MentorView extends MixedView
 {
     public function __construct(PlSet $set, array $params)
     {
@@ -264,7 +283,45 @@ class MentorView extends ProfileView
     }
 }
 
-class TrombiView extends ProfileView
+class GroupMemberView extends MixedView
+{
+    public function __construct(PlSet $set, array $params)
+    {
+        $this->entriesPerPage = 20;
+        $this->addSort(new PlViewOrder('name', array(new UFO_Name(Profile::DN_SORT)), 'nom'));
+        $this->addSort(new PlViewOrder('promo', array(
+                    new UFO_Promo(UserFilter::DISPLAY, true),
+                    new UFO_Name(Profile::DN_SORT),
+                ), 'promotion'));
+        parent::__construct($set, $params);
+    }
+
+    public function templateName()
+    {
+        return 'include/plview.groupmember.tpl';
+    }
+}
+
+class ListMemberView extends MixedView
+{
+    public function __construct(PlSet $set, array $params)
+    {
+        $this->entriesPerPage = 100;
+        $this->addSort(new PlViewOrder('name', array(new UFO_Name(Profile::DN_SORT)), 'nom'));
+        $this->addSort(new PlViewOrder('promo', array(
+                    new UFO_Promo(UserFilter::DISPLAY, true),
+                    new UFO_Name(Profile::DN_SORT),
+                ), 'promotion'));
+        parent::__construct($set, $params);
+    }
+
+    public function templateName()
+    {
+        return 'include/plview.listmember.tpl';
+    }
+}
+
+class TrombiView extends MixedView
 {
     public function __construct(PlSet $set, array $params)
     {

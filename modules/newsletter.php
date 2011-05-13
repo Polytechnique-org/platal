@@ -103,7 +103,7 @@ class NewsletterModule extends PLModule
         }
 
         if (!Post::has('nl_search')) {
-            pl_redirect($nl->prefix());
+            pl_redirect($nl->prefix(true, false));
         }
 
         $nl_search = Post::t('nl_search');
@@ -199,7 +199,7 @@ class NewsletterModule extends PLModule
             S::logger()->log('nl_issue_create', $nid);
 
             $id = $nl->createPending();
-            pl_redirect($nl->adminPrefix() . '/edit/' . $id);
+            pl_redirect($nl->adminPrefix(true, false) . '/edit/' . $id);
         }
 
         $page->assign_by_ref('nl', $nl);
@@ -273,7 +273,7 @@ class NewsletterModule extends PLModule
         // Delete an article
         if($action == 'delete') {
             $issue->delArticle($aid);
-            pl_redirect($nl->adminPrefix() . "/edit/$nid");
+            pl_redirect($nl->adminPrefix(true, false) . "/edit/$nid");
         }
 
         // Save an article
@@ -281,7 +281,7 @@ class NewsletterModule extends PLModule
             $art  = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'),
                                   $aid, Post::v('cid'), Post::v('pos'));
             $issue->saveArticle($art);
-            pl_redirect($nl->adminPrefix() . "/edit/$nid");
+            pl_redirect($nl->adminPrefix(true, false) . "/edit/$nid");
         }
 
         // Edit an article
@@ -431,11 +431,30 @@ class NewsletterModule extends PLModule
     }
 
     function handler_admin_nl_cat($page, $action = 'list', $id = null) {
+        $nl = $this->getNl();
+        if (!$nl) {
+            return PL_NOT_FOUND;
+        }
+
+        if (!$nl->mayEdit()) {
+            return PL_FORBIDDEN;
+        }
+
         $page->setTitle('Administration - Newsletter : Catégories');
         $page->assign('title', 'Gestion des catégories de la newsletter');
-        $table_editor = new PLTableEditor('admin/newsletter/categories','newsletter_cat','cid');
+        $table_editor = new PLTableEditor($nl->adminPrefix() . '/categories', 'newsletter_cat','cid');
         $table_editor->describe('title','intitulé',true);
         $table_editor->describe('pos','position',true);
+        if ($nl->group == Newsletter::GROUP_XORG) {
+            $table_editor->add_option_table('newsletters', 'newsletters.id = t.nlid');
+            $table_editor->add_option_field('newsletters.name', 'newsletter_name', 'Newsletter', null, 'nlid');
+            $table_editor->describe('nlid', 'ID NL', true);
+        } else {
+            $table_editor->force_field_value('nlid', $nl->id);
+            $table_editor->describe('nlid', 'nlid', false);
+        }
+        // Prevent deletion.
+        $table_editor->on_delete(null, null);
         $table_editor->apply($page, $action, $id);
     }
 }

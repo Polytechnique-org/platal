@@ -1,5 +1,8 @@
 ================================================================================
-VERSION 1.1.1                                                         XX XX XXXX
+VERSION 1.1.2                                                         XX XX XXXX
+
+================================================================================
+VERSION 1.1.1                                                         09 05 2011
 
 New:
 
@@ -11,6 +14,9 @@ Bug/Wish:
     * Auth:
         - #1474: Provides accounts data for accounts without profile       -JAC
         - #1476: Logs last use of Auth-Groupe-X keys                       -JAC
+
+    * Carnet:
+        - #1486: Allows deletion of deceased contact/watched user          -JAC
 
     * Core:
         - #1484: Fix reference to is_IE that does not exist anymore        -FRU
@@ -27,6 +33,9 @@ Bug/Wish:
     * Newsletter:
         - #1394: Links nl unsubscribtions to the issues that caused them   -JAC
 
+    * Paiement:
+        - #1485: Properly formats name and comment field in paiements      -JAC
+
     * Profile:
         - #1445: Add job entry year                                        -JAC
         - #1478: Uses user's visibility limitations to display vcards      -JAC
@@ -38,6 +47,9 @@ Bug/Wish:
         - #1470: Fixes autocomplete on countries                           -JAC
 
     * XnetGrp:
+        - Enables NLs filling from group members                           -JAC
+        - #1179: Adds alphabetic choices for group directories             -XEL
+        - #1460: Enables NLs creation for groups                           -XEL
         - #1473: Enables group filling from its MLs and aliases            -JAC
 
     * XnetList:

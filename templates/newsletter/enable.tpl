@@ -20,62 +20,29 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
 <h1>
-  {$nl->name}
-{if $nl->mayEdit() && $nl->adminLinksEnabled()}
-  [<a href="{$nl->adminPrefix()}">Administrer</a>]
-{/if}
+  Mise en place de la lettre d'informations du groupe {$asso->nom}
 </h1>
 
-{if $nl->maySubmit()}
-<p class="center">
-  <a href="{$nl->prefix()}/submit">{icon name=page_edit value="Proposer un article"} Proposer un article pour la {$nl->name}</a>
-</p>
-{/if}
-
-<h2>Ton statut</h2>
-
-{if $nl->subscriptionState()}
-{if $smarty.session.user->type != 'xnet'}
 <p>
-Tu es actuellement inscrit à la {$nl->name} (pour choisir le format HTML ou texte, rends toi sur la page <a href="https://{$globals->core->secure_domain}/prefs">des préférences</a>).
+Tu peux demander sur cette page la mise en place d'une newsletter pour le groupe.
+
+Tu pourras ensuite envoyer aux membres du groupe qui auront choisi de s'y inscrire,
+   avec une structure plus adaptée que l'outil d'envoi de mails.
 </p>
-{/if}
-<div class='center'>
-  [<a href='{$nl->prefix()}/out'>{icon name=delete} me désinscrire de la {$nl->name}</a>]
-</div>
-{else}
+
 <p>
-Tu n'es actuellement pas inscrit à la {$nl->name}.
+Si le titre par défaut de la newsletter ne te convient pas, n'hésite pas à
+le modifier.
+
+<form method="post" action="{$platal->ns}admin/nl/enable">
+{xsrf_token_field}
+<p>
+  <label for='title'>Titre de la newsletter</label>
+  <input name='title' id='title' size="40" value="Lettre d'informations du groupe {$asso->nom}" />
 </p>
-<div class='center'>
-  [<a href='{$nl->prefix()}/in'>{icon name=add} m'inscrire à la {$nl->name}</a>]
-</div>
-{/if}
+<p>
+  <input type="submit" value="Créer" />
+</p>
+</form>
 
-{include file="newsletter/search.tpl" nl_search_type="1" nl_search=""}
-
-<h2>Les archives</h2>
-
-<table class="bicol" cellpadding="3" cellspacing="0" summary="liste des NL">
-  <tr>
-    <th>date</th>
-    <th>titre</th>
-  </tr>
-  {foreach item=nli from=$nl_list}
-  <tr class="{cycle values="impair,pair"}">
-    <td>{$nli->date|date_format}</td>
-    <td>
-      <a href="{$nl->prefix()}/show/{$nli->id()}">{$nli->title()|default:"[Sans titre]"}</a>
-    </td>
-  </tr>
-  {/foreach}
-</table>
-
-{if $nl->mayEdit()}
-<p>Il y a actuellement {$nl->subscriberCount()} inscrits aux envois.</p>
-{/if}
-
-
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

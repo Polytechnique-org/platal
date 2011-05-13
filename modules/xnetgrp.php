@@ -324,53 +324,18 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
 
-        if ($action == 'trombi') {
-            __autoload('userset');
-            if ($action == 'trombi') {
-                $view = new ProfileSet(new UFC_Group($globals->asso('id')));
-            } else {
-                $view = new UserSet(new UFC_Group($globals->asso('id')));
-            }
-            $view->addMod('trombi', 'Trombinoscope');
-            $view->apply('annuaire', $page, $action, $subaction);
-            $page->changeTpl('xnetgrp/annuaire.tpl');
-            $count = XDB::fetchOneCell('SELECT  COUNT(*)
-                                          FROM  group_members
-                                         WHERE  asso_id = {?}',
-                                       $globals->asso('id'));
-            $page->assign('nb_tot', $count);
-            return;
+        __autoload('userset');
+        $admins = false;
+        if ($action == 'admins') {
+            $admins = true;
+            $action = $subaction;
         }
-
+        $view = new UserSet(new UFC_Group($globals->asso('id'), $admins));
+        $view->addMod('groupmember', 'Annuaire');
+        $view->addMod('trombi', 'Trombinoscope');
+        $view->apply('annuaire', $page, $action);
+        $page->assign('only_admin', $admins);
         $page->changeTpl('xnetgrp/annuaire.tpl');
-        $sort = Env::s('order', 'directory_name');
-        $ofs  = Env::i('offset');
-        if ($ofs < 0) {
-            $ofs = 0;
-        }
-
-        $sdesc = $sort{0} == '-';
-        $sf    = $sdesc ? substr($sort, 1) : $sort;
-        if ($sf == 'promo') {
-            $se = new UFO_Promo(null, $sdesc);
-        } else {
-            $se = new UFO_Name($sf, null, null, $sdesc);
-        }
-
-        if (Env::b('admin')) {
-            $uf = $globals->asso()->getAdminsFilter(null, $se);
-        } else {
-            $uf = $globals->asso()->getMembersFilter(null, $se);
-        }
-        $users = $uf->getUsers(new PlLimit(NB_PER_PAGE, $ofs * NB_PER_PAGE));
-        $count = $uf->getTotalCount();
-
-        $page->assign('nb_tot', $count);
-        $page->assign('pages', floor(($count + NB_PER_PAGE - 1) / NB_PER_PAGE));
-        $page->assign('current', $ofs);
-        $page->assign('order', $sort);
-        $page->assign('users', $users);
-        $page->assign('only_admin', Env::b('admin'));
     }
 
     function handler_trombi($page)
@@ -495,15 +460,19 @@ class XnetGrpModule extends PLModule
         }
         $nonusers = array_unique($nonusers);
         $uids = array_unique($uids);
-        $uids = XDB::fetchColumn('SELECT  a.uid
-                                    FROM  accounts AS a
-                                   WHERE  a.uid IN {?} AND NOT EXISTS (SELECT  *
-                                                                         FROM  group_members AS g
-                                                                        WHERE  a.uid = g.uid AND g.asso_id = {?})',
-                                 $uids, $globals->asso('id'));
+        if (count($uids)) {
+            $uids = XDB::fetchColumn('SELECT  a.uid
+                                        FROM  accounts AS a
+                                       WHERE  a.uid IN {?} AND NOT EXISTS (SELECT  *
+                                                                             FROM  group_members AS g
+                                                                            WHERE  a.uid = g.uid AND g.asso_id = {?})',
+                                     $uids, $globals->asso('id'));
 
-        $users = User::getBulkUsersWithUIDs($uids);
-        usort($users, 'User::compareDirectoryName');
+            $users = User::getBulkUsersWithUIDs($uids);
+            usort($users, 'User::compareDirectoryName');
+        } else {
+            $users = array();
+        }
         sort($nonusers);
 
         $page->assign('users', $users);
@@ -1299,7 +1268,7 @@ class XnetGrpModule extends PLModule
             $page->trigError('Le fichier n\'est pas une image valide au format JPEG, GIF ou PNG.');
             $upload->rm();
             return false;
-        } elseif (!$upload->resizeImage(200, 300, 100, 100, 32284)) {
+        } elseif (!$upload->resizeImage(80, 100, 100, 100, 32284)) {
             $page->trigError('Impossible de retraiter l\'image');
             return false;
         }

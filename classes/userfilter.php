@@ -971,11 +971,11 @@ class UserFilter extends PlFilter
         foreach ($this->sa as $sub => $emails) {
             if (is_null($emails)) {
                 $joins['sa' . $sub] = PlSqlJoin::left('email_source_account', '$ME.uid = $UID');
-            } else if ($key == self::ALIAS_BEST) {
+            } else if ($sub == self::ALIAS_BEST) {
                 $joins['sa' . $sub] = PlSqlJoin::left('email_source_account', '$ME.uid = $UID AND FIND_IN_SET(\'bestalias\', $ME.flags)');
-            } else if ($key == self::ALIAS_FORLIFE) {
+            } else if ($sub == self::ALIAS_FORLIFE) {
                 $joins['sa' . $sub] = PlSqlJoin::left('email_source_account', '$ME.uid = $UID AND $ME.type = \'forlife\'');
-            } else if ($key == self::ALIAS_AUXILIARY) {
+            } else if ($sub == self::ALIAS_AUXILIARY) {
                 $joins['sa' . $sub] = PlSqlJoin::left('email_source_account', '$ME.uid = $UID AND $ME.type = \'alias_aux\'');
             } else {
                 if (!is_array($emails)) {
@@ -1185,6 +1185,37 @@ class UserFilter extends PlFilter
         return $joins;
     }
 
+    /** DELTATEN
+     */
+    private $dts = array();
+    const DELTATEN = 1;
+    const DELTATEN_MESSAGE = 2;
+    // TODO: terms
+
+    public function addDeltaTenFilter($type)
+    {
+        $this->requireProfiles();
+        switch ($type) {
+        case self::DELTATEN:
+            $this->dts['pdt'] = 'profile_deltaten';
+            return 'pdt';
+        case self::DELTATEN_MESSAGE:
+            $this->dts['pdtm'] = 'profile_deltaten';
+            return 'pdtm';
+        default:
+            Platal::page()->killError("Undefined DeltaTen filter.");
+        }
+    }
+
+    protected function deltatenJoins()
+    {
+        $joins = array();
+        foreach ($this->dts as $sub => $tab) {
+            $joins[$sub] = PlSqlJoin::left($tab, '$ME.pid = $PID');
+        }
+        return $joins;
+    }
+
     /** MENTORING
      */
 
@@ -1197,7 +1228,7 @@ class UserFilter extends PlFilter
 
     public function addMentorFilter($type)
     {
-        $this->requireAccounts();
+        $this->requireProfiles();
         switch($type) {
         case self::MENTOR:
             $this->pms['pm'] = 'profile_mentor';

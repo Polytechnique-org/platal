@@ -83,7 +83,7 @@ class GoogleAppsModule extends PLModule
                 if ($account->pending_update_suspension) {
                     $page->trigWarning("Ton compte est déjà en cours de désactivation.");
                 } else {
-                    if ($redirect->modify_one_email('googleapps', false) == SUCCESS) {
+                    if (!$redirect_active || $redirect->modify_one_email('googleapps', false) == SUCCESS) {
                         $account->suspend();
                         $page->trigSuccess("Ton compte Google Apps est dorénavant désactivé.");
                     } else {

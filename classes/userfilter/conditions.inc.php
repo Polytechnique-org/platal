@@ -993,7 +993,7 @@ class UFC_Email extends UserFilterCondition
 
         if (count($foreign) > 0) {
             $sub = $uf->addEmailRedirectFilter($foreign);
-            $cond[] = XDB::format('ra' . $sub . '.redirect IS NOT NULL OR ra' . $sub . '.redirect IN {?}', $foreign);
+            $cond[] = XDB::format('ra' . $sub . '.redirect IS NOT NULL OR ra' . $sub . '.redirect IN {?} OR a.email IN {?}', $foreign, $foreign);
         }
         if (count($local) > 0) {
             $sub = $uf->addAliasFilter($local);
@@ -1510,6 +1510,36 @@ abstract class UFC_UserRelated extends UserFilterCondition
     public function __construct(PlUser $user)
     {
         $this->user =& $user;
+    }
+}
+// }}}
+// {{{ class UFC_DeltaTen
+class UFC_DeltaTen extends UserFilterCondition
+{
+    public function buildCondition(PlFilter $uf)
+    {
+        $sub = $uf->addDeltaTenFilter(UserFilter::DELTATEN);
+        return $sub . '.message IS NOT NULL';
+    }
+}
+// }}}
+// {{{ class UFC_DeltaTen_Message
+/** Filters users by deltaten message
+ * @param $message Message for the DeltaTen program
+ */
+class UFC_DeltaTen_Message extends UserFilterCondition
+{
+    private $message;
+
+    public function __construct($message)
+    {
+        $this->message = $message;
+    }
+
+    public function buildCondition(PlFilter $uf)
+    {
+        $sub = $uf->addDeltaTenFilter(UserFilter::DELTATEN_MESSAGE);
+        return $sub . '.message ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->message);
     }
 }
 // }}}

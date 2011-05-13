@@ -21,61 +21,20 @@
 {**************************************************************************}
 
 
-<h1>
-  {$nl->name}
-{if $nl->mayEdit() && $nl->adminLinksEnabled()}
-  [<a href="{$nl->adminPrefix()}">Administrer</a>]
-{/if}
-</h1>
-
-{if $nl->maySubmit()}
-<p class="center">
-  <a href="{$nl->prefix()}/submit">{icon name=page_edit value="Proposer un article"} Proposer un article pour la {$nl->name}</a>
-</p>
-{/if}
-
-<h2>Ton statut</h2>
-
-{if $nl->subscriptionState()}
-{if $smarty.session.user->type != 'xnet'}
-<p>
-Tu es actuellement inscrit à la {$nl->name} (pour choisir le format HTML ou texte, rends toi sur la page <a href="https://{$globals->core->secure_domain}/prefs">des préférences</a>).
-</p>
-{/if}
-<div class='center'>
-  [<a href='{$nl->prefix()}/out'>{icon name=delete} me désinscrire de la {$nl->name}</a>]
-</div>
-{else}
-<p>
-Tu n'es actuellement pas inscrit à la {$nl->name}.
-</p>
-<div class='center'>
-  [<a href='{$nl->prefix()}/in'>{icon name=add} m'inscrire à la {$nl->name}</a>]
-</div>
-{/if}
-
-{include file="newsletter/search.tpl" nl_search_type="1" nl_search=""}
-
-<h2>Les archives</h2>
-
-<table class="bicol" cellpadding="3" cellspacing="0" summary="liste des NL">
+<table summary="membres du groupe" class="bicol">
   <tr>
-    <th>date</th>
-    <th>titre</th>
+    <th>Nom</th>
+    <th>Promo</th>
+    <th colspan="2">Infos</th>
+    {if $is_admin}
+      <th>Actions</th>
+    {/if}
   </tr>
-  {foreach item=nli from=$nl_list}
-  <tr class="{cycle values="impair,pair"}">
-    <td>{$nli->date|date_format}</td>
-    <td>
-      <a href="{$nl->prefix()}/show/{$nli->id()}">{$nli->title()|default:"[Sans titre]"}</a>
-    </td>
-  </tr>
+  {assign var=lostUsers value=false}
+  {foreach from=$set item=user}
+    {if $user->lost}{assign var=lostUsers value=true}{/if}
+    {include file="include/plview.groupmember.entry.tpl" user=$user|get_user}
   {/foreach}
 </table>
-
-{if $nl->mayEdit()}
-<p>Il y a actuellement {$nl->subscriberCount()} inscrits aux envois.</p>
-{/if}
-
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

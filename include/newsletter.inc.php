@@ -501,10 +501,14 @@ class NewsLetter
     /** Get the prefix leading to the page for this NL
      * Only X.org / AX / X groups may be seen on X.org.
      */
-    public function prefix($enforce_xnet=true)
+    public function prefix($enforce_xnet=true, $with_group=true)
     {
         if (!empty($GLOBALS['IS_XNET_SITE'])) {
-            return $this->group . '/nl';
+            if ($with_group) {
+                return $this->group . '/nl';
+            } else {
+                return 'nl';
+            }
         }
         switch ($this->group) {
         case self::GROUP_XORG:
@@ -521,10 +525,14 @@ class NewsLetter
 
     /** Get the prefix to use for all 'admin' pages of this NL.
      */
-    public function adminPrefix($enforce_xnet=true)
+    public function adminPrefix($enforce_xnet=true, $with_group=true)
     {
         if (!empty($GLOBALS['IS_XNET_SITE'])) {
-            return $this->group . '/admin/nl';
+            if ($with_group) {
+                return $this->group . '/admin/nl';
+            } else {
+                return 'admin/nl';
+            }
         }
         switch ($this->group) {
         case self::GROUP_XORG:
@@ -557,6 +565,18 @@ class NewsLetter
     public function hasCustomCss()
     {
         return $this->custom_css;
+    }
+
+    public function canSyncWithGroup()
+    {
+        switch ($this->group) {
+          case self::GROUP_XORG:
+          case self::GROUP_AX:
+          case self::GROUP_EP:
+            return false;
+          default:
+            return true;
+        }
     }
 
     // }}}
@@ -825,7 +845,11 @@ class NLIssue
     public function last()
     {
         if (is_null($this->id_last)) {
-            $this->id_last = $this->nl->getIssue('last')->id;
+            try {
+                $this->id_last = $this->nl->getIssue('last')->id;
+            } catch (MailNotFound $e) {
+                $this->id_last = null;
+            }
         }
         return $this->id_last;
     }

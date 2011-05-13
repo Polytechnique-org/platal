@@ -19,40 +19,47 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-Platal::load('newsletter');
-
-class EPLetterModule extends NewsletterModule
+class ProfilePageDeltaten extends ProfilePage
 {
-    function handlers()
+    protected $pg_template = 'profile/deltaten.tpl';
+
+    public function __construct(PlWizard $wiz)
     {
-        return array(
-            'epletter'                   => $this->make_hook('nl',              AUTH_COOKIE),
-            'epletter/out'               => $this->make_hook('out',             AUTH_PUBLIC),
-            'epletter/show'              => $this->make_hook('nl_show',         AUTH_COOKIE),
-            'epletter/search'            => $this->make_hook('nl_search',       AUTH_COOKIE),
-            'epletter/admin'             => $this->make_hook('admin_nl',        AUTH_MDP),
-            'epletter/admin/edit'        => $this->make_hook('admin_nl_edit',   AUTH_MDP),
-            'epletter/admin/edit/valid'  => $this->make_hook('admin_nl_valid',  AUTH_MDP),
-            'epletter/admin/edit/cancel' => $this->make_hook('admin_nl_cancel', AUTH_MDP),
-            'epletter/admin/edit/delete' => $this->make_hook('admin_nl_delete', AUTH_MDP),
-            'epletter/admin/categories'  => $this->make_hook('admin_nl_cat',    AUTH_MDP),
-        );
+        parent::__construct($wiz);
+        $this->settings['message'] = null;
     }
 
-    protected function getNl()
+    protected function _fetchData()
     {
-        require_once 'newsletter.inc.php';
-        return NewsLetter::forGroup(NewsLetter::GROUP_EP);
+        $res = XDB::query('SELECT  message
+                             FROM  profile_deltaten
+                            WHERE  pid = {?}',
+                          $this->pid());
+        $this->values['message'] = $res->fetchOneCell();
     }
 
-    function handler_out($page, $hash = null)
+    protected function _saveData()
     {
-        if (!$hash) {
-            if (!S::logged()) {
-                return PL_DO_AUTH;
+        if ($this->changed['message']) {
+            $message = trim($this->values['message']);
+            if (empty($message)) {
+                XDB::execute('DELETE FROM  profile_deltaten
+                                    WHERE  pid = {?}',
+                             $this->pid());
+                $this->values['message'] = null;
+            } else {
+                XDB::execute('INSERT INTO  profile_deltaten (pid, message)
+                                   VALUES  ({?}, {?})
+                  ON DUPLICATE KEY UPDATE  message = VALUES(message)',
+                             $this->pid(), $message);
+                $this->values['message'] = $message;
             }
         }
-        return $this->handler_nl($page, 'out', $hash);
+    }
+
+    public function _prepare(PlPage $page, $id)
+    {
+        $page->assign('hrpid', $this->profile->hrpid);
     }
 }
 

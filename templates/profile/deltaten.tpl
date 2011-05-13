@@ -20,62 +20,40 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-<h1>
-  {$nl->name}
-{if $nl->mayEdit() && $nl->adminLinksEnabled()}
-  [<a href="{$nl->adminPrefix()}">Administrer</a>]
-{/if}
-</h1>
-
-{if $nl->maySubmit()}
-<p class="center">
-  <a href="{$nl->prefix()}/submit">{icon name=page_edit value="Proposer un article"} Proposer un article pour la {$nl->name}</a>
-</p>
-{/if}
-
-<h2>Ton statut</h2>
-
-{if $nl->subscriptionState()}
-{if $smarty.session.user->type != 'xnet'}
-<p>
-Tu es actuellement inscrit à la {$nl->name} (pour choisir le format HTML ou texte, rends toi sur la page <a href="https://{$globals->core->secure_domain}/prefs">des préférences</a>).
-</p>
-{/if}
-<div class='center'>
-  [<a href='{$nl->prefix()}/out'>{icon name=delete} me désinscrire de la {$nl->name}</a>]
-</div>
-{else}
-<p>
-Tu n'es actuellement pas inscrit à la {$nl->name}.
-</p>
-<div class='center'>
-  [<a href='{$nl->prefix()}/in'>{icon name=add} m'inscrire à la {$nl->name}</a>]
-</div>
-{/if}
-
-{include file="newsletter/search.tpl" nl_search_type="1" nl_search=""}
-
-<h2>Les archives</h2>
-
-<table class="bicol" cellpadding="3" cellspacing="0" summary="liste des NL">
+<table class="bicol" summary="Profil&nbsp;: Opération N N-10">
   <tr>
-    <th>date</th>
-    <th>titre</th>
+    <th>
+      <div class="flags" style="float: left">
+        <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
+        {icon name="flag_red" title="privé"}
+      </div>
+      Expériences et expertises que tu acceptes de faire partager à la promotion N+10 :
+    </th>
   </tr>
-  {foreach item=nli from=$nl_list}
-  <tr class="{cycle values="impair,pair"}">
-    <td>{$nli->date|date_format}</td>
+  <tr>
     <td>
-      <a href="{$nl->prefix()}/show/{$nli->id()}">{$nli->title()|default:"[Sans titre]"}</a>
+      <p>
+        Si tu acceptes de participer à l'opération N N-10 pour que les camarades de la promotion plus jeune de 10 ans puisse profiter de ton expérience, il te suffit de remplir un message ci-dessous.
+        Cette démarche est complémentaire du « Mentoring », pour lequel tu trouveras plus de détails dans l'onglet dédié.
+      </p>
+
+      <p>
+        Tu peux par exemple donner des conseils sur le choix de carrière, sur ton expérience, &hellip;
+      </p>
     </td>
   </tr>
-  {/foreach}
+  <tr>
+    <td>
+      <textarea rows="8" cols="60" name="message">{$message}</textarea>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      Une fois que tu as saisi ton message, il suffit d'enregistrer les modifications en cliquant sur le bouton ci-dessous
+      pour apparaître dans la base de recherche "N N-10".
+    </td>
+  </tr>
 </table>
 
-{if $nl->mayEdit()}
-<p>Il y a actuellement {$nl->subscriberCount()} inscrits aux envois.</p>
-{/if}
-
-
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+

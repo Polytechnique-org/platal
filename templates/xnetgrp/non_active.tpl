@@ -40,7 +40,7 @@
     {/foreach}
     <tr>
       <td colspan="3" class="center">
-        <input type="submit" value="Inscrire au groupe" />
+        <input type="submit" value="Activer les comptes" />
       </td>
     </tr>
   </table>

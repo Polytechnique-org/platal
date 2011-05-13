@@ -28,7 +28,7 @@ class Xorg extends Platal
                             'profile', 'register', 'search', 'stats', 'admin',
                             'newsletter', 'axletter', 'epletter', 'bandeau', 'survey',
                             'fusionax', 'gadgets', 'googleapps', 'poison',
-                            'openid', 'reminder', 'api', 'urlshortener');
+                            'openid', 'reminder', 'api', 'urlshortener', 'deltaten');
     }
 
     public function find_hook()

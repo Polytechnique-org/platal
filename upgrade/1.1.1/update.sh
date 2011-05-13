@@ -7,3 +7,6 @@
 
 confirm "* Running database upgrade scripts"
 mysql_run_directory .
+
+confirm "* Running upgrade scripts"
+script_run ./group_logos.php

@@ -20,62 +20,26 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-<h1>
-  {$nl->name}
-{if $nl->mayEdit() && $nl->adminLinksEnabled()}
-  [<a href="{$nl->adminPrefix()}">Administrer</a>]
-{/if}
-</h1>
-
-{if $nl->maySubmit()}
-<p class="center">
-  <a href="{$nl->prefix()}/submit">{icon name=page_edit value="Proposer un article"} Proposer un article pour la {$nl->name}</a>
-</p>
-{/if}
-
-<h2>Ton statut</h2>
-
-{if $nl->subscriptionState()}
-{if $smarty.session.user->type != 'xnet'}
-<p>
-Tu es actuellement inscrit à la {$nl->name} (pour choisir le format HTML ou texte, rends toi sur la page <a href="https://{$globals->core->secure_domain}/prefs">des préférences</a>).
-</p>
-{/if}
-<div class='center'>
-  [<a href='{$nl->prefix()}/out'>{icon name=delete} me désinscrire de la {$nl->name}</a>]
-</div>
-{else}
-<p>
-Tu n'es actuellement pas inscrit à la {$nl->name}.
-</p>
-<div class='center'>
-  [<a href='{$nl->prefix()}/in'>{icon name=add} m'inscrire à la {$nl->name}</a>]
-</div>
-{/if}
-
-{include file="newsletter/search.tpl" nl_search_type="1" nl_search=""}
-
-<h2>Les archives</h2>
-
-<table class="bicol" cellpadding="3" cellspacing="0" summary="liste des NL">
-  <tr>
-    <th>date</th>
-    <th>titre</th>
-  </tr>
-  {foreach item=nli from=$nl_list}
-  <tr class="{cycle values="impair,pair"}">
-    <td>{$nli->date|date_format}</td>
-    <td>
-      <a href="{$nl->prefix()}/show/{$nli->id()}">{$nli->title()|default:"[Sans titre]"}</a>
-    </td>
-  </tr>
-  {/foreach}
-</table>
-
-{if $nl->mayEdit()}
-<p>Il y a actuellement {$nl->subscriberCount()} inscrits aux envois.</p>
-{/if}
-
-
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+<tr>
+  <td>
+    {profile user=$user promo=false}
+  </td>
+  <td>
+    {if $user->group_perms eq 'admin' && $user->category()}<strong>{/if}
+    {$user->category()|default:"Extérieur"}
+    {if $user->group_perms eq 'admin' && $user->category()}</strong>{/if}
+  </td>
+  <td>{if $user->group_comm}{$user->group_comm}{else}&nbsp;{/if}</td>
+  <td class="right">
+    {if $user->hasProfile()}
+    <a href="https://www.polytechnique.org/vcard/{$user->login()}.vcf">{icon name=vcard title="[vcard]"}</a>
+    {/if}
+    <a href="mailto:{$user->bestEmail()}">{icon name=email title="email"}</a>
+  </td>
+  {if $is_admin}
+  <td class="center">
+    <a href="{$platal->ns}member/{$user->login()}">{icon name=user_edit title="Édition du profil"}</a>
+    <a href="{$platal->ns}member/del/{$user->login()}">{icon name=delete title="Supprimer de l'annuaire"}</a>
+  </td>
+  {/if}
+</tr>

@@ -21,61 +21,53 @@
 {**************************************************************************}
 
 
-<h1>
-  {$nl->name}
-{if $nl->mayEdit() && $nl->adminLinksEnabled()}
-  [<a href="{$nl->adminPrefix()}">Administrer</a>]
-{/if}
-</h1>
+<table summary="abonnés à la liste" class="bicol" cellpadding="0" cellspacing="0">
+  {if $details.own || hasPerms('admin,groupadmin')}
+  <tr><td colspan="2">
+  <a href="{$platal->ns}lists/csv/{$platal->argv[1]}/{$platal->argv[1]}.csv">
+    {icon name="page_excel" title="Télécharger la liste des membres"}
+    Télécharger la liste des membres au format Excel
+  </a>
+  </td></tr>
+  {/if}
 
-{if $nl->maySubmit()}
-<p class="center">
-  <a href="{$nl->prefix()}/submit">{icon name=page_edit value="Proposer un article"} Proposer un article pour la {$nl->name}</a>
-</p>
-{/if}
-
-<h2>Ton statut</h2>
-
-{if $nl->subscriptionState()}
-{if $smarty.session.user->type != 'xnet'}
-<p>
-Tu es actuellement inscrit à la {$nl->name} (pour choisir le format HTML ou texte, rends toi sur la page <a href="https://{$globals->core->secure_domain}/prefs">des préférences</a>).
-</p>
-{/if}
-<div class='center'>
-  [<a href='{$nl->prefix()}/out'>{icon name=delete} me désinscrire de la {$nl->name}</a>]
-</div>
-{else}
-<p>
-Tu n'es actuellement pas inscrit à la {$nl->name}.
-</p>
-<div class='center'>
-  [<a href='{$nl->prefix()}/in'>{icon name=add} m'inscrire à la {$nl->name}</a>]
-</div>
-{/if}
-
-{include file="newsletter/search.tpl" nl_search_type="1" nl_search=""}
-
-<h2>Les archives</h2>
-
-<table class="bicol" cellpadding="3" cellspacing="0" summary="liste des NL">
-  <tr>
-    <th>date</th>
-    <th>titre</th>
-  </tr>
-  {foreach item=nli from=$nl_list}
-  <tr class="{cycle values="impair,pair"}">
-    <td>{$nli->date|date_format}</td>
-    <td>
-      <a href="{$nl->prefix()}/show/{$nli->id()}">{$nli->title()|default:"[Sans titre]"}</a>
-    </td>
-  </tr>
+  {assign var=current_key value=''}
+  {foreach from=$set item=obj}
+    {assign var=user value=$obj|get_user}
+    <tr>
+      <td class="titre" style="width: 20%">
+        {if $order eq 'promo'}
+          {assign var=user_key value=$user->promo()}
+        {elseif $order eq 'name'}
+          {assign var=user_key value=$user->lastName()|string_format:'%.1s'|upper}
+        {else}
+          {assign var=user_key value=''}
+        {/if}
+        {if $user_key neq $current_key}
+          {assign var=current_key value=$user_key}
+          {$user_key}
+        {/if}
+      </td>
+      <td>
+        {if $user->hasProfile()}
+          {if $user->lost}{assign var=lostUsers value=true}{/if}
+          {profile user=$user}
+        {else}
+          {$user->displayName()}
+        {/if}
+      </td>
+      {if t($delete)}
+        <td class="center">
+          {if t($user.uid)}
+            <a href="{$platal->ns}member/{$user.uid}">{icon name=user_edit title='Éditer'}</a>&nbsp;
+          {else}
+            {icon name=null}&nbsp;
+          {/if}
+          <a href='{$platal->pl_self(1)}?{$delete}={$user.email}&amp;token={xsrf_token}'>{icon name=cross title='Retirer'}</a>
+        </td>
+      {/if}
+    </tr>
   {/foreach}
 </table>
-
-{if $nl->mayEdit()}
-<p>Il y a actuellement {$nl->subscriberCount()} inscrits aux envois.</p>
-{/if}
-
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

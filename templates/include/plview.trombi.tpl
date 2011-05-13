@@ -28,29 +28,34 @@
 <table cellpadding="0" cellspacing="2" style="width: 100%">
   {section name=trombi loop=$set_keys start=0}
   {if $smarty.section.trombi.index % 3 == 1}
-  {assign var=key_prev value=$set_keys[trombi.index_prev]}
-  {assign var=key_cur  value=$set_keys[trombi]}
-  {assign var=key_next value=$set_keys[trombi.index_next]}
-  <tr>
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_prev] photo=true}
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_cur] photo=true}
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_next] photo=true}
-  </tr>
-  <tr>
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_prev] photo=false}
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_cur] photo=false}
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_next] photo=false}
-  </tr>
+    {assign var=key_prev value=$set_keys[trombi.index_prev]}
+    {assign var=key_cur  value=$set_keys[trombi]}
+    {assign var=key_next value=$set_keys[trombi.index_next]}
+    {assign var=profile_prev value=$set[$key_prev]|get_profile}
+    {assign var=profile_cur value=$set[$key_cur]|get_profile}
+    {assign var=profile_next value=$set[$key_next]|get_profile}
+
+    <tr>
+      {include file="include/plview.trombi.entry.tpl" profile=$profile_prev photo=true}
+      {include file="include/plview.trombi.entry.tpl" profile=$profile_cur photo=true}
+      {include file="include/plview.trombi.entry.tpl" profile=$profile_next photo=true}
+    </tr>
+    <tr>
+      {include file="include/plview.trombi.entry.tpl" profile=$profile_prev photo=false}
+      {include file="include/plview.trombi.entry.tpl" profile=$profile_cur photo=false}
+      {include file="include/plview.trombi.entry.tpl" profile=$profile_next photo=false}
+    </tr>
   {elseif ($smarty.section.trombi.index % 3 == 0) && ($smarty.section.trombi.last)}
-  {assign var=key_cur  value=$set_keys[trombi]}
-  <tr>
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_cur] photo=true}
-    <td></td><td></td>
-  </tr>
-  <tr style="margin-top: 0; padding-top: 0">
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_cur] photo=false}
-    <td></td><td></td>
-  </tr>
+    {assign var=key_cur  value=$set_keys[trombi]}
+    {assign var=profile_cur value=$set[$key_cur]|get_profile}
+    <tr>
+      {include file="include/plview.trombi.entry.tpl" profile=$profile_cur photo=true}
+      <td></td><td></td>
+    </tr>
+    <tr style="margin-top: 0; padding-top: 0">
+      {include file="include/plview.trombi.entry.tpl" profile=$profile_cur photo=false}
+      <td></td><td></td>
+    </tr>
   {/if}
   {/section}
 </table>
