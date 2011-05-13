@@ -161,6 +161,18 @@
         <small>Poste, origine&hellip; (accessible à toutes les personnes autorisées à consulter l'annuaire)</small>
       </td>
     </tr>
+    {if $asso->has_nl}
+    <tr class="impair">
+      <td class="titre">
+        Newsletter&nbsp;:
+      </td>
+      <td>
+        <label>Inscrit<input type="radio" name="newsletter" value="1" {if $nl_registered eq 1}checked="checked"{/if} /></label>
+        &nbsp;-&nbsp;
+        <label><input type="radio" name="newsletter" value="0" {if $nl_registered eq 0}checked="checked"{/if} />Non inscrit</label>
+      </td>
+    </tr>
+    {/if}
     {if $user->type eq 'xnet'}
     <tr id="make_X">
       <td colspan="2">

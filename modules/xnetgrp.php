@@ -1234,16 +1234,39 @@ class XnetGrpModule extends PLModule
                     $page->trigSuccess("{$user->fullName()} a été désabonné de $ml.");
                 }
             }
+
+            if ($globals->asso('has_nl')) {
+                // Updates group's newsletter subscription.
+                if (Post::i('newsletter') == 1) {
+                    XDB::execute('INSERT IGNORE INTO  newsletter_ins (uid, nlid)
+                                              SELECT  {?}, id
+                                                FROM  newsletters
+                                               WHERE  group_id = {?}',
+                                 $user->id(), $globals->asso('id'));
+                } else {
+                    XDB::execute('DELETE  ni
+                                    FROM  newsletter_ins AS ni
+                              INNER JOIN  newsletters    AS n  ON (n.id = ni.nlid)
+                                   WHERE  ni.uid = {?} AND n.group_id = {?}',
+                                 $user->id(), $globals->asso('id'));
+                }
+            }
         }
 
         $res = XDB::rawFetchAllAssoc('SHOW COLUMNS FROM group_members LIKE \'position\'');
         $positions = str_replace(array('enum(', ')', '\''), '', $res[0]['Type']);
+        $nl_registered = XDB::fetchOneCell('SELECT  COUNT(ni.uid)
+                                              FROM  newsletter_ins AS ni
+                                        INNER JOIN  newsletters    AS n  ON (n.id = ni.nlid)
+                                             WHERE  ni.uid = {?} AND n.group_id = {?}',
+                                           $user->id(), $globals->asso('id'));
 
         $page->assign('user', $user);
         $page->assign('suggest', $this->suggest($user));
         $page->assign('listes', $mmlist->get_lists($user->forlifeEmail()));
         $page->assign('alias', $user->emailGroupAliases($globals->asso('mail_domain')));
         $page->assign('positions', explode(',', $positions));
+        $page->assign('nl_registered', $nl_registered);
     }
 
     function handler_rss(PlPage $page, PlUser $user)
