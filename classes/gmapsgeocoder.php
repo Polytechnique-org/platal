@@ -38,6 +38,7 @@ class GMapsGeocoder extends Geocoder {
         }
 
         // Try to geocode the full address.
+        $address->geocoding_calls = 1;
         if (($geocodedData = $this->getPlacemarkForAddress($textAddress, $defaultLanguage))) {
             $this->getUpdatedAddress($address, $geocodedData, null, $forceLanguage);
             return;
@@ -52,6 +53,7 @@ class GMapsGeocoder extends Geocoder {
         for ($i = max(1, $linesCount - self::MAX_GMAPS_RPC_CALLS + 1); $i < $linesCount; ++$i) {
             $extraLines = implode("\n", array_slice($addressLines, 0, $i));
             $toGeocode  = implode("\n", array_slice($addressLines, $i));
+            ++$address->geocoding_calls;
             if (($geocodedData = $this->getPlacemarkForAddress($toGeocode, $defaultLanguage))) {
                 $this->getUpdatedAddress($address, $geocodedData, $extraLines, $forceLanguage);
                 return;

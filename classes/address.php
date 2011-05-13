@@ -311,6 +311,8 @@ class Address
     public $partial_match = false;
     public $componentsIds = '';
     public $request = false;
+    public $geocoding_date = null;
+    public $geocoding_calls = 0;
 
     // Database's field required for both 'home' and 'job' addresses.
     public $pub = 'ax';
@@ -614,6 +616,8 @@ class Address
             'location_type'       => $this->location_type,
             'partial_match'       => $this->partial_match,
             'componentsIds'       => $this->componentsIds,
+            'geocoding_date'      => $this->geocoding_date,
+            'geocoding_calls'     => $this->geocoding_calls,
             'request'             => $this->request
         );
 
@@ -682,12 +686,13 @@ class Address
         if (!$this->isEmpty()) {
             XDB::execute('INSERT IGNORE INTO  profile_addresses (pid, jobid, groupid, type, id, flags, text, postalText, pub, comment,
                                                                  types, formatted_address, location_type, partial_match, latitude, longitude,
-                                                                 southwest_latitude, southwest_longitude, northeast_latitude, northeast_longitude)
+                                                                 southwest_latitude, southwest_longitude, northeast_latitude, northeast_longitude,
+                                                                 geocoding_date, geocoding_calls)
                                       VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
-                                               {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                                               {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, NOW(), {?})',
                          $this->pid, $this->jobid, $this->groupid, $this->type, $this->id, $this->flags, $this->text, $this->postalText, $this->pub, $this->comment,
                          $this->types, $this->formatted_address, $this->location_type, $this->partial_match, $this->latitude, $this->longitude,
-                         $this->southwest_latitude, $this->southwest_longitude, $this->northeast_latitude, $this->northeast_longitude);
+                         $this->southwest_latitude, $this->southwest_longitude, $this->northeast_latitude, $this->northeast_longitude, $this->geocoding_calls);
 
             if ($this->componentsIds) {
                 foreach (explode(',', $this->componentsIds) as $component_id) {
@@ -721,12 +726,13 @@ class Address
             XDB::execute('UPDATE  profile_addresses
                              SET  text = {?}, postalText = {?}, types = {?}, formatted_address = {?},
                                   location_type = {?}, partial_match = {?}, latitude = {?}, longitude = {?},
-                                  southwest_latitude = {?}, southwest_longitude = {?}, northeast_latitude = {?}, northeast_longitude = {?}
+                                  southwest_latitude = {?}, southwest_longitude = {?}, northeast_latitude = {?}, northeast_longitude = {?},
+                                  geocoding_date = {?}, geocoding_calls = NOW()
                            WHERE  pid = {?} AND jobid = {?} AND groupid = {?} AND type = {?} AND id = {?}',
                          $this->text, $this->postalText, $this->types, $this->formatted_address,
                          $this->location_type, $this->partial_match, $this->latitude, $this->longitude,
                          $this->southwest_latitude, $this->southwest_longitude, $this->northeast_latitude, $this->northeast_longitude,
-                         $this->pid, $this->jobid, $this->groupid, $this->type, $id);
+                         $this->pid, $this->jobid, $this->groupid, $this->type, $id, $this->geocoding_calls);
 
             XDB::execute('DELETE FROM  profile_addresses_components
                                 WHERE  pid = {?} AND jobid = {?} AND groupid = {?} AND type = {?} AND id = {?}',
@@ -901,6 +907,7 @@ class AddressIterator implements PlIterator
         $sql = 'SELECT  pa.pid, pa.jobid, pa.groupid, pa.type, pa.id, pa.flags, pa.text, pa.postalText, pa.pub, pa.comment,
                         pa.types, pa.formatted_address, pa.location_type, pa.partial_match, pa.latitude, pa.longitude,
                         pa.southwest_latitude, pa.southwest_longitude, pa.northeast_latitude, pa.northeast_longitude,
+                        pa.geocoding_date, pa.geocoding_calls,
                         GROUP_CONCAT(DISTINCT pc.component_id SEPARATOR \',\') AS componentsIds,
                         pace1.long_name AS postalCode, pace2.long_name AS locality, pace3.long_name AS administrativeArea, pace4.long_name AS country
                   FROM  profile_addresses                 AS pa

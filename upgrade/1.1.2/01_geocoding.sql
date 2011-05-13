@@ -48,6 +48,8 @@ ALTER TABLE profile_addresses ADD COLUMN northeast_latitude FLOAT(10, 7) DEFAULT
 ALTER TABLE profile_addresses ADD COLUMN northeast_longitude FLOAT(10, 7) DEFAULT NULL AFTER northeast_latitude;
 ALTER TABLE profile_addresses ADD COLUMN location_type ENUM('ROOFTOP', 'RANGE_INTERPOLATED', 'GEOMETRIC_CENTER', 'APPROXIMATE') DEFAULT NULL AFTER northeast_longitude;
 ALTER TABLE profile_addresses ADD COLUMN partial_match BOOLEAN NOT NULL DEFAULT false AFTER location_type;
+ALTER TABLE profile_addresses ADD COLUMN geocoding_date DATE DEFAULT NULL;
+ALTER TABLE profile_addresses ADD COLUMN geocoding_calls TINYINT NOT NULL DEFAULT 0;
 
 UPDATE  profile_addresses
    SET  latitude = NULL, longitude = NULL;

@@ -41,6 +41,8 @@
     <input type="hidden" name="{$prefname}[componentsIds]" value="{$address.componentsIds}" />
     <input type="hidden" name="{$prefname}[changed]" value="0" />
     <input type="hidden" name="{$prefname}[removed]" value="0" />
+    <input type="hidden" name="{$prefname}[geocoding_calls]" value="{$address.geocoding_calls}" />
+    <input type="hidden" name="{$prefname}[geocoding_date]" value="{$address.geocoding_date}" />
 {if t($validation)}
     <br />
     <label><input type="checkbox" name="{$prefname}[modified]"{if $valid->modified} checked="checked"{/if} />Utiliser la version modifiée</label>
