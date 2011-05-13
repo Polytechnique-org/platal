@@ -530,9 +530,8 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
         $this->removeSubscriptionRequest($user->id());
-        XDB::execute("INSERT IGNORE INTO  group_members (asso_id, uid)
-                                  VALUES  ({?}, {?})",
-                     $globals->asso('id'), $user->id());
+        Group::subscribe($globals->asso('id'), $user->id());
+
         if (XDB::affectedRows() == 1) {
             $mailer = new PlMailer();
             $mailer->addTo($user->forlifeEmail());
@@ -947,9 +946,7 @@ class XnetGrpModule extends PLModule
     function unsubscribe(PlUser $user)
     {
         global $globals;
-        XDB::execute("DELETE FROM  group_members
-                            WHERE  uid = {?} AND asso_id = {?}",
-                     $user->id(), $globals->asso('id'));
+        Group::unsubscribe($globals->asso('id'), $user->id());
 
         if ($globals->asso('notif_unsub')) {
             $mailer = new PlMailer('xnetgrp/unsubscription-notif.mail.tpl');
