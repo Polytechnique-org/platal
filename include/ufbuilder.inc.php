@@ -445,8 +445,8 @@ class UFB_NewsLetter extends UserFilterBuilder
     {
         $fields = array();
         if ($flags->hasFlag(self::FIELDS_PROMO)) {
-            $fields[] = new UFBF_Promo('promo1', 'Promotion', 'egal1');
-            $fields[] = new UFBF_Promo('promo2', 'Promotion', 'egal2');
+            $fields[] = new UFBF_Promo('promo1', 'Promotion', 'egal1', 'edu_type');
+            $fields[] = new UFBF_Promo('promo2', 'Promotion', 'egal2', 'edu_type');
         }
         if ($flags->hasFlag(self::FIELDS_AXID)) {
             $fields[] = new UFBF_SchoolIds('axid', 'Matricule AX', UFC_SchoolId::AX);
