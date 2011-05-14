@@ -54,6 +54,12 @@ Le groupe {$asso->nom} compte {$plset_count} membres&nbsp;:
     </a>
   </li>
   {/if}
+  <li>
+    <a href="{$platal->ns}former_users">
+      {icon name=status_offline title="Anciens membres du groupe"}
+      Anciens membres du groupe
+    </a>
+  </li>
   {/if}
   <li>
     <a href="{$platal->ns}annuaire/csv/{$asso->diminutif}.csv">

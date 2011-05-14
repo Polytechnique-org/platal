@@ -36,7 +36,7 @@
     {/if}
     <a href="mailto:{$user->bestEmail()}">{icon name=email title="email"}</a>
   </td>
-  {if $is_admin}
+  {if $is_admin && !t($groupmember_noadmin)}
   <td class="center">
     <a href="{$platal->ns}member/{$user->login()}">{icon name=user_edit title="Édition du profil"}</a>
     <a href="{$platal->ns}member/del/{$user->login()}">{icon name=delete title="Supprimer de l'annuaire"}</a>

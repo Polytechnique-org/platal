@@ -7,6 +7,7 @@ Bug/Wish:
         - #1285: Autocompletes on internal words in university search      -JAC
 
     * XnetGrp:
+        - #947: Lists group former members to group admins                 -JAC
         - #1481: Adds group nl subscription from group profile edition     -JAC
 
 ================================================================================

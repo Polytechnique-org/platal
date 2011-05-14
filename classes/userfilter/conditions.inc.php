@@ -912,6 +912,30 @@ class UFC_Group extends UserFilterCondition
     }
 }
 // }}}
+// {{{ class UFC_GroupFormerMember
+/** Filters users based on group former membership
+ * @param $group Group whose former members we are selecting
+ */
+class UFC_GroupFormerMember extends UserFilterCondition
+{
+    private $group;
+
+    public function __construct($group)
+    {
+        $this->group = $group;
+    }
+
+    public function buildCondition(PlFilter $uf)
+    {
+        // Groups are only visible for users with perm 'groups'.
+        if (!S::user()->checkPerms(User::PERM_GROUPS)) {
+            return self::COND_FALSE;
+        }
+        $sub = $uf->addGroupFormerMemberFilter();
+        return XDB::format('gpfm' . $sub . '.asso_id = {?}', $this->group);
+    }
+}
+// }}}
 // {{{ class UFC_Binet
 /** Selects users based on their belonging to a given (list of) binet
  * @param $binet either a binet_id or an array of binet_ids

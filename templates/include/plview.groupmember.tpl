@@ -26,7 +26,7 @@
     <th>Nom</th>
     <th>Promo</th>
     <th colspan="2">Infos</th>
-    {if $is_admin}
+    {if $is_admin && !t($groupmember_noadmin)}
       <th>Actions</th>
     {/if}
   </tr>
