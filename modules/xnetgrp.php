@@ -32,7 +32,7 @@ class XnetGrpModule extends PLModule
             '%grp/edit'            => $this->make_hook('edit',                  AUTH_MDP, 'groupadmin'),
             '%grp/mail'            => $this->make_hook('mail',                  AUTH_MDP, 'groupadmin'),
             '%grp/forum'           => $this->make_hook('forum',                 AUTH_MDP, 'groupmember'),
-            '%grp/former_users'    => $this->make_hook('former_users',          AUTH_MDP, 'groupadmin'),
+            '%grp/former_users'    => $this->make_hook('former_users',          AUTH_MDP, 'admin'),
             '%grp/annuaire'        => $this->make_hook('annuaire',              AUTH_MDP, 'groupannu'),
             '%grp/annuaire/vcard'  => $this->make_hook('vcard',                 AUTH_MDP, 'groupmember:groupannu'),
             '%grp/annuaire/csv'    => $this->make_hook('csv',                   AUTH_MDP, 'groupmember:groupannu'),
