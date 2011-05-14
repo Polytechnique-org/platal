@@ -54,6 +54,8 @@ Le groupe {$asso->nom} compte {$plset_count} membres&nbsp;:
     </a>
   </li>
   {/if}
+  {/if}
+  {if hasPerm('admin')}
   <li>
     <a href="{$platal->ns}former_users">
       {icon name=status_offline title="Anciens membres du groupe"}
