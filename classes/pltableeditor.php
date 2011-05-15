@@ -361,7 +361,7 @@ class PLTableEditor
                     } elseif ($descr['Type'] == 'ip_address') {
                         $val = ip2long($val);
                     }
-                } else {
+                } elseif ($descr['display']) {
                     $cancel = true;
                     $page->trigError("Il manque le champ ".$field);
                 }
