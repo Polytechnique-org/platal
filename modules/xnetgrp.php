@@ -392,8 +392,24 @@ class XnetGrpModule extends PLModule
             S::assert_xsrf_token();
 
             $users = array_keys(Env::v('add_users'));
+            $former_users = XDB::fetchColumn('SELECT  uid
+                                                FROM  group_former_members
+                                               WHERE  remember = TRUE AND uid IN {?}',
+                                             $users);
+            $new_users = array_diff($users, $former_users);
+
+            foreach ($former_users as $uid) {
+                $user = User::getSilentWithUID($uid);
+                $page->trigWarning($user->fullName() . ' est un ancien membre du groupe qui ne souhaite pas y revenir.');
+            }
+            if (count($former_users) > 1) {
+                $page->trigWarning('S\'ils souhaitent revenir dans le groupe, il faut qu\'ils en fassent la demande sur la page d\'accueil du groupe.');
+            } elseif (count($former_users)) {
+                $page->trigWarning('S\'il souhaite revenir dans le groupe, il faut qu\'il en fasse la demande sur la page d\'accueil du groupe.');
+            }
+
             $data = array();
-            foreach ($users as $uid) {
+            foreach ($new_users as $uid) {
                 $data[] = XDB::format('({?}, {?})', $globals->asso('id'), $uid);
             }
             XDB::rawExecute('INSERT INTO  group_members (asso_id, uid)
@@ -641,6 +657,9 @@ class XnetGrpModule extends PLModule
             XDB::execute("INSERT INTO  group_member_sub_requests (asso_id, uid, ts, reason)
                                VALUES  ({?}, {?}, NOW(), {?})",
                          $globals->asso('id'), S::i('uid'), Post::v('message'));
+            XDB::execute('DELETE FROM  group_former_members
+                                WHERE  uid = {?} AND asso_id = {?}',
+                         S::i('uid'), $globals->asso('id'));
             $uf = New UserFilter(New UFC_Group($globals->asso('id'), true));
             $admins = $uf->iterUsers();
             $admin = $admins->next();
@@ -866,9 +885,23 @@ class XnetGrpModule extends PLModule
         }
 
         if ($user) {
-            XDB::execute('INSERT IGNORE INTO  group_members (uid, asso_id)
-                                      VALUES  ({?}, {?})',
-                         $user->id(), $globals->asso('id'));
+            // First check if the user used to be in this group.
+            XDB::rawExecute('DELETE FROM  group_former_members
+                                   WHERE  remember AND DATE_SUB(NOW(), INTERVAL 1 YEAR) > unsubsciption_date');
+            $former_member = XDB::fetchOneCell('SELECT  remember
+                                                  FROM  group_former_members
+                                                 WHERE  uid = {?} AND asso_id = {?}',
+                                               $user->id(), $globals->asso('id'));
+            if ($former_member === 1) {
+                $page->trigError($user->fullName() . ' est un ancien membre du groupe qui ne souhaite pas y revenir. S\'il souhaite revenir dans le groupe, il faut qu\'il en fasse la demande sur la page d\'accueil du groupe.');
+                return;
+            } elseif (!is_null($former_member) && Post::i('force_continue') == 0) {
+                $page->trigWarning($user->fullName() . ' est un ancien membre du groupe qui s\'est récemment désinscrit. Malgré cela, si tu penses qu\'il souhaite revenir, cliquer sur « Ajouter » l\'ajoutera bien au groupe cette fois.');
+                $page->assign('force_continue', 1);
+                return;
+            }
+
+            Group::subscribe($globals->asso('id'), $user->id());
             $this->removeSubscriptionRequest($user->id());
             if ($suggest_account_activation) {
                 pl_redirect('member/suggest/' . $user->login() . '/' . $email . '/' . $globals->asso('nom'));
