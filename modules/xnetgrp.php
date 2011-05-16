@@ -955,10 +955,10 @@ class XnetGrpModule extends PLModule
         $page->assign('users', $users);
     }
 
-    function unsubscribe(PlUser $user)
+    function unsubscribe(PlUser $user, $remember = false)
     {
         global $globals;
-        Group::unsubscribe($globals->asso('id'), $user->id());
+        Group::unsubscribe($globals->asso('id'), $user->id(), $remember);
 
         if ($globals->asso('notif_unsub')) {
             $mailer = new PlMailer('xnetgrp/unsubscription-notif.mail.tpl');
@@ -1025,7 +1025,7 @@ class XnetGrpModule extends PLModule
 
         $hasSingleGroup = ($user->groupCount() == 1);
 
-        if ($this->unsubscribe($user)) {
+        if ($this->unsubscribe($user, Post::b('remember'))) {
             $page->trigSuccess('Tu as été désinscrit du groupe avec succès.');
         } else {
             $page->trigWarning('Tu as été désinscrit du groupe, mais des erreurs se sont produites lors des désinscriptions des alias et des listes de diffusion.');

@@ -1,6 +1,9 @@
+DROP TABLE IF EXISTS group_former_members;
+
 CREATE TABLE group_former_members (
   asso_id SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0,
   uid INT(11) UNSIGNED NOT NULL DEFAULT 0,
+  remember BOOLEAN NOT NULL DEFAULT FALSE,
   unsubsciption_date DATE NOT NULL,
   PRIMARY KEY (asso_id, uid),
   KEY uid (uid),

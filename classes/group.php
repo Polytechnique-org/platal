@@ -151,11 +151,11 @@ class Group
                      $group_id, $uid);
     }
 
-    static public function unsubscribe($group_id, $uid)
+    static public function unsubscribe($group_id, $uid, $remember)
     {
-        XDB::execute('INSERT INTO  group_former_members (asso_id, uid, unsubsciption_date)
-                           VALUES  ({?}, {?}, NOW())',
-                     $group_id, $uid);
+        XDB::execute('INSERT INTO  group_former_members (asso_id, uid, remember, unsubsciption_date)
+                           VALUES  ({?}, {?}, {?}, NOW())',
+                     $group_id, $uid, $remember);
         XDB::execute('DELETE FROM  group_members
                             WHERE  uid = {?} AND asso_id = {?}',
                      $uid, $group_id);
