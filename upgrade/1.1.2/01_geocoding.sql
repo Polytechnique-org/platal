@@ -7,7 +7,7 @@ CREATE TABLE profile_addresses_components_enum (
   long_name VARCHAR(255) NOT NULL DEFAULT '',
   types SET('street_address', 'route', 'intersection', 'political', 'country', 'administrative_area_level_1', 'administrative_area_level_2', 'administrative_area_level_3', 'colloquial_area', 'locality', 'sublocality', 'neighborhood', 'premise', 'subpremise', 'postal_code', 'natural_feature', 'airport', 'park', 'point_of_interest', 'post_box', 'street_number', 'floor', 'room') NOT NULL DEFAULT '',
   PRIMARY KEY (id),
-  UNIQUE KEY (types, long_name),
+  KEY (types, long_name),
   KEY (types, short_name)
 ) ENGINE=InnoDB, CHARSET=utf8;
 
