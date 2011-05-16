@@ -94,6 +94,8 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
 
     make_event_date($evt);
 
+    $evt['show_participants'] = ($evt['show_participants'] && (is_member() || may_update()));
+
     return $evt;
 }
 
