@@ -79,6 +79,9 @@
 
 <div class="menu_title">Communauté X</div>
 <div class="menu_item"><a href="search">Annuaire</a></div>
+{if hasPerm('directory_private,edit_directory')}
+<div class="menu_item"><a href="map">Planisphère</a></div>
+{/if}
 {if hasPerm('directory_private')}
 <div class="menu_item"><a href="jobs">Emploi &amp; Carrières</a></div>
 {/if}

@@ -19,40 +19,24 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class Xnet extends Platal
+class GeolocModule extends PLModule
 {
-    public function __construct()
+    function handlers()
     {
-        parent::__construct('xnet', 'xnetgrp', 'xnetlists', 'xnetevents',
-                            'payment', 'bandeau', 'xnetnl', 'geoloc');
+        return array(
+            'map' => $this->make_hook('map', AUTH_COOKIE),
+        );
     }
 
-    public function hook_map($name)
+    function handler_map($page)
     {
-        if ($name == 'grp') {
-            global $globals;
-            if ($globals->asso()) {
-                return $globals->asso('shortname');
-            }
-        }
-        return null;
-    }
+        $page->changeTpl('geoloc/index.tpl');
+        $page->addJsLink('https://maps-api-ssl.google.com/maps/api/js?v=3&sensor=false', false);
+        $page->addJsLink('maps.js');
+        $page->assign('pl_extra_header', '<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />');
 
-    protected function find_hook()
-    {
-        $ans = parent::find_hook();
-        $this->https = false;
-        return $ans;
-    }
-
-    public function force_login(PlPage $page)
-    {
-        $redirect = S::v('loginX');
-        if (!$redirect) {
-            $page->trigError('Impossible de s\'authentifier. Problème de configuration de plat/al.');
-            return;
-        }
-        http_redirect($redirect);
+        $page->assign('latitude', 0);
+        $page->assign('longitude', 0);
     }
 }
 
