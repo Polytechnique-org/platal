@@ -317,12 +317,16 @@ abstract class PlPage extends Smarty
     // }}}
     // {{{ function addJsLink
 
-    public function addJsLink($filename, $static_content = true)
+    public function addJsLink($filename, $internal = true, $static_content = true)
     {
-        if ($static_content) {
-            $this->append('pl_js', pl_static_content_path("javascript/", $filename));
+        if ($internal) {
+            if ($static_content) {
+                $this->append('pl_js', pl_static_content_path("javascript/", $filename));
+            } else {
+                $this->append('pl_js', "javascript/$filename");
+            }
         } else {
-            $this->append('pl_js', "javascript/$filename");
+            $this->append('pl_js', $filename);
         }
     }
 
