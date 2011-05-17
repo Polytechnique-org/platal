@@ -182,6 +182,7 @@ class PaymentModule extends PLModule
         $page->assign('pay', $pay);
         $page->assign('evtlink', $pay->event());
         $page->assign('sex', S::user()->isFemale());
+        $page->assign('donation', $pay->flags->hasflag('donation'));
     }
 
     function handler_cyber2_return($page, $uid = null)
@@ -233,9 +234,9 @@ class PaymentModule extends PLModule
         }
 
         /* on fait l'insertion en base de donnees */
-        XDB::execute('INSERT INTO  payment_transactions (id, uid, ref, fullref, amount, pkey, comment)
-                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                     Env::v('vads_trans_date'), $user->id(), $ref, Env::v('vads_order_id'), $montant, '', Env::v('vads_order_info'));
+        XDB::execute('INSERT INTO  payment_transactions (id, uid, ref, fullref, amount, pkey, comment, display)
+                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                     Env::v('vads_trans_date'), $user->id(), $ref, Env::v('vads_order_id'), $montant, '', Env::v('vads_order_info'), Env::i('vads_order_info2'));
         echo "Paiement stored.\n";
 
         // We check if it is an Xnet payment and then update the related ML.
@@ -331,9 +332,9 @@ class PaymentModule extends PLModule
         }
 
         /* on fait l'insertion en base de donnees */
-        XDB::execute("INSERT INTO  payment_transactions (id, uid, ref, fullref, amount, pkey, comment)
-                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})",
-                    $no_transaction, $user->id(), $ref, $fullref, $montant, $clef, Env::v('comment'));
+        XDB::execute("INSERT INTO  payment_transactions (id, uid, ref, fullref, amount, pkey, comment, display)
+                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, '?})",
+                    $no_transaction, $user->id(), $ref, $fullref, $montant, $clef, Env::v('comment'), Get::i('display'));
 
         // We check if it is an Xnet payment and then update the related ML.
         $res = XDB::query('SELECT  eid

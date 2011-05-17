@@ -140,9 +140,20 @@ function payment_submit(form)
       <td>Commentaire</td>
       <td><textarea name="comment" rows="5" cols="30"></textarea></td>
     </tr>
+    {if t($donation)}
+    <tr>
+      <td>Afficher ton nom dans la liste des donateurs sur {#globals.core.sitename#}</td>
+      <td>
+        <label>Oui<input type="radio" name="display" value="1" checked="checked" /></label>
+        &nbsp;-&nbsp;
+        <label><input type="radio" name="display" value="0" />Non</label>
+      </td>
+    </tr>
+    {/if}
     <tr>
       <td>&nbsp;</td>
       <td>
+        {if !t($donation)}<input type="hidden" name="display" value="0" />{/if}
         <input type="hidden" name="op" value="submit" />
         <input type="submit" value="Continuer" />
       </td>
