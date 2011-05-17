@@ -172,6 +172,27 @@ class PaymentModule extends PLModule
             if ($res->total()) {
                 $page->assign('transactions', $res);
             }
+
+            if ($pay->flags->hasflag('donation')) {
+                $donations = XDB::fetchAllAssoc('SELECT  IF(p.display,
+                                                            IF(ap.pid IS NOT NULL, CONCAT(a.full_name, \' (\', pd.promo, \')\'), a.full_name),
+                                                            \'XXXX\') AS name, p.amount
+                                                   FROM  payment_transactions AS p
+                                             INNER JOIN  accounts             AS a  ON (a.uid = p.uid)
+                                              LEFT JOIN  account_profiles     AS ap ON (a.uid = ap.uid AND FIND_IN_SET(\'owner\', ap.perms))
+                                              LEFT JOIN  profile_display      AS pd ON (ap.pid = pd.pid)
+                                                  WHERE  p.ref = {?}
+                                               ORDER BY  LENGTH(p.amount) DESC, p.amount DESC, name',
+                                                $ref);
+                $sum = 0;
+                foreach ($donations as $d) {
+                    $amount = $d['amount'];
+                    $sum += trim(strtr(substr($amount, 0, strpos($amount, 'EUR')), ',', '.'));
+                }
+
+                $page->assign('donations', $donations);
+                $page->assign('sum', strtr($sum, '.', ','));
+            }
         }
 
         $val = floor($val) . '.' . substr(floor(($val - floor($val)) * 100 + 100), 1);

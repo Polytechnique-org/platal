@@ -174,6 +174,26 @@ function payment_submit(form)
 </table>
 {/if}
 
+{if t($donation)}
+{if !t($donations)}
+<p class="descr">Aucun don n'a encore été recueilli.</p>
+{else}
+<p class="descr">Les dons suivants ont déjà été recueillis (pour un total de {$sum} &euro;)&nbsp;:</p>
+<table class="bicol">
+  <tr>
+    <th>Nom</th>
+    <th>Montant</th>
+  </tr>
+  {foreach from=$donations item=d}
+  <tr class="{cycle values="pair,impair"}">
+    <td>{$d.name}</td>
+    <td class="center">{$d.amount|replace:'EUR':'&euro;'}</td>
+  </tr>
+  {/foreach}
+</table>
+{/if}
+{/if}
+
 {/if}
 
 
