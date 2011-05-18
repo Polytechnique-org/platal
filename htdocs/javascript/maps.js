@@ -29,6 +29,20 @@ function map_initialize(latitude, longitude)
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     var map = new google.maps.Map($('#map_canvas').get(0), myOptions);
+
+    $.xget('map/ajax', function(json_data) {
+        var data = jQuery.parseJSON(json_data);
+        var dots = data.data;
+        var count = dots.length;
+        var markers = [];
+
+        for (var i = 0; i < count; ++i) {
+            var latLng = new google.maps.LatLng(dots[i].latitude, dots[i].longitude);
+            var marker = new google.maps.Marker({'position': latLng});
+            markers.push(marker);
+        }
+        var mc = new MarkerClusterer(map, markers);
+    });
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

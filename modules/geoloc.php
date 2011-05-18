@@ -24,7 +24,8 @@ class GeolocModule extends PLModule
     function handlers()
     {
         return array(
-            'map' => $this->make_hook('map', AUTH_COOKIE),
+            'map'      => $this->make_hook('map',      AUTH_COOKIE),
+            'map/ajax' => $this->make_hook('map_ajax', AUTH_COOKIE)
         );
     }
 
@@ -32,14 +33,25 @@ class GeolocModule extends PLModule
     {
         global $globals;
         $page->changeTpl('geoloc/index.tpl');
+        $page->addJsLink('maps.js');
+        $page->addJsLink('markerclusterer_packed.js');
 
         $map_url = $globals->maps->dynamic_map . '?&sensor=false&v=' . $globals->maps->api_version . '&language=' . $globals->maps->language;
         $page->addJsLink($map_url, false);
-        $page->addJsLink('maps.js');
         $page->assign('pl_extra_header', '<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />');
 
         $page->assign('latitude', 0);
         $page->assign('longitude', 0);
+    }
+
+    function handler_map_ajax($page)
+    {
+        $data = XDB::rawFetchAllAssoc('SELECT  latitude, longitude
+                                         FROM  profile_addresses
+                                        WHERE  type = \'home\' AND latitude IS NOT NULL AND longitude IS NOT NULL');
+        $page->jsonAssign('data', $data);
+
+        return PL_JSON;
     }
 }
 
