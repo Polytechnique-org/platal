@@ -846,6 +846,15 @@ class UserFilter extends PlFilter
         return $sub;
     }
 
+    private $gpfm = array();
+    public function addGroupFormerMemberFilter()
+    {
+        $this->requireAccounts();
+        $sub = '_' . $this->option++;
+        $this->gpfm[] = $sub;
+        return $sub;
+    }
+
     protected function groupJoins()
     {
         $joins = array();
@@ -859,6 +868,9 @@ class UserFilter extends PlFilter
                 $joins['gpa' . $sub] = PlSqlJoin::inner('groups', '$ME.diminutif = {?}', $key);
                 $joins['gpm' . $sub] = PlSqlJoin::left('group_members', '$ME.uid = $UID AND $ME.asso_id = gpa' . $sub . '.id');
             }
+        }
+        foreach ($this->gpfm as $sub) {
+            $joins['gpfm' . $sub] = PlSqlJoin::left('group_former_members', '$ME.uid = $UID');
         }
         return $joins;
     }

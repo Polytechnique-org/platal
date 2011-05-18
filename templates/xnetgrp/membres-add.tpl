@@ -72,6 +72,7 @@ function searchX()
     <tr>
       <td class="center" colspan="2">
         <input type="text" id="email" name="email" size="40" value="{if t($platal->argv[1])}{$platal->argv[1]}{/if}" />
+        <input type="hidden" name="force_continue" value="{if t($force_continue)}1{else}0{/if}" />
         <input type='submit' value='Ajouter'
           onclick='this.form.action += this.form.email.value' />
       </td>

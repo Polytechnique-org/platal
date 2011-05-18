@@ -20,45 +20,58 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if t($smarty.post.confirm)}
-
-<p class="descr">
-{if !$self}
-<a href="{$platal->ns}annuaire">retour à l'annuaire</a>
+{if $users|@count eq 0}
+<p>Tous les inscrits au groupe sont déjà inscrits à la newsletter.</p>
 {else}
-<a href="">retour à l'accueil</a>
-{/if}
-</p>
-
-{else}
-
-<h1>{$asso->nom}&nbsp;: gestion des membres</h1>
-
-<h2>
-  Suppression du membre&nbsp;: {profile user=$user groupperms=false sex=false promo=true}
-</h2>
-
-
-<form method="post" action="{$platal->pl_self()}">
+<form action="{$platal->ns}admin/nl/sync" method="post">
   {xsrf_token_field}
-  <div class="center">
-    <p class="descr">
-    {if $self}
-    Êtes-vous sûr de vouloir vous désinscrire du groupe {$asso->nom} et de toutes
-    les listes de diffusion associées&nbsp;?
-    {else}
-    Êtes-vous sûr de vouloir supprimer {$user->fullName()} du groupe,
-    lui retirer tous les droits associés à son statut de membre
-    et le désabonner de toutes les listes de diffusion du groupe&nbsp;?
-    {/if}
-    </p>
-    {if $self}
-    <label><input type="checkbox" name="remember" />Empêcher ma réinscription au groupe par un animateur.</label><br /><br />
-    {/if}
-    <input type="submit" name="confirm" value="Oui, je {if $self}me{else}le{/if} désinscris complètement du groupe !" />
-  </div>
-</form>
+  <table cellspacing="2" cellpadding="0" class="tiny">
+    <tr>
+      <th>Nom</th>
+      <th>
+        <a href="javascript:toggleAll()">{icon name="arrow_refresh" title="Tout (dé)cocher"}</a>
+      </th>
+    </tr>
+    {foreach from=$users item=user}
+    <tr>
+      <td class="checkboxToggle">{profile user=$user promo=true}</td>
+      <td class="checkboxToggle"><input type="checkbox" class="user" name="add_users[{$user->id()}]" /></td>
+    </tr>
+    {/foreach}
+    <tr>
+      <td colspan="2" class="center">
+        <input type="submit" value="Inscrire à la newsletter" />
+      </td>
+    </tr>
+  </table>
 
+  <script type="text/javascript">//<![CDATA[
+  {literal}
+  var toggleState = false;
+  function toggleAll() {
+    toggleState = !toggleState;
+    var boxes = $(':checkbox.user');
+    if (toggleState) {
+      boxes.attr('checked', 'checked');
+    } else {
+      boxes.removeAttr('checked');
+    }
+  }
+
+  $('.checkboxToggle').click(function (event) {
+    // Don't uncheck the checkbox when clicking it
+    if (event.target.tagName === 'INPUT') {
+      return;
+    }
+
+    var checkbox = $(this).parent().find(':checkbox');
+    checkbox = checkbox.attr('checked', !checkbox.attr('checked'));
+    event.stopPropagation();
+  });
+  {/literal}
+  //]]></script>
+
+</form>
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

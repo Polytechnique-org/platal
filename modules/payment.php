@@ -172,6 +172,27 @@ class PaymentModule extends PLModule
             if ($res->total()) {
                 $page->assign('transactions', $res);
             }
+
+            if ($pay->flags->hasflag('donation')) {
+                $donations = XDB::fetchAllAssoc('SELECT  IF(p.display,
+                                                            IF(ap.pid IS NOT NULL, CONCAT(a.full_name, \' (\', pd.promo, \')\'), a.full_name),
+                                                            \'XXXX\') AS name, p.amount
+                                                   FROM  payment_transactions AS p
+                                             INNER JOIN  accounts             AS a  ON (a.uid = p.uid)
+                                              LEFT JOIN  account_profiles     AS ap ON (a.uid = ap.uid AND FIND_IN_SET(\'owner\', ap.perms))
+                                              LEFT JOIN  profile_display      AS pd ON (ap.pid = pd.pid)
+                                                  WHERE  p.ref = {?}
+                                               ORDER BY  LENGTH(p.amount) DESC, p.amount DESC, name',
+                                                $ref);
+                $sum = 0;
+                foreach ($donations as $d) {
+                    $amount = $d['amount'];
+                    $sum += trim(strtr(substr($amount, 0, strpos($amount, 'EUR')), ',', '.'));
+                }
+
+                $page->assign('donations', $donations);
+                $page->assign('sum', strtr($sum, '.', ','));
+            }
         }
 
         $val = floor($val) . '.' . substr(floor(($val - floor($val)) * 100 + 100), 1);
@@ -182,6 +203,7 @@ class PaymentModule extends PLModule
         $page->assign('pay', $pay);
         $page->assign('evtlink', $pay->event());
         $page->assign('sex', S::user()->isFemale());
+        $page->assign('donation', $pay->flags->hasflag('donation'));
     }
 
     function handler_cyber2_return($page, $uid = null)
@@ -233,9 +255,9 @@ class PaymentModule extends PLModule
         }
 
         /* on fait l'insertion en base de donnees */
-        XDB::execute('INSERT INTO  payment_transactions (id, uid, ref, fullref, amount, pkey, comment)
-                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                     Env::v('vads_trans_date'), $user->id(), $ref, Env::v('vads_order_id'), $montant, '', Env::v('vads_order_info'));
+        XDB::execute('INSERT INTO  payment_transactions (id, uid, ref, fullref, amount, pkey, comment, display)
+                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                     Env::v('vads_trans_date'), $user->id(), $ref, Env::v('vads_order_id'), $montant, '', Env::v('vads_order_info'), Env::i('vads_order_info2'));
         echo "Paiement stored.\n";
 
         // We check if it is an Xnet payment and then update the related ML.
@@ -331,9 +353,9 @@ class PaymentModule extends PLModule
         }
 
         /* on fait l'insertion en base de donnees */
-        XDB::execute("INSERT INTO  payment_transactions (id, uid, ref, fullref, amount, pkey, comment)
-                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})",
-                    $no_transaction, $user->id(), $ref, $fullref, $montant, $clef, Env::v('comment'));
+        XDB::execute("INSERT INTO  payment_transactions (id, uid, ref, fullref, amount, pkey, comment, display)
+                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, '?})",
+                    $no_transaction, $user->id(), $ref, $fullref, $montant, $clef, Env::v('comment'), Get::i('display'));
 
         // We check if it is an Xnet payment and then update the related ML.
         $res = XDB::query('SELECT  eid

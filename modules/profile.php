@@ -331,8 +331,8 @@ class ProfileModule extends PLModule
         }
 
         // Build the page
-        $page->addJsLink('education.js', false); /* dynamic content */
-        $page->addJsLink('grades.js', false);    /* dynamic content */
+        $page->addJsLink('education.js', true, false); /* dynamic content */
+        $page->addJsLink('grades.js', true, false);    /* dynamic content */
         $page->addJsLink('profile.js');
         $wiz = new PlWizard('Profil', PlPage::getCoreTpl('plwizard.tpl'), true, true, false);
         $wiz->addUserData('profile', $profile);

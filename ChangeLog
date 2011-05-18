@@ -1,6 +1,21 @@
 ================================================================================
 VERSION 1.1.2                                                         XX XX XXXX
 
+Bug/Wish:
+
+    * Paiement:
+        - #192: Displays users donations                                   -JAC
+
+    * Search:
+        - #1285: Autocompletes on internal words in university search      -JAC
+
+    * XnetGrp:
+        - #947: Lists group former members to group admins                 -JAC
+        - #1481: Adds group nl subscription from group profile edition     -JAC
+
+    * XnetEvent:
+        - #1487: Removes link to event attending users to group outsiders  -JAC
+
 ================================================================================
 VERSION 1.1.1                                                         09 05 2011
 

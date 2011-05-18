@@ -140,6 +140,26 @@ class Group
                                         $data['id']);
         return new Group(array_merge($data, array('positions' => $positions)));
     }
+
+    static public function subscribe($group_id, $uid)
+    {
+        XDB::execute('DELETE FROM  group_former_members
+                            WHERE  uid = {?} AND asso_id = {?}',
+                     $uid, $group_id);
+        XDB::execute('INSERT IGNORE INTO  group_members (asso_id, uid)
+                                  VALUES  ({?}, {?})',
+                     $group_id, $uid);
+    }
+
+    static public function unsubscribe($group_id, $uid, $remember)
+    {
+        XDB::execute('INSERT INTO  group_former_members (asso_id, uid, remember, unsubsciption_date)
+                           VALUES  ({?}, {?}, {?}, NOW())',
+                     $group_id, $uid, $remember);
+        XDB::execute('DELETE FROM  group_members
+                            WHERE  uid = {?} AND asso_id = {?}',
+                     $uid, $group_id);
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

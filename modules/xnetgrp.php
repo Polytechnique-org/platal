@@ -32,6 +32,7 @@ class XnetGrpModule extends PLModule
             '%grp/edit'            => $this->make_hook('edit',                  AUTH_MDP, 'groupadmin'),
             '%grp/mail'            => $this->make_hook('mail',                  AUTH_MDP, 'groupadmin'),
             '%grp/forum'           => $this->make_hook('forum',                 AUTH_MDP, 'groupmember'),
+            '%grp/former_users'    => $this->make_hook('former_users',          AUTH_MDP, 'admin'),
             '%grp/annuaire'        => $this->make_hook('annuaire',              AUTH_MDP, 'groupannu'),
             '%grp/annuaire/vcard'  => $this->make_hook('vcard',                 AUTH_MDP, 'groupmember:groupannu'),
             '%grp/annuaire/csv'    => $this->make_hook('csv',                   AUTH_MDP, 'groupmember:groupannu'),
@@ -338,6 +339,17 @@ class XnetGrpModule extends PLModule
         $page->changeTpl('xnetgrp/annuaire.tpl');
     }
 
+    function handler_former_users($page)
+    {
+        global $globals;
+        require_once 'userset.inc.php';
+
+        $view = new UserSet(new UFC_GroupFormerMember($globals->asso('id')));
+        $view->addMod('groupmember', 'Anciens membres', true, array('noadmin' => true));
+        $view->apply('former_users', $page);
+        $page->changeTpl('xnetgrp/former_users.tpl');
+    }
+
     function handler_trombi($page)
     {
         pl_redirect('annuaire/trombi');
@@ -380,8 +392,24 @@ class XnetGrpModule extends PLModule
             S::assert_xsrf_token();
 
             $users = array_keys(Env::v('add_users'));
+            $former_users = XDB::fetchColumn('SELECT  uid
+                                                FROM  group_former_members
+                                               WHERE  remember = TRUE AND uid IN {?}',
+                                             $users);
+            $new_users = array_diff($users, $former_users);
+
+            foreach ($former_users as $uid) {
+                $user = User::getSilentWithUID($uid);
+                $page->trigWarning($user->fullName() . ' est un ancien membre du groupe qui ne souhaite pas y revenir.');
+            }
+            if (count($former_users) > 1) {
+                $page->trigWarning('S\'ils souhaitent revenir dans le groupe, il faut qu\'ils en fassent la demande sur la page d\'accueil du groupe.');
+            } elseif (count($former_users)) {
+                $page->trigWarning('S\'il souhaite revenir dans le groupe, il faut qu\'il en fasse la demande sur la page d\'accueil du groupe.');
+            }
+
             $data = array();
-            foreach ($users as $uid) {
+            foreach ($new_users as $uid) {
                 $data[] = XDB::format('({?}, {?})', $globals->asso('id'), $uid);
             }
             XDB::rawExecute('INSERT INTO  group_members (asso_id, uid)
@@ -530,9 +558,8 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
         $this->removeSubscriptionRequest($user->id());
-        XDB::execute("INSERT IGNORE INTO  group_members (asso_id, uid)
-                                  VALUES  ({?}, {?})",
-                     $globals->asso('id'), $user->id());
+        Group::subscribe($globals->asso('id'), $user->id());
+
         if (XDB::affectedRows() == 1) {
             $mailer = new PlMailer();
             $mailer->addTo($user->forlifeEmail());
@@ -630,6 +657,9 @@ class XnetGrpModule extends PLModule
             XDB::execute("INSERT INTO  group_member_sub_requests (asso_id, uid, ts, reason)
                                VALUES  ({?}, {?}, NOW(), {?})",
                          $globals->asso('id'), S::i('uid'), Post::v('message'));
+            XDB::execute('DELETE FROM  group_former_members
+                                WHERE  uid = {?} AND asso_id = {?}',
+                         S::i('uid'), $globals->asso('id'));
             $uf = New UserFilter(New UFC_Group($globals->asso('id'), true));
             $admins = $uf->iterUsers();
             $admin = $admins->next();
@@ -855,9 +885,23 @@ class XnetGrpModule extends PLModule
         }
 
         if ($user) {
-            XDB::execute('INSERT IGNORE INTO  group_members (uid, asso_id)
-                                      VALUES  ({?}, {?})',
-                         $user->id(), $globals->asso('id'));
+            // First check if the user used to be in this group.
+            XDB::rawExecute('DELETE FROM  group_former_members
+                                   WHERE  remember AND DATE_SUB(NOW(), INTERVAL 1 YEAR) > unsubsciption_date');
+            $former_member = XDB::fetchOneCell('SELECT  remember
+                                                  FROM  group_former_members
+                                                 WHERE  uid = {?} AND asso_id = {?}',
+                                               $user->id(), $globals->asso('id'));
+            if ($former_member === 1) {
+                $page->trigError($user->fullName() . ' est un ancien membre du groupe qui ne souhaite pas y revenir. S\'il souhaite revenir dans le groupe, il faut qu\'il en fasse la demande sur la page d\'accueil du groupe.');
+                return;
+            } elseif (!is_null($former_member) && Post::i('force_continue') == 0) {
+                $page->trigWarning($user->fullName() . ' est un ancien membre du groupe qui s\'est récemment désinscrit. Malgré cela, si tu penses qu\'il souhaite revenir, cliquer sur « Ajouter » l\'ajoutera bien au groupe cette fois.');
+                $page->assign('force_continue', 1);
+                return;
+            }
+
+            Group::subscribe($globals->asso('id'), $user->id());
             $this->removeSubscriptionRequest($user->id());
             if ($suggest_account_activation) {
                 pl_redirect('member/suggest/' . $user->login() . '/' . $email . '/' . $globals->asso('nom'));
@@ -944,12 +988,10 @@ class XnetGrpModule extends PLModule
         $page->assign('users', $users);
     }
 
-    function unsubscribe(PlUser $user)
+    function unsubscribe(PlUser $user, $remember = false)
     {
         global $globals;
-        XDB::execute("DELETE FROM  group_members
-                            WHERE  uid = {?} AND asso_id = {?}",
-                     $user->id(), $globals->asso('id'));
+        Group::unsubscribe($globals->asso('id'), $user->id(), $remember);
 
         if ($globals->asso('notif_unsub')) {
             $mailer = new PlMailer('xnetgrp/unsubscription-notif.mail.tpl');
@@ -1016,7 +1058,7 @@ class XnetGrpModule extends PLModule
 
         $hasSingleGroup = ($user->groupCount() == 1);
 
-        if ($this->unsubscribe($user)) {
+        if ($this->unsubscribe($user, Post::b('remember'))) {
             $page->trigSuccess('Tu as été désinscrit du groupe avec succès.');
         } else {
             $page->trigWarning('Tu as été désinscrit du groupe, mais des erreurs se sont produites lors des désinscriptions des alias et des listes de diffusion.');
@@ -1234,16 +1276,39 @@ class XnetGrpModule extends PLModule
                     $page->trigSuccess("{$user->fullName()} a été désabonné de $ml.");
                 }
             }
+
+            if ($globals->asso('has_nl')) {
+                // Updates group's newsletter subscription.
+                if (Post::i('newsletter') == 1) {
+                    XDB::execute('INSERT IGNORE INTO  newsletter_ins (uid, nlid)
+                                              SELECT  {?}, id
+                                                FROM  newsletters
+                                               WHERE  group_id = {?}',
+                                 $user->id(), $globals->asso('id'));
+                } else {
+                    XDB::execute('DELETE  ni
+                                    FROM  newsletter_ins AS ni
+                              INNER JOIN  newsletters    AS n  ON (n.id = ni.nlid)
+                                   WHERE  ni.uid = {?} AND n.group_id = {?}',
+                                 $user->id(), $globals->asso('id'));
+                }
+            }
         }
 
         $res = XDB::rawFetchAllAssoc('SHOW COLUMNS FROM group_members LIKE \'position\'');
         $positions = str_replace(array('enum(', ')', '\''), '', $res[0]['Type']);
+        $nl_registered = XDB::fetchOneCell('SELECT  COUNT(ni.uid)
+                                              FROM  newsletter_ins AS ni
+                                        INNER JOIN  newsletters    AS n  ON (n.id = ni.nlid)
+                                             WHERE  ni.uid = {?} AND n.group_id = {?}',
+                                           $user->id(), $globals->asso('id'));
 
         $page->assign('user', $user);
         $page->assign('suggest', $this->suggest($user));
         $page->assign('listes', $mmlist->get_lists($user->forlifeEmail()));
         $page->assign('alias', $user->emailGroupAliases($globals->asso('mail_domain')));
         $page->assign('positions', explode(',', $positions));
+        $page->assign('nl_registered', $nl_registered);
     }
 
     function handler_rss(PlPage $page, PlUser $user)

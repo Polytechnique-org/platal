@@ -201,6 +201,7 @@ Ton inscription à [METS LE NOM DE L'ÉVÉNEMENT ICI] a bien été enregistrée 
 {$profile->fullName("promo")}{/if}</textarea><br />
         {assign var='asso_url' value=$globals->baseurl|cat:'/'|cat:$platal->ns}
         Page internet de l'événement&nbsp;: <input size="40" name="site" value="{$paiement_site|default:$asso->site|default:$asso_url}" /><br />
+        <label><input type="checkbox" name="donation" {if t($donation)}check="checked"{/if} />Afficher la liste des payeurs ne s'y opposant pas sur {#globals.core.sitename#}</label><br />
         Le nouveau paiement sera activé automatiquement après validation par le trésorier de Polytechnique.org,
         ce qui sera fait sous peu.
         <script type="text/javascript">//<![CDATA[

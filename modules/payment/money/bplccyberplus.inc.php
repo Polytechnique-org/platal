@@ -89,7 +89,8 @@ class BPLCCyberPlus
             'vads_trans_date' => $trans_date,
             'vads_trans_id' => $trans_id,
             'vads_order_id' => $fullref,
-            'vads_order_info' => substr(self::replaceNonAlpha(replace_accent(Env::v('comment'))), 0, 255));
+            'vads_order_info' => substr(self::replaceNonAlpha(replace_accent(Env::v('comment'))), 0, 255),
+            'vads_order_info2' => Post::i('display'));
         $this->infos['divers'] = Array(
             'vads_version' => 'V2',
             'vads_ctx_mode' => $globals->money->cyperplus_prod,
