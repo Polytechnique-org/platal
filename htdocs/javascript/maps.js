@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 // http://code.google.com/apis/maps/documentation/javascript/
+// http://code.google.com/p/google-maps-utility-library-v3/wiki/Libraries
 
 function map_initialize(latitude, longitude)
 {
@@ -38,7 +39,25 @@ function map_initialize(latitude, longitude)
 
         for (var i = 0; i < count; ++i) {
             var latLng = new google.maps.LatLng(dots[i].latitude, dots[i].longitude);
-            var marker = new google.maps.Marker({'position': latLng});
+
+            if (dots[i].hrpid.search(',') > -1) {
+                var hrpids = dots[i].hrpid.split(',');
+                var names = dots[i].name.split(',');
+                var link_array = new Array();
+
+                for (var j = 0; j < hrpids.length; ++j) {
+                    link_array[j] = '<a href="profile/' + hrpids[j] + '">' + names[j] + '</a>';
+                }
+                var link = link_array.join('<br />');
+            } else {
+                var link = '<a href="profile/' + dots[i].hrpid + '">' + dots[i].name + '</a>';
+            }
+
+            var marker = new MarkerWithLabel({
+                'position': latLng,
+                'labelContent': link,
+                'labelClass': 'marker_label'
+            });
             markers.push(marker);
         }
         var mc = new MarkerClusterer(map, markers);

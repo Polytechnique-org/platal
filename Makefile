@@ -243,8 +243,13 @@ $(JSTREE_PATH):
 ##
 ## Maps auxiliary scripts
 ##
-maps:
+maps: htdocs/javascript/markerclusterer_packed.js htdocs/javascript/markerwithlabel_packed.js
+
+htdocs/javascript/markerclusterer_packed.js:
 	wget http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_packed.js -O htdocs/javascript/markerclusterer_packed.js
+
+htdocs/javascript/markerwithlabel_packed.js:
+	wget http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerwithlabel/1.1.4/src/markerwithlabel_packed.js -O htdocs/javascript/markerwithlabel_packed.js
 
 ##
 ## lists rpc

@@ -33,11 +33,11 @@ class GeolocModule extends PLModule
     {
         global $globals;
         $page->changeTpl('geoloc/index.tpl');
-        $page->addJsLink('maps.js');
-        $page->addJsLink('markerclusterer_packed.js');
-
         $map_url = $globals->maps->dynamic_map . '?&sensor=false&v=' . $globals->maps->api_version . '&language=' . $globals->maps->language;
         $page->addJsLink($map_url, false);
+        $page->addJsLink('maps.js');
+        $page->addJsLink('markerclusterer_packed.js');
+        $page->addJsLink('markerwithlabel_packed.js');
         $page->assign('pl_extra_header', '<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />');
 
         $page->assign('latitude', 0);
@@ -46,9 +46,13 @@ class GeolocModule extends PLModule
 
     function handler_map_ajax($page)
     {
-        $data = XDB::rawFetchAllAssoc('SELECT  latitude, longitude
-                                         FROM  profile_addresses
-                                        WHERE  type = \'home\' AND latitude IS NOT NULL AND longitude IS NOT NULL');
+        $data = XDB::rawFetchAllAssoc('SELECT  pa.latitude, pa.longitude, GROUP_CONCAT(DISTINCT p.hrpid SEPARATOR \',\') AS hrpid,
+                                               GROUP_CONCAT(DISTINCT CONCAT(pd.private_name, \' (\', pd.promo, \')\') SEPARATOR \',\') AS name
+                                         FROM  profile_addresses AS pa
+                                   INNER JOIN  profiles          AS p  ON (pa.pid = p.pid)
+                                   INNER JOIN  profile_display   AS pd ON (pd.pid = pa.pid)
+                                        WHERE  pa.type = \'home\' AND pa.latitude IS NOT NULL AND pa.longitude IS NOT NULL
+                                     GROUP BY  pa.latitude, pa.longitude');
         $page->jsonAssign('data', $data);
 
         return PL_JSON;
