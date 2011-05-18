@@ -33,14 +33,14 @@ abstract class Geocoder {
     // geocoded data and returns the corresponding id.
     static public function getComponentId(array $component)
     {
-        $where_types = array();
+        $where = '';
         foreach ($component['types'] as $type) {
-            $where_types[] = XDB::format('FIND_IN_SET({?}, types)', $type);
+            $where .= XDB::format(' AND FIND_IN_SET({?}, types)', $type);
         }
 
         $id = XDB::fetchOneCell('SELECT  id
                                    FROM  profile_addresses_components_enum
-                                  WHERE  short_name = {?} AND long_name = {?} AND ' . implode(' AND ', $where_types),
+                                  WHERE  short_name = {?} AND long_name = {?}' . $where,
                                 $component['short_name'], $component['long_name']);
         if (is_null($id)) {
             XDB::execute('INSERT INTO  profile_addresses_components_enum (short_name, long_name, types)
