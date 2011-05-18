@@ -53,7 +53,7 @@
   <td>
 {/if}
   {if t($address.latitude)}
-    <img src="https://maps.googleapis.com/maps/api/staticmap?size=300x100&amp;markers=color:{$profile->promoColor()}%7C{$address.latitude},{$address.longitude}&amp;zoom=12&amp;sensor=false"
+    <img src="{#globals.maps.static_map#}?size=300x100&amp;markers=color:{$profile->promoColor()}%7C{$address.latitude},{$address.longitude}&amp;zoom=12&amp;sensor=false"
          alt="Position de l'adresse" />
     {if t($geocoding_removal)}
     <br />

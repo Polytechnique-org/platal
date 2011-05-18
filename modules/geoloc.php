@@ -30,8 +30,11 @@ class GeolocModule extends PLModule
 
     function handler_map($page)
     {
+        global $globals;
         $page->changeTpl('geoloc/index.tpl');
-        $page->addJsLink('https://maps-api-ssl.google.com/maps/api/js?v=3&sensor=false', false);
+
+        $map_url = $globals->maps->dynamic_map . '?&sensor=false&v=' . $globals->maps->api_version . '&language=' . $globals->maps->language;
+        $page->addJsLink($map_url, false);
         $page->addJsLink('maps.js');
         $page->assign('pl_extra_header', '<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />');
 
