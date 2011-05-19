@@ -479,7 +479,7 @@ function cleanForm(f) {
     </tr>
     <tr id="locality_text">
       <td>Ville</td>
-      <td><input type="text" class="autocomplete" name="localityTxt" size="32" value="{$smarty.request.locality}" /></td>
+      <td><input type="text" class="autocomplete" name="localityTxt" size="32" value="{$smarty.request.localityTxt}" /></td>
     </tr>
     <tr id="locality_list">
       <td>Ville</td>
