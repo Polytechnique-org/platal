@@ -602,38 +602,43 @@ class DE_AddressesComponents extends DirEnumeration
 
     protected $ac_join   = 'INNER JOIN profile_addresses_components ON (profile_addresses_components.component_id = profile_addresses_components_enum.id)';
     protected $ac_unique = 'profile_addresses_components.pid';
-    protected $ac_where  = 'profile_addresses_components.type = \'home\'';
 }
 // }}}
 // {{{ class DE_AddressesComponents extensions
 class DE_Countries extends DE_AddressesComponents
 {
     protected $where = 'WHERE  FIND_IN_SET(\'country\', profile_addresses_components_enum.types)';
+    protected $ac_where  = 'profile_addresses_components.type = \'home\' AND FIND_IN_SET(\'country\', profile_addresses_components_enum.types)';
 }
 
 class DE_Admnistrativeareas1 extends DE_AddressesComponents
 {
     protected $where = 'WHERE  FIND_IN_SET(\'admnistrative_area_1\', profile_addresses_components_enum.types)';
+    protected $ac_where  = 'profile_addresses_components.type = \'home\' AND FIND_IN_SET(\'admnistrative_area_1\', profile_addresses_components_enum.types)';
 }
 
 class DE_Admnistrativeareas2 extends DE_AddressesComponents
 {
     protected $where = 'WHERE  FIND_IN_SET(\'admnistrative_area_2\', profile_addresses_components_enum.types)';
+    protected $ac_where  = 'profile_addresses_components.type = \'home\' AND FIND_IN_SET(\'admnistrative_area_2\', profile_addresses_components_enum.types)';
 }
 
 class DE_Admnistrativeareas3 extends DE_AddressesComponents
 {
     protected $where = 'WHERE  FIND_IN_SET(\'admnistrative_area_3\', profile_addresses_components_enum.types)';
+    protected $ac_where  = 'profile_addresses_components.type = \'home\' AND FIND_IN_SET(\'admnistrative_area_3\', profile_addresses_components_enum.types)';
 }
 
 class DE_Localities extends DE_AddressesComponents
 {
     protected $where = 'WHERE  FIND_IN_SET(\'locality\', profile_addresses_components_enum.types)';
+    protected $ac_where  = 'profile_addresses_components.type = \'home\' AND FIND_IN_SET(\'locality\', profile_addresses_components_enum.types)';
 }
 
 class DE_Sublocalities extends DE_AddressesComponents
 {
     protected $where = 'WHERE  FIND_IN_SET(\'sublocality\', profile_addresses_components_enum.types)';
+    protected $ac_where  = 'profile_addresses_components.type = \'home\' AND FIND_IN_SET(\'sublocality\', profile_addresses_components_enum.types)';
 }
 
 // }}}
