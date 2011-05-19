@@ -39,6 +39,7 @@ function map_initialize(latitude, longitude)
 
         for (var i = 0; i < count; ++i) {
             var latLng = new google.maps.LatLng(dots[i].latitude, dots[i].longitude);
+            var color = promos_to_color(dots[i].promo);
 
             if (dots[i].hrpid.search(',') > -1) {
                 var hrpids = dots[i].hrpid.split(',');
@@ -58,10 +59,111 @@ function map_initialize(latitude, longitude)
                 'labelContent': link,
                 'labelClass': 'marker_label'
             });
+            marker.bindTo('icon', new ColoredIcon(color));
+            marker.set('color', color);
             markers.push(marker);
         }
         var mc = new MarkerClusterer(map, markers);
     });
+}
+
+function ColoredIcon(color)
+{
+    this.set('starcolor', null);
+    this.set('color', color);
+    this.set('icon', 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=|' + color);
+}
+
+ColoredIcon.prototype = new google.maps.MVCObject();
+
+var colors = new Array();
+colors['red'] = 'ff0000';
+colors['yellow'] = 'ffff00';
+colors['blue'] = '0000ff';
+colors['green'] = '00ff00';
+colors['gray'] = '606060';
+
+function promos_to_color(promos)
+{
+    var promos_array = promos.split(',');
+    var length = promos_array.length;
+
+    if (length == 1) {
+        return colors[promo_to_color(promos)];
+    }
+
+    var color_array = new Array();
+    for (var i = 0; i < length; ++i) {
+        color_array[i] = promo_to_color(promos_array[i]);
+    }
+
+    return color_average(color_array);
+}
+
+function promo_to_color(promo)
+{
+    var main_education = promo.charAt(0);
+
+    switch (main_education)
+    {
+      case 'X':
+        var year_promo = promo.substr(1);
+        if ((year_promo % 2) == 0) {
+            return 'red';
+        } else {
+            return 'yellow';
+        }
+      case 'M':
+        return 'green';
+      case 'D':
+        return 'blue';
+      default:
+        return 'gray';
+    }
+}
+
+function color_average(color_array)
+{
+    var length = color_array.length;
+    var rbg = new Array(0, 0, 0);
+
+    for (var i = 0; i < length; ++i) {
+        switch (color_array[i])
+        {
+          case 'red':
+            rbg[0] += 1;
+            break;
+          case 'yellow':
+            rbg[0] += 1;
+            rbg[1] += 1;
+            break;
+          case 'blue':
+            rbg[1] += 1;
+            break;
+          case 'green':
+            rbg[2] += 1;
+            break;
+          case 'gray':
+            rbg[0] += 0.5;
+            rbg[1] += 0.5;
+            rbg[2] += 0.5;
+            break;
+          default:
+            break;
+        }
+    }
+
+    var color_code = '';
+    for (var i = 0; i < 3; ++i) {
+        var color = Math.floor(rbg[i] / length * 255);
+        var hexa = color.toString(16);
+        if (hexa.length == 1) {
+            hexa += '0';
+        }
+        color_code += hexa;
+    }
+
+    return color_code;
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
