@@ -362,8 +362,12 @@ class PLTableEditor
                         $val = ip2long($val);
                     }
                 } elseif ($descr['display']) {
+                    // The field wasn't available in Post, but was displayed
                     $cancel = true;
                     $page->trigError("Il manque le champ ".$field);
+                } else {
+                    // The field wasn't in Post, but wasn't displayed: ignore it.
+                    continue;
                 }
                 $values[$field] = XDB::escape($val);
             }
