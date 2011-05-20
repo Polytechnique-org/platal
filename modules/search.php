@@ -323,7 +323,7 @@ class SearchModule extends PLModule
                               INNER JOIN  profile_addresses_components      AS pac2  ON (pac1.pid = pac2.pid AND pac1.jobid = pac2.jobid AND pac1.id = pac2.id
                                                                                          AND pac1.groupid = pac2.groupid AND pac1.type = pac2.type)
                               INNER JOIN  profile_addresses_components_enum AS pace2 ON (pac2.component_id = pace2.id AND FIND_IN_SET({?}, pace2.types))
-                                   WHERE  pace2.id = {?} AND FIND_IN_SET({?}, pace1.types)
+                                   WHERE  pace2.id = {?} AND FIND_IN_SET({?}, pace1.types) AND pac1.type = 'home'
                                 GROUP BY  pace1.long_name",
                                  Env::v('previous'), Env::v('value'), $type);
             break;
