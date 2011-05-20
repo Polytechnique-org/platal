@@ -31,7 +31,7 @@ function map_initialize()
     };
     var map = new google.maps.Map($('#map_canvas').get(0), myOptions);
 
-    $.xget('map/ajax', function(json_data) {
+    $.xget(window.location.href, {ajax: true}, function(json_data) {
         var data = jQuery.parseJSON(json_data);
         var dots = data.data;
         var count = dots.length;

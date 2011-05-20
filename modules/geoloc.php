@@ -24,8 +24,7 @@ class GeolocModule extends PLModule
     function handlers()
     {
         return array(
-            'map'      => $this->make_hook('map',      AUTH_COOKIE),
-            'map/ajax' => $this->make_hook('map_ajax', AUTH_COOKIE)
+            'map' => $this->make_hook('map', AUTH_COOKIE)
         );
     }
 
@@ -41,24 +40,33 @@ class GeolocModule extends PLModule
         $page->assign('pl_extra_header', '<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />');
     }
 
-    function handler_map($page)
+    static public function assign_json_to_map(PlPage $page, $pids = null)
     {
-        self::prepare_map($page);
-    }
+        if (!is_null($pids)) {
+            $where = XDB::format(' AND pa.pid IN {?}', $pids);
+        } else {
+            $where = '';
+        }
 
-    function handler_map_ajax($page)
-    {
         $data = XDB::rawFetchAllAssoc('SELECT  pa.latitude, pa.longitude, GROUP_CONCAT(DISTINCT p.hrpid SEPARATOR \',\') AS hrpid,
                                                GROUP_CONCAT(pd.promo SEPARATOR \',\') AS promo,
                                                GROUP_CONCAT(DISTINCT CONCAT(pd.private_name, \' (\', pd.promo, \')\') SEPARATOR \',\') AS name
                                          FROM  profile_addresses AS pa
                                    INNER JOIN  profiles          AS p  ON (pa.pid = p.pid)
                                    INNER JOIN  profile_display   AS pd ON (pd.pid = pa.pid)
-                                        WHERE  pa.type = \'home\' AND pa.latitude IS NOT NULL AND pa.longitude IS NOT NULL
+                                        WHERE  pa.type = \'home\' AND pa.latitude IS NOT NULL AND pa.longitude IS NOT NULL' . $where . '
                                      GROUP BY  pa.latitude, pa.longitude');
         $page->jsonAssign('data', $data);
+    }
 
-        return PL_JSON;
+    function handler_map($page)
+    {
+        if (Get::b('ajax')) {
+            self::assign_json_to_map($page);
+            return PL_JSON;
+        } else {
+            self::prepare_map($page);
+        }
     }
 }
 

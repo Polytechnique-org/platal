@@ -324,12 +324,9 @@ class CarnetModule extends PLModule
 
         $view->addMod('minifiche', 'Mini-fiches', true);
         $view->addMod('trombi', 'Trombinoscope', false, array('with_admin' => false, 'with_promo' => true));
-        // TODO: Reactivate when the new map is completed.
-        // $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'carnet/contacts/search'));
+        $view->addMod('map', 'Planisphère');
         $view->apply('carnet/contacts', $page, $action, $subaction);
-        //if ($action != 'geoloc' || ($search && !$ssaction) || (!$search && !$subaction)) {
         $page->changeTpl('carnet/mescontacts.tpl');
-        //}
     }
 
     function handler_pdf($page, $arg0 = null, $arg1 = null)

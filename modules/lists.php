@@ -399,8 +399,7 @@ class ListsModule extends PLModule
         if (empty($GLOBALS['IS_XNET_SITE'])) {
             $view->addMod('minifiche', 'Mini-fiches', false);
         }
-        // TODO: Reactivate when the new map is completed.
-        // $view->addMod('geoloc', 'Planisphère');
+        $view->addMod('map', 'Planisphère');
         $view->apply("lists/annu/$liste", $page, $action, $subaction);
 
         $page->changeTpl('lists/annu.tpl');

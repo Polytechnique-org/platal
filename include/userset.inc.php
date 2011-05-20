@@ -359,6 +359,37 @@ class TrombiView extends MixedView
     }
 }
 
+class MapView implements PlView
+{
+    private $set;
+
+    public function __construct(PlSet $set, array $params)
+    {
+        $this->set = $set;
+    }
+
+    public function apply(PlPage $page)
+    {
+        Platal::load('geoloc');
+
+        if (Get::b('ajax')) {
+            $pids = $this->set->getIds(new PlLimit());
+            GeolocModule::assign_json_to_map($page, $pids);
+            $page->runJSON();
+            exit;
+        } else {
+            $this->set->getIds(new PlLimit());
+            GeolocModule::prepare_map($page);
+            return 'geoloc/index.tpl';
+        }
+    }
+
+    public function args()
+    {
+        return $this->set->args();
+    }
+}
+
 class GadgetView implements PlView
 {
     public function __construct(PlSet $set, array $params)

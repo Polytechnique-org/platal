@@ -123,8 +123,7 @@ class SearchModule extends PLModule
             $view->addMod('minifiche', 'Mini-fiches', true, array('with_score' => true, 'starts_with' => $byletter));
             if (S::logged() && !Env::i('nonins')) {
                 $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true, 'with_score' => true));
-                // TODO: Reactivate when the new map is completed.
-                // $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
+                $view->addMod('map', 'Planisphère');
             }
             $view->apply('search', $page, $model);
 
@@ -188,8 +187,7 @@ class SearchModule extends PLModule
             } else {
                 $view->addMod('minifiche', 'Mini-fiches', true, array('starts_with' => $byletter));
                 $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true));
-                // TODO: Reactivate when the new map is completed.
-                // $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
+                $view->addMod('map', 'Planisphère');
                 if (S::user()->checkPerms(User::PERM_EDIT_DIRECTORY) || S::admin()) {
                     $view->addMod('addresses', 'Adresses postales', false);
                 }
