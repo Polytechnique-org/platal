@@ -29,7 +29,7 @@ class GeolocModule extends PLModule
         );
     }
 
-    function handler_map($page)
+    static public function prepare_map(PlPage $page)
     {
         global $globals;
         $page->changeTpl('geoloc/index.tpl');
@@ -39,6 +39,11 @@ class GeolocModule extends PLModule
         $page->addJsLink('markerclusterer_packed.js');
         $page->addJsLink('markerwithlabel_packed.js');
         $page->assign('pl_extra_header', '<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />');
+    }
+
+    function handler_map($page)
+    {
+        self::prepare_map($page);
     }
 
     function handler_map_ajax($page)
