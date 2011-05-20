@@ -39,9 +39,6 @@ class GeolocModule extends PLModule
         $page->addJsLink('markerclusterer_packed.js');
         $page->addJsLink('markerwithlabel_packed.js');
         $page->assign('pl_extra_header', '<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />');
-
-        $page->assign('latitude', 0);
-        $page->assign('longitude', 0);
     }
 
     function handler_map_ajax($page)

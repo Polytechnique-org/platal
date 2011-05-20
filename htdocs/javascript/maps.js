@@ -21,9 +21,9 @@
 // http://code.google.com/apis/maps/documentation/javascript/
 // http://code.google.com/p/google-maps-utility-library-v3/wiki/Libraries
 
-function map_initialize(latitude, longitude)
+function map_initialize()
 {
-    var latlng = new google.maps.LatLng(latitude, longitude);
+    var latlng = new google.maps.LatLng(0, 0);
     var myOptions = {
         zoom: 1,
         center: latlng,
