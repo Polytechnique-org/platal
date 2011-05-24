@@ -162,8 +162,6 @@
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/sections">Sections</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/names">Noms</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/networking">Networking</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/profile">Modifications récentes</a>

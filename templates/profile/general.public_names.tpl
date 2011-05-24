@@ -20,31 +20,38 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-<tr class="impair">
-  <td class="titre">Ancien alias&nbsp;:</td>
-  <td>{$valid->old_alias}</td>
-</tr>
-<tr class="impair">
-  <td class="titre">Nouvel alias&nbsp;:</td>
-  <td>{$valid->new_alias}</td>
-</tr>
-{foreach from=$valid->public_names item=name key=type}
-<tr class="impair">
-  <td class="titre">*{$valid->descriptions.$type}&nbsp;:</td>
-  <td>{$name}</td>
-</tr>
-{/foreach}
-{foreach from=$valid->old_public_names item=name key=type}
-<tr class="impair">
-  <td class="titre">&#8224;{$valid->descriptions.$type}&nbsp;:</td>
-  <td>{$name}</td>
-</tr>
-{/foreach}
-<tr class="impair">
-  <td class="center" colspan="2">
-    <span class="smaller">* nouveau nom ; &#8224; ancien nom</span>
+{foreach from=$lastnames key=suffix item=description}
+{assign var=type value="lastname_"|cat:$suffix}
+{assign var=error value=$type|cat:"_error"}
+{assign var=particle value="particle_"|cat:$suffix}
+<tr class="names_advanced" {if !$errors.search_names}style="display: none"{/if}>
+  <td>
+    <span class="flags">{icon name="flag_green" title="site public"}</span>&nbsp;{$description}
+  </td>
+  <td>
+    <input type="text" name="search_names[public_names][{$type}]" value="{$names.$type}"
+      title="Coche la case en bout de ligne si ton nom commence par une particule."
+      {if t($names.$error)} class="error"{/if} size="25" onkeyup="updateNameDisplay({$isFemale});"/>
+  </td>
+  <td>
+    <input type="checkbox"{if t($names.$particle) neq ''} checked="checked"{/if}
+      title="Coche cette case si ton nom commence par une particule." />
   </td>
 </tr>
+{/foreach}
+
+{foreach from=$firstnames key=type item=description}
+{assign var=error value=$type|cat:"_error"}
+<tr class="names_advanced" {if !$errors.search_names}style="display: none"{/if}>
+  <td>
+    <span class="flags">{icon name="flag_green" title="site public"}</span>&nbsp;{$description}
+  </td>
+  <td>
+    <input type="text" name="search_names[public_names][{$type}]" value="{$names.$type}"
+      {if t($names.$error)} class="error"{/if} size="25" onkeyup="updateNameDisplay({$isFemale});" />
+  </td>
+  <td></td>
+</tr>
+{/foreach}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

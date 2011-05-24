@@ -29,9 +29,6 @@ class DirEnum
      * Each of these consts contains the basename of the class (its full name
      * being DE_$basename).
      */
-    const NAMETYPES      = 'nametypes';
-    const NAMES          = 'names';
-
     const BINETS         = 'binets';
     const GROUPESX       = 'groupesx';
     const SECTIONS       = 'sections';
@@ -430,29 +427,6 @@ abstract class DE_WithSuboption extends DirEnumeration
                             ORDER BY ' . ($this->ac_distinct ? 'nb DESC' : $this->valfield) . '
                                LIMIT ' . self::AUTOCOMPLETE_LIMIT);
     }
-}
-// }}}
-
-// {{{ class DE_NameTypes
-// returns 'system' names ('lastname', 'lastname_marital', ...)
-class DE_NameTypes extends DirEnumeration
-{
-    public $capabilities = 0x005; // self::HAS_OPTIONS | self::SAVE_IN_SESSION;
-
-    protected $from     = 'profile_name_enum';
-    protected $valfield = 'type';
-}
-// }}}
-
-// {{{ class DE_Names
-// returns 'system' names ('lastname', 'lastname_marital', ...)
-class DE_Names extends DirEnumeration
-{
-    public $capabilities = 0x005; // self::HAS_OPTIONS | self::SAVE_IN_SESSION;
-
-    protected $from     = 'profile_name_enum';
-    protected $idfield  = 'type';
-    protected $valfield = 'name';
 }
 // }}}
 

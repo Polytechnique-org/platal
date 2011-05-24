@@ -65,16 +65,14 @@
       <span class="titre">Gestion des noms, prénoms, surnoms...</span>
       <span class="smaller">Ils déterminent la façon dont
       {if $isMe}ton{else}son{/if} nom apparaît sur les annuaires
-      en ligne et papier et ta fiche apparaitra quand on cherche un de ces noms. Pour plus
-      d'explications sur l'icône suivante
-      <a href="profile/name_info" class="popup3">{icon name="information" title="Plus d'infos"}</a>.</span><br/>
+      en ligne et papier et ta fiche apparaitra quand on cherche un de ces noms.</span><br/>
       <div class="small center">Si un de tes noms commence par une particule,
       coche la case en bout de ligne.</div>
     </td>
   </tr>
-  {foreach from=$search_names item=sn key=id}
-    {include file="profile/general.searchname.tpl" i=$id sn=$sn
-    class="names_advanced" style="display: none" error_name=$errors.search_names}
+  {include file="profile/general.public_names.tpl" names=$search_names.public_names}
+  {foreach from=$search_names.private_names key=id item=name}
+    {include file="profile/general.private_name.tpl"}
   {/foreach}
   <tr class="names_advanced" id="searchname" {if !$errors.search_names}style="display: none"{/if}>
     <td colspan="3">

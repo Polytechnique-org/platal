@@ -1,0 +1,4 @@
+Check that the following queries return the same results before updating:
+SELECT COUNT(*), COUNT(DISTINCT(pid)) FROM profile_name AS pn INNER JOIN profile_name_enum AS pne ON (pn.typeid = pne.id) WHERE pne.type = 'nickname';
+SELECT COUNT(*), COUNT(DISTINCT(pid)) FROM profile_name AS pn INNER JOIN profile_name_enum AS pne ON (pn.typeid = pne.id) WHERE pne.type = 'name_other';
+SELECT COUNT(*), COUNT(DISTINCT(pid)) FROM profile_name AS pn INNER JOIN profile_name_enum AS pne ON (pn.typeid = pne.id) WHERE pne.type = 'firstname_other';

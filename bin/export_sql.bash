@@ -27,7 +27,6 @@ profile_job_term_relation \
 profile_langskill_enum \
 profile_medal_enum \
 profile_medal_grade_enum \
-profile_name_enum \
 profile_networking_enum \
 profile_section_enum \
 profile_skill_enum \

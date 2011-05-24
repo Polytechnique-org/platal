@@ -816,8 +816,6 @@ class AdminModule extends PLModule
             $lines = explode("\n", Env::t('people'));
             $separator = Env::t('separator');
             $promotion = Env::i('promotion');
-            $nameTypes = DirEnum::getOptions(DirEnum::NAMETYPES);
-            $nameTypes = array_flip($nameTypes);
 
             if (Env::t('add_type') == 'promo') {
                 $eduSchools = DirEnum::getOptions(DirEnum::EDUSCHOOLS);
@@ -877,15 +875,9 @@ class AdminModule extends PLModule
                                                VALUES  ({?}, {?}, {?}, {?}, {?})',
                                          $infos['hrid'], $xorgId, (isset($infos[5]) ? $infos[5] : null), $birthDate, $sex);
                             $pid = XDB::insertId();
-                            XDB::execute('INSERT INTO  profile_name (pid, name, typeid)
-                                               VALUES  ({?}, {?}, {?}),
-                                                       ({?}, {?}, {?}),
-                                                       ({?}, {?}, {?}),
-                                                       ({?}, {?}, {?})',
-                                         $pid, $infos[0], $nameTypes['name_ini'],
-                                         $pid, $infos[0], $nameTypes['lastname'],
-                                         $pid, $infos[1], $nameTypes['firstname_ini'],
-                                         $pid, $infos[1], $nameTypes['firstname']);
+                            XDB::execute('INSERT INTO  profile_public_names (pid, lastname_initial, lastname_main, firstname_initial, firstname_main)
+                                               VALUES  ({?}, {?}, {?}, {?}, {?})',
+                                         $pid, $infos[0], $infos[0], $infos[1], $infos[1]);
                             XDB::execute('INSERT INTO  profile_display (pid, yourself, public_name, private_name,
                                                                         directory_name, short_name, sort_name, promo)
                                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',

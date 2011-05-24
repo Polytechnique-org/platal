@@ -47,7 +47,6 @@ class ProfileModule extends PLModule
             'javascript/education.js'    => $this->make_hook('education_js',               AUTH_COOKIE),
             'javascript/grades.js'       => $this->make_hook('grades_js',                  AUTH_COOKIE),
             'profile/medal'              => $this->make_hook('medal',                      AUTH_PUBLIC),
-            'profile/name_info'          => $this->make_hook('name_info',                  AUTH_PUBLIC),
 
             'referent'                   => $this->make_hook('referent',                   AUTH_COOKIE),
             'referent/country'           => $this->make_hook('ref_country',                AUTH_COOKIE, 'user', NO_AUTH),
@@ -68,7 +67,6 @@ class ProfileModule extends PLModule
             'admin/trombino'             => $this->make_hook('admin_trombino',             AUTH_MDP,    'admin'),
             'admin/corps_enum'           => $this->make_hook('admin_corps_enum',           AUTH_MDP,    'admin'),
             'admin/corps_rank'           => $this->make_hook('admin_corps_rank',           AUTH_MDP,    'admin'),
-            'admin/names'                => $this->make_hook('admin_names',                AUTH_MDP,    'admin'),
         );
     }
 
@@ -113,19 +111,6 @@ class ProfileModule extends PLModule
         pl_cached_content_headers(mime_content_type($img));
         echo file_get_contents($img);
         exit;
-    }
-
-    function handler_name_info($page)
-    {
-        pl_content_headers("text/html");
-        $page->changeTpl('profile/name_info.tpl', SIMPLE);
-        $res = XDB::iterator("SELECT  name, explanations,
-                                      FIND_IN_SET('public', flags) AS public,
-                                      FIND_IN_SET('has_particle', flags) AS has_particle
-                                FROM  profile_name_enum
-                               WHERE  NOT FIND_IN_SET('not_displayed', flags)
-                            ORDER BY  NOT FIND_IN_SET('public', flags)");
-        $page->assign('types', $res);
     }
 
     function handler_networking($page, $mid)
@@ -490,14 +475,11 @@ class ProfileModule extends PLModule
     function handler_ajax_searchname($page, $id, $isFemale)
     {
         pl_content_headers("text/html");
-        $page->changeTpl('profile/general.searchname.tpl', NO_SKIN);
-        $res = XDB::query("SELECT  id, name, FIND_IN_SET('public', flags) AS pub
-                             FROM  profile_name_enum
-                            WHERE  NOT FIND_IN_SET('not_displayed', flags)
-                                   AND NOT FIND_IN_SET('always_displayed', flags)");
-        $page->assign('sn_type_list', $res->fetchAllAssoc());
+        $page->changeTpl('profile/general.private_name.tpl', NO_SKIN);
+        $page->assign('other_names', array('nickname' => 'Surnom', 'firstname' => 'Autre prénom', 'lastname' => 'Autre nom'));
+        $page->assign('new_name', true);
         $page->assign('isFemale', $isFemale);
-        $page->assign('i', $id);
+        $page->assign('id', $id);
     }
 
     function handler_ajax_buildnames($page, $data, $isFemale)
@@ -709,17 +691,6 @@ class ProfileModule extends PLModule
                 XDB::execute('DELETE FROM profile_photos WHERE pid = {?}', $user->profile()->id());
                 break;
         }
-    }
-    function handler_admin_names($page, $action = 'list', $id = null) {
-        $page->setTitle('Administration - Types de noms');
-        $page->assign('title', 'Gestion des types de noms');
-        $table_editor = new PLTableEditor('admin/names', 'profile_name_enum', 'id', true);
-        $table_editor->describe('name', 'Nom', true);
-        $table_editor->describe('explanations', 'Explications', true);
-        $table_editor->describe('type', 'Type', true);
-        $table_editor->describe('flags', 'Flags', true);
-        $table_editor->describe('score', 'Score', true);
-        $table_editor->apply($page, $action, $id);
     }
     function handler_admin_binets($page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Binets');

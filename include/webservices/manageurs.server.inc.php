@@ -174,10 +174,7 @@ function get_nouveau_infos($method, $params) {
     }
     // We check we actually have an identification number.
     if(!empty($params[1])) {
-        $nameTypes = DirEnum::getOptions(DirEnum::NAMETYPES);
-        $nameTypes = array_flip($nameTypes);
-
-        $res = XDB::query("SELECT  pnl.name AS nom, pnu.name AS nom_usage, pnf.name AS prenom,
+        $res = XDB::query("SELECT  ppn.lastname_initial AS nom, ppn.lastname_ordinary AS nom_usage, ppn.firstname_initial AS prenom,
                                    p.sex = 'female' AS femme, p.deathdate IS NOT NULL AS decede,
                                    p.birthdate, pd.promo, CONCAT(e.email, '@', d.name) AS mail
                              FROM  profiles         AS p
@@ -185,12 +182,9 @@ function get_nouveau_infos($method, $params) {
                        INNER JOIN  email_source_account AS s ON (s.uid = ap.uid AND FIND_IN_SET('bestalias', s.flags))
                        INNER JOIN  email_virtual_domains AS d ON (s.domain = s.id)
                        INNER JOIN  profile_display  AS pd PN (p.pid = pd.pid)
-                       INNER JOIN  profile_name AS pnl ON (p.pid = pnl.pid AND pnl.typeid = {?})
-                       INNER JOIN  profile_name AS pnf ON (p.pid = pnf.pid AND pnf.typeid = {?})
-                       INNER JOIN  profile_name AS pnu ON (p.pid = pnu.pid AND pnu.typeid = {?})
+                       INNER JOIN  profile_public_names AS ppn ON (ppn.pid = p.pid)
                             WHERE  a.flags = 'bestalias' AND p.xorg_id = {?}",
-                          $nameTypes['name_ini'], $nameTypes['lastname_ordinary'],
-                          $nameTypes['firstname_ini'], $params[1]);
+                          $params[1]);
         // $data['mail'] .= '@polytechnique.org';
 
 

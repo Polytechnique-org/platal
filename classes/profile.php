@@ -427,7 +427,7 @@ class Profile implements PlExportable
      *      profile_job, profile_langskills, profile_mentor, profile_networking,
      *      profile_phones, profile_skills, watch_profile
      *  *always keeps in: profile_corps, profile_display, profile_education,
-     *      profile_medals, profile_name, profile_photos, search_name
+     *      profile_medals, profile_*_names, profile_photos, search_name
      *  *modifies: profiles
      */
     public function clear()
@@ -947,10 +947,9 @@ class Profile implements PlExportable
                                      IF (p.freetext_pub IN {?}, p.freetext, NULL) AS freetext,
                                      pe.entry_year, pe.grad_year, pe.promo_year, pe.program, pe.fieldid,
                                      IF ({?}, pse.text, NULL) AS section,
-                                     pn_f.name AS firstname, pn_l.name AS lastname,
-                                     IF ({?}, pn_n.name, NULL) AS nickname,
-                                     IF (pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_ordinary,
-                                     IF (pn_ul.name IS NULL, pn_l.name, pn_ul.name) AS lastname_ordinary,
+                                     ppn.firstname_main AS firstname, ppn.lastname_main AS lastname, IF ({?}, pn.name, NULL) AS nickname,
+                                     IF (ppn.firstname_ordinary = \'\', ppn.firstname_main, ppn.firstname_ordinary) AS firstname_ordinary,
+                                     IF (ppn.lastname_ordinary = \'\', ppn.firstname_main, ppn.lastname_ordinary) AS lastname_ordinary,
                                      pd.yourself, pd.promo, pd.short_name, pd.public_name AS full_name,
                                      pd.directory_name, pd.public_name, pd.private_name,
                                      IF (pp.pub IN {?}, pp.display_tel, NULL) AS mobile,
@@ -964,16 +963,8 @@ class Profile implements PlExportable
                          INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
                          INNER JOIN  profile_education AS pe ON (pe.pid = p.pid AND FIND_IN_SET(\'primary\', pe.flags))
                           LEFT JOIN  profile_section_enum AS pse ON (pse.id = p.section)
-                         INNER JOIN  profile_name AS pn_f ON (pn_f.pid = p.pid
-                                                              AND pn_f.typeid = ' . self::getNameTypeId('firstname', true) . ')
-                         INNER JOIN  profile_name AS pn_l ON (pn_l.pid = p.pid
-                                                              AND pn_l.typeid = ' . self::getNameTypeId('lastname', true) . ')
-                          LEFT JOIN  profile_name AS pn_uf ON (pn_uf.pid = p.pid
-                                                               AND pn_uf.typeid = ' . self::getNameTypeId('firstname_ordinary', true) . ')
-                          LEFT JOIN  profile_name AS pn_ul ON (pn_ul.pid = p.pid
-                                                               AND pn_ul.typeid = ' . self::getNameTypeId('lastname_ordinary', true) . ')
-                          LEFT JOIN  profile_name AS pn_n ON (pn_n.pid = p.pid
-                                                              AND pn_n.typeid = ' . self::getNameTypeId('nickname', true) . ')
+                         INNER JOIN  profile_public_names AS ppn ON (ppn.pid = p.pid)
+                          LEFT JOIN  profile_private_names AS pn ON (pn.pid = p.pid AND type = \'nickname\')
                           LEFT JOIN  profile_phones AS pp ON (pp.pid = p.pid AND pp.link_type = \'user\' AND tel_type = \'mobile\')
                           LEFT JOIN  profile_photos AS ph ON (ph.pid = p.pid)
                           LEFT JOIN  profile_mentor AS pm ON (pm.pid = p.pid)
@@ -1115,47 +1106,46 @@ class Profile implements PlExportable
         }
     }
 
-    public static function getNameTypeId($type, $for_sql = false)
-    {
-        if (!S::has('name_types')) {
-            $table = XDB::fetchAllAssoc('type', 'SELECT  id, type
-                                                   FROM  profile_name_enum');
-            S::set('name_types', $table);
-        } else {
-            $table = S::v('name_types');
-        }
-        if ($for_sql) {
-            return XDB::escape($table[$type]);
-        } else {
-            return $table[$type];
-        }
-    }
-
     public static function rebuildSearchTokens($pids, $transaction = true)
     {
+        require_once 'name.func.inc.php';
         if (!is_array($pids)) {
             $pids = array($pids);
         }
-        $keys = XDB::iterator("(SELECT  n.pid AS pid, n.name AS name, e.score AS score, e.general_type,
-                                        IF(FIND_IN_SET('public', e.flags), 'public', '') AS public
-                                  FROM  profile_name      AS n
-                            INNER JOIN  profile_name_enum AS e ON (n.typeid = e.id)
-                                 WHERE  n.pid IN {?} AND NOT FIND_IN_SET('not_displayed', e.flags))
-                                 UNION
-                                (SELECT  n.pid AS pid, n.particle AS name, 0 AS score, e.general_type,
-                                         IF(FIND_IN_SET('public', e.flags), 'public', '') AS public
-                                   FROM  profile_name      AS n
-                             INNER JOIN  profile_name_enum AS e ON (n.typeid = e.id)
-                                  WHERE  n.pid IN {?} AND NOT FIND_IN_SET('not_displayed', e.flags))
-                               ",
-                              $pids, $pids);
+        $keys = XDB::iterator("(SELECT  pid, name, type, IF(type = 'nickname', 2, 1) AS score, '' AS public
+                                  FROM  profile_private_names
+                                 WHERE  pid IN {?})
+                                UNION
+                               (SELECT  pid, lastname_main, 'lastname' AS type, 10 AS score, 'public' AS public
+                                  FROM  profile_public_names
+                                 WHERE  lastname_main != '' AND pid IN {?})
+                                UNION
+                               (SELECT  pid, lastname_marital, 'lastname' AS type, 10 AS score, 'public' AS public
+                                  FROM  profile_public_names
+                                 WHERE  lastname_marital != '' AND pid IN {?})
+                                UNION
+                               (SELECT  pid, lastname_ordinary, 'lastname' AS type, 10 AS score, 'public' AS public
+                                  FROM  profile_public_names
+                                 WHERE  lastname_ordinary != '' AND pid IN {?})
+                                UNION
+                               (SELECT  pid, firstname_main, 'firstname' AS type, 10 AS score, 'public' AS public
+                                  FROM  profile_public_names
+                                 WHERE  firstname_main != '' AND pid IN {?})
+                                UNION
+                               (SELECT  pid, firstname_ordinary, 'firstname' AS type, 10 AS score, 'public' AS public
+                                  FROM  profile_public_names
+                                 WHERE  firstname_ordinary != '' AND pid IN {?})
+                                UNION
+                               (SELECT  pid, pseudonym, 'nickname' AS type, 10 AS score, 'public' AS public
+                                  FROM  profile_public_names
+                                 WHERE  pseudonym != '' AND pid IN {?})",
+                              $pids, $pids, $pids, $pids, $pids, $pids, $pids);
         $names = array();
         while ($key = $keys->next()) {
             if ($key['name'] == '') {
                 continue;
             }
-            $pid   = $key['pid'];
-            require_once 'name.func.inc.php';
+            $pid  = $key['pid'];
             $toks = split_name_for_search($key['name']);
             $toks = array_reverse($toks);
 
@@ -1170,7 +1160,7 @@ class Profile implements PlExportable
                 $token = $tok . $token;
                 $names["$pid-$token"] = XDB::format('({?}, {?}, {?}, {?}, {?}, {?})',
                                                     $token, $pid, soundex_fr($token),
-                                                    $eltScore, $key['public'], $key['general_type']);
+                                                    $eltScore, $key['public'], $key['type']);
             }
         }
         if ($transaction) {

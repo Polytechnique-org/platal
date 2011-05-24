@@ -49,9 +49,7 @@ class RegisterModule extends PLModule
         }
 
         if ($hash) {
-            $nameTypes = DirEnum::getOptions(DirEnum::NAMETYPES);
-            $nameTypes = array_flip($nameTypes);
-            $res = XDB::query("SELECT  a.uid, a.hruid, pnl.name AS lastname, pnf.name AS firstname, p.xorg_id AS xorgid,
+            $res = XDB::query("SELECT  a.uid, a.hruid, ppn.lastname_initial AS lastname, ppn.firstname_initial AS firstname, p.xorg_id AS xorgid,
                                        pd.promo, pe.promo_year AS yearpromo, pde.degree AS edu_type,
                                        p.birthdate_ref AS birthdateRef, FIND_IN_SET('watch', a.flags) AS watch, m.hash, a.type
                                  FROM  register_marketing AS m
@@ -61,10 +59,9 @@ class RegisterModule extends PLModule
                            INNER JOIN  profile_display    AS pd  ON (p.pid = pd.pid)
                            INNER JOIN  profile_education  AS pe  ON (pe.pid = p.pid AND FIND_IN_SET('primary', pe.flags))
                            INNER JOIN  profile_education_degree_enum AS pde ON (pde.id = pe.degreeid)
-                           INNER JOIN  profile_name       AS pnl ON (p.pid = pnl.pid AND pnl.typeid = {?})
-                           INNER JOIN  profile_name       AS pnf ON (p.pid = pnf.pid AND pnf.typeid = {?})
+                           INNER JOIN  profile_public_names AS ppn ON (ppn.pid = p.pid)
                                 WHERE  m.hash = {?} AND a.state = 'pending'",
-                              $nameTypes['name_ini'], $nameTypes['firstname_ini'], $hash);
+                              $hash);
 
             if ($res->numRows() == 1) {
                 $subState->merge($res->fetchOneRow());
@@ -281,25 +278,21 @@ class RegisterModule extends PLModule
             return PL_FORBIDDEN;
         }
 
-        $nameTypes = DirEnum::getOptions(DirEnum::NAMETYPES);
-        $nameTypes = array_flip($nameTypes);
-
         // Retrieve the pre-registration information using the url-provided
         // authentication token.
         $res = XDB::query("SELECT  r.uid, p.pid, r.forlife, r.bestalias, r.mailorg2,
                                    r.password, r.email, r.services, r.naissance,
-                                   pnl.name AS lastname, pnf.name AS firstname, pe.promo_year,
+                                   ppn.lastname_initial, ppn.firstname_initial, pe.promo_year,
                                    pd.promo, p.sex, p.birthdate_ref, a.type
                              FROM  register_pending AS r
                        INNER JOIN  accounts         AS a   ON (r.uid = a.uid)
                        INNER JOIN  account_profiles AS ap  ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
                        INNER JOIN  profiles         AS p   ON (p.pid = ap.pid)
-                       INNER JOIN  profile_name     AS pnl ON (p.pid = pnl.pid AND pnl.typeid = {?})
-                       INNER JOIN  profile_name     AS pnf ON (p.pid = pnf.pid AND pnf.typeid = {?})
+                       INNER JOIN  profile_public_names AS ppn ON (ppn.pid = p.pid)
                        INNER JOIN  profile_display  AS pd  ON (p.pid = pd.pid)
                        INNER JOIN  profile_education AS pe ON (pe.pid = p.pid AND FIND_IN_SET('primary', pe.flags))
                             WHERE  hash = {?} AND hash != 'INSCRIT' AND a.state = 'pending'",
-                          $nameTypes['name_ini'], $nameTypes['firstname_ini'], $hash);
+                          $hash);
         if (!$hash || $res->numRows() == 0) {
             $page->kill("<p>Cette adresse n'existe pas, ou plus, sur le serveur.</p>
                          <p>Causes probables&nbsp;:</p>

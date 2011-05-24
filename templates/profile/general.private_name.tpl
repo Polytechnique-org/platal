@@ -20,30 +20,24 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-<tr class="impair">
-  <td class="titre">Ancien alias&nbsp;:</td>
-  <td>{$valid->old_alias}</td>
-</tr>
-<tr class="impair">
-  <td class="titre">Nouvel alias&nbsp;:</td>
-  <td>{$valid->new_alias}</td>
-</tr>
-{foreach from=$valid->public_names item=name key=type}
-<tr class="impair">
-  <td class="titre">*{$valid->descriptions.$type}&nbsp;:</td>
-  <td>{$name}</td>
-</tr>
-{/foreach}
-{foreach from=$valid->old_public_names item=name key=type}
-<tr class="impair">
-  <td class="titre">&#8224;{$valid->descriptions.$type}&nbsp;:</td>
-  <td>{$name}</td>
-</tr>
-{/foreach}
-<tr class="impair">
-  <td class="center" colspan="2">
-    <span class="smaller">* nouveau nom ; &#8224; ancien nom</span>
+{assign var=type value=$name.type}
+<tr class="names_advanced" id="search_name_{$id}" {if !$errors.search_names && !t($new_name)}style="display: none"{/if}>
+  <td>
+    <span class="flags">{icon name="flag_red" title="site privé"}</span>{if !t($new_name)}&nbsp;{$other_names.$type}{else}
+    <select name="search_names[private_names][{$id}][type]">
+    {foreach from=$other_names item=description key=type}
+      <option value="{$type}">{$description}</option>
+    {/foreach}
+    </select>
+    {/if}
+  </td>
+  <td>
+    {if !t($new_name)}<input type="hidden" name="search_names[private_names][{$id}][type]" value="{$type}" />{/if}
+    <input type="text" name="search_names[private_names][{$id}][name]" value="{$name.name}"
+      size="25" onkeyup="updateNameDisplay({$isFemale});"/>
+  </td>
+  <td>
+    <a href="javascript:removeSearchName({$id}, {$isFemale})">{icon name=cross title="Supprimer ce nom"}</a>
   </td>
 </tr>
 

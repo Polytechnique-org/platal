@@ -26,46 +26,35 @@ class NamesReq extends ProfileValidate
     // {{{ properties
 
     public $unique = true;
-
-    public $sn_old;
-    public $sn_new;
-    public $display_names;
-    public $mail_domain;
-    public $old_alias;
-    public $new_alias;
-    public $sn_types;
-
+    public $public_names;
+    public $old_public_names;
+    public $old_alias = null;
+    public $new_alias = null;
+    public $descriptions = array('lastname_main' => 'Nom patronymique', 'lastname_marital' => 'Nom marital', 'lastname_ordinary' => 'Nom usuel', 'firstname_main' => 'Prénom', 'firstname_ordinary' => 'Prénom usuel', 'pseudonym' => 'Pseudonyme (nom de plume)');
     public $rules = "Refuser tout ce qui n'est visiblement pas un nom de famille (ce qui est extremement rare car à peu près n'importe quoi peut être un nom de famille).";
 
     // }}}
     // {{{ constructor
 
-    public function __construct(User $_user, Profile $_profile, $_search_names, $_private_name_end)
+    public function __construct(User $_user, Profile $_profile, array $_public_names, array $_old_public_names)
     {
         parent::__construct($_user, $_profile, true, 'usage');
-        require_once 'name.func.inc.php';
 
-        $this->sn_types  = build_types();
-        $this->sn_old    = build_sn_pub($this->profile->id());
-        $this->sn_new    = $_search_names;
-        $this->new_alias = true;
-        $this->display_names = array();
-        $this->mail_domain = $this->profileOwner->mainEmailDomain();
-
-        build_display_names($this->display_names, $_search_names,
-                            $this->profile->isFemale(), $_private_name_end, $this->new_alias);
-        foreach ($this->sn_new AS $key => &$sn) {
-            if (!isset($sn['pub'])) {
-                unset($this->sn_new[$key]);
-            }
-        }
+        $this->public_names = $_public_names;
+        $this->old_public_names = $_old_public_names;
 
         if (!is_null($this->profileOwner)) {
+            require_once 'name.func.inc.php';
+
+            $this->new_alias = build_email_alias($this->public_names);
             $this->old_alias = XDB::fetchOneCell('SELECT  email
                                                     FROM  email_source_account
                                                    WHERE  uid = {?} AND type = \'alias\' AND FIND_IN_SET(\'usage\', flags)',
                                                  $this->profileOwner->id());
-            if ($this->old_alias != $this->new_alias) {
+
+            if ($this->old_alias == $this->new_alias) {
+                $this->old_alias = $this->new_alias = null;
+            } else {
                 $used = XDB::fetchOneCell('SELECT  COUNT(uid)
                                              FROM  email_source_account
                                             WHERE  email = {?} AND type != \'alias_aux\'',
@@ -130,11 +119,24 @@ class NamesReq extends ProfileValidate
     {
         require_once 'name.func.inc.php';
 
-        set_profile_display($this->display_names, $this->profile);
+        update_public_names($this->profile->id(), $this->public_names);
+        update_display_names($this->profile, $this->public_names);
 
         if (!is_null($this->profileOwner)) {
-            set_alias_names($this->sn_new, $this->sn_old, $this->profile->id(),
-                            $this->profileOwner, true, $this->new_alias);
+            if (!is_null($this->old_alias)) {
+                XDB::execute('DELETE FROM  email_source_account
+                                    WHERE  FIND_IN_SET(\'usage\', flags) AND uid = {?} AND type = \'alias\'',
+                             $this->profileOwner->id());
+            }
+            if (!is_null($this->new_alias)) {
+                XDB::execute('INSERT INTO  email_source_account (email, uid, type, flags, domain)
+                                   SELECT  {?}, {?}, \'alias\', \'usage\', id
+                                     FROM  email_virtual_domains
+                                    WHERE  name = {?}',
+                             $this->new_alias, $this->profileOwner->id(), $this->profileOwner->mainEmailDomain());
+            }
+            require_once 'emails.inc.php';
+            fix_bestalias($this->profileOwner);
 
             // Update the local User object, to pick up the new bestalias.
             $this->profileOwner = User::getSilentWithUID($this->profileOwner->id());
@@ -144,6 +146,18 @@ class NamesReq extends ProfileValidate
     }
 
     // }}}
+    // {{{ function getPublicNames()
+
+    static public function getPublicNames($pid)
+    {
+        if ($request = parent::get_typed_request($pid, 'usage')) {
+            return $request->public_names;
+        }
+        return false;
+    }
+
+    // }}}
+
 }
 // }}}
 
