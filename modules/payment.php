@@ -499,7 +499,7 @@ class PaymentModule extends PLModule
             }
             $res = XDB::query('SELECT  amount
                                  FROM  payment_transactions
-                                WHERE  id = {?} AND uid = {?}', $pid, S::v('uid'));
+                                WHERE  ref = {?} AND uid = {?}', $pid, S::v('uid'));
             $montants = $res->fetchColumn();
 
             foreach ($montants as $m) {

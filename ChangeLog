@@ -5,6 +5,7 @@ Bug/Wish:
 
     * Paiement:
         - #192: Displays users donations                                   -JAC
+        - #1499: Fixes session user's payment display in xnet admin page   -JAC
 
     * Search:
         - #1285: Autocompletes on internal words in university search      -JAC
