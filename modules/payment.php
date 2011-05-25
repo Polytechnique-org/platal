@@ -163,10 +163,10 @@ class PaymentModule extends PLModule
             $pay->init($val, $meth);
             $pay->prepareform($pay);
         } else {
-            $res = XDB::iterator('SELECT  timestamp, amount
+            $res = XDB::iterator('SELECT  ts_confirmed, amount
                                     FROM  payment_transactions
                                    WHERE  uid = {?} AND ref = {?}
-                                ORDER BY  timestamp DESC',
+                                ORDER BY  ts_confirmed DESC',
                                  S::v('uid', -1), $ref);
 
             if ($res->total()) {
@@ -186,8 +186,7 @@ class PaymentModule extends PLModule
                                                 $ref);
                 $sum = 0;
                 foreach ($donations as $d) {
-                    $amount = $d['amount'];
-                    $sum += trim(strtr(substr($amount, 0, strpos($amount, 'EUR')), ',', '.'));
+                    $sum += $d['amount'];
                 }
 
                 $page->assign('donations', $donations);
@@ -195,7 +194,7 @@ class PaymentModule extends PLModule
             }
         }
 
-        $val = floor($val) . '.' . substr(floor(($val - floor($val)) * 100 + 100), 1);
+        $val = floor($val*100)/100;
         $page->assign('montant', $val);
         $page->assign('comment', Env::v('comment'));
 
@@ -246,8 +245,7 @@ class PaymentModule extends PLModule
         if (Env::v('vads_currency') != '978') {
             cb_erreur("monnaie autre que l'euro");
         }
-        $amount = ((float)Env::i('vads_amount')) / 100;
-        $montant = sprintf("%.02f EUR", $amount);
+        $montant = ((float)Env::i('vads_amount')) / 100;
 
         /* on extrait le code de retour */
         if (Env::v('vads_result') != '00') {
@@ -255,10 +253,10 @@ class PaymentModule extends PLModule
         }
 
         /* on fait l'insertion en base de donnees */
-        XDB::execute('INSERT INTO  payment_transactions (id, uid, ref, fullref, amount, pkey, comment, display)
-                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+        XDB::execute('INSERT INTO  payment_transactions (id, method_id, uid, ref, fullref, ts_confirmed, amount, pkey, comment, status, display)
+                           VALUES  ({?}, 2, {?}, {?}, {?}, NOW(), {?}, {?}, {?}, "confirmed", {?})',
                      Env::v('vads_trans_date'), $user->id(), $ref, Env::v('vads_order_id'), $montant, '', Env::v('vads_order_info'), Env::i('vads_order_info2'));
-        echo "Paiement stored.\n";
+        echo "Payment stored.\n";
 
         // We check if it is an Xnet payment and then update the related ML.
         $res = XDB::query('SELECT  eid, asso_id
@@ -319,10 +317,11 @@ class PaymentModule extends PLModule
         /* reference complete de la commande */
         $fullref = Env::s('cm');
         /* montant de la transaction */
-        $montant_nb = Env::s('amt');
+        $montant = Env::s('amt');
         /* devise */
-        $montant_dev = Env::s('cc');
-        $montant = "$montant_nb $montant_dev";
+        if (Env::s('cc') != 'EUR') {
+            cb_erreur("monnaie autre que l'euro");
+        }
 
         /* on extrait le code de retour */
         if ($status != "Completed") {
@@ -353,8 +352,8 @@ class PaymentModule extends PLModule
         }
 
         /* on fait l'insertion en base de donnees */
-        XDB::execute("INSERT INTO  payment_transactions (id, uid, ref, fullref, amount, pkey, comment, display)
-                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, '?})",
+        XDB::execute("INSERT INTO  payment_transactions (id, method_id, uid, ref, fullref, ts_confirmed, amount, pkey, comment, status, display)
+                           VALUES  ({?}, 1, {?}, {?}, {?}, NOW(), {?}, {?}, {?}, 'confirmed', {?})",
                     $no_transaction, $user->id(), $ref, $fullref, $montant, $clef, Env::v('comment'), Get::i('display'));
 
         // We check if it is an Xnet payment and then update the related ML.
@@ -462,7 +461,7 @@ class PaymentModule extends PLModule
         foreach($tit as $foo) {
             $pid = $foo['id'];
             if (may_update()) {
-                $res = XDB::query('SELECT  p.uid, IF(p.timestamp = \'0000-00-00\', 0, p.timestamp) AS date, p.comment, p.amount
+                $res = XDB::query('SELECT  p.uid, IF(p.ts_confirmed = \'0000-00-00\', 0, p.ts_confirmed) AS date, p.comment, p.amount
                                      FROM  payment_transactions AS p
                                INNER JOIN  accounts             AS a  ON (a.uid = p.uid)
                                 LEFT JOIN  account_profiles     AS ap ON (ap.uid = p.uid AND FIND_IN_SET(\'owner\', ap.perms))
@@ -472,11 +471,11 @@ class PaymentModule extends PLModule
                 $trans[$pid] = User::getBulkUsersWithUIDs($res->fetchAllAssoc(), 'uid', 'user');
                 $sum = 0;
                 foreach ($trans[$pid] as $i => $t) {
-                    $sum += strtr(substr($t['amount'], 0, strpos($t['amount'], 'EUR')), ',', '.');
-                    $trans[$pid][$i]['amount'] = str_replace('EUR', '€', $t['amount']);
+                    $sum += $t['amount'];
+                    $trans[$pid][$i]['amount'] = $t['amount'];
                 }
                 $trans[$pid][] = array('limit'  =>  true,
-                                       'amount' => strtr($sum, '.', ',') . ' €');
+                                       'amount' => $sum);
             }
             $res = XDB::iterRow("SELECT  e.eid, e.short_name, e.intitule, ep.nb, ei.montant, ep.paid
                                    FROM  group_events             AS e
@@ -497,15 +496,10 @@ class PaymentModule extends PLModule
                     $event[$pid]['paid']      = $paid;
                 }
             }
-            $res = XDB::query('SELECT  amount
+            $res = XDB::query('SELECT  SUM(amount) AS sum_amount
                                  FROM  payment_transactions
                                 WHERE  ref = {?} AND uid = {?}', $pid, S::v('uid'));
-            $montants = $res->fetchColumn();
-
-            foreach ($montants as $m) {
-                $p = strtr(substr($m, 0, strpos($m, 'EUR')), ',', '.');
-                $event[$pid]['paid'] += trim($p);
-            }
+            $event[$pid]['paid'] = $res->fetchOneCell();
         }
         $page->register_modifier('decode_comment', 'decode_comment');
         $page->assign('trans', $trans);
@@ -521,10 +515,10 @@ class PaymentModule extends PLModule
             $pid = substr($pid, 0, strlen($pid) - 4);
         }
 
-        $res = XDB::fetchAllAssoc('SELECT  uid, IF(timestamp = \'0000-00-00\', 0, timestamp) AS date, comment, amount
+        $res = XDB::fetchAllAssoc('SELECT  uid, IF(ts_confirmed = \'0000-00-00\', 0, ts_confirmed) AS date, comment, amount
                                      FROM  payment_transactions
                                     WHERE  ref = {?}
-                                 ORDER BY  timestamp',
+                                 ORDER BY  ts_confirmed',
                                   $pid);
         if (is_null($res)) {
             pl_redirect('payment');
@@ -538,12 +532,12 @@ class PaymentModule extends PLModule
         fputcsv($csv, array('Date', 'Nom', 'Prénom', 'Sexe', 'Promotion', 'Email', 'Commentaire', 'Montant'), ';');
         foreach ($users as $item) {
             $user = $item['user'];
-            $sum += strtr(substr($item['amount'], 0, strpos($item['amount'], 'EUR')), ',', '.');
+            $sum += $item['amount'];
             fputcsv($csv, array(format_datetime($item['date'], '%d/%m/%y'), $user->lastName(), $user->firstName(),
                                 ($user->isFemale()) ? 'F' : 'M', $user->promo(), $user->ForlifeEmail(),
-                                $item['comment'], str_replace('EUR', '€', $item['amount'])), ';');
+                                $item['comment'], strtr($item['amount'],'.',',').' €' ), ';');
         }
-        fputcsv($csv, array(date('d/m/y'), 'Total', '', '', '' , '', '', strtr($sum, '.', ',') . ' €'), ';');
+        fputcsv($csv, array(date('d/m/y'), 'Total', '', '', '' , '', '', strtr($sum,'.',',').' €'), ';');
 
         fclose($csv);
         exit;

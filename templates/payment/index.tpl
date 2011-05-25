@@ -167,8 +167,8 @@ function payment_submit(form)
 <tr><th>Date</th><th>Montant</th></tr>
 {iterate from=$transactions item=t}
   <tr class="{cycle values="pair,impair"}">
-    <td>{$t.timestamp|date_format}</td>
-    <td>{$t.amount|replace:'EUR':'&euro;'}</td>
+    <td>{$t.ts_confirmed|date_format}</td>
+    <td>{$t.amount|replace:'.':','} &euro;</td>
   </tr>
 {/iterate}
 </table>
@@ -187,7 +187,7 @@ function payment_submit(form)
   {foreach from=$donations item=d}
   <tr class="{cycle values="pair,impair"}">
     <td>{$d.name}</td>
-    <td class="center">{$d.amount|replace:'EUR':'&euro;'}</td>
+    <td class="center">{$d.amount|replace:'.':','} &euro;</td>
   </tr>
   {/foreach}
 </table>

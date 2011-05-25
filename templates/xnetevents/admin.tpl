@@ -97,7 +97,7 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
       <a href="https://www.polytechnique.org/vcard/{$m.user->login()}.vcf">{icon name=vcard title="vcard"}</a>
       <a href="mailto:{$m.user->bestEmail()}">{icon name=email title="email"}</a>
     </td>
-    <td>{$m.amount}</td>
+    <td>{$m.amount|replace:'.':','} &euro;</td>
   </tr>
   {/foreach}
 </table>

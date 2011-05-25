@@ -151,16 +151,11 @@ class XnetEventsModule extends PLModule
                 $e['topay'] += $m['nb'] * $m['montant'];
             }
 
-            $query = XDB::query(
-                "SELECT amount
+            $montant = XDB::fetchOneCell(
+                "SELECT SUM(amount) as sum_amount
                    FROM payment_transactions AS t
                  WHERE ref = {?} AND uid = {?}", $e['paiement_id'], S::v('uid'));
-            $montants = $query->fetchColumn();
-
-            foreach ($montants as $m) {
-                $p = strtr(substr($m, 0, strpos($m, 'EUR')), ',', '.');
-                $e['paid'] += trim($p);
-            }
+            $e['paid'] += $montant;
 
             make_event_date($e);
 

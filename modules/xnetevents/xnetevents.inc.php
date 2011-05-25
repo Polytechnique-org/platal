@@ -80,16 +80,12 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
         $evt['notify_payment'] = $evt['notify_payment'] || $m['notify_payment'];
     }
 
-    $montants = XDB::fetchColumn('SELECT  amount
+    $montant = XDB::fetchOneCell('SELECT  SUM(amount) AS sum_amount
                                     FROM  payment_transactions AS t
                                    WHERE  ref = {?} AND uid = {?}',
                                    $evt['paiement_id'], S::v('uid'));
-    $evt['telepaid'] = 0;
-    foreach ($montants as $m) {
-        $p = strtr(substr($m, 0, strpos($m, 'EUR')), ',', '.');
-        $evt['paid'] += trim($p);
-        $evt['telepaid'] += trim($p);
-    }
+    $evt['telepaid'] = $montant;
+    $evt['paid'] += $montant;
     $evt['organizer'] = User::getSilent($evt['uid']);
 
     make_event_date($evt);
@@ -137,14 +133,11 @@ function get_event_participants(&$evt, $item_id, array $tri = array(), $limit = 
         $u['adminpaid'] = $u['paid'];
         $u['montant'] = 0;
         if ($money && $pay_id) {
-            $montants = XDB::fetchColumn('SELECT  amount
+            $montant = XDB::fetchOneCell('SELECT  SUM(amount)
                                             FROM  payment_transactions AS t
                                            WHERE  ref = {?} AND uid = {?}',
                                          $pay_id, $uid);
-            foreach ($montants as $m) {
-                $p = strtr(substr($m, 0, strpos($m, "EUR")), ",", ".");
-                $u['paid'] += trim($p);
-            }
+            $u['paid'] += $montant;
         }
         $u['telepayment'] = $u['paid'] - $u['adminpaid'];
         $res_ = XDB::iterator('SELECT  ep.nb, ep.item_id, ei.montant
