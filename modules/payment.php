@@ -928,7 +928,11 @@ class PaymentLogsImporter extends CSVImporter {
         $this->result = array();
         foreach ($this->data as $line) {
             $a = $this->makeAssoc($line, $insert_relation);
+            // convert date
             $a['date'] = preg_replace('/([0-9]{2})\/([0-9]{2})\/([0-9]{4}).*/', '\3-\2-\1', $a['date']);
+            $a['date'] = preg_replace('/T.*/','', $a['date']);
+            
+            // convert money
             $a['amount'] = str_replace(',', '.', $a['amount']);
             $a['commission'] = str_replace(',', '.', $a['commission']);
             $this->result[] = $a;
