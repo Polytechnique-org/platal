@@ -100,7 +100,7 @@ INSERT INTO  profile_private_names (pid, type, id, name)
  INNER JOIN  profile_name_enum AS pne ON (pn.typeid = pne.id)
       WHERE  pne.type = 'firstname_other';
 
--- DROP TABLE IF EXISTS profile_name;
--- DROP TABLE IF EXISTS profile_name_enum;
+DROP TABLE IF EXISTS profile_name;
+DROP TABLE IF EXISTS profile_name_enum;
 
 -- vim:set syntax=mysql:
