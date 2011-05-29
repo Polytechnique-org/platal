@@ -22,6 +22,7 @@ Bug/Wish:
 
     * XnetEvent:
         - #1487: Removes link to event attending users to group outsiders  -JAC
+        - #1491: Fixes participants multi-page display                     -JAC
 
 ================================================================================
 VERSION 1.1.1                                                         09 05 2011
