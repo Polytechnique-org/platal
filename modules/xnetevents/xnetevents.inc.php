@@ -98,7 +98,7 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
 // }}}
 
 // {{{ function get_event_participants()
-function get_event_participants(&$evt, $item_id, array $tri = array(), $limit = null)
+function get_event_participants(&$evt, $item_id, array $tri = array(), $limit = null, $offset = 0)
 {
     global $globals;
 
@@ -113,7 +113,7 @@ function get_event_participants(&$evt, $item_id, array $tri = array(), $limit = 
                                          WHERE  ep.eid = {?} AND nb > 0 ' . $append . '
                                       GROUP BY  ep.uid', $eid);
     $uf = new UserFilter(new PFC_True(), $tri);
-    $users = User::getBulkUsersWithUIDs($uf->filter(array_keys($query), new PlLimit($count, $offset)));
+    $users = User::getBulkUsersWithUIDs($uf->filter(array_keys($query), new PlLimit($limit, $offset)));
     $tab = array();
     foreach ($users as $user) {
         $uid = $user->id();
