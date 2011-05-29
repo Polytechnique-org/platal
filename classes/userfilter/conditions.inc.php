@@ -583,67 +583,28 @@ class UFC_EducationField extends UserFilterCondition
     }
 }
 // }}}
-// {{{ class UFC_Name
-/** Filters users based on name
- * @param $type Type of name field on which filtering is done (firstname, lastname...)
- * @param $text Text on which to filter
- * @param $mode Flag indicating search type (prefix, suffix, with particule...)
+// {{{ class UFC_NameInitial
+/** Filters users based on sort_name
+ * @param $initial Initial on which to filter
  */
-class UFC_Name extends UserFilterCondition
+class UFC_NameInitial extends UserFilterCondition
 {
-    const EXACT    = XDB::WILDCARD_EXACT;    // 0x000
-    const PREFIX   = XDB::WILDCARD_PREFIX;   // 0x001
-    const SUFFIX   = XDB::WILDCARD_SUFFIX;   // 0x002
-    const CONTAINS = XDB::WILDCARD_CONTAINS; // 0x003
-    const PARTICLE = 0x004;
-    const VARIANTS = 0x008;
+    private $initial;
 
-    private $type;
-    private $text;
-    private $mode;
-
-    public function __construct($type, $text, $mode)
+    public function __construct($initial)
     {
-        $this->type = $type;
-        $this->text = $text;
-        $this->mode = $mode;
-    }
-
-    private function buildNameQuery($type, $variant, $where, UserFilter $uf)
-    {
-        $sub = $uf->addNameFilter($type, $variant);
-        return str_replace('$ME', 'pn' . $sub, $where);
+        $this->initial = $initial;
     }
 
     public function buildCondition(PlFilter $uf)
     {
-        $left = '$ME.name';
-        if (($this->mode & self::PARTICLE) == self::PARTICLE) {
-            $left = 'CONCAT($ME.particle, \' \', $ME.name)';
-        }
-        $right = XDB::formatWildcards($this->mode & self::CONTAINS, $this->text);
-
-        $cond = $left . $right;
-        $conds = array($this->buildNameQuery($this->type, null, $cond, $uf));
-        if (($this->mode & self::VARIANTS) != 0 && isset(Profile::$name_variants[$this->type])) {
-            foreach (Profile::$name_variants[$this->type] as $var) {
-                $conds[] = $this->buildNameQuery($this->type, $var, $cond, $uf);
-            }
-        }
-        return implode(' OR ', $conds);
+        $sub = $uf->addDisplayFilter();
+        return 'SUBSTRING(pd.sort_name, 1, 1) ' . XDB::formatWildcards(XDB::WILDCARD_PREFIX, $this->initial);
     }
 
     public function export()
     {
-        $export = $this->buildExport($this->type);
-        if ($this->mode & self::VARIANTS) {
-            $export['search_in_variants'] = true;
-        }
-        if ($this->mode & self::PARTICLE) {
-            $export['search_in_particle'] = true;
-        }
-        $export['comparison'] = self::comparisonFromXDBWildcard($this->mode & 0x3);
-        $export['text'] = $this->text;
+        $export = $this->buildExport($this->initial);
         return $export;
     }
 }

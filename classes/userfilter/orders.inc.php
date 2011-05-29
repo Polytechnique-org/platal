@@ -36,13 +36,8 @@ abstract class UserFilterOrders
           case 'promo':
             return new UFO_Promo($export->v('grade'), $desc);
 
-          case 'lastname':
           case 'name':
-          case 'firstname':
-          case 'nickname':
-          case 'pseudonym':
-            return new UFO_Name($type, $export->v('variant'),
-                                $export->b('particle'), $desc);
+            return new UFO_Name($desc);
 
           case 'score':
           case 'registration':
@@ -106,43 +101,19 @@ class UFO_Promo extends PlFilterGroupableOrder
 // }}}
 // {{{ class UFO_Name
 /** Sorts users by name
- * @param $type Type of name on which to sort (firstname...)
- * @param $variant Variant of that name to use (marital, ordinary...)
- * @param $particle Set to true if particles should be included in the sorting order
  * @param $desc If sort order should be descending
  */
 class UFO_Name extends PlFilterGroupableOrder
 {
-    private $type;
-    private $variant;
-    private $particle;
-
-    public function __construct($type, $variant = null, $particle = false, $desc = false)
-    {
-        parent::__construct($desc);
-        $this->type = $type;
-        $this->variant = $variant;
-        $this->particle = $particle;
-    }
-
     protected function getSortTokens(PlFilter $uf)
     {
-        if (Profile::isDisplayName($this->type)) {
-            $sub = $uf->addDisplayFilter();
-            $token = 'pd' . $sub . '.' . $this->type;
-            if ($uf->accountsRequired()) {
-                $account_token = Profile::getAccountEquivalentName($this->type);
-                return 'IFNULL(' . $token . ', a.' . $account_token . ')';
-            } else {
-                return $token;
-            }
+        $sub = $uf->addDisplayFilter();
+        $token = 'pd.sort_name';
+        if ($uf->accountsRequired()) {
+            $account_token = Profile::getAccountEquivalentName('sort_name');
+            return 'IFNULL(' . $token . ', a.' . $account_token . ')';
         } else {
-            $sub = $uf->addNameFilter($this->type, $this->variant);
-            if ($this->particle) {
-                return 'CONCAT(pn' . $sub . '.particle, \' \', pn' . $sub . '.name)';
-            } else {
-                return 'pn' . $sub . '.name';
-            }
+            return $token;
         }
     }
 
@@ -153,30 +124,12 @@ class UFO_Name extends PlFilterGroupableOrder
 
     public function getCondition($initial)
     {
-        if (Profile::isDisplayName($this->type)) {
-            switch ($this->type) {
-            case Profile::DN_PRIVATE:
-            case Profile::DN_SHORT:
-            case Profile::DN_YOURSELF:
-                $type = Profile::FIRSTNAME;
-            default:
-                $type = Profile::LASTNAME;
-            }
-        } else {
-            $type = $this->type;
-        }
-        return new UFC_Name($type, $initial, UFC_Name::PREFIX);
+        return new UFC_NameInitial($initial);
     }
 
     public function export()
     {
-        $export = $this->buildExport($this->type);
-        if (!is_null($this->variant)) {
-            $export['variant'] = $this->variant;
-        }
-        if ($this->particle) {
-            $export['particle'] = true;
-        }
+        $export = $this->buildExport();
         return $export;
     }
 }

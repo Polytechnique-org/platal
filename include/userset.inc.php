@@ -245,8 +245,7 @@ class MinificheView extends MixedView
             && $this->params['starts_with'] != null) {
 
             $this->set->addCond(
-                new UFC_Name(Profile::LASTNAME,
-                    $this->params['starts_with'], UFC_Name::PREFIX)
+                new UFC_NameInitial($this->params['starts_with'])
             );
         }
         return parent::apply($page);

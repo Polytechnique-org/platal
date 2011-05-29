@@ -543,12 +543,12 @@ class UserFilter extends PlFilter
 
     static public function sortByName()
     {
-        return array(new UFO_Name(Profile::LASTNAME), new UFO_Name(Profile::FIRSTNAME));
+        return array(new UFO_Name());
     }
 
     static public function sortByPromo()
     {
-        return array(new UFO_Promo(), new UFO_Name(Profile::LASTNAME), new UFO_Name(Profile::FIRSTNAME));
+        return array(new UFO_Promo(), new UFO_Name());
     }
 
     static private function getDBSuffix($string)
@@ -672,44 +672,6 @@ class UserFilter extends PlFilter
         $joins = array();
         if ($this->with_logger) {
             $joins['ls'] = PlSqlJoin::left('log_sessions', '$ME.uid = $UID');
-        }
-        return $joins;
-    }
-
-    /** NAMES
-     */
-
-    static public function assertName($name)
-    {
-        if (!DirEnum::getID(DirEnum::NAMETYPES, $name)) {
-            Platal::page()->kill('Invalid name type: ' . $name);
-        }
-    }
-
-    private $pn  = array();
-    public function addNameFilter($type, $variant = null)
-    {
-        $this->requireProfiles();
-        if (!is_null($variant)) {
-            $ft  = $type . '_' . $variant;
-        } else {
-            $ft = $type;
-        }
-        $sub = '_' . $ft;
-        self::assertName($ft);
-
-        if (!is_null($variant) && $variant == 'other') {
-            $sub .= $this->option++;
-        }
-        $this->pn[$sub] = DirEnum::getID(DirEnum::NAMETYPES, $ft);
-        return $sub;
-    }
-
-    protected function nameJoins()
-    {
-        $joins = array();
-        foreach ($this->pn as $sub => $type) {
-            $joins['pn' . $sub] = PlSqlJoin::left('profile_name', '$ME.pid = $PID AND $ME.typeid = {?}', $type);
         }
         return $joins;
     }
