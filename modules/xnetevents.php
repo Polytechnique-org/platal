@@ -630,8 +630,7 @@ class XnetEventsModule extends PLModule
                                            GROUP BY  p.uid', $evt['eid']);
 
         $ofs = Env::i('offset');
-        $tot = (is_null($evt['nb_tot']) ? $evt['nb'] : $evt['nb_tot']);
-        $nbp = ceil($tot / NB_PER_PAGE);
+        $nbp = ceil($evt['user_count'] / NB_PER_PAGE);
         if ($nbp > 1) {
             $links = array();
             if ($ofs) {
