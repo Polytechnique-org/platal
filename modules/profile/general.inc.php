@@ -198,7 +198,7 @@ class ProfileSettingEdu implements ProfileSetting
             $value = array();
             $value = XDB::fetchAllAssoc("SELECT  eduid, degreeid, fieldid, grad_year, program
                                            FROM  profile_education
-                                          WHERE  pid = {?} AND !FIND_IN_SET('primary', flags)
+                                          WHERE  pid = {?} AND !(FIND_IN_SET('primary', flags) OR FIND_IN_SET('secondary', flags))
                                        ORDER BY  id",
                                         $page->pid());
         } else if (!is_array($value)) {
@@ -229,10 +229,11 @@ class ProfileSettingEdu implements ProfileSetting
     public function save(ProfilePage $page, $field, $value)
     {
         XDB::execute("DELETE FROM  profile_education
-                            WHERE  pid = {?} AND !FIND_IN_SET('primary', flags)",
+                            WHERE  pid = {?} AND !(FIND_IN_SET('primary', flags) OR FIND_IN_SET('secondary', flags))",
                      $page->pid());
+        $schoolsList = DirEnum::getOptions(DirEnum::EDUSCHOOLS);
         foreach ($value as $eduid=>&$edu) {
-            if ($edu['eduid'] != '') {
+            if ($edu['eduid'] != '' && $schoolsList[$edu['eduid']] != Profile::EDU_X) {
                 $fieldId = ($edu['fieldid'] == 0) ? null : $edu['fieldid'];
                 XDB::execute("INSERT INTO  profile_education
                                       SET  id = {?}, pid = {?}, eduid = {?}, degreeid = {?},
@@ -301,8 +302,8 @@ class ProfileSettingMainEdu implements ProfileSetting
             $value = array();
             $value = XDB::fetchAllAssoc("SELECT  degreeid, fieldid, promo_year, program
                                            FROM  profile_education
-                                          WHERE  pid = {?} AND FIND_IN_SET('primary', flags)
-                                       ORDER BY  degreeid",
+                                          WHERE  pid = {?} AND (FIND_IN_SET('primary', flags) OR FIND_IN_SET('secondary', flags))
+                                       ORDER BY  NOT FIND_IN_SET('primary', flags), degreeid",
                                         $page->pid());
 
             foreach ($value as &$item) {
@@ -327,7 +328,7 @@ class ProfileSettingMainEdu implements ProfileSetting
             $fieldId = ($item['fieldid'] == 0) ? null : $item['fieldid'];
             XDB::execute("UPDATE  profile_education
                              SET  fieldid = {?}, program = {?}
-                           WHERE  pid = {?} AND FIND_IN_SET('primary', flags) AND degreeid = {?}",
+                           WHERE  pid = {?} AND (FIND_IN_SET('primary', flags) OR FIND_IN_SET('secondary', flags)) AND degreeid = {?}",
                          $fieldId, $item['program'], $page->pid(), $item['degreeid']);
         }
     }
