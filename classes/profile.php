@@ -273,6 +273,20 @@ class Profile implements PlExportable
         }
     }
 
+    public static function educationDuration($education)
+    {
+        switch ($education) {
+          case self::DEGREE_X:
+            return 3;
+          case self::DEGREE_M:
+            return 2;
+          case self::DEGREE_D:
+            return 3;
+          default:
+            return 0;
+        }
+    }
+
     /** Number of years between the promotion year until the
      * graduation year. In standard schools it's 0, but for
      * Polytechnique the promo year is the entry year.

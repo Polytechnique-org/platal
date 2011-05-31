@@ -116,9 +116,11 @@
     </td>
   </tr>
   <tr class="impair">
-    <td class="titre">Promotions</td>
+    <td class="titre">Formations</td>
     <td>
       <a href="admin/phd">Doctorants</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/add_secondary_edu">Ajout de formation</a>
     </td>
   </tr>
 

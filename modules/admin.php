@@ -54,7 +54,8 @@ class AdminModule extends PLModule
             'admin/xnet_without_group'     => $this->make_hook('xnet_without_group',     AUTH_MDP,    'admin'),
             'admin/jobs'                   => $this->make_hook('jobs',                   AUTH_MDP,    'admin,edit_directory'),
             'admin/profile'                => $this->make_hook('profile',                AUTH_MDP,    'admin,edit_directory'),
-            'admin/phd'                    => $this->make_hook('phd',                    AUTH_MDP,    'admin')
+            'admin/phd'                    => $this->make_hook('phd',                    AUTH_MDP,    'admin'),
+            'admin/add_secondary_edu'      => $this->make_hook('add_secondary_edu',      AUTH_MDP,    'admin')
         );
     }
 
@@ -1884,6 +1885,115 @@ class AdminModule extends PLModule
                               $eduDegrees[Profile::DEGREE_D], $promo);
         $page->assign('list', $list);
         $page->assign('promo', $promo);
+    }
+
+    function handler_add_secondary_edu($page)
+    {
+        $page->changeTpl('admin/add_secondary_edu.tpl');
+
+        if (!(Post::has('verify') || Post::has('add'))) {
+            return;
+        } elseif (!Post::has('people')) {
+            $page->trigWarning("Aucune information n'a été fournie.");
+            return;
+        }
+
+        require_once 'name.func.inc.php';
+        $lines = explode("\n", Post::t('people'));
+        $separator = Post::t('separator');
+        $degree = Post::v('degree');
+        $promotion = Post::i('promotion');
+        $schoolsList = array_flip(DirEnum::getOptions(DirEnum::EDUSCHOOLS));
+        $degreesList = array_flip(DirEnum::getOptions(DirEnum::EDUDEGREES));
+        $edu_id = $schoolsList[Profile::EDU_X];
+        $degree_id = $degreesList[$degree];
+
+        $res = array(
+            'incomplete' => array(),
+            'empty'      => array(),
+            'multiple'   => array(),
+            'already'    => array(),
+            'new'        => array()
+        );
+        $old_pids = array();
+        $new_pids = array();
+        foreach ($lines as $line) {
+            $line = trim($line);
+            $line_array = explode($separator, $line);
+            array_walk($line_array, 'trim');
+            if (count($line_array) != 3) {
+                $page->trigError("La ligne « $line » est incomplète.");
+                $res['incomplete'][] = $line;
+                continue;
+            }
+            $cond = new PFC_And(new UFC_NameTokens(split_name_for_search($line_array[0]), array(), false, false, Profile::LASTNAME));
+            $cond->addChild(new UFC_NameTokens(split_name_for_search($line_array[1]), array(), false, false, Profile::FIRSTNAME));
+            $cond->addChild(new UFC_Promo('=', UserFilter::DISPLAY, $line_array[2]));
+            $uf = new UserFilter($cond);
+            $pid = $uf->getPIDs();
+            $count = count($pid);
+            if ($count == 0) {
+                $page->trigError("La ligne « $line » ne correspond à aucun profil existant.");
+                $res['empty'][] = $line;
+                continue;
+            } elseif ($count > 1) {
+                $page->trigError("La ligne « $line » correspond à plusieurs profils existant.");
+                $res['multiple'][] = $line;
+                continue;
+            } else {
+                $count = XDB::fetchOneCell('SELECT  COUNT(*) AS count
+                                              FROM  profile_education
+                                             WHERE  pid = {?} AND eduid = {?} AND degreeid = {?}',
+                                      $pid, $edu_id, $degree_id);
+                if ($count == 1) {
+                    $res['already'][] = $line;
+                    $old_pids[] = $pid[0];
+                } else {
+                    $res['new'][] = $line;
+                    $new_pids[] = $pid[0];
+                }
+            }
+        }
+
+        $display = array();
+        foreach ($res as $type => $res_type) {
+            if (count($res_type) > 0) {
+                $display = array_merge($display, array('--------------------' . $type . ':'), $res_type);
+            }
+        }
+        $page->assign('people', implode("\n", $display));
+        $page->assign('promotion', $promotion);
+        $page->assign('degree', $degree);
+
+        if (Post::has('add')) {
+            $entry_year = $promotion - Profile::educationDuration($degree);
+
+            if (Post::b('force_addition')) {
+                $pids = array_unique(array_merge($old_pids, $new_pids));
+            } else {
+                $pids = array_unique($new_pids);
+
+                // Updates years.
+                XDB::execute('UPDATE  profile_education
+                                 SET  entry_year = {?}, grad_year = {?}, promo_year = {?}
+                               WHERE  pid IN {?} AND eduid = {?} AND degreeid = {?}',
+                             $entry_year, $promotion, $promotion, $old_pids, $edu_id, $degree_id);
+            }
+
+            // Precomputes values common to all users.
+            $select = XDB::format('MAX(id) + 1, pid, {?}, {?}, {?}, {?}, {?}, \'secondary\'',
+                                  $edu_id, $degree_id, $entry_year, $promotion, $promotion );
+            XDB::startTransaction();
+            foreach ($pids as $pid) {
+                XDB::execute('INSERT INTO  profile_education (id, pid, eduid, degreeid, entry_year, grad_year, promo_year, flags)
+                                   SELECT  ' . $select . '
+                                     FROM  profile_education
+                                    WHERE  pid = {?}',
+                             $pid);
+            }
+            XDB::commit();
+        }
+
     }
 }
 
