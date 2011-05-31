@@ -8,6 +8,7 @@ Bug/Wish:
         - #1499: Fixes session user's payment display in xnet admin page   -JAC
 
     * Profile:
+        - #1489: Enables automatic procecessing for secondary education    -JAC
         - #1497: Fixes issues with ordinary names                          -JAC
 
     * Register:
