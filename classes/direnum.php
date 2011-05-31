@@ -654,6 +654,10 @@ class DE_JobDescription extends DirEnumeration
 // {{{ class DE_JobTerms
 class DE_JobTerms extends DirEnumeration
 {
+    protected $valfield = 'profile_job_term_enum.name';
+    protected $from = 'profile_job_term_enum';
+    protected $idfield = 'profile_job_term_enum.jtid';
+
     // {{{ function getAutoComplete
     public function getAutoComplete($text)
     {
