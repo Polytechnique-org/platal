@@ -328,9 +328,13 @@ function addAddress()
                                               checkCurrentAddress());
 }
 
-function addressChanged(prefid)
+function addressChanged(prefid, color)
 {
+    var text = $('#' + prefid + '_cont').find("[name*='[text]']").val();
     $('#' + prefid + '_cont').find('[name*=changed]').val("1");
+    $.xpost('map_url/', { text:text, color:color }, function(data) {
+        $('.static_map_url').find('img').attr('src', data);
+    });
 }
 
 function deleteGeocoding(prefid, hrpid)

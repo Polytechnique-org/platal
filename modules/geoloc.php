@@ -24,7 +24,8 @@ class GeolocModule extends PLModule
     function handlers()
     {
         return array(
-            'map' => $this->make_hook('map', AUTH_COOKIE)
+            'map'     => $this->make_hook('map', AUTH_COOKIE),
+            'map_url' => $this->make_hook('map_url', AUTH_COOKIE)
         );
     }
 
@@ -67,6 +68,20 @@ class GeolocModule extends PLModule
         } else {
             self::prepare_map($page);
         }
+    }
+
+    function handler_map_url($page)
+    {
+        pl_content_headers('text/plain');
+
+        if (Post::has('text')) {
+            $address = new Address(array('text' => Post::t('text')));
+            $gmapsGeocoder = new GMapsGeocoder();
+            $gmapsGeocoder->getGeocodedAddress($address);
+            echo GMapsGeocoder::buildStaticMapURL($address->latitude, $address->longitude, Post::t('color'));
+        }
+
+        exit();
     }
 }
 

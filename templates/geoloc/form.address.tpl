@@ -26,7 +26,7 @@
 <tr{if t($class)} class="{$class}"{/if}>
   <td>
 {/if}
-    <textarea name="{$prefname}[text]" cols="30" rows="4" onkeyup="addressChanged('{$prefid}')">{$address.text}</textarea>
+    <textarea name="{$prefname}[text]" cols="30" rows="4" onchange="addressChanged('{$prefid}','{$profile->promoColor()}')">{$address.text}</textarea>
     <input type="hidden" name="{$prefname}[postalText]" value="{$address.postalText}" />
     <input type="hidden" name="{$prefname}[types]" value="{$address.types}" />
     <input type="hidden" name="{$prefname}[formatted_address]" value="{$address.formatted_address}" />
@@ -52,9 +52,8 @@
   </td>
   <td>
 {/if}
-  {if t($address.latitude)}
-    <img src="{#globals.maps.static_map#}?size=300x100&amp;markers=color:{$profile->promoColor()}%7C{$address.latitude},{$address.longitude}&amp;zoom=12&amp;sensor=false"
-         alt="Position de l'adresse" />
+  <div class="static_map_url" {if !t($address.latitude)}style="display: none"{/if}>
+    <img src="{insert name="getStaticMapURL" latitude=$address.latitude longitude=$address.longitude color=$profile->promoColor()}" alt="Position de l'adresse" />
     {if t($geocoding_removal)}
     <br />
     <small id="{$prefid}_geocoding_removal">
@@ -65,7 +64,7 @@
     {/if}
     </small>
     {/if}
-  {/if}
+  </div>
 {if t($validation)}
 </div>
 <div style="clear: both"></div>

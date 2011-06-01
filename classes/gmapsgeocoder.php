@@ -30,6 +30,19 @@ class GMapsGeocoder extends Geocoder {
     // Maximum number of Geocoding calls to the Google Maps API.
     const MAX_GMAPS_RPC_CALLS = 5;
 
+    static public function buildStaticMapURL($latitude, $longitude, $color, $separator = '&')
+    {
+        $parameters = array(
+            'size'    => '300x100',
+            'markers' => 'color:' . $color . '|' . $latitude . ',' . $longitude,
+            'zoom'    => '12',
+            'sensor'  => 'false'
+        );
+        global $globals;
+
+        return Platal::globals()->maps->static_map . '?' . http_build_query($parameters, '', $separator);
+    }
+
     public function getGeocodedAddress(Address $address, $defaultLanguage = null, $forceLanguage = false) {
         $this->prepareAddress($address);
         $textAddress = $this->getTextToGeocode($address->text);
