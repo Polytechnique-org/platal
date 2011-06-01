@@ -20,47 +20,58 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if t($address.geocodedText)}
-<div class="erreur center {$prefid}_geoloc">
-  Le géocodage n'a pas donné un résultat certain&nbsp;! Tu as le choix entre&nbsp;:
-</div>
-<div class="{$prefid}_geoloc">
-  <ul>
-    <li><a href="javascript:validGeoloc('{$prefid}','{$id}',2)"
-           title="Garder le texte de l'adresse que tu as renseignée tout en utilisant les informations trouvées par le géocodage pour te localiser sur le planisphère et dans lors d'une recherche dans l'annuaire.">
-      le texte de ton adresse localisé à l'endroit que nous te suggérons</a>.</li>
-    <li><a href="javascript:validGeoloc('{$prefid}','{$id}',0)" style="color: red">ton adresse (à gauche)</a>&nbsp;;</li>
-    <li><a href="javascript:validGeoloc('{$prefid}','{$id}',1)" style="color: green">notre suggestion (à droite)</a>&nbsp;;</li>
-  </ul>
-</div>
+{if t($validation)}
+<div style="float: left">
+{else}
+<tr{if t($class)} class="{$class}"{/if}>
+  <td>
 {/if}
-
-<div>
-  <textarea name="{$prefname}[text]" cols="30" rows="4" onkeyup="addressChanged('{$prefid}')"
-            {if t($address.geocodedText)}class="error"{/if}>{$address.text}</textarea>
-{if t($address.geocodedText)}
-  <textarea cols="30" rows="4" class="valid {$prefid}_geoloc">{$address.geocodedText}</textarea>
-{/if}
+    <textarea name="{$prefname}[text]" cols="30" rows="4" onchange="addressChanged('{$prefid}','{$profile->promoColor()}')">{$address.text}</textarea>
+    <input type="hidden" name="{$prefname}[postalText]" value="{$address.postalText}" />
+    <input type="hidden" name="{$prefname}[types]" value="{$address.types}" />
+    <input type="hidden" name="{$prefname}[formatted_address]" value="{$address.formatted_address}" />
+    <input type="hidden" name="{$prefname}[latitude]" value="{$address.latitude}" />
+    <input type="hidden" name="{$prefname}[longitude]" value="{$address.longitude}" />
+    <input type="hidden" name="{$prefname}[southwest_latitude]" value="{$address.southwest_latitude}" />
+    <input type="hidden" name="{$prefname}[southwest_longitude]" value="{$address.southwest_longitude}" />
+    <input type="hidden" name="{$prefname}[northeast_latitude]" value="{$address.northeast_latitude}" />
+    <input type="hidden" name="{$prefname}[northeast_longitude]" value="{$address.northeast_longitude}" />
+    <input type="hidden" name="{$prefname}[location_type]" value="{$address.location_type}" />
+    <input type="hidden" name="{$prefname}[partial_match]" value="{$address.partial_match}" />
+    <input type="hidden" name="{$prefname}[componentsIds]" value="{$address.componentsIds}" />
+    <input type="hidden" name="{$prefname}[changed]" value="0" />
+    <input type="hidden" name="{$prefname}[removed]" value="0" />
+    <input type="hidden" name="{$prefname}[geocoding_calls]" value="{$address.geocoding_calls}" />
+    <input type="hidden" name="{$prefname}[geocoding_date]" value="{$address.geocoding_date}" />
+{if t($validation)}
+    <br />
+    <label><input type="checkbox" name="{$prefname}[modified]"{if $valid->modified} checked="checked"{/if} />Utiliser la version modifiée</label>
 </div>
-{if !$isMe}<div><small><strong>Adress postale&nbsp;:</strong><br />{$address.postalText|nl2br}</small></div>{/if}
-{if t($address.geocodedText)}
-<input type="hidden" name="{$prefname}[geocodeChosen]" value="1" />
-<input type="hidden" name="{$prefname}[geocodedText]" value="{$address.geocodedText}" />
+<div style="float: right">
+{else}
+  </td>
+  <td>
 {/if}
-<input type="hidden" name="{$prefname}[accuracy]" value="{$address.accuracy}" />
-<input type="hidden" name="{$prefname}[postalText]" value="{$address.postalText}" />
-<input type="hidden" name="{$prefname}[postalCode]" value="{$address.postalCode}" />
-<input type="hidden" name="{$prefname}[administrativeAreaId]" value="{$address.administrativeAreaId}" />
-<input type="hidden" name="{$prefname}[subAdministrativeAreaId]" value="{$address.subAdministrativeAreaId}" />
-<input type="hidden" name="{$prefname}[localityId]" value="{$address.localityId}" />
-<input type="hidden" name="{$prefname}[countryId]" value="{$address.countryId}" />
-<input type="hidden" name="{$prefname}[latitude]" value="{$address.latitude}" />
-<input type="hidden" name="{$prefname}[longitude]" value="{$address.longitude}" />
-<input type="hidden" name="{$prefname}[north]" value="{$address.north}" />
-<input type="hidden" name="{$prefname}[south]" value="{$address.south}" />
-<input type="hidden" name="{$prefname}[east]" value="{$address.east}" />
-<input type="hidden" name="{$prefname}[west]" value="{$address.west}" />
-<input type="hidden" name="{$prefname}[changed]" value="0" />
-<input type="hidden" name="{$prefname}[removed]" value="0" />
+  <div id="{$prefid}_static_map_url" {if !t($address.latitude)}style="display: none"{/if}>
+    <img src="{insert name="getStaticMapURL" latitude=$address.latitude longitude=$address.longitude color=$profile->promoColor()}" alt="Position de l'adresse" />
+    {if t($geocoding_removal)}
+    <br />
+    <small id="{$prefid}_geocoding_removal">
+    {if !t($address.request)}
+      <label><input type="checkbox" name="{$prefname}[request]" onclick="return deleteGeocoding('{$prefid}')" /> Signaler que le repère est mal placé</label>
+    {else}
+    Localisation en attente de validation.
+    <input type="hidden" name="{$prefname}[request]" value="{$address.request}" />
+    {/if}
+    </small>
+    {/if}
+  </div>
+{if t($validation)}
+</div>
+<div style="clear: both"></div>
+{else}
+  </td>
+</tr>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

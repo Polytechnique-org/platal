@@ -184,20 +184,14 @@
       </td>
     </tr>
     <tr id="{$jobid}_w_address" class="pair" {if $hiddenjob || $hiddenaddr}style="display: none"{/if}>
-      <td colspan="2">
-        <div style="float: left">
-          <div class="titre">Adresse</div>
-          <div class="flags">
-            {include file="include/flags.radio.tpl" name="`$jobpref`[w_address][pub]" val=$job.w_address.pub
-                     subField='w_address' mainField='jobs' mainId=$i subId=''}
-          </div>
-          <div style="margin-top: 20px; clear: both">
-            {include file="geoloc/form.address.tpl" prefname="`$jobpref`[w_address]"
-                     prefid=$jobid address=$job.w_address}
-          </div>
-        </div>
+      <td class="titre">Adresse</td>
+      <td class="flags">
+        {include file="include/flags.radio.tpl" name="`$jobpref`[w_address][pub]" val=$job.w_address.pub
+                 subField='w_address' mainField='jobs' mainId=$i subId=''}
       </td>
     </tr>
+    {include file="geoloc/form.address.tpl" prefname="`$jobpref`[w_address]"
+                     prefid=$jobid address=$job.w_address class="pair"}
     {if $hiddenaddr}
     <tr class="pair">
       <td class="titre" colspan="2">Adresse (masquée)</td>

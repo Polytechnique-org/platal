@@ -385,6 +385,16 @@ div.long td.rt { width: 65%; }
     padding: 0 6px 0 0;
 }
 
+.marker_label {
+    border: 1px solid black;
+    background-color: white;
+    white-space: nowrap;
+}
+
+.marker_label a {
+    color: black;
+}
+
 /*******************************************************************************
     7   fiche.php & fiche_referent.php
         [ cas de la fiche ]

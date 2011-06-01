@@ -25,7 +25,7 @@ endef
 
 all: build
 
-build: core conf static banana wiki openid medals jquery
+build: core conf static banana wiki openid medals jquery maps
 
 check:
 	@!(find . -name '*.php' -exec php -l {} ";" | grep -v 'No syntax errors detected')
@@ -240,6 +240,16 @@ $(JSTREE_PATH):
 	ln -snf jquery.jstree-$(JSTREE_VERSION).js htdocs/javascript/jquery.jstree.js
 	rm -Rf spool/tmp/jstree
 
+##
+## Maps auxiliary scripts
+##
+maps: htdocs/javascript/markerclusterer_packed.js htdocs/javascript/markerwithlabel_packed.js
+
+htdocs/javascript/markerclusterer_packed.js:
+	wget http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_packed.js -O htdocs/javascript/markerclusterer_packed.js
+
+htdocs/javascript/markerwithlabel_packed.js:
+	wget http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerwithlabel/1.1.4/src/markerwithlabel_packed.js -O htdocs/javascript/markerwithlabel_packed.js
 
 ##
 ## lists rpc

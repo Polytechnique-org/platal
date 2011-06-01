@@ -299,6 +299,25 @@ class Profile implements PlExportable
         return 0;
     }
 
+    // Returns the profile's color.
+    public function promoColor()
+    {
+        switch ($this->mainEducation()) {
+          case 'X':
+            if (($this->yearpromo() % 2) === 0) {
+                return 'red';
+            } else {
+                return 'yellow';
+            }
+          case 'M':
+            return 'green';
+          case 'D':
+            return 'blue';
+          default:
+            return 'gray';
+        }
+    }
+
     /** Print a name with the given formatting:
      * %s = • for women
      * %f = firstname
@@ -394,15 +413,15 @@ class Profile implements PlExportable
     public function nationalities()
     {
         $nats = array();
-        $countries = DirEnum::getOptions(DirEnum::COUNTRIES);
+        $nationalities = DirEnum::getOptions(DirEnum::NATIONALITIES);
         if ($this->nationality1) {
-            $nats[$this->nationality1] = $countries[$this->nationality1];
+            $nats[$this->nationality1] = $nationalities[$this->nationality1];
         }
         if ($this->nationality2) {
-            $nats[$this->nationality2] = $countries[$this->nationality2];
+            $nats[$this->nationality2] = $nationalities[$this->nationality2];
         }
         if ($this->nationality3) {
-            $nats[$this->nationality3] = $countries[$this->nationality3];
+            $nats[$this->nationality3] = $nationalities[$this->nationality3];
         }
         return $nats;
     }

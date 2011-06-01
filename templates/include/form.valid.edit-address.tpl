@@ -20,23 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<p class="center"><small>Seules les adresses principales permanentes avec un drapeau vert ou orange figureront dans l'annuaire papier de l'AX.</small></p>
-
-{foreach key=i item=address from=$addresses}
-<div id="{"addresses_`$i`_cont"}">
-{include file="profile/adresses.address.tpl" i=$i address=$address}
-</div>
-{/foreach}
-{if $addresses|@count eq 0}
-<div id="addresses_0_cont">
-{include file="profile/adresses.address.tpl" i=0 address=0}
-</div>
-{/if}
-
-<div id="add_address" class="center">
-  <a href="javascript:addAddress({$profile->id()})">
-    {icon name=add title="Ajouter une adresse"} Ajouter une adresse
-  </a>
-</div>
+{include file="geoloc/form.address.tpl" prefname="valid" prefid=0 address=$valid->address validation=1}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -38,15 +38,20 @@ function get_annuaire_infos($method, $params) {
                                 $params[1]);
             $array = $res->next();
         } else {
-            $res = XDB::iterRow("SELECT  p.birthdate, pa.text, pa.postalCode
-                                         gl.name, pa.countryId, p.pid, pa.id
-                                   FROM  profiles          AS p
-                              LEFT JOIN  profile_addresses AS pa ON (pa.pid = p.pid)
-                              LEFT JOIN  geoloc_localities AS gl ON (pl.id = pa.localityId)
+            $res = XDB::iterRow("SELECT  p.birthdate, pa.text, GROUP_CONCAT(pace3.short_name), GROUP_CONCAT(pace2.short_name),
+                                         GROUP_CONCAT(pace1.short_name), p.pid, pa.id
+                                   FROM  profiles                          AS p
+                              LEFT JOIN  profile_addresses                 AS pa    ON (pa.pid = p.pid)
+                              LEFT JOIN  profile_addresses_components      AS pc    ON (pa.pid = pc.pid AND pa.jobid = pc.jobid AND pa.groupid = pc.groupid
+                                                                                        AND pa.type = pc.type AND pa.id = pc.id)
+                              LEFT JOIN  profile_addresses_components_enum AS pace1 ON (FIND_IN_SET(\'country\', pace1.types) AND pace1.id = pc.component_id)
+                              LEFT JOIN  profile_addresses_components_enum AS pace2 ON (FIND_IN_SET(\'locality\', pace2.types) AND pace2.id = pc.component_id)
+                              LEFT JOIN  profile_addresses_components_enum AS pace3 ON (FIND_IN_SET(\'postal_code\', pace3.types) AND pace3.id = pc.component_id)
                                   WHERE  p.xorg_id = {?} AND NOT FIND_IN_SET('job', pa.flags)
                                ORDER BY  NOT FIND_IN_SET('current', pa.flags),
                                          FIND_IN_SET('secondary', pa.flags),
-                                         NOT FIND_IN_SET('mail', pa.flags)",
+                                         NOT FIND_IN_SET('mail', pa.flags)
+                               GROUP BY  pa.pid, pa.jobid, pa.groupid, pa.id, pa.type",
                                 $params[1]);
             // Process the addresses we got.
             if(list($age, $text, $adr['cp'], $adr['ville'],

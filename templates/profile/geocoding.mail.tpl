@@ -24,16 +24,14 @@
 {if $mail_part eq 'head'}
 {from full=#from#}
 {to addr=#to#}
-{subject text="Adresse impossible à geolocaliser"}
+{subject text="Erreur de géolocalisation"}
 {elseif $mail_part eq 'wiki'}
-Un camarade {$smarty.session.hruid} a forcé l'utilisation de l'adresse entrée
-à la main et a refusé la version geolocalisée :
+La requête de géocodage générée par {$smarty.session.hruid} et dont l'url
+est la suivante :\\
+{$url}\\
+a reçu le status d'erreur suivant :\\
+{$status}
 
-'''Version utilisateur (validée) :'''\\
-{$text}
-
-'''Version geoloc (refusée) :'''\\
-{$geoloc}
 {include file="include/signature.mail.tpl"}
 {/if}
 

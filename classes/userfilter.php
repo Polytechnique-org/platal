@@ -967,44 +967,28 @@ class UserFilter extends PlFilter
 
     /** ADDRESSES
      */
-    private $with_pa = false;
-    public function addAddressFilter()
+    private $types = array();
+    public function addAddressFilter($type)
     {
         $this->requireProfiles();
         $this->with_pa = true;
-        return 'pa';
-    }
 
-    private $with_pac = false;
-    public function addAddressCountryFilter()
-    {
-        $this->requireProfiles();
-        $this->addAddressFilter();
-        $this->with_pac = true;
-        return 'gc';
-    }
-
-    private $with_pal = false;
-    public function addAddressLocalityFilter()
-    {
-        $this->requireProfiles();
-        $this->addAddressFilter();
-        $this->with_pal = true;
-        return 'gl';
+        $sub = '_' . $this->option++;
+        $this->types[$type] = $sub;
+        return $sub;
     }
 
     protected function addressJoins()
     {
         $joins = array();
-        if ($this->with_pa) {
-            $joins['pa'] = PlSqlJoin::left('profile_addresses', '$ME.pid = $PID');
+        foreach ($this->types as $type => $sub) {
+            $joins['pa' . $sub] = PlSqlJoin::inner('profile_addresses', '$ME.pid = $PID');
+            $joins['pac' . $sub] = PlSqlJoin::inner('profile_addresses_components',
+                                                    '$ME.pid = pa' . $sub . '.pid AND $ME.jobid = pa' . $sub . '.jobid AND $ME.groupid = pa' . $sub . '.groupid AND $ME.type = pa' . $sub . '.type AND $ME.id = pa' . $sub . '.id');
+            $joins['pace' . $sub] = PlSqlJoin::inner('profile_addresses_components_enum',
+                                                     '$ME.id = pac' . $sub . '.component_id AND FIND_IN_SET({?}, $ME.types)', $type);
         }
-        if ($this->with_pac) {
-            $joins['gc'] = PlSqlJoin::left('geoloc_countries', '$ME.iso_3166_1_a2 = pa.countryID');
-        }
-        if ($this->with_pal) {
-            $joins['gl'] = PlSqlJoin::left('geoloc_localities', '$ME.id = pa.localityID');
-        }
+
         return $joins;
     }
 

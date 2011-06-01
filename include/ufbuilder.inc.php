@@ -347,10 +347,12 @@ class UFB_AdvancedSearch extends UserFilterBuilder
             new UFBF_HasEmailRedirect('has_email_redirect', 'A une redirection active'),
             new UFBF_Dead('alive', 'En vie'),
 
-            new UFBF_Town('city', 'Ville / Code Postal'),
-            new UFBF_Country('countryTxt', 'country', 'Pays'),
-            new UFBF_AdminArea('administrativearea', 'Région'),
-            new UFBF_SubAdminArea('subadministrativearea', 'Département'),
+            new UFBF_AddressIndex('sublocality', 'Arrondissement', 'SUBLOCALITIES'),
+            new UFBF_AddressIndex('administrative_area_level_3', 'Canton', 'ADMNISTRATIVEAREAS3'),
+            new UFBF_AddressIndex('administrative_area_level_2', 'Département', 'ADMNISTRATIVEAREAS2'),
+            new UFBF_AddressIndex('administrative_area_level_1', 'Région', 'ADMNISTRATIVEAREAS1'),
+            new UFBF_AddressMixed('localityTxt', 'locality', 'Ville', 'LOCALITIES'),
+            new UFBF_AddressMixed('countryTxt', 'country', 'Pays', 'COUNTRIES'),
 
             new UFBF_JobCompany('entreprise', 'Entreprise'),
             new UFBF_JobDescription('jobdescription', 'Fonction'),
@@ -1065,69 +1067,16 @@ class UFBF_Dead extends UFBF_Enum
 }
 // }}}
 
-// {{{ class UFBF_Town
-/** Retrieves a town, either from a postal code or a town name
- */
-class UFBF_Town extends UFBF_Text
+// {{{ class UFBF_AddressMixed
+class UFBF_AddressMixed extends UFBF_Mixed
 {
-    const TYPE_TEXT = 1;
-    const TYPE_ZIP  = 2;
-    const TYPE_ANY  = 3;
-
-    private $type;
-    private $onlycurrentfield;
-
-    public function __construct($envfield, $formtext = '', $type = self::TYPE_ANY, $onlycurrentfield = 'only_current')
-    {
-        $this->type = $type;
-        $this->onlycurrentfield = $onlycurrentfield;
-        parent::__construct($envfield, $formtext, 2, 30);
-    }
-
-    protected function buildUFC(UserFilterBuilder $ufb)
-    {
-        if ($ufb->isOn($this->onlycurrentfield)) {
-            $flags = UFC_Address::FLAG_CURRENT;
-        } else {
-            $flags = UFC_Address::FLAG_ANY;
-        }
-
-        if (preg_match('/[0-9]/', $this->val)) {
-            if ($this->type & self::TYPE_ZIP) {
-                return new UFC_AddressField($this->val, UFC_AddressField::FIELD_ZIPCODE, UFC_Address::TYPE_ANY, $flags);
-            } else {
-                return new PFC_False();
-            }
-        } else {
-            $byname = new UFC_AddressText(null, XDB::WILDCARD_CONTAINS, UFC_Address::TYPE_ANY, $flags, null, $this->val);
-            $byzip  = new UFC_AddressField($this->val, UFC_AddressField::FIELD_ZIPCODE, UFC_Address::TYPE_ANY, $flags);
-            if ($this->type & self::TYPE_ANY) {
-                return new PFC_Or($byname, $byzip);
-            } else if ($this->type & self::TYPE_TEXT) {
-                return $byname;
-            } else {
-                return $byzip;
-            }
-        }
-    }
-
-    public function getEnvFieldNames()
-    {
-        return array($this->envfield, $this->onlycurrentfield);
-    }
-}
-// }}}
-
-// {{{ class UFBF_Country
-class UFBF_Country extends UFBF_Mixed
-{
-    protected $direnum = DirEnum::COUNTRIES;
     protected $onlycurrentfield;
 
-    public function __construct($envfieldtext, $envfieldindex, $formtext = '', $onlycurrentfield = 'only_current')
+    public function __construct($envfieldtext, $envfieldindex, $formtext = '', $addressfield, $onlycurrentfield = 'only_current')
     {
         parent::__construct($envfieldtext, $envfieldindex, $formtext);
         $this->onlycurrentfield = $onlycurrentfield;
+        $this->direnum = constant('DirEnum::' . $addressfield);
     }
 
     protected function buildUFC(UserFilterBuilder $ufb)
@@ -1138,7 +1087,7 @@ class UFBF_Country extends UFBF_Mixed
             $flags = UFC_Address::FLAG_ANY;
         }
 
-        return new UFC_AddressField($this->val, UFC_AddressField::FIELD_COUNTRY, UFC_Address::TYPE_ANY, $flags);
+        return new UFC_AddressComponent($this->val, $this->envfieldindex, UFC_Address::TYPE_NON_HQ, $flags);
     }
 
     public function getEnvFieldNames()
@@ -1148,16 +1097,17 @@ class UFBF_Country extends UFBF_Mixed
 }
 // }}}
 
-// {{{ class UFBF_AdminArea
-class UFBF_AdminArea extends UFBF_Index
+// {{{ class UFBF_AddressIndex
+class UFBF_AddressIndex extends UFBF_Index
 {
-    protected $direnum = DirEnum::ADMINAREAS;
+    protected $direnum;
     protected $onlycurrentfield;
 
-    public function __construct($envfield, $formtext = '', $onlycurrentfield = 'only_current')
+    public function __construct($envfield, $formtext = '', $addressfield, $onlycurrentfield = 'only_current')
     {
         parent::__construct($envfield, $formtext);
         $this->onlycurrentfield = $onlycurrentfield;
+        $this->direnum = constant('DirEnum::' . $addressfield);
     }
 
 
@@ -1169,38 +1119,7 @@ class UFBF_AdminArea extends UFBF_Index
             $flags = UFC_Address::FLAG_ANY;
         }
 
-        return new UFC_AddressField($this->val, UFC_AddressField::FIELD_ADMAREA, UFC_Address::TYPE_ANY, $flags);
-    }
-
-    public function getEnvFieldNames()
-    {
-        return array($this->envfield, $this->onlycurrentfield);
-    }
-}
-// }}}
-
-// {{{ class UFBF_SubAdminArea
-class UFBF_SubAdminArea extends UFBF_Index
-{
-    protected $direnum = DirEnum::SUBADMINAREAS;
-    protected $onlycurrentfield;
-
-    public function __construct($envfield, $formtext = '', $onlycurrentfield = 'only_current')
-    {
-        parent::__construct($envfield, $formtext);
-        $this->onlycurrentfield = $onlycurrentfield;
-    }
-
-
-    protected function buildUFC(UserFilterBuilder $ufb)
-    {
-        if ($ufb->isOn($this->onlycurrentfield)) {
-            $flags = UFC_Address::FLAG_CURRENT;
-        } else {
-            $flags = UFC_Address::FLAG_ANY;
-        }
-
-        return new UFC_AddressField($this->val, UFC_AddressField::FIELD_SUBADMAREA, UFC_Address::TYPE_ANY, $flags);
+        return new UFC_AddressComponent($this->val, $this->envfield, UFC_Address::TYPE_NON_HQ, $flags);
     }
 
     public function getEnvFieldNames()

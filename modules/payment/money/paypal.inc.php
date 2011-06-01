@@ -67,15 +67,19 @@ class PayPal
         );
 
         if ($user->hasProfile()) {
-            $res = XDB::query("SELECT  pa.text, gl.name AS city, pa.postalCode AS zip, pa.countryId AS country,
+            $res = XDB::query("SELECT  pa.text, GROUP_CONCAT(pace2.short_name) AS city,
+                                       GROUP_CONCAT(pace3.short_name) AS zip, GROUP_CONCAT(pace1.short_name) AS country,
                                        IF(pp1.display_tel != '', pp1.display_tel, pp2.display_tel) AS night_phone_b
-                                 FROM  profile_addresses AS pa
-                            LEFT JOIN  profile_phones    AS pp1 ON (pp1.pid = pa.pid AND pp1.link_type = 'address'
-                                                                    AND pp1.link_id = pa.id)
-                            LEFT JOIN  profile_phones    AS pp2 ON (pp2.pid = pa.pid AND pp2.link_type = 'user'
-                                                                    AND pp2.link_id = 0)
-                            LEFT JOIN  geoloc_localities AS gl  ON (gl.id = pa.localityId)
+                                 FROM  profile_addresses                 AS pa
+                            LEFT JOIN  profile_phones                    AS pp1   ON (pp1.pid = pa.pid AND pp1.link_type = 'address' AND pp1.link_id = pa.id)
+                            LEFT JOIN  profile_phones                    AS pp2   ON (pp2.pid = pa.pid AND pp2.link_type = 'user' AND pp2.link_id = 0)
+                            LEFT JOIN  profile_addresses_components      AS pc    ON (pa.pid = pc.pid AND pa.jobid = pc.jobid AND pa.groupid = pc.groupid
+                                                                                      AND pa.type = pc.type AND pa.id = pc.id)
+                            LEFT JOIN  profile_addresses_components_enum AS pace1 ON (FIND_IN_SET(\'country\', pace1.types) AND pace1.id = pc.component_id)
+                            LEFT JOIN  profile_addresses_components_enum AS pace2 ON (FIND_IN_SET(\'locality\', pace2.types) AND pace2.id = pc.component_id)
+                            LEFT JOIN  profile_addresses_components_enum AS pace3 ON (FIND_IN_SET(\'postal_code\', pace3.types) AND pace3.id = pc.component_id)
                                 WHERE  pa.pid = {?} AND FIND_IN_SET('current', pa.flags)
+                             GROUP BY  pa.pid, pa.jobid, pa.groupid, pa.id, pa.type
                                 LIMIT  1",
                               $user->profile()->id());
             $this->infos['client'] = array_map('replace_accent', array_merge($info_client, $res->fetchOneAssoc()));

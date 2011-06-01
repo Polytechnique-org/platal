@@ -301,34 +301,41 @@ function checkCurrentAddress(id)
     }
 }
 
-function addAddress()
+function addAddress(pid)
 {
     var i = 0;
     while ($('#addresses_' + i + '_cont').length != 0) {
         i++;
     }
     $('#add_address').before('<div id="addresses_' + i + '_cont"></div>');
-    $('#addresses_' + i + '_cont').updateHtml('profile/ajax/address/' + i,
+    $('#addresses_' + i + '_cont').updateHtml('profile/ajax/address/' + i + '/' + pid,
                                               checkCurrentAddress());
 }
 
-function addressChanged(prefid)
+function addressChanged(prefid, color)
 {
+    var text = $('#' + prefid + '_cont').find("[name*='[text]']").val();
     $('#' + prefid + '_cont').find('[name*=changed]').val("1");
+    $.xpost('map_url/', { text:text, color:color }, function(data) {
+        $('#' + prefid + '_static_map_url').show();
+        $('#' + prefid + '_static_map_url').find('img').attr('src', data);
+    });
 }
 
-function validGeoloc(prefid, id, geoloc)
+function deleteGeocoding(prefid)
 {
-    if (geoloc == 1) {
-        $('#' + prefid + '_cont').find('[name*=text]').val($('#' + prefid + '_cont').find('[name*=geocodedText]').val());
-        $('#' + prefid + '_cont').find('[name*=postalText]').val('');
+    if($('#' + prefid + '_geocoding_removal').find('[name*=request]:checkbox:checked').length == 0) {
+        return true;
     }
-    if (geoloc > 0) {
-        $('#' + prefid + '_cont').find("[name*='[geocodedText]']").remove();
-    }
-    $('#' + prefid + '_cont').find('[name*=text]').removeClass('error');
-    $('#' + prefid + '_cont').find('[name*=geocodeChosen]').val(geoloc);
-    $('.' + prefid + '_geoloc').remove();
+
+    return confirm(
+        "La localisation de l'adresse sert à deux choses : te placer dans "
+        + "le planisphère et te faire apparaître dans la recherche avancée par "
+        + "pays, région, département, ville... La supprimer t'en fera disparaître. "
+        + "\nIl ne faut le faire que si cette localisation "
+        + "est réellement erronée. Avant de supprimer cette localisation, l'équipe de "
+        + "Polytechnique.org tentera de la réparer.\n\nConfirmes-tu ta "
+        + "demande de suppression de cette localisation ?");
 }
 
 // {{{1 Phones

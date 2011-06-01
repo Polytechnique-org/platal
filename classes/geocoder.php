@@ -29,54 +29,26 @@ abstract class Geocoder {
     // Cleans the address from its geocoded data
     abstract public function stripGeocodingFromAddress(Address $address);
 
-    // Updates geoloc_administrativeareas, geoloc_subadministrativeareas and
-    // geoloc_localities databases with new geocoded data and returns the
-    // corresponding id.
-    static public function getAreaId(Address $address, $area)
+    // Updates profile_addresses_components_enum, if needed, with new
+    // geocoded data and returns the corresponding id.
+    static public function getComponentId(array $component)
     {
-        static $databases = array(
-            'administrativeArea'    => 'geoloc_administrativeareas',
-            'subAdministrativeArea' => 'geoloc_subadministrativeareas',
-            'locality'              => 'geoloc_localities',
-        );
-        static $extras = array(
-            'subAdministrativeArea' => array(
-                'field' => 'administrativearea',
-                'name'  => 'administrativeAreaName'
-            )
-        );
-
-        $areaName = $area . 'Name';
-        $areaNameLocal = $areaName . 'Local';
-        $areaId = $area . 'Id';
-        if (!is_null($address->$areaName) && isset($databases[$area])) {
-            $extra = (isset($extras[$area]) ? $extras[$area]['administrativeAreaName'] : false);
-
-            $res = XDB::query('SELECT  id, nameLocal
-                                 FROM  ' . $databases[$area] . '
-                                WHERE  name = {?}',
-                              $address->$areaName);
-            if ($res->numRows() == 0) {
-                XDB::execute('INSERT INTO  ' . $databases[$area] . ' (name, nameLocal, country' .
-                                           ($extra ? ', ' . $extras[$area]['field'] : '') . ')
-                                   VALUES  ({?}, {?}, {?}' . ($extra ? ', {?}' : '') . ')',
-                             $address->$areaName, $address->$areaNameLocal, $address->countryId,
-                             ($extra ? $address->$extra : null));
-                $address->$areaId = XDB::insertId();
-            } else {
-                // XXX: remove this once all areas have both nameLocal and name.
-                list($id, $name) = $res->fetchOneRow();
-                if (is_null($name) && !is_null($address->$areaNameLocal)) {
-                    XDB::execute('UPDATE  ' . $databases[$area] . '
-                                     SET  nameLocal = {?}
-                                   WHERE  id = {?}',
-                                 $address->$areaNameLocal, $id);
-                }
-                $address->$areaId = $id;
-            }
-        } elseif (empty($address->$areaId)) {
-            $address->$areaId = null;
+        $where = '';
+        foreach ($component['types'] as $type) {
+            $where .= XDB::format(' AND FIND_IN_SET({?}, types)', $type);
         }
+
+        $id = XDB::fetchOneCell('SELECT  id
+                                   FROM  profile_addresses_components_enum
+                                  WHERE  short_name = {?} AND long_name = {?}' . $where,
+                                $component['short_name'], $component['long_name']);
+        if (is_null($id)) {
+            XDB::execute('INSERT INTO  profile_addresses_components_enum (short_name, long_name, types)
+                               VALUES  ({?}, {?}, {?})',
+                         $component['short_name'], $component['long_name'], implode(',', $component['types']));
+            $id = XDB::insertId();
+        }
+        return $id;
     }
 
     // Returns the part of the text preceeding the line with the postal code
@@ -100,24 +72,6 @@ abstract class Geocoder {
             $firstLines .= "\n";
         }
         return $firstLines;
-    }
-
-    // Returns the number of non geocoded addresses for a user.
-    static public function countNonGeocoded($pid, $jobid = null, $type = Address::LINK_PROFILE)
-    {
-        $where = array();
-        if (!is_null($pid)) {
-            $where[] = XDB::format('pid = {?}', $pid);
-        }
-        if (!is_null($jobid)) {
-            $where[] = XDB::format('jobid = {?}', $jobid);
-        }
-        $where[] = XDB::format('FIND_IN_SET({?}, type) AND accuracy = 0', $type);
-        $res = XDB::query('SELECT  COUNT(*)
-                             FROM  profile_addresses
-                            WHERE  ' . implode(' AND ', $where),
-                          $pid);
-        return $res->fetchOneCell();
     }
 }
 

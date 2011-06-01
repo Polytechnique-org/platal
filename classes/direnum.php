@@ -41,11 +41,13 @@ class DirEnum
     const ORIGINCORPS    = 'origincorps';
     const CORPSRANKS     = 'corpsranks';
 
-    const NATIONALITIES  = 'nationalities';
-    const COUNTRIES      = 'countries';
-    const ADMINAREAS     = 'adminareas';
-    const SUBADMINAREAS  = 'subadminareas';
-    const LOCALITIES     = 'localities';
+    const NATIONALITIES       = 'nationalities';
+    const SUBLOCALITIES       = 'sublocalities';
+    const LOCALITIES          = 'localities';
+    const ADMNISTRATIVEAREAS3 = 'admnistrativeareas3';
+    const ADMNISTRATIVEAREAS2 = 'admnistrativeareas2';
+    const ADMNISTRATIVEAREAS1 = 'admnistrativeareas1';
+    const COUNTRIES           = 'countries';
 
     const COMPANIES      = 'companies';
     const JOBDESCRIPTION = 'jobdescription';
@@ -565,56 +567,54 @@ class DE_Nationalities extends DirEnumeration
 }
 // }}}
 
-// {{{ class DE_Countries
-class DE_Countries extends DirEnumeration
+// {{{ class DE_AddressesComponents
+class DE_AddressesComponents extends DirEnumeration
 {
-    protected $idfield   = 'geoloc_countries.iso_3166_1_a2';
-    protected $valfield  = 'geoloc_countries.country';
-    protected $valfield2 = 'geoloc_countries.countryEn';
-    protected $from      = 'geoloc_countries';
+    protected $idfield   = 'profile_addresses_components_enum.id';
+    protected $valfield  = 'profile_addresses_components_enum.long_name';
+    protected $from      = 'profile_addresses_components_enum';
 
-    protected $ac_join   = 'INNER JOIN profile_addresses ON (geoloc_countries.iso_3166_1_a2 = profile_addresses.countryId)';
-    protected $ac_unique = 'profile_addresses.pid';
-    protected $ac_where  = 'profile_addresses.type = \'home\'';
+    protected $ac_join   = 'INNER JOIN profile_addresses_components ON (profile_addresses_components.component_id = profile_addresses_components_enum.id)';
+    protected $ac_unique = 'profile_addresses_components.pid';
 }
 // }}}
-
-// {{{ class DE_AdminAreas
-class DE_AdminAreas extends DE_WithSuboption
+// {{{ class DE_AddressesComponents extensions
+class DE_Countries extends DE_AddressesComponents
 {
-    protected $idfield   = 'geoloc_administrativeareas.id';
-    protected $optfield  = 'geoloc_administrativeareas.country';
-    protected $valfield  = 'geoloc_administrativeareas.name';
-    protected $from      = 'geoloc_administrativeareas';
-
-    protected $ac_join   = 'INNER JOIN profile_addresses ON (profile_addresses.administrativeAreaId = geoloc_administrativeareas.id)';
-    protected $ac_unique = 'profile_addresses.pid';
+    protected $where = 'WHERE  FIND_IN_SET(\'country\', profile_addresses_components_enum.types)';
+    protected $ac_where  = 'profile_addresses_components.type = \'home\' AND FIND_IN_SET(\'country\', profile_addresses_components_enum.types)';
 }
-// }}}
 
-// {{{ class DE_SubAdminAreas
-class DE_SubAdminAreas extends DE_WithSuboption
+class DE_Admnistrativeareas1 extends DE_AddressesComponents
 {
-    protected $idfield   = 'geoloc_subadministrativeareas.id';
-    protected $optfield  = 'geoloc_subadministrativeareas.administrativearea';
-    protected $valfield  = 'geoloc_subadministrativeareas.name';
-    protected $from      = 'geoloc_subadministrativeareas';
-
-    protected $ac_join   = 'INNER JOIN profile_addresses ON (profile_addresses.subadministrativeAreaId = geoloc_subadministrativeareas.id)';
-    protected $ac_unique = 'profile_addresses.pid';
+    protected $where = 'WHERE  FIND_IN_SET(\'admnistrative_area_1\', profile_addresses_components_enum.types)';
+    protected $ac_where  = 'profile_addresses_components.type = \'home\' AND FIND_IN_SET(\'admnistrative_area_1\', profile_addresses_components_enum.types)';
 }
-// }}}
 
-// {{{ class DE_Localities
-class DE_Localities extends DirEnumeration
+class DE_Admnistrativeareas2 extends DE_AddressesComponents
 {
-    protected $idfield   = 'geoloc_localities.id';
-    protected $valfield  = 'geoloc_localities.name';
-    protected $from      = 'geoloc_localities';
-
-    protected $ac_join   = 'INNER JOIN profile_addresses ON (profile_addresses.localityID = geoloc_localities.id)';
-    protected $ac_unique = 'profile_addresses.pid';
+    protected $where = 'WHERE  FIND_IN_SET(\'admnistrative_area_2\', profile_addresses_components_enum.types)';
+    protected $ac_where  = 'profile_addresses_components.type = \'home\' AND FIND_IN_SET(\'admnistrative_area_2\', profile_addresses_components_enum.types)';
 }
+
+class DE_Admnistrativeareas3 extends DE_AddressesComponents
+{
+    protected $where = 'WHERE  FIND_IN_SET(\'admnistrative_area_3\', profile_addresses_components_enum.types)';
+    protected $ac_where  = 'profile_addresses_components.type = \'home\' AND FIND_IN_SET(\'admnistrative_area_3\', profile_addresses_components_enum.types)';
+}
+
+class DE_Localities extends DE_AddressesComponents
+{
+    protected $where = 'WHERE  FIND_IN_SET(\'locality\', profile_addresses_components_enum.types)';
+    protected $ac_where  = 'profile_addresses_components.type = \'home\' AND FIND_IN_SET(\'locality\', profile_addresses_components_enum.types)';
+}
+
+class DE_Sublocalities extends DE_AddressesComponents
+{
+    protected $where = 'WHERE  FIND_IN_SET(\'sublocality\', profile_addresses_components_enum.types)';
+    protected $ac_where  = 'profile_addresses_components.type = \'home\' AND FIND_IN_SET(\'sublocality\', profile_addresses_components_enum.types)';
+}
+
 // }}}
 
 /** JOBS
