@@ -26,10 +26,11 @@ class AddressReq extends ProfileValidate
     // {{{ properties
 
     // Address primary field that are not in its formatted array.
-    public $pid;
-    public $jobid;
-    public $groupid;
-    public $type;
+    public $key_pid;
+    public $key_jobid;
+    public $key_groupid;
+    public $key_type;
+    public $key_id;
 
     // We need the text given by the user, and the toy version to try to improve
     // the geocoding.
@@ -43,17 +44,17 @@ class AddressReq extends ProfileValidate
     // }}}
     // {{{ constructor
 
-    public function __construct(User $_user, Profile $_profile, $_text, $_pid, $_jobid, $_groupid, $_type, $_stamp = 0)
+    public function __construct(User $_user, array $_address, $_pid, $_jobid, $_groupid, $_type, $_id, $_stamp = 0)
     {
+        $_profile = Profile::get($_pid);
         parent::__construct($_user, $_profile, false, 'address', $_stamp);
         $this->key_pid = $_pid;
         $this->key_jobid = $_jobid;
         $this->key_groupid = $_groupid;
         $this->key_type = $_type;
-        $this->given_text = $_text;
-        $address = new Address(array('changed' => 1, 'text' => $_text));
-        $address->format();
-        $this->address = $address->toFormArray();
+        $this->key_id = $_id;
+        $this->given_text = $_address['text'];
+        $this->address = $_address;
     }
 
     // }}}
@@ -115,10 +116,11 @@ class AddressReq extends ProfileValidate
     public function commit()
     {
         $this->address = array_merge($this->address, array(
-            'pid' => $this->key_pid,
-            'jobid' => $this->key_jobid,
+            'pid'     => $this->key_pid,
+            'jobid'   => $this->key_jobid,
             'groupid' => $this->key_groupid,
-            'type' => $this->key_type
+            'type'    => $this->key_type,
+            'id'      => $this->key_id
         ));
         $this->address['text'] = ($this->modified ? $this->toy_text : $this->given_text);;
         $this->address['changed'] = 0;
@@ -132,12 +134,12 @@ class AddressReq extends ProfileValidate
     // }}}
     // {{{ function get_request()
 
-    static public function get_request($pid, $jobid, $groupid, $type, $address)
+    static public function get_request($pid, $jobid, $groupid, $type, $id)
     {
         $reqs = parent::get_typed_requests($pid, 'address');
         foreach ($reqs as &$req) {
             if ($req->key_pid == $pid && $req->key_jobid == $jobid && $req->key_groupid == $groupid
-                && $req->key_type == $type && $req->address['text'] == $address) {
+                && $req->key_type == $type && $req->key_id == $id) {
                 return $req;
             }
         }
@@ -153,14 +155,7 @@ class AddressReq extends ProfileValidate
         $requests = parent::get_all_typed_requests('address');
         foreach ($requests as &$req) {
             if ($req->key_pid == $pid && $req->key_jobid == $jobid && $req->key_groupid == $groupid && $req->key_type == $type) {
-                $count = XDB::fetchOneCell('SELECT  COUNT(*)
-                                              FROM  profile_addresses
-                                             WHERE  pid = {?} AND jobid = {?} AND groupid = {?}
-                                                    AND type = {?} AND text = {?}',
-                                           $pid, $jobid, $groupid, $type, $req->address['text']);
-                if ($count == 0) {
-                    $req->clean();
-                }
+                $req->clean();
             }
         }
     }

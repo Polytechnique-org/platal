@@ -52,15 +52,16 @@
   </td>
   <td>
 {/if}
-  <div class="static_map_url" {if !t($address.latitude)}style="display: none"{/if}>
+  <div id="{$prefid}_static_map_url" {if !t($address.latitude)}style="display: none"{/if}>
     <img src="{insert name="getStaticMapURL" latitude=$address.latitude longitude=$address.longitude color=$profile->promoColor()}" alt="Position de l'adresse" />
     {if t($geocoding_removal)}
     <br />
     <small id="{$prefid}_geocoding_removal">
     {if !t($address.request)}
-      <a href="javascript:deleteGeocoding('{$prefid}', '{$hrpid}')">{icon name=cross title="Adresse mal localisée"} Signaler que le repère est mal placé</a>
+      <label><input type="checkbox" name="{$prefname}[request]" onclick="return deleteGeocoding('{$prefid}')" /> Signaler que le repère est mal placé</label>
     {else}
     Localisation en attente de validation.
+    <input type="hidden" name="{$prefname}[request]" value="{$address.request}" />
     {/if}
     </small>
     {/if}

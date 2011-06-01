@@ -317,14 +317,14 @@ function checkCurrentAddress(id)
     }
 }
 
-function addAddress()
+function addAddress(pid)
 {
     var i = 0;
     while ($('#addresses_' + i + '_cont').length != 0) {
         i++;
     }
     $('#add_address').before('<div id="addresses_' + i + '_cont"></div>');
-    $('#addresses_' + i + '_cont').updateHtml('profile/ajax/address/' + i,
+    $('#addresses_' + i + '_cont').updateHtml('profile/ajax/address/' + i + '/' + pid,
                                               checkCurrentAddress());
 }
 
@@ -333,13 +333,18 @@ function addressChanged(prefid, color)
     var text = $('#' + prefid + '_cont').find("[name*='[text]']").val();
     $('#' + prefid + '_cont').find('[name*=changed]').val("1");
     $.xpost('map_url/', { text:text, color:color }, function(data) {
-        $('.static_map_url').find('img').attr('src', data);
+        $('#' + prefid + '_static_map_url').show();
+        $('#' + prefid + '_static_map_url').find('img').attr('src', data);
     });
 }
 
-function deleteGeocoding(prefid, hrpid)
+function deleteGeocoding(prefid)
 {
-    var confirmation = confirm(
+    if($('#' + prefid + '_geocoding_removal').find('[name*=request]:checkbox:checked').length == 0) {
+        return true;
+    }
+
+    return confirm(
         "La localisation de l'adresse sert à deux choses : te placer dans "
         + "le planisphère et te faire apparaître dans la recherche avancée par "
         + "pays, région, département, ville... La supprimer t'en fera disparaître. "
@@ -347,12 +352,6 @@ function deleteGeocoding(prefid, hrpid)
         + "est réellement erronée. Avant de supprimer cette localisation, l'équipe de "
         + "Polytechnique.org tentera de la réparer.\n\nConfirmes-tu ta "
         + "demande de suppression de cette localisation ?");
-
-    if (confirmation) {
-        var address = $('#' + prefid).find("[name*='[text]']").val();
-        $.xpost('profile/ajax/address/del/' + hrpid, { address:address });
-        $('#' + prefid + '_geocoding_removal').html('Localisation en attente de validation.');
-    }
 }
 
 // {{{1 Phones

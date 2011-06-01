@@ -396,26 +396,15 @@ class ProfileModule extends PLModule
         $page->assign('medal_list', $mlist);
     }
 
-    function handler_ajax_address($page, $id)
+    function handler_ajax_address($page, $id, $pid)
     {
         pl_content_headers("text/html");
         $page->changeTpl('profile/adresses.address.tpl', NO_SKIN);
         $page->assign('i', $id);
         $page->assign('address', array());
-    }
-
-    function handler_ajax_address_del($page, $hrpid)
-    {
-        if ($profile = Profile::get($hrpid)) {
-            if (S::user()->canEdit($profile)) {
-                $address = Post::t('address');
-                if (is_null(AddressReq::get_request($profile->id(), 0, 0, Address::LINK_PROFILE, $address))) {
-                    $req = new AddressReq(S::user(), $profile, $address, $profile->id(), 0, 0, Address::LINK_PROFILE);
-                    $req->submit();
-                }
-            }
-        }
-        exit();
+        $page->assign('profile', Profile::get($pid));
+        $page->assign('isMe', true);
+        $page->assign('geocoding_removal', true);
     }
 
     function handler_ajax_tel($page, $prefid, $prefname, $telid, $subField, $mainField, $mainId)

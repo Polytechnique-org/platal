@@ -65,7 +65,7 @@
   <tr {if $hiddenaddr}style="display: none"{/if}>
   {if !$isMe}
     <td>
-      <small><strong>Adress postale&nbsp;:</strong><br />{$address.postalText|nl2br}</small>
+      <small><strong>Adresse postale&nbsp;:</strong><br />{$address.postalText|nl2br}</small>
     </td>
     <td>
   {else}
