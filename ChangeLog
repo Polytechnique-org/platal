@@ -1,6 +1,12 @@
 ================================================================================
 VERSION 1.1.2                                                         XX XX XXXX
 
+New:
+
+    * Geoloc:
+        - Updates geocoding to Google Maps API v3                          -JAC
+        - Reintroduces maps, now based on Google Maps                      -JAC
+
 Bug/Wish:
 
     * Paiement:
