@@ -26,6 +26,7 @@ Bug/Wish:
     * XnetGrp:
         - #947: Lists group former members to group admins                 -JAC
         - #1481: Adds group nl subscription from group profile edition     -JAC
+        - #1504: Displays users without profile in alphabetic lists        -JAC
 
     * XnetEvent:
         - #1487: Removes link to event attending users to group outsiders  -JAC

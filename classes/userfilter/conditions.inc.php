@@ -598,8 +598,15 @@ class UFC_NameInitial extends UserFilterCondition
 
     public function buildCondition(PlFilter $uf)
     {
-        $sub = $uf->addDisplayFilter();
-        return 'SUBSTRING(pd.sort_name, 1, 1) ' . XDB::formatWildcards(XDB::WILDCARD_PREFIX, $this->initial);
+        $table = 'sort_name';
+        if ($uf->accountsRequired()) {
+            $table = Profile::getAccountEquivalentName($table);
+            $sub = 'a';
+        } else {
+            $uf->addDisplayFilter();
+            $sub = 'pd';
+        }
+        return 'SUBSTRING(' . $sub . '.' . $table . ', 1, 1) ' . XDB::formatWildcards(XDB::WILDCARD_PREFIX, $this->initial);
     }
 
     public function export()
