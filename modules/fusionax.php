@@ -172,8 +172,6 @@ class FusionAxModule extends PLModule
                                     FROM  fusionax_anciens
                                    WHERE  promotion_etude = 1920;');
 
-            $nameTypes = DirEnum::getOptions(DirEnum::NAMETYPES);
-            $nameTypes = array_flip($nameTypes);
             $eduSchools = DirEnum::getOptions(DirEnum::EDUSCHOOLS);
             $eduSchools = array_flip($eduSchools);
             $eduDegrees = DirEnum::getOptions(DirEnum::EDUDEGREES);
@@ -205,12 +203,9 @@ class FusionAxModule extends PLModule
                                    VALUES  ({?}, {?}, {?}, {?})',
                              $hrid, $xorgId, $ax_id, $sex);
                 $pid = XDB::insertId();
-                XDB::execute('INSERT INTO  profile_name (pid, name, typeid)
+                XDB::execute('INSERT INTO  profile_public_names (pid, lastname_initial, firstname_initial)
                                    VALUES  ({?}, {?}, {?})',
-                             $pid, $lastname, $nameTypes['name_ini']);
-                XDB::execute('INSERT INTO  profile_name (pid, name, typeid)
-                                   VALUES  ({?}, {?}, {?})',
-                             $pid, $firstname, $nameTypes['firstname_ini']);
+                             $pid, $lastname, $firstname);
                 XDB::execute('INSERT INTO  profile_display (pid, yourself, public_name, private_name,
                                                             directory_name, short_name, sort_name, promo)
                                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
@@ -545,37 +540,18 @@ class FusionAxModule extends PLModule
                        INNER JOIN  profiles         AS p    ON (f.ax_id = p.ax_id)');
         $page->assign('total', $res->fetchOneCell());
 
-        // To be checked:
-        // | lastname           |  1 |
-        // | lastname_marital   |  2 |
-        // | lastname_ordinary  |  3 |
-        // | firstname          |  4 |
-        // | firstname_ordinary |  7 |
-        // | firstname_other    |  8 |
-        // | name_other         |  9 |
-        // | name_ini           | 10 |
-        // | firstname_ini      | 11 |
-        $res = XDB::query("SELECT  COUNT(*)
-                             FROM  fusionax_anciens AS f
-                       INNER JOIN  profiles         AS p   ON (f.ax_id = p.ax_id)
-                        LEFT JOIN  profile_name     AS pnp ON (p.pid = pnp.pid AND pnp.typeid = 1)
-                        LEFT JOIN  profile_name     AS pnm ON (p.pid = pnm.pid AND pnm.typeid = 2)
-                        LEFT JOIN  profile_name     AS pno ON (p.pid = pno.pid AND pno.typeid = 3)
-                        LEFT JOIN  profile_name     AS pne ON (p.pid = pne.pid AND pne.typeid = 9)
-                        LEFT JOIN  profile_name     AS pni ON (p.pid = pni.pid AND pni.typeid = 10)
-                            WHERE  IF(f.partic_patro, CONCAT(f.partic_patro, CONCAT(' ', f.Nom_patronymique)), f.Nom_patronymique) NOT IN (pnp.name, pno.name, pnm.name, pne.name, pni.name)
-                                   OR IF(f.partic_nom, CONCAT(f.partic_nom, CONCAT(' ', f.Nom_usuel)), f.Nom_usuel) NOT IN (pnp.name, pno.name, pnm.name, pne.name, pni.name)
-                                   OR f.Nom_complet NOT IN (pnp.name, pno.name, pnm.name, pne.name, pni.name)");
+        $res = XDB::rawFetchOneCell("SELECT  COUNT(*)
+                                       FROM  fusionax_anciens AS f
+                                 INNER JOIN  profiles         AS p   ON (f.ax_id = p.ax_id)
+                                      WHERE  IF(f.partic_patro, CONCAT(f.partic_patro, CONCAT(' ', f.Nom_patronymique)), f.Nom_patronymique) NOT IN (p.lastname_initial, p.lastname_main, p.lastname_marital, p.lastname_ordinary)
+                                             OR IF(f.partic_nom, CONCAT(f.partic_nom, CONCAT(' ', f.Nom_usuel)), f.Nom_usuel) NOT IN (p.lastname_initial, p.lastname_main, p.lastname_marital, p.lastname_ordinary)
+                                             OR f.Nom_complet NOT IN (p.lastname_initial, p.lastname_main, p.lastname_marital, p.lastname_ordinary)");
         $page->assign('lastnameIssues', $res->fetchOneCell());
 
-        $res = XDB::query('SELECT  COUNT(*)
-                             FROM  fusionax_anciens AS f
-                       INNER JOIN  profiles         AS p   ON (f.ax_id = p.ax_id)
-                        LEFT JOIN  profile_name     AS pnf ON (p.pid = pnf.pid AND pnf.typeid = 4)
-                        LEFT JOIN  profile_name     AS pno ON (p.pid = pno.pid AND pno.typeid = 7)
-                        LEFT JOIN  profile_name     AS pne ON (p.pid = pne.pid AND pne.typeid = 8)
-                        LEFT JOIN  profile_name     AS pni ON (p.pid = pni.pid AND pni.typeid = 11)
-                            WHERE  f.prenom NOT IN (pnf.name, pno.name, pne.name, pni.name)');
+        $res = XDB::rawFetchOneCell('SELECT  COUNT(*)
+                                       FROM  fusionax_anciens AS f
+                                 INNER JOIN  profiles         AS p   ON (f.ax_id = p.ax_id)
+                                      WHERE  f.prenom NOT IN (p.firstname_initial, p.firstname_main, p.firstname_ordinary)');
         $page->assign('firstnameIssues', $res->fetchOneCell());
 
     }
