@@ -1407,6 +1407,40 @@ class UserFilter extends PlFilter
             return array();
         }
     }
+
+
+    /** PARTNER SHARING
+     */
+
+    // Lists partner shortnames in use, as a $partner_shortname => true map.
+    private $ppss = array();
+
+    /** Add a filter on user having settings for a given partner.
+     * @param $partner_id the ID of the partner
+     * @return the name of the table to use in joins (e.g ppss_$partner_id).
+     */
+    public function addPartnerSharingFilter($partner_id)
+    {
+        $this->requireProfiles();
+        $sub = "ppss_$partner_id";
+        $this->ppss[$sub] = $partner_id;
+        return $sub;
+    }
+
+    protected function partnerSharingJoins()
+    {
+        $joins = array();
+        foreach ($this->ppss as $sub => $partner_id) {
+            $joins[$sub] = PlSqlJoin::left('profile_partnersharing_settings', '$ME.pid = $PID AND $ME.partner_id = {?} AND $ME.sharing_level != \'none\'', $partner_id);
+        }
+        return $joins;
+    }
+
+    public function restrictVisibilityForPartner($partner_id)
+    {
+        $sub = $this->addPartnerSharingFilter($partner_id);
+        $this->visibility_field = $sub . '.sharing_level';
+    }
 }
 // }}}
 // {{{ class ProfileFilter

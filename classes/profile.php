@@ -110,10 +110,11 @@ class Profile implements PlExportable
     const FETCH_JOB_TERMS      = 0x000200;
     const FETCH_MENTOR_TERMS   = 0x000400;
     const FETCH_DELTATEN       = 0x000800;
+    const FETCH_PARTNER        = 0x001000;
 
     const FETCH_MINIFICHES   = 0x00012D; // FETCH_ADDRESSES | FETCH_EDU | FETCH_JOBS | FETCH_NETWORKING | FETCH_PHONES
 
-    const FETCH_ALL          = 0x000FFF; // OR of FETCH_*
+    const FETCH_ALL          = 0x001FFF; // OR of FETCH_*
 
     static public $descriptions = array(
         'search_names'    => 'Noms',
@@ -458,7 +459,8 @@ class Profile implements PlExportable
      * Clears a profile.
      *  *always deletes in: profile_addresses, profile_binets, profile_deltaten,
      *      profile_job, profile_langskills, profile_mentor, profile_networking,
-     *      profile_phones, profile_skills, watch_profile
+     *      profile_partnersharing_settings, profile_phones, profile_skills,
+     *      watch_profile
      *  *always keeps in: profile_corps, profile_display, profile_education,
      *      profile_medals, profile_*_names, profile_photos, search_name
      *  *modifies: profiles
@@ -469,7 +471,7 @@ class Profile implements PlExportable
             'profile_job', 'profile_langskills', 'profile_mentor',
             'profile_networking', 'profile_skills', 'watch_profile',
             'profile_phones', 'profile_addresses', 'profile_binets',
-            'profile_deltaten');
+            'profile_deltaten', 'profile_partnersharing_settings');
 
         foreach ($tables as $t) {
             XDB::execute('DELETE FROM  ' . $t . '
@@ -911,6 +913,25 @@ class Profile implements PlExportable
             return array();
         }
         return $this->medals->medals;
+    }
+
+    /** Sharing data with partner websites
+     */
+    private $partners_settings = null;
+    public function setPartnersSettings(ProfilePartnerSharing $partners_settings)
+    {
+        $this->partners_settings = $partners_settings;
+    }
+
+    public function getPartnerSettings($partner_id)
+    {
+        if ($this->partners_settings == null && !$this->fetched(self::FETCH_PARTNER)) {
+            $this->setPartnersSettings($this->getProfileField(self::FETCH_PARTNER));
+        }
+        if ($this->partners_settings == null) {
+            return PartnerSettings::getEmpty($partner_id);
+        }
+        return $this->partners_settings->get($partner_id);
     }
 
     public function compareNames($firstname, $lastname)

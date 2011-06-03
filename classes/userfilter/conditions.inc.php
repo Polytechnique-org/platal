@@ -1616,6 +1616,72 @@ class UFC_MarketingHash extends UserFilterCondition
     }
 }
 // }}}
+// {{{ class UFC_PartnerSharing
+/** Filters users, keeping only those sharing data with a given partner.
+ */
+class UFC_PartnerSharing extends UserFilterCondition
+{
+    const PTA = 'pta';
+
+    private $partner;
+
+    public function __construct($partner)
+    {
+        $this->partner = $partner;
+    }
+
+    public function buildCondition(PlFilter $uf)
+    {
+        $sub = $uf->addPartnerSharingFilter($this->partner);
+        return XDB::format("$sub.exposed_uid IS NOT NULL");
+    }
+}
+// }}}
+// {{{ class UFC_PartnerSharingEmail
+/** Filters users, keeping only those allowing emails to be sent by
+ * a given partner.
+ */
+class UFC_PartnerSharingEmail extends UserFilterCondition
+{
+    private $partner;
+
+    public function __construct($partner)
+    {
+        $this->partner = $partner;
+    }
+
+    public function buildCondition(PlFilter $uf)
+    {
+        $sub = $uf->addPartnerSharingFilter($this->partner);
+        return XDB::format("$sub.allow_email IN ('digest', 'direct')");
+    }
+}
+// }}}
+// {{{ class UFC_PartnerSharingID
+/** Filters users according to a list of partner-known IDs
+ */
+class UFC_PartnerSharingID extends UserFilterCondition
+{
+    private $partner;
+    private $ids;
+
+    public function __construct($partner)
+    {
+        $this->partner = $partner;
+        $ids = func_get_args();
+        array_shift($ids);
+        $this->ids   = pl_flatten($ids);
+    }
+
+    public function buildCondition(PlFilter $uf)
+    {
+        $uf->requireProfiles();
+        $ids = $this->ids;
+        $sub = $uf->addPartnerSharingFilter($this->partner);
+        return XDB::format("$sub.exposed_uid IN {?}", $ids);
+    }
+}
+// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

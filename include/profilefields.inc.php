@@ -36,6 +36,7 @@ abstract class ProfileField
         Profile::FETCH_MENTOR_COUNTRY => 'ProfileMentoringCountries',
         Profile::FETCH_JOB_TERMS      => 'ProfileJobTerms',
         Profile::FETCH_MENTOR_TERMS   => 'ProfileMentoringTerms',
+        Profile::FETCH_PARTNER        => 'ProfilePartnerSharing',
     );
 
     /** The profile to which this field belongs
@@ -719,6 +720,45 @@ class ProfileMentoringTerms extends ProfileJobTerms
     }
 }
 // }}}
+// {{{ class ProfilePartnerSharing                    [ Field ]
+class ProfilePartnerSharing extends ProfileField
+{
+    public function __construct(PlInnerSubIterator $it)
+    {
+        require_once 'partnersharing.inc.php';
+
+        $this->pid = $it->value();
+        while ($partner_settings = $it->next()) {
+            $settings = new PartnerSettings($partner_settings);
+            $this->partners_settings[$settings->partner->id] = $settings;
+        }
+    }
+
+    public static function fetchData(array $pids, Visibility $visibility)
+    {
+        $data = XDB::iterator('SELECT  ppss.pid, ppss.exposed_uid, ppss.sharing_level,
+                                       ppss.allow_email, ppss.partner_id,
+                                       ppse.shortname AS partner_shortname,
+                                       ppse.name AS partner_name,
+                                       ppse.url AS partner_url
+                                 FROM  profile_partnersharing_settings AS ppss
+                            LEFT JOIN  profile_partnersharing_enum AS ppse ON (ppss.partner_id = ppse.id)
+                                WHERE  ppss.pid IN {?}
+                             ORDER BY  ' . XDB::formatCustomOrder('ppss.pid', $pids),
+                                 $pids);
+        return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
+    }
+
+    public function get($partner_id)
+    {
+        if (isset($this->partners_settings[$partner_id])) {
+            return $this->partners_settings[$partner_id];
+        } else {
+            return PartnerSettings::getEmpty($partner_id);
+        }
+    }
+}
+// }}}
 // {{{ class CompanyList
 class CompanyList
 {
@@ -780,6 +820,7 @@ class CompanyList
         return null;
     }
 }
+// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
