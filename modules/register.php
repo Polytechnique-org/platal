@@ -31,7 +31,8 @@ class RegisterModule extends PLModule
 
     function handler_register($page, $hash = null)
     {
-        $alert = null;
+        $alert = array();
+        $alert_details = '';
         $subState = new PlDict(S::v('subState', array()));
         if (!$subState->has('step')) {
             $subState->set('step', 0);
@@ -44,14 +45,15 @@ class RegisterModule extends PLModule
             $subState->v('backs')->set($subState->v('backs')->count() + 1, $subState->dict());
             $subState->v('backs')->kill('backs');
             if ($subState->v('backs')->count() == 3) {
-                $alert .= "Tentative d'inscription très hésitante - ";
+                $alert[] = "Tentative d'inscription très hésitante";
+                $alert_details .= "\n   * Retours en arrières : 3.";
             }
         }
 
         if ($hash) {
             $res = XDB::query("SELECT  a.uid, a.hruid, ppn.lastname_initial AS lastname, ppn.firstname_initial AS firstname, p.xorg_id AS xorgid,
                                        pd.promo, pe.promo_year AS yearpromo, pde.degree AS edu_type,
-                                       p.birthdate_ref AS birthdateRef, FIND_IN_SET('watch', a.flags) AS watch, m.hash, a.type
+                                       p.birthdate_ref AS birthdateRef, FIND_IN_SET('watch', a.flags) AS watch, m.hash, a.type, a.comment
                                  FROM  register_marketing AS m
                            INNER JOIN  accounts           AS a   ON (m.uid = a.uid)
                            INNER JOIN  account_profiles   AS ap  ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
@@ -175,7 +177,8 @@ class RegisterModule extends PLModule
                         $ref_year = substr($subState->v('birthdateRef'), 0, 4);
                         if (abs($ref_year - $year) > 2) {
                             $error[] = "La 'Date de naissance' n'est pas correcte.";
-                            $alert = "Date de naissance incorrecte à l'inscription - ";
+                            $alert[] = "Date de naissance incorrecte à l'inscription";
+                            $alert_details .= "\n   * Date de naissance renseignée : " . $birth . ' (date connue : ' . $subState->v('birthdateRef') . ')';
                             $subState->set('wrong_birthdate', $birth);
                         }
                     }
@@ -202,14 +205,16 @@ class RegisterModule extends PLModule
                     $bannedEmail = false;
                     if ($res->numRows()) {
                         list($state, $description) = $res->fetchOneRow();
-                        $alert .= "Email surveillé proposé à l'inscription - ";
+                        $alert[] = "Email surveillé proposé à l'inscription";
+                        $alert_details .= "\n   * Email surveillé : " . Post::v('email');
                         $subState->set('email_desc', $description);
                         if ($state == 'dangerous') {
                             $bannedEmail = true;
                         }
                     }
                     if ($subState->i('watch') != 0) {
-                        $alert .= "Inscription d'un utilisateur surveillé - ";
+                        $alert[] = "Inscription d'un utilisateur surveillé";
+                        $alert_details .= "\n   * Commentaire pour la surveillance : " . $subState->v('comment');
                     }
 
                     if (($bannedIp = check_ip('unsafe'))) {
@@ -228,10 +233,12 @@ class RegisterModule extends PLModule
                         // or if the IP address of the user has been banned.
                         if ($subState->s('birthdateRef') != '0000-00-00'
                             && $subState->s('birthdateRef') != $subState->s('birthdate')) {
-                            $alert .= "Date de naissance incorrecte à l'inscription - ";
+                            $alert[] = "Date de naissance incorrecte à l'inscription";
+                            $alert_details .= "\n   * Date de naissance renseignée : " . $subState->s('birthdateRef') . ' (date connue : ' . $subState->s('birthdateRef') . ')';
                         }
                         if ($bannedIp) {
-                            $alert .= "Tentative d'inscription depuis une IP surveillée";
+                            $alert[] = "Tentative d'inscription depuis une IP surveillée";
+                            $alert_details .= "\n   * IP surveillée : " . $_SESSION['check_ip'];
                         }
 
                         // Prevent banned user from actually registering; save the current state for others.
@@ -244,7 +251,8 @@ class RegisterModule extends PLModule
                         } else {
                             $subState->set('step', 4);
                             if ($subState->v('backs')->count() >= 3) {
-                                $alert .= "Fin d'une inscription hésitante.";
+                                $alert[] = "Fin d'une inscription hésitante";
+                                $alert_details .= "\n   * Nombre de retours en arrière : " . $subState->v('backs')->count();
                             }
                             finishRegistration($subState);
                         }
@@ -254,8 +262,9 @@ class RegisterModule extends PLModule
         }
 
         $_SESSION['subState'] = $subState->dict();
-        if (!empty($alert)) {
-            send_warning_mail($alert);
+        if (count($alert)) {
+            $alert_details = "Détails des alertes :" . $alert_details . "\n\n\n";
+            send_warning_mail(implode(' - ', $alert), $alert_details);
         }
 
         $page->changeTpl('register/step' . $subState->i('step') . '.tpl');

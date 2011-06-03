@@ -19,6 +19,7 @@ Bug/Wish:
 
     * Register:
         - #1501: Displays redirections in succesful registration summary   -JAC
+        - #1506: Displays errors summary on registration alert emails      -JAC
 
     * Search:
         - #1285: Autocompletes on internal words in university search      -JAC

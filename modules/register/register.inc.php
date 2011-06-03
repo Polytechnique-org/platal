@@ -50,6 +50,7 @@ function strongCheckId($subState)
     $subState->set('firstname', $profile->firstName());
     $subState->set('uid', $profile->owner()->id());
     $subState->set('watch', $profile->owner()->watch);
+    $subState->set('comment', $profile->owner()->comment);
     $subState->set('birthdateRef', $profile->__get('birthdate_ref'));
     return true;
 }
@@ -71,6 +72,7 @@ function weakCheckId($subState)
                 $subState->set('firstname', $profile->firstName());
                 $subState->set('uid', $profile->owner()->id());
                 $subState->set('watch', $profile->owner()->watch);
+                $subState->set('comment', $profile->owner()->comment);
                 $subState->set('birthdateRef', $profile->__get('birthdate_ref'));
                 $subState->set('xorgid', $profile->__get('xorg_id'));
                 return true;
@@ -88,6 +90,7 @@ function weakCheckId($subState)
             if ($profile->compareNames($subState->s('firstname'), $subState->s('lastname'))) {
                 $subState->set('uid', $profile->owner()->id());
                 $subState->set('watch', $profile->owner()->watch);
+                $subState->set('comment', $profile->owner()->comment);
                 $subState->set('birthdateRef', $profile->__get('birthdate_ref'));
                 $subState->set('xorgid', $profile->__get('xorg_id'));
                 return 'Tu es vraisemblablement déjà inscrit !';
