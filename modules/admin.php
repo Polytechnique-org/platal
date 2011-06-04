@@ -969,14 +969,12 @@ class AdminModule extends PLModule
 
         // When we have a valid target, prepare emails.
         if ($target) {
-            require_once 'emails.inc.php';
             // Examine what operation needs to be performed.
             switch ($op) {
                 case 'mail':
                     S::assert_xsrf_token();
 
-                    send_warning_homonyme($user, $loginbis);
-                    fix_bestalias($user);
+                    send_warning_homonym($user, $loginbis);
                     $op = 'list';
                     $page->trigSuccess('Email envoyé à ' . $user->forlifeEmail() . '.');
                     break;
@@ -984,16 +982,8 @@ class AdminModule extends PLModule
                 case 'correct':
                     S::assert_xsrf_token();
 
-                    XDB::execute('DELETE FROM  email_source_account
-                                        WHERE  email = {?} AND type = \'alias\'',
-                                 $loginbis);
-                    XDB::execute('INSERT INTO  email_source_other (hrmid, email, domain, type, expire)
-                                       SELECT  {?}, {?}, id, \'homonym\', NOW()
-                                         FROM  email_virtual_domains
-                                        WHERE  name = {?}',
-                                 User::makeHomonymHrmid($loginbis), $loginbis, $user->mainEmailDomain());
-                    fix_bestalias($user);
-                    send_robot_homonyme($user, $loginbis);
+                    fix_homonym($user, $loginbis);
+                    send_robot_homonym($user, $loginbis);
                     $op = 'list';
                     $page->trigSuccess('Email envoyé à ' . $user->forlifeEmail() . ', alias supprimé.');
                     break;
@@ -1027,6 +1017,14 @@ class AdminModule extends PLModule
                 $homonyms_to_fix[$item['homonym']][] = $item;
             }
             $page->assign_by_ref('homonyms_to_fix', $homonyms_to_fix);
+        }
+
+        if ($op == 'correct-conf') {
+            $page->assign('robot_mail_text', get_robot_mail_text($user, $loginbis));
+        }
+
+        if ($op == 'mail-conf') {
+            $page->assign('warning_mail_text', get_warning_mail_text($user, $loginbis));
         }
     }
 

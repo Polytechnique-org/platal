@@ -103,22 +103,7 @@
     </tr>
     <tr>
       <td>
-        <textarea cols="80" rows="20" name="mailbody">
-{$user->displayName()},
-
-
-Comme nous t'en avons informé par email il y a quelques temps,
-pour respecter nos engagements en terme d'adresses email devinables,
-tu te verras bientôt retirer l'alias {$loginbis}@{$user->mainEmailDomain()} pour
-ne garder que {$user->forlifeEmail()}.
-
-Toute personne qui écrira à {$loginbis}@{$user->mainEmailDomain()} recevra la
-réponse d'un robot qui l'informera que {$loginbis}@{$user->mainEmailDomain()}
-est ambigu pour des raisons d'homonymie et signalera ton email exact.
-
-L'équipe Polytechnique.org
-{#globals.baseurl#}
-        </textarea>
+        <textarea cols="80" rows="20" name="mailbody">{$warning_mail_text}</textarea>
       </td>
     </tr>
     <tr>
@@ -139,22 +124,7 @@ L'équipe Polytechnique.org
     </tr>
     <tr>
       <td>
-        <textarea cols="80" rows="20" name="mailbody">
-{$user->displayName()},
-
-Comme nous t'en avons informé par email il y a quelques temps,
-nous t'avons retiré de façon définitive l'adresse
-{$loginbis}@{$user->mainEmailDomain()}.
-
-Toute personne qui écrit à {$loginbis}@{$user->mainEmailDomain()} reçoit la
-réponse d'un robot qui l'informe que {$loginbis}@{$user->mainEmailDomain()}
-est ambigu pour des raisons d'homonymie et indique ton email exact.
-
-Tu peux faire l'essai toi-même en écrivant à {$loginbis}@{$user->mainEmailDomain()}.
-
-L'équipe Polytechnique.org
-{#globals.baseurl#}
-        </textarea>
+        <textarea cols="80" rows="20" name="mailbody">{$robot_mail_text}</textarea>
       </td>
     </tr>
     <tr>

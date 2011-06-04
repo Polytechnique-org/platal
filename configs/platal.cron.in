@@ -30,7 +30,7 @@ WD=/home/web/prod/platal/bin/cron
 15 * * * *      web     cd $WD; ./newsletters.send.php | mail -e -s "Envoi des NLs des groupes" br@staff.m4x.org
 
 # homonymes
-0 0 4 * *	web	cd $WD; ./homonyms.php
+0 0 * * 1	web	cd $WD; ./homonyms.php
 
 # ml moderation
 * * * * *       web     cd $WD; ./cron_ml_moderate.php > /dev/null
