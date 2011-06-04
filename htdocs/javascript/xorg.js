@@ -839,23 +839,6 @@ function previewWiki(idFrom, idTo, withTitle, idShow)
 }
 
 // }}}
-// {{{ send test email
-
-function sendTestEmail(token, hruid)
-{
-    var url = 'emails/test';
-    var msg = "Un email a été envoyé avec succès";
-    if (hruid != null) {
-        url += '/' + hruid;
-        msg += " sur l'adresse de " + hruid + ".";
-    } else {
-        msg += " sur ton addresse.";
-    }
-    $('#mail_sent').successMessage($url + '?token=' + token, msg);
-    return false;
-}
-
-// }}}
 
 /***************************************************************************
  * Quick search
