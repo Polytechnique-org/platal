@@ -26,6 +26,7 @@ class HomonymeReq extends Validate
     // {{{ properties
 
     public $loginbis;
+    public $homonymes_hruid;
     public $warning = true;
     public $rules = "Accepter, sauf cas particulier d'utilisateur dont l'homonymie est traité plus &hellip; manuellement.";
 
@@ -40,6 +41,7 @@ class HomonymeReq extends Validate
 
         $this->refuse = false;
         $this->loginbis = $_loginbis;
+        $this->homonymes_hruid = $_homonymes_hruid;
     }
 
     // }}}
