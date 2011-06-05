@@ -41,12 +41,12 @@ class MarketingModule extends PLModule
         $page->changeTpl('marketing/index.tpl');
         $page->setTitle('Marketing');
 
-        $alive = new UserFilter(new PFC_Not(new UFC_Dead()));
-        $registered = new UserFilter(new PFC_And(new UFC_Registered(), new PFC_Not(new UFC_Dead())));
-        $alive72 = new UserFilter(new PFC_And(new UFC_Promo('>=', UserFilter::GRADE_ING, 1972), new PFC_Not(new UFC_Dead())));
-        $registered72 = new UserFilter(new PFC_And(new UFC_Registered(), new UFC_Promo('>=', UserFilter::GRADE_ING, 1972), new PFC_Not(new UFC_Dead())));
-        $aliveWomen = new UserFilter(new PFC_And(new UFC_Sex(User::GENDER_FEMALE) , new PFC_Not(new UFC_Dead())));
-        $registeredWomen = new UserFilter(new PFC_And(new UFC_Registered(), new UFC_Sex(User::GENDER_FEMALE), new PFC_Not(new UFC_Dead())));
+        $alive = new ProfileFilter(new PFC_Not(new UFC_Dead()));
+        $registered = new ProfileFilter(new PFC_And(new UFC_Registered(true), new PFC_Not(new UFC_Dead())));
+        $alive72 = new ProfileFilter(new PFC_And(new UFC_Promo('>=', UserFilter::GRADE_ING, 1972), new PFC_Not(new UFC_Dead())));
+        $registered72 = new ProfileFilter(new PFC_And(new UFC_Registered(true), new UFC_Promo('>=', UserFilter::GRADE_ING, 1972), new PFC_Not(new UFC_Dead())));
+        $aliveWomen = new ProfileFilter(new PFC_And(new UFC_Sex(User::GENDER_FEMALE) , new PFC_Not(new UFC_Dead())));
+        $registeredWomen = new ProfileFilter(new PFC_And(new UFC_Registered(true), new UFC_Sex(User::GENDER_FEMALE), new PFC_Not(new UFC_Dead())));
         $statistics = array(
             'alive'           => $alive->getTotalCount(),
             'registered'      => $registered->getTotalCount(),
@@ -59,7 +59,7 @@ class MarketingModule extends PLModule
         $statistics['registeredRate72']    = $statistics['registered72'] / $statistics['alive72'] * 100;
         $statistics['womenRegisteredRate'] = $statistics['womenRegistered'] / $statistics['womenAlive'] * 100;
 
-        $registeredWeek = new UserFilter(new PFC_And(new UFC_Registered(false, '>=', strtotime('1 week ago')), new PFC_Not(new UFC_Dead())));
+        $registeredWeek = new ProfileFilter(new PFC_And(new UFC_Registered(true, '>=', strtotime('1 week ago')), new PFC_Not(new UFC_Dead())));
         $registrationPending = XDB::fetchOneCell('SELECT  COUNT(*)
                                                     FROM  register_pending');
         $registrations = array(

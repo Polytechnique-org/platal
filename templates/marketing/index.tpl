@@ -40,21 +40,21 @@
 <br />
 
 <p>
-nombre d'X vivants d'après notre base de données&nbsp;: {$statistics.alive}<br />
-nombre d'X vivants inscrits à Polytechnique.org&nbsp;: {$statistics.registered}<br />
+nombre d'étudiants et anciens de l'X vivants d'après notre base de données&nbsp;: {$statistics.alive}<br />
+nombre d'étudiants et anciens de l'X vivants inscrits à Polytechnique.org&nbsp;: {$statistics.registered}<br />
 Soit un pourcentage d'inscrits de&nbsp;: {$statistics.registeredRate} %<br />
 </p>
 
 <p>
 Parmi ceux-ci&nbsp;:<br />
-nombre d'X vivants depuis 1972 d'après notre base de données&nbsp;: {$statistics.alive72}<br />
-nombre d'X vivants depuis 1972 inscrits à Polytechnique.org&nbsp;: {$statistics.registered72}<br />
+nombre d'X vivants depuis la promo 1972 d'après notre base de données&nbsp;: {$statistics.alive72}<br />
+nombre d'X vivants depuis la promo 1972 inscrits à Polytechnique.org&nbsp;: {$statistics.registered72}<br />
 Soit un pourcentage d'inscrits de&nbsp;: {$statistics.registeredRate72} %<br />
 </p>
 
 <p>
-nombre de Polytechniciennes vivantes&nbsp;: {$statistics.womenAlive}<br />
-nombre de Polytechniciennes vivantes et inscrites&nbsp;: {$statistics.womenRegistered}<br />
+nombre de étudiantes et anciennes de l'X vivantes&nbsp;: {$statistics.womenAlive}<br />
+nombre de étudiantes et anciennes de l'X vivantes et inscrites&nbsp;: {$statistics.womenRegistered}<br />
 Soit un pourcentage d'inscrites de&nbsp;: {$statistics.womenRegisteredRate} %<br />
 </p>
 
