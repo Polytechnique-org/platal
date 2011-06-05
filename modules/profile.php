@@ -429,13 +429,16 @@ class ProfileModule extends PLModule
         $page->assign('medal', array('id' => $id, 'grade' => 0, 'valid' => 0));
     }
 
-    function handler_ajax_job($page, $id)
+    function handler_ajax_job($page, $id, $pid)
     {
         pl_content_headers("text/html");
         $page->changeTpl('profile/jobs.job.tpl', NO_SKIN);
         $page->assign('i', $id);
         $page->assign('job', array());
         $page->assign('new', true);
+        $page->assign('profile', Profile::get($pid));
+        $page->assign('isMe', true);
+        $page->assign('geocoding_removal', true);
         require_once "emails.combobox.inc.php";
         fill_email_combobox($page, array('redirect', 'job', 'stripped_directory'));
     }

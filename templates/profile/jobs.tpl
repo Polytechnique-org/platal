@@ -30,7 +30,7 @@
 {/if}
 
 <div id="add_job" class="center">
-  <a href="javascript:addJob()">
+  <a href="javascript:addJob({$profile->id()})">
     {icon name=add title="Ajouter un emploi"} Ajouter un emploi
   </a>
   <br/><br/>

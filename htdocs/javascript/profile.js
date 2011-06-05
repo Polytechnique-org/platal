@@ -549,13 +549,13 @@ function makeAddJob(id)
     };
 }
 
-function addJob()
+function addJob(pid)
 {
     var i = 0;
     while ($('#jobs_' + i).length != 0) {
         ++i;
     }
-    $.xget('profile/ajax/job/' + i, makeAddJob(i));
+    $.xget('profile/ajax/job/' + i + '/' + pid, makeAddJob(i));
 }
 
 function addEntreprise(id)
