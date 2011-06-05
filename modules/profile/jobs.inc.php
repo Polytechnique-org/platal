@@ -409,6 +409,7 @@ class ProfilePageJobs extends ProfilePage
         $this->settings['corps'] = new ProfileSettingCorps();
         $this->settings['jobs'] = new ProfileSettingJob();
         $this->watched = array('cv' => true, 'jobs' => true, 'corps' => true);
+        Platal::page()->assign('geocoding_removal', true);
     }
 
     protected function _fetchData()
