@@ -700,6 +700,12 @@ class Address
                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?})',
                                  $this->pid, $this->jobid, $this->groupid, $this->type, $this->id, $component_id);
                 }
+            } else {
+                // If the address was not geocoded, notifies it to the appropriate ML.
+                $mailer = new PlMailer('profile/no_geocoding.mail.tpl');
+                $mailer->assign('text', $this->text);
+                $mailer->assign('primary_key', $this->pid . '-' . $this->jobid . '-' . $this->groupid . '-' . $this->type . '-' . $this->id);
+                $mailer->send();
             }
 
             if ($this->type == self::LINK_PROFILE) {
