@@ -73,6 +73,20 @@ abstract class Geocoder {
         }
         return $firstLines;
     }
+
+    // Returns the number of non geocoded addresses for a profile.
+    static public function countNonGeocoded($pid)
+    {
+        $count = XDB::fetchOneCell('SELECT  COUNT(*)
+                                      FROM  profile_addresses AS pa
+                                     WHERE  pid = {?} AND type = \'home\'
+                                            AND NOT EXISTS (SELECT  *
+                                                              FROM  profile_addresses_components AS pc
+                                                             WHERE  pa.pid = pc.pid AND pa.jobid = pc.jobid AND pa.groupid = pc.groupid
+                                                                    AND pa.type = pc.type AND pa.id = pc.id)',
+                                   $pid);
+        return $count;
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
