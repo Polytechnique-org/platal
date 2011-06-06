@@ -147,45 +147,15 @@
     {if $issue->isEditable()}
       {if $nl->criteria->hasFlag('promo')}
       <tr>
-        <td class='titre'>
-          Promotions
-        </td>
+        <td class="titre">Promotions</td>
         <td>
-          <script type="text/javascript">/*<![CDATA[*/
-            {literal}
-            function updatepromofields(egal1) {
-              var f = egal1.form;
-              f.egal2.disabled = f.promo2.disabled = egal1.value == '=';
-              f.egal2.readOnly = true;
-              if (f.egal1.value == '>=') {
-                f.egal2.value = '<=';
-              } else {
-                f.egal2.value = '>=';
-              }
-            }
-            $(function() { updatepromofields($('select[name=egal1]')[0]); });
-            {/literal}
-          /*]]>*/</script>
-          <select name="egal1" onchange="updatepromofields(this)" style="text-align:center">
-            <option value="=" {if $smarty.request.egal1 eq "="}selected="selected"{/if}>&nbsp;=&nbsp;</option>
-            <option value="&gt;=" {if $smarty.request.egal1 eq "&gt;="}selected="selected"{/if}>&nbsp;&gt;=&nbsp;</option>
-            <option value="&lt;=" {if $smarty.request.egal1 eq "&lt;="}selected="selected"{/if}>&nbsp;&lt;=&nbsp;</option>
-          </select>
-          <input type="text" name="promo1" size="4" maxlength="4" value="{$smarty.request.promo1}" />
-          &nbsp;et&nbsp;
-          <input type="text" name="egal2" size="1" style="text-align:center" value="{if t($smarty.request.egal2) eq '&lt;'}&lt;{else}&gt;{/if}" readonly="readonly" />
-          <input type="text" name="promo2" size="4" maxlength="4" value="{$smarty.request.promo2}" />
-          <select name="edu_type" style="text-align:center">
-            <option value="{#UserFilter::GRADE_ING#}" {if $smarty.request.edu_type eq #UserFilter::GRADE_ING#}selected="selected"{/if}>X</option>
-            <option value="{#UserFilter::GRADE_MST#}" {if $smarty.request.edu_type eq #UserFilter::GRADE_MST#}selected="selected"{/if}>Master</option>
-            <option value="{#UserFilter::GRADE_PHD#}" {if $smarty.request.edu_type eq #UserFilter::GRADE_PHD#}selected="selected"{/if}>Docteur</option>
-          </select>
+          {include file="include/select_promo.tpl" promo_data=$smarty.request egal1="egal1" egal2="egal2" promo1="promo1" promo2="promo2" edu_type="edu_type"}
         </td>
       </tr>
       {/if}
       {if $nl->criteria->hasFlag('axid')}
       <tr>
-        <td>Matricule AX</td>
+        <td class="titre">Matricule AX</td>
         <td>
           <textarea name="axid" rows="10" cols="12">{$smarty.request.axid}</textarea>
           <br />
