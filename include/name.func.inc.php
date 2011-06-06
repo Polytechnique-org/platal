@@ -21,211 +21,108 @@
 
 function build_javascript_names($data, $isFemale)
 {
-    $data_array = explode(';;', $data);
-    $n = count($data_array);
-    $n--;
-    for ($i = 0; $i < $n; $i++) {
-        $searchname = explode(';', $data_array[$i]);
-        if (isset($search_names[$searchname[0]])) {
-            $search_names[$searchname[0]][] = $searchname[1];
-        } else {
-            $search_names[$searchname[0]] = array('fullname' => $searchname[1]);
-        }
+    $names = array();
+    foreach (explode(';-;', $data) as $key => $item) {
+        $names[$key] = explode(';', $item);
+    }
+    $lastnames = array(
+        'lastname_main'     => $names[0][0],
+        'lastname_ordinary' => $names[0][1],
+        'lastname_marital'  => $names[0][2],
+        'pseudonym'         => $names[0][3]
+    );
+    $firstnames = array(
+        'firstname_main'     => $names[1][0],
+        'firstname_ordinary' => $names[1][1]
+    );
+    $private_names_count = intval(count($names[2]) / 2);
+    $private_names = array();
+    for ($i = 0; $i < $private_names_count; ++$i) {
+        $private_names[] = array('type' => $names[2][2 * $i], 'name' => $names[2][2 * $i + 1]);
     }
 
-    $sn_types_public  = build_types('public');
-    $sn_types_private = build_types('private');
-    $full_name        = build_full_name($search_names, $sn_types_public, $isFemale);
-    return build_public_name($search_names, $sn_types_public, $full_name) . ';' .
-           build_private_name($search_names, $sn_types_private);
+    return build_first_name($firstnames) . ' ' . build_full_last_name($lastnames, $isFemale) . ';' . build_private_name($private_names);
 }
 
-function build_display_names(&$display_names, $search_names, $isFemale, $private_name_end = null, &$alias = null)
-{
-    $sn_types_public  = build_types('public');
-    $full_name        = build_full_name($search_names, $sn_types_public, $isFemale);
-    $display_names['public_name']    = build_public_name($search_names, $sn_types_public, $full_name);
-    $display_names['private_name']   = $display_names['public_name'] . $private_name_end;
-    $display_names['directory_name'] = build_directory_name($search_names, $sn_types_public, $full_name);
-    $display_names['short_name']     = build_short_name($search_names, $sn_types_public, $alias);
-    $display_names['sort_name']      = build_sort_name($search_names, $sn_types_public);
+function build_email_alias(array $public_names)
+{ 
+    return PlUser::makeUserName(build_first_name($public_names), build_short_last_name($public_names));
 }
 
-function build_types($pub = null)
+function build_display_names(array $public_names, array $private_names, $isFemale)
 {
-    if ($pub == 'public') {
-        $sql_pub = "AND FIND_IN_SET('public', flags)";
-    } elseif ($pub == 'private') {
-        $sql_pub = "AND NOT FIND_IN_SET('public', flags)";
+    $short_last_name = build_short_last_name($public_names);
+    $full_last_name = build_full_last_name($public_names, $isFemale);
+    $private_last_name_end = build_private_name($private_names);
+    $firstname = build_first_name($public_names);
+
+    $display_names = array();
+    $display_names['public_name']    = $firstname . ' ' . $full_last_name;
+    $display_names['private_name']   = $display_names['public_name'] . $private_last_name_end;
+    $display_names['directory_name'] = $full_last_name . ' ' . $firstname;
+    $display_names['short_name']     = $firstname . ' ' . $short_last_name;
+    $display_names['sort_name']      = $short_last_name . ' ' . $firstname;
+
+    return $display_names;
+}
+
+function build_short_last_name(array $lastnames)
+{
+    return ($lastnames['lastname_ordinary'] == '') ? $lastnames['lastname_main'] : $lastnames['lastname_ordinary'];
+}
+
+function build_full_last_name(array $lastnames, $isFemale)
+{
+    if ($lastnames['lastname_ordinary'] != '') {
+        $name = $lastnames['lastname_ordinary'] . ' (' . $lastnames['lastname_main'] . ')';
     } else {
-        $sql_pub = "";
+        $name = $lastnames['lastname_main'];
     }
-    $sql = "SELECT  id, type, name
-              FROM  profile_name_enum
-             WHERE  NOT FIND_IN_SET('not_displayed', flags)" . $sql_pub;
-    $sn_types = XDB::iterator($sql);
-    $types    = array();
-    while ($sn_type = $sn_types->next()) {
-        if ($pub) {
-            $types[$sn_type['type']] = $sn_type['id'];
-        } else {
-            $types[$sn_type['id']]   = $sn_type['name'];
+    if ($lastnames['lastname_marital'] != '' || $lastnames['pseudonym'] != '') {
+        $name .= ' (';
+        if ($lastnames['lastname_marital'] != '') {
+            $name .= ($isFemale ? 'Mme ' : 'M ') . $lastnames['lastname_marital'];
+            $name .= (($lastnames['pseudonym'] == '') ? '' : ', ');
         }
-    }
-    return $types;
-}
-
-function build_full_name(&$search_names, &$sn_types, $isFemale)
-{
-    $name = "";
-    if (isset($search_names[$sn_types['lastname_ordinary']])) {
-        $name .= $search_names[$sn_types['lastname_ordinary']]['fullname'] . " ("
-              . $search_names[$sn_types['lastname']]['fullname'] . ")";
-    } else {
-        $name .= $search_names[$sn_types['lastname']]['fullname'];
-    }
-    if (isset($search_names[$sn_types['lastname_marital']])
-        || isset($search_names[$sn_types['pseudonym']])) {
-        $name .= " (";
-        if (isset($search_names[$sn_types['lastname_marital']])) {
-            if ($isFemale) {
-                $name .= "Mme ";
-            } else {
-                $name .= "M ";
-            }
-            $name .= $search_names[$sn_types['lastname_marital']]['fullname'];
-            if (isset($search_names[$sn_types['pseudonym']])) {
-                $name .= ", ";
-            }
-        }
-        if (isset($search_names[$sn_types['pseudonym']])) {
-            $name .= $search_names[$sn_types['pseudonym']]['fullname'];
-        }
-        $name .= ")";
+        $name .= (($lastnames['pseudonym'] == '')? '' : $lastnames['pseudonym']) . ')';
     }
     return $name;
 }
 
-function build_public_name(&$search_names, &$sn_types, $full_name)
+function build_first_name(array $firstnames)
 {
-    return $search_names[$sn_types['firstname']]['fullname'] . " " . $full_name;
+    return ($firstnames['firstname_ordinary'] ? $firstnames['firstname_ordinary'] : $firstnames['firstname_main']);
 }
 
-function build_private_name(&$search_names, &$sn_types)
+function build_private_name(array $private_names)
 {
-    $name = "";
-    if (isset($search_names[$sn_types['nickname']])
-        || (isset($search_names[$sn_types['name_other']])
-        || isset($search_names[$sn_types['name_other']]))) {
-        $name .= " (";
-        if (isset($search_names[$sn_types['nickname']])) {
-            $name .= "alias " . $search_names[$sn_types['nickname']]['fullname'];
-            $i = 0;
-            while (isset($search_names[$sn_types['nickname']][$i])) {
-                $name .= ", " . $search_names[$sn_types['nickname']][$i];
-                $i++;
-            }
-            if (isset($search_names[$sn_types['name_other']])
-                || isset($search_names[$sn_types['firstname_other']])) {
-                $name .= ", ";
-            }
+    if (is_null($private_names) || count($private_names) == 0) {
+        return '';
+    }
+
+    static $types = array('nickname' => 'alias ', 'firstname' => 'autres prénoms : ', 'lastname' => 'autres noms : ');
+    $names_sorted = array('nickname' => array(), 'firstname' => array(), 'lastname' => array());
+
+    foreach ($private_names as $private_name) {
+        $names_sorted[$private_name['type']][] = $private_name['name'];
+    }
+
+    $names_array = array();
+    foreach ($names_sorted as $type => $names) {
+        if (count($names)) {
+            $names_array[] = $types[$type] . implode(', ', $names);
         }
-        if (isset($search_names[$sn_types['firstname_other']])) {
-            $name .= "autres prénoms : " . $search_names[$sn_types['firstname_other']]['fullname'];
-            $i = 0;
-            while (isset($search_names[$sn_types['firstname_other']][$i])) {
-                $name .= ", " . $search_names[$sn_types['firstname_other']][$i];
-                $i++;
-            }
-            if (isset($search_names[$sn_types['name_other']])) {
-                $name .= ", ";
-            }
-        }
-        if (isset($search_names[$sn_types['name_other']])) {
-            $name .= "autres noms : " . $search_names[$sn_types['name_other']]['fullname'];
-            $i = 0;
-            while (isset($search_names[$sn_types['name_other']][$i])) {
-                $name .= ", " . $search_names[$sn_types['name_other']][$i];
-                $i++;
-            }
-        }
-        $name .= ")";
     }
-    return $name;
+
+    return ' (' . implode(', ', $names_array) . ')';
 }
 
-function build_directory_name(&$search_names, &$sn_types, $full_name)
-{
-    return $full_name . " " . $search_names[$sn_types['firstname']]['fullname'];
-}
-
-function build_short_name(&$search_names, &$sn_types, &$alias = null)
-{
-    if (isset($search_names[$sn_types['lastname_ordinary']])) {
-        $lastname = $search_names[$sn_types['lastname_ordinary']]['fullname'];
-    } else {
-        $lastname = $search_names[$sn_types['lastname']]['fullname'];
-    }
-    if (isset($search_names[$sn_types['firstname_ordinary']])) {
-        $firstname = $search_names[$sn_types['firstname_ordinary']]['fullname'];
-    } else {
-        $firstname = $search_names[$sn_types['firstname']]['fullname'];
-    }
-    if ($alias) {
-        $alias = PlUser::makeUserName($firstname, $lastname);
-    }
-    return $firstname . " " . $lastname;
-}
-
-function build_sort_name(&$search_names, &$sn_types)
-{
-    $name = "";
-    if (isset($search_names[$sn_types['lastname_ordinary']])) {
-        $name .= $search_names[$sn_types['lastname_ordinary']]['name'];
-    } else {
-        $name .= $search_names[$sn_types['lastname']]['name'];
-    }
-    $name .= " " . $search_names[$sn_types['firstname']]['fullname'];
-    return $name;
-}
-
-function set_profile_display(&$display_names, Profile $profile)
-{
-    XDB::execute("UPDATE  profile_display
-                     SET  public_name = {?}, private_name = {?},
-                          directory_name = {?}, short_name = {?}, sort_name = {?}
-                   WHERE  pid = {?}",
-                 $display_names['public_name'], $display_names['private_name'],
-                 $display_names['directory_name'], $display_names['short_name'],
-                 $display_names['sort_name'], $profile->id());
-
-    $owner = $profile->owner();
-    if ($owner) {
-        XDB::execute('UPDATE  accounts
-                         SET  full_name = {?}, directory_name = {?}
-                       WHERE  uid = {?}',
-                     $display_names['public_name'], $display_names['directory_name'], $owner->id());
-    }
-}
-
-function build_sn_pub($pid)
-{
-    $res = XDB::iterator("SELECT  CONCAT(sn.particle, sn.name) AS fullname, sn.typeid,
-                                  sn.particle, sn.name, sn.id
-                            FROM  profile_name      AS sn
-                      INNER JOIN  profile_name_enum AS e  ON (e.id = sn.typeid)
-                           WHERE  sn.pid = {?} AND NOT FIND_IN_SET('not_displayed', e.flags)
-                                  AND FIND_IN_SET('public', e.flags)
-                        ORDER BY  NOT FIND_IN_SET('always_displayed', e.flags), e.id, sn.name",
-                         $pid);
-    $sn_old = array();
-    while ($old = $res->next()) {
-        $sn_old[$old['typeid']] = array('fullname' => $old['fullname'],
-                                        'name'     => $old['name'],
-                                        'particle' => $old['particle'],
-                                        'id'       => $old['id']);
-    }
-    return $sn_old;
+/** Splits a name into tokens, as used in search_name.
+ * Used for search_name rebuilding and for queries.
+ */
+function split_name_for_search($name) {
+    return preg_split('/[[:space:]\'\-]+/', strtolower(replace_accent($name)),
+                      -1, PREG_SPLIT_NO_EMPTY);
 }
 
 /** Transform a name to its canonical value so it can be compared
@@ -247,70 +144,61 @@ function compare_basename($a, $b) {
     return name_to_basename($a) == name_to_basename($b);
 }
 
-function set_alias_names(&$sn_new, $sn_old, $pid, PlUser $user, $update_new = false, $new_alias = null)
+function update_account_from_profile($uid)
 {
-    $has_new = false;
-    foreach ($sn_new as $typeid => $sn) {
-        if (isset($sn['pub']) && !is_null($sn['fullname'])) {
-            if (isset($sn_old[$typeid]) && $update_new) {
-                XDB::execute("UPDATE  profile_name
-                                 SET  particle = {?}, name = {?}, typeid = {?}
-                               WHERE  id = {?} AND pid = {?}",
-                             $sn['particle'], $sn['name'], $typeid, $sn_old[$typeid]['id'], $pid);
-                unset($sn_old[$typeid]);
-            } elseif ($sn['fullname'] == $sn_old[$typeid]['fullname'] && $sn['name'] == $sn_old[$typeid]['name']) {
-                XDB::execute('INSERT INTO  profile_name (particle, name, typeid, pid)
-                                   VALUES  ({?}, {?}, {?}, {?})',
-                             $sn_old[$typeid]['particle'], $sn_old[$typeid]['name'], $typeid, $pid);
-                unset($sn_old[$typeid]);
-            } else {
-                $has_new = true;
-            }
-        } else {
-            if ($sn['fullname'] != '') {
-                XDB::execute("INSERT INTO  profile_name (particle, name, typeid, pid)
-                                   VALUES  ('', {?}, {?}, {?})",
-                             $sn['fullname'], $typeid, $pid);
-            }
-            $i = 0;
-            while (isset($sn[$i])) {
-                XDB::execute("INSERT INTO  profile_name (particle, name, typeid, pid)
-                                   VALUES  ('', {?}, {?}, {?})",
-                             $sn[$i], $typeid, $pid);
-                $i++;
-            }
+    XDB::execute("UPDATE  accounts             AS a
+              INNER JOIN  account_profiles     AS ap  ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
+              INNER JOIN  profile_public_names AS ppn ON (ppn.pid = ap.pid)
+              INNER JOIN  profile_display      AS pd  ON (pd.pid = ap.pid)
+                     SET  a.lastname = IF(ppn.lastname_ordinary = '', ppn.lastname_main, ppn.lastname_ordinary),
+                          a.firstname = IF(ppn.firstname_ordinary = '', ppn.firstname_main, ppn.firstname_ordinary),
+                          a.full_name = pd.short_name, a.directory_name = pd.directory_name
+                   WHERE  a.uid = {?}",
+                 $uid);
+}
+
+function update_display_names(Profile $profile, array $public_names, array $private_names = null)
+{
+    if (is_null($private_names)) {
+        $private_names = XDB::fetchAllAssoc('SELECT  type, name
+                                               FROM  profile_private_names
+                                              WHERE  pid = {?}
+                                           ORDER BY  type, id',
+                                            $profile->id());
+    }
+    $display_names = build_display_names($public_names, $private_names, $profile->isFemale());
+
+    XDB::execute('UPDATE  profile_display
+                     SET  public_name = {?}, private_name = {?},
+                          directory_name = {?}, short_name = {?}, sort_name = {?}
+                   WHERE  pid = {?}',
+                 $display_names['public_name'], $display_names['private_name'],
+                 $display_names['directory_name'], $display_names['short_name'],
+                 $display_names['sort_name'], $profile->id());
+
+    Profile::rebuildSearchTokens($profile->id(), false);
+
+    if ($profile->owner()) {
+        update_account_from_profile($profile->owner()->id());
+    }
+}
+
+function update_public_names($pid, array $public_names)
+{
+    $public_names['particles'] = new PlFlagSet();
+    static $suffixes = array('main', 'marital', 'ordinary');
+    foreach ($suffixes as $suffix) {
+        if (isset($public_names['particle_' . $suffix]) && ($public_names['particle_' . $suffix] == 1 || $public_names['particle_' . $suffix] == 'on')) {
+            $public_names['particles']->addFlag($suffix, 1);
         }
     }
-    if (count($sn_old) > 0) {
-        if (!$update_new) {
-            $has_new = true;
-            foreach ($sn_old as $typeid => $sn) {
-                XDB::execute("INSERT INTO  profile_name (particle, name, typeid, pid)
-                                   VALUES  ({?}, {?}, {?}, {?})",
-                             $sn['particle'], $sn['name'], $typeid, $pid);
-            }
-        } else {
-            foreach ($sn_old as $typeid => $sn) {
-                XDB::execute("DELETE FROM  profile_name
-                                    WHERE  pid = {?} AND id = {?}",
-                             $pid, $sn['id']);
-            }
-        }
-    }
-    if ($update_new) {
-        XDB::execute('DELETE FROM  email_source_account
-                            WHERE  FIND_IN_SET(\'usage\', flags) AND uid = {?} AND type = \'alias\'',
-                     $user->id());
-    }
-    if ($new_alias) {
-        XDB::execute('INSERT INTO  email_source_account (email, uid, type, flags, domain)
-                           SELECT  {?}, {?}, \'alias\', \'usage\', id
-                             FROM  email_virtual_domains
-                            WHERE  name = {?}',
-                     $new_alias, $user->id(), $user->mainEmailDomain());
-    }
-    Profile::rebuildSearchTokens($pid, false);
-    return $has_new;
+
+    XDB::execute('UPDATE  profile_public_names
+                     SET  particles = {?}, lastname_main = {?}, lastname_marital = {?}, lastname_ordinary = {?},
+                          firstname_main = {?}, firstname_ordinary = {?}, pseudonym = {?}
+                   WHERE  pid = {?}',
+                 $public_names['particles'], $public_names['lastname_main'], $public_names['lastname_marital'], $public_names['lastname_ordinary'],
+                 $public_names['firstname_main'], $public_names['firstname_ordinary'], $public_names['pseudonym'], $pid);
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

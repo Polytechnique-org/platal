@@ -23,7 +23,7 @@
 <tr class="pair">
   <td class="titre">Adresse litigieuse&nbsp;:</td>
   <td>
-    {$valid->loginbis}@polytechnique.org
+    {$valid->email}@polytechnique.org
   </td>
 </tr>
 <tr class="pair">

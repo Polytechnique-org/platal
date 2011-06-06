@@ -339,8 +339,8 @@ class UFC_HasEmailRedirect extends UserFilterCondition
 {
     public function buildCondition(PlFilter $uf)
     {
-        $sub_redirect = $uf->addEmailRedirectFilter();
-        return 'ra' . $sub_redirect . '.flags = \'active\'';
+        $sub_redirect = $uf->addActiveEmailRedirectFilter();
+        return 'rf.redirect IS NOT NULL';
     }
 
     public function export()
@@ -583,67 +583,35 @@ class UFC_EducationField extends UserFilterCondition
     }
 }
 // }}}
-// {{{ class UFC_Name
-/** Filters users based on name
- * @param $type Type of name field on which filtering is done (firstname, lastname...)
- * @param $text Text on which to filter
- * @param $mode Flag indicating search type (prefix, suffix, with particule...)
+// {{{ class UFC_NameInitial
+/** Filters users based on sort_name
+ * @param $initial Initial on which to filter
  */
-class UFC_Name extends UserFilterCondition
+class UFC_NameInitial extends UserFilterCondition
 {
-    const EXACT    = XDB::WILDCARD_EXACT;    // 0x000
-    const PREFIX   = XDB::WILDCARD_PREFIX;   // 0x001
-    const SUFFIX   = XDB::WILDCARD_SUFFIX;   // 0x002
-    const CONTAINS = XDB::WILDCARD_CONTAINS; // 0x003
-    const PARTICLE = 0x004;
-    const VARIANTS = 0x008;
+    private $initial;
 
-    private $type;
-    private $text;
-    private $mode;
-
-    public function __construct($type, $text, $mode)
+    public function __construct($initial)
     {
-        $this->type = $type;
-        $this->text = $text;
-        $this->mode = $mode;
-    }
-
-    private function buildNameQuery($type, $variant, $where, UserFilter $uf)
-    {
-        $sub = $uf->addNameFilter($type, $variant);
-        return str_replace('$ME', 'pn' . $sub, $where);
+        $this->initial = $initial;
     }
 
     public function buildCondition(PlFilter $uf)
     {
-        $left = '$ME.name';
-        if (($this->mode & self::PARTICLE) == self::PARTICLE) {
-            $left = 'CONCAT($ME.particle, \' \', $ME.name)';
+        $table = 'sort_name';
+        if ($uf->accountsRequired()) {
+            $table = Profile::getAccountEquivalentName($table);
+            $sub = 'a';
+        } else {
+            $uf->addDisplayFilter();
+            $sub = 'pd';
         }
-        $right = XDB::formatWildcards($this->mode & self::CONTAINS, $this->text);
-
-        $cond = $left . $right;
-        $conds = array($this->buildNameQuery($this->type, null, $cond, $uf));
-        if (($this->mode & self::VARIANTS) != 0 && isset(Profile::$name_variants[$this->type])) {
-            foreach (Profile::$name_variants[$this->type] as $var) {
-                $conds[] = $this->buildNameQuery($this->type, $var, $cond, $uf);
-            }
-        }
-        return implode(' OR ', $conds);
+        return 'SUBSTRING(' . $sub . '.' . $table . ', 1, 1) ' . XDB::formatWildcards(XDB::WILDCARD_PREFIX, $this->initial);
     }
 
     public function export()
     {
-        $export = $this->buildExport($this->type);
-        if ($this->mode & self::VARIANTS) {
-            $export['search_in_variants'] = true;
-        }
-        if ($this->mode & self::PARTICLE) {
-            $export['search_in_particle'] = true;
-        }
-        $export['comparison'] = self::comparisonFromXDBWildcard($this->mode & 0x3);
-        $export['text'] = $this->text;
+        $export = $this->buildExport($this->initial);
         return $export;
     }
 }
@@ -663,8 +631,9 @@ class UFC_NameTokens extends UserFilterCondition
     private $flags;
     private $soundex;
     private $exact;
+    private $general_type;
 
-    public function __construct($tokens, $flags = array(), $soundex = false, $exact = false)
+    public function __construct($tokens, $flags = array(), $soundex = false, $exact = false, $general_type = '')
     {
         if (is_array($tokens)) {
             $this->tokens = $tokens;
@@ -678,6 +647,7 @@ class UFC_NameTokens extends UserFilterCondition
         }
         $this->soundex = $soundex;
         $this->exact = $exact;
+        $this->general_type = $general_type;
     }
 
     public function buildCondition(PlFilter $uf)
@@ -694,6 +664,9 @@ class UFC_NameTokens extends UserFilterCondition
             }
             if ($this->flags != null) {
                 $c .= XDB::format(' AND ' . $sub . '.flags IN {?}', $this->flags);
+            }
+            if ($this->general_type) {
+                $c .= XDB::format(' AND ' . $sub . '.general_type = {?}', $this->general_type);
             }
             $conds[] = $c;
         }
@@ -894,9 +867,9 @@ class UFC_Group extends UserFilterCondition
 
     public function buildCondition(PlFilter $uf)
     {
-        // Groups have AX visibility.
-        if ($uf->getVisibilityLevel() == ProfileVisibility::VIS_PUBLIC) {
-            return self::COND_TRUE;
+        // Groups are only visible for users with perm 'groups'.
+        if (!S::user()->checkPerms(User::PERM_GROUPS)) {
+            return self::COND_FALSE;
         }
         $sub = $uf->addGroupFilter($this->group);
         $where = 'gpm' . $sub . '.perms IS NOT NULL';
@@ -904,6 +877,30 @@ class UFC_Group extends UserFilterCondition
             $where .= ' AND gpm' . $sub . '.perms = \'admin\'';
         }
         return $where;
+    }
+}
+// }}}
+// {{{ class UFC_GroupFormerMember
+/** Filters users based on group former membership
+ * @param $group Group whose former members we are selecting
+ */
+class UFC_GroupFormerMember extends UserFilterCondition
+{
+    private $group;
+
+    public function __construct($group)
+    {
+        $this->group = $group;
+    }
+
+    public function buildCondition(PlFilter $uf)
+    {
+        // Groups are only visible for users with perm 'groups'.
+        if (!S::user()->checkPerms(User::PERM_GROUPS)) {
+            return self::COND_FALSE;
+        }
+        $sub = $uf->addGroupFormerMemberFilter();
+        return XDB::format('gpfm' . $sub . '.asso_id = {?}', $this->group);
     }
 }
 // }}}
@@ -924,7 +921,7 @@ class UFC_Binet extends UserFilterCondition
     {
         // Binets are private.
         if ($uf->getVisibilityLevel() != ProfileVisibility::VIS_PRIVATE) {
-            return self::CONF_TRUE;
+            return self::COND_TRUE;
         }
         $sub = $uf->addBinetsFilter();
         return XDB::format($sub . '.binet_id IN {?}', $this->val);
@@ -948,7 +945,7 @@ class UFC_Section extends UserFilterCondition
     {
         // Sections are private.
         if ($uf->getVisibilityLevel() != ProfileVisibility::VIS_PRIVATE) {
-            return self::CONF_TRUE;
+            return self::COND_TRUE;
         }
         $uf->requireProfiles();
         return XDB::format('p.section IN {?}', $this->section);
@@ -988,7 +985,7 @@ class UFC_Email extends UserFilterCondition
 
         if (count($foreign) > 0) {
             $sub = $uf->addEmailRedirectFilter($foreign);
-            $cond[] = XDB::format('ra' . $sub . '.redirect IS NOT NULL OR ra.redirect IN {?}', $foreign);
+            $cond[] = XDB::format('ra' . $sub . '.redirect IS NOT NULL OR ra' . $sub . '.redirect IN {?} OR a.email IN {?}', $foreign, $foreign);
         }
         if (count($local) > 0) {
             $sub = $uf->addAliasFilter($local);
@@ -1001,17 +998,20 @@ class UFC_Email extends UserFilterCondition
 // {{{ class UFC_Address
 abstract class UFC_Address extends UserFilterCondition
 {
-    /** Valid address type ('hq' is reserved for company addresses)
+    /** Valid address type
      */
-    const TYPE_HOME = 1;
-    const TYPE_PRO  = 2;
-    const TYPE_ANY  = 3;
+    const TYPE_HOME     = 1;
+    const TYPE_PRO      = 2;
+    const TYPE_NON_HQ   = 3;
+    const TYPE_HQ       = 4;
+    const TYPE_ANY      = 7;
 
     /** Text for these types
      */
     protected static $typetexts = array(
         self::TYPE_HOME => 'home',
         self::TYPE_PRO  => 'pro',
+        self::TYPE_HQ   => 'hq',
     );
 
     protected $type;
@@ -1056,74 +1056,19 @@ abstract class UFC_Address extends UserFilterCondition
             }
         }
         if (count($types)) {
-            $conds[] = XDB::format($sub . '.type IN {?}', $types);
+            $conds[] = XDB::format('pa' . $sub . '.type IN {?}', $types);
         }
 
         if ($this->flags != self::FLAG_ANY) {
             foreach(self::$flagtexts as $flag => $text) {
                 if ($flag & $this->flags) {
-                    $conds[] = 'FIND_IN_SET(' . XDB::format('{?}', $text) . ', ' . $sub . '.flags)';
+                    $conds[] = 'FIND_IN_SET(' . XDB::format('{?}', $text) . ', pa' . $sub . '.flags)';
                 }
             }
         }
         return $conds;
     }
 
-}
-// }}}
-// {{{ class UFC_AddressText
-/** Select users based on their address, using full text search
- * @param $text Text for filter in fulltext search
- * @param $textSearchMode Mode for search (one of XDB::WILDCARD_*)
- * @param $type Filter on address type
- * @param $flags Filter on address flags
- * @param $country Filter on address country
- * @param $locality Filter on address locality
- */
-class UFC_AddressText extends UFC_Address
-{
-
-    private $text;
-    private $textSearchMode;
-
-    public function __construct($text = null, $textSearchMode = XDB::WILDCARD_CONTAINS,
-        $type = null, $flags = self::FLAG_ANY, $country = null, $locality = null)
-    {
-        parent::__construct($type, $flags);
-        $this->text           = $text;
-        $this->textSearchMode = $textSearchMode;
-        $this->country        = $country;
-        $this->locality       = $locality;
-    }
-
-    private function mkMatch($txt)
-    {
-        return XDB::formatWildcards($this->textSearchMode, $txt);
-    }
-
-    public function buildCondition(PlFilter $uf)
-    {
-        $sub = $uf->addAddressFilter();
-        $conds = $this->initConds($sub, $uf->getVisibilityCondition($sub . '.pub'));
-        if ($this->text != null) {
-            $conds[] = $sub . '.text' . $this->mkMatch($this->text);
-        }
-
-        if ($this->country != null) {
-            $subc = $uf->addAddressCountryFilter();
-            $subconds = array();
-            $subconds[] = $subc . '.country' . $this->mkMatch($this->country);
-            $subconds[] = $subc . '.countryFR' . $this->mkMatch($this->country);
-            $conds[] = implode(' OR ', $subconds);
-        }
-
-        if ($this->locality != null) {
-            $subl = $uf->addAddressLocalityFilter();
-            $conds[] = $subl . '.name' . $this->mkMatch($this->locality);
-        }
-
-        return implode(' AND ', $conds);
-    }
 }
 // }}}
 // {{{ class UFC_AddressField
@@ -1133,55 +1078,36 @@ class UFC_AddressText extends UFC_Address
  * @param $type Filter on address type
  * @param $flags Filter on address flags
  */
-class UFC_AddressField extends UFC_Address
+class UFC_AddressComponent extends UFC_Address
 {
-    const FIELD_COUNTRY    = 1;
-    const FIELD_ADMAREA    = 2;
-    const FIELD_SUBADMAREA = 3;
-    const FIELD_LOCALITY   = 4;
-    const FIELD_ZIPCODE    = 5;
+    static $components = array('sublocality', 'locality', 'administrative_area_level_3', 'administrative_area_level_2', 'administrative_area_level_1', 'country');
 
     /** Data of the filter
      */
     private $val;
     private $fieldtype;
+    private $exact;
 
-    public function __construct($val, $fieldtype, $type = null, $flags = self::FLAG_ANY)
+    public function __construct($val, $fieldtype, $exact = true, $type = null, $flags = self::FLAG_ANY)
     {
-        parent::__construct($type, $flags);
+        if (!in_array($fieldtype, self::$components)) {
+            Platal::page()->killError('Invalid address field type: ' . $this->fieldtype);
+        }
 
+        parent::__construct($type, $flags);
         if (!is_array($val)) {
             $val = array($val);
         }
         $this->val       = $val;
         $this->fieldtype = $fieldtype;
+        $this->exact     = $exact;
     }
 
     public function buildCondition(PlFilter $uf)
     {
-        $sub = $uf->addAddressFilter();
-        $conds = $this->initConds($sub, $uf->getVisibilityCondition($sub . '.pub'));
-
-        switch ($this->fieldtype) {
-        case self::FIELD_COUNTRY:
-            $field = 'countryId';
-            break;
-        case self::FIELD_ADMAREA:
-            $field = 'administrativeAreaId';
-            break;
-        case self::FIELD_SUBADMAREA:
-            $field = 'subAdministrativeAreaId';
-            break;
-        case self::FIELD_LOCALITY:
-            $field = 'localityId';
-            break;
-        case self::FIELD_ZIPCODE:
-            $field = 'postalCode';
-            break;
-        default:
-            Platal::page()->killError('Invalid address field type: ' . $this->fieldtype);
-        }
-        $conds[] = XDB::format($sub . '.' . $field . ' IN {?}', $this->val);
+        $sub = $uf->addAddressFilter($this->fieldtype);
+        $conds = $this->initConds($sub, $uf->getVisibilityCondition('pa' . $sub . '.pub'));
+        $conds[] = XDB::format('pace' . $sub . '.id IN {?}', $this->val);
 
         return implode(' AND ', $conds);
     }
@@ -1198,11 +1124,13 @@ class UFC_Corps extends UserFilterCondition
     const ORIGIN    = 2;
 
     private $corps;
+    private $id;
     private $type;
 
-    public function __construct($corps, $type = self::CURRENT)
+    public function __construct($corps, $id = null, $type = self::CURRENT)
     {
         $this->corps = $corps;
+        $this->id    = $id;
         $this->type  = $type;
     }
 
@@ -1214,8 +1142,14 @@ class UFC_Corps extends UserFilterCondition
          * pcec for profile_corps_enum - current
          */
         $sub = $uf->addCorpsFilter($this->type);
-        $cond = $sub . '.abbreviation = ' . $corps;
-        $cond .= ' AND ' . $uf->getVisibilityCondition($sub . '.corps_pub');
+        if (is_null($this->id)) {
+            $cond = $sub . '.abbreviation = ' . $this->corps;
+        } else {
+            $cond = $sub . '.id = ' . $this->id;
+        }
+        // XXX(x2006barrois): find a way to get rid of that hardcoded
+        // reference to 'pc'.
+        $cond .= ' AND ' . $uf->getVisibilityCondition('pc.corps_pub');
         return $cond;
     }
 }
@@ -1227,9 +1161,12 @@ class UFC_Corps extends UserFilterCondition
 class UFC_Corps_Rank extends UserFilterCondition
 {
     private $rank;
-    public function __construct($rank)
+    private $id;
+
+    public function __construct($rank, $id = null)
     {
         $this->rank = $rank;
+        $this->id   = $id;
     }
 
     public function buildCondition(PlFilter $uf)
@@ -1239,7 +1176,11 @@ class UFC_Corps_Rank extends UserFilterCondition
          * pcr for profile_corps_rank
          */
         $sub = $uf->addCorpsRankFilter();
-        $cond = $sub . '.abbreviation = ' . $rank;
+        if (is_null($this->id)) {
+            $cond = $sub . '.abbreviation = ' . $this->rank;
+        } else {
+            $cond = $sub . '.id = ' . $this->id;
+        }
         // XXX(x2006barrois): find a way to get rid of that hardcoded
         // reference to 'pc'.
         $cond .= ' AND ' . $uf->getVisibilityCondition('pc.corps_pub');
@@ -1341,12 +1282,9 @@ class UFC_Job_Description extends UserFilterCondition
         // don't do anything. Otherwise restrict to standard job visibility.
         if ($this->fields == UserFilter::JOB_CV) {
            if ($uf->getVisibilityLevel() != ProfileVisibility::VIS_PRIVATE) {
-               return self::CONF_TRUE;
+               return self::COND_TRUE;
            }
-        } else {
-            $conds[] = $uf->getVisibilityCondition($jsub . '.pub');
         }
-
         if ($this->fields & UserFilter::JOB_USERDEFINED) {
             $conds[] = $jsub . '.description ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description);
         }
@@ -1354,7 +1292,10 @@ class UFC_Job_Description extends UserFilterCondition
             $uf->requireProfiles();
             $conds[] = 'p.cv ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description);
         }
-        return implode(' OR ', $conds);
+        if (count($conds) == 0) {
+            return self::COND_TRUE;
+        }
+        return $uf->getVisibilityCondition($jsub . '.pub') . ' AND ( ' . implode(' OR ', $conds) . ' )';
     }
 }
 // }}}
@@ -1413,7 +1354,7 @@ class UFC_Phone extends UserFilterCondition
     {
         $phone = new Phone(array('display' => $number));
         $phone->format();
-        $this->number = $phone->search();
+        $this->number = $phone->search;
         $this->num_type = $num_type;
         $this->phone_type = $phone_type;
     }
@@ -1561,6 +1502,36 @@ abstract class UFC_UserRelated extends UserFilterCondition
     public function __construct(PlUser $user)
     {
         $this->user =& $user;
+    }
+}
+// }}}
+// {{{ class UFC_DeltaTen
+class UFC_DeltaTen extends UserFilterCondition
+{
+    public function buildCondition(PlFilter $uf)
+    {
+        $sub = $uf->addDeltaTenFilter(UserFilter::DELTATEN);
+        return $sub . '.message IS NOT NULL';
+    }
+}
+// }}}
+// {{{ class UFC_DeltaTen_Message
+/** Filters users by deltaten message
+ * @param $message Message for the DeltaTen program
+ */
+class UFC_DeltaTen_Message extends UserFilterCondition
+{
+    private $message;
+
+    public function __construct($message)
+    {
+        $this->message = $message;
+    }
+
+    public function buildCondition(PlFilter $uf)
+    {
+        $sub = $uf->addDeltaTenFilter(UserFilter::DELTATEN_MESSAGE);
+        return $sub . '.message ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->message);
     }
 }
 // }}}

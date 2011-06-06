@@ -29,16 +29,16 @@
   <td class="titre">Nouvel alias&nbsp;:</td>
   <td>{$valid->new_alias}</td>
 </tr>
-{foreach from=$valid->sn_new item=sn key=typeid}
+{foreach from=$valid->public_names item=name key=type}
 <tr class="impair">
-  <td class="titre">*{$valid->sn_types.$typeid}&nbsp;:</td>
-  <td>{$sn.name}</td>
+  <td class="titre">*{$valid->descriptions.$type}&nbsp;:</td>
+  <td>{$name}</td>
 </tr>
 {/foreach}
-{foreach from=$valid->sn_old item=sn key=typeid}
+{foreach from=$valid->old_public_names item=name key=type}
 <tr class="impair">
-  <td class="titre">&#8224;{$valid->sn_types.$typeid}&nbsp;:</td>
-  <td>{$sn.name}</td>
+  <td class="titre">&#8224;{$valid->descriptions.$type}&nbsp;:</td>
+  <td>{$name}</td>
 </tr>
 {/foreach}
 <tr class="impair">

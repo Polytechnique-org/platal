@@ -65,16 +65,14 @@
       <span class="titre">Gestion des noms, prénoms, surnoms...</span>
       <span class="smaller">Ils déterminent la façon dont
       {if $isMe}ton{else}son{/if} nom apparaît sur les annuaires
-      en ligne et papier et ta fiche apparaitra quand on cherche un de ces noms. Pour plus
-      d'explications sur l'icône suivante
-      <a href="profile/name_info" class="popup3">{icon name="information" title="Plus d'infos"}</a>.</span><br/>
+      en ligne et papier et ta fiche apparaitra quand on cherche un de ces noms.</span><br/>
       <div class="small center">Si un de tes noms commence par une particule,
       coche la case en bout de ligne.</div>
     </td>
   </tr>
-  {foreach from=$search_names item=sn key=id}
-    {include file="profile/general.searchname.tpl" i=$id sn=$sn
-    class="names_advanced" style="display: none" error_name=$errors.search_names}
+  {include file="profile/general.public_names.tpl" names=$search_names.public_names}
+  {foreach from=$search_names.private_names key=id item=name}
+    {include file="profile/general.private_name.tpl"}
   {/foreach}
   <tr class="names_advanced" id="searchname" {if !$errors.search_names}style="display: none"{/if}>
     <td colspan="3">
@@ -179,6 +177,48 @@
       <a href="javascript:delNationality('3');">{icon name=cross title="Supprimer cette nationalité"}</a>
     </td>
   </tr>
+</table>
+
+<table class="bicol" style="margin-bottom: 1em" summary="Profil&nbsp;: Formations à l'X">
+  <tr>
+    <th colspan="2">
+      <div class="flags" style="float: left">
+        <input type="checkbox" disabled="disabled" checked="checked" />
+        {icon name="flag_green" title="site public"}
+      </div>
+      Formations à l'École polytechnique
+    </th>
+  </tr>
+  {foreach from=$main_edus key=eduid item=main_edu}
+  {cycle values="impair, pair" assign=class}
+  <tr class="{$class}">
+    <td><span class="titre">Cycle&nbsp;:</span></td>
+    <td>{$main_edu.cycle}</td>
+  </tr>
+  <tr class="{$class}">
+    <td><span class="titre">Promotion&nbsp;:</span></td>
+    <td>{$main_edu.promo_year}</td>
+  </tr>
+  <tr class="{$class}">
+    <td><span class="titre">Domaine de formation&nbsp;:</span></td>
+    <td>
+      <select name="main_edus[{$main_edu.degreeid}][fieldid]">
+        <option value="">&nbsp;</option>
+        {foreach from=$edu_fields item=field}
+        <option value="{$field.id}" {if $field.id eq $main_edu.fieldid}selected="selected"{/if}>{$field.field}</option>
+        {/foreach}
+      </select>
+    </td>
+  </tr>
+  <tr class="{$class}">
+    <td><span class="titre">Description de la formation&nbsp;:</span></td>
+    <td>
+      <input type="text" name="main_edus[{$main_edu.degreeid}][program]" value="{$main_edu.program}" size="30" maxlength="255" />
+      <input type="hidden" name="main_edus[{$main_edu.degreeid}][degreeid]" value="{$main_edu.degreeid}" />
+      <input type="hidden" name="main_edus[{$main_edu.degreeid}][cycle]" value="{$main_edu.cycle}" />
+    </td>
+  </tr>
+  {/foreach}
 </table>
 
 <table class="bicol" style="margin-bottom: 1em" summary="Profil&nbsp;: Formations">

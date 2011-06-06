@@ -37,6 +37,7 @@ class PayReq extends Validate
     public $asso;
     public $evt;
     public $evt_intitule;
+    public $donation;
 
     public $rules = "Vérifier que les balises &lt;salutation&gt;, &lt;prenom&gt;, &lt;nom&gt;,  &lt;montant&gt; et &lt;comment&gt; n'ont pas été modifiées.
 Vérifier que le demandeur n'a pas laissé les crochets [].
@@ -46,7 +47,7 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
 
     public function __construct(User $_user, $_intitule, $_site, $_montant, $_msg,
                                 $_montantmin=0, $_montantmax=999, $_asso_id = 0,
-                                $_evt = 0, $_stamp=0)
+                                $_evt = 0, $_donation = false, $_stamp=0)
     {
         parent::__construct($_user, false, 'paiements', $_stamp);
 
@@ -55,6 +56,7 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
         $this->msg_reponse  = $_msg;
         $this->asso_id      = (string)$_asso_id;
         $this->evt          = (string)$_evt;
+        $this->donation     = $_donation;
         $this->montant      = $_montant;
         $this->montant_min  = $_montantmin;
         $this->montant_max  = $_montantmax;
@@ -154,9 +156,9 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
     protected function _mail_body($isok)
     {
         if ($isok) {
-            return "  Le paiement que tu avais demandé pour {$this->titre} vient d'être créé.".($this->evt?" Il a bien été associé à la gestion de l'événement du groupe":"");
+            return "  Le paiement demandé pour {$this->titre} vient d'être créé.".($this->evt?" Il a bien été associé à la gestion de l'événement du groupe":"");
         } else {
-            return "  La demande que tu avais faite pour le paiement de {$this->intitule} a été refusée.";
+            return "  La demande faite pour le paiement de {$this->intitule} a été refusée.";
         }
     }
 
@@ -167,14 +169,11 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
     {
         $res = XDB::query("SELECT MAX(id) FROM payments");
         $id = $res->fetchOneCell()+1;
-        $ret = XDB::execute("INSERT INTO payments VALUES
-            ( {?}, {?}, {?}, '',
-            {?}, {?}, {?},
-            {?}, {?}, {?} )
-            ",
-            $id, $this->titre, $this->site,
-            $this->montant, $this->montant_min, $this->montant_max,
-            $this->user->bestEmail(), $this->msg_reponse, $this->asso_id);
+        $flags = ($this->donation ? 'donation' : '');
+        $ret = XDB::execute('INSERT INTO  payments (id, text, url, flags, amount_def, amount_min, amount_max, mail, confirmation, asso_id)
+                                  VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                            $id, $this->titre, $this->site, $flags, $this->montant, $this->montant_min,
+                            $this->montant_max, $this->user->bestEmail(), $this->msg_reponse, $this->asso_id);
         if ($this->asso_id && $this->evt) {
             XDB::execute("UPDATE  group_events
                              SET  paiement_id = {?}
@@ -195,7 +194,7 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
                 $topay = $u['montant'] - $u['paid'];
                 if ($topay > 0) {
                     $mailer = new PlMailer('xnetevents/newpayment.mail.tpl');
-                    $mail->addTo($u['user']);
+                    $mailer->addTo($u['user']);
                     $mailer->assign('asso', $nom);
                     $mailer->assign('diminutif', $diminutif);
                     $mailer->assign('evt', $evt);

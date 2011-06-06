@@ -23,7 +23,7 @@
 <h1>{$asso->nom}&nbsp;: Annuaire du groupe </h1>
 
 <p class="descr">
-Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
+Le groupe {$asso->nom} compte {$plset_count} membres&nbsp;:
 </p>
 
 <ul class="descr">
@@ -34,6 +34,18 @@ Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
       Ajouter un membre
     </a>
   </li>
+  <li>
+    <a href="{$platal->ns}directory/sync">
+      {icon name=arrow_refresh title="Synchroniser avec les listes"}
+      Synchroniser avec les listes
+    </a>
+  </li>
+  <li>
+    <a href="{$platal->ns}directory/unact">
+      {icon name=group_gear title="Lister les membres du groupe sans compte actif"}
+      Lister les membres du groupe sans compte actif
+    </a>
+  </li>
   {if $asso->has_ml}
   <li>
     <a href="{$platal->ns}admin/annuaire">
@@ -42,6 +54,14 @@ Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
     </a>
   </li>
   {/if}
+  {/if}
+  {if hasPerm('admin')}
+  <li>
+    <a href="{$platal->ns}former_users">
+      {icon name=status_offline title="Anciens membres du groupe"}
+      Anciens membres du groupe
+    </a>
+  </li>
   {/if}
   <li>
     <a href="{$platal->ns}annuaire/csv/{$asso->diminutif}.csv">
@@ -58,98 +78,12 @@ Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
   </li>
 </ul>
 
-{if $plset_base}
-{include core=plset.tpl}
-{else}
-
 <p class="center">
-[<a href="{$platal->ns}annuaire?order={$order}" {if !$only_admin}class="erreur"{/if}>tous les membres</a>]
-[<a href="{$platal->ns}annuaire?order={$order}&amp;admin=1" {if $only_admin}class="erreur"{/if}>animateurs</a>]<br/>
-{*
- XXX: This code has been temporary dropped, waiting for a cleaner way to do that stuff
-{foreach from=$alphabet item=c}
-{if $c}
-[<a href="{$platal->ns}annuaire?order={$order}&amp;admin={$only_admin}"{if $request_group eq $c} class="erreur"{/if}>{$c}</a>]
-{/if}
-{/foreach}
-*}
+[<a href="{$platal->ns}{$plset_base}/{$plset_mod}{$plset_args}" {if !$only_admin}class="erreur"{/if}>tous les membres</a>]
+[<a href="{$platal->ns}{$plset_base}/admins/{$plset_mod}{$plset_args}" {if $only_admin}class="erreur"{/if}>animateurs</a>]
 </p>
 
-<table summary="membres du groupe" class="bicol">
-  <tr>
-    <th>
-      <a href="{$platal->ns}annuaire?order={if $order eq 'directory_name'}-{/if}directory_name&amp;admin={$only_admin}">
-      {if $order eq 'directory_name'}
-        <img src="{$platal->baseurl}images/dn.png" alt="" title="Tri croissant" />
-      {elseif $order eq '-directory_name'}
-        <img src="{$platal->baseurl}images/up.png" alt="" title="Tri décroissant" />
-      {/if}
-      NOM Prénom
-      </a>
-    </th>
-    <th>
-      <a href="{$platal->ns}annuaire?order={if $order eq 'promo'}-{/if}promo&amp;admin={$only_admin}">
-      {if $order eq '-promo'}
-        <img src="{$platal->baseurl}images/dn.png" alt="" title="Tri croissant" />
-      {elseif $order eq 'promo'}
-        <img src="{$platal->baseurl}images/up.png" alt="" title="Tri décroissant" />
-      {/if}
-      Promo
-      </a>
-    </th>
-    <th colspan="2">Infos</th>
-    {if $is_admin}
-    <th>Actions</th>
-    {/if}
-  </tr>
-  {assign var=lostUsers value=false}
-  {foreach from=$users item=user}
-  <tr>
-    <td>
-      {if $user->lost}{assign var=lostUsers value=true}{/if}
-      {profile user=$user promo=false}
-    </td>
-    <td>
-      {if $user->group_perms eq 'admin' && $user->category()}<strong>{/if}
-      {$user->category()|default:"Extérieur"}
-      {if $user->group_perms eq 'admin' && $user->category()}</strong>{/if}
-    </td>
-    {if $user->group_comm}
-    <td>{$user->group_comm}</td>
-    {/if}
-    <td class="right"{if !$user->group_comm} colspan="2"{/if}>
-      {if $user->hasProfile()}
-      <a href="https://www.polytechnique.org/vcard/{$user->login()}.vcf">{icon name=vcard title="[vcard]"}</a>
-      {/if}
-      <a href="mailto:{$user->bestEmail()}">{icon name=email title="email"}</a>
-    </td>
-    {if $is_admin}
-    <td class="center">
-      <a href="{$platal->ns}member/{$user->login()}">{icon name=user_edit title="Édition du profil"}</a>
-      <a href="{$platal->ns}member/del/{$user->login()}">{icon name=delete title="Supprimer de l'annuaire"}</a>
-    </td>
-    {/if}
-  </tr>
-  {/foreach}
-</table>
-
-{if $pages gt 1}
-<p class="descr" style="text-align: center">
-{section name="links" loop=$pages}
-{if $smarty.section.links.index eq $current}
-<span class="erreur">{$smarty.section.links.iteration}</span>
-{else}
-{if $smarty.section.links.first}
-<a href="{$platal->ns}annuaire?offset={$current-1}&amp;order={$order}&amp;admin={$only_admin}">précédente</a>
-{/if}
-<a href="{$platal->ns}annuaire?offset={$smarty.section.links.index}&amp;order={$order}&amp;admin={$only_admin}">{$smarty.section.links.iteration}</a>
-{if $smarty.section.links.last}
-<a href="{$platal->ns}annuaire?offset={$current+1}&amp;order={$order}&amp;admin={$only_admin}">suivante</a>
-{/if}
-{/if}
-{/section}
-</p>
-{/if}
+{include core=plset.tpl}
 
 {if $lostUsers}
 <p class="smaller">
@@ -157,8 +91,6 @@ Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
   plus être contacté via son adresse polytechnique.org. Si tu connais sa nouvelle adresse, tu peux nous la communiquer en
   cliquant sur le symbole.
 </p>
-{/if}
-
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

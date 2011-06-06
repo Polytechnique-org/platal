@@ -111,7 +111,7 @@ while ($nickname = $res->next()) {
 $res = XDB::iterator(
     "SELECT  g.l_userid AS id, g.g_nickname AS nickname
        FROM  gapps_nicknames AS g
-  LEFT JOIN  email_source_account AS s ON (s.uid = g.l_userid AND s.type = 'forlife' AND s.email = g.g_nickname)
+  LEFT JOIN  email_source_account AS s ON (s.uid = g.l_userid AND s.type = 'alias' AND s.email = g.g_nickname)
       WHERE  g.l_userid IS NOT NULL AND s.email IS NULL");
 while ($nickname = $res->next()) {
     XDB::execute(

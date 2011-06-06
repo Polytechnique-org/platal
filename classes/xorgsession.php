@@ -148,9 +148,18 @@ class XorgSession extends PlSession
                                              WHERE  email = {?} AND type = \'alias_aux\'',
                                            $uname);
                 $loginType = 'uid';
-            } else if (Post::s('domain') == "ax") {
+            } else if (Post::s('domain') == 'hruid') {
                 $login = $uname;
                 $loginType = 'hruid';
+            } else if ((Post::s('domain') == 'email')) {
+                $login = XDB::fetchOneCell('SELECT  SQL_CALC_FOUND_ROWS uid
+                                              FROM  accounts
+                                             WHERE  email = {?}',
+                                           $uname);
+                if (!(XDB::fetchOneCell('SELECT FOUND_ROWS()') == 1)) {
+                    $login =null;
+                }
+                $loginType = 'uid';
             } else {
                 $login = $uname;
                 $loginType = is_numeric($uname) ? 'uid' : 'alias';

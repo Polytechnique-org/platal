@@ -22,7 +22,7 @@
 
 <h1>Mise à jour de l'annuaire</h1>
 
-{if $newAccounts}
+{if t($newAccounts)}
 <p>
   Les comptes suivants ont été ajoutés&nbsp;:
   <ul>
@@ -33,7 +33,7 @@
 </p>
 {/if}
 
-{if !$add_type}
+{if !t($add_type)}
 <form action="{$platal->pl_self()}" method="post">
 <table class="tinybicol">
   <tr>
@@ -57,12 +57,12 @@
 
 {else}
 <form action="{$platal->pl_self()}" method="post">
-<input type="hidden" name="add_type" value="{$add_type}" />
-<table class="tinybicol">
+<table class="tinybicol" style="margin-bottom: 1em">
   <tr>
     <td class="center">
       <strong>Promotion&nbsp;:</strong>
       <input type="text" name="promotion" size="4" maxlength="4" />
+      <input type="hidden" name="add_type" value="{$add_type}" />
     </td>
   </tr>
 {if $add_type eq 'promo'}
@@ -75,7 +75,6 @@
     </td>
   </tr>
 </table>
-<br />
 <table class="bicol">
   <tr>
     <td>Nom</td>

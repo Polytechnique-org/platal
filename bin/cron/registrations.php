@@ -5,19 +5,20 @@ require 'connect.db.inc.php';
 
 $message = '';
 
-$res = XDB::iterRow("SELECT  a.registration_date, a.hruid, s.email
-                       FROM  accounts             AS a
-                 INNER JOIN  account_profiles     AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
-                 INNER JOIN  profile_display      AS pd ON (ap.pid = pd.pid)
-                  LEFT JOIN  email_source_account AS s  ON (a.uid = s.uid)
+$res = XDB::iterRow("SELECT  a.registration_date, a.hruid, s.email, GROUP_CONCAT(r.redirect SEPARATOR ', ')
+                       FROM  accounts               AS a
+                 INNER JOIN  account_profiles       AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
+                 INNER JOIN  profile_display        AS pd ON (ap.pid = pd.pid)
+                  LEFT JOIN  email_source_account   AS s  ON (a.uid = s.uid)
+                  LEFT JOIN  email_redirect_account AS r  ON (a.uid = r.uid)
                       WHERE  a.registration_date > {?}
                    GROUP BY  a.hruid
                    ORDER BY  pd.promo",
        date("Ymd000000", strtotime('last Monday')));
 if ($count = $res->total()) {
     $message .= "$count INSCRIPTIONS CONFIRMÉES CETTE SEMAINE :\n";
-    while (list($date, $hruid, $email) = $res->next()) {
-	      $message .= "$date, $hruid, $email\n";
+    while (list($date, $hruid, $email, $redirect) = $res->next()) {
+	      $message .= "$date, $hruid, $email, $redirect\n";
     }
 }
 

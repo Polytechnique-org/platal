@@ -25,21 +25,23 @@ class HomonymeReq extends Validate
 {
     // {{{ properties
 
-    public $loginbis;
+    public $email;
+    public $homonymes_hruid;
     public $warning = true;
     public $rules = "Accepter, sauf cas particulier d'utilisateur dont l'homonymie est traité plus &hellip; manuellement.";
 
     // }}}
     // {{{ constructor
 
-    public function __construct(User $_user, $_loginbis, $_homonymes_hruid, $warning=true)
+    public function __construct(User $_user, $_email, $_homonymes_hruid, $warning = true)
     {
         $this->warning = $warning;
 
         parent::__construct($_user, true, $this->title());
 
         $this->refuse = false;
-        $this->loginbis = $_loginbis;
+        $this->email = $_email;
+        $this->homonymes_hruid = $_homonymes_hruid;
     }
 
     // }}}
@@ -65,7 +67,7 @@ class HomonymeReq extends Validate
     {
         return "[Polytechnique.org/Support] "
             . ($this->warning ? "Dans une semaine : suppression de l'alias " : "Mise en place du robot")
-            . " $loginbis@" . $this->user->mainEmailDomain();
+            . " $email@" . $this->user->mainEmailDomain();
     }
 
     // }}}
@@ -77,11 +79,11 @@ class HomonymeReq extends Validate
 "
 Comme nous t'en avons informé par email il y a quelques temps,
 pour respecter nos engagements en terme d'adresses email devinables,
-tu te verras bientôt retirer l'alias " . $this->loginbis . "@" . $this->user->mainEmailDomain() . " pour
+tu te verras bientôt retirer l'alias " . $this->email . "@" . $this->user->mainEmailDomain() . " pour
 ne garder que " . $this->user->forlifeEmail() . ".
 
-Toute personne qui écrira à " . $this->loginbis . "@" . $this->user->mainEmailDomain() . " recevra la
-réponse d'un robot qui l'informera que " . $this->loginbis . "@" . $this->user->mainEmailDomain() . "
+Toute personne qui écrira à " . $this->email . "@" . $this->user->mainEmailDomain() . " recevra la
+réponse d'un robot qui l'informera que " . $this->email . "@" . $this->user->mainEmailDomain() . "
 est ambigu pour des raisons d'homonymie et signalera ton email exact.";
     }
 
@@ -90,42 +92,25 @@ est ambigu pour des raisons d'homonymie et signalera ton email exact.";
 
     protected function sendmail($isok)
     {
-        if (!$isok) return false;
-        global $globals;
-        $mailer = new PlMailer;
-        $cc = "support+homonyme@" . $globals->mail->domain;
-        $from = "\"Support Polytechnique.org\" <$cc>";
-        $mailer->setSubject($this->_mail_subj());
-        $mailer->setFrom($from);
-        $mailer->addTo("\"{$this->user->fullName()}\" <{$this->user->bestEmail()}>");
-        $mailer->addCc($cc);
+        if (!$isok) {
+            return false;
+        }
 
-        $body = $this->user->displayName() . ",\n\n"
-              . $this->_mail_body($isok)
-              . (Env::has('comm') ? "\n\n".Env::v('comm') : '')
-              . "\n\nCordialement,\n\n-- \nL'équipe de Polytechnique.org\n";
-
-        $mailer->setTxtBody(wordwrap($body));
-        $mailer->send();
+        Platal::load('admin', 'homonyms.inc.php');
+        if ($this->warning) {
+            send_warning_homonym($this->user, $this->email);
+        } else {
+            send_robot_homonym($this->user, $this->email);
+        }
     }
     // }}}
     // {{{ function commit()
 
     public function commit()
     {
-        Platal::load('admin', 'homonyms.inc.php');
         if (!$this->warning) {
-            require_once 'emails.inc.php';
-
-            XDB::execute('DELETE FROM  email_source_account
-                                WHERE  email = {?} AND type = \'alias\'',
-                         $this->loginbis);
-            XDB::execute('INSERT INTO  email_source_other (hrmid, email, domain, type, expire)
-                               SELECT  {?}, {?}, id, \'homonym\', NOW()
-                                 FROM  email_virtual_domains
-                                WHERE  name = {?}',
-                         User::makeHomonymHrmid($this->loginbis), $this->loginbis, $this->user->mainEmailDomain());
-            fix_bestalias($this->user);
+            Platal::load('admin', 'homonyms.inc.php');
+            fix_homonym($this->user, $this->email);
         }
 
         return true;

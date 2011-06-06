@@ -159,11 +159,11 @@ class User extends PlUser
 
         $uids = array_map(array('XDB', 'escape'), $uids);
 
-        return XDB::iterator('SELECT  a.uid, a.hruid, a.registration_date, h.uid IS NOT NULL AS homonym,
+        return XDB::iterator('SELECT  a.uid, a.hruid, a.registration_date, h.uid IS NOT NULL AS homonym, a.firstname, a.lastname,
                                       IF(ef.email IS NULL, NULL, CONCAT(ef.email, \'@\', mf.name)) AS forlife,
                                       IF(ef.email IS NULL, NULL, CONCAT(ef.email, \'@\', df.name)) AS forlife_alternate,
                                       IF(eb.email IS NULL, NULL, CONCAT(eb.email, \'@\', mb.name)) AS bestalias,
-                                      (er.redirect IS NULL AND a.state = \'active\') AS lost,
+                                      (er.redirect IS NULL AND a.state = \'active\' AND FIND_IN_SET(\'mail\', at.perms)) AS lost,
                                       a.email, a.full_name, a.directory_name, a.display_name, a.sex = \'female\' AS gender,
                                       IF(a.state = \'active\', CONCAT(at.perms, \',\', IF(a.user_perms IS NULL, \'\', a.user_perms)), \'\') AS perms,
                                       a.user_perms, a.email_format, a.is_admin, a.state, a.type, at.description AS type_description, a.skin,
@@ -178,7 +178,7 @@ class User extends PlUser
                            LEFT JOIN  email_virtual_domains  AS mf ON (ef.domain = mf.id)
                            LEFT JOIN  email_virtual_domains  AS df ON (df.aliasing = mf.id AND
                                                                        df.name LIKE CONCAT(\'%\', {?}) AND df.name NOT LIKE \'alumni.%\')
-                           LEFT JOIN  email_source_account   AS eb ON (eb.uid = a.uid AND eb.flags = \'bestalias\')
+                           LEFT JOIN  email_source_account   AS eb ON (eb.uid = a.uid AND FIND_IN_SET(\'bestalias\',eb.flags))
                            LEFT JOIN  email_virtual_domains  AS mb ON (a.best_domain = mb.id)
                            LEFT JOIN  email_redirect_account AS er ON (er.uid = a.uid AND er.flags = \'active\' AND er.broken_level < 3
                                                                        AND er.type != \'imap\' AND er.type != \'homonym\')
@@ -292,12 +292,25 @@ class User extends PlUser
         return $this->profile()->fullName($with_promo);
     }
 
+    public function shortName($with_promo = false)
+    {
+        if (!$this->hasProfile()) {
+            return $this->full_name;
+        }
+        return $this->profile()->shortName($with_promo);
+    }
+
     public function directoryName()
     {
         if (!$this->hasProfile()) {
             return $this->directory_name;
         }
         return $this->profile()->directory_name;
+    }
+
+    static public function compareDirectoryName($a, $b)
+    {
+        return strcasecmp(replace_accent($a->directoryName()), replace_accent($b->directoryName()));
     }
 
     /** Return the main profile attached with this account if any.
@@ -630,6 +643,23 @@ class User extends PlUser
         }
     }
 
+    public function groupCount()
+    {
+        return XDB::fetchOneCell('SELECT  COUNT(DISTINCT(asso_id))
+                                    FROM  group_members
+                                   WHERE  uid = {?}',
+                                 $this->id());
+    }
+
+    public function inGroup($asso_id)
+    {
+        $res = XDB::fetchOneCell('SELECT  COUNT(*)
+                                    FROM  group_members
+                                   WHERE  uid = {?} AND asso_id = {?}',
+                                 $this->id(), $asso_id);
+        return ($res > 0);
+    }
+
     /**
      * Clears a user.
      *  *always deletes in: account_lost_passwords, register_marketing,
@@ -684,7 +714,7 @@ class User extends PlUser
             }
 
             $tables = array('account_auth_openid', 'announce_read', 'contacts',
-                            'email_send_save', 'email_virtual',
+                            'email_send_save',
                             'forum_innd', 'forum_profiles', 'forum_subs',
                             'group_announces_read', 'group_members',
                             'group_member_sub_requests', 'reminder', 'requests',
@@ -697,6 +727,9 @@ class User extends PlUser
             XDB::execute('DELETE FROM  email_redirect_account
                                 WHERE  uid = {?} AND type != \'homonym\'',
                          $this->id());
+            XDB::execute('DELETE FROM  email_virtual
+                                WHERE  redirect = {?}',
+                         $this->forlifeEmail());
 
             foreach (array('gapps_accounts', 'gapps_nicknames') as $t) {
                 XDB::execute('DELETE FROM  ' . $t . '
@@ -744,7 +777,7 @@ class User extends PlUser
                              $this->forlifeEmail(), $newuser->id());
 
                 // Reftech new user so its forlifeEmail will be correct.
-                $newuser = getSilentWithUID($newuser->id());
+                $newuser = self::getSilentWithUID($newuser->id());
             }
 
             // Change email used in mailing lists.
@@ -840,7 +873,7 @@ class User extends PlUser
 
         $is_main_domain = false;
         foreach (self::$sub_mail_domains as $sub_domain) {
-            $is_main_domain = $is_main_domain || $domain == ($sub_domain . $globals->mail->domain) && $domain == ($sub_domain . $globals->mail->domain2);
+            $is_main_domain = $is_main_domain || $domain == ($sub_domain . $globals->mail->domain) || $domain == ($sub_domain . $globals->mail->domain2);
         }
         return $is_main_domain;
     }

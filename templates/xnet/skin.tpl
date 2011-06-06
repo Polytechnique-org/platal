@@ -112,7 +112,7 @@
           {/foreach}
           {if t($asso)}{assign var=asso_id value=$asso->id}{/if}
           {if t($smarty.session.suid)}{assign var=suid value=true}{else}{assign var=suid value=false}{/if}
-          {if $asso && $is_admin ||
+          {if t($asso) && $is_admin ||
                       ($suid && ($smarty.session.suid.perms->hasFlag('admin') ||
                                                 $smarty.session.suid.may_update[$asso_id]))}
           <h1>Voir le site comme&hellip;</h1>
@@ -169,10 +169,16 @@
               {list_all_my_groups}
               {if !$smarty.session.auth}
                 <div>Me connecter&nbsp;:</div>
-                <a class='gp' href="login/{if $platal->pl_self() eq 'exit'}index{else}{$platal->pl_self()}{/if}">polytechnicien</a>
-                {if $platal->pl_self() neq 'exit'}
-                  <!-- <script type="text/javascript" src="login/autologin/{$platal->pl_self()}?forceXml=1"></script> -->
-                {/if}
+                <table style="margin-left: 1em">
+                  <tr>
+                    <td>
+                      <a class="gp" href="login/{if $platal->pl_self() eq 'exit'}index{else}{$platal->pl_self()}{/if}">X, masters, doctorants&hellip;</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a class="gp" href="login/ext">Extérieurs</a></td>
+                  </tr>
+                </table>
               {/if}
             </td>
             <td class="right" style="vertical-align: middle">

@@ -106,13 +106,11 @@ class PaymentModule extends PLModule
     {
         return array(
             'payment'                      => $this->make_hook('payment',          AUTH_MDP,    'payment'),
-            'payment/cyber_return'         => $this->make_hook('cyber_return',     AUTH_PUBLIC, 'user', NO_HTTPS),
             'payment/cyber2_return'        => $this->make_hook('cyber2_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
             'payment/paypal_return'        => $this->make_hook('paypal_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
             '%grp/paiement'                => $this->make_hook('xnet_payment',     AUTH_MDP),
             '%grp/payment'                 => $this->make_hook('xnet_payment',     AUTH_MDP),
             '%grp/payment/csv'             => $this->make_hook('payment_csv',      AUTH_MDP,    'groupadmin'),
-            '%grp/payment/cyber_return'    => $this->make_hook('cyber_return',     AUTH_PUBLIC, 'user', NO_HTTPS),
             '%grp/payment/cyber2_return'   => $this->make_hook('cyber2_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
             '%grp/payment/paypal_return'   => $this->make_hook('paypal_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
             'admin/payments'               => $this->make_hook('admin',            AUTH_MDP,    'admin'),
@@ -165,18 +163,38 @@ class PaymentModule extends PLModule
             $pay->init($val, $meth);
             $pay->prepareform($pay);
         } else {
-            $res = XDB::iterator('SELECT  timestamp, amount
+            $res = XDB::iterator('SELECT  ts_confirmed, amount
                                     FROM  payment_transactions
                                    WHERE  uid = {?} AND ref = {?}
-                                ORDER BY  timestamp DESC',
+                                ORDER BY  ts_confirmed DESC',
                                  S::v('uid', -1), $ref);
 
             if ($res->total()) {
                 $page->assign('transactions', $res);
             }
+
+            if ($pay->flags->hasflag('donation')) {
+                $donations = XDB::fetchAllAssoc('SELECT  IF(p.display,
+                                                            IF(ap.pid IS NOT NULL, CONCAT(a.full_name, \' (\', pd.promo, \')\'), a.full_name),
+                                                            \'XXXX\') AS name, p.amount
+                                                   FROM  payment_transactions AS p
+                                             INNER JOIN  accounts             AS a  ON (a.uid = p.uid)
+                                              LEFT JOIN  account_profiles     AS ap ON (a.uid = ap.uid AND FIND_IN_SET(\'owner\', ap.perms))
+                                              LEFT JOIN  profile_display      AS pd ON (ap.pid = pd.pid)
+                                                  WHERE  p.ref = {?}
+                                               ORDER BY  LENGTH(p.amount) DESC, p.amount DESC, name',
+                                                $ref);
+                $sum = 0;
+                foreach ($donations as $d) {
+                    $sum += $d['amount'];
+                }
+
+                $page->assign('donations', $donations);
+                $page->assign('sum', strtr($sum, '.', ','));
+            }
         }
 
-        $val = floor($val) . '.' . substr(floor(($val - floor($val)) * 100 + 100), 1);
+        $val = floor($val*100)/100;
         $page->assign('montant', $val);
         $page->assign('comment', Env::v('comment'));
 
@@ -184,104 +202,7 @@ class PaymentModule extends PLModule
         $page->assign('pay', $pay);
         $page->assign('evtlink', $pay->event());
         $page->assign('sex', S::user()->isFemale());
-    }
-
-    function handler_cyber_return($page, $uid = null)
-    {
-        /* reference banque (numero de transaction) */
-        $champ901 = Env::s('CHAMP901');
-        /* cle d'acceptation */
-        $champ905 = Env::s('CHAMP905');
-        /* code retour */
-        $champ906 = Env::s('CHAMP906');
-        /* email renvoye par la banque */
-        $champ104 = Env::s('CHAMP104');
-        /* reference complete de la commande */
-        $champ200 = Env::s('CHAMP200');
-        /* montant de la transaction */
-        $champ201 = Env::s('CHAMP201');
-        /* devise */
-        $champ202 = Env::s('CHAMP202');
-        $montant = "$champ201 $champ202";
-
-        /* on extrait les informations sur l'utilisateur */
-        $user = User::get($uid);
-        if (!$user) {
-            cb_erreur("uid invalide");
-        }
-
-
-        /* on extrait la reference de la commande */
-        if (!ereg('-xorg-([0-9]+)$', $champ200, $matches)) {
-            cb_erreur("référence de commande invalide");
-        }
-
-        echo ($ref = $matches[1]);
-        $res = XDB::query('SELECT  mail, text, confirmation
-                             FROM  payments
-                            WHERE  id = {?}', $ref);
-        if (!list($conf_mail, $conf_title, $conf_text) = $res->fetchOneRow()) {
-            cb_erreur("référence de commande inconnue");
-        }
-
-        /* on extrait le code de retour */
-        if ($champ906 != "0000") {
-            $res = XDB::query('SELECT  rcb.text, c.id, c.text
-                                 FROM  payment_codeRCB AS rcb
-                            LEFT JOIN  payment_codeC   AS c ON (rcb.codeC = c.id)
-                                WHERE  rcb.id = {?}', $champ906);
-            if (list($rcb_text, $c_id, $c_text) = $res->fetchOneRow()) {
-                cb_erreur("erreur lors du paiement : $c_text ($c_id)");
-            } else{
-                cb_erreur("erreur inconnue lors du paiement");
-            }
-        }
-
-        /* on fait l'insertion en base de donnees */
-        XDB::execute('INSERT INTO  payment_transactions (id, uid, ref, fullref, amount, pkey, comment)
-                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                     $champ901, $user->id(), $ref, $champ200, $montant, $champ905, Env::v('comment'));
-
-        // We check if it is an Xnet payment and then update the related ML.
-        $res = XDB::query('SELECT  eid
-                             FROM  group_events
-                            WHERE  paiement_id = {?}', $ref);
-        if ($eid = $res->fetchOneCell()) {
-            require_once dirname(__FILE__) . '/xnetevents/xnetevents.inc.php';
-            $evt = get_event_detail($eid);
-            subscribe_lists_event($uid, $evt['short_name'], 1, $montant, true);
-        }
-
-        /* on genere le mail de confirmation */
-        $conf_text = str_replace(
-            array('<prenom>', '<nom>', '<promo>', '<montant>', '<salutation>', '<cher>', '<comment>'),
-            array($user->firstName(), $user->lastName(), $user->promo(), $montant,
-                  $user->isFemale() ? 'Chère' : 'Cher', $user->isFemale() ? 'Chère' : 'Cher',
-                  Env::v('comment')), $conf_text);
-
-        global $globals;
-        $mymail = new PlMailer();
-        $mymail->setFrom($conf_mail);
-        $mymail->addCc($conf_mail);
-        $mymail->setSubject($conf_title);
-        $mymail->setWikiBody($conf_text);
-        $mymail->sendTo($user);
-
-        /* on envoie les details de la transaction à telepaiement@ */
-        $mymail = new PlMailer();
-        $mymail->setFrom("webmaster@" . $globals->mail->domain);
-        $mymail->addTo($globals->money->email);
-        $mymail->setSubject($conf_title);
-        $msg = 'utilisateur : ' . $user->login() . ' (' . $user->id() . ')' . "\n" .
-               'mail : ' . $user->forlifeEmail() . "\n\n" .
-               "paiement : $conf_title ($conf_mail)\n".
-               "reference : $champ200\n".
-               "montant : $montant\n\n".
-               "dump de REQUEST:\n".
-               var_export($_REQUEST,true);
-        $mymail->setTxtBody($msg);
-        $mymail->send();
-        exit;
+        $page->assign('donation', $pay->flags->hasflag('donation'));
     }
 
     function handler_cyber2_return($page, $uid = null)
@@ -324,8 +245,7 @@ class PaymentModule extends PLModule
         if (Env::v('vads_currency') != '978') {
             cb_erreur("monnaie autre que l'euro");
         }
-        $amount = ((float)Env::i('vads_amount')) / 100;
-        $montant = sprintf("%.02f EUR", $amount);
+        $montant = ((float)Env::i('vads_amount')) / 100;
 
         /* on extrait le code de retour */
         if (Env::v('vads_result') != '00') {
@@ -333,10 +253,10 @@ class PaymentModule extends PLModule
         }
 
         /* on fait l'insertion en base de donnees */
-        XDB::execute('INSERT INTO  payment_transactions (id, uid, ref, fullref, amount, pkey, comment)
-                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                     Env::v('vads_trans_date'), $user->id(), $ref, Env::v('vads_order_id'), $montant, '', Env::v('vads_order_info'));
-        echo "Paiement stored.\n";
+        XDB::execute('INSERT INTO  payment_transactions (id, method_id, uid, ref, fullref, ts_confirmed, amount, pkey, comment, status, display)
+                           VALUES  ({?}, 2, {?}, {?}, {?}, NOW(), {?}, {?}, {?}, "confirmed", {?})',
+                     Env::v('vads_trans_date'), $user->id(), $ref, Env::v('vads_order_id'), $montant, '', Env::v('vads_order_info'), Env::i('vads_order_info2'));
+        echo "Payment stored.\n";
 
         // We check if it is an Xnet payment and then update the related ML.
         $res = XDB::query('SELECT  eid, asso_id
@@ -354,7 +274,7 @@ class PaymentModule extends PLModule
             array('<prenom>', '<nom>', '<promo>', '<montant>', '<salutation>', '<cher>', '<comment>'),
             array($user->firstName(), $user->lastName(), $user->promo(), $montant,
                   $user->isFemale() ? 'Chère' : 'Cher', $user->isFemale() ? 'Chère' : 'Cher',
-                  Env::v('comment')), $conf_text);
+                  Env::v('vads_order_info')), $conf_text);
 
         global $globals;
         $mymail = new PlMailer();
@@ -397,10 +317,11 @@ class PaymentModule extends PLModule
         /* reference complete de la commande */
         $fullref = Env::s('cm');
         /* montant de la transaction */
-        $montant_nb = Env::s('amt');
+        $montant = Env::s('amt');
         /* devise */
-        $montant_dev = Env::s('cc');
-        $montant = "$montant_nb $montant_dev";
+        if (Env::s('cc') != 'EUR') {
+            cb_erreur("monnaie autre que l'euro");
+        }
 
         /* on extrait le code de retour */
         if ($status != "Completed") {
@@ -431,9 +352,9 @@ class PaymentModule extends PLModule
         }
 
         /* on fait l'insertion en base de donnees */
-        XDB::execute("INSERT INTO  payment_transactions (id, uid, ref, fullref, amount, pkey, comment)
-                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})",
-                    $no_transaction, $user->id(), $ref, $fullref, $montant, $clef, Env::v('comment'));
+        XDB::execute("INSERT INTO  payment_transactions (id, method_id, uid, ref, fullref, ts_confirmed, amount, pkey, comment, status, display)
+                           VALUES  ({?}, 1, {?}, {?}, {?}, NOW(), {?}, {?}, {?}, 'confirmed', {?})",
+                    $no_transaction, $user->id(), $ref, $fullref, $montant, $clef, Env::v('comment'), Get::i('display'));
 
         // We check if it is an Xnet payment and then update the related ML.
         $res = XDB::query('SELECT  eid
@@ -540,7 +461,7 @@ class PaymentModule extends PLModule
         foreach($tit as $foo) {
             $pid = $foo['id'];
             if (may_update()) {
-                $res = XDB::query('SELECT  p.uid, IF(p.timestamp = \'0000-00-00\', 0, p.timestamp) AS date, p.comment, p.amount
+                $res = XDB::query('SELECT  p.uid, IF(p.ts_confirmed = \'0000-00-00\', 0, p.ts_confirmed) AS date, p.comment, p.amount
                                      FROM  payment_transactions AS p
                                INNER JOIN  accounts             AS a  ON (a.uid = p.uid)
                                 LEFT JOIN  account_profiles     AS ap ON (ap.uid = p.uid AND FIND_IN_SET(\'owner\', ap.perms))
@@ -550,11 +471,11 @@ class PaymentModule extends PLModule
                 $trans[$pid] = User::getBulkUsersWithUIDs($res->fetchAllAssoc(), 'uid', 'user');
                 $sum = 0;
                 foreach ($trans[$pid] as $i => $t) {
-                    $sum += strtr(substr($t['amount'], 0, strpos($t['amount'], 'EUR')), ',', '.');
-                    $trans[$pid][$i]['amount'] = str_replace('EUR', '€', $t['amount']);
+                    $sum += $t['amount'];
+                    $trans[$pid][$i]['amount'] = $t['amount'];
                 }
                 $trans[$pid][] = array('limit'  =>  true,
-                                       'amount' => strtr($sum, '.', ',') . ' €');
+                                       'amount' => $sum);
             }
             $res = XDB::iterRow("SELECT  e.eid, e.short_name, e.intitule, ep.nb, ei.montant, ep.paid
                                    FROM  group_events             AS e
@@ -575,15 +496,10 @@ class PaymentModule extends PLModule
                     $event[$pid]['paid']      = $paid;
                 }
             }
-            $res = XDB::query('SELECT  amount
+            $res = XDB::query('SELECT  SUM(amount) AS sum_amount
                                  FROM  payment_transactions
-                                WHERE  id = {?} AND uid = {?}', $pid, S::v('uid'));
-            $montants = $res->fetchColumn();
-
-            foreach ($montants as $m) {
-                $p = strtr(substr($m, 0, strpos($m, 'EUR')), ',', '.');
-                $event[$pid]['paid'] += trim($p);
-            }
+                                WHERE  ref = {?} AND uid = {?}', $pid, S::v('uid'));
+            $event[$pid]['paid'] = $res->fetchOneCell();
         }
         $page->register_modifier('decode_comment', 'decode_comment');
         $page->assign('trans', $trans);
@@ -599,10 +515,10 @@ class PaymentModule extends PLModule
             $pid = substr($pid, 0, strlen($pid) - 4);
         }
 
-        $res = XDB::fetchAllAssoc('SELECT  uid, IF(timestamp = \'0000-00-00\', 0, timestamp) AS date, comment, amount
+        $res = XDB::fetchAllAssoc('SELECT  uid, IF(ts_confirmed = \'0000-00-00\', 0, ts_confirmed) AS date, comment, amount
                                      FROM  payment_transactions
                                     WHERE  ref = {?}
-                                 ORDER BY  timestamp',
+                                 ORDER BY  ts_confirmed',
                                   $pid);
         if (is_null($res)) {
             pl_redirect('payment');
@@ -616,12 +532,12 @@ class PaymentModule extends PLModule
         fputcsv($csv, array('Date', 'Nom', 'Prénom', 'Sexe', 'Promotion', 'Email', 'Commentaire', 'Montant'), ';');
         foreach ($users as $item) {
             $user = $item['user'];
-            $sum += strtr(substr($item['amount'], 0, strpos($item['amount'], 'EUR')), ',', '.');
+            $sum += $item['amount'];
             fputcsv($csv, array(format_datetime($item['date'], '%d/%m/%y'), $user->lastName(), $user->firstName(),
                                 ($user->isFemale()) ? 'F' : 'M', $user->promo(), $user->ForlifeEmail(),
-                                $item['comment'], str_replace('EUR', '€', $item['amount'])), ';');
+                                $item['comment'], strtr($item['amount'],'.',',').' €' ), ';');
         }
-        fputcsv($csv, array(date('d/m/y'), 'Total', '', '', '' , '', '', strtr($sum, '.', ',') . ' €'), ';');
+        fputcsv($csv, array(date('d/m/y'), 'Total', '', '', '' , '', '', strtr($sum,'.',',').' €'), ';');
 
         fclose($csv);
         exit;
@@ -1006,7 +922,11 @@ class PaymentLogsImporter extends CSVImporter {
         $this->result = array();
         foreach ($this->data as $line) {
             $a = $this->makeAssoc($line, $insert_relation);
+            // convert date
             $a['date'] = preg_replace('/([0-9]{2})\/([0-9]{2})\/([0-9]{4}).*/', '\3-\2-\1', $a['date']);
+            $a['date'] = preg_replace('/T.*/','', $a['date']);
+            
+            // convert money
             $a['amount'] = str_replace(',', '.', $a['amount']);
             $a['commission'] = str_replace(',', '.', $a['commission']);
             $this->result[] = $a;

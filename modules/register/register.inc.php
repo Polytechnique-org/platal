@@ -19,9 +19,9 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ function checkId
+// {{{ function strongCheckId
 
-function checkId($subState)
+function strongCheckId($subState)
 {
     $subState->set('xorgid', Profile::getXorgId($subState->i('schoolid')));
     if (!$subState->v('xorgid')) {
@@ -50,46 +50,51 @@ function checkId($subState)
     $subState->set('firstname', $profile->firstName());
     $subState->set('uid', $profile->owner()->id());
     $subState->set('watch', $profile->owner()->watch);
+    $subState->set('comment', $profile->owner()->comment);
     $subState->set('birthdateRef', $profile->__get('birthdate_ref'));
     return true;
 }
 
 // }}}
-// {{{ function checkOldId
+// {{{ function weakCheckId
 
-function checkOldId($subState)
+function weakCheckId($subState)
 {
     $uf = new UserFilter(new PFC_And(
             new PFC_Not(new UFC_Dead()),
-            new UFC_Promo('=', UserFilter::DISPLAY, $subState->s('promo')),
+            new UFC_Promo('=', $subState->s('edu_type'), $subState->s('yearpromo')),
             new PFC_Not(new UFC_Registered(true))
     ));
-    $it = $uf->iterProfiles();
-    while ($profile = $it->next()) {
-        if ($profile->compareNames($subState->s('firstname'), $subState->s('lastname'))) {
-            $subState->set('lastname', $profile->lastName());
-            $subState->set('firstname', $profile->firstName());
-            $subState->set('uid', $profile->owner()->id());
-            $subState->set('watch', $profile->owner()->watch);
-            $subState->set('birthdateRef', $profile->__get('birthdate_ref'));
-            $subState->set('xorgid', $profile->__get('xorg_id'));
-            return true;
+    if ($it = $uf->iterProfiles()) {
+        while ($profile = $it->next()) {
+            if ($profile->compareNames($subState->s('firstname'), $subState->s('lastname'))) {
+                $subState->set('lastname', $profile->lastName());
+                $subState->set('firstname', $profile->firstName());
+                $subState->set('uid', $profile->owner()->id());
+                $subState->set('watch', $profile->owner()->watch);
+                $subState->set('comment', $profile->owner()->comment);
+                $subState->set('birthdateRef', $profile->__get('birthdate_ref'));
+                $subState->set('xorgid', $profile->__get('xorg_id'));
+                return true;
+            }
         }
     }
 
     $uf = new UserFilter(new PFC_And(
             new PFC_Not(new UFC_Dead()),
-            new UFC_Promo('=', UserFilter::DISPLAY, $subState->s('promo')),
+            new UFC_Promo('=', $subState->s('edu_type'), $subState->s('yearpromo')),
             new UFC_Registered(true)
     ));
-    $it = $uf->iterProfiles();
-    while ($profile = $it->next()) {
-        if ($profile->compareNames($subState->s('firstname'), $subState->s('lastname'))) {
-            $subState->set('uid', $profile->owner()->id());
-            $subState->set('watch', $profile->owner()->watch);
-            $subState->set('birthdateRef', $profile->__get('birthdate_ref'));
-            $subState->set('xorgid', $profile->__get('xorg_id'));
-            return 'Tu es vraisemblablement déjà inscrit !';
+    if ($it = $uf->iterProfiles()) {
+        while ($profile = $it->next()) {
+            if ($profile->compareNames($subState->s('firstname'), $subState->s('lastname'))) {
+                $subState->set('uid', $profile->owner()->id());
+                $subState->set('watch', $profile->owner()->watch);
+                $subState->set('comment', $profile->owner()->comment);
+                $subState->set('birthdateRef', $profile->__get('birthdate_ref'));
+                $subState->set('xorgid', $profile->__get('xorg_id'));
+                return 'Tu es vraisemblablement déjà inscrit !';
+            }
         }
     }
     return 'Erreur : vérifie que tu as bien orthographié ton nom !';
@@ -110,14 +115,10 @@ function checkNewUser($subState)
     $lastname = preg_replace("/''+/", '\'', $lastname);
     $subState->set('lastname', mb_strtoupper($lastname));
 
-    if ($subState->i('yearpromo') >= 1996 && $subState->v('edu_type') == 'X') {
-        $res = checkId($subState);
+    if ($subState->v('edu_type') == Profile::DEGREE_X && $subState->i('yearpromo') >= 1996) {
+        $res = strongCheckId($subState);
     } else {
-        $res = checkOldId($subState);
-    }
-    if ($subState->v('edu_type') != 'X' &&
-        $subState->v('xorgid') != $subState->v('schoolid')) {
-        return 'Le matricule est incorrect.';
+        $res = weakCheckId($subState);
     }
     if ($res !== true) {
         return $res;
@@ -132,9 +133,6 @@ function checkNewUser($subState)
 function createAliases($subState)
 {
     global $globals;
-
-    $emailXorg  = PlUser::makeUserName($subState->t('firstname'), $subState->t('lastname'));
-    $emailXorg2 = $emailXorg . sprintf(".%02u", ($subState->i('yearpromo') % 100));
 
     $res = XDB::query("SELECT  hruid, state, type
                          FROM  accounts
@@ -156,6 +154,10 @@ function createAliases($subState)
              . "<a href=\"mailto:support@{$globals->mail->domain}\">support@{$globals->mail->domain}</a>.";
     }
 
+
+    $emailXorg  = PlUser::makeUserName($subState->t('firstname'), $subState->t('lastname'));
+    $suffix = (User::$sub_mail_domains[$type] ? substr(User::$sub_mail_domains[$type], 0, 1) : '') . substr($subState->v('yearpromo'), -2);
+    $emailXorg2 = $emailXorg . '.' . $suffix;
     $res = XDB::query('SELECT  uid, expire
                          FROM  email_source_account
                         WHERE  email = {?} AND type != \'alias_aux\'',

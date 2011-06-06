@@ -543,12 +543,12 @@ class UserFilter extends PlFilter
 
     static public function sortByName()
     {
-        return array(new UFO_Name(Profile::LASTNAME), new UFO_Name(Profile::FIRSTNAME));
+        return array(new UFO_Name());
     }
 
     static public function sortByPromo()
     {
-        return array(new UFO_Promo(), new UFO_Name(Profile::LASTNAME), new UFO_Name(Profile::FIRSTNAME));
+        return array(new UFO_Promo(), new UFO_Name());
     }
 
     static private function getDBSuffix($string)
@@ -676,44 +676,6 @@ class UserFilter extends PlFilter
         return $joins;
     }
 
-    /** NAMES
-     */
-
-    static public function assertName($name)
-    {
-        if (!DirEnum::getID(DirEnum::NAMETYPES, $name)) {
-            Platal::page()->kill('Invalid name type: ' . $name);
-        }
-    }
-
-    private $pn  = array();
-    public function addNameFilter($type, $variant = null)
-    {
-        $this->requireProfiles();
-        if (!is_null($variant)) {
-            $ft  = $type . '_' . $variant;
-        } else {
-            $ft = $type;
-        }
-        $sub = '_' . $ft;
-        self::assertName($ft);
-
-        if (!is_null($variant) && $variant == 'other') {
-            $sub .= $this->option++;
-        }
-        $this->pn[$sub] = DirEnum::getID(DirEnum::NAMETYPES, $ft);
-        return $sub;
-    }
-
-    protected function nameJoins()
-    {
-        $joins = array();
-        foreach ($this->pn as $sub => $type) {
-            $joins['pn' . $sub] = PlSqlJoin::left('profile_name', '$ME.pid = $PID AND $ME.typeid = {?}', $type);
-        }
-        return $joins;
-    }
-
     /** NAMETOKENS
      */
     private $name_tokens = array();
@@ -764,9 +726,9 @@ class UserFilter extends PlFilter
 
     /** EDUCATION
      */
-    const GRADE_ING = 'Ing.';
-    const GRADE_PHD = 'PhD';
-    const GRADE_MST = 'M%';
+    const GRADE_ING = Profile::DEGREE_X;
+    const GRADE_PHD = Profile::DEGREE_D;
+    const GRADE_MST = Profile::DEGREE_M;
     static public function isGrade($grade)
     {
         return ($grade !== 0) && ($grade == self::GRADE_ING || $grade == self::GRADE_PHD || $grade == self::GRADE_MST);
@@ -813,7 +775,7 @@ class UserFilter extends PlFilter
         foreach ($this->pepe as $grade => $sub) {
             if ($this->isGrade($grade)) {
                 $joins['pe' . $sub] = PlSqlJoin::left('profile_education', '$ME.eduid = pee.id AND $ME.pid = $PID');
-                $joins['pede' . $sub] = PlSqlJoin::inner('profile_education_degree_enum', '$ME.id = pe' . $sub . '.degreeid AND $ME.abbreviation LIKE {?}', $grade);
+                $joins['pede' . $sub] = PlSqlJoin::inner('profile_education_degree_enum', '$ME.id = pe' . $sub . '.degreeid AND $ME.degree LIKE {?}', $grade);
             } else {
                 $joins['pe' . $sub] = PlSqlJoin::left('profile_education', '$ME.pid = $PID');
                 $joins['pee' . $sub] = PlSqlJoin::inner('profile_education_enum', '$ME.id = pe' . $sub . '.eduid');
@@ -846,6 +808,15 @@ class UserFilter extends PlFilter
         return $sub;
     }
 
+    private $gpfm = array();
+    public function addGroupFormerMemberFilter()
+    {
+        $this->requireAccounts();
+        $sub = '_' . $this->option++;
+        $this->gpfm[] = $sub;
+        return $sub;
+    }
+
     protected function groupJoins()
     {
         $joins = array();
@@ -859,6 +830,9 @@ class UserFilter extends PlFilter
                 $joins['gpa' . $sub] = PlSqlJoin::inner('groups', '$ME.diminutif = {?}', $key);
                 $joins['gpm' . $sub] = PlSqlJoin::left('group_members', '$ME.uid = $UID AND $ME.asso_id = gpa' . $sub . '.id');
             }
+        }
+        foreach ($this->gpfm as $sub) {
+            $joins['gpfm' . $sub] = PlSqlJoin::left('group_former_members', '$ME.uid = $UID');
         }
         return $joins;
     }
@@ -937,10 +911,20 @@ class UserFilter extends PlFilter
      *  that email as a source email.
      * @return Suffix to use to access the adequate table.
      */
-     public function addAliasFilter($email = null)
+    public function addAliasFilter($email = null)
     {
         $this->requireAccounts();
         return $this->register_optional($this->sa, $email);
+    }
+
+    private $with_rf = false;
+    /** Allows filtering by active redirection.
+     * @return Suffix to use to access the adequate table.
+     */
+    public function addActiveEmailRedirectFilter($email = null)
+    {
+        $this->requireAccounts();
+        $this->with_rf = true;
     }
 
     protected function emailJoins()
@@ -954,18 +938,18 @@ class UserFilter extends PlFilter
                 if (!is_array($redirections)) {
                     $key = array($redirections);
                 }
-                $joins['ra' . $sub] = PlSqlJoin::left('email_redriect_account', '$ME.uid = $UID AND $ME.type != \'imap\'
+                $joins['ra' . $sub] = PlSqlJoin::left('email_redirect_account', '$ME.uid = $UID AND $ME.type != \'imap\'
                                                                                  AND $ME.redirect IN {?}', $redirections);
             }
         }
         foreach ($this->sa as $sub => $emails) {
             if (is_null($emails)) {
                 $joins['sa' . $sub] = PlSqlJoin::left('email_source_account', '$ME.uid = $UID');
-            } else if ($key == self::ALIAS_BEST) {
+            } else if ($sub == self::ALIAS_BEST) {
                 $joins['sa' . $sub] = PlSqlJoin::left('email_source_account', '$ME.uid = $UID AND FIND_IN_SET(\'bestalias\', $ME.flags)');
-            } else if ($key == self::ALIAS_FORLIFE) {
+            } else if ($sub == self::ALIAS_FORLIFE) {
                 $joins['sa' . $sub] = PlSqlJoin::left('email_source_account', '$ME.uid = $UID AND $ME.type = \'forlife\'');
-            } else if ($key == self::ALIAS_AUXILiIARY) {
+            } else if ($sub == self::ALIAS_AUXILIARY) {
                 $joins['sa' . $sub] = PlSqlJoin::left('email_source_account', '$ME.uid = $UID AND $ME.type = \'alias_aux\'');
             } else {
                 if (!is_array($emails)) {
@@ -974,50 +958,37 @@ class UserFilter extends PlFilter
                 $joins['sa' . $sub] = PlSqlJoin::left('email_source_account', '$ME.uid = $UID AND $ME.email IN {?}', $emails);
             }
         }
+        if ($this->with_rf) {
+            $joins['rf'] = PlSqlJoin::left('email_redirect_account', '$ME.uid = $UID AND $ME.type != \'imap\' AND $ME.flags = \'active\'');;
+        }
         return $joins;
     }
 
 
     /** ADDRESSES
      */
-    private $with_pa = false;
-    public function addAddressFilter()
+    private $types = array();
+    public function addAddressFilter($type)
     {
         $this->requireProfiles();
         $this->with_pa = true;
-        return 'pa';
-    }
 
-    private $with_pac = false;
-    public function addAddressCountryFilter()
-    {
-        $this->requireProfiles();
-        $this->addAddressFilter();
-        $this->with_pac = true;
-        return 'gc';
-    }
-
-    private $with_pal = false;
-    public function addAddressLocalityFilter()
-    {
-        $this->requireProfiles();
-        $this->addAddressFilter();
-        $this->with_pal = true;
-        return 'gl';
+        $sub = '_' . $this->option++;
+        $this->types[$type] = $sub;
+        return $sub;
     }
 
     protected function addressJoins()
     {
         $joins = array();
-        if ($this->with_pa) {
-            $joins['pa'] = PlSqlJoin::left('profile_addresses', '$ME.pid = $PID');
+        foreach ($this->types as $type => $sub) {
+            $joins['pa' . $sub] = PlSqlJoin::inner('profile_addresses', '$ME.pid = $PID');
+            $joins['pac' . $sub] = PlSqlJoin::inner('profile_addresses_components',
+                                                    '$ME.pid = pa' . $sub . '.pid AND $ME.jobid = pa' . $sub . '.jobid AND $ME.groupid = pa' . $sub . '.groupid AND $ME.type = pa' . $sub . '.type AND $ME.id = pa' . $sub . '.id');
+            $joins['pace' . $sub] = PlSqlJoin::inner('profile_addresses_components_enum',
+                                                     '$ME.id = pac' . $sub . '.component_id AND FIND_IN_SET({?}, $ME.types)', $type);
         }
-        if ($this->with_pac) {
-            $joins['gc'] = PlSqlJoin::left('geoloc_countries', '$ME.iso_3166_1_a2 = pa.countryID');
-        }
-        if ($this->with_pal) {
-            $joins['gl'] = PlSqlJoin::left('geoloc_localities', '$ME.id = pa.localityID');
-        }
+
         return $joins;
     }
 
@@ -1033,10 +1004,10 @@ class UserFilter extends PlFilter
         $this->requireProfiles();
         $this->pc = true;
         if ($type == UFC_Corps::CURRENT) {
-            $pce['pcec'] = 'current_corpsid';
+            $this->pce['pcec'] = 'current_corpsid';
             return 'pcec';
         } else if ($type == UFC_Corps::ORIGIN) {
-            $pce['pceo'] = 'original_corpsid';
+            $this->pce['pceo'] = 'original_corpsid';
             return 'pceo';
         }
     }
@@ -1188,6 +1159,37 @@ class UserFilter extends PlFilter
         return $joins;
     }
 
+    /** DELTATEN
+     */
+    private $dts = array();
+    const DELTATEN = 1;
+    const DELTATEN_MESSAGE = 2;
+    // TODO: terms
+
+    public function addDeltaTenFilter($type)
+    {
+        $this->requireProfiles();
+        switch ($type) {
+        case self::DELTATEN:
+            $this->dts['pdt'] = 'profile_deltaten';
+            return 'pdt';
+        case self::DELTATEN_MESSAGE:
+            $this->dts['pdtm'] = 'profile_deltaten';
+            return 'pdtm';
+        default:
+            Platal::page()->killError("Undefined DeltaTen filter.");
+        }
+    }
+
+    protected function deltatenJoins()
+    {
+        $joins = array();
+        foreach ($this->dts as $sub => $tab) {
+            $joins[$sub] = PlSqlJoin::left($tab, '$ME.pid = $PID');
+        }
+        return $joins;
+    }
+
     /** MENTORING
      */
 
@@ -1200,7 +1202,7 @@ class UserFilter extends PlFilter
 
     public function addMentorFilter($type)
     {
-        $this->requireAccounts();
+        $this->requireProfiles();
         switch($type) {
         case self::MENTOR:
             $this->pms['pm'] = 'profile_mentor';

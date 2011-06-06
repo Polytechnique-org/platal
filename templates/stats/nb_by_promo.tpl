@@ -23,18 +23,19 @@
 <h1>Inscrits par promo</h1>
 
 <p>
-Voici le nombre d'inscrits par promo&nbsp;:
+Voici le nombre d'inscrits par promotion&nbsp;:
 </p>
 
 <table class="bicol" cellpadding="3" cellspacing="0" summary="Statistiques">
+  {foreach from=$nbs key=cycle item=nb_cycle}
   <tr>
-    <th></th>
+    <th>{$cycle}</th>
     <th>0</th><th>1</th><th>2</th><th>3</th><th>4</th>
     <th>5</th><th>6</th><th>7</th><th>8</th><th>9</th>
   </tr>
-  {foreach item=nb10 key=lustre from=$nbs}
+  {foreach item=nb10 key=lustre from=$nb_cycle}
   <tr>
-    <th>{$lustre}-</th>
+    <th>{$lustre}</th>
     {foreach item=nb from=$nb10}
     <td class="center">
       {if $nb && $nb.promo eq $promo}
@@ -47,6 +48,7 @@ Voici le nombre d'inscrits par promo&nbsp;:
     </td>
     {/foreach}
   </tr>
+  {/foreach}
   {/foreach}
 </table>
 
@@ -67,7 +69,15 @@ Voici le nombre d'inscrits par promo&nbsp;:
 <h1>Inscrits par promo en (%)</h1>
 
 <div class="center">
-  <img src="stats/graph/all" alt="[graphe du nombre d'inscrits par promo]" />
+  <img src="stats/graph/{#Profile::DEGREE_X#}" alt="[graphe du nombre d'inscrits par promotion pour les X]" />
+</div>
+
+<div class="center">
+  <img src="stats/graph/{#Profile::DEGREE_M#}" alt="[graphe du nombre d'inscrits par promotion pour les masters]" />
+</div>
+
+<div class="center">
+  <img src="stats/graph/{#Profile::DEGREE_D#}" alt="[graphe du nombre d'inscrits par promotion pour les docteurs]" />
 </div>
 
 {/if}

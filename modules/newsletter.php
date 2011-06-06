@@ -26,12 +26,14 @@ class NewsletterModule extends PLModule
         return array(
             'nl'                           => $this->make_hook('nl',              AUTH_COOKIE),
             'nl/show'                      => $this->make_hook('nl_show',         AUTH_COOKIE),
+            'nl/search'                    => $this->make_hook('nl_search',       AUTH_COOKIE),
             'nl/submit'                    => $this->make_hook('nl_submit',       AUTH_MDP),
+            'nl/remaining'                 => $this->make_hook('nl_remaining',    AUTH_MDP),
             'admin/nls'                    => $this->make_hook('admin_nl_groups', AUTH_MDP, 'admin'),
             'admin/newsletter'             => $this->make_hook('admin_nl',        AUTH_MDP, 'admin'),
             'admin/newsletter/categories'  => $this->make_hook('admin_nl_cat',    AUTH_MDP, 'admin'),
             'admin/newsletter/edit'        => $this->make_hook('admin_nl_edit',   AUTH_MDP, 'admin'),
-            'admin/newsletter/edit/delete' => $this->make_hook('delete',          AUTH_MDP, 'admin'),
+            'admin/newsletter/edit/delete' => $this->make_hook('admin_nl_delete', AUTH_MDP, 'admin'),
             // Automatic mailing is disabled for X.org NL
 //            'admin/newsletter/edit/cancel' => $this->make_hook('cancel', AUTH_MDP, 'admin'),
 //            'admin/newsletter/edit/valid'  => $this->make_hook('valid',  AUTH_MDP, 'admin'),
@@ -46,7 +48,7 @@ class NewsletterModule extends PLModule
         return NewsLetter::forGroup(NewsLetter::GROUP_XORG);
     }
 
-    function handler_nl($page, $action = null, $hash = null)
+    function handler_nl($page, $action = null, $hash = null, $issue_id = null)
     {
         $nl = $this->getNl();
         if (!$nl) {
@@ -56,8 +58,9 @@ class NewsletterModule extends PLModule
         $page->changeTpl('newsletter/index.tpl');
         $page->setTitle('Lettres mensuelles');
 
+        $hash = ($hash == 'nohash') ? null : $hash;
         switch ($action) {
-          case 'out': $nl->unsubscribe($hash, $hash != null); break;
+          case 'out': $nl->unsubscribe($issue_id, $hash, $hash != null); break;
           case 'in':  $nl->subscribe(); break;
           default: ;
         }
@@ -91,6 +94,55 @@ class NewsletterModule extends PLModule
         }
     }
 
+    function handler_nl_search($page)
+    {
+        S::assert_xsrf_token();
+        $nl = $this->getNl();
+        if (!$nl) {
+            return PL_NOT_FOUND;
+        }
+
+        if (!Post::has('nl_search')) {
+            pl_redirect($nl->prefix(true, false));
+        }
+
+        $nl_search = Post::t('nl_search');
+        $nl_search_type = Post::t('nl_search_type');
+        if (!$nl_search || !($nl_search_type > 0 && $nl_search_type < 10)) {
+            $page->trigErrorRedirect('La recherche est vide ou erronée.', $nl->prefix());
+        }
+
+        $page->changeTpl('newsletter/search.tpl');
+        $user = S::user();
+        $fields = array(1 => 'all', 2 => 'all', 3 => 'title', 4 => 'body', 5 => 'append', 6 => 'all', 7 => 'title', 8 => 'head', 9 => 'signature');
+        $res_articles = $res_issues = array();
+        if ($nl_search_type < 6) {
+            $res_articles = $nl->articleSearch($nl_search, $fields[$nl_search_type], $user);
+        }
+        if ($nl_search_type > 5 || $nl_search_type == 1) {
+            $res_issues = $nl->issueSearch($nl_search, $fields[$nl_search_type], $user);
+        }
+
+        $articles_count = count($res_articles);
+        $issues_count = count($res_issues);
+        $results_count = $articles_count + $issues_count;
+        if ($results_count > 200) {
+            $page->trigError('Recherche trop générale.');
+        } elseif ($results_count == 0) {
+            $page->trigWarning('Aucun résultat pour cette recherche.');
+        } else {
+            $page->assign('res_articles', $res_articles);
+            $page->assign('res_issues', $res_issues);
+            $page->assign('articles_count', $articles_count);
+            $page->assign('issues_count', $issues_count);
+        }
+
+        $page->assign_by_ref('nl', $nl);
+        $page->assign('nl_search', $nl_search);
+        $page->assign('nl_search_type', $nl_search_type);
+        $page->assign('results_count', $results_count);
+    }
+
     function handler_nl_submit($page)
     {
         $page->changeTpl('newsletter/submit.tpl');
@@ -118,6 +170,21 @@ class NewsletterModule extends PLModule
         $page->addCssLink($nl->cssFile());
     }
 
+    function handler_nl_remaining($page)
+    {
+        require_once 'newsletter.inc.php';
+
+        pl_content_headers('text/html');
+        $page->changeTpl('newsletter/remaining.tpl', NO_SKIN);
+
+        $article = new NLArticle('', Post::t('body'), '');
+        $rest = $article->remain();
+
+        $page->assign('too_long', $rest['remaining_lines'] < 0);
+        $page->assign('last_line', ($rest['remaining_lines'] == 0));
+        $page->assign('remaining', ($rest['remaining_lines'] == 0) ? $rest['remaining_characters_for_last_line'] : $rest['remaining_lines']);
+    }
+
     function handler_admin_nl($page, $new = false) {
         $page->changeTpl('newsletter/admin.tpl');
         $page->setTitle('Administration - Newsletter : liste');
@@ -128,8 +195,11 @@ class NewsletterModule extends PLModule
         }
 
         if ($new == 'new') {
+            // Logs NL creation.
+            S::logger()->log('nl_issue_create', $nid);
+
             $id = $nl->createPending();
-            pl_redirect($nl->adminPrefix() . '/edit/' . $id);
+            pl_redirect($nl->adminPrefix(true, false) . '/edit/' . $id);
         }
 
         $page->assign_by_ref('nl', $nl);
@@ -169,6 +239,7 @@ class NewsletterModule extends PLModule
         $error_msgs = array(
             NLIssue::ERROR_INVALID_SHORTNAME => "Le nom court est invalide ou vide.",
             NLIssue::ERROR_INVALID_UFC => "Le filtre des destinataires est invalide.",
+            NLIssue::ERROR_TOO_LONG_UFC => "Le nombre de matricules AX renseigné est trop élevé.",
             NLIssue::ERROR_SQL_SAVE => "Une erreur est survenue en tentant de sauvegarder la lettre, merci de réessayer.",
         );
 
@@ -202,7 +273,7 @@ class NewsletterModule extends PLModule
         // Delete an article
         if($action == 'delete') {
             $issue->delArticle($aid);
-            pl_redirect($nl->adminPrefix() . "/edit/$nid");
+            pl_redirect($nl->adminPrefix(true, false) . "/edit/$nid");
         }
 
         // Save an article
@@ -210,7 +281,7 @@ class NewsletterModule extends PLModule
             $art  = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'),
                                   $aid, Post::v('cid'), Post::v('pos'));
             $issue->saveArticle($art);
-            pl_redirect($nl->adminPrefix() . "/edit/$nid");
+            pl_redirect($nl->adminPrefix(true, false) . "/edit/$nid");
         }
 
         // Edit an article
@@ -287,6 +358,9 @@ class NewsletterModule extends PLModule
             $page->trigErrorRedirect("Une erreur est survenue lors de l'annulation de l'envoi.", $nl->adminPrefix());
         }
 
+        // Logs NL cancelling.
+        S::logger()->log('nl_mailing_cancel', $nid);
+
         $page->trigSuccessRedirect("L'envoi de l'annonce {$issue->title()} est annulé.", $nl->adminPrefix());
     }
 
@@ -315,6 +389,9 @@ class NewsletterModule extends PLModule
         if (!$issue->scheduleMailing()) {
             $page->trigErrorRedirect("Une erreur est survenue lors de la validation de l'envoi.", $nl->adminPrefix());
         }
+
+        // Logs NL validation.
+        S::logger()->log('nl_mailing_valid', $nid);
 
         $page->trigSuccessRedirect("L'envoi de la newsletter {$issue->title()} a été validé.", $nl->adminPrefix());
     }
@@ -347,15 +424,37 @@ class NewsletterModule extends PLModule
             $page->trigErrorRedirect("Une erreur est survenue lors de la suppression de la lettre.", $nl->adminPrefix());
         }
 
+        // Logs NL deletion.
+        S::logger()->log('nl_issue_delete', $nid);
+
         $page->trigSuccessRedirect("La lettre a bien été supprimée.", $nl->adminPrefix());
     }
 
     function handler_admin_nl_cat($page, $action = 'list', $id = null) {
+        $nl = $this->getNl();
+        if (!$nl) {
+            return PL_NOT_FOUND;
+        }
+
+        if (!$nl->mayEdit()) {
+            return PL_FORBIDDEN;
+        }
+
         $page->setTitle('Administration - Newsletter : Catégories');
         $page->assign('title', 'Gestion des catégories de la newsletter');
-        $table_editor = new PLTableEditor('admin/newsletter/categories','newsletter_cat','cid');
+        $table_editor = new PLTableEditor($nl->adminPrefix() . '/categories', 'newsletter_cat','cid');
         $table_editor->describe('title','intitulé',true);
         $table_editor->describe('pos','position',true);
+        if ($nl->group == Newsletter::GROUP_XORG) {
+            $table_editor->add_option_table('newsletters', 'newsletters.id = t.nlid');
+            $table_editor->add_option_field('newsletters.name', 'newsletter_name', 'Newsletter', null, 'nlid');
+            $table_editor->describe('nlid', 'ID NL', true);
+        } else {
+            $table_editor->force_field_value('nlid', $nl->id);
+            $table_editor->describe('nlid', 'nlid', false);
+        }
+        // Prevent deletion.
+        $table_editor->on_delete(null, null);
         $table_editor->apply($page, $action, $id);
     }
 }

@@ -174,7 +174,7 @@
           <input type="submit" value="Créer mon compte !" />
         {else}
           <input type="hidden" name="pwhash" value="" />
-          <input type="submit" name="create_account" value="Créer mon compte !" onclick="return hashResponse('new1', 'new2', true);" />
+          <input type="submit" name="create_account" value="Créer mon compte !" onclick="return hashResponse('new1', 'new2', true, false);" />
         {/if}
       </td>
     </tr>
@@ -379,7 +379,7 @@
           <td></td>
           <td>
             <input type="hidden" name="pwhash" value="" />
-            <input type="submit" name="create_account" value="Changer" onclick="return hashResponse('new1', 'new2', true);" />
+            <input type="submit" name="create_account" value="Changer" onclick="return hashResponse('new1', 'new2', true, false);" />
           </td>
         </tr>
       </table>

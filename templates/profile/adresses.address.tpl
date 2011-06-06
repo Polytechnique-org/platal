@@ -40,7 +40,7 @@
 </table>
 <table class="bicol" style="margin-bottom: 1em" id="{$prefid}">
   <tr>
-    <th>
+    <th colspan="2">
       <div style="float: left">
         <label>
           <input name="{$prefname}[current]" type="radio" {if $address.current}checked="checked"{/if}
@@ -57,14 +57,20 @@
     </th>
   </tr>
   <tr {if $hiddenaddr}style="display: none"{/if}>
+    <td colspan="2" class="flags">
+      {include file="include/flags.radio.tpl" name="`$prefname`[pub]" val=$address.pub mainField='addresses' mainId=$i subField='phones' subId=-1}
+    </td>
+  </tr>
+  {include file="geoloc/form.address.tpl" prefname=$prefname prefid=$prefid address=$address id=$i}
+  <tr {if $hiddenaddr}style="display: none"{/if}>
+  {if !$isMe}
     <td>
-      <div style="margin-bottom: 0.2em" class="flags">
-        {include file="include/flags.radio.tpl" name="`$prefname`[pub]" val=$address.pub mainField='addresses' mainId=$i subField='phones' subId=-1}
-      </div>
-      <div style="clear: both"></div>
-      <div style="float: left">
-      {include file="geoloc/form.address.tpl" prefname=$prefname prefid=$prefid address=$address id=$i}
-      </div>
+      <small><strong>Adresse postale&nbsp;:</strong><br />{$address.postalText|nl2br}</small>
+    </td>
+    <td>
+  {else}
+    <td colspan="2">
+  {/if}
       <div style="float: left">
         <div>
           <label>
@@ -117,7 +123,7 @@
     </td>
   </tr>
   <tr class="pair" {if $hiddenaddr}style="display: none"{/if}>
-    <td>
+    <td colspan="2">
       {foreach from=$address.phones key=t item=tel}
         <div id="{"`$prefid`_phones_`$t`"}" style="clear: both">
           {include file="profile/phone.tpl" prefname="`$prefname`[phones]" prefid="`$prefid`_phones" telid=$t tel=$tel

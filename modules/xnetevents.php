@@ -26,12 +26,12 @@ class XnetEventsModule extends PLModule
     function handlers()
     {
         return array(
-            '%grp/events'       => $this->make_hook('events',  AUTH_MDP),
-            '%grp/events/sub'   => $this->make_hook('sub',     AUTH_MDP),
-            '%grp/events/csv'   => $this->make_hook('csv',     AUTH_MDP, 'user', NO_HTTPS),
-            '%grp/events/ical'  => $this->make_hook('ical',    AUTH_MDP, 'user', NO_HTTPS),
-            '%grp/events/edit'  => $this->make_hook('edit',    AUTH_MDP, 'groupadmin'),
-            '%grp/events/admin' => $this->make_hook('admin',   AUTH_MDP, 'groupmember'),
+            '%grp/events'       => $this->make_hook('events', AUTH_MDP),
+            '%grp/events/sub'   => $this->make_hook('sub',    AUTH_MDP),
+            '%grp/events/csv'   => $this->make_hook('csv',    AUTH_MDP, 'user', NO_HTTPS),
+            '%grp/events/ical'  => $this->make_hook('ical',   AUTH_MDP, 'user', NO_HTTPS),
+            '%grp/events/edit'  => $this->make_hook('edit',   AUTH_MDP, 'groupadmin'),
+            '%grp/events/admin' => $this->make_hook('admin',  AUTH_MDP, 'groupmember'),
         );
     }
 
@@ -151,16 +151,11 @@ class XnetEventsModule extends PLModule
                 $e['topay'] += $m['nb'] * $m['montant'];
             }
 
-            $query = XDB::query(
-                "SELECT amount
+            $montant = XDB::fetchOneCell(
+                "SELECT SUM(amount) as sum_amount
                    FROM payment_transactions AS t
                  WHERE ref = {?} AND uid = {?}", $e['paiement_id'], S::v('uid'));
-            $montants = $query->fetchColumn();
-
-            foreach ($montants as $m) {
-                $p = strtr(substr($m, 0, strpos($m, 'EUR')), ',', '.');
-                $e['paid'] += trim($p);
-            }
+            $e['paid'] += $montant;
 
             make_event_date($e);
 
@@ -468,7 +463,7 @@ class XnetEventsModule extends PLModule
                                 Post::v('intitule')." - ".$globals->asso('nom'),
                                 Post::v('site'), $money_defaut,
                                 Post::v('confirmation'), 0, 999,
-                                $globals->asso('id'), $eid);
+                                $globals->asso('id'), $eid, Post::b('donation'));
                 if ($p->accept()) {
                     $p->submit();
                 } else {
@@ -635,8 +630,7 @@ class XnetEventsModule extends PLModule
                                            GROUP BY  p.uid', $evt['eid']);
 
         $ofs = Env::i('offset');
-        $tot = (is_null($evt['nb_tot']) ? $evt['nb'] : $evt['nb_tot']);
-        $nbp = ceil($tot / NB_PER_PAGE);
+        $nbp = ceil($evt['user_count'] / NB_PER_PAGE);
         if ($nbp > 1) {
             $links = array();
             if ($ofs) {

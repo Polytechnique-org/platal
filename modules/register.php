@@ -31,7 +31,8 @@ class RegisterModule extends PLModule
 
     function handler_register($page, $hash = null)
     {
-        $alert = null;
+        $alert = array();
+        $alert_details = '';
         $subState = new PlDict(S::v('subState', array()));
         if (!$subState->has('step')) {
             $subState->set('step', 0);
@@ -41,32 +42,32 @@ class RegisterModule extends PLModule
         }
         if (Get::has('back') && Get::i('back') < $subState->i('step')) {
             $subState->set('step', max(0, Get::i('back')));
-            $subState->v('back')->set($subState->v('back')->count() + 1, $subState->dict());
-            $subState->v('back')->kill('back');
+            $subState->v('backs')->set($subState->v('backs')->count() + 1, $subState->dict());
+            $subState->v('backs')->kill('backs');
             if ($subState->v('backs')->count() == 3) {
-                $alert .= "Tentative d'inscription très hésitante - ";
+                $alert[] = "Tentative d'inscription très hésitante";
+                $alert_details .= "\n   * Retours en arrières : 3.";
             }
         }
 
         if ($hash) {
-            $nameTypes = DirEnum::getOptions(DirEnum::NAMETYPES);
-            $nameTypes = array_flip($nameTypes);
-            $res = XDB::query("SELECT  a.uid, pd.promo, pnl.name AS lastname, pnf.name AS firstname, p.xorg_id AS xorgid,
-                                       p.birthdate_ref AS birthdateRef, FIND_IN_SET('watch', a.flags) AS watch, m.hash, a.type
+            $res = XDB::query("SELECT  a.uid, a.hruid, ppn.lastname_initial AS lastname, ppn.firstname_initial AS firstname, p.xorg_id AS xorgid,
+                                       pd.promo, pe.promo_year AS yearpromo, pde.degree AS edu_type,
+                                       p.birthdate_ref AS birthdateRef, FIND_IN_SET('watch', a.flags) AS watch, m.hash, a.type, a.comment
                                  FROM  register_marketing AS m
                            INNER JOIN  accounts           AS a   ON (m.uid = a.uid)
                            INNER JOIN  account_profiles   AS ap  ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
                            INNER JOIN  profiles           AS p   ON (p.pid = ap.pid)
                            INNER JOIN  profile_display    AS pd  ON (p.pid = pd.pid)
-                           INNER JOIN  profile_name       AS pnl ON (p.pid = pnl.pid AND pnl.typeid = {?})
-                           INNER JOIN  profile_name       AS pnf ON (p.pid = pnf.pid AND pnf.typeid = {?})
+                           INNER JOIN  profile_education  AS pe  ON (pe.pid = p.pid AND FIND_IN_SET('primary', pe.flags))
+                           INNER JOIN  profile_education_degree_enum AS pde ON (pde.id = pe.degreeid)
+                           INNER JOIN  profile_public_names AS ppn ON (ppn.pid = p.pid)
                                 WHERE  m.hash = {?} AND a.state = 'pending'",
-                              $nameTypes['name_ini'], $nameTypes['firstname_ini'], $hash);
+                              $hash);
 
             if ($res->numRows() == 1) {
                 $subState->merge($res->fetchOneRow());
                 $subState->set('main_mail_domain', User::$sub_mail_domains[$subState->v('type')]);
-                $subState->set('yearpromo', substr($subState->s('promo'), 1, 4));
 
                 XDB::execute('INSERT INTO  register_mstats (uid, sender, success)
                                    SELECT  m.uid, m.sender, 0
@@ -95,14 +96,14 @@ class RegisterModule extends PLModule
                 if (Post::has('yearpromo')) {
                     $edu_type = Post::t('edu_type');
                     $yearpromo = Post::i('yearpromo');
-                    $promo = $edu_type . $yearpromo;
+                    $promo = Profile::$cycle_prefixes[$edu_type] . $yearpromo;
                     $res = XDB::query("SELECT  COUNT(*)
                                          FROM  accounts         AS a
                                    INNER JOIN  account_profiles AS ap ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
                                    INNER JOIN  profiles         AS p  ON (p.pid = ap.pid)
-                                   INNER JOIN  profile_display  AS pd ON (p.pid = pd.pid)
-                                        WHERE  a.state = 'pending' AND p.deathdate IS NULL AND pd.promo = {?}",
-                                      $promo);
+                                   INNER JOIN  profile_education AS pe ON (pe.pid = p.pid AND FIND_IN_SET('primary', pe.flags))
+                                        WHERE  a.state = 'pending' AND p.deathdate IS NULL AND pe.promo_year = {?}",
+                                      $yearpromo);
 
                     if (!$res->fetchOneCell()) {
                         $error = 'La promotion saisie est incorrecte ou tous les camarades de cette promotion sont inscrits !';
@@ -111,14 +112,16 @@ class RegisterModule extends PLModule
                         $subState->set('promo', $promo);
                         $subState->set('yearpromo', $yearpromo);
                         $subState->set('edu_type', $edu_type);
-                        if ($edu_type == 'X') {
+                        if ($edu_type == Profile::DEGREE_X) {
                             if ($yearpromo >= 1996 && $yearpromo < 2000) {
                                 $subState->set('schoolid', ($yearpromo % 100) * 10 . '???');
+                                $subState->set('schoolid_exemple', ($yearpromo % 100) * 10000 + 532);
+                                $subState->set('schoolid_exemple_ev2', (($yearpromo + 1) % 100) * 10000 + 532);
                             } elseif($yearpromo >= 2000) {
                                 $subState->set('schoolid', 100 + ($yearpromo % 100) . '???');
+                                $subState->set('schoolid_exemple', (100 + ($yearpromo % 100)) * 1000 + 532);
+                                $subState->set('schoolid_exemple_ev2', (100 + (($yearpromo + 1) % 100)) * 1000 + 532);
                             }
-                        } else {
-                            $subState->set('schoolid', '');
                         }
                     }
                 }
@@ -129,7 +132,9 @@ class RegisterModule extends PLModule
                     $this->load('register.inc.php');
                     $subState->set('firstname', Post::t('firstname'));
                     $subState->set('lastname', Post::t('lastname'));
-                    $subState->set('schoolid', Post::i('schoolid'));
+                    if (Post::has('schoolid')) {
+                        $subState->set('schoolid', Post::i('schoolid'));
+                    }
                     $error = checkNewUser($subState);
 
                     if ($error !== true) {
@@ -168,11 +173,12 @@ class RegisterModule extends PLModule
                         if ($birth[2] < 100) {
                             $birth[2] += 1900;
                         }
-                        $year  = $birth[2];
-                        $promo = $subState->i('yearpromo');
-                        if ($year > $promo - 15 || $year < $promo - 30) {
+                        $year = $birth[2];
+                        $ref_year = substr($subState->v('birthdateRef'), 0, 4);
+                        if (abs($ref_year - $year) > 2) {
                             $error[] = "La 'Date de naissance' n'est pas correcte.";
-                            $alert = "Date de naissance incorrecte à l'inscription - ";
+                            $alert[] = "Date de naissance incorrecte à l'inscription";
+                            $alert_details .= "\n   * Date de naissance renseignée : " . $birth . ' (date connue : ' . $subState->v('birthdateRef') . ')';
                             $subState->set('wrong_birthdate', $birth);
                         }
                     }
@@ -199,14 +205,16 @@ class RegisterModule extends PLModule
                     $bannedEmail = false;
                     if ($res->numRows()) {
                         list($state, $description) = $res->fetchOneRow();
-                        $alert .= "Email surveillé proposé à l'inscription - ";
+                        $alert[] = "Email surveillé proposé à l'inscription";
+                        $alert_details .= "\n   * Email surveillé : " . Post::v('email');
                         $subState->set('email_desc', $description);
                         if ($state == 'dangerous') {
                             $bannedEmail = true;
                         }
                     }
                     if ($subState->i('watch') != 0) {
-                        $alert .= "Inscription d'un utilisateur surveillé - ";
+                        $alert[] = "Inscription d'un utilisateur surveillé";
+                        $alert_details .= "\n   * Commentaire pour la surveillance : " . $subState->v('comment');
                     }
 
                     if (($bannedIp = check_ip('unsafe'))) {
@@ -225,10 +233,12 @@ class RegisterModule extends PLModule
                         // or if the IP address of the user has been banned.
                         if ($subState->s('birthdateRef') != '0000-00-00'
                             && $subState->s('birthdateRef') != $subState->s('birthdate')) {
-                            $alert .= "Date de naissance incorrecte à l'inscription - ";
+                            $alert[] = "Date de naissance incorrecte à l'inscription";
+                            $alert_details .= "\n   * Date de naissance renseignée : " . $subState->s('birthdateRef') . ' (date connue : ' . $subState->s('birthdateRef') . ')';
                         }
                         if ($bannedIp) {
-                            $alert .= "Tentative d'inscription depuis une IP surveillée";
+                            $alert[] = "Tentative d'inscription depuis une IP surveillée";
+                            $alert_details .= "\n   * IP surveillée : " . $_SESSION['check_ip'];
                         }
 
                         // Prevent banned user from actually registering; save the current state for others.
@@ -241,7 +251,8 @@ class RegisterModule extends PLModule
                         } else {
                             $subState->set('step', 4);
                             if ($subState->v('backs')->count() >= 3) {
-                                $alert .= "Fin d'une inscription hésitante.";
+                                $alert[] = "Fin d'une inscription hésitante";
+                                $alert_details .= "\n   * Nombre de retours en arrière : " . $subState->v('backs')->count();
                             }
                             finishRegistration($subState);
                         }
@@ -251,8 +262,9 @@ class RegisterModule extends PLModule
         }
 
         $_SESSION['subState'] = $subState->dict();
-        if (!empty($alert)) {
-            send_warning_mail($alert);
+        if (count($alert)) {
+            $alert_details = "Détails des alertes :" . $alert_details . "\n\n\n";
+            send_warning_mail(implode(' - ', $alert), $alert_details);
         }
 
         $page->changeTpl('register/step' . $subState->i('step') . '.tpl');
@@ -275,24 +287,21 @@ class RegisterModule extends PLModule
             return PL_FORBIDDEN;
         }
 
-        $nameTypes = DirEnum::getOptions(DirEnum::NAMETYPES);
-        $nameTypes = array_flip($nameTypes);
-
         // Retrieve the pre-registration information using the url-provided
         // authentication token.
         $res = XDB::query("SELECT  r.uid, p.pid, r.forlife, r.bestalias, r.mailorg2,
                                    r.password, r.email, r.services, r.naissance,
-                                   pnl.name AS lastname, pnf.name AS firstname,
-                                   pd.promo, p.sex, p.birthdate_ref, a.type AS eduType
+                                   ppn.lastname_initial, ppn.firstname_initial, pe.promo_year,
+                                   pd.promo, p.sex, p.birthdate_ref, a.type
                              FROM  register_pending AS r
                        INNER JOIN  accounts         AS a   ON (r.uid = a.uid)
                        INNER JOIN  account_profiles AS ap  ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
                        INNER JOIN  profiles         AS p   ON (p.pid = ap.pid)
-                       INNER JOIN  profile_name     AS pnl ON (p.pid = pnl.pid AND pnl.typeid = {?})
-                       INNER JOIN  profile_name     AS pnf ON (p.pid = pnf.pid AND pnf.typeid = {?})
+                       INNER JOIN  profile_public_names AS ppn ON (ppn.pid = p.pid)
                        INNER JOIN  profile_display  AS pd  ON (p.pid = pd.pid)
+                       INNER JOIN  profile_education AS pe ON (pe.pid = p.pid AND FIND_IN_SET('primary', pe.flags))
                             WHERE  hash = {?} AND hash != 'INSCRIT' AND a.state = 'pending'",
-                          $nameTypes['name_ini'], $nameTypes['firstname_ini'], $hash);
+                          $hash);
         if (!$hash || $res->numRows() == 0) {
             $page->kill("<p>Cette adresse n'existe pas, ou plus, sur le serveur.</p>
                          <p>Causes probables&nbsp;:</p>
@@ -309,10 +318,9 @@ class RegisterModule extends PLModule
         }
 
         list($uid, $pid, $forlife, $bestalias, $emailXorg2, $password, $email, $services,
-             $birthdate, $lastname, $firstname, $promo, $sex, $birthdate_ref, $eduType) = $res->fetchOneRow();
-        $isX = ($eduType == 'x');
-        $yearpromo = substr($promo, 1, 4);
-        $mail_domain = User::$sub_mail_domains[$eduType] . $globals->mail->domain;
+             $birthdate, $lastname, $firstname, $yearpromo, $promo, $sex, $birthdate_ref, $type) = $res->fetchOneRow();
+        $isX = ($type == 'x');
+        $mail_domain = User::$sub_mail_domains[$type] . $globals->mail->domain;
 
         // Prepare the template for display.
         $page->changeTpl('register/end.tpl');
@@ -367,14 +375,15 @@ class RegisterModule extends PLModule
         $user = User::getSilentWithUID($uid);
         $redirect = new Redirect($user);
         $redirect->add_email($email);
+        fix_bestalias($user);
 
         // Try to start a session (so the user don't have to log in); we will use
         // the password available in Post:: to authenticate the user.
         Platal::session()->start(AUTH_MDP);
 
         // Subscribe the user to the services she did request at registration time.
+        require_once 'newsletter.inc.php';
         foreach (explode(',', $services) as $service) {
-            require_once 'newsletter.inc.php';
             switch ($service) {
                 case 'ax_letter':
                     NewsLetter::forGroup(NewsLetter::GROUP_AX)->subscribe($user);
@@ -383,21 +392,23 @@ class RegisterModule extends PLModule
                     NewsLetter::forGroup(NewsLetter::GROUP_XORG)->subscribe($user);
                     break;
                 case 'imap':
-                    Email::activate_storage($user, 'imap');
+                    Email::activate_storage($user, 'imap', Bogo::IMAP_DEFAULT);
                     break;
                 case 'ml_promo':
-                    $r = XDB::query('SELECT id FROM groups WHERE diminutif = {?}', $yearpromo);
-                    if ($r->numRows()) {
-                        $asso_id = $r->fetchOneCell();
-                        XDB::execute('INSERT IGNORE INTO  group_members (uid, asso_id)
-                                                  VALUES  ({?}, {?})',
-                                     $uid, $asso_id);
-                        try {
-                            $mmlist = new MMList($user);
-                            $mmlist->subscribe("promo" . $yearpromo);
-                        } catch (Exception $e) {
-                            PlErrorReport::report($e);
-                            $page->trigError("L'inscription à la liste promo" . $yearpromo . " a échouée.");
+                    if ($isX) {
+                        $r = XDB::query('SELECT id FROM groups WHERE diminutif = {?}', $yearpromo);
+                        if ($r->numRows()) {
+                            $asso_id = $r->fetchOneCell();
+                            XDB::execute('INSERT IGNORE INTO  group_members (uid, asso_id)
+                                                      VALUES  ({?}, {?})',
+                                         $uid, $asso_id);
+                            try {
+                                $mmlist = new MMList($user);
+                                $mmlist->subscribe("promo" . $yearpromo);
+                            } catch (Exception $e) {
+                                PlErrorReport::report($e);
+                                $page->trigError("L'inscription à la liste promo" . $yearpromo . " a échouée.");
+                            }
                         }
                     }
                     break;
@@ -435,17 +446,17 @@ class RegisterModule extends PLModule
         Platal::session()->updateNbNotifs();
 
         // Forcibly register the new user on default forums.
-        $promoForum = 'xorg.promo.' . strtolower($promo);
-        $registeredForums = array('xorg.general', 'xorg.pa.divers', 'xorg.pa.logements', $promoForum);
-        foreach ($registeredForums as $forum) {
-            XDB::execute("INSERT INTO  forum_subs (fid, uid)
-                               SELECT  fid, {?}
-                                 FROM  forums
-                                WHERE  name = {?}",
-                         $uid, $val);
+        $registeredForums = array('xorg.general', 'xorg.pa.divers', 'xorg.pa.logements');
 
-            // Notify the newsgroup admin of the promotion forum needs be created.
-            if (XDB::affectedRows() == 0 && $forum == $promoForum) {
+        if ($isX) {
+            $promoForum = 'xorg.promo.' . strtolower($promo);
+            $exists = XDB::fetchOneCell('SELECT  COUNT(*)
+                                           FROM  forums
+                                          WHERE  name = {?}',
+                                        $promoForum);
+
+            if ($exists == 0) {
+                // Notify the newsgroup admin of the promotion forum needs be created.
                 $promoFull = new UserFilter(new UFC_Promo('=', UserFilter::DISPLAY, $promo));
                 $promoRegistered = new UserFilter(new PFC_And(
                         new UFC_Promo('=', UserFilter::DISPLAY, $promo),
@@ -457,7 +468,17 @@ class RegisterModule extends PLModule
                     $mymail->assign('promo', $promo);
                     $mymail->send();
                 }
+            } else {
+                $registeredForums[] = $promoForum;
             }
+        }
+
+        foreach ($registeredForums as $forum) {
+            XDB::execute("INSERT INTO  forum_subs (fid, uid)
+                               SELECT  fid, {?}
+                                 FROM  forums
+                                WHERE  name = {?}",
+                         $uid, $val);
         }
 
         // Update the global registration count stats.
@@ -483,7 +504,7 @@ class RegisterModule extends PLModule
             $market[] = " - par {$sender->fullName()} sur $maketingEmails (le plus récemment le $lastDate)";
             $mymail = new PlMailer('register/marketer.mail.tpl');
             $mymail->setSubject("$firstname $lastname s'est inscrit à Polytechnique.org !");
-            $mymail->addTo($sender);
+            $mymail->setTo($sender);
             $mymail->assign('sender', $sender);
             $mymail->assign('firstname', $firstname);
             $mymail->assign('lastname', $lastname);

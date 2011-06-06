@@ -51,6 +51,8 @@
     <td>
       <a href="admin/lists">MLs</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/aliases">aliases</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/mx/broken">MX défaillants</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/emails/lost">Perdus de vue</a>
@@ -106,9 +108,19 @@
     <td>
       <a href="admin/dead-but-active">Décédés actifs</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/xnet_without_group">Comptes xnet sans groupe</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/account/watch">Administrateurs/Désactivations</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/googleapps">Google Apps</a>
+    </td>
+  </tr>
+  <tr class="impair">
+    <td class="titre">Formations</td>
+    <td>
+      <a href="admin/phd">Doctorants</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/add_secondary_edu">Ajout de formation</a>
     </td>
   </tr>
 
@@ -152,8 +164,6 @@
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/sections">Sections</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/names">Noms</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/networking">Networking</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/profile">Modifications récentes</a>
@@ -185,6 +195,8 @@
       <a href="admin/nls">Liste des NLs groupes</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/newsletter/">NL de X.org</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/url">Raccourcisseur d'url</a>
     </td>
   </tr>
   <tr class="impair">

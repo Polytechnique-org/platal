@@ -79,10 +79,11 @@ class NLReq extends Validate
 
     protected function _mail_body($isok)
     {
+        $you_have = ($this->formal ? 'vous aviez' : 'tu avais');
         if ($isok) {
-            return "  L'article que tu avais proposé (" . $this->art->title() . ") vient d'être validé.";
+            return "  L'article que $you_have proposé (" . $this->art->title() . ") vient d'être validé.";
         } else {
-            return "  L'article que tu avais proposé a été refusé.";
+            return "  L'article que $you_have proposé a été refusé.";
         }
     }
 

@@ -24,18 +24,18 @@ class CarnetModule extends PLModule
     function handlers()
     {
         return array(
-            'carnet'                => $this->make_hook('index',      AUTH_COOKIE, 'directory_private'),
-            'carnet/panel'          => $this->make_hook('panel',      AUTH_COOKIE, 'directory_private'),
-            'carnet/notifs'         => $this->make_hook('notifs',     AUTH_COOKIE, 'directory_private'),
+            'carnet'                       => $this->make_hook('index',              AUTH_COOKIE, 'directory_private'),
+            'carnet/panel'                 => $this->make_hook('panel',              AUTH_COOKIE, 'directory_private'),
+            'carnet/notifs'                => $this->make_hook('notifs',             AUTH_COOKIE, 'directory_private'),
 
-            'carnet/contacts'       => $this->make_hook('contacts',   AUTH_COOKIE, 'directory_private'),
-            'carnet/contacts/pdf'   => $this->make_hook('pdf',        AUTH_COOKIE, 'directory_private'),
-            'carnet/contacts/vcard' => $this->make_hook('vcard',      AUTH_COOKIE, 'directory_private'),
-            'carnet/contacts/ical'  => $this->make_token_hook('ical', AUTH_COOKIE, 'directory_private'),
-            'carnet/contacts/csv'   => $this->make_token_hook('csv',  AUTH_COOKIE, 'directory_private'),
+            'carnet/contacts'              => $this->make_hook('contacts',           AUTH_COOKIE, 'directory_private'),
+            'carnet/contacts/pdf'          => $this->make_hook('pdf',                AUTH_COOKIE, 'directory_private'),
+            'carnet/contacts/vcard'        => $this->make_hook('vcard',              AUTH_COOKIE, 'directory_private'),
+            'carnet/contacts/ical'         => $this->make_token_hook('ical',         AUTH_COOKIE, 'directory_private'),
+            'carnet/contacts/csv'          => $this->make_token_hook('csv',          AUTH_COOKIE, 'directory_private'),
             'carnet/contacts/csv/birthday' => $this->make_token_hook('csv_birthday', AUTH_COOKIE, 'directory_private'),
 
-            'carnet/rss'            => $this->make_token_hook('rss',  AUTH_COOKIE, 'directory_private'),
+            'carnet/rss'                   => $this->make_token_hook('rss',          AUTH_COOKIE, 'directory_private'),
         );
     }
 
@@ -280,7 +280,7 @@ class CarnetModule extends PLModule
         }
         switch (Env::v('action')) {
             case 'retirer':
-                if (($contact = User::get(Env::v('user')))) {
+                if (($contact = Profile::get(Env::v('user')))) {
                     if (XDB::execute("DELETE FROM  contacts
                                             WHERE  uid = {?} AND contact = {?}",
                                      $uid, $contact->id())) {
@@ -291,7 +291,7 @@ class CarnetModule extends PLModule
                 break;
 
             case 'ajouter':
-                if (($contact = User::get(Env::v('user')))) {
+                if (($contact = Profile::get(Env::v('user')))) {
                     XDB::execute('INSERT IGNORE INTO  contacts (uid, contact)
                                               VALUES  ({?}, {?})',
                                  $uid, $contact->id());
@@ -324,12 +324,9 @@ class CarnetModule extends PLModule
 
         $view->addMod('minifiche', 'Mini-fiches', true);
         $view->addMod('trombi', 'Trombinoscope', false, array('with_admin' => false, 'with_promo' => true));
-        // TODO: Reactivate when the new map is completed.
-        // $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'carnet/contacts/search'));
+        $view->addMod('map', 'Planisphère');
         $view->apply('carnet/contacts', $page, $action, $subaction);
-        //if ($action != 'geoloc' || ($search && !$ssaction) || (!$search && !$subaction)) {
         $page->changeTpl('carnet/mescontacts.tpl');
-        //}
     }
 
     function handler_pdf($page, $arg0 = null, $arg1 = null)

@@ -24,15 +24,16 @@ class SearchModule extends PLModule
     function handlers()
     {
         return array(
-            'search'              => $this->make_hook('quick',          AUTH_PUBLIC),
-            'search/adv'          => $this->make_hook('advanced',       AUTH_COOKIE, 'directory_ax'),
-            'advanced_search.php' => $this->make_hook('redir_advanced', AUTH_PUBLIC),
-            'search/autocomplete' => $this->make_hook('autocomplete',   AUTH_COOKIE, 'directory_ax', NO_AUTH),
-            'search/list'         => $this->make_hook('list',           AUTH_COOKIE, 'directory_ax', NO_AUTH),
-            'jobs'                => $this->make_hook('referent',       AUTH_COOKIE),
-            'emploi'              => $this->make_hook('referent',       AUTH_COOKIE),
-            'referent/search'     => $this->make_hook('referent',       AUTH_COOKIE),
-            'search/referent/countries' => $this->make_hook('referent_countries',     AUTH_COOKIE),
+            'search'                    => $this->make_hook('quick',              AUTH_PUBLIC),
+            'search/adv'                => $this->make_hook('advanced',           AUTH_COOKIE, 'directory_ax'),
+            'advanced_search.php'       => $this->make_hook('redir_advanced',     AUTH_PUBLIC),
+            'search/autocomplete'       => $this->make_hook('autocomplete',       AUTH_COOKIE, 'directory_ax', NO_AUTH),
+            'search/list'               => $this->make_hook('list',               AUTH_COOKIE, 'directory_ax', NO_AUTH),
+            'search/list/count'         => $this->make_hook('list_count',         AUTH_COOKIE, 'directory_ax', NO_AUTH),
+            'jobs'                      => $this->make_hook('referent',           AUTH_COOKIE),
+            'emploi'                    => $this->make_hook('referent',           AUTH_COOKIE),
+            'referent/search'           => $this->make_hook('referent',           AUTH_COOKIE),
+            'search/referent/countries' => $this->make_hook('referent_countries', AUTH_COOKIE),
         );
     }
 
@@ -122,8 +123,7 @@ class SearchModule extends PLModule
             $view->addMod('minifiche', 'Mini-fiches', true, array('with_score' => true, 'starts_with' => $byletter));
             if (S::logged() && !Env::i('nonins')) {
                 $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true, 'with_score' => true));
-                // TODO: Reactivate when the new map is completed.
-                // $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
+                $view->addMod('map', 'Planisphère');
             }
             $view->apply('search', $page, $model);
 
@@ -156,6 +156,18 @@ class SearchModule extends PLModule
         $networks[0] = '-';
         ksort($networks);
         $page->assign('networking_types', $networks);
+        $origin_corps_list = DirEnum::getOptions(DirEnum::CURRENTCORPS);
+        $current_corps_list = DirEnum::getOptions(DirEnum::ORIGINCORPS);
+        $corps_rank_list = DirEnum::getOptions(DirEnum::CORPSRANKS);
+        $origin_corps_list[0] = '-';
+        $current_corps_list[0] = '-';
+        $corps_rank_list[0] = '-';
+        ksort($origin_corps_list);
+        ksort($current_corps_list);
+        ksort($corps_rank_list);
+        $page->assign('origin_corps_list', $origin_corps_list);
+        $page->assign('current_corps_list', $current_corps_list);
+        $page->assign('corps_rank_list', $corps_rank_list);
 
         if (!Env::has('rechercher') && $model != 'geoloc') {
             $this->form_prepare();
@@ -175,8 +187,7 @@ class SearchModule extends PLModule
             } else {
                 $view->addMod('minifiche', 'Mini-fiches', true, array('starts_with' => $byletter));
                 $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true));
-                // TODO: Reactivate when the new map is completed.
-                // $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
+                $view->addMod('map', 'Planisphère');
                 if (S::user()->checkPerms(User::PERM_EDIT_DIRECTORY) || S::admin()) {
                     $view->addMod('addresses', 'Adresses postales', false);
                 }
@@ -235,7 +246,7 @@ class SearchModule extends PLModule
             'groupexTxt'         => DirEnum::GROUPESX,
             'sectionTxt'         => DirEnum::SECTIONS,
             'networking_typeTxt' => DirEnum::NETWORKS,
-            'city'               => DirEnum::LOCALITIES,
+            'localityTxt'        => DirEnum::LOCALITIES,
             'countryTxt'         => DirEnum::COUNTRIES,
             'entreprise'         => DirEnum::COMPANIES,
             'jobtermTxt'         => DirEnum::JOBTERMS,
@@ -296,7 +307,23 @@ class SearchModule extends PLModule
             break;
           case 'country':
             $ids = DirEnum::getOptionsIter(DirEnum::COUNTRIES);
-            $page->assign('onchange', 'changeCountry(this.value)');
+            $page->assign('onchange', 'changeAddressComponents(\'' . $type . '\', this.value)');
+            break;
+          case 'administrative_area_level_1':
+          case 'administrative_area_level_2':
+          case 'administrative_area_level_3':
+          case 'locality':
+            $page->assign('onchange', 'changeAddressComponents(\'' . $type . '\', this.value)');
+          case 'sublocality':
+            $ids = XDB::iterator("SELECT  pace1.id, pace1.long_name AS field
+                                    FROM  profile_addresses_components_enum AS pace1
+                              INNER JOIN  profile_addresses_components      AS pac1  ON (pac1.component_id = pace1.id)
+                              INNER JOIN  profile_addresses_components      AS pac2  ON (pac1.pid = pac2.pid AND pac1.jobid = pac2.jobid AND pac1.id = pac2.id
+                                                                                         AND pac1.groupid = pac2.groupid AND pac1.type = pac2.type)
+                              INNER JOIN  profile_addresses_components_enum AS pace2 ON (pac2.component_id = pace2.id AND FIND_IN_SET({?}, pace2.types))
+                                   WHERE  pace2.id = {?} AND FIND_IN_SET({?}, pace1.types) AND pac1.type = 'home'
+                                GROUP BY  pace1.long_name",
+                                 Env::v('previous'), Env::v('value'), $type);
             break;
           case 'diploma':
             if (Env::has('school') && Env::i('school') != 0) {
@@ -310,21 +337,6 @@ class SearchModule extends PLModule
             break;
           case 'nationalite':
             $ids = DirEnum::getOptionsIter(DirEnum::NATIONALITIES);
-            break;
-          case 'administrativearea':
-            if (Env::has('country')) {
-                $ids = DirEnum::getOptionsIter(DirEnum::ADMINAREAS, Env::v('country'));
-            } else {
-                $ids = DirEnum::getOptionsIter(DirEnum::ADMINAREAS);
-            }
-            $page->assign('onchange', 'changeAdministrativeArea(this.value)');
-            break;
-          case 'subadministrativearea':
-            if (Env::has('administrativearea')) {
-                $ids = DirEnum::getOptionsIter(DirEnum::SUBADMINAREAS, Env::v('administrativearea'));
-            } else {
-                $ids = DirEnum::getOptionsIter(DirEnum::SUBADMINAREAS);
-            }
             break;
           case 'school':
             $ids = DirEnum::getOptionsIter(DirEnum::EDUSCHOOLS);

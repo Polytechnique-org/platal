@@ -26,7 +26,7 @@ class ApiModule extends PlModule
         return array(
             // TODO(vzanotti): Extend the plat/al engine to support placeholders
             // in handler urls, for instance "api/1/user/%forlife/isRegistered".
-            'api/1/user'   => $this->make_api_hook('user', AUTH_COOKIE, 'api_user_readonly'),
+            'api/1/user'   => $this->make_api_hook('user',   AUTH_COOKIE, 'api_user_readonly'),
             'api/1/search' => $this->make_api_hook('search', AUTH_COOKIE),
         );
     }

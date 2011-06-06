@@ -38,15 +38,20 @@ function get_annuaire_infos($method, $params) {
                                 $params[1]);
             $array = $res->next();
         } else {
-            $res = XDB::iterRow("SELECT  p.birthdate, pa.text, pa.postalCode
-                                         gl.name, pa.countryId, p.pid, pa.id
-                                   FROM  profiles          AS p
-                              LEFT JOIN  profile_addresses AS pa ON (pa.pid = p.pid)
-                              LEFT JOIN  geoloc_localities AS gl ON (pl.id = pa.localityId)
+            $res = XDB::iterRow("SELECT  p.birthdate, pa.text, GROUP_CONCAT(pace3.short_name), GROUP_CONCAT(pace2.short_name),
+                                         GROUP_CONCAT(pace1.short_name), p.pid, pa.id
+                                   FROM  profiles                          AS p
+                              LEFT JOIN  profile_addresses                 AS pa    ON (pa.pid = p.pid)
+                              LEFT JOIN  profile_addresses_components      AS pc    ON (pa.pid = pc.pid AND pa.jobid = pc.jobid AND pa.groupid = pc.groupid
+                                                                                        AND pa.type = pc.type AND pa.id = pc.id)
+                              LEFT JOIN  profile_addresses_components_enum AS pace1 ON (FIND_IN_SET(\'country\', pace1.types) AND pace1.id = pc.component_id)
+                              LEFT JOIN  profile_addresses_components_enum AS pace2 ON (FIND_IN_SET(\'locality\', pace2.types) AND pace2.id = pc.component_id)
+                              LEFT JOIN  profile_addresses_components_enum AS pace3 ON (FIND_IN_SET(\'postal_code\', pace3.types) AND pace3.id = pc.component_id)
                                   WHERE  p.xorg_id = {?} AND NOT FIND_IN_SET('job', pa.flags)
                                ORDER BY  NOT FIND_IN_SET('current', pa.flags),
                                          FIND_IN_SET('secondary', pa.flags),
-                                         NOT FIND_IN_SET('mail', pa.flags)",
+                                         NOT FIND_IN_SET('mail', pa.flags)
+                               GROUP BY  pa.pid, pa.jobid, pa.groupid, pa.id, pa.type",
                                 $params[1]);
             // Process the addresses we got.
             if(list($age, $text, $adr['cp'], $adr['ville'],
@@ -174,10 +179,7 @@ function get_nouveau_infos($method, $params) {
     }
     // We check we actually have an identification number.
     if(!empty($params[1])) {
-        $nameTypes = DirEnum::getOptions(DirEnum::NAMETYPES);
-        $nameTypes = array_flip($nameTypes);
-
-        $res = XDB::query("SELECT  pnl.name AS nom, pnu.name AS nom_usage, pnf.name AS prenom,
+        $res = XDB::query("SELECT  ppn.lastname_initial AS nom, ppn.lastname_ordinary AS nom_usage, ppn.firstname_initial AS prenom,
                                    p.sex = 'female' AS femme, p.deathdate IS NOT NULL AS decede,
                                    p.birthdate, pd.promo, CONCAT(e.email, '@', d.name) AS mail
                              FROM  profiles         AS p
@@ -185,12 +187,9 @@ function get_nouveau_infos($method, $params) {
                        INNER JOIN  email_source_account AS s ON (s.uid = ap.uid AND FIND_IN_SET('bestalias', s.flags))
                        INNER JOIN  email_virtual_domains AS d ON (s.domain = s.id)
                        INNER JOIN  profile_display  AS pd PN (p.pid = pd.pid)
-                       INNER JOIN  profile_name AS pnl ON (p.pid = pnl.pid AND pnl.typeid = {?})
-                       INNER JOIN  profile_name AS pnf ON (p.pid = pnf.pid AND pnf.typeid = {?})
-                       INNER JOIN  profile_name AS pnu ON (p.pid = pnu.pid AND pnu.typeid = {?})
+                       INNER JOIN  profile_public_names AS ppn ON (ppn.pid = p.pid)
                             WHERE  a.flags = 'bestalias' AND p.xorg_id = {?}",
-                          $nameTypes['name_ini'], $nameTypes['lastname_ordinary'],
-                          $nameTypes['firstname_ini'], $params[1]);
+                          $params[1]);
         // $data['mail'] .= '@polytechnique.org';
 
 

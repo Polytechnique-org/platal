@@ -29,7 +29,7 @@ class GoogleAppsModule extends PLModule
         }
 
         return array(
-            'googleapps'            => $this->make_hook('index',      AUTH_MDP, 'mail'),
+            'googleapps'            => $this->make_hook('index',      AUTH_MDP, 'gapps'),
             'admin/googleapps'      => $this->make_hook('admin',      AUTH_MDP, 'admin'),
             'admin/googleapps/job'  => $this->make_hook('admin_job',  AUTH_MDP, 'admin'),
             'admin/googleapps/user' => $this->make_hook('admin_user', AUTH_MDP, 'admin'),
@@ -83,7 +83,7 @@ class GoogleAppsModule extends PLModule
                 if ($account->pending_update_suspension) {
                     $page->trigWarning("Ton compte est déjà en cours de désactivation.");
                 } else {
-                    if ($redirect->modify_one_email('googleapps', false) == SUCCESS) {
+                    if (!$redirect_active || $redirect->modify_one_email('googleapps', false) == SUCCESS) {
                         $account->suspend();
                         $page->trigSuccess("Ton compte Google Apps est dorénavant désactivé.");
                     } else {

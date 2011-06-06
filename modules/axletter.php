@@ -26,14 +26,16 @@ class AXLetterModule extends NewsletterModule
     function handlers()
     {
         return array(
-            'ax'                   => $this->make_hook('nl',  AUTH_COOKIE),
-            'ax/out'               => $this->make_hook('out',    AUTH_PUBLIC),
-            'ax/show'              => $this->make_hook('nl_show',   AUTH_COOKIE),
-            'ax/admin'             => $this->make_hook('admin_nl', AUTH_MDP),
-            'ax/admin/edit'        => $this->make_hook('admin_nl_edit', AUTH_MDP),
-            'ax/admin/edit/valid'  => $this->make_hook('admin_nl_valid', AUTH_MDP),
+            'ax'                   => $this->make_hook('nl',              AUTH_COOKIE),
+            'ax/out'               => $this->make_hook('out',             AUTH_PUBLIC),
+            'ax/show'              => $this->make_hook('nl_show',         AUTH_COOKIE),
+            'ax/search'            => $this->make_hook('nl_search',       AUTH_COOKIE),
+            'ax/admin'             => $this->make_hook('admin_nl',        AUTH_MDP),
+            'ax/admin/edit'        => $this->make_hook('admin_nl_edit',   AUTH_MDP),
+            'ax/admin/edit/valid'  => $this->make_hook('admin_nl_valid',  AUTH_MDP),
             'ax/admin/edit/cancel' => $this->make_hook('admin_nl_cancel', AUTH_MDP),
             'ax/admin/edit/delete' => $this->make_hook('admin_nl_delete', AUTH_MDP),
+            'ax/admin/categories'  => $this->make_hook('admin_nl_cat',    AUTH_MDP),
         );
     }
 

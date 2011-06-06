@@ -179,7 +179,7 @@ function auto_links() {
         }
         if ((!href.contains(fqdn) && !this.className.contains('popup')) || node.hasClass('popup')) {
             node.click(function () {
-                window.open(href);
+                window.open(this.href);
                 return false;
             });
         }
@@ -566,7 +566,7 @@ function checkPassword(box, okLabel) {
     }
 }
 
-function hashResponse(password1, password2, hasConfirmation) {
+function hashResponse(password1, password2, hasConfirmation, doAuth) {
     var pw1 = $('[name=' + password1 + ']').val();
     var pw2;
 
@@ -590,9 +590,15 @@ function hashResponse(password1, password2, hasConfirmation) {
         return false;
     }
 
-    alert("Le mot de passe que tu as rentré va être chiffré avant de nous parvenir par Internet ! Ainsi il ne circulera pas en clair.");
+    alert("Le mot de passe va être chiffré avant de nous parvenir par Internet ! Ainsi il ne circulera pas en clair.");
     $('[name=' + password1 + ']').val('');
     $('[name=pwhash]').val(hash_encrypt(pw1));
+
+    if (doAuth) {
+        $('[name=password]').val(pw1);
+        doChallengeResponse();
+    }
+
     return true;
 }
 
@@ -685,7 +691,7 @@ function sendTestEmail(token, hruid)
     } else {
         msg += " sur ton addresse.";
     }
-    $('#mail_sent').successMessage($url + '?token=' + token, msg);
+    $('#mail_sent').successMessage(url + '?token=' + token, msg);
     return false;
 }
 
@@ -830,23 +836,6 @@ function previewWiki(idFrom, idTo, withTitle, idShow)
     if (idShow != null) {
         $('#' + idShow).show();
     }
-}
-
-// }}}
-// {{{ send test email
-
-function sendTestEmail(token, hruid)
-{
-    var url = 'emails/test';
-    var msg = "Un email a été envoyé avec succès";
-    if (hruid != null) {
-        url += '/' + hruid;
-        msg += " sur l'adresse de " + hruid + ".";
-    } else {
-        msg += " sur ton addresse.";
-    }
-    $('#mail_sent').successMessage($url + '?token=' + token, msg);
-    return false;
 }
 
 // }}}
@@ -1043,7 +1032,7 @@ function sendTestEmail(token, hruid)
                 queryParams:       {
                     offset: 0,
                     count:  10,
-                    allow_special: true,
+                    allow_special: true
                 },
                 loadingClassLeft:  'ac_loading',
                 loadingClassRight: 'ac_loading_left',

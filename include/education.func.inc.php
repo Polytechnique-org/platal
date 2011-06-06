@@ -28,8 +28,9 @@ function education_options($current = 0)
                         LEFT JOIN  geoloc_countries       AS gc ON (e.country = gc.iso_3166_1_a2)
                      WHERE EXISTS  (SELECT  *
                                       FROM  profile_education_degree AS d
-                                     WHERE  e.id = d.eduid)
-                         ORDER BY  gc.country, e.name");
+                                     WHERE  e.id = d.eduid) AND e.name != {?}
+                         ORDER BY  gc.country, e.name",
+                          Profile::EDU_X);
     $country = "";
     while ($arr_edu = $res->next()) {
         if ($arr_edu["country"] != $country) {

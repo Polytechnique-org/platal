@@ -33,12 +33,14 @@ class ProfileModule extends PLModule
             'profile/ax'                 => $this->make_hook('ax',                         AUTH_COOKIE, 'admin,edit_directory'),
             'profile/edit'               => $this->make_hook('p_edit',                     AUTH_MDP),
             'profile/ajax/address'       => $this->make_hook('ajax_address',               AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/address/del'   => $this->make_hook('ajax_address_del',           AUTH_MDP),
             'profile/ajax/tel'           => $this->make_hook('ajax_tel',                   AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/edu'           => $this->make_hook('ajax_edu',                   AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/medal'         => $this->make_hook('ajax_medal',                 AUTH_COOKIE, 'user', NO_AUTH),
             'profile/networking'         => $this->make_hook('networking',                 AUTH_PUBLIC),
             'profile/ajax/job'           => $this->make_hook('ajax_job',                   AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/skill'         => $this->make_hook('ajax_skill',                 AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/deltaten'      => $this->make_hook('ajax_deltaten',              AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/searchname'    => $this->make_hook('ajax_searchname',            AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/buildnames'    => $this->make_hook('ajax_buildnames',            AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/tree/jobterms' => $this->make_hook('ajax_tree_job_terms',        AUTH_COOKIE, 'user', NO_AUTH),
@@ -46,7 +48,6 @@ class ProfileModule extends PLModule
             'javascript/education.js'    => $this->make_hook('education_js',               AUTH_COOKIE),
             'javascript/grades.js'       => $this->make_hook('grades_js',                  AUTH_COOKIE),
             'profile/medal'              => $this->make_hook('medal',                      AUTH_PUBLIC),
-            'profile/name_info'          => $this->make_hook('name_info',                  AUTH_PUBLIC),
 
             'referent'                   => $this->make_hook('referent',                   AUTH_COOKIE),
             'referent/country'           => $this->make_hook('ref_country',                AUTH_COOKIE, 'user', NO_AUTH),
@@ -56,18 +57,17 @@ class ProfileModule extends PLModule
             'groupes-x/logo'             => $this->make_hook('xnetlogo',                   AUTH_PUBLIC),
 
             'vcard'                      => $this->make_hook('vcard',                      AUTH_COOKIE, 'user', NO_HTTPS),
-            'admin/binets'               => $this->make_hook('admin_binets',               AUTH_MDP, 'admin'),
-            'admin/medals'               => $this->make_hook('admin_medals',               AUTH_MDP, 'admin'),
-            'admin/education'            => $this->make_hook('admin_education',            AUTH_MDP, 'admin'),
-            'admin/education_field'      => $this->make_hook('admin_education_field',      AUTH_MDP, 'admin'),
-            'admin/education_degree'     => $this->make_hook('admin_education_degree',     AUTH_MDP, 'admin'),
-            'admin/education_degree_set' => $this->make_hook('admin_education_degree_set', AUTH_MDP, 'admin'),
-            'admin/sections'             => $this->make_hook('admin_sections',             AUTH_MDP, 'admin'),
-            'admin/networking'           => $this->make_hook('admin_networking',           AUTH_MDP, 'admin'),
-            'admin/trombino'             => $this->make_hook('admin_trombino',             AUTH_MDP, 'admin'),
-            'admin/corps_enum'           => $this->make_hook('admin_corps_enum',           AUTH_MDP, 'admin'),
-            'admin/corps_rank'           => $this->make_hook('admin_corps_rank',           AUTH_MDP, 'admin'),
-            'admin/names'                => $this->make_hook('admin_names',                AUTH_MDP, 'admin'),
+            'admin/binets'               => $this->make_hook('admin_binets',               AUTH_MDP,    'admin'),
+            'admin/medals'               => $this->make_hook('admin_medals',               AUTH_MDP,    'admin'),
+            'admin/education'            => $this->make_hook('admin_education',            AUTH_MDP,    'admin'),
+            'admin/education_field'      => $this->make_hook('admin_education_field',      AUTH_MDP,    'admin'),
+            'admin/education_degree'     => $this->make_hook('admin_education_degree',     AUTH_MDP,    'admin'),
+            'admin/education_degree_set' => $this->make_hook('admin_education_degree_set', AUTH_MDP,    'admin'),
+            'admin/sections'             => $this->make_hook('admin_sections',             AUTH_MDP,    'admin'),
+            'admin/networking'           => $this->make_hook('admin_networking',           AUTH_MDP,    'admin'),
+            'admin/trombino'             => $this->make_hook('admin_trombino',             AUTH_MDP,    'admin'),
+            'admin/corps_enum'           => $this->make_hook('admin_corps_enum',           AUTH_MDP,    'admin'),
+            'admin/corps_rank'           => $this->make_hook('admin_corps_rank',           AUTH_MDP,    'admin'),
         );
     }
 
@@ -112,19 +112,6 @@ class ProfileModule extends PLModule
         pl_cached_content_headers(mime_content_type($img));
         echo file_get_contents($img);
         exit;
-    }
-
-    function handler_name_info($page)
-    {
-        pl_content_headers("text/html");
-        $page->changeTpl('profile/name_info.tpl', SIMPLE);
-        $res = XDB::iterator("SELECT  name, explanations,
-                                      FIND_IN_SET('public', flags) AS public,
-                                      FIND_IN_SET('has_particle', flags) AS has_particle
-                                FROM  profile_name_enum
-                               WHERE  NOT FIND_IN_SET('not_displayed', flags)
-                            ORDER BY  NOT FIND_IN_SET('public', flags)");
-        $page->assign('types', $res);
     }
 
     function handler_networking($page, $mid)
@@ -285,7 +272,7 @@ class ProfileModule extends PLModule
 
         // Determines and displays the virtual alias.
         if (!is_null($owner) && $profile->alias_pub == 'public') {
-            $page->assign('virtualalias', $owner->emailAliases());
+            $page->assign('virtualalias', $owner->emailAlias());
         }
 
         $page->assign_by_ref('profile', $profile);
@@ -312,7 +299,7 @@ class ProfileModule extends PLModule
     {
         global $globals;
 
-        if (in_array($hrpid, array('general', 'adresses', 'emploi', 'poly', 'deco', 'skill', 'mentor'))) {
+        if (in_array($hrpid, array('general', 'adresses', 'emploi', 'poly', 'deco', 'skill', 'mentor', 'deltaten'))) {
             $aux = $opened_tab;
             $opened_tab = $hrpid;
             $hrpid = $aux;
@@ -329,8 +316,8 @@ class ProfileModule extends PLModule
         }
 
         // Build the page
-        $page->addJsLink('education.js', false); /* dynamic content */
-        $page->addJsLink('grades.js', false);    /* dynamic content */
+        $page->addJsLink('education.js', true, false); /* dynamic content */
+        $page->addJsLink('grades.js', true, false);    /* dynamic content */
         $page->addJsLink('profile.js');
         $wiz = new PlWizard('Profil', PlPage::getCoreTpl('plwizard.tpl'), true, true, false);
         $wiz->addUserData('profile', $profile);
@@ -347,6 +334,9 @@ class ProfileModule extends PLModule
             $wiz->addPage('ProfilePageSkills', 'Compétences diverses', 'skill');
             $wiz->addPage('ProfilePageMentor', 'Mentoring', 'mentor');
         }
+        if (S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE) && $profile->isDeltatenEnabled(Profile::DELTATEN_OLD)) {
+            $wiz->addPage('ProfilePageDeltaten', 'Opération N N-10', 'deltaten');
+        }
         $wiz->apply($page, 'profile/edit/' . $profile->hrid(), $opened_tab, $mode);
 
         if (!$profile->birthdate) {
@@ -355,6 +345,7 @@ class ProfileModule extends PLModule
         }
 
        $page->setTitle('Mon Profil');
+       $page->assign('hrpid', $profile->hrid());
        if (isset($success) && $success) {
            $page->trigSuccess('Ton profil a bien été mis à jour.');
        }
@@ -390,12 +381,15 @@ class ProfileModule extends PLModule
         $page->assign('medal_list', $mlist);
     }
 
-    function handler_ajax_address($page, $id)
+    function handler_ajax_address($page, $id, $pid)
     {
         pl_content_headers("text/html");
         $page->changeTpl('profile/adresses.address.tpl', NO_SKIN);
         $page->assign('i', $id);
         $page->assign('address', array());
+        $page->assign('profile', Profile::get($pid));
+        $page->assign('isMe', true);
+        $page->assign('geocoding_removal', true);
     }
 
     function handler_ajax_tel($page, $prefid, $prefname, $telid, $subField, $mainField, $mainId)
@@ -435,15 +429,18 @@ class ProfileModule extends PLModule
         $page->assign('medal', array('id' => $id, 'grade' => 0, 'valid' => 0));
     }
 
-    function handler_ajax_job($page, $id)
+    function handler_ajax_job($page, $id, $pid)
     {
         pl_content_headers("text/html");
         $page->changeTpl('profile/jobs.job.tpl', NO_SKIN);
         $page->assign('i', $id);
         $page->assign('job', array());
         $page->assign('new', true);
+        $page->assign('profile', Profile::get($pid));
+        $page->assign('isMe', true);
+        $page->assign('geocoding_removal', true);
         require_once "emails.combobox.inc.php";
-        fill_email_combobox($page);
+        fill_email_combobox($page, array('redirect', 'job', 'stripped_directory'));
     }
 
     /**
@@ -486,14 +483,11 @@ class ProfileModule extends PLModule
     function handler_ajax_searchname($page, $id, $isFemale)
     {
         pl_content_headers("text/html");
-        $page->changeTpl('profile/general.searchname.tpl', NO_SKIN);
-        $res = XDB::query("SELECT  id, name, FIND_IN_SET('public', flags) AS pub
-                             FROM  profile_name_enum
-                            WHERE  NOT FIND_IN_SET('not_displayed', flags)
-                                   AND NOT FIND_IN_SET('always_displayed', flags)");
-        $page->assign('sn_type_list', $res->fetchAllAssoc());
+        $page->changeTpl('profile/general.private_name.tpl', NO_SKIN);
+        $page->assign('other_names', array('nickname' => 'Surnom', 'firstname' => 'Autre prénom', 'lastname' => 'Autre nom'));
+        $page->assign('new_name', true);
         $page->assign('isFemale', $isFemale);
-        $page->assign('i', $id);
+        $page->assign('id', $id);
     }
 
     function handler_ajax_buildnames($page, $data, $isFemale)
@@ -705,17 +699,6 @@ class ProfileModule extends PLModule
                 XDB::execute('DELETE FROM profile_photos WHERE pid = {?}', $user->profile()->id());
                 break;
         }
-    }
-    function handler_admin_names($page, $action = 'list', $id = null) {
-        $page->setTitle('Administration - Types de noms');
-        $page->assign('title', 'Gestion des types de noms');
-        $table_editor = new PLTableEditor('admin/names', 'profile_name_enum', 'id', true);
-        $table_editor->describe('name', 'Nom', true);
-        $table_editor->describe('explanations', 'Explications', true);
-        $table_editor->describe('type', 'Type', true);
-        $table_editor->describe('flags', 'Flags', true);
-        $table_editor->describe('score', 'Score', true);
-        $table_editor->apply($page, $action, $id);
     }
     function handler_admin_binets($page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Binets');

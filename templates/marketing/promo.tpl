@@ -22,7 +22,7 @@
 
 <form action="marketing/promo/" method="post" onsubmit="this.action += this.promo.value">
   <div class="center">
-    Promo&nbsp;:<input type="text" name="promo" value="{$promo}" size="5" maxlength="5" /><input type="submit" value="GO" />
+    Promo&nbsp;:<input type="text" name="promo" value="{$promo}" size="5" maxlength="12" /><input type="submit" value="GO" />
   </div>
 </form>
 

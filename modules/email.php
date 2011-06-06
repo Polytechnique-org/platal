@@ -72,9 +72,10 @@ class EmailModule extends PLModule
                            WHERE  uid = {?} AND email = {?}", $user->id(), $email);
             XDB::execute('UPDATE  accounts              AS a
                       INNER JOIN  email_virtual_domains AS d ON (d.name = {?})
+                      INNER JOIN  email_virtual_domains AS m ON (d.aliasing = m.id)
                              SET  a.best_domain = d.id
-                           WHERE  a.uid = {?}',
-                         $domain, $user->id());
+                           WHERE  a.uid = {?} AND m.name = {?}',
+                         $domain, $user->id(), $user->mainEmailDomain());
 
             // As having a non-null bestalias value is critical in
             // plat/al's code, we do an a posteriori check on the
@@ -307,7 +308,7 @@ class EmailModule extends PLModule
         $page->assign('googleapps', GoogleAppsAccount::account_status($user->id()));
 
         require_once 'emails.combobox.inc.php';
-        fill_email_combobox($page);
+        fill_email_combobox($page, array('job', 'stripped_directory'));
     }
 
     function handler_antispam($page, $filter_status = null, $redirection = null)
@@ -615,12 +616,12 @@ class EmailModule extends PLModule
         require_once 'emails.inc.php';
         $page->assign('ok', false);
         if (S::logged() && (is_null($user) || $user->id() == S::i('uid'))) {
-            Email::activate_storage(S::user(), 'imap');
+            Email::activate_storage(S::user(), 'imap', Bogo::IMAP_DEFAULT);
             $page->assign('ok', true);
             $page->assign('yourself', S::user()->displayName());
             $page->assign('sexe', S::user()->isFemale());
         } else if (!S::logged() && $user) {
-            Email::activate_storage($user, 'imap');
+            Email::activate_storage($user, 'imap', Bogo::IMAP_DEFAULT);
             $page->assign('ok', true);
             $page->assign('yourself', $user->displayName());
             $page->assign('sexe', $user->isFemale());
@@ -740,7 +741,7 @@ class EmailModule extends PLModule
                                   FROM  email_watch            AS w
                             INNER JOIN  email_redirect_account AS r ON (w.email = r.redirect)
                             INNER JOIN  email_source_account   AS s ON (s.uid = r.uid AND s.type = \'forlife\')
-                            INNER JOIN  accounts               AS a ON (w.uid = a.uid)
+                             LEFT JOIN  accounts               AS a ON (w.uid = a.uid)
                                  WHERE  w.email = {?}
                               ORDER BY  s.email',
                                $email);
@@ -827,25 +828,33 @@ class EmailModule extends PLModule
             if ($list == '') {
                 $page->trigError('La liste est vide.');
             } else {
+                require_once 'notifs.inc.php';
+
                 $broken_user_list = array();
+                $broken_user_email_count = array();
                 $broken_list = explode("\n", $list);
                 sort($broken_list);
 
                 foreach ($broken_list as $email) {
                     if ($user = mark_broken_email($email, true)) {
-                        if ($user['nb_mails'] > 0) {
+                        if ($user['nb_mails'] > 0 && $user['notify']) {
                             $mail = new PlMailer('emails/broken.mail.tpl');
-                            $mail->addTo($user);
+                            $dest = User::getSilentWithUID($user['uid']);
+                            $mail->setTo($dest);
                             $mail->assign('user', $user);
                             $mail->assign('email', $email);
                             $mail->send();
+                        } else {
+                            $profile = Profile::get($user['alias']);
+                            WatchProfileUpdate::register($profile, 'broken');
                         }
 
-                        if (!isset($broken_user_list[$user['alias']])) {
-                            $broken_user_list[$user['alias']] = array($email);
+                        if (!isset($broken_user_list[$user['uid']])) {
+                            $broken_user_list[$user['uid']] = array($email);
                         } else {
-                            $broken_user_list[$user['alias']][] = $email;
+                            $broken_user_list[$user['uid']][] = $email;
                         }
+                        $broken_user_email_count[$user['uid']] = $user['nb_mails'];
                     }
                 }
 
@@ -860,42 +869,29 @@ class EmailModule extends PLModule
 
                 // Output the list of users with recently broken addresses,
                 // along with the count of valid redirections.
-                require_once 'notifs.inc.php';
                 pl_cached_content_headers('text/x-csv', 1);
 
                 $csv = fopen('php://output', 'w');
-                fputcsv($csv, array('nom', 'promo', 'alias', 'bounce', 'nbmails', 'url', 'corps', 'job', 'networking'), ';');
-                foreach ($broken_user_list as $alias => $mails) {
-                    $sel = Xdb::query(
-                        'SELECT  a.uid, count(DISTINCT(r.redirect)) AS nb_mails,
-                                 IFNULL(pd.public_name, a.full_name) AS fullname,
-                                 IFNULL(pd.promo, 0) AS promo, IFNULL(pce.name, \'Aucun\') AS corps,
-                                 IFNULL(pje.name, \'Aucun\') AS job, GROUP_CONCAT(pn.address SEPARATOR \', \') AS networking
-                           FROM  email_source_account   AS s
-                     INNER JOIN  accounts               AS a   ON (s.uid = a.uid)
-                      LEFT JOIN  email_redirect_account AS r   ON (a.uid = r.uid AND r.broken_level = 0 AND r.flags = \'active\' AND
-                                                                   (r.type = \'smtp\' OR r.type = \'googleapps\'))
-                      LEFT JOIN  account_profiles       AS ap  ON (a.uid = ap.uid AND FIND_IN_SET(\'owner\', ap.perms))
-                      LEFT JOIN  profile_display        AS pd  ON (pd.pid = ap.pid)
-                      LEFT JOIN  profile_corps          AS pc  ON (pc.pid = ap.pid)
-                      LEFT JOIN  profile_corps_enum     AS pce ON (pc.current_corpsid = pce.id)
-                      LEFT JOIN  profile_job            AS pj  ON (pj.pid = ap.pid)
-                      LEFT JOIN  profile_job_enum       AS pje ON (pj.jobid = pje.id)
-                      LEFT JOIN  profile_networking     AS pn  ON (pn.pid = ap.pid)
-                          WHERE  s.email = {?}
-                       GROUP BY  a.uid', $alias);
-
-                    if ($x = $sel->fetchOneAssoc()) {
-                        if ($x['nb_mails'] == 0) {
-                            $user = User::getSilentWithUID($x['uid']);
-                            $profile = $user->profile();
-                            WatchProfileUpdate::register($profile, 'broken');
-                        }
-                        fputcsv($csv, array($x['fullname'], $x['promo'], $alias,
-                                            join(',', $mails), $x['nb_mails'],
-                                            'https://www.polytechnique.org/marketing/broken/' . $alias,
-                                            $x['corps'], $x['job'], $x['networking']), ';');
+                fputcsv($csv, array('nom', 'promo', 'bounces', 'nbmails', 'url', 'corps', 'job', 'networking'), ';');
+                $corpsList = DirEnum::getOptions(DirEnum::CURRENTCORPS);
+                foreach ($broken_user_list as $uid => $mails) {
+                    $profile = Profile::get($uid);
+                    $corps = $profile->getCorps();
+                    $current_corps = ($corps && $corps->current) ? $corpsList[$corps->current] : '';
+                    $jobs = $profile->getJobs();
+                    $companies = array();
+                    foreach ($jobs as $job) {
+                        $companies[] = $job->company->name;
                     }
+                    $networkings = $profile->getNetworking(Profile::NETWORKING_ALL);
+                    $networking_list = array();
+                    foreach ($networkings as $networking) {
+                        $networking_list[] = $networking['address'];
+                    }
+                    fputcsv($csv, array($profile->fullName(), $profile->promo(),
+                                        join(',', $mails), $broken_user_email_count[$uid],
+                                        'https://www.polytechnique.org/marketing/broken/' . $profile->hrid(),
+                                        $current_corps, implode(',', $companies), implode(',', $networking_list)), ';');
                 }
                 fclose($csv);
                 exit;

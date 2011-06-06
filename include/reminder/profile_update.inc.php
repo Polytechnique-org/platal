@@ -103,7 +103,8 @@ class ReminderProfileUpdate extends Reminder
             return false;
         }
         return !$profile->has_photo || $profile->is_old
-            || !is_null(self::ListMergeIssues($profile));
+            || !is_null(self::ListMergeIssues($profile))
+            || Geocoder::countNonGeocoded($profile->id()) > 0;
     }
 }
 

@@ -339,22 +339,29 @@ class UFB_AdvancedSearch extends UserFilterBuilder
     public function __construct($include_admin = false, $include_ax = false, $envprefix = '')
     {
         $fields = array(
-            new UFBF_Name('name', 'Nom'),
-            new UFBF_Promo('promo1', 'Promotion', 'egal1'),
-            new UFBF_Promo('promo2', 'Promotion', 'egal2'),
+            new UFBF_Name('name', 'Nom', 'name_type'),
+            new UFBF_Promo('promo1', 'Promotion', 'egal1', 'edu_type'),
+            new UFBF_Promo('promo2', 'Promotion', 'egal2', 'edu_type'),
             new UFBF_Sex('woman', 'Sexe'),
             new UFBF_Registered('subscriber', 'Inscrit'),
+            new UFBF_HasEmailRedirect('has_email_redirect', 'A une redirection active'),
             new UFBF_Dead('alive', 'En vie'),
 
-            new UFBF_Town('city', 'Ville / Code Postal'),
-            new UFBF_Country('countryTxt', 'country', 'Pays'),
-            new UFBF_AdminArea('administrativearea', 'Région'),
-            new UFBF_SubAdminArea('subadministrativearea', 'Département'),
+            new UFBF_AddressIndex('sublocality', 'Arrondissement', 'SUBLOCALITIES'),
+            new UFBF_AddressIndex('administrative_area_level_3', 'Canton', 'ADMNISTRATIVEAREAS3'),
+            new UFBF_AddressIndex('administrative_area_level_2', 'Département', 'ADMNISTRATIVEAREAS2'),
+            new UFBF_AddressIndex('administrative_area_level_1', 'Région', 'ADMNISTRATIVEAREAS1'),
+            new UFBF_AddressMixed('localityTxt', 'locality', 'Ville', 'LOCALITIES'),
+            new UFBF_AddressMixed('countryTxt', 'country', 'Pays', 'COUNTRIES'),
 
             new UFBF_JobCompany('entreprise', 'Entreprise'),
             new UFBF_JobDescription('jobdescription', 'Fonction'),
             new UFBF_JobCv('cv', 'CV'),
             new UFBF_JobTerms('jobterm', 'Mots-clefs'),
+
+            new UFBF_OriginCorps('origin_corps', 'Corps d\'origine'),
+            new UFBF_CurrentCorps('current_corps', 'Corps actuel'),
+            new UFBF_CorpsRank('corps_rank', 'Grade'),
 
             new UFBF_Nationality('nationaliteTxt', 'nationalite', 'Nationalité'),
             new UFBF_Binet('binetTxt', 'binet', 'Binet'),
@@ -396,6 +403,39 @@ class UFB_MentorSearch extends UserFilterBuilder
 }
 // }}}
 
+// {{{ class UFB_DeltaTenSearch
+class UFB_DeltaTenSearch extends UserFilterBuilder
+{
+    public function __construct($envprefix = '')
+    {
+        $fields = array(
+            new UFBF_DeltaTenMessage('deltaten_message'),
+
+            new UFBF_Town('city', 'Ville / Code Postal'),
+            new UFBF_Country('countryTxt', 'country', 'Pays'),
+            new UFBF_AdminArea('administrativearea', 'Région'),
+            new UFBF_SubAdminArea('subadministrativearea', 'Département'),
+
+
+            new UFBF_EducationSchool('schoolTxt', 'school', "École d'application"),
+            new UFBF_EducationDegree('diplomaTxt', 'diploma', 'Diplôme'),
+            new UFBF_EducationField('fieldTxt', 'field', "Domaine d'études"),
+
+            new UFBF_JobCompany('entreprise', 'Entreprise'),
+            new UFBF_JobDescription('jobdescription', 'Fonction'),
+            new UFBF_JobTerms('jobterm', 'Mots-clefs'),
+
+            new UFBF_Nationality('nationaliteTxt', 'nationalite', 'Nationalité'),
+            new UFBF_Binet('binetTxt', 'binet', 'Binet'),
+            new UFBF_Group('groupexTxt', 'groupex', 'Groupe X'),
+            new UFBF_Section('sectionTxt', 'section', 'Section'),
+            new UFBF_Sex('woman', 'Sexe'),
+        );
+        parent::__construct($fields, $envprefix);
+    }
+}
+// }}}
+
 // {{{ class UFB_NewsLetter
 class UFB_NewsLetter extends UserFilterBuilder
 {
@@ -407,8 +447,8 @@ class UFB_NewsLetter extends UserFilterBuilder
     {
         $fields = array();
         if ($flags->hasFlag(self::FIELDS_PROMO)) {
-            $fields[] = new UFBF_Promo('promo1', 'Promotion', 'egal1');
-            $fields[] = new UFBF_Promo('promo2', 'Promotion', 'egal2');
+            $fields[] = new UFBF_Promo('promo1', 'Promotion', 'egal1', 'edu_type');
+            $fields[] = new UFBF_Promo('promo2', 'Promotion', 'egal2', 'edu_type');
         }
         if ($flags->hasFlag(self::FIELDS_AXID)) {
             $fields[] = new UFBF_SchoolIds('axid', 'Matricule AX', UFC_SchoolId::AX);
@@ -713,14 +753,19 @@ class UFBF_Quick extends UFB_Field
         /** Name
          */
         $s = preg_replace('!\d+!', ' ', $s);
-        $strings = preg_split("![^a-zA-Z%]+!",$s, -1, PREG_SPLIT_NO_EMPTY);
+        $strings = preg_split("![^a-z%]+!i", $s, -1, PREG_SPLIT_NO_EMPTY);
+        foreach ($strings as $key => $string) {
+            if (strlen($string) < 2) {
+                unset($strings[$key]);
+            }
+        }
         if (count($strings) > 5) {
             Platal::page()->trigWarning("Tu as indiqué trop d'éléments dans ta recherche, seuls les 5 premiers seront pris en compte");
             $strings = array_slice($strings, 0, 5);
         }
 
         if (count($strings)) {
-            if (S::user()->checkPerms('directory_private')) {
+            if (S::user() != null && S::user()->checkPerms('directory_private')) {
                 $flags = array();
             } else {
                 $flags = array('public');
@@ -735,29 +780,30 @@ class UFBF_Quick extends UFB_Field
          */
         $s = preg_replace('! *- *!', '-', $r);
         $s = preg_replace('!([<>]) *!', ' \1', $s);
-        $s = preg_replace('![^0-9\-><]!', ' ', $s);
+        $s = preg_replace('![^0-9xmd\-><]!i', ' ', $s);
         $s = preg_replace('![<>\-] !', '', $s);
-        $ranges = preg_split('! +!', $s, -1, PREG_SPLIT_NO_EMPTY);
+        $ranges = preg_split('! +!', strtolower($s), -1, PREG_SPLIT_NO_EMPTY);
+        $grades = array('' => UserFilter::GRADE_ING, 'x' => UserFilter::GRADE_ING, 'm' => UserFilter::GRADE_MST, 'd' => UserFilter::GRADE_PHD);
         foreach ($ranges as $r) {
-            if (preg_match('!^\d{4}$!', $r)) {
-                $conds->addChild(new UFC_Promo('=', UserFilter::DISPLAY, 'X' . $r));
-            } elseif (preg_match('!^(\d{4})-(\d{4})$!', $r, $matches)) {
-                $p1=min(intval($matches[1]), intval($matches[2]));
-                $p2=max(intval($matches[1]), intval($matches[2]));
+            if (preg_match('!^([xmd]?)(\d{4})$!', $r, $matches)) {
+                $conds->addChild(new UFC_Promo('=', $grades[$matches[1]], $matches[2]));
+            } elseif (preg_match('!^([xmd]?)(\d{4})-\1(\d{4})$!', $r, $matches)) {
+                $p1 = min(intval($matches[2]), intval($matches[3]));
+                $p2 = max(intval($matches[2]), intval($matches[3]));
                 $conds->addChild(new PFC_And(
-                    new UFC_Promo('>=', UserFilter::DISPLAY, 'X' . $p1),
-                    new UFC_Promo('<=', UserFilter::DISPLAY, 'X' . $p2)
+                    new UFC_Promo('>=', $grades[$matches[1]], $p1),
+                    new UFC_Promo('<=', $grades[$matches[1]], $p2)
                 ));
-            } elseif (preg_match('!^<(\d{4})!', $r, $matches)) {
-                $conds->addChild(new UFC_Promo('<=', UserFilter::DISPLAY, 'X' . $matches[1]));
-            } elseif (preg_match('!^>(\d{4})!', $r, $matches)) {
-                $conds->addChild(new UFC_Promo('>=', UserFilter::DISPLAY, 'X' . $matches[1]));
+            } elseif (preg_match('!^<([xmd]?)(\d{4})!', $r, $matches)) {
+                $conds->addChild(new UFC_Promo('<=', $grades[$matches[1]], $matches[2]));
+            } elseif (preg_match('!^>([xmd]?)(\d{4})!', $r, $matches)) {
+                $conds->addChild(new UFC_Promo('>=', $grades[$matches[1]], $matches[2]));
             }
         }
 
         /** Phone number
          */
-        $t = preg_replace('!(\d{4}-\d{4}|>\d{4}|<\d{4})!', '', $s);
+        $t = preg_replace('!([xmd]?\d{4}-|>|<|)[xmd]?\d{4}!i', '', $s);
         $t = preg_replace('![<>\- ]!', '', $t);
         if (strlen($t) > 4) {
             $conds->addChild(new UFC_Phone($t));
@@ -825,22 +871,42 @@ class UFBF_SchoolIds extends UFB_Field
 // {{{ class UFBF_Name
 class UFBF_Name extends UFBF_Text
 {
+    private $envfieldtype;
+    private $type;
+
+    public function __construct($envfield, $formtext = '', $envfieldtype)
+    {
+        parent::__construct($envfield, $formtext);
+        $this->envfieldtype = $envfieldtype;
+    }
+
     protected function check(UserFilterBuilder $ufb)
     {
         if (!parent::check($ufb)) {
             return false;
         }
 
-        $this->val = preg_split('/[[:space:]]/', $this->val);
+        require_once 'name.func.inc.php';
+
+        $this->val = split_name_for_search($this->val);
         if (count($this->val) == 0) {
             $this->empty = true;
+        }
+        $this->type = $ufb->v($this->envfieldtype);
+        if (!in_array($this->type, array('', 'lastname', 'firstname', 'nickname'))) {
+            return $this->raise("Le critère {$this->type} n'est pas valide pour le champ %s");
         }
         return true;
     }
 
     protected function buildUFC(UserFilterBuilder $ufb)
     {
-        return new UFC_NameTokens($this->val, array(), $ufb->b('with_soundex'), $ufb->b('exact'));
+        return new UFC_NameTokens($this->val, array(), $ufb->b('with_soundex'), $ufb->b('exact'), $this->type);
+    }
+
+    public function getEnvFieldNames()
+    {
+        return array($this->envfield, $this->envfieldtype);
     }
 }
 // }}}
@@ -849,24 +915,33 @@ class UFBF_Name extends UFBF_Text
 class UFBF_Promo extends UFB_Field
 {
     private static $validcomps = array('<', '<=', '=', '>=', '>');
+    private static $validtypes = array(UserFilter::GRADE_ING, UserFilter::GRADE_PHD, UserFilter::GRADE_MST);
     private $comp;
+    private $type;
     private $envfieldcomp;
+    private $envfieldtype;
 
-    public function __construct($envfield, $formtext = '', $envfieldcomp)
+    public function __construct($envfield, $formtext = '', $envfieldcomp, $envfieldtype)
     {
         parent::__construct($envfield, $formtext);
         $this->envfieldcomp = $envfieldcomp;
+        $this->envfieldtype = $envfieldtype;
     }
 
     protected function check(UserFilterBuilder $ufb)
     {
-        if ($ufb->blank($this->envfield) || $ufb->blank($this->envfieldcomp)) {
+        if ($ufb->blank($this->envfield) || $ufb->blank($this->envfieldcomp) || $ufb->blank($this->envfieldtype)) {
             $this->empty = true;
             return true;
         }
 
         $this->val  = $ufb->i($this->envfield);
         $this->comp = $ufb->v($this->envfieldcomp);
+        $this->type = $ufb->v($this->envfieldtype);
+
+        if (!in_array($this->type, self::$validtypes)) {
+            return $this->raise("Le critère {$this->type} n'est pas valide pour le champ %s");
+        }
 
         if (!in_array($this->comp, self::$validcomps)) {
             return $this->raise("Le critère {$this->comp} n'est pas valide pour le champ %s");
@@ -882,12 +957,12 @@ class UFBF_Promo extends UFB_Field
     }
 
     protected function buildUFC(UserFilterBuilder $ufb) {
-        return new UFC_Promo($this->comp, UserFilter::GRADE_ING, $this->val);
+        return new UFC_Promo($this->comp, $this->type, $this->val);
     }
 
     public function getEnvFieldNames()
     {
-        return array($this->envfield, $this->envfieldcomp);
+        return array($this->envfield, $this->envfieldcomp, $this->envfieldtype);
     }
 }
 // }}}
@@ -954,6 +1029,25 @@ class UFBF_Registered extends UFBF_Enum
 }
 // }}}
 
+// {{{ class UFBF_HasEmailRedirect
+class UFBF_HasEmailRedirect extends UFBF_Enum
+{
+    public function __construct($envfield, $formtext = '')
+    {
+        parent::__construct($envfield, $formtext, array(1, 2));
+    }
+
+    protected function buildUFC(UserFilterBuilder $ufb)
+    {
+        if ($this->val == 1) {
+            return new UFC_HasEmailRedirect();
+        } else if ($this->val == 2) {
+            return new PFC_Not(new UFC_HasEmailRedirect());
+        }
+    }
+}
+// }}}
+
 // {{{ class UFBF_Dead
 class UFBF_Dead extends UFBF_Enum
 {
@@ -973,69 +1067,16 @@ class UFBF_Dead extends UFBF_Enum
 }
 // }}}
 
-// {{{ class UFBF_Town
-/** Retrieves a town, either from a postal code or a town name
- */
-class UFBF_Town extends UFBF_Text
+// {{{ class UFBF_AddressMixed
+class UFBF_AddressMixed extends UFBF_Mixed
 {
-    const TYPE_TEXT = 1;
-    const TYPE_ZIP  = 2;
-    const TYPE_ANY  = 3;
-
-    private $type;
-    private $onlycurrentfield;
-
-    public function __construct($envfield, $formtext = '', $type = self::TYPE_ANY, $onlycurrentfield = 'only_current')
-    {
-        $this->type = $type;
-        $this->onlycurrentfield = $onlycurrentfield;
-        parent::__construct($envfield, $formtext, 2, 30);
-    }
-
-    protected function buildUFC(UserFilterBuilder $ufb)
-    {
-        if ($ufb->isOn($this->onlycurrentfield)) {
-            $flags = UFC_Address::FLAG_CURRENT;
-        } else {
-            $flags = UFC_Address::FLAG_ANY;
-        }
-
-        if (preg_match('/[0-9]/', $this->val)) {
-            if ($this->type & self::TYPE_ZIP) {
-                return new UFC_AddressField($this->val, UFC_AddressField::FIELD_ZIPCODE, UFC_Address::TYPE_ANY, $flags);
-            } else {
-                return new PFC_False();
-            }
-        } else {
-            $byname = new UFC_AddressText(null, XDB::WILDCARD_CONTAINS, UFC_Address::TYPE_ANY, $flags, null, $this->val);
-            $byzip  = new UFC_AddressField($this->val, UFC_AddressField::FIELD_ZIPCODE, UFC_Address::TYPE_ANY, $flags);
-            if ($this->type & self::TYPE_ANY) {
-                return new PFC_Or($byname, $byzip);
-            } else if ($this->type & self::TYPE_TEXT) {
-                return $byname;
-            } else {
-                return $byzip;
-            }
-        }
-    }
-
-    public function getEnvFieldNames()
-    {
-        return array($this->envfield, $this->onlycurrentfield);
-    }
-}
-// }}}
-
-// {{{ class UFBF_Country
-class UFBF_Country extends UFBF_Mixed
-{
-    protected $direnum = DirEnum::COUNTRIES;
     protected $onlycurrentfield;
 
-    public function __construct($envfieldtext, $envfieldindex, $formtext = '', $onlycurrentfield = 'only_current')
+    public function __construct($envfieldtext, $envfieldindex, $formtext = '', $addressfield, $onlycurrentfield = 'only_current')
     {
         parent::__construct($envfieldtext, $envfieldindex, $formtext);
         $this->onlycurrentfield = $onlycurrentfield;
+        $this->direnum = constant('DirEnum::' . $addressfield);
     }
 
     protected function buildUFC(UserFilterBuilder $ufb)
@@ -1046,7 +1087,7 @@ class UFBF_Country extends UFBF_Mixed
             $flags = UFC_Address::FLAG_ANY;
         }
 
-        return new UFC_AddressField($this->val, UFC_AddressField::FIELD_COUNTRY, UFC_Address::TYPE_ANY, $flags);
+        return new UFC_AddressComponent($this->val, $this->envfieldindex, UFC_Address::TYPE_NON_HQ, $flags);
     }
 
     public function getEnvFieldNames()
@@ -1056,16 +1097,17 @@ class UFBF_Country extends UFBF_Mixed
 }
 // }}}
 
-// {{{ class UFBF_AdminArea
-class UFBF_AdminArea extends UFBF_Index
+// {{{ class UFBF_AddressIndex
+class UFBF_AddressIndex extends UFBF_Index
 {
-    protected $direnum = DirEnum::ADMINAREAS;
+    protected $direnum;
     protected $onlycurrentfield;
 
-    public function __construct($envfield, $formtext = '', $onlycurrentfield = 'only_current')
+    public function __construct($envfield, $formtext = '', $addressfield, $onlycurrentfield = 'only_current')
     {
         parent::__construct($envfield, $formtext);
         $this->onlycurrentfield = $onlycurrentfield;
+        $this->direnum = constant('DirEnum::' . $addressfield);
     }
 
 
@@ -1077,38 +1119,7 @@ class UFBF_AdminArea extends UFBF_Index
             $flags = UFC_Address::FLAG_ANY;
         }
 
-        return new UFC_AddressField($this->val, UFC_AddressField::FIELD_ADMAREA, UFC_Address::TYPE_ANY, $flags);
-    }
-
-    public function getEnvFieldNames()
-    {
-        return array($this->envfield, $this->onlycurrentfield);
-    }
-}
-// }}}
-
-// {{{ class UFBF_SubAdminArea
-class UFBF_SubAdminArea extends UFBF_Index
-{
-    protected $direnum = DirEnum::SUBADMINAREAS;
-    protected $onlycurrentfield;
-
-    public function __construct($envfield, $formtext = '', $onlycurrentfield = 'only_current')
-    {
-        parent::__construct($envfield, $formtext);
-        $this->onlycurrentfield = $onlycurrentfield;
-    }
-
-
-    protected function buildUFC(UserFilterBuilder $ufb)
-    {
-        if ($ufb->isOn($this->onlycurrentfield)) {
-            $flags = UFC_Address::FLAG_CURRENT;
-        } else {
-            $flags = UFC_Address::FLAG_ANY;
-        }
-
-        return new UFC_AddressField($this->val, UFC_AddressField::FIELD_SUBADMAREA, UFC_Address::TYPE_ANY, $flags);
+        return new UFC_AddressComponent($this->val, $this->envfield, UFC_Address::TYPE_NON_HQ, $flags);
     }
 
     public function getEnvFieldNames()
@@ -1309,6 +1320,42 @@ class UFBF_EducationField extends UFBF_Mixed
 }
 // }}}
 
+// {{{ class UFBF_OriginCorps
+class UFBF_OriginCorps extends UFBF_Index
+{
+    protected $direnum = DirEnum::ORIGINCORPS;
+
+    protected function buildUFC(UserFilterBuilder $ufb)
+    {
+        return new UFC_Corps(null, $this->val, UFC_Corps::ORIGIN);
+    }
+}
+// }}}
+
+// {{{ class UFBF_CurrentCorps
+class UFBF_CurrentCorps extends UFBF_Index
+{
+    protected $direnum = DirEnum::CURRENTCORPS;
+
+    protected function buildUFC(UserFilterBuilder $ufb)
+    {
+        return new UFC_Corps(null, $this->val, UFC_Corps::CURRENT);
+    }
+}
+// }}}
+
+// {{{ class UFBF_CorpsRank
+class UFBF_CorpsRank extends UFBF_Index
+{
+    protected $direnum = DirEnum::CORPSRANKS;
+
+    protected function buildUFC(UserFilterBuilder $ufb)
+    {
+        return new UFC_Corps_Rank(null, $this->val);
+    }
+}
+// }}}
+
 // {{{ class UFBF_Comment
 class UFBF_Comment extends UFBF_Text
 {
@@ -1404,6 +1451,16 @@ class UFBF_MentorExpertise extends UFBF_Text
     protected function buildUFC(UserFilterBuilder $ufb)
     {
         return new UFC_Mentor_Expertise($this->val);
+    }
+}
+// }}}
+
+// {{{ class UFBF_DeltaTenMessage
+class UFBF_DeltaTenMessage extends UFBF_Text
+{
+    protected function buildUFC(UserFilterBuilder $ufb)
+    {
+        return new UFC_DeltaTen_Message($this->val);
     }
 }
 // }}}

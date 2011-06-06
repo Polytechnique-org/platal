@@ -25,7 +25,7 @@ endef
 
 all: build
 
-build: core conf static banana wiki openid medals jquery
+build: core conf static banana wiki openid medals jquery maps
 
 check:
 	@!(find . -name '*.php' -exec php -l {} ";" | grep -v 'No syntax errors detected')
@@ -76,13 +76,17 @@ htdocs/.htaccess: htdocs/.htaccess.in Makefile
 ##
 ## static content
 ##
-static: htdocs/javascript/core.js htdocs/javascript@VERSION
+static: htdocs/javascript/core.js htdocs/javascript@VERSION htdocs/javascript/json2.js
 
 htdocs/javascript/core.js:
 	cd htdocs/javascript/ && ln -s ../../core/htdocs/javascript/core.js
 
 %@VERSION: % Makefile ChangeLog
 	cd $< && rm -f $(VERSION) && ln -sf . $(VERSION)
+
+htdocs/javascript/json2.js: DOWNLOAD_SRC = https://github.com/douglascrockford/JSON-js/raw/master/json2.js --no-check-certificate
+htdocs/javascript/json2.js:
+	@$(download)
 
 ##
 ## wiki
@@ -135,25 +139,8 @@ get-wiki:
 ## openid
 ##
 
-openid: get-openid spool/openid/store
-
-# There is no obvious way to automatically use the latest version
-OPENID_VERSION = 2.2.2
-OPENID_COMMIT  = 782224d
-get-openid:
-	@if ! test -d include/Auth; then                                  \
-		wget --no-check-certificate                                   \
-			https://github.com/openid/php-openid/tarball/$(OPENID_VERSION) \
-			-O php-openid-$(OPENID_VERSION).tar.gz; \
-		tar -xzf php-openid-$(OPENID_VERSION).tar.gz;                \
-		mv openid-php-openid-$(OPENID_COMMIT)/Auth include/;                \
-		rm php-openid-$(OPENID_VERSION).tar.gz;                      \
-		rm -r openid-php-openid-$(OPENID_COMMIT);                           \
-	fi
-
-spool/openid/store:
-	mkdir -p $@
-	chmod o+w $@
+openid:
+	-rm -rf include/Auth
 
 ##
 ## banana
@@ -253,6 +240,16 @@ $(JSTREE_PATH):
 	ln -snf jquery.jstree-$(JSTREE_VERSION).js htdocs/javascript/jquery.jstree.js
 	rm -Rf spool/tmp/jstree
 
+##
+## Maps auxiliary scripts
+##
+maps: htdocs/javascript/markerclusterer_packed.js htdocs/javascript/markerwithlabel_packed.js
+
+htdocs/javascript/markerclusterer_packed.js:
+	wget http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_packed.js -O htdocs/javascript/markerclusterer_packed.js
+
+htdocs/javascript/markerwithlabel_packed.js:
+	wget http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerwithlabel/1.1.4/src/markerwithlabel_packed.js -O htdocs/javascript/markerwithlabel_packed.js
 
 ##
 ## lists rpc

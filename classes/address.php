@@ -296,28 +296,23 @@ class Address
     public $id = 0;
 
     // Geocoding fields.
-    public $accuracy = 0;
     public $text = '';
     public $postalText = '';
-    public $postalCode = null;
-    public $localityId = null;
-    public $subAdministrativeAreaId = null;
-    public $administrativeAreaId = null;
-    public $localityName = null;
-    public $subAdministrativeAreaName = null;
-    public $administrativeAreaName = null;
-    public $localityNameLocal = null;
-    public $subAdministrativeAreaNameLocal = null;
-    public $administrativeAreaNameLocal = null;
-    public $countryId = null;
+    public $types = '';
+    public $formatted_address = '';
+    public $components = array();
     public $latitude = null;
     public $longitude = null;
-    public $north = null;
-    public $south = null;
-    public $east = null;
-    public $west = null;
-    public $geocodedText = null;
-    public $geocodeChosen = null;
+    public $southwest_latitude = null;
+    public $southwest_longitude = null;
+    public $northeast_latitude = null;
+    public $northeast_longitude = null;
+    public $location_type = '';
+    public $partial_match = false;
+    public $componentsIds = '';
+    public $request = false;
+    public $geocoding_date = null;
+    public $geocoding_calls = 0;
 
     // Database's field required for both 'home' and 'job' addresses.
     public $pub = 'ax';
@@ -360,6 +355,7 @@ class Address
                                                                                array('', "\n"), $this->text)), 'CEDEX')) !== false);
             }
         }
+        $this->request = ($this->request || !is_null(AddressReq::get_request($this->pid, $this->jobid, $this->groupid, $this->type, $this->id)));
     }
 
     public function setId($id)
@@ -559,38 +555,25 @@ class Address
         // country, then apply corresponding formatting or translate country
         // into default language.
         $count = count($arrayText);
-        if (in_array(strtoupper($this->countryId), Address::$formattings)) {
-            $text = call_user_func(array($this, 'formatPostalAddress' . strtoupper($this->countryId)), $arrayText);
+        list($countryId, $country) = XDB::fetchOneRow('SELECT  gc.iso_3166_1_a2, gc.country
+                                                         FROM  geoloc_countries AS gc
+                                                   INNER JOIN  geoloc_languages AS gl ON (gc.iso_3166_1_a2 = gl.iso_3166_1_a2)
+                                                        WHERE  gl.countryPlain = {?} OR gc.countryPlain = {?}',
+                                                      $arrayText[$count - 1], $arrayText[$count - 1]);
+        if (is_null($countryId)) {
+            $text = $this->formatPostalAddressFR($arrayText);
+        } elseif (in_array(strtoupper($countryId), Address::$formattings)) {
+            $text = call_user_func(array($this, 'formatPostalAddress' . strtoupper($countryId)), $arrayText);
         } else {
-            list($countryId, $country) = XDB::fetchOneRow('SELECT  gc.iso_3166_1_a2, gc.country
-                                                             FROM  geoloc_countries AS gc
-                                                       INNER JOIN  geoloc_languages AS gl ON (gc.iso_3166_1_a2 = gl.iso_3166_1_a2)
-                                                            WHERE  gc.iso_3166_1_a2 = {?} OR gl.countryPlain = {?} OR gc.countryPlain = {?}',
-                                                          $this->countryId, $arrayText[$count - 1], $arrayText[$count - 1]);
-            if (is_null($countryId)) {
-                $text = $this->formatPostalAddressFR($arrayText);
-            } elseif (in_array(strtoupper($countryId), Address::$formattings)) {
-                $text = call_user_func(array($this, 'formatPostalAddress' . strtoupper($countryId)), $arrayText);
-            } else {
-                $arrayText[$count - 1] = mb_strtoupper(replace_accent($country));
-                $text = implode("\n", $arrayText);
-            }
+            $arrayText[$count - 1] = mb_strtoupper(replace_accent($country));
+            $text = implode("\n", $arrayText);
         }
 
         $this->postalText = $text;
     }
 
-    public function format(array $format = array())
+    public function format()
     {
-        if (empty($format)) {
-            $format['requireGeocoding'] = false;
-            $format['stripGeocoding'] = false;
-            $format['postalText'] = false;
-        } else {
-            foreach (array('requireGeocoding', 'stripGeocoding', 'postalText') as $type) {
-                $format[$type] = (isset($format[$type])) ? $format[$type] : false;
-            }
-        }
         $this->text = trim($this->text);
         $this->phones = Phone::formatFormArray($this->phones, $this->error, new ProfileVisibility($this->pub));
         if ($this->removed == 1) {
@@ -602,70 +585,47 @@ class Address
             }
         }
 
-        if ($format['requireGeocoding'] || $this->changed == 1) {
+        $this->formatPostalAddress();
+        if ($this->changed == 1) {
             $gmapsGeocoder = new GMapsGeocoder();
             $gmapsGeocoder->getGeocodedAddress($this);
-            $this->changed = 0;
-            $this->error = !empty($this->geocodedText);
-        }
-        if ($format['stripGeocoding'] || ($this->type == self::LINK_COMPANY && $this->error) || $this->geocodeChosen === '0') {
-            if ($this->geocodeChosen === '0') {
-                $mailer = new PlMailer('profile/geocoding.mail.tpl');
-                $mailer->assign('text', $this->text);
-                $mailer->assign('geoloc', $this->geocodedText);
-                $mailer->send();
+
+            $componants = array();
+            foreach ($this->components as $component) {
+                $componants[] = Geocoder::getComponentId($component);
             }
-            $gmapsGeocoder = new GMapsGeocoder();
-            $gmapsGeocoder->stripGeocodingFromAddress($this);
+            $this->componentsIds = implode(',', $componants);
         }
-        if ($this->countryId == '') {
-            $this->countryId = null;
-        }
-        $this->geocodeChosen = null;
-        if ($format['postalText']) {
-            $this->formatPostalAddress();
-        }
-        return !$this->error;
+
+        return true;
     }
 
     public function toFormArray()
     {
         $address = array(
-            'accuracy'                       => $this->accuracy,
-            'text'                           => $this->text,
-            'postalText'                     => $this->postalText,
-            'postalCode'                     => $this->postalCode,
-            'localityId'                     => $this->localityId,
-            'subAdministrativeAreaId'        => $this->subAdministrativeAreaId,
-            'administrativeAreaId'           => $this->administrativeAreaId,
-            'countryId'                      => $this->countryId,
-            'localityName'                   => $this->localityName,
-            'subAdministrativeAreaName'      => $this->subAdministrativeAreaName,
-            'administrativeAreaName'         => $this->administrativeAreaName,
-            'localityNameLocal'              => $this->localityNameLocal,
-            'subAdministrativeAreaNameLocal' => $this->subAdministrativeAreaNameLocal,
-            'administrativeAreaNameLocal'    => $this->administrativeAreaNameLocal,
-            'latitude'                       => $this->latitude,
-            'longitude'                      => $this->longitude,
-            'north'                          => $this->north,
-            'south'                          => $this->south,
-            'east'                           => $this->east,
-            'west'                           => $this->west,
-            'error'                          => $this->error,
-            'changed'                        => $this->changed,
-            'removed'                        => $this->removed,
+            'text'                => $this->text,
+            'postalText'          => $this->postalText,
+            'types'               => $this->types,
+            'formatted_address'   => $this->formatted_address,
+            'latitude'            => $this->latitude,
+            'longitude'           => $this->longitude,
+            'southwest_latitude'  => $this->southwest_latitude,
+            'southwest_longitude' => $this->southwest_longitude,
+            'northeast_latitude'  => $this->northeast_latitude,
+            'northeast_longitude' => $this->northeast_longitude,
+            'location_type'       => $this->location_type,
+            'partial_match'       => $this->partial_match,
+            'componentsIds'       => $this->componentsIds,
+            'geocoding_date'      => $this->geocoding_date,
+            'geocoding_calls'     => $this->geocoding_calls,
+            'request'             => $this->request
         );
-        if (!is_null($this->geocodedText)) {
-            $address['geocodedText'] = $this->geocodedText;
-            $address['geocodeChosen'] = $this->geocodeChosen;
-        }
 
         if ($this->type == self::LINK_PROFILE || $this->type == self::LINK_JOB) {
             $address['pub'] = $this->pub;
         }
         if ($this->type == self::LINK_PROFILE) {
             static $flags = array('current', 'temporary', 'secondary', 'mail', 'cedex', 'deliveryIssue');
-
             foreach ($flags as $flag) {
                 $address[$flag] = $this->flags->hasFlag($flag);
             }
@@ -723,39 +683,77 @@ class Address
 
     public function save()
     {
-        static $areas = array('administrativeArea', 'subAdministrativeArea', 'locality');
-
-        $this->format(array('postalText' => true));
         if (!$this->isEmpty()) {
-            foreach ($areas as $area) {
-                Geocoder::getAreaId($this, $area);
-            }
+            XDB::execute('INSERT IGNORE INTO  profile_addresses (pid, jobid, groupid, type, id, flags, text, postalText, pub, comment,
+                                                                 types, formatted_address, location_type, partial_match, latitude, longitude,
+                                                                 southwest_latitude, southwest_longitude, northeast_latitude, northeast_longitude,
+                                                                 geocoding_date, geocoding_calls)
+                                      VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
+                                               {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, NOW(), {?})',
+                         $this->pid, $this->jobid, $this->groupid, $this->type, $this->id, $this->flags, $this->text, $this->postalText, $this->pub, $this->comment,
+                         $this->types, $this->formatted_address, $this->location_type, $this->partial_match, $this->latitude, $this->longitude,
+                         $this->southwest_latitude, $this->southwest_longitude, $this->northeast_latitude, $this->northeast_longitude, $this->geocoding_calls);
 
-            XDB::execute('INSERT IGNORE INTO  profile_addresses (pid, jobid, groupid, type, id, flags, accuracy,
-                                                                 text, postalText, postalCode, localityId,
-                                                                 subAdministrativeAreaId, administrativeAreaId,
-                                                                 countryId, latitude, longitude, pub, comment,
-                                                                 north, south, east, west)
-                                      VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
-                                               {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                         $this->pid, $this->jobid, $this->groupid, $this->type, $this->id, $this->flags, $this->accuracy,
-                         $this->text, $this->postalText, $this->postalCode, $this->localityId,
-                         $this->subAdministrativeAreaId, $this->administrativeAreaId,
-                         $this->countryId, $this->latitude, $this->longitude,
-                         $this->pub, $this->comment,
-                         $this->north, $this->south, $this->east, $this->west);
+            if ($this->componentsIds) {
+                foreach (explode(',', $this->componentsIds) as $component_id) {
+                    XDB::execute('INSERT IGNORE INTO  profile_addresses_components (pid, jobid, groupid, type, id, component_id)
+                                              VALUES  ({?}, {?}, {?}, {?}, {?}, {?})',
+                                 $this->pid, $this->jobid, $this->groupid, $this->type, $this->id, $component_id);
+                }
+            } else {
+                // If the address was not geocoded, notifies it to the appropriate ML.
+                $mailer = new PlMailer('profile/no_geocoding.mail.tpl');
+                $mailer->assign('text', $this->text);
+                $mailer->assign('primary_key', $this->pid . '-' . $this->jobid . '-' . $this->groupid . '-' . $this->type . '-' . $this->id);
+                $mailer->send();
+            }
 
             if ($this->type == self::LINK_PROFILE) {
                 Phone::savePhones($this->phones, $this->pid, Phone::LINK_ADDRESS, $this->id);
+            }
+
+            if ($this->request) {
+                $req = new AddressReq(S::user(), $this->toFormArray(), $this->pid, $this->jobid, $this->groupid, $this->type, $this->id);
+                $req->submit();
+            }
+        }
+    }
+
+    public function updateGeocoding($text)
+    {
+        XDB::execute('UPDATE  profile_addresses
+                         SET  text = {?}, postalText = {?}, types = {?}, formatted_address = {?},
+                              location_type = {?}, partial_match = {?}, latitude = {?}, longitude = {?},
+                              southwest_latitude = {?}, southwest_longitude = {?}, northeast_latitude = {?}, northeast_longitude = {?},
+                              geocoding_date = NOW(), geocoding_calls = {?}
+                       WHERE  pid = {?} AND jobid = {?} AND groupid = {?} AND type = {?} AND id = {?}',
+                     $this->text, $this->postalText, $this->types, $this->formatted_address,
+                     $this->location_type, $this->partial_match, $this->latitude, $this->longitude,
+                     $this->southwest_latitude, $this->southwest_longitude, $this->northeast_latitude, $this->northeast_longitude, $this->geocoding_calls,
+                     $this->pid, $this->jobid, $this->groupid, $this->type, $this->id);
+
+        XDB::execute('DELETE FROM  profile_addresses_components
+                            WHERE  pid = {?} AND jobid = {?} AND groupid = {?} AND type = {?} AND id = {?}',
+                     $this->pid, $this->jobid, $this->groupid, $this->type, $this->id);
+        if ($this->componentsIds) {
+            foreach (explode(',', $this->componentsIds) as $component_id) {
+                XDB::execute('INSERT IGNORE INTO  profile_addresses_components (pid, jobid, groupid, type, id, component_id)
+                                          VALUES  ({?}, {?}, {?}, {?}, {?}, {?})',
+                             $this->pid, $this->jobid, $this->groupid, $this->type, $this->id, $component_id);
             }
         }
     }
 
     public function delete()
     {
+        XDB::execute('DELETE FROM  profile_addresses_components
+                            WHERE  pid = {?} AND jobid = {?} AND groupid = {?} AND type = {?} AND id = {?}',
+                     $this->pid, $this->jobid, $this->groupid, $this->type, $this->id);
         XDB::execute('DELETE FROM  profile_addresses
                             WHERE  pid = {?} AND jobid = {?} AND groupid = {?} AND type = {?} AND id = {?}',
                      $this->pid, $this->jobid, $this->groupid, $this->type, $this->id);
+
+        return XDB::affectedRows();
     }
 
     static public function deleteAddresses($pid, $type, $jobid = null, $groupid = null, $deletePrivate = true)
@@ -908,22 +906,22 @@ class AddressIterator implements PlIterator
         if (count($pubs) != 0) {
             $where[] = XDB::format('(pa.pub IN {?})', $pubs);
         }
-        $sql = 'SELECT  pa.pid, pa.jobid, pa.type, pa.id, pa.flags,
-                        pa.accuracy, pa.text, pa.postalText, pa.postalCode,
-                        pa.localityId, pa.subAdministrativeAreaId,
-                        pa.administrativeAreaId, pa.countryId,
-                        pa.latitude, pa.longitude, pa.north, pa.south, pa.east, pa.west,
-                        pa.pub, pa.comment,
-                        gl.name AS locality, gl.nameLocal AS localityLocal,
-                        gs.name AS subAdministrativeArea, gs.nameLocal AS subAdministrativeAreaLocal,
-                        ga.name AS administrativeArea, ga.nameLocal AS administrativeAreaLocal,
-                        gc.country
-                  FROM  profile_addresses             AS pa
-             LEFT JOIN  geoloc_localities             AS gl ON (gl.id = pa.localityId)
-             LEFT JOIN  geoloc_administrativeareas    AS ga ON (ga.id = pa.administrativeAreaId)
-             LEFT JOIN  geoloc_subadministrativeareas AS gs ON (gs.id = pa.subAdministrativeAreaId)
-             LEFT JOIN  geoloc_countries              AS gc ON (gc.iso_3166_1_a2 = pa.countryId)
+        $sql = 'SELECT  pa.pid, pa.jobid, pa.groupid, pa.type, pa.id, pa.flags, pa.text, pa.postalText, pa.pub, pa.comment,
+                        pa.types, pa.formatted_address, pa.location_type, pa.partial_match, pa.latitude, pa.longitude,
+                        pa.southwest_latitude, pa.southwest_longitude, pa.northeast_latitude, pa.northeast_longitude,
+                        pa.geocoding_date, pa.geocoding_calls,
+                        GROUP_CONCAT(DISTINCT pc.component_id SEPARATOR \',\') AS componentsIds,
+                        GROUP_CONCAT(pace1.long_name) AS postalCode, GROUP_CONCAT(pace2.long_name) AS locality,
+                        GROUP_CONCAT(pace3.long_name) AS administrativeArea, GROUP_CONCAT(pace4.long_name) AS country
+                  FROM  profile_addresses                 AS pa
+             LEFT JOIN  profile_addresses_components      AS pc    ON (pa.pid = pc.pid AND pa.jobid = pc.jobid AND pa.groupid = pc.groupid
+                                                                       AND pa.type = pc.type AND pa.id = pc.id)
+             LEFT JOIN  profile_addresses_components_enum AS pace1 ON (FIND_IN_SET(\'postal_code\', pace1.types) AND pace1.id = pc.component_id)
+             LEFT JOIN  profile_addresses_components_enum AS pace2 ON (FIND_IN_SET(\'locality\', pace2.types) AND pace2.id = pc.component_id)
+             LEFT JOIN  profile_addresses_components_enum AS pace3 ON (FIND_IN_SET(\'administrative_area_level_1\', pace3.types) AND pace3.id = pc.component_id)
+             LEFT JOIN  profile_addresses_components_enum AS pace4 ON (FIND_IN_SET(\'country\', pace4.types) AND pace4.id = pc.component_id)
                  ' . ((count($where) > 0) ? 'WHERE  ' . implode(' AND ', $where) : '') . '
+              GROUP BY  pa.pid, pa.jobid, pa.groupid, pa.type, pa.id
               ORDER BY  pa.pid, pa.jobid, pa.id';
         $this->dbiter = XDB::iterator($sql);
     }

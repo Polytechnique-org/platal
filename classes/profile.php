@@ -48,6 +48,17 @@ class Profile implements PlExportable
     const DEGREE_M = 'Master';
     const DEGREE_D = 'Doctorat';
 
+    static public $cycles = array(
+        self::DEGREE_X => 'polytechnicien',
+        self::DEGREE_M => 'master',
+        self::DEGREE_D => 'docteur'
+    );
+    static public $cycle_prefixes = array(
+        self::DEGREE_X => 'X',
+        self::DEGREE_M => 'M',
+        self::DEGREE_D => 'D'
+    );
+
     static public $name_variants = array(
             self::LASTNAME => array(self::VN_MARITAL, self::VN_ORDINARY),
             self::FIRSTNAME => array(self::VN_ORDINARY, self::VN_INI, self::VN_OTHER)
@@ -98,10 +109,11 @@ class Profile implements PlExportable
     const FETCH_PHONES         = 0x000100;
     const FETCH_JOB_TERMS      = 0x000200;
     const FETCH_MENTOR_TERMS   = 0x000400;
+    const FETCH_DELTATEN       = 0x000800;
 
     const FETCH_MINIFICHES   = 0x00012D; // FETCH_ADDRESSES | FETCH_EDU | FETCH_JOBS | FETCH_NETWORKING | FETCH_PHONES
 
-    const FETCH_ALL          = 0x0007FF; // OR of FETCH_*
+    const FETCH_ALL          = 0x000FFF; // OR of FETCH_*
 
     static public $descriptions = array(
         'search_names'    => 'Noms',
@@ -113,6 +125,7 @@ class Profile implements PlExportable
         'networking'      => 'Messageries…',
         'tels'            => 'Téléphones',
         'edus'            => 'Formations',
+        'main_edus'       => 'Formations à l\'X',
         'promo'           => 'Promotion de sortie',
         'birthdate'       => 'Date de naissance',
         'yourself'        => 'Nom affiché',
@@ -132,7 +145,8 @@ class Profile implements PlExportable
         'langues'         => 'Langues',
         'expertise'       => 'Expertises (mentoring)',
         'terms'           => 'Compétences (mentoring)',
-        'countries'       => 'Pays (mentoring)'
+        'countries'       => 'Pays (mentoring)',
+        'deltaten'        => 'Opération N N-10',
     );
 
     private $fetched_fields  = 0x000000;
@@ -181,14 +195,26 @@ class Profile implements PlExportable
         return false;
     }
 
-    public function promo()
+    public function promo($details = false)
     {
+        if ($details && ($this->program || $this->fieldid)) {
+            $text = array();
+            if ($this->program) {
+                $text[] = $this->program;
+            }
+            if ($this->fieldid) {
+                $fieldsList = DirEnum::getOptions(DirEnum::EDUFIELDS);
+                $text[] = $fieldsList[$this->fieldid];
+            }
+            return $this->promo . ' (' . implode(', ', $text) . ')';
+        }
+
         return $this->promo;
     }
 
     public function yearpromo()
     {
-        return intval(substr($this->promo, 1, 4));
+        return $this->promo_year;
     }
 
     /** Check if user is an orange (associated with several promos)
@@ -247,6 +273,20 @@ class Profile implements PlExportable
         }
     }
 
+    public static function educationDuration($education)
+    {
+        switch ($education) {
+          case self::DEGREE_X:
+            return 3;
+          case self::DEGREE_M:
+            return 2;
+          case self::DEGREE_D:
+            return 3;
+          default:
+            return 0;
+        }
+    }
+
     /** Number of years between the promotion year until the
      * graduation year. In standard schools it's 0, but for
      * Polytechnique the promo year is the entry year.
@@ -257,6 +297,25 @@ class Profile implements PlExportable
             return $this->mainEducationDuration();
         }
         return 0;
+    }
+
+    // Returns the profile's color.
+    public function promoColor()
+    {
+        switch ($this->mainEducation()) {
+          case 'X':
+            if (($this->yearpromo() % 2) === 0) {
+                return 'red';
+            } else {
+                return 'yellow';
+            }
+          case 'M':
+            return 'green';
+          case 'D':
+            return 'blue';
+          default:
+            return 'gray';
+        }
     }
 
     /** Print a name with the given formatting:
@@ -354,15 +413,15 @@ class Profile implements PlExportable
     public function nationalities()
     {
         $nats = array();
-        $countries = DirEnum::getOptions(DirEnum::COUNTRIES);
+        $nationalities = DirEnum::getOptions(DirEnum::NATIONALITIES);
         if ($this->nationality1) {
-            $nats[$this->nationality1] = $countries[$this->nationality1];
+            $nats[$this->nationality1] = $nationalities[$this->nationality1];
         }
         if ($this->nationality2) {
-            $nats[$this->nationality2] = $countries[$this->nationality2];
+            $nats[$this->nationality2] = $nationalities[$this->nationality2];
         }
         if ($this->nationality3) {
-            $nats[$this->nationality3] = $countries[$this->nationality3];
+            $nats[$this->nationality3] = $nationalities[$this->nationality3];
         }
         return $nats;
     }
@@ -397,11 +456,11 @@ class Profile implements PlExportable
 
     /**
      * Clears a profile.
-     *  *always deletes in: profile_addresses, profile_binets, profile_job,
-     *      profile_langskills, profile_mentor, profile_networking,
+     *  *always deletes in: profile_addresses, profile_binets, profile_deltaten,
+     *      profile_job, profile_langskills, profile_mentor, profile_networking,
      *      profile_phones, profile_skills, watch_profile
      *  *always keeps in: profile_corps, profile_display, profile_education,
-     *      profile_medals, profile_name, profile_photos, search_name
+     *      profile_medals, profile_*_names, profile_photos, search_name
      *  *modifies: profiles
      */
     public function clear()
@@ -409,7 +468,8 @@ class Profile implements PlExportable
         $tables = array(
             'profile_job', 'profile_langskills', 'profile_mentor',
             'profile_networking', 'profile_skills', 'watch_profile',
-            'profile_phones', 'profile_addresses', 'profile_binets');
+            'profile_phones', 'profile_addresses', 'profile_binets',
+            'profile_deltaten');
 
         foreach ($tables as $t) {
             XDB::execute('DELETE FROM  ' . $t . '
@@ -780,6 +840,44 @@ class Profile implements PlExportable
         }
     }
 
+    /** DeltaTen
+     */
+
+    /** Find out whether this profile may take part to the "DeltaTen" operation.
+     * @param $role Which role to select ('young' or 'old')
+     * @return Boolean: whether it is enabled.
+     */
+    const DELTATEN_YOUNG = 'young';
+    const DELTATEN_OLD = 'old';
+    public function isDeltaTenEnabled($role)
+    {
+        global $globals;
+        switch ($role) {
+        case self::DELTATEN_YOUNG:
+            return ($this->mainGrade() == UserFilter::GRADE_ING && $this->yearpromo() >= $globals->deltaten->first_promo_young);
+        case self::DELTATEN_OLD:
+            // Roughly compute the current promo in second year on the campus:
+            // Promo 2010 is in second year between 09/2011 and 08/2012 => use 2012.
+            // DeltaTen program begins around January of the second year.
+            $promo_on_platal = ((int) date('Y')) - 2;
+            return ($this->mainGrade() == UserFilter::GRADE_ING && $this->yearpromo() >= $globals->deltaten->first_promo_young - 10 && $this->yearpromo() <= $promo_on_platal - 10);
+        default:
+            Platal::assert(false, "Invalid DeltaTen role $role");
+        }
+    }
+
+    /** Retrieve the "Deltaten" message of the user.
+     * Returns "null" if the message is empty or the user is not taking part to the
+     * DeltaTen operation.
+     */
+    public function getDeltatenMessage()
+    {
+        if ($this->isDeltaTenEnabled(self::DELTATEN_OLD)) {
+            return $this->deltaten_message;
+        } else {
+            return null;
+        }
+    }
 
     /* Binets
      */
@@ -880,37 +978,30 @@ class Profile implements PlExportable
                                      IF ({?}, p.cv, NULL) AS cv, p.medals_pub, p.alias_pub, p.email_directory,
                                      p.last_change, p.nationality1, p.nationality2, p.nationality3,
                                      IF (p.freetext_pub IN {?}, p.freetext, NULL) AS freetext,
-                                     pe.entry_year, pe.grad_year,
+                                     pe.entry_year, pe.grad_year, pe.promo_year, pe.program, pe.fieldid,
                                      IF ({?}, pse.text, NULL) AS section,
-                                     pn_f.name AS firstname, pn_l.name AS lastname,
-                                     IF( {?}, pn_n.name, NULL) AS nickname,
-                                     IF(pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_ordinary,
-                                     IF(pn_ul.name IS NULL, pn_l.name, pn_ul.name) AS lastname_ordinary,
+                                     ppn.firstname_main AS firstname, ppn.lastname_main AS lastname, IF ({?}, pn.name, NULL) AS nickname,
+                                     IF (ppn.firstname_ordinary = \'\', ppn.firstname_main, ppn.firstname_ordinary) AS firstname_ordinary,
+                                     IF (ppn.lastname_ordinary = \'\', ppn.firstname_main, ppn.lastname_ordinary) AS lastname_ordinary,
                                      pd.yourself, pd.promo, pd.short_name, pd.public_name AS full_name,
                                      pd.directory_name, pd.public_name, pd.private_name,
-                                     IF(pp.pub IN {?}, pp.display_tel, NULL) AS mobile,
+                                     IF (pp.pub IN {?}, pp.display_tel, NULL) AS mobile,
                                      (ph.pub IN {?} AND ph.attach IS NOT NULL) AS has_photo,
                                      ph.x AS photo_width, ph.y AS photo_height,
                                      p.last_change < DATE_SUB(NOW(), INTERVAL 365 DAY) AS is_old,
                                      pm.expertise AS mentor_expertise,
+                                     IF ({?}, pdt.message, NULL) AS deltaten_message,
                                      ap.uid AS owner_id
                                FROM  profiles AS p
                          INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
                          INNER JOIN  profile_education AS pe ON (pe.pid = p.pid AND FIND_IN_SET(\'primary\', pe.flags))
                           LEFT JOIN  profile_section_enum AS pse ON (pse.id = p.section)
-                         INNER JOIN  profile_name AS pn_f ON (pn_f.pid = p.pid
-                                                              AND pn_f.typeid = ' . self::getNameTypeId('firstname', true) . ')
-                         INNER JOIN  profile_name AS pn_l ON (pn_l.pid = p.pid
-                                                              AND pn_l.typeid = ' . self::getNameTypeId('lastname', true) . ')
-                          LEFT JOIN  profile_name AS pn_uf ON (pn_uf.pid = p.pid
-                                                               AND pn_uf.typeid = ' . self::getNameTypeId('firstname_ordinary', true) . ')
-                          LEFT JOIN  profile_name AS pn_ul ON (pn_ul.pid = p.pid
-                                                               AND pn_ul.typeid = ' . self::getNameTypeId('lastname_ordinary', true) . ')
-                          LEFT JOIN  profile_name AS pn_n ON (pn_n.pid = p.pid
-                                                              AND pn_n.typeid = ' . self::getNameTypeId('nickname', true) . ')
+                         INNER JOIN  profile_public_names AS ppn ON (ppn.pid = p.pid)
+                          LEFT JOIN  profile_private_names AS pn ON (pn.pid = p.pid AND type = \'nickname\')
                           LEFT JOIN  profile_phones AS pp ON (pp.pid = p.pid AND pp.link_type = \'user\' AND tel_type = \'mobile\')
                           LEFT JOIN  profile_photos AS ph ON (ph.pid = p.pid)
                           LEFT JOIN  profile_mentor AS pm ON (pm.pid = p.pid)
+                          LEFT JOIN  profile_deltaten AS pdt ON (pdt.pid = p.pid)
                           LEFT JOIN  account_profiles AS ap ON (ap.pid = p.pid AND FIND_IN_SET(\'owner\', ap.perms))
                               WHERE  p.pid IN {?}
                            GROUP BY  p.pid
@@ -921,6 +1012,7 @@ class Profile implements PlExportable
                            $visibility->isVisible(ProfileVisibility::VIS_PRIVATE), // nickname
                            $visibility->levels(), // mobile
                            $visibility->levels(), // photo
+                           $visibility->isVisible(ProfileVisibility::VIS_PRIVATE), // deltaten_message
                            $pids
                        );
         return new ProfileIterator($it, $pids, $fields, $visibility);
@@ -1047,48 +1139,47 @@ class Profile implements PlExportable
         }
     }
 
-    public static function getNameTypeId($type, $for_sql = false)
-    {
-        if (!S::has('name_types')) {
-            $table = XDB::fetchAllAssoc('type', 'SELECT  id, type
-                                                   FROM  profile_name_enum');
-            S::set('name_types', $table);
-        } else {
-            $table = S::v('name_types');
-        }
-        if ($for_sql) {
-            return XDB::escape($table[$type]);
-        } else {
-            return $table[$type];
-        }
-    }
-
     public static function rebuildSearchTokens($pids, $transaction = true)
     {
+        require_once 'name.func.inc.php';
         if (!is_array($pids)) {
             $pids = array($pids);
         }
-        $keys = XDB::iterator("(SELECT  n.pid AS pid, n.name AS name, e.score AS score,
-                                        IF(FIND_IN_SET('public', e.flags), 'public', '') AS public
-                                  FROM  profile_name      AS n
-                            INNER JOIN  profile_name_enum AS e ON (n.typeid = e.id)
-                                 WHERE  n.pid IN {?} AND NOT FIND_IN_SET('not_displayed', e.flags))
-                                 UNION
-                                (SELECT  n.pid AS pid, n.particle AS name, 0 AS score,
-                                         IF(FIND_IN_SET('public', e.flags), 'public', '') AS public
-                                   FROM  profile_name      AS n
-                             INNER JOIN  profile_name_enum AS e ON (n.typeid = e.id)
-                                  WHERE  n.pid IN {?} AND NOT FIND_IN_SET('not_displayed', e.flags))
-                               ",
-                              $pids, $pids);
+        $keys = XDB::iterator("(SELECT  pid, name, type, IF(type = 'nickname', 2, 1) AS score, '' AS public
+                                  FROM  profile_private_names
+                                 WHERE  pid IN {?})
+                                UNION
+                               (SELECT  pid, lastname_main, 'lastname' AS type, 10 AS score, 'public' AS public
+                                  FROM  profile_public_names
+                                 WHERE  lastname_main != '' AND pid IN {?})
+                                UNION
+                               (SELECT  pid, lastname_marital, 'lastname' AS type, 10 AS score, 'public' AS public
+                                  FROM  profile_public_names
+                                 WHERE  lastname_marital != '' AND pid IN {?})
+                                UNION
+                               (SELECT  pid, lastname_ordinary, 'lastname' AS type, 10 AS score, 'public' AS public
+                                  FROM  profile_public_names
+                                 WHERE  lastname_ordinary != '' AND pid IN {?})
+                                UNION
+                               (SELECT  pid, firstname_main, 'firstname' AS type, 10 AS score, 'public' AS public
+                                  FROM  profile_public_names
+                                 WHERE  firstname_main != '' AND pid IN {?})
+                                UNION
+                               (SELECT  pid, firstname_ordinary, 'firstname' AS type, 10 AS score, 'public' AS public
+                                  FROM  profile_public_names
+                                 WHERE  firstname_ordinary != '' AND pid IN {?})
+                                UNION
+                               (SELECT  pid, pseudonym, 'nickname' AS type, 10 AS score, 'public' AS public
+                                  FROM  profile_public_names
+                                 WHERE  pseudonym != '' AND pid IN {?})",
+                              $pids, $pids, $pids, $pids, $pids, $pids, $pids);
         $names = array();
         while ($key = $keys->next()) {
             if ($key['name'] == '') {
                 continue;
             }
-            $pid   = $key['pid'];
-            $toks  = preg_split('/[ \'\-]+/', strtolower(replace_accent($key['name'])),
-                                -1, PREG_SPLIT_NO_EMPTY);
+            $pid  = $key['pid'];
+            $toks = split_name_for_search($key['name']);
             $toks = array_reverse($toks);
 
             /* Split the score between the tokens to avoid the user to be over-rated.
@@ -1100,9 +1191,9 @@ class Profile implements PlExportable
             $token = '';
             foreach ($toks as $tok) {
                 $token = $tok . $token;
-                $names["$pid-$token"] = XDB::format('({?}, {?}, {?}, {?}, {?})',
+                $names["$pid-$token"] = XDB::format('({?}, {?}, {?}, {?}, {?}, {?})',
                                                     $token, $pid, soundex_fr($token),
-                                                    $eltScore, $key['public']);
+                                                    $eltScore, $key['public'], $key['type']);
             }
         }
         if ($transaction) {
@@ -1112,7 +1203,7 @@ class Profile implements PlExportable
                             WHERE  pid IN {?}',
                      $pids);
         if (count($names) > 0) {
-            XDB::rawExecute('INSERT INTO  search_name (token, pid, soundex, score, flags)
+            XDB::rawExecute('INSERT INTO  search_name (token, pid, soundex, score, flags, general_type)
                                   VALUES  ' . implode(', ', $names));
         }
         if ($transaction) {

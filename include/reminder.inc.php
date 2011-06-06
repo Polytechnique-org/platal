@@ -72,7 +72,7 @@ abstract class Reminder
     private static function UpdateStatus($uid, $type_id, $status, $next_ask)
     {
         XDB::execute('INSERT INTO  reminder (uid, type_id, status, remind_last, remind_next)
-                           VALUES  ({?}, {?}, {?}, NOW(), {?})
+                           VALUES  ({?}, {?}, {?}, NOW(), FROM_UNIXTIME({?}))
           ON DUPLICATE KEY UPDATE  status = VALUES(status), remind_last = VALUES(remind_last), remind_next = VALUES(remind_next)',
                      $uid, $type_id, $status,
                      ($next_ask > 0 ? time() + $next_ask * 24 * 60 * 60 : null));

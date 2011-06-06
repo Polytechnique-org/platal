@@ -39,24 +39,25 @@
 
 <br />
 
-<p>
-nombre d'X vivants d'après notre base de données&nbsp;: {$statistics.alive}<br />
-nombre d'X vivants inscrits à Polytechnique.org&nbsp;: {$statistics.registered}<br />
-Soit un pourcentage d'inscrits de&nbsp;: {$statistics.registeredRate} %<br />
-</p>
-
-<p>
-Parmi ceux-ci&nbsp;:<br />
-nombre d'X vivants depuis 1972 d'après notre base de données&nbsp;: {$statistics.alive72}<br />
-nombre d'X vivants depuis 1972 inscrits à Polytechnique.org&nbsp;: {$statistics.registered72}<br />
-Soit un pourcentage d'inscrits de&nbsp;: {$statistics.registeredRate72} %<br />
-</p>
-
-<p>
-nombre de Polytechniciennes vivantes&nbsp;: {$statistics.womenAlive}<br />
-nombre de Polytechniciennes vivantes et inscrites&nbsp;: {$statistics.womenRegistered}<br />
-Soit un pourcentage d'inscrites de&nbsp;: {$statistics.womenRegisteredRate} %<br />
-</p>
+<table class="bicol">
+  <tr>
+    <th colspan="4">Statistiques</th>
+  </tr>
+  <tr>
+    <td class="titre"></td>
+    <td style="text-align: right" class="titre">Vivants</td>
+    <td style="text-align: right" class="titre">Inscrits</td>
+    <td style="text-align: right" class="titre">Pourcentage</td>
+  </tr>
+  {foreach from=$statistics item=data}
+  <tr>
+    <td>{$data.description}</td>
+    <td style="text-align: right">{$data.alive}</td>
+    <td style="text-align: right">{$data.registered}</td>
+    <td style="text-align: right">{$data.rate}</td>
+  </tr>
+  {/foreach}
+</table>
 
 <p>
 nombre d'<a href="marketing/this_week">inscrits ces 7 derniers jours</a>&nbsp;: {$registrations.week}<br />
@@ -69,35 +70,35 @@ nombre d'<a href="marketing/relance">inscriptions en cours</a> (2ème phase non 
   </tr>
   <tr>
     <td>&nbsp;</td>
-    <td class="titre">Non abouti</td>
-    <td class="titre">Abouti</td>
-    <td class="titre">Total</td>
+    <td style="text-align: right" class="titre">Non abouti</td>
+    <td style="text-align: right" class="titre">Abouti</td>
+    <td style="text-align: right" class="titre">Total</td>
   </tr>
   <tr>
     <td>Personnel</td>
-    <td>{$marketings.noPerso}</td>
-    <td rowspan="3" style="vertical-align: middle">{$marketings.ok}</td>
-    <td rowspan="3" style="vertical-align: middle">{$marketings.ok+$marketings.noPerso+$marketings.noXorg+$marketings.noAX}</td>
+    <td style="text-align: right">{$marketings.noPerso}</td>
+    <td rowspan="3" style="vertical-align: middle; text-align: right">{$marketings.ok}</td>
+    <td rowspan="3" style="vertical-align: middle; text-align: right">{$marketings.ok+$marketings.noPerso+$marketings.noXorg+$marketings.noAX}</td>
   </tr>
   <tr>
     <td>Par Polytechnique.org</td>
-    <td>{$marketings.noXorg}</td>
+    <td style="text-align: right">{$marketings.noXorg}</td>
   </tr>
   <tr>
     <td>Par l'AX</td>
-    <td>{$marketings.noAX}</td>
+    <td style="text-align: right">{$marketings.noAX}</td>
   </tr>
   <tr>
     <td>Cette semaine</td>
-    <td>{$marketings.noWeek}</td>
-    <td>{$marketings.okWeek}</td>
-    <td>{$marketings.okWeek+$marketings.noWeek}</td>
+    <td style="text-align: right">{$marketings.noWeek}</td>
+    <td style="text-align: right">{$marketings.okWeek}</td>
+    <td style="text-align: right">{$marketings.okWeek+$marketings.noWeek}</td>
   </tr>
   <tr>
     <td class="titre">Total</td>
-    <td>{$marketings.noPerso+$marketings.noXorg+$marketings.noAX}</td>
-    <td>{$marketings.ok}</td>
-    <td>{$marketings.ok+$marketings.noPerso+$marketings.noXorg+$marketings.noAX}</td>
+    <td style="text-align: right">{$marketings.noPerso+$marketings.noXorg+$marketings.noAX}</td>
+    <td style="text-align: right">{$marketings.ok}</td>
+    <td style="text-align: right">{$marketings.ok+$marketings.noPerso+$marketings.noXorg+$marketings.noAX}</td>
   </tr>
 </table>
 

@@ -41,6 +41,9 @@ class XnetPage extends PlPage
             $this->assign('is_admin', may_update());
             $this->assign('is_member', is_member());
         }
+        if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false) {
+            $this->addJsLink('json2.js');
+        }
         $this->addJsLink('jquery.xorg.js');
         $this->addJsLink('overlib.js');
         $this->addJsLink('core.js');
@@ -81,6 +84,10 @@ class XnetPage extends PlPage
         $sub = array();
         $sub['tous les groupes'] = 'plan';
         $sub['documentation']     = 'Xnet';
+        if (S::user()->type == 'xnet') {
+            $sub['mon compte'] = 'edit';
+            $sub['mon mot de passe'] = 'password';
+        }
         $sub['signaler un bug']   = array('href' => 'send_bug/'.$_SERVER['REQUEST_URI'], 'class' => 'popup_840x600');
         $menu["no_title"]   = $sub;
 
@@ -120,6 +127,9 @@ class XnetPage extends PlPage
                 $sub['envoyer un mail']     = "$dim/mail";
                 $sub['créer une liste']     = "$dim/lists/create";
                 $sub['créer un alias']      = "$dim/alias/create";
+            }
+            if (!$globals->asso('has_nl')) {
+                $sub['créer la newsletter'] = "$dim/admin/nl/enable";
             }
             if (S::admin()) {
                 $sub['gérer les groupes'] = array('href' => 'admin', 'style' => 'color: gray;');

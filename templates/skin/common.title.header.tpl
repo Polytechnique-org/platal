@@ -24,7 +24,7 @@
   <tr>
     <td class="date-heure"></td>
     <td class="inscrits">
-      {$globals->core->NbIns|number_format} polytechniciens sur le web
+      {$globals->core->NbIns|number_format} étudiants et anciens de l'X sur le web
       {if t($smarty.request.quick)}
         {assign var=requestQuick value=$smarty.request.quick|smarty:nodefaults}
       {else}

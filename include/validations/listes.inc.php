@@ -131,8 +131,7 @@ class ListeReq extends Validate
 
         if ($this->asso == 'alias') {
             foreach ($this->members as $member) {
-                $user = User::get($member);
-                add_to_list_alias($user, $this->liste, $this->domain);
+                add_to_list_alias($member, $this->liste, $this->domain);
             }
         } else {
             $list = new MMList(S::user(), $this->domain);

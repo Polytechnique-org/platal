@@ -47,6 +47,11 @@ class NewsLetter
     const GROUP_AX = 'AX';
     const GROUP_EP = 'Ecole';
 
+    // Searches on mutiple fields
+    const SEARCH_ALL = 'all';
+    const SEARCH_TITLE = 'title';
+
+
     // {{{ Constructor, NewsLetter retrieval (forGroup, getAll)
 
     public function __construct($id)
@@ -251,6 +256,63 @@ class NewsLetter
         }
     }
 
+    /** Returns a list of either issues or articles corresponding to the search.
+     * @p $search The searched pattern.
+     * @p $field The fields where to search, if none given, search in all possible fields.
+     * @return The list of object found.
+     */
+    public function issueSearch($search, $field, $user)
+    {
+        $search = XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $search);
+        if ($field == self::SEARCH_ALL) {
+            $where = '(title ' . $search . ' OR mail_title ' . $search . ' OR head ' . $search . ' OR signature ' . $search . ')';
+        } elseif ($field == self::SEARCH_TITLE) {
+            $where = '(title ' . $search . ' OR mail_title ' . $search . ')';
+        } else {
+            $where = $field . $search;
+        }
+        $list = XDB::fetchColumn('SELECT  DISTINCT(id)
+                                    FROM  newsletter_issues
+                                   WHERE  nlid = {?} AND state = \'sent\' AND ' . $where . '
+                                ORDER BY  date DESC',
+                                 $this->id);
+
+        $issues = array();
+        foreach ($list as $id) {
+            $issue = new NLIssue($id, $this, false);
+            if ($issue->checkUser($user)) {
+                $issues[] = $issue;
+            }
+        }
+        return $issues;
+    }
+
+    public function articleSearch($search, $field, $user)
+    {
+        $search = XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $search);
+        if ($field == self::SEARCH_ALL) {
+            $where = '(a.title ' . $search . ' OR a.body ' . $search . ' OR a.append ' . $search . ')';
+        } else {
+            $where = 'a.' . $field . $search;
+        }
+        $list = XDB::fetchAllAssoc('SELECT  i.short_name, a.aid, i.id, a.title
+                                      FROM  newsletter_art    AS a
+                                INNER JOIN  newsletter_issues AS i ON (a.id = i.id)
+                                     WHERE  i.nlid = {?} AND i.state = \'sent\' AND ' . $where . '
+                                  GROUP BY  a.id, a.aid
+                                  ORDER BY  i.date DESC, a.aid',
+                                   $this->id);
+
+        $articles = array();
+        foreach ($list as $item) {
+            $issue = new NLIssue($item['id'], $this, false);
+            if ($issue->checkUser($user)) {
+                $articles[] = $item;
+            }
+        }
+        return $articles;
+    }
+
     // }}}
     // {{{ Subscription related function
 
@@ -259,7 +321,7 @@ class NewsLetter
      * @p $hash True if the uid is actually a hash.
      * @return True if the user was successfully unsubscribed.
      */
-    public function unsubscribe($uid = null, $hash = false)
+    public function unsubscribe($issue_id = null, $uid = null, $hash = false)
     {
         if (is_null($uid) && $hash) {
             // Unable to unsubscribe from an empty hash
@@ -280,6 +342,12 @@ class NewsLetter
         XDB::execute('DELETE FROM  newsletter_ins
                             WHERE  nlid = {?} AND uid = {?}',
                             $this->id, $user);
+        if (!is_null($issue_id)) {
+            XDB::execute('UPDATE  newsletter_issues
+                             SET  unsubscribe = unsubscribe + 1
+                           WHERE  id = {?}',
+                         $id);
+        }
         return true;
     }
 
@@ -433,10 +501,14 @@ class NewsLetter
     /** Get the prefix leading to the page for this NL
      * Only X.org / AX / X groups may be seen on X.org.
      */
-    public function prefix($enforce_xnet=true)
+    public function prefix($enforce_xnet=true, $with_group=true)
     {
         if (!empty($GLOBALS['IS_XNET_SITE'])) {
-            return $this->group . '/nl';
+            if ($with_group) {
+                return $this->group . '/nl';
+            } else {
+                return 'nl';
+            }
         }
         switch ($this->group) {
         case self::GROUP_XORG:
@@ -453,10 +525,14 @@ class NewsLetter
 
     /** Get the prefix to use for all 'admin' pages of this NL.
      */
-    public function adminPrefix($enforce_xnet=true)
+    public function adminPrefix($enforce_xnet=true, $with_group=true)
     {
         if (!empty($GLOBALS['IS_XNET_SITE'])) {
-            return $this->group . '/admin/nl';
+            if ($with_group) {
+                return $this->group . '/admin/nl';
+            } else {
+                return 'admin/nl';
+            }
         }
         switch ($this->group) {
         case self::GROUP_XORG:
@@ -489,6 +565,18 @@ class NewsLetter
     public function hasCustomCss()
     {
         return $this->custom_css;
+    }
+
+    public function canSyncWithGroup()
+    {
+        switch ($this->group) {
+          case self::GROUP_XORG:
+          case self::GROUP_AX:
+          case self::GROUP_EP:
+            return false;
+          default:
+            return true;
+        }
     }
 
     // }}}
@@ -558,6 +646,7 @@ class NLIssue
             $this->nl = new NewsLetter($issue['nlid']);
         }
         $this->id = $id;
+        $this->nlid        = $issue['nlid'];
         $this->shortname   = $issue['short_name'];
         $this->date        = $issue['date'];
         $this->send_before = $issue['send_before'];
@@ -756,7 +845,11 @@ class NLIssue
     public function last()
     {
         if (is_null($this->id_last)) {
-            $this->id_last = $this->nl->getIssue('last')->id;
+            try {
+                $this->id_last = $this->nl->getIssue('last')->id;
+            } catch (MailNotFound $e) {
+                $this->id_last = null;
+            }
         }
         return $this->id_last;
     }
@@ -766,6 +859,7 @@ class NLIssue
 
     const ERROR_INVALID_SHORTNAME = 'invalid_shortname';
     const ERROR_INVALID_UFC = 'invalid_ufc';
+    const ERROR_TOO_LONG_UFC = 'too_long_ufc';
     const ERROR_SQL_SAVE = 'sql_error';
 
     /** Save the global properties of this NL issue (title&co).
@@ -791,6 +885,11 @@ class NLIssue
             }
             if ($this->sufb->isValid() || $this->sufb->isEmpty()) {
                 $fields['sufb_json'] = json_encode($this->sufb->export()->dict());
+                // If sufb_json is too long to be store, we do not store a truncated json and notify the user.
+                // The limit is LONGTEXT's one, ie 2^32 = 4294967296.
+                if (strlen($fields['sufb_json']) > 4294967295) {
+                    $errors[] = self::ERROR_TOO_LONG_UFC;
+                }
             } else {
                 $errors[] = self::ERROR_INVALID_UFC;
             }
@@ -1124,7 +1223,8 @@ class NLIssue
 class NLArticle
 {
     // Maximum number of lines per article
-    const MAX_LINES_PER_ARTICLE = 9;
+    const MAX_LINES_PER_ARTICLE = 8;
+    const MAX_CHARACTERS_PER_LINE = 68;
 
     // {{{ properties
 
@@ -1212,17 +1312,30 @@ class NLArticle
 
     public function check()
     {
-        $text = MiniWiki::WikiToText($this->body);
-        $arr  = explode("\n",wordwrap($text,68));
-        $c    = 0;
-        foreach ($arr as $line) {
-            if (trim($line)) {
-                $c++;
-            }
-        }
-        return $c < self::MAX_LINES_PER_ARTICLE;
+        $rest = $this->remain();
+
+        return $rest['remaining_lines'] >= 0;
     }
 
+    // }}}
+    // {{{ function remain()
+
+    public function remain()
+    {
+        $text  = MiniWiki::WikiToText($this->body);
+        $array = explode("\n", wordwrap($text, self::MAX_CHARACTERS_PER_LINE));
+        $lines_count = 0;
+        foreach ($array as $line) {
+            if (trim($line) != '') {
+                ++$lines_count;
+            }
+        }
+
+        return array(
+            'remaining_lines'                    => self::MAX_LINES_PER_ARTICLE - $lines_count,
+            'remaining_characters_for_last_line' => self::MAX_CHARACTERS_PER_LINE - strlen($array[count($array) - 1])
+       );
+    }
     // }}}
     // {{{ function parseUrlsFromArticle()
 

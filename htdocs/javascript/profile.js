@@ -77,12 +77,10 @@ function addSearchName(isFemale)
     while ($('#search_name_' + i).length != 0) {
         i++;
     }
-    $('#search_name_' + i)
-        .updateHtml('profile/ajax/searchname/' + i + '/' + isFemale,
-                    function(data) {
-                        $('#searchname').before(data);
-                        changeNameFlag(i);
-                    });
+    $('#search_name_' + i).updateHtml('profile/ajax/searchname/' + i + '/' + isFemale,
+        function(data) {
+            $('#searchname').before(data);
+    });
 }
 
 function removeSearchName(i, isFemale)
@@ -91,49 +89,35 @@ function removeSearchName(i, isFemale)
     updateNameDisplay(isFemale);
 }
 
-function changeNameFlag(i)
-{
-    $('#flag_' + i).remove();
-    var typeid = $('#search_name_' + i).find('select').val();
-    var type   = $('#search_name_' + i).find('select :selected').text();
-    if ($('[name=sn_type_' + typeid + '_' + i + ']').val() > 0) {
-        $('#flag_cb_' + i).after('<span id="flag_' + i + '">&nbsp;' +
-            '<img src="images/icons/flag_green.gif" alt="site public" title="site public" />' +
-            '<input type="hidden" name="search_names[' + i + '][pub]" value="1"/>' +
-            '<input type="hidden" name="search_names[' + i + '][typeid]" value="' + typeid + '"/>' +
-            '<input type="hidden" name="search_names[' + i + '][type]" value="' + type + '"/></span>');
-    } else {
-        $('#flag_cb_' + i).after('<span id="flag_' + i + '">&nbsp;' +
-            '<img src="images/icons/flag_red.gif" alt="site privé" title="site privé" />' +
-            '<input type="hidden" name="search_names[' + i + '][typeid]" value="' + typeid + '"/>' +
-            '<input type="hidden" name="search_names[' + i + '][type]" value="' + type + '"/></span>');
-    }
-}
-
 function updateNameDisplay(isFemale)
 {
+    var lastnames = new Array('lastname_main', 'lastname_ordinary', 'lastname_marital', 'pseudonym');
+    var firstnames = new Array('firstname_main', 'firstname_ordinary');
     var searchnames = '';
-    for (var i = 0; i < 10; i++) {
+
+    for (var i = 0; i < 4; ++i) {
+        searchnames += $('.names_advanced').find('[name*=' + lastnames[i] + ']').val() + ';';
+    }
+    searchnames += '-;'
+    for (var i = 0; i < 2; ++i) {
+        searchnames += $('.names_advanced').find('[name*=' + firstnames[i] + ']').val() + ';';
+    }
+    searchnames += '-';
+
+    var has_private = false;
+    for (var i = 0; i < 10; ++i) {
         if ($('#search_name_' + i).find(':text').val()) {
-            searchnames += $('#search_name_' + i).find('[name*=typeid]').val() + ';';
-            searchnames += $('#search_name_' + i).find(':text').val() + ';;';
+            searchnames += ';' + $('#search_name_' + i).find('[name*=type]').val() + ';' + $('#search_name_' + i).find(':text').val();
+            has_private = true;
         }
     }
+    searchnames += (has_private ? '' : ';');
     $.xget('profile/ajax/buildnames/' + searchnames + '/' + isFemale,
            function(data){
                var name = data.split(';');
                $('#public_name').html(name[0]);
                $('#private_name').html(name[0] + name[1]);
            });
-}
-
-function toggleParticle(id)
-{
-    if ($('#search_name_' + id).find("[name*='[particle]']").val() == '') {
-        $('#search_name_' + id).find("[name*='[particle]']").val(1);
-    } else {
-        $('#search_name_' + id).find("[name*='[particle]']").val('');
-    }
 }
 
 // Promotions {{{1
@@ -317,34 +301,46 @@ function checkCurrentAddress(id)
     }
 }
 
-function addAddress()
+function addAddress(pid)
 {
     var i = 0;
     while ($('#addresses_' + i + '_cont').length != 0) {
         i++;
     }
     $('#add_address').before('<div id="addresses_' + i + '_cont"></div>');
-    $('#addresses_' + i + '_cont').updateHtml('profile/ajax/address/' + i,
+    $('#addresses_' + i + '_cont').updateHtml('profile/ajax/address/' + i + '/' + pid,
                                               checkCurrentAddress());
 }
 
-function addressChanged(prefid)
+function addressChanged(prefid, color)
 {
+    var text = $('#' + prefid + '_cont').find("[name*='[text]']").val();
     $('#' + prefid + '_cont').find('[name*=changed]').val("1");
+    $.xpost('map_url/', { text:text, color:color }, function(data) {
+        if (data) {
+            $('#' + prefid + '_static_map_url').show();
+            $('#' + prefid + '_static_map_url').find('img').attr('src', data);
+        } else {
+            $('#' + prefid + '_static_map_url').hide();
+            $('#' + prefid + '_geocoding_removal').find('[name*=request]:checkbox').removeAttr('checked');
+        }
+    });
 }
 
-function validGeoloc(prefid, id, geoloc)
+function deleteGeocoding(prefid)
 {
-    if (geoloc == 1) {
-        $('#' + prefid + '_cont').find('[name*=text]').val($('#' + prefid + '_cont').find('[name*=geocodedText]').val());
-        $('#' + prefid + '_cont').find('[name*=postalText]').val('');
+    if($('#' + prefid + '_geocoding_removal').find('[name*=request]:checkbox:checked').length == 0) {
+        return true;
     }
-    if (geoloc > 0) {
-        $('#' + prefid + '_cont').find("[name*='[geocodedText]']").remove();
-    }
-    $('#' + prefid + '_cont').find('[name*=text]').removeClass('error');
-    $('#' + prefid + '_cont').find('[name*=geocodeChosen]').val(geoloc);
-    $('.' + prefid + '_geoloc').remove();
+
+    return confirm(
+        "La localisation de l'adresse sert à deux choses : te placer dans "
+        + "le planisphère et te faire apparaître dans la recherche avancée par "
+        + "pays, région, département, ville... La supprimer t'en fera disparaître. "
+        + "\nIl ne faut le faire que si cette localisation "
+        + "est réellement erronée. Avant de supprimer cette localisation, l'équipe de "
+        + "Polytechnique.org tentera de la réparer.\n\nConfirmes-tu ta "
+        + "demande de suppression de cette localisation ?");
 }
 
 // {{{1 Phones
@@ -558,13 +554,13 @@ function makeAddJob(id)
     };
 }
 
-function addJob()
+function addJob(pid)
 {
     var i = 0;
     while ($('#jobs_' + i).length != 0) {
         ++i;
     }
-    $.xget('profile/ajax/job/' + i, makeAddJob(i));
+    $.xget('profile/ajax/job/' + i + '/' + pid, makeAddJob(i));
 }
 
 function addEntreprise(id)

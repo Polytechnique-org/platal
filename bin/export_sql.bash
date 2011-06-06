@@ -7,10 +7,8 @@
 # Developers: list 'public' tables here.
 SHARED_TABLES="account_types \
 forums \
-geoloc_administrativeareas \
 geoloc_countries \
-geoloc_localities \
-geoloc_subadministrativeareas \
+geoloc_languages \
 log_actions \
 newsletter_cat \
 profile_binet_enum \
@@ -27,7 +25,6 @@ profile_job_term_relation \
 profile_langskill_enum \
 profile_medal_enum \
 profile_medal_grade_enum \
-profile_name_enum \
 profile_networking_enum \
 profile_section_enum \
 profile_skill_enum \

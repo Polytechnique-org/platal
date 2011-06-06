@@ -21,20 +21,20 @@
  ***************************************************************************/
 
 /**
- * Requires destruction of aliases: a first notification 10 days before
+ * Requires destruction of aliases: a first notification 7 days before
  * destruction, a second on the date.
  */
 require 'connect.db.inc.php';
 
 $resRobot = XDB::iterator("SELECT  uid, email, expire
                              FROM  email_source_account
-                            WHERE  (expire = NOW() + INTERVAL 7 DAY OR expire <= NOW())");
+                            WHERE  expire <= NOW() + INTERVAL 7 DAY");
 while ($old = $resRobot->next()) {
     $res = XDB::query('SELECT  a.hruid
                          FROM  homonyms_list AS h
                    INNER JOIN  accounts      AS a ON (h.uid = a.uid)
                         WHERE  h.hrmid = {?}',
-                      User::makeHomonymHrmid($old['email']);
+                      User::makeHomonymHrmid($old['email']));
     $hruids = $res->fetchColumn();
 
     $homonym = User::getSilent($old['uid']);

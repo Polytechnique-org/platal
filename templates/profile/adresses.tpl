@@ -34,7 +34,7 @@
 {/if}
 
 <div id="add_address" class="center">
-  <a href="javascript:addAddress()">
+  <a href="javascript:addAddress({$profile->id()})">
     {icon name=add title="Ajouter une adresse"} Ajouter une adresse
   </a>
 </div>

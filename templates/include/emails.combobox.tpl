@@ -35,40 +35,25 @@
   {if $name eq "email"}<td></td>{/if}
   <td>
     {if $name neq "email"}<div style="float: left">{/if}
+    {if $emails_count neq 0}
     <select name="{$name}" id="{$combobox}">
-      {if $email_type eq "directory"}
-      <optgroup label="Email annuaire AX">
-        <option value="{$email_directory}" {if
-        $val eq $email_directory}selected="selected"{/if}>{$email_directory}</option>
-      </optgroup>
-      {/if}
-      {if $name eq "email_directory"}
-      <optgroup label="Emails polytechniciens">
-        {foreach from=$list_email_X item=email}
-        <option value="{$email.email}" {if $val eq $email.email}selected="selected"{/if}>{$email.email}</option>
-        {/foreach}
-      </optgroup>
-      {/if}
-      {if (($name neq "email") && ($list_email_redir|@count neq 0))}
-      <optgroup label="Redirections">
-        {foreach from=$list_email_redir item=email}
+      {foreach from=$email_lists item=email_list key=key}
+      {if $email_list|@count}
+      <optgroup label="{$key}">
+        {foreach from=$email_list item=email}
         <option value="{$email}" {if $val eq $email}selected="selected"{/if}>{$email}</option>
         {/foreach}
       </optgroup>
       {/if}
-      {if $list_email_pro|@count neq 0}
-      <optgroup label="Emails professionels">
-        {foreach from=$list_email_pro item=email}
-        <option value="{$email}" {if
-                $val eq $email}selected="selected"{/if}>{$email}</option>
-        {/foreach}
-      </optgroup>
-      {/if}
+      {/foreach}
       <optgroup label="Autres choix">
         <option value="new@example.org" {if ($val eq '' && !$error && $name eq 'email') || $error}selected="selected"{/if}>Nouvelle adresse email</option>
-        <option value="" {if $val eq '' && !$error && $name neq 'email'}selected="selected"{/if}>{if $name neq "email"}Ne pas mettre d'adresse email{else}&nbsp;{/if}</option>
+        {if $name neq "email"}<option value="" {if $val eq '' && !$error}selected="selected"{/if}>Ne pas mettre d'adresse email</option>{/if}
       </optgroup>
     </select>
+    {else}
+    <input type="text" maxlength="255" {if $error}class="error" value="{$val}"{/if} name="{$name}"/>
+    {/if}
     {if $name neq "email"}
     </div>
     <div style="float: right" class="flags">

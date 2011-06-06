@@ -32,7 +32,7 @@
   qui aura lieu {$evt.date}.
 </p>
 
-{if $evt.participant_list && $is_admin}
+{if $participants|@count && $is_admin}
 <p class="center">
   [<a href="mailto:?bcc={$evt.short_name}-participants@{#globals.xnet.evts_domain#}">envoyer un email à ceux qui viennent</a>]
   <br />
@@ -97,7 +97,7 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
       <a href="https://www.polytechnique.org/vcard/{$m.user->login()}.vcf">{icon name=vcard title="vcard"}</a>
       <a href="mailto:{$m.user->bestEmail()}">{icon name=email title="email"}</a>
     </td>
-    <td>{$m.amount}</td>
+    <td>{$m.amount|replace:'.':','} &euro;</td>
   </tr>
   {/foreach}
 </table>

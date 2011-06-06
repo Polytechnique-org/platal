@@ -26,24 +26,25 @@ class ListsModule extends PLModule
     function handlers()
     {
         return array(
-            'lists'           => $this->make_hook('lists',     AUTH_MDP),
-            'lists/ajax'      => $this->make_hook('ajax',      AUTH_MDP, 'user', NO_AUTH),
-            'lists/create'    => $this->make_hook('create',    AUTH_MDP, 'lists'),
+            'lists'              => $this->make_hook('lists',     AUTH_MDP),
+            'lists/ajax'         => $this->make_hook('ajax',      AUTH_MDP,    'user', NO_AUTH),
+            'lists/create'       => $this->make_hook('create',    AUTH_MDP,    'lists'),
 
-            'lists/members'   => $this->make_hook('members',   AUTH_COOKIE),
-            'lists/csv'       => $this->make_hook('csv',       AUTH_COOKIE),
-            'lists/annu'      => $this->make_hook('annu',      AUTH_COOKIE),
-            'lists/archives'  => $this->make_hook('archives',  AUTH_COOKIE),
-            'lists/archives/rss' => $this->make_hook('rss',    AUTH_PUBLIC, 'user', NO_HTTPS),
+            'lists/members'      => $this->make_hook('members',   AUTH_COOKIE),
+            'lists/csv'          => $this->make_hook('csv',       AUTH_COOKIE),
+            'lists/annu'         => $this->make_hook('annu',      AUTH_COOKIE),
+            'lists/archives'     => $this->make_hook('archives',  AUTH_COOKIE),
+            'lists/archives/rss' => $this->make_hook('rss',       AUTH_PUBLIC, 'user', NO_HTTPS),
 
-            'lists/moderate'  => $this->make_hook('moderate',  AUTH_MDP),
-            'lists/admin'     => $this->make_hook('admin',     AUTH_MDP),
-            'lists/options'   => $this->make_hook('options',   AUTH_MDP),
-            'lists/delete'    => $this->make_hook('delete',    AUTH_MDP),
+            'lists/moderate'     => $this->make_hook('moderate',  AUTH_MDP),
+            'lists/admin'        => $this->make_hook('admin',     AUTH_MDP),
+            'lists/options'      => $this->make_hook('options',   AUTH_MDP),
+            'lists/delete'       => $this->make_hook('delete',    AUTH_MDP),
 
-            'lists/soptions'  => $this->make_hook('soptions',  AUTH_MDP),
-            'lists/check'     => $this->make_hook('check',     AUTH_MDP),
-            'admin/lists'     => $this->make_hook('admin_all', AUTH_MDP, 'admin'),
+            'lists/soptions'     => $this->make_hook('soptions',  AUTH_MDP),
+            'lists/check'        => $this->make_hook('check',     AUTH_MDP),
+            'admin/lists'        => $this->make_hook('admin_all', AUTH_MDP,    'admin'),
+            'admin/aliases'      => $this->make_hook('aaliases',  AUTH_MDP,    'admin')
         );
     }
 
@@ -376,29 +377,34 @@ class ListsModule extends PLModule
             $page->kill("La liste n'existe pas ou tu n'as pas le droit d'en voir les détails.");
         }
 
-        global $platal;
         list(,$members) = $this->client->get_members($liste);
-        $users = array();
-        foreach ($members as $m) {
-            $users[] = $m[1];
+
+        if ($action == 'moderators') {
+            $users = $owners;
+            $show_moderators = true;
+            $action = $subaction;
+            $subaction = '';
+        } else {
+            $show_moderators = false;
+            $users = array();
+            foreach ($members as $m) {
+                $users[] = $m[1];
+            }
         }
+
         require_once 'userset.inc.php';
-        $view = new ArraySet($users);
-        $view->addMod('trombi', 'Trombinoscope', true, array('with_promo' => true));
+        $view = new UserArraySet($users);
+        $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true));
+        $view->addMod('listmember', 'Annuaire', true);
         if (empty($GLOBALS['IS_XNET_SITE'])) {
             $view->addMod('minifiche', 'Mini-fiches', false);
         }
-        // TODO: Reactivate when the new map is completed.
-        // $view->addMod('geoloc', 'Planisphère');
+        $view->addMod('map', 'Planisphère');
         $view->apply("lists/annu/$liste", $page, $action, $subaction);
-        if ($action == 'geoloc' && $subaction) {
-            return;
-        }
 
         $page->changeTpl('lists/annu.tpl');
-        $moderos = list_sort_owners($owners[1]);
         $page->assign_by_ref('details', $owners[0]);
-        $page->assign_by_ref('owners',  $moderos);
+        $page->assign('show_moderators', $show_moderators);
     }
 
     function handler_archives($page, $liste = null, $action = null, $artid = null)
@@ -885,6 +891,62 @@ class ListsModule extends PLModule
         $this->prepare_client($page);
         $listes = $this->client->get_all_lists();
         $page->assign_by_ref('listes', $listes);
+    }
+
+    function handler_aaliases($page, $alias = null)
+    {
+        global $globals;
+        require_once 'emails.inc.php';
+        $page->setTitle('Administration - Aliases');
+
+        if (Post::has('new_alias')) {
+            pl_redirect('admin/aliases/' . Post::t('new_alias') . '@' . $globals->mail->domain);
+        }
+
+        // If no alias, list them all.
+        if (is_null($alias)) {
+            $page->changeTpl('lists/admin_aliases.tpl');
+            $page->assign('aliases', array_merge(iterate_list_alias($globals->mail->domain), iterate_list_alias($globals->mail->domain2)));
+            return;
+        }
+
+        list($local_part, $domain) = explode('@', $alias);
+        if (!($globals->mail->domain == $domain || $globals->mail->domain2 == $domain)
+              || !preg_match("/^[a-zA-Z0-9\-\.]*$/", $local_part)) {
+            $page->trigErrorRedirect('Le nom de l\'alias est erroné.', $globals->asso('diminutif') . 'admin/aliases');
+        }
+
+        // Now we can perform the action.
+        if (Post::has('del_alias')) {
+            S::assert_xsrf_token();
+
+            delete_list_alias($local_part, $domain);
+            $page->trigSuccessRedirect($alias . ' supprimé.', 'admin/aliases');
+        }
+
+        if (Post::has('add_member')) {
+            S::assert_xsrf_token();
+
+            if (add_to_list_alias(Post::t('add_member'), $local_part, $domain)) {
+                $page->trigSuccess('Ajout réussit.');
+            } else {
+                $page->trigError('Ajout infructueux.');
+            }
+        }
+
+        if (Get::has('del_member')) {
+            S::assert_xsrf_token();
+
+            if (delete_from_list_alias(Get::t('del_member'), $local_part, $domain)) {
+                $page->trigSuccess('Suppression réussie.');
+            } else {
+                $page->trigError('Suppression infructueuse.');
+            }
+        }
+
+        $page->changeTpl('lists/admin_edit_alias.tpl');
+        $page->assign('members', list_alias_members($local_part, $domain));
+        $page->assign('alias', $alias);
     }
 }
 

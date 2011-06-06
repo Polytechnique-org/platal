@@ -139,7 +139,7 @@ il suffit de cliquer sur le titre de la colonne concernée.
     </td>
     <td class="center">{$p.user->promo()}</td>
     <td>{$p.comment|comment_decode}</td>
-    <td class="right">{$p.amount}</td>
+    <td class="right">{$p.amount|replace:'.':','} &euro;</td>
   </tr>
   {elseif $smarty.foreach.people.first}
   <tr>
@@ -148,7 +148,7 @@ il suffit de cliquer sur le titre de la colonne concernée.
   {else}
   <tr class="pair">
     <td class="right" colspan="5"><strong>Total </strong></td>
-    <th class="right">{$p.amount}</th>
+    <th class="right">{$p.amount|replace:'.':','} &euro;</th>
   </tr>
   {/if}
   {/foreach}

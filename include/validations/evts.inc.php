@@ -122,10 +122,11 @@ class EvtReq extends Validate
 
     protected function _mail_body($isok)
     {
+        $you_have = ($this->formal ? 'vous aviez' : 'tu avais');
         if ($isok) {
-            return "  L'annonce que tu avais proposée ({$this->titre}) vient d'être validée.";
+            return "  L'annonce que $you_have proposée ({$this->titre}) vient d'être validée.";
         } else {
-            return "  L'annonce que tu avais proposée ({$this->titre}) a été refusée.";
+            return "  L'annonce que $you_have proposée ({$this->titre}) a été refusée.";
         }
     }
 

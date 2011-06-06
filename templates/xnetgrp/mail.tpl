@@ -96,7 +96,7 @@ masculin ou féminin, par son prénom, ou son nom.
       <td>
         <label><input type="checkbox" name="ml[{$l.list}]" value="1" {if $smarty.request.ml[$l.list]}checked="checked"{/if} />
         {$l.addr}</label>
-        <a href="{$platal->ns}lists/admin/{$l.list}" class="popup">(voir composition)</a>
+        <a href="{$platal->ns}lists/members/{$l.list}" class="popup">(voir composition)</a>
       </td>
     </tr>
     {/foreach}

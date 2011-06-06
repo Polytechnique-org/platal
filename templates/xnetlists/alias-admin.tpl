@@ -24,11 +24,15 @@
 
 <h1>Membres de {$platal->argv[1]}</h1>
 <table class='tinybicol'>
-  {if $members|@count}
-  {foreach from=$members item=member}
+  {if $members.users|@count}
+  {foreach from=$members.users item=member}
   <tr>
     <td>
-      <a href="https://www.polytechnique.org/profile/{$member->profile()->hrpid}" class="popup2">{$member->fullName()}</a>
+      {if $member->hasProfile()}
+      <a href="https://www.polytechnique.org/profile/{$member->hruid}" class="popup2">{$member->fullName()}</a>
+      {else}
+      {$member->fullName()}
+      {/if}
     </td>
     <td class="right">{$member->promo()}</td>
     <td class="center">
@@ -38,7 +42,21 @@
     </td>
   </tr>
   {/foreach}
-  {else}
+  {/if}
+  {if $members.nonusers|@count}
+  {foreach from=$members.nonusers item=member}
+  <tr>
+    <td>{$member}</td>
+    <td></td>
+    <td class="center">
+      <a href='{$platal->ns}alias/admin/{$platal->argv[1]}?del_member={$member}&amp;token={xsrf_token}'>
+      {icon name=delete title='retirer membre'}
+      </a>
+    </td>
+  </tr>
+  {/foreach}
+  {/if}
+  {if $members.users|@count eq 0 && $members.nonusers|@count eq 0}
   <tr>
     <td colspan="3">
       <em>aucun membre&hellip;</em>

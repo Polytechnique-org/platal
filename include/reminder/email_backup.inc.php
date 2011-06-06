@@ -25,7 +25,7 @@ class ReminderEmailBackup extends Reminder
     {
         if ($action == 'yes') {
             require_once 'emails.inc.php';
-            Email::activate_storage($this->user, 'imap');
+            Email::activate_storage($this->user, 'imap', Bogo::IMAP_DEFAULT);
             $this->UpdateOnYes();
         }
 

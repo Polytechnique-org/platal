@@ -29,30 +29,34 @@ class XnetGrpModule extends PLModule
             '%grp/asso.php'        => $this->make_hook('index',                 AUTH_PUBLIC),
             '%grp/logo'            => $this->make_hook('logo',                  AUTH_PUBLIC),
             '%grp/site'            => $this->make_hook('site',                  AUTH_PUBLIC),
-            '%grp/edit'            => $this->make_hook('edit',                  AUTH_MDP,    'groupadmin'),
-            '%grp/mail'            => $this->make_hook('mail',                  AUTH_MDP,    'groupadmin'),
-            '%grp/forum'           => $this->make_hook('forum',                 AUTH_MDP,    'groupmember'),
-            '%grp/annuaire'        => $this->make_hook('annuaire',              AUTH_MDP,    'groupannu'),
-            '%grp/annuaire/vcard'  => $this->make_hook('vcard',                 AUTH_MDP,    'groupmember:groupannu'),
-            '%grp/annuaire/csv'    => $this->make_hook('csv',                   AUTH_MDP,    'groupmember:groupannu'),
-            '%grp/trombi'          => $this->make_hook('trombi',                AUTH_MDP,    'groupannu'),
-            '%grp/geoloc'          => $this->make_hook('geoloc',                AUTH_MDP,    'groupannu'),
+            '%grp/edit'            => $this->make_hook('edit',                  AUTH_MDP, 'groupadmin'),
+            '%grp/mail'            => $this->make_hook('mail',                  AUTH_MDP, 'groupadmin'),
+            '%grp/forum'           => $this->make_hook('forum',                 AUTH_MDP, 'groupmember'),
+            '%grp/former_users'    => $this->make_hook('former_users',          AUTH_MDP, 'admin'),
+            '%grp/annuaire'        => $this->make_hook('annuaire',              AUTH_MDP, 'groupannu'),
+            '%grp/annuaire/vcard'  => $this->make_hook('vcard',                 AUTH_MDP, 'groupmember:groupannu'),
+            '%grp/annuaire/csv'    => $this->make_hook('csv',                   AUTH_MDP, 'groupmember:groupannu'),
+            '%grp/directory/sync'  => $this->make_hook('directory_sync',        AUTH_MDP, 'groupadmin'),
+            '%grp/directory/unact' => $this->make_hook('non_active',            AUTH_MDP, 'groupadmin'),
+            '%grp/trombi'          => $this->make_hook('trombi',                AUTH_MDP, 'groupannu'),
+            '%grp/geoloc'          => $this->make_hook('geoloc',                AUTH_MDP, 'groupannu'),
             '%grp/subscribe'       => $this->make_hook('subscribe',             AUTH_MDP),
-            '%grp/subscribe/valid' => $this->make_hook('subscribe_valid',       AUTH_MDP,    'groupadmin'),
-            '%grp/unsubscribe'     => $this->make_hook('unsubscribe',           AUTH_MDP,    'groupmember'),
+            '%grp/subscribe/valid' => $this->make_hook('subscribe_valid',       AUTH_MDP, 'groupadmin'),
+            '%grp/unsubscribe'     => $this->make_hook('unsubscribe',           AUTH_MDP, 'groupmember'),
 
             '%grp/change_rights'   => $this->make_hook('change_rights',         AUTH_MDP),
-            '%grp/admin/annuaire'  => $this->make_hook('admin_annuaire',        AUTH_MDP,    'groupadmin'),
-            '%grp/member'          => $this->make_hook('admin_member',          AUTH_MDP,    'groupadmin'),
-            '%grp/member/new'      => $this->make_hook('admin_member_new',      AUTH_MDP,    'groupadmin'),
-            '%grp/member/new/ajax' => $this->make_hook('admin_member_new_ajax', AUTH_MDP,    'user', NO_AUTH),
-            '%grp/member/del'      => $this->make_hook('admin_member_del',      AUTH_MDP,    'groupadmin'),
+            '%grp/admin/annuaire'  => $this->make_hook('admin_annuaire',        AUTH_MDP, 'groupadmin'),
+            '%grp/member'          => $this->make_hook('admin_member',          AUTH_MDP, 'groupadmin'),
+            '%grp/member/new'      => $this->make_hook('admin_member_new',      AUTH_MDP, 'groupadmin'),
+            '%grp/member/new/ajax' => $this->make_hook('admin_member_new_ajax', AUTH_MDP, 'user', NO_AUTH),
+            '%grp/member/del'      => $this->make_hook('admin_member_del',      AUTH_MDP, 'groupadmin'),
+            '%grp/member/suggest'  => $this->make_hook('admin_member_suggest',  AUTH_MDP, 'groupadmin'),
 
             '%grp/rss'             => $this->make_token_hook('rss',             AUTH_PUBLIC),
-            '%grp/announce/new'    => $this->make_hook('edit_announce',         AUTH_MDP,    'groupadmin'),
-            '%grp/announce/edit'   => $this->make_hook('edit_announce',         AUTH_MDP,    'groupadmin'),
+            '%grp/announce/new'    => $this->make_hook('edit_announce',         AUTH_MDP, 'groupadmin'),
+            '%grp/announce/edit'   => $this->make_hook('edit_announce',         AUTH_MDP, 'groupadmin'),
             '%grp/announce/photo'  => $this->make_hook('photo_announce',        AUTH_PUBLIC),
-            '%grp/admin/announces' => $this->make_hook('admin_announce',        AUTH_MDP,    'groupadmin'),
+            '%grp/admin/announces' => $this->make_hook('admin_announce',        AUTH_MDP, 'groupadmin'),
         );
     }
 
@@ -321,53 +325,29 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
 
-        if ($action == 'trombi') {
-            __autoload('userset');
-            if ($action == 'trombi') {
-                $view = new ProfileSet(new UFC_Group($globals->asso('id')));
-            } else {
-                $view = new UserSet(new UFC_Group($globals->asso('id')));
-            }
-            $view->addMod('trombi', 'Trombinoscope');
-            $view->apply('annuaire', $page, $action, $subaction);
-            $page->changeTpl('xnetgrp/annuaire.tpl');
-            $count = XDB::fetchOneCell('SELECT  COUNT(*)
-                                          FROM  group_members
-                                         WHERE  asso_id = {?}',
-                                       $globals->asso('id'));
-            $page->assign('nb_tot', $count);
-            return;
+        __autoload('userset');
+        $admins = false;
+        if ($action == 'admins') {
+            $admins = true;
+            $action = $subaction;
         }
-
+        $view = new UserSet(new UFC_Group($globals->asso('id'), $admins));
+        $view->addMod('groupmember', 'Annuaire');
+        $view->addMod('trombi', 'Trombinoscope');
+        $view->apply('annuaire', $page, $action);
+        $page->assign('only_admin', $admins);
         $page->changeTpl('xnetgrp/annuaire.tpl');
-        $sort = Env::s('order', 'directory_name');
-        $ofs  = Env::i('offset');
-        if ($ofs < 0) {
-            $ofs = 0;
-        }
+    }
 
-        $sdesc = $sort{0} == '-';
-        $sf    = $sdesc ? substr($sort, 1) : $sort;
-        if ($sf == 'promo') {
-            $se = new UFO_Promo(null, $sdesc);
-        } else {
-            $se = new UFO_Name($sf, null, null, $sdesc);
-        }
+    function handler_former_users($page)
+    {
+        global $globals;
+        require_once 'userset.inc.php';
 
-        if (Env::b('admin')) {
-            $uf = $globals->asso()->getAdminsFilter(null, $se);
-        } else {
-            $uf = $globals->asso()->getMembersFilter(null, $se);
-        }
-        $users = $uf->getUsers(new PlLimit(NB_PER_PAGE, $ofs * NB_PER_PAGE));
-        $count = $uf->getTotalCount();
-
-        $page->assign('nb_tot', $count);
-        $page->assign('pages', floor(($count + NB_PER_PAGE - 1) / NB_PER_PAGE));
-        $page->assign('current', $ofs);
-        $page->assign('order', $sort);
-        $page->assign('users', $users);
-        $page->assign('only_admin', Env::b('admin'));
+        $view = new UserSet(new UFC_GroupFormerMember($globals->asso('id')));
+        $view->addMod('groupmember', 'Anciens membres', true, array('noadmin' => true));
+        $view->apply('former_users', $page);
+        $page->changeTpl('xnetgrp/former_users.tpl');
     }
 
     function handler_trombi($page)
@@ -400,6 +380,172 @@ class XnetGrpModule extends PLModule
         $page->assign('users', $users);
     }
 
+    function handler_directory_sync($page)
+    {
+        global $globals;
+        require_once 'emails.inc.php';
+
+        $page->changeTpl('xnetgrp/sync.tpl');
+        Platal::load('lists', 'lists.inc.php');
+
+        if (Env::has('add_users')) {
+            S::assert_xsrf_token();
+
+            $users = array_keys(Env::v('add_users'));
+            $former_users = XDB::fetchColumn('SELECT  uid
+                                                FROM  group_former_members
+                                               WHERE  remember = TRUE AND uid IN {?}',
+                                             $users);
+            $new_users = array_diff($users, $former_users);
+
+            foreach ($former_users as $uid) {
+                $user = User::getSilentWithUID($uid);
+                $page->trigWarning($user->fullName() . ' est un ancien membre du groupe qui ne souhaite pas y revenir.');
+            }
+            if (count($former_users) > 1) {
+                $page->trigWarning('S\'ils souhaitent revenir dans le groupe, il faut qu\'ils en fassent la demande sur la page d\'accueil du groupe.');
+            } elseif (count($former_users)) {
+                $page->trigWarning('S\'il souhaite revenir dans le groupe, il faut qu\'il en fasse la demande sur la page d\'accueil du groupe.');
+            }
+
+            $data = array();
+            foreach ($new_users as $uid) {
+                $data[] = XDB::format('({?}, {?})', $globals->asso('id'), $uid);
+            }
+            XDB::rawExecute('INSERT INTO  group_members (asso_id, uid)
+                                  VALUES  ' . implode(',', $data));
+        }
+
+        if (Env::has('add_nonusers')) {
+            S::assert_xsrf_token();
+
+            $nonusers = array_keys(Env::v('add_nonusers'));
+            foreach ($nonusers as $email) {
+                if ($user = User::getSilent($email) || !isvalid_email($email)) {
+                    continue;
+                }
+
+                list($local_part, $domain) = explode('@', strtolower($email));
+                $hruid = User::makeHrid($local_part, $domain, 'ext');
+                if ($user = User::getSilent($hruid)) {
+                    continue;
+                }
+
+                $parts = explode('.', $local_part);
+                if (count($parts) == 1) {
+                    $lastname = $display_name = $full_name = $directory_name = ucfirst($local_part);
+                    $firstname = '';
+                } else {
+                    $firstname = ucfirst($parts[0]);
+                    $lastname = ucwords(implode(' ', array_slice($parts, 1)));
+                    $display_name = $firstname;
+                    $full_name = $firstname . ' ' . $lastname;
+                    $directory_name = strtoupper($lastname) . ' ' . $firstname;
+                }
+                XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, directory_name, firstname, lastname, email, type, state)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, \'xnet\', \'disabled\')',
+                             $hruid, $display_name, $full_name, $directory_name, $firstname, $lastname, $email);
+                $uid = XDB::insertId();
+                XDB::execute('INSERT INTO  group_members (asso_id, uid)
+                                   VALUES  ({?}, {?})',
+                             $globals->asso('id'), $uid);
+            }
+        }
+
+        if (Env::has('add_users') || Env::has('add_nonusers')) {
+            $page->trigSuccess('Ajouts réalisés avec succès.');
+        }
+
+        $user = S::user();
+        $client = new MMList($user, $globals->asso('mail_domain'));
+        $lists = $client->get_lists();
+        $members = array();
+        foreach ($lists as $list) {
+            $details = $client->get_members($list['list']);
+            $members = array_merge($members, list_extract_members($details[1]));
+        }
+        $members = array_unique($members);
+        $uids = array();
+        $users = array();
+        $nonusers = array();
+        foreach ($members as $email) {
+            if ($user = User::getSilent($email)) {
+                $uids[] = $user->id();
+            } else {
+                $nonusers[] = $email;
+            }
+        }
+
+        $aliases = iterate_list_alias($globals->asso('mail_domain'));
+        foreach ($aliases as $alias) {
+            list($local_part, $domain) = explode('@', $alias);
+            $aliases_members = list_alias_members($local_part, $domain);
+            $users = array_merge($users, $aliases_members['users']);
+            $nonusers = array_merge($nonusers, $aliases_members['nonusers']);
+        }
+        foreach ($users as $user) {
+            $uids[] = $user->id();
+        }
+        $nonusers = array_unique($nonusers);
+        $uids = array_unique($uids);
+        if (count($uids)) {
+            $uids = XDB::fetchColumn('SELECT  a.uid
+                                        FROM  accounts AS a
+                                       WHERE  a.uid IN {?} AND NOT EXISTS (SELECT  *
+                                                                             FROM  group_members AS g
+                                                                            WHERE  a.uid = g.uid AND g.asso_id = {?})',
+                                     $uids, $globals->asso('id'));
+
+            $users = User::getBulkUsersWithUIDs($uids);
+            usort($users, 'User::compareDirectoryName');
+        } else {
+            $users = array();
+        }
+        sort($nonusers);
+
+        $page->assign('users', $users);
+        $page->assign('nonusers', $nonusers);
+    }
+
+    function handler_non_active($page)
+    {
+        global $globals;
+        $page->changeTpl('xnetgrp/non_active.tpl');
+
+        $uids = XDB::fetchColumn('SELECT  g.uid
+                                    FROM  group_members         AS g
+                              INNER JOIN  accounts              AS a ON (a.uid = g.uid)
+                               LEFT JOIN  register_pending_xnet AS p ON (p.uid = g.uid)
+                                   WHERE  a.uid = g.uid AND g.asso_id = {?} AND a.type = \'xnet\' AND a.state = \'disabled\' AND p.uid IS NULL',
+                                 $globals->asso('id'));
+        foreach ($uids as $key => $uid) {
+            if (AccountReq::isPending($uid) || BulkAccountsReq::isPending($uid)) {
+                unset($uids[$key]);
+            }
+        }
+
+        if (Post::has('enable_accounts')) {
+            S::assert_xsrf_token();
+
+            $uids_to_enable = array_intersect(array_keys(Post::v('enable_accounts')), $uids);
+
+            $user = S::user();
+            $group = Platal::globals()->asso('nom');
+            $request = new BulkAccountsReq($user, $uids_to_enable, $group);
+            $request->submit();
+            $page->trigSuccess('Un email va bientôt être envoyé aux personnes sélectionnées pour l\'activation de leur compte.');
+
+            foreach ($uids as $key => $uid) {
+                if (in_array($uid, $uids_to_enable)) {
+                    unset($uids[$key]);
+                }
+            }
+        }
+
+        $users = User::getBulkUsersWithUIDs($uids);
+        $page->assign('users', $users);
+    }
+
     private function removeSubscriptionRequest($uid)
     {
         global $globals;
@@ -412,9 +558,8 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
         $this->removeSubscriptionRequest($user->id());
-        XDB::execute("INSERT IGNORE INTO  group_members (asso_id, uid)
-                                  VALUES  ({?}, {?})",
-                     $globals->asso('id'), $user->id());
+        Group::subscribe($globals->asso('id'), $user->id());
+
         if (XDB::affectedRows() == 1) {
             $mailer = new PlMailer();
             $mailer->addTo($user->forlifeEmail());
@@ -512,6 +657,9 @@ class XnetGrpModule extends PLModule
             XDB::execute("INSERT INTO  group_member_sub_requests (asso_id, uid, ts, reason)
                                VALUES  ({?}, {?}, NOW(), {?})",
                          $globals->asso('id'), S::i('uid'), Post::v('message'));
+            XDB::execute('DELETE FROM  group_former_members
+                                WHERE  uid = {?} AND asso_id = {?}',
+                         S::i('uid'), $globals->asso('id'));
             $uf = New UserFilter(New UFC_Group($globals->asso('id'), true));
             $admins = $uf->iterUsers();
             $admin = $admins->next();
@@ -656,21 +804,27 @@ class XnetGrpModule extends PLModule
         }
 
         S::assert_xsrf_token();
+        $suggest_account_activation = false;
+
+        // FS#703 : $_GET is urldecoded twice, hence
+        // + (the data) => %2B (in the url) => + (first decoding) => ' ' (second decoding)
+        // Since there can be no spaces in emails, we can fix this with :
+        $email = str_replace(' ', '+', $email);
 
         // Finds or creates account: first cases are for users with an account.
         if (!User::isForeignEmailAddress($email)) {
             // Standard account
-            $user = User::get($email);
+            $user = User::getSilent($email);
         } else if (!isvalid_email($email)) {
             // email might not be a regular email but an alias or a hruid
-            $user = User::get($email);
+            $user = User::getSilent($email);
             if (!$user) {
                 // need a valid email address
                 $page->trigError('«&nbsp;<strong>' . $email . '</strong>&nbsp;» n\'est pas une adresse email valide.');
                 return;
             }
         } else if (Env::v('x') && Env::i('userid')) {
-            $user = User::getWithUID(Env::i('userid'));
+            $user = User::getSilentWithUID(Env::i('userid'));
             if (!$user) {
                 $page->trigError('Utilisateur invalide.');
                 return;
@@ -694,17 +848,26 @@ class XnetGrpModule extends PLModule
                 }
             }
         } else {
-            // User is of type xnet.
+            // User is of type xnet. There are 3 possible cases:
+            //  * the email is not known yet: we create a new account and
+            //      propose to send an email to the user so he can activate
+            //      his account,
+            //  * the email is known but the user was not contacted in order to
+            //      activate yet: we propose to send an email to the user so he
+            //      can activate his account,
+            //  * the email is known and the user was already contacted or has
+            //      an active account: nothing to be done.
             list($mbox, $domain) = explode('@', strtolower($email));
             $hruid = User::makeHrid($mbox, $domain, 'ext');
             // User might already have an account (in another group for example).
-            $user = User::get($hruid);
+            $user = User::getSilent($hruid);
 
             // If the user has no account yet, creates new account: build names from email address.
             if (empty($user)) {
                 $parts = explode('.', $mbox);
                 if (count($parts) == 1) {
-                    $display_name = $full_name = $directory_name = ucfirst($mbox);
+                    $lastname = $display_name = $full_name = $directory_name = ucfirst($mbox);
+                    $firstname = '';
                 } else {
                     $firstname = ucfirst($parts[0]);
                     $lastname = ucwords(implode(' ', array_slice($parts, 1)));
@@ -712,21 +875,84 @@ class XnetGrpModule extends PLModule
                     $full_name = "$firstname $lastname";
                     $directory_name = strtoupper($lastname) . " " . $firstname;
                 }
-                XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, directory_name,
-                                           email, type)
-                                   VALUES  ({?}, {?}, {?}, {?}, {?}, \'xnet\')',
-                             $hruid, $display_name, $full_name, $directory_name, $email);
-                $user = User::get($hruid);
+                XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, directory_name, firstname, lastname, email, type, state)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, \'xnet\', \'disabled\')',
+                             $hruid, $display_name, $full_name, $directory_name, $firstname, $lastname, $email);
+                $user = User::getSilent($hruid);
             }
+
+            $suggest_account_activation = $this->suggest($user);
         }
 
         if ($user) {
-            XDB::execute('INSERT IGNORE INTO  group_members (uid, asso_id)
-                                      VALUES  ({?}, {?})',
-                         $user->id(), $globals->asso('id'));
+            // First check if the user used to be in this group.
+            XDB::rawExecute('DELETE FROM  group_former_members
+                                   WHERE  remember AND DATE_SUB(NOW(), INTERVAL 1 YEAR) > unsubsciption_date');
+            $former_member = XDB::fetchOneCell('SELECT  remember
+                                                  FROM  group_former_members
+                                                 WHERE  uid = {?} AND asso_id = {?}',
+                                               $user->id(), $globals->asso('id'));
+            if ($former_member === 1) {
+                $page->trigError($user->fullName() . ' est un ancien membre du groupe qui ne souhaite pas y revenir. S\'il souhaite revenir dans le groupe, il faut qu\'il en fasse la demande sur la page d\'accueil du groupe.');
+                return;
+            } elseif (!is_null($former_member) && Post::i('force_continue') == 0) {
+                $page->trigWarning($user->fullName() . ' est un ancien membre du groupe qui s\'est récemment désinscrit. Malgré cela, si tu penses qu\'il souhaite revenir, cliquer sur « Ajouter » l\'ajoutera bien au groupe cette fois.');
+                $page->assign('force_continue', 1);
+                return;
+            }
+
+            Group::subscribe($globals->asso('id'), $user->id());
             $this->removeSubscriptionRequest($user->id());
-            pl_redirect('member/' . $user->login());
+            if ($suggest_account_activation) {
+                pl_redirect('member/suggest/' . $user->login() . '/' . $email . '/' . $globals->asso('nom'));
+            } else {
+                pl_redirect('member/' . $user->login());
+            }
         }
+    }
+
+    // Check if the user has a pending or active account, and thus if we should her account's activation.
+    private function suggest(PlUser $user)
+    {
+        $active = XDB::fetchOneCell('SELECT  state = \'active\'
+                                       FROM  accounts
+                                      WHERE  uid = {?}',
+                                    $user->id());
+        $pending = XDB::fetchOneCell('SELECT  uid
+                                        FROM  register_pending_xnet
+                                       WHERE  uid = {?}',
+                                     $user->id());
+        $requested = AccountReq::isPending($user->id()) || BulkAccountsReq::isPending($user->id());
+
+        if ($active || $pending || $requested) {
+            return false;
+        }
+        return true;
+    }
+
+    function handler_admin_member_suggest($page, $hruid, $email)
+    {
+        $page->changeTpl('xnetgrp/membres-suggest.tpl');
+
+        // FS#703 : $_GET is urldecoded twice, hence
+        // + (the data) => %2B (in the url) => + (first decoding) => ' ' (second decoding)
+        // Since there can be no spaces in emails, we can fix this with :
+        $email = str_replace(' ', '+', $email);
+
+        if (Post::has('suggest')) {
+            if (Post::t('suggest') == 'yes') {
+                $user = S::user();
+                $group = Platal::globals()->asso('nom');
+                $request = new AccountReq($user, $hruid, $email, $group);
+                $request->submit();
+                $page->trigSuccessRedirect('Un email va bien être envoyé à ' . $email . ' pour l\'activation de son compte.',
+                                           $group . '/member/' . $hruid);
+            } else {
+                pl_redirect('member/' . $hruid);
+            }
+        }
+        $page->assign('email', $email);
+        $page->assign('hruid', $hruid);
     }
 
     function handler_admin_member_new_ajax($page)
@@ -744,10 +970,10 @@ class XnetGrpModule extends PLModule
             list($lastname, $firstname) = str_replace(array('-', ' ', "'"), '%', array(Env::t('nom'), Env::t('prenom')));
             $cond = new PFC_And(new PFC_Not(new UFC_Registered()));
             if (!empty($lastname)) {
-                $cond->addChild(new UFC_Name(Profile::LASTNAME, $lastname, UFC_Name::CONTAINS));
+                $cond->addChild(new UFC_NameTokens($lastname, array(), false, false, Profile::LASTNAME));
             }
             if (!empty($firstname)) {
-                $cond->addChild(new UFC_Name(Profile::FIRSTNAME, $firstname, UFC_Name::CONTAINS));
+                $cond->addChild(new UFC_NameTokens($firstname, array(), false, false, Profile::FIRSTNAME));
             }
             if (Env::t('promo')) {
                 $cond->addChild(new UFC_Promo('=', UserFilter::DISPLAY, Env::t('promo')));
@@ -762,12 +988,10 @@ class XnetGrpModule extends PLModule
         $page->assign('users', $users);
     }
 
-    function unsubscribe(PlUser $user)
+    function unsubscribe(PlUser $user, $remember = false)
     {
         global $globals;
-        XDB::execute("DELETE FROM  group_members
-                            WHERE  uid = {?} AND asso_id = {?}",
-                     $user->id(), $globals->asso('id'));
+        Group::unsubscribe($globals->asso('id'), $user->id(), $remember);
 
         if ($globals->asso('notif_unsub')) {
             $mailer = new PlMailer('xnetgrp/unsubscription-notif.mail.tpl');
@@ -820,12 +1044,11 @@ class XnetGrpModule extends PLModule
     {
         $page->changeTpl('xnetgrp/membres-del.tpl');
         $user = S::user();
-        $uid  = S::user()->id();
-        if (empty($uid)) {
+        if (empty($user)) {
             return PL_NOT_FOUND;
         }
         $page->assign('self', true);
-        $page->assign('user', $uid);
+        $page->assign('user', $user);
 
         if (!Post::has('confirm')) {
             return;
@@ -833,10 +1056,17 @@ class XnetGrpModule extends PLModule
             S::assert_xsrf_token();
         }
 
-        if ($this->unsubscribe($user)) {
-            $page->trigSuccess('Vous avez été désinscrit du groupe avec succès.');
+        $hasSingleGroup = ($user->groupCount() == 1);
+
+        if ($this->unsubscribe($user, Post::b('remember'))) {
+            $page->trigSuccess('Tu as été désinscrit du groupe avec succès.');
         } else {
-            $page->trigWarning('Vous avez été désinscrit du groupe, mais des erreurs se sont produites lors des désinscriptions des alias et des listes de diffusion.');
+            $page->trigWarning('Tu as été désinscrit du groupe, mais des erreurs se sont produites lors des désinscriptions des alias et des listes de diffusion.');
+        }
+
+        // If user is of type xnet account and this was her last group, disable the account.
+        if ($user->type == 'xnet' && $hasSingleGroup) {
+            $user->clear(true);
         }
         $page->assign('is_member', is_member(true));
     }
@@ -848,6 +1078,14 @@ class XnetGrpModule extends PLModule
         if (empty($user)) {
             return PL_NOT_FOUND;
         }
+
+        global $globals;
+
+        if (!$user->inGroup($globals->asso('id'))) {
+            pl_redirect('annuaire');
+        }
+
+        $page->assign('self', false);
         $page->assign('user', $user);
 
         if (!Post::has('confirm')) {
@@ -856,14 +1094,21 @@ class XnetGrpModule extends PLModule
             S::assert_xsrf_token();
         }
 
+        $hasSingleGroup = ($user->groupCount() == 1);
+
         if ($this->unsubscribe($user)) {
             $page->trigSuccess("{$user->fullName()} a été désinscrit du groupe&nbsp;!");
         } else {
             $page->trigWarning("{$user->fullName()} a été désinscrit du groupe, mais des erreurs subsistent&nbsp;!");
         }
+
+        // If user is of type xnet account and this was her last group, disable the account.
+        if ($user->type == 'xnet' && $hasSingleGroup) {
+            $user->clear(true);
+        }
     }
 
-    private function changeLogin(PlPage $page, PlUser $user, MMList $mmlist, $login)
+    private function changeLogin(PlPage $page, PlUser $user, $login)
     {
         // Search the user's uid.
         $xuser = User::getSilent($login);
@@ -893,21 +1138,26 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
 
-        $page->changeTpl('xnetgrp/membres-edit.tpl');
-
         $user = User::getSilent($user);
         if (empty($user)) {
             return PL_NOT_FOUND;
         }
 
+        if (!$user->inGroup($globals->asso('id'))) {
+            pl_redirect('annuaire');
+        }
+
+        $page->changeTpl('xnetgrp/membres-edit.tpl');
+
         $mmlist = new MMList(S::user(), $globals->asso('mail_domain'));
 
         if (Post::has('change')) {
+            require_once 'emails.inc.php';
             S::assert_xsrf_token();
 
             // Convert user status to X
             if (!Post::blank('login_X')) {
-                $forlife = $this->changeLogin($page, $user, $mmlist, Post::t('login_X'));
+                $forlife = $this->changeLogin($page, $user, Post::t('login_X'));
                 if ($forlife) {
                     pl_redirect('member/' . $forlife);
                 }
@@ -916,12 +1166,22 @@ class XnetGrpModule extends PLModule
             // Update user info
             $email_changed = (!$user->profile() && strtolower($user->forlifeEmail()) != strtolower(Post::v('email')));
             $from_email = $user->forlifeEmail();
-            if ($user->type == 'virtual' || $user->type == 'xnet') {
+            if ($user->type == 'virtual' || ($user->type == 'xnet' && !$user->perms)) {
+                $lastname = Post::s('lastname');
+                if (Post::s('type') != 'virtual') {
+                    $firstname = Post::s('firstname');
+                    $full_name = $firstname . ' ' . $lastname;
+                    $directory_name = mb_strtoupper($lastname) . ' ' . $firstname;
+                } else {
+                    $firstname = '';
+                    $full_name = $lastname;
+                    $directory_name = mb_strtoupper($lastname);
+                }
                 XDB::query('UPDATE  accounts
                                SET  full_name = {?}, directory_name = {?}, display_name = {?},
-                                    sex = {?}, email = {?}, type = {?}
+                                    firstname = {?}, lastname = {?}, sex = {?}, email = {?}, type = {?}
                              WHERE  uid = {?}',
-                           Post::t('full_name'), Post::t('directory_name'), Post::t('display_name'),
+                           $full_name, $directory_name, Post::t('display_name'), $firstname, $lastname,
                            (Post::t('sex') == 'male') ? 'male' : 'female', Post::t('email'),
                            (Post::t('type') == 'xnet') ? 'xnet' : 'virtual', $user->id());
             } else if (!$user->perms) {
@@ -930,8 +1190,19 @@ class XnetGrpModule extends PLModule
                              WHERE  uid = {?}',
                            Post::t('email'), $user->id());
             }
+            if (require_email_update($user, Post::t('email'))) {
+                $listClient = new MMList(S::user());
+                $listClient->change_user_email($user->forlifeEmail(), Post::t('email'));
+                update_alias_user($user->forlifeEmail(), Post::t('email'));
+            }
             if (XDB::affectedRows()) {
-                $page->trigSuccess('Données de l\'utilisateur mise à jour.');
+                $page->trigSuccess('Données de l\'utilisateur mises à jour.');
+            }
+
+            if (($user->type == 'xnet' && !$user->perms) && Post::b('suggest')) {
+                $request = new AccountReq(S::user(), $user->hruid, Post::t('email'), $globals->asso('nom'));
+                $request->submit();
+                $page->trigSuccess('Le compte va bientôt être activé.');
             }
 
             // Update group params for user
@@ -991,28 +1262,53 @@ class XnetGrpModule extends PLModule
             foreach (Env::v('ml3', array()) as $ml => $state) {
                 require_once 'emails.inc.php';
                 $ask = !empty($_REQUEST['ml4'][$ml]);
+                list($local_part, ) = explode('@', $ml);
                 if($state == $ask) {
                     if ($state && $email_changed) {
-                        update_list_alias($user, $from_email, $ml, $globals->asso('mail_domain'));
+                        update_list_alias($user->id(), $from_email, $local_part, $globals->asso('mail_domain'));
                         $page->trigSuccess("L'abonnement de {$user->fullName()} à $ml a été mis à jour.");
                     }
                 } else if($ask) {
-                    add_to_list_alias($user, $ml, $globals->asso('mail_domain'));
+                    add_to_list_alias($user->id(), $local_part, $globals->asso('mail_domain'));
                     $page->trigSuccess("{$user->fullName()} a été abonné à $ml.");
                 } else {
-                    delete_from_list_alias($user, $ml, $globals->asso('mail_domain'));
+                    delete_from_list_alias($user->id(), $local_part, $globals->asso('mail_domain'));
                     $page->trigSuccess("{$user->fullName()} a été désabonné de $ml.");
+                }
+            }
+
+            if ($globals->asso('has_nl')) {
+                // Updates group's newsletter subscription.
+                if (Post::i('newsletter') == 1) {
+                    XDB::execute('INSERT IGNORE INTO  newsletter_ins (uid, nlid)
+                                              SELECT  {?}, id
+                                                FROM  newsletters
+                                               WHERE  group_id = {?}',
+                                 $user->id(), $globals->asso('id'));
+                } else {
+                    XDB::execute('DELETE  ni
+                                    FROM  newsletter_ins AS ni
+                              INNER JOIN  newsletters    AS n  ON (n.id = ni.nlid)
+                                   WHERE  ni.uid = {?} AND n.group_id = {?}',
+                                 $user->id(), $globals->asso('id'));
                 }
             }
         }
 
         $res = XDB::rawFetchAllAssoc('SHOW COLUMNS FROM group_members LIKE \'position\'');
         $positions = str_replace(array('enum(', ')', '\''), '', $res[0]['Type']);
+        $nl_registered = XDB::fetchOneCell('SELECT  COUNT(ni.uid)
+                                              FROM  newsletter_ins AS ni
+                                        INNER JOIN  newsletters    AS n  ON (n.id = ni.nlid)
+                                             WHERE  ni.uid = {?} AND n.group_id = {?}',
+                                           $user->id(), $globals->asso('id'));
 
         $page->assign('user', $user);
+        $page->assign('suggest', $this->suggest($user));
         $page->assign('listes', $mmlist->get_lists($user->forlifeEmail()));
         $page->assign('alias', $user->emailGroupAliases($globals->asso('mail_domain')));
         $page->assign('positions', explode(',', $positions));
+        $page->assign('nl_registered', $nl_registered);
     }
 
     function handler_rss(PlPage $page, PlUser $user)
@@ -1037,7 +1333,7 @@ class XnetGrpModule extends PLModule
             $page->trigError('Le fichier n\'est pas une image valide au format JPEG, GIF ou PNG.');
             $upload->rm();
             return false;
-        } elseif (!$upload->resizeImage(200, 300, 100, 100, 32284)) {
+        } elseif (!$upload->resizeImage(80, 100, 100, 100, 32284)) {
             $page->trigError('Impossible de retraiter l\'image');
             return false;
         }
@@ -1149,13 +1445,13 @@ class XnetGrpModule extends PLModule
                 if (!empty($art['contact_html'])) {
                     $fulltext .= "\n\n'''Contacts :'''\\\\\n" . $art['contact_html'];
                 }
-                $post = null;/*
+                $post = null;
                 if ($globals->asso('forum')) {
                     require_once 'banana/forum.inc.php';
                     $banana = new ForumsBanana(S::user());
                     $post = $banana->post($globals->asso('forum'), null,
                                           $art['titre'], MiniWiki::wikiToText($fulltext, false, 0, 80));
-                }*/
+                }
                 XDB::query('INSERT INTO  group_announces (uid, asso_id, create_date, titre, texte, contacts,
                                                           expiration, promo_min, promo_max, flags, post_id)
                                  VALUES  ({?}, {?}, NOW(), {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',

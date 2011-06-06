@@ -27,7 +27,7 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
     if (is_null($asso_id)) {
         $asso_id = $globals->asso('id');
     }
-    $evt = XDB::fetchOneAssoc('SELECT  SUM(nb) AS nb_tot, COUNT(DISTINCT ep.uid) AS nb, e.*,
+    $evt = XDB::fetchOneAssoc('SELECT  SUM(nb) AS nb_tot, COUNT(DISTINCT ep.uid) AS nb, e.*, SUM(IF(nb > 0, 1, 0)) AS user_count,
                                        IF(e.deadline_inscription,
                                           e.deadline_inscription >= LEFT(NOW(), 10),
                                           1) AS inscr_open,
@@ -80,19 +80,17 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
         $evt['notify_payment'] = $evt['notify_payment'] || $m['notify_payment'];
     }
 
-    $montants = XDB::fetchColumn('SELECT  amount
+    $montant = XDB::fetchOneCell('SELECT  SUM(amount) AS sum_amount
                                     FROM  payment_transactions AS t
                                    WHERE  ref = {?} AND uid = {?}',
                                    $evt['paiement_id'], S::v('uid'));
-    $evt['telepaid'] = 0;
-    foreach ($montants as $m) {
-        $p = strtr(substr($m, 0, strpos($m, 'EUR')), ',', '.');
-        $evt['paid'] += trim($p);
-        $evt['telepaid'] += trim($p);
-    }
+    $evt['telepaid'] = $montant;
+    $evt['paid'] += $montant;
     $evt['organizer'] = User::getSilent($evt['uid']);
 
     make_event_date($evt);
+
+    $evt['show_participants'] = ($evt['show_participants'] && (is_member() || may_update()));
 
     return $evt;
 }
@@ -100,7 +98,7 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
 // }}}
 
 // {{{ function get_event_participants()
-function get_event_participants(&$evt, $item_id, array $tri = array(), $limit = null)
+function get_event_participants(&$evt, $item_id, array $tri = array(), $limit = null, $offset = 0)
 {
     global $globals;
 
@@ -115,7 +113,7 @@ function get_event_participants(&$evt, $item_id, array $tri = array(), $limit = 
                                          WHERE  ep.eid = {?} AND nb > 0 ' . $append . '
                                       GROUP BY  ep.uid', $eid);
     $uf = new UserFilter(new PFC_True(), $tri);
-    $users = User::getBulkUsersWithUIDs($uf->filter(array_keys($query), new PlLimit($count, $offset)));
+    $users = User::getBulkUsersWithUIDs($uf->filter(array_keys($query), new PlLimit($limit, $offset)));
     $tab = array();
     foreach ($users as $user) {
         $uid = $user->id();
@@ -135,14 +133,11 @@ function get_event_participants(&$evt, $item_id, array $tri = array(), $limit = 
         $u['adminpaid'] = $u['paid'];
         $u['montant'] = 0;
         if ($money && $pay_id) {
-            $montants = XDB::fetchColumn('SELECT  amount
+            $montant = XDB::fetchOneCell('SELECT  SUM(amount)
                                             FROM  payment_transactions AS t
                                            WHERE  ref = {?} AND uid = {?}',
                                          $pay_id, $uid);
-            foreach ($montants as $m) {
-                $p = strtr(substr($m, 0, strpos($m, "EUR")), ",", ".");
-                $u['paid'] += trim($p);
-            }
+            $u['paid'] += $montant;
         }
         $u['telepayment'] = $u['paid'] - $u['adminpaid'];
         $res_ = XDB::iterator('SELECT  ep.nb, ep.item_id, ei.montant
@@ -184,39 +179,37 @@ function subscribe_lists_event($uid, $short_name, $participate, $paid, $payment 
         return;
     }
 
-    $user = User::getSilentWithUID($uid);
-
     /** If $payment is not null, we do not retrieve the value of $participate,
      * thus we do not alter participant and absent lists.
      */
     if ($payment === true) {
         if ($paid > 0) {
-            delete_from_list_alias($user, $short_name . $globals->xnet->unpayed_list, $globals->xnet->evts_domain, 'event');
-            add_to_list_alias($user, $short_name . $globals->xnet->payed_list, $globals->xnet->evts_domain, 'event');
+            delete_from_list_alias($uid, $short_name . $globals->xnet->unpayed_list, $globals->xnet->evts_domain, 'event');
+            add_to_list_alias($uid, $short_name . $globals->xnet->payed_list, $globals->xnet->evts_domain, 'event');
         }
     } else {
         switch ($participate) {
           case -1:
-            delete_from_list_alias($user, $short_name . $globals->xnet->participant_list, $globals->xnet->evts_domain, 'event');
-            delete_from_list_alias($user, $short_name . $globals->xnet->unpayed_list, $globals->xnet->evts_domain, 'event');
-            delete_from_list_alias($user, $short_name . $globals->xnet->payed_list, $globals->xnet->evts_domain, 'event');
-            add_to_list_alias($user, $short_name . $globals->xnet->absent_list, $globals->xnet->evts_domain, 'event');
+            delete_from_list_alias($uid, $short_name . $globals->xnet->participant_list, $globals->xnet->evts_domain, 'event');
+            delete_from_list_alias($uid, $short_name . $globals->xnet->unpayed_list, $globals->xnet->evts_domain, 'event');
+            delete_from_list_alias($uid, $short_name . $globals->xnet->payed_list, $globals->xnet->evts_domain, 'event');
+            add_to_list_alias($uid, $short_name . $globals->xnet->absent_list, $globals->xnet->evts_domain, 'event');
             break;
           case 0:
-            delete_from_list_alias($user, $short_name . $globals->xnet->participant_list, $globals->xnet->evts_domain, 'event');
-            delete_from_list_alias($user, $short_name . $globals->xnet->absent_list, $globals->xnet->evts_domain, 'event');
-            delete_from_list_alias($user, $short_name . $globals->xnet->unpayed_list, $globals->xnet->evts_domain, 'event');
-            delete_from_list_alias($user, $short_name . $globals->xnet->payed_list, $globals->xnet->evts_domain, 'event');
+            delete_from_list_alias($uid, $short_name . $globals->xnet->participant_list, $globals->xnet->evts_domain, 'event');
+            delete_from_list_alias($uid, $short_name . $globals->xnet->absent_list, $globals->xnet->evts_domain, 'event');
+            delete_from_list_alias($uid, $short_name . $globals->xnet->unpayed_list, $globals->xnet->evts_domain, 'event');
+            delete_from_list_alias($uid, $short_name . $globals->xnet->payed_list, $globals->xnet->evts_domain, 'event');
             break;
           case 1:
-            add_to_list_alias($user, $short_name . $globals->xnet->participant_list, $globals->xnet->evts_domain, 'event');
-            delete_from_list_alias($user, $short_name . $globals->xnet->absent_list, $globals->xnet->evts_domain, 'event');
+            add_to_list_alias($uid, $short_name . $globals->xnet->participant_list, $globals->xnet->evts_domain, 'event');
+            delete_from_list_alias($uid, $short_name . $globals->xnet->absent_list, $globals->xnet->evts_domain, 'event');
             if ($paid > 0) {
-                delete_from_list_alias($user, $short_name . $globals->xnet->unpayed_list, $globals->xnet->evts_domain, 'event');
-                add_to_list_alias($user, $short_name . $globals->xnet->payed_list, $globals->xnet->evts_domain, 'event');
+                delete_from_list_alias($uid, $short_name . $globals->xnet->unpayed_list, $globals->xnet->evts_domain, 'event');
+                add_to_list_alias($uid, $short_name . $globals->xnet->payed_list, $globals->xnet->evts_domain, 'event');
             } else {
-                add_to_list_alias($user, $short_name . $globals->xnet->unpayed_list, $globals->xnet->evts_domain, 'event');
-                delete_from_list_alias($user, $short_name . $globals->xnet->payed_list, $globals->xnet->evts_domain, 'event');
+                add_to_list_alias($uid, $short_name . $globals->xnet->unpayed_list, $globals->xnet->evts_domain, 'event');
+                delete_from_list_alias($uid, $short_name . $globals->xnet->payed_list, $globals->xnet->evts_domain, 'event');
             }
             break;
         }
@@ -287,11 +280,10 @@ function event_change_shortname($page, $eid, $old, $new)
         foreach (array($globals->xnet->participant_list, $globals->xnet->payed_list, $globals->xnet->unpayed_list) as $suffix) {
             $uids = XDB::fetchColumn('SELECT  uid
                                         FROM  group_event_participants
-                                       WHERE  eid = {?} AND ' . $where,
+                                       WHERE  eid = {?} AND ' . $where[$suffix],
                                      $eid);
-            $users = User::getBulkUsersWithUIDs($uids, null, null, false);
-            foreach ($users as $user) {
-                add_to_list_alias($user, $new . $suffix, $globals->xnet->evts_domain, 'event');
+            foreach ($uids as $uid) {
+                add_to_list_alias($uid, $new . $suffix, $globals->xnet->evts_domain, 'event');
             }
         }
         $uids = XDB::fetchColumn('SELECT  m.uid
@@ -299,9 +291,8 @@ function event_change_shortname($page, $eid, $old, $new)
                                LEFT JOIN  group_event_participants AS e ON (e.uid = m.uid AND e.eid = {?})
                                    WHERE  m.asso_id = {?} AND e.uid IS NULL',
                                  $eid, $globals->asso('id'));
-        $users = User::getBulkUsersWithUIDs($uids, null, null, false);
-        foreach ($users as $user) {
-            add_to_list_alias($user, $new . $globals->xnet->absent_list, $globals->xnet->evts_domain, 'event');
+        foreach ($uids as $uid) {
+            add_to_list_alias($uid, $new . $globals->xnet->absent_list, $globals->xnet->evts_domain, 'event');
         }
 
         return $new;

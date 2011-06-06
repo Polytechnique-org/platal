@@ -51,50 +51,80 @@
       };
   }
 
-  // when changing country, open up administrativearea choice
-  function changeCountry(a2) {
-    $(".autocompleteTarget[name='country']").attr('value',a2);
+  function setAddress(i, j, values)
+  {
+    var types = new Array('country', 'administrative_area_level_1', 'administrative_area_level_2', 'administrative_area_level_3', 'locality', 'sublocality');
+    var prev_type = types[i];
+    var next_type = types[j];
+    var next_list = next_type + '_list';
 
-    if (a2) {
-      $(".autocomplete[name='countryTxt']").addClass('hidden_valid');
-
-      $("[name='administrativearea']").parent().load(baseurl + 'list/administrativearea/', { country:a2 }, function() {
-          if ($("select[name='administrativearea']").children("option").size() > 1) {
-            $("select[name='administrativearea']").attr('value', '{/literal}{$smarty.request.administrativearea}{literal}');
-
-            $("tr#administrativearea_list").show();
-          } else {
-            $("select[name='administrativearea']").attr('value', '');
-
-            $("tr#administrativearea_list").hide();
-          }
-        });
-    } else {
-      $(".autocomplete[name='countryTxt']").removeClass('hidden_valid');
-
-      $("select[name='administrativearea']").attr('value', '');
-      $("select[name='subadministrativearea']").attr('value', '');
-
-      $("tr#administrativearea_list").hide();
-      $("tr#subadministrativearea_list").hide();
+    if (j == 3) {
+      $('tr#locality_text').hide()
+      $("select[name='localityTxt']").attr('value', '');
     }
+
+    $("[name='" + next_type + "']").parent().load(baseurl + 'list/' + next_type, { previous:prev_type, value:values[i] }, function() {
+      if ($("select[name='" + next_type + "']").children("option").size() > 1) {
+        $("tr#" + next_list).show();
+        $("select[name='" + next_type + "']").attr('value', values[j]);
+        if (j < 6) {
+          setAddress(j, j + 1, values);
+        }
+      } else {
+        $("tr#" + next_list).hide();
+        $("select[name='" + next_type + "']").attr('value', '');
+        if (j < 6) {
+          setAddress(i, j + 1, values);
+        }
+      }
+    });
+
   }
 
-  // when changing administrativearea, open up subadministrativearea choice
-  function changeAdministrativeArea(id) {
-    if (id) {
-      $("[name='subadministrativearea']").parent().load(baseurl + 'list/subadministrativearea/', { administrativearea:id }, function() {
-          if ($("select[name='subadministrativearea']").children("option").size() > 1) {
-            $("select[name='subadministrativearea']").attr('value', '{/literal}{$smarty.request.subadministrativearea}{literal}');
-            $("tr#subadministrativearea_list").show();
-          } else {
-            $("select[name='subadministrativearea']").attr('value', '');
-            $("tr#subadministrativearea_list").hide();
-          }
-        });
-    } else {
-      $("select[name='subadministrativearea']").attr('value', '');
-      $("tr#subadministrativearea_list").hide();
+  function displayNextAddressComponent(i, j, value)
+  {
+    var types = new Array('country', 'administrative_area_level_1', 'administrative_area_level_2', 'administrative_area_level_3', 'locality', 'sublocality');
+    var prev_type = types[i];
+    var next_type = types[j];
+    var next_list = next_type + '_list';
+
+    if (j == 3) {
+      $('tr#locality_text').hide()
+      $("select[name='localityTxt']").attr('value', '');
+    }
+
+    $("[name='" + next_type + "']").parent().load(baseurl + 'list/' + next_type, { previous:prev_type, value:value }, function() {
+      $("select[name='" + next_type + "']").attr('value', '');
+      if ($("select[name='" + next_type + "']").children("option").size() > 1) {
+        $("tr#" + next_list).show();
+      } else {
+        $("tr#" + next_list).hide();
+        if (j < 6) {
+          displayNextAddressComponent(i, j + 1, value);
+        }
+      }
+    });
+  }
+
+  function changeAddressComponents(type, value)
+  {
+    var types = new Array('country', 'administrative_area_level_1', 'administrative_area_level_2', 'administrative_area_level_3', 'locality', 'sublocality');
+    var i = 0, j = 0;
+
+    while (types[i] != type && i < 6) {
+      ++i;
+    }
+
+    j = i + 1;
+    while (j < 6) {
+      $("select[name='" + types[j] + "']").attr('value', '');
+      $("tr#" + types[j] + "_list").hide();
+      ++j;
+    }
+
+    if (value != '' && i < 5) {
+      $("select[name='" + type + "']").attr('value', value);
+      displayNextAddressComponent(i, i + 1, value);
     }
   }
 
@@ -145,15 +175,20 @@
       if (nameRealField == name)
         return null;
 
-      // if changing country, might want to open administrativearea choice
-      if (nameRealField == 'country')
+      // When changing country or locality, open next address component.
+      if (nameRealField == 'country' || nameRealField == 'locality') {
         return function(i) {
+            nameRealField = name.replace(/Txt$/, '');
             if (i.extra[0] < 0) {
-              cancel_autocomplete('countryTxt', 'country');
+              cancel_autocomplete(name, nameRealField);
               i.extra[1] = '';
             }
-            changeCountry(i.extra[1]);
+            $("[name='" + nameRealField + "']").parent().load(baseurl + 'list/' + nameRealField, function() {
+              $("select[name='" + nameRealField + "']").attr('value', i.extra[1]);
+            });
+            changeAddressComponents(nameRealField, i.extra[1]);
           }
+      }
 
       if (nameRealField == 'school')
         return function(i) {
@@ -204,10 +239,23 @@
 
       $(".autocomplete").change(function() { $(this).removeClass('hidden_valid'); });
 
-      $(".autocomplete[name='countryTxt']").change(function() { changeCountry(''); });
-
-      changeCountry({/literal}'{$smarty.request.country}'{literal});
-      changeAdministrativeArea({/literal}'{$smarty.request.administrativearea}'{literal});
+      if ({/literal}'{$smarty.request.country}'{literal} != '') {
+        $("[name='country']").parent().load(baseurl + 'list/country', function() {
+          $("select[name='country']").attr('value', {/literal}'{$smarty.request.country}'{literal});
+        });
+        setAddress(0, 1, new Array({/literal}'{$smarty.request.country}'{literal},
+                                   {/literal}'{$smarty.request.administrative_area_level_1}'{literal},
+                                   {/literal}'{$smarty.request.administrative_area_level_2}'{literal},
+                                   {/literal}'{$smarty.request.administrative_area_level_3}'{literal},
+                                   {/literal}'{$smarty.request.locality}'{literal},
+                                   {/literal}'{$smarty.request.sublocality}'{literal})
+        );
+      } else {
+        var types = new Array('administrative_area_level_1', 'administrative_area_level_2', 'administrative_area_level_3', 'locality', 'sublocality');
+        for (var i = 0; i < 5; ++i) {
+          $("tr#" + types[i] + '_list').hide();
+        }
+      }
 
       $(".autocomplete[name='schoolTxt']").change(function() { changeSchool(''); });
 
@@ -235,7 +283,6 @@
         });
 
       $("#only_referent").change(function() { changeOnlyReferent(); });
-      changeOnlyReferent();
 
     });
 /** Regexps to wipe out from search queries */
@@ -277,6 +324,12 @@ function cleanForm(f) {
         <input type="hidden" name="rechercher" value="Chercher"/>
         <input type="submit" style="display:none"/>
         <input type="text" name="name" size="32" value="{$smarty.request.name}" />
+        <select name="name_type">
+          <option value="" {if $smarty.request.name_type eq ''}selected="selected"{/if}>&nbsp;-&nbsp;</option>
+          <option value="lastname" {if $smarty.request.name_type eq 'lastname'}selected="selected"{/if}>nom</option>
+          <option value="firstname" {if $smarty.request.name_type eq 'firstname'}selected="selected"{/if}>prénom</option>
+          <option value="nickname" {if $smarty.request.name_type eq 'nickname'}selected="selected"{/if}>surnom</option>
+        </select>
       </td>
     </tr>
     <tr>
@@ -306,6 +359,11 @@ function cleanForm(f) {
         &nbsp;et&nbsp;
         <input type="text" name="egal2" size="1" style="text-align:center" value="{if t($smarty.request.egal2) eq '&lt;'}&lt;{else}&gt;{/if}" readonly="readonly" />
         <input type="text" name="promo2" size="4" maxlength="4" value="{$smarty.request.promo2}" />
+        <select name="edu_type" style="text-align:center">
+          <option value="{#UserFilter::GRADE_ING#}" {if $smarty.request.edu_type eq #UserFilter::GRADE_ING#}selected="selected"{/if}>X</option>
+          <option value="{#UserFilter::GRADE_MST#}" {if $smarty.request.edu_type eq #UserFilter::GRADE_MST#}selected="selected"{/if}>Master</option>
+          <option value="{#UserFilter::GRADE_PHD#}" {if $smarty.request.edu_type eq #UserFilter::GRADE_PHD#}selected="selected"{/if}>Docteur</option>
+        </select>
       </td>
     </tr>
     <tr>
@@ -345,6 +403,27 @@ function cleanForm(f) {
       </td>
     </tr>
     <tr>
+      <td>A une redirection active</td>
+      <td>
+        <table>
+          <tr>
+            <td style="width:100px">
+              <input type="radio" name="has_email_redirect" value="0" {if !$smarty.request.has_email_redirect}checked="checked"{/if}
+                id="has_email_redirect0" /><label for="has_email_redirect0">indifférent</label>
+            </td>
+            <td style="width:100px">
+              <input type="radio" name="has_email_redirect" value="1" {if $smarty.request.has_email_redirect eq 1}checked="checked"{/if}
+                id="has_email_redirect1" /><label for="has_email_redirect1">oui</label>
+            </td>
+            <td style="width:100px">
+              <input type="radio" name="has_email_redirect" value="2" {if $smarty.request.has_email_redirect eq 2}checked="checked"{/if}
+                id="has_email_redirect2" /><label for="has_email_redirect2">non</label>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
       <td>En vie</td>
       <td>
         <table>
@@ -372,10 +451,6 @@ function cleanForm(f) {
       <th colspan="2">Géographie</th>
     </tr>
     <tr>
-      <td>Ville ou code postal</td>
-      <td><input type="text" class="autocomplete" name="city" size="32" value="{$smarty.request.city}" /></td>
-    </tr>
-    <tr>
       <td>Pays</td>
       <td>
         <input name="countryTxt" type="text" class="autocomplete" style="display:none" size="32"
@@ -384,16 +459,38 @@ function cleanForm(f) {
         <a href="country" class="autocompleteToSelect">{icon name="table" title="Tous les pays"}</a>
       </td>
     </tr>
-    <tr id="administrativearea_list">
+    <tr id="administrative_area_level_1_list">
       <td>Région, province, état&hellip;</td>
       <td>
-        <input name="administrativearea" type="hidden" size="32" value="{$smarty.request.administrativearea}" />
+        <input name="administrative_area_level_1" type="hidden" size="32" value="{$smarty.request.administrative_area_level_1}" />
       </td>
     </tr>
-    <tr id="subadministrativearea_list">
+    <tr id="administrative_area_level_2_list">
       <td>Département, comté&hellip;</td>
       <td>
-        <input name="subadministrativearea" type="hidden" size="32" value="{$smarty.request.subadministrativearea}" />
+        <input name="administrative_area_level_2" type="hidden" size="32" value="{$smarty.request.administrative_area_level_2}" />
+      </td>
+    </tr>
+    <tr id="administrative_area_level_3_list">
+      <td>Canton&hellip;</td>
+      <td>
+        <input name="administrative_area_level_3" type="hidden" size="32" value="{$smarty.request.administrative_area_level_3}" />
+      </td>
+    </tr>
+    <tr id="locality_text">
+      <td>Ville</td>
+      <td><input type="text" class="autocomplete" name="localityTxt" size="32" value="{$smarty.request.localityTxt}" /></td>
+    </tr>
+    <tr id="locality_list">
+      <td>Ville</td>
+      <td>
+        <input name="locality" type="hidden" size="32" value="{$smarty.request.locality}" />
+      </td>
+    </tr>
+    <tr id="sublocality_list">
+      <td>Arrondissement, quartier&hellip;</td>
+      <td>
+        <input name="sublocality" type="hidden" size="32" value="{$smarty.request.sublocality}" />
       </td>
     </tr>
     <tr>
@@ -413,7 +510,7 @@ function cleanForm(f) {
     </tr>
     <tr>
       <td>Description</td>
-      <td><input type="text" class="autocomplete" name="description" size="32" value="{$smarty.request.description}" /></td>
+      <td><input type="text" class="autocomplete" name="jobdescription" size="32" value="{$smarty.request.jobdescription}" /></td>
     </tr>
     <tr>
       <td>Mots-clefs</td>
@@ -492,6 +589,36 @@ function cleanForm(f) {
       <td>Diplôme</td>
       <td>
         <input name="diploma" size="32" value="{$smarty.request.diploma}"/>
+      </td>
+    </tr>
+    <tr>
+      <td>Corps d'origine</td>
+      <td>
+        <select name="origin_corps">
+        {foreach from=$origin_corps_list key=id item=corps}
+          <option value="{$id}" {if $smarty.request.origin_corps eq $id}selected="selected"{/if}>{$corps}</option>
+        {/foreach}
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>Corps actuel</td>
+      <td>
+        <select name="current_corps">
+        {foreach from=$current_corps_list key=id item=corps}
+          <option value="{$id}" {if $smarty.request.current_corps eq $id}selected="selected"{/if}>{$corps}</option>
+        {/foreach}
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>Grade</td>
+      <td>
+        <select name="corps_rank">
+        {foreach from=$corps_rank_list key=id item=corps}
+          <option value="{$id}" {if $smarty.request.corps_rank eq $id}selected="selected"{/if}>{$corps}</option>
+        {/foreach}
+        </select>
       </td>
     </tr>
     <tr>

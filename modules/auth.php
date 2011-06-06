@@ -145,6 +145,10 @@ class AuthModule extends PLModule
                 // the user to the real GroupeX website, which defeats the attack).
                 if (empty($returnurls) || @preg_match($returnurls, $gpex_url)) {
                     $returl = $gpex_url . gpex_make_params($gpex_challenge, $privkey, $datafields, $charset);
+                    XDB::execute('UPDATE  group_auth
+                                     SET  last_used = DATE(NOW())
+                                   WHERE  name = {?}',
+                                 $name);
                     http_redirect($returl);
                 } else if (S::admin()) {
                     $page->kill("La requête d'authentification a échouée (url de retour invalide).");
@@ -166,6 +170,7 @@ class AuthModule extends PLModule
         $table_editor->describe('privkey','clé privée',false);
         $table_editor->describe('datafields','champs renvoyés',true);
         $table_editor->describe('returnurls','urls de retour',true);
+        $table_editor->describe('last_used', 'dernière utilisation', true);
         $table_editor->apply($page, $action, $id);
     }
 }

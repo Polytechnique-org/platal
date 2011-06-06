@@ -70,7 +70,7 @@ class XnetListsModule extends ListsModule
         return $globals->asso('mail_domain');
     }
 
-    function handler_lists($page)
+    function handler_lists($page, $order_by = null, $order = null)
     {
         global $globals;
         require_once 'emails.inc.php';
@@ -102,9 +102,44 @@ class XnetListsModule extends ListsModule
         }
 
         $listes = $this->client->get_lists();
+        // Default ordering is by ascending names.
+        if (is_null($order_by) || is_null($order)
+            || !in_array($order_by, array('list', 'desc', 'nbsub'))
+            || !in_array($order, array('asc', 'desc'))) {
+            $order_by = 'list';
+            $order = 'asc';
+        }
+
+        $compare = function ($a, $b) use ($order_by, $order)
+        {
+            switch ($order_by) {
+              case 'desc':
+                $a[$order_by] = replace_accent($a[$order_by]);
+                $b[$order_by] = replace_accent($b[$order_by]);
+              case 'list':
+                $res = strcasecmp($a[$order_by], $b[$order_by]);
+                break;
+              case 'nbsub':
+                $res = $a[$order_by] - $b[$order_by];
+                break;
+              default:
+                $res = 0;
+            }
+
+            if ($order == 'asc') {
+                return $res;
+            }
+            return $res * -1;
+        };
+        usort($listes, $compare);
         $page->assign('listes', $listes);
+        $page->assign('order_by', $order_by);
+        $page->assign('order', $order);
         $page->assign('aliases', iterate_list_alias($globals->asso('mail_domain')));
         $page->assign('may_update', may_update());
+        if (S::suid()) {
+            $page->trigWarning("Attention&nbsp;: l'affichage des listes de diffusion ne tient pas compte de l'option « Voir le site comme&hellip; ».");
+        }
 
         if (count($listes) > 0 && !$globals->asso('has_ml')) {
             XDB::execute("UPDATE  groups
@@ -215,25 +250,29 @@ class XnetListsModule extends ListsModule
 
         require_once 'emails.inc.php';
         list($local_part, $domain) = explode('@', $lfull);
+        if ($globals->asso('mail_domain') != $domain || !preg_match("/^[a-zA-Z0-9\-\.]*$/", $local_part)) {
+            $page->trigErrorRedirect('Le nom de l\'alias est erroné.', $globals->asso('diminutif') . '/lists');
+        }
+
+
         if (Env::has('add_member')) {
             S::assert_xsrf_token();
 
-            $email = Env::t('add_member');
-            $user = User::getSilent($email);
-            if ($user) {
-                add_to_list_alias($user, $local_part, $domain);
-                $page->trigSuccess($email . ' ajouté.');
+            if (add_to_list_alias(Env::t('add_member'), $local_part, $domain)) {
+                $page->trigSuccess('Ajout réussit.');
             } else {
-                $page->trigError($email . " n'existe pas.");
+                $page->trigError('Ajout infructueux.');
             }
         }
 
         if (Env::has('del_member')) {
             S::assert_xsrf_token();
 
-            $user = User::getSilent(Env::t('del_member'));
-            delete_from_list_alias($user, $local_part, $domain);
-            $page->trigSuccess($user->fullName() . ' supprimé.');
+            if (delete_from_list_alias(Env::t('del_member'), $local_part, $domain)) {
+                $page->trigSuccess('Suppression réussie.');
+            } else {
+                $page->trigError('Suppression infructueuse.');
+            }
         }
 
         $page->assign('members', list_alias_members($local_part, $domain));
@@ -271,7 +310,7 @@ class XnetListsModule extends ListsModule
             return;
         }
 
-        add_to_list_alias(S::user(), $list, $globals->asso('mail_domain'));
+        add_to_list_alias(S::i('uid'), $list, $globals->asso('mail_domain'));
         pl_redirect('alias/admin/' . $list . '@' . $globals->asso('mail_domain'));
     }
 

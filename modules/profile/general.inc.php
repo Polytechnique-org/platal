@@ -21,12 +21,14 @@
 
 class ProfileSettingSearchNames implements ProfileSetting
 {
-    private $private_name_end;
-    private $search_names;
-    private $name_types;
+    private function diff($pid, array $old, array $new)
+    {
+        $diff = false;
+        foreach ($old as $field => $name) {
+            $diff = $diff || ($name != $new[$field]);
+        }
 
-    public function __construct() {
-            $this->name_types = DirEnum::getOptions(DirEnum::NAMES);
+        return $diff;
     }
 
     private function matchWord($old, $new, $newLen)
@@ -36,173 +38,83 @@ class ProfileSettingSearchNames implements ProfileSetting
             && ($i + $newLen == strlen($old) || $old{$i + $newLen} == ' ');
     }
 
-    private function prepareField($value)
+    private function prepare(ProfilePage $page, array &$new_value)
     {
-        return name_to_basename($value);
-    }
+        $initial_value = XDB::fetchOneAssoc('SELECT  lastname_main, firstname_main
+                                               FROM  profile_public_names
+                                              WHERE  pid = {?}',
+                                            $page->pid());
 
-    private function prepare(ProfilePage $page, $field, $value, $init, &$success)
-    {
         $success = true;
-        $ini     = $this->prepareField($init);
-        $new     = $this->prepareField($value);
-        $newLen  = strlen($new);
-        $success = $this->matchWord($ini, $new, $newLen)
-                   || ($field == 'lastname' && $new == 'DE ' . $ini);
-        if (!$success) {
-            $field = strtolower($field);
-            Platal::page()->trigError("Le " . $this->name_types[$field] . " que tu as choisi (" . $value .
-                                      ") est trop loin de ton " . $this->name_types[$field] . " initial (" . $init . ").");
-        }
-        return $success ? $value : $init;
-    }
+        foreach ($initial_value as $field => $name) {
+            $initial = name_to_basename($name);
+            $new = name_to_basename($new_value[$field]);
 
-    /* Removes duplicated entries for the fields that do not allow them. */
-    private function clean($value)
-    {
-        $single_types = XDB::fetchAllAssoc('id',
-                                           'SELECT  id, 0
-                                              FROM  profile_name_enum
-                                             WHERE  NOT FIND_IN_SET(\'allow_duplicates\', flags)');
-
-        foreach ($value as $key => $item) {
-            if (isset($single_types[$item['typeid']])) {
-                if ($single_types[$item['typeid']] === true) {
-                    unset($value[$key]);
-                } else {
-                    $single_types[$item['typeid']] = true;
-                }
+            if (!($this->matchWord($initial, $new, strlen($new))
+                || ($field == 'lastname_main' && $new == 'DE ' . $initial))) {
+                $new_value[$field . '_error'] = true;
+                $success = false;
+                Platal::page()->trigError('Le nom choisi (' . $new . ') est trop loin de sa valeur initiale (' . $initial . ').');
             }
         }
 
-        return $value;
+        return $success;
     }
 
     public function value(ProfilePage $page, $field, $value, &$success)
     {
-        $success     = true;
-        $success_tmp = true;
+        $success = true;
 
         if (is_null($value)) {
-            $sn_all = XDB::iterator("SELECT  CONCAT(sn.particle, sn.name) AS name,
-                                             sn.particle, sn.typeid, e.type, e.name AS type_name,
-                                             FIND_IN_SET('has_particle', e.flags) AS has_particle,
-                                             FIND_IN_SET('always_displayed', e.flags) AS always_displayed,
-                                             FIND_IN_SET('public', e.flags) AS pub
-                                       FROM  profile_name      AS sn
-                                 INNER JOIN  profile_name_enum AS e  ON (e.id = sn.typeid)
-                                      WHERE  sn.pid = {?} AND NOT FIND_IN_SET('not_displayed', e.flags)
-                                   ORDER BY  NOT FIND_IN_SET('always_displayed', e.flags), e.id, sn.name",
-                                     $page->pid());
+            $request = NamesReq::getPublicNames($page->pid());
 
-            $sn_types = XDB::iterator("SELECT  id, type, name,
-                                               FIND_IN_SET('has_particle', flags) AS has_particle
-                                         FROM  profile_name_enum
-                                        WHERE  NOT FIND_IN_SET('not_displayed', flags)
-                                               AND FIND_IN_SET('always_displayed', flags)
-                                     ORDER BY  id");
+            if (!$request) {
+                $value['public_names'] = XDB::fetchOneAssoc('SELECT  particles, lastname_main, lastname_marital, lastname_ordinary,
+                                                                     firstname_main, firstname_ordinary, pseudonym
+                                                               FROM  profile_public_names
+                                                              WHERE  pid = {?}',
+                                                            $page->pid());
 
-            $value = array();
-            $sn = $sn_all->next();
-            while ($sn_type = $sn_types->next()) {
-                if ($sn_type['id'] == $sn['typeid']) {
-                    $value[] = $sn;
-                    if ($sn) {
-                        $sn = $sn_all->next();
-                    }
-                } else {
-                    $value[] = array('name'             => '',
-                                     'particle'         => '',
-                                     'typeid'           => $sn_type['id'],
-                                     'type'             => $sn_type['type'],
-                                     'type_name'        => $sn_type['name'],
-                                     'has_particle'     => $sn_type['has_particle'],
-                                     'always_displayed' => 1,
-                                     'pub'              => 1);
+                $flags = new PlFlagSet($value['public_names']['particles']);
+                unset($value['public_names']['particles']);
+                static $suffixes = array('main', 'marital', 'ordinary');
+
+                foreach ($suffixes as $suffix) {
+                    $value['public_names']['particle_' . $suffix] = $flags->hasFlag($suffix);
                 }
-            }
-            if ($sn) {
-                do {
-                    $value[] = $sn;
-                } while ($sn = $sn_all->next());
-            }
-            $namesRequest = ProfileValidate::get_typed_requests($page->pid(), 'usage');
-            if (count($namesRequest) > 0) {
+            } else {
+                $value['public_names'] = $request;
                 Platal::page()->assign('validation', true);
             }
-            $value = $this->clean($value);
-        } else {
-            require_once 'name.func.inc.php';
 
-            $value = $this->clean($value);
-            $res = XDB::query("SELECT  s.particle, s.name
-                                 FROM  profile_name      AS s
-                           INNER JOIN  profile_name_enum AS e ON (e.id = s.typeid)
-                                WHERE  s.pid = {?} AND (e.type = 'lastname' OR e.type = 'firstname')
-                             ORDER BY  e.type = 'firstname'",
-                             $page->pid());
-            $res = $res->fetchAllAssoc();
-            $initial = array();
-            $initial['lastname'] = $res[0]['particle'] . $res[0]['name'];
-            $initial['firstname'] = $res[1]['name'];
-            $sn_types = build_types();
-            $this->search_names = array();
-            foreach ($value as &$sn) {
-                $sn['name'] = trim($sn['name']);
-                if (S::user()->isMe($page->owner) && ($sn['type'] == 'firstname' || $sn['type'] == 'lastname')) {
-                    $sn['name'] = $this->prepare($page, $sn['type'], $sn['name'],
-                                                 $initial[$sn['type']], $success_tmp);
-                    $success = $success && $success_tmp;
-                }
-                if ($sn['pub']) {
-                    if (isset($sn['particle']) && ($sn['particle'] != '')) {
-                        // particle is before first blank
-                        list($particle, $name) = explode(' ', $sn['name'], 2);
-                        $particle = trim($particle) . ' ';
-                        if (!$name) {
-                            // particle is before first quote
-                            list($particle, $name) = explode('\'', $sn['name'], 2);
-                            $particle = trim($particle);
-                            if (!$name) {
-                                // actually there is no particle
-                                $particle = '';
-                                $name = $sn['name'];
-                            }
-                        }
-                    } else {
-                        $particle = '';
-                        $name     = $sn['name'];
-                    }
-                }
-                if ($sn['name'] != '') {
-                    if ($sn['pub']) {
-                        $this->search_names[$sn['typeid']] = array('fullname' => $sn['name'],
-                                                                   'name'     => $name,
-                                                                   'particle' => $particle,
-                                                                   'pub'      => $sn['pub']);
-                    } else {
-                        if (isset($this->search_names[$sn['typeid']])) {
-                            $this->search_names[$sn['typeid']][] = $sn['name'];
-                        } else {
-                            $this->search_names[$sn['typeid']] = array('fullname' => $sn['name']);
-                        }
-                        $sn['type_name'] = $sn_types[$sn['typeid']];
-                    }
+            $value['private_names'] = XDB::fetchAllAssoc('SELECT  type, name
+                                                            FROM  profile_private_names
+                                                           WHERE  pid = {?}
+                                                        ORDER BY  type, id',
+                                                         $page->pid());
+        } else {
+            foreach ($value['public_names'] as $key => $name) {
+                $value['public_names'][$key] = trim($name);
+            }
+            foreach ($value['private_names'] as $key => $name) {
+                $value['private_names'][$key]['name'] = trim($name['name']);
+                if ($value['private_names'][$key]['name'] == '') {
+                    unset($value['private_names'][$key]);
                 }
             }
-            $res = XDB::query("SELECT  public_name, private_name
-                                 FROM  profile_display
-                                WHERE  pid = {?}",
-                              $page->pid());
-            list($public_name, $private_name) = $res->fetchOneRow();
-            if ($success) {
-                $sn_types_private       = build_types('private');
-                $this->private_name_end = build_private_name($this->search_names, $sn_types_private);
-                $private_name           = $public_name . $this->private_name_end;
+
+            if (S::user()->isMe($page->owner)) {
+                $success = $this->prepare($page, $value['public_names']);
             }
-            Platal::page()->assign('public_name', $public_name);
-            Platal::page()->assign('private_name', $private_name);
         }
+
+        require_once 'name.func.inc.php';
+        $public_name = build_first_name($value['public_names']) . ' ' . build_full_last_name($value['public_names'], $page->profile->isFemale());
+        $private_name_end = build_private_name($value['private_names']);
+        $private_name = $public_name . $private_name_end;
+
+        Platal::page()->assign('public_name', $public_name);
+        Platal::page()->assign('private_name', $private_name);
 
         return $value;
     }
@@ -211,36 +123,57 @@ class ProfileSettingSearchNames implements ProfileSetting
     {
         require_once 'name.func.inc.php';
 
-        $sn_old = build_sn_pub($page->pid());
-        XDB::execute("DELETE FROM  s
-                            USING  profile_name      AS s
-                       INNER JOIN  profile_name_enum AS e ON (s.typeid = e.id)
-                            WHERE  s.pid = {?} AND NOT FIND_IN_SET('not_displayed', e.flags)",
-                     $page->pid());
-        $has_new = set_alias_names($this->search_names, $sn_old, $page->pid(), $page->owner);
+        $old = XDB::fetchOneAssoc('SELECT  lastname_main, lastname_marital, lastname_ordinary,
+                                           firstname_main, firstname_ordinary, pseudonym
+                                     FROM  profile_public_names
+                                    WHERE  pid = {?}',
+                                  $page->pid());
 
-        // Only requires validation if modification in public names
-        if ($has_new) {
-            $new_names = new NamesReq(S::user(), $page->profile, $this->search_names, $this->private_name_end);
+        if ($has_diff = $this->diff($page->pid(), $old, $value['public_names'])) {
+            $new_names = new NamesReq(S::user(), $page->profile, $value['public_names'], $old);
             $new_names->submit();
-            Platal::page()->trigWarning('La demande de modification de tes noms a bien été prise en compte.' .
-                                        ' Tu recevras un email dès que ces changements auront été effectués.');
+            Platal::page()->assign('validation', true);
+            Platal::page()->trigWarning('La demande de modification des noms a bien été prise en compte.' .
+                                        ' Un email sera envoyé dès que ces changements auront été effectués.');
+        }
+
+        XDB::execute('DELETE FROM  profile_private_names
+                            WHERE  pid = {?}',
+                     $page->pid());
+        $values = array();
+        $nickname = $lastname = $firstname = 0;
+        foreach ($value['private_names'] as $name) {
+            $values[] = XDB::format('({?}, {?}, {?}, {?})', $page->pid(), $name['type'], $$name['type']++, $name['name']);
+        }
+        if (count($values)) {
+            XDB::rawExecute('INSERT INTO  profile_private_names (pid, type, id, name)
+                                  VALUES  ' . implode(',', $values));
+        }
+
+        if ($has_diff) {
+            update_display_names($page->profile, $old, $value['private_names']);
         } else {
-            $display_names = array();
-            build_display_names($display_names, $this->search_names,
-                                $page->profile->isFemale(), $this->private_name_end);
-            set_profile_display($display_names, $page->profile);
+            update_display_names($page->profile, $value['public_names'], $value['private_names']);
         }
     }
 
     public function getText($value) {
-        $names = array();
-        foreach ($value as $name) {
-            if ($name['name'] != '') {
-                $names[] = mb_strtolower($name['type_name']) . ' : ' . $name['name'];
+        $public_names = array();
+        foreach ($value['public_names'] as $name) {
+            if ($name != '') {
+                $public_names[] = $name;
             }
         }
-        return implode(', ' , $names);
+
+        if (count($value['private_names'])) {
+            $private_names = array();
+            foreach ($value['private_names'] as $name) {
+                $private_names[] = $name['name'];
+            }
+            return 'noms publics : ' . implode(', ' , $public_names) . ', noms privés : ' . implode(', ' , $private_names);;
+        }
+
+        return 'noms publics : ' . implode(', ' , $public_names);
     }
 }
 
@@ -265,7 +198,7 @@ class ProfileSettingEdu implements ProfileSetting
             $value = array();
             $value = XDB::fetchAllAssoc("SELECT  eduid, degreeid, fieldid, grad_year, program
                                            FROM  profile_education
-                                          WHERE  pid = {?} AND !FIND_IN_SET('primary', flags)
+                                          WHERE  pid = {?} AND !(FIND_IN_SET('primary', flags) OR FIND_IN_SET('secondary', flags))
                                        ORDER BY  id",
                                         $page->pid());
         } else if (!is_array($value)) {
@@ -296,10 +229,11 @@ class ProfileSettingEdu implements ProfileSetting
     public function save(ProfilePage $page, $field, $value)
     {
         XDB::execute("DELETE FROM  profile_education
-                            WHERE  pid = {?} AND !FIND_IN_SET('primary', flags)",
+                            WHERE  pid = {?} AND !(FIND_IN_SET('primary', flags) OR FIND_IN_SET('secondary', flags))",
                      $page->pid());
+        $schoolsList = DirEnum::getOptions(DirEnum::EDUSCHOOLS);
         foreach ($value as $eduid=>&$edu) {
-            if ($edu['eduid'] != '') {
+            if ($edu['eduid'] != '' && $schoolsList[$edu['eduid']] != Profile::EDU_X) {
                 $fieldId = ($edu['fieldid'] == 0) ? null : $edu['fieldid'];
                 XDB::execute("INSERT INTO  profile_education
                                       SET  id = {?}, pid = {?}, eduid = {?}, degreeid = {?},
@@ -340,6 +274,75 @@ class ProfileSettingEdu implements ProfileSetting
             }
             if (count($details)) {
                 $educations[$id] .= ' (' . implode(', ', $details) . ')';
+            }
+        }
+        return implode(', ', $educations);
+    }
+}
+
+class ProfileSettingMainEdu implements ProfileSetting
+{
+    private $cycles;
+
+    public function __construct()
+    {
+        $eduDegrees = DirEnum::getOptions(DirEnum::EDUDEGREES);
+        $eduDegrees = array_flip($eduDegrees);
+        $this->cycles = array(
+            $eduDegrees[Profile::DEGREE_X] => 'Cycle polytechnicien',
+            $eduDegrees[Profile::DEGREE_M] => 'Cycle master',
+            $eduDegrees[Profile::DEGREE_D] => 'Cycle doctoral'
+        );
+    }
+
+    public function value(ProfilePage $page, $field, $value, &$success)
+    {
+        $success = true;
+        if (is_null($value)) {
+            $value = array();
+            $value = XDB::fetchAllAssoc("SELECT  degreeid, fieldid, promo_year, program
+                                           FROM  profile_education
+                                          WHERE  pid = {?} AND (FIND_IN_SET('primary', flags) OR FIND_IN_SET('secondary', flags))
+                                       ORDER BY  NOT FIND_IN_SET('primary', flags), degreeid",
+                                        $page->pid());
+
+            foreach ($value as &$item) {
+                $item['cycle'] = $this->cycles[$item['degreeid']];
+            }
+        } elseif (!is_array($value)) {
+            $value = array();
+        } else {
+            foreach ($value as $key => $item) {
+                if (!isset($item['degreeid'])) {
+                    unset($value[$key]);
+                }
+            }
+        }
+
+        return $value;
+    }
+
+    public function save(ProfilePage $page, $field, $value)
+    {
+        foreach ($value as $item) {
+            $fieldId = ($item['fieldid'] == 0) ? null : $item['fieldid'];
+            XDB::execute("UPDATE  profile_education
+                             SET  fieldid = {?}, program = {?}
+                           WHERE  pid = {?} AND (FIND_IN_SET('primary', flags) OR FIND_IN_SET('secondary', flags)) AND degreeid = {?}",
+                         $fieldId, $item['program'], $page->pid(), $item['degreeid']);
+        }
+    }
+
+    public function getText($value) {
+        $fieldsList = DirEnum::getOptions(DirEnum::EDUFIELDS);
+        $educations = array();
+        foreach ($value as $item) {
+            $details = array($this->cycles[$item['degreeid']]);
+            if ($education['program']) {
+                $details[] = '« ' . $education['program'] . ' »';
+            }
+            if ($education['fieldid']) {
+                $details[] = $fieldsList[$education['fieldid']];
             }
         }
         return implode(', ', $educations);
@@ -490,10 +493,7 @@ class ProfileSettingPromo implements ProfileSetting
     {
         $entryYear = $page->profile->entry_year;
         $gradYear  = $page->profile->grad_year;
-        $yearpromo = $page->profile->grad_year;
-        if ($page->profile->mainEducation() == 'X') {
-            $yearpromo -= $page->profile->mainEducationDuration();
-        }
+        $yearpromo = $page->profile->yearpromo();
         $success   = true;
         if (is_null($value) || $value == $yearpromo) {
             if ($gradYear != $entryYear + $page->profile->mainEducationDuration()) {
@@ -554,6 +554,7 @@ class ProfilePageGeneral extends ProfilePage
         $this->settings['networking'] = new ProfileSettingNetworking();
         $this->settings['tels']   = new ProfileSettingPhones();
         $this->settings['edus']   = new ProfileSettingEdu();
+        $this->settings['main_edus'] = new ProfileSettingMainEdu();
         $this->settings['promo']  = new ProfileSettingPromo();
         $this->watched= array('tels' => true,
                               'networking' => true, 'edus' => true,
@@ -675,14 +676,18 @@ class ProfilePageGeneral extends ProfilePage
         }
         if ($this->changed['promo_display']) {
             if ($this->values['promo_display']{0} == $this->profile->mainEducation()) {
-                if (($this->profile->mainEducation() == 'X'
-                     && intval(substr($this->values['promo_display'], 1, 4)) >= $this->profile->entry_year)
+                $yearpromo = intval(substr($this->values['promo_display'], 1, 4));
+                if (($this->profile->mainEducation() == 'X' && $yearpromo >= $this->profile->entry_year)
                     || ($this->profile->mainEducation() != 'X'
-                        && intval(substr($this->values['promo_display'], 1, 4)) >= $this->profile->entry_year + $this->profile->mainEducationDuration())) {
+                        && $yearpromo >= $this->profile->entry_year + $this->profile->mainEducationDuration())) {
                     XDB::execute('UPDATE  profile_display
                                      SET  promo = {?}
                                    WHERE  pid = {?}',
                                  $this->values['promo_display'], $this->pid());
+                    XDB::execute('UPDATE  profile_education
+                                     SET  promo_year = {?}
+                                   WHERE  pid = {?} AND FIND_IN_SET(\'primary\', flags)',
+                                 $yearpromo, $this->pid());
                 }
             }
         }
@@ -717,20 +722,16 @@ class ProfilePageGeneral extends ProfilePage
         $page->assign('edu_fields', $res->fetchAllAssoc());
 
         require_once "emails.combobox.inc.php";
-        fill_email_combobox($page, $this->owner);
+        fill_email_combobox($page, array('source', 'redirect', 'job', 'directory'), $this->owner);
 
         $res = XDB::query("SELECT  nw.nwid AS type, nw.name
                              FROM  profile_networking_enum AS nw
                          ORDER BY  name");
         $page->assign('network_list', $res->fetchAllAssoc());
 
-        $res = XDB::query("SELECT  public_name, private_name
-                             FROM  profile_display
-                            WHERE  pid = {?}",
-                          $this->pid());
-        $res = $res->fetchOneRow();
-        $page->assign('public_name', $res[0]);
-        $page->assign('private_name', $res[1]);
+        $page->assign('lastnames', array('main' => 'Nom patronymique', 'marital' => 'Nom marital', 'ordinary' => 'Nom usuel'));
+        $page->assign('firstnames', array('firstname_main' => 'Prénom', 'firstname_ordinary' => 'Prénom usuel', 'pseudonym' => 'Pseudonyme (nom de plume)'));
+        $page->assign('other_names', array('nickname' => 'Surnom', 'firstname' => 'Autre prénom', 'lastname' => 'Autre nom'));
         $page->assign('isFemale', $this->profile->isFemale() ? 1 : 0);
     }
 }

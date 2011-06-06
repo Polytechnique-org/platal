@@ -77,11 +77,12 @@ class PlatalGlobals extends PlGlobals
 
     public function updateNbIns()
     {
-        $res = XDB::query("SELECT  COUNT(*)
-                             FROM  accounts
-                            WHERE  state = 'active'");
-        $cnt = $res->fetchOneCell();
-        $this->changeDynamicConfig(array('NbIns' => $cnt));
+        $count = XDB::rawFetchOneCell("SELECT  COUNT(*)
+                                         FROM  accounts         AS a
+                                   INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
+                                   INNER JOIN  profiles         AS p  ON (ap.pid = p.pid)
+                                        WHERE  a.state = 'active' AND p.deathdate IS NULL");
+        $this->changeDynamicConfig(array('NbIns' => $count));
     }
 
     public function updateNbValid()

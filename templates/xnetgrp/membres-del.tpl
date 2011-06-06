@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $smarty.post.confirm}
+{if t($smarty.post.confirm)}
 
 <p class="descr">
 {if !$self}
@@ -52,7 +52,10 @@
     et le désabonner de toutes les listes de diffusion du groupe&nbsp;?
     {/if}
     </p>
-    <input type='submit' name='confirm' value='Oui, je {if $self}me{else}le{/if} désinscris complètement du groupe !' />
+    {if $self}
+    <label><input type="checkbox" name="remember" />Empêcher ma réinscription au groupe par un animateur.</label><br /><br />
+    {/if}
+    <input type="submit" name="confirm" value="Oui, je {if $self}me{else}le{/if} désinscris complètement du groupe !" />
   </div>
 </form>
 

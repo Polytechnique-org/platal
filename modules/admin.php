@@ -24,35 +24,38 @@ class AdminModule extends PLModule
     function handlers()
     {
         return array(
-            'phpinfo'                      => $this->make_hook('phpinfo',                AUTH_MDP, 'admin'),
+            'phpinfo'                      => $this->make_hook('phpinfo',                AUTH_MDP,    'admin'),
             'get_rights'                   => $this->make_hook('get_rights',             AUTH_COOKIE, 'admin'),
             'set_skin'                     => $this->make_hook('set_skin',               AUTH_COOKIE, 'admin'),
-            'admin'                        => $this->make_hook('default',                AUTH_MDP, 'admin'),
-            'admin/dead-but-active'        => $this->make_hook('dead_but_active',        AUTH_MDP, 'admin'),
-            'admin/deaths'                 => $this->make_hook('deaths',                 AUTH_MDP, 'admin'),
-            'admin/downtime'               => $this->make_hook('downtime',               AUTH_MDP, 'admin'),
-            'admin/homonyms'               => $this->make_hook('homonyms',               AUTH_MDP, 'admin'),
-            'admin/logger'                 => $this->make_hook('logger',                 AUTH_MDP, 'admin'),
-            'admin/logger/actions'         => $this->make_hook('logger_actions',         AUTH_MDP, 'admin'),
-            'admin/postfix/blacklist'      => $this->make_hook('postfix_blacklist',      AUTH_MDP, 'admin'),
-            'admin/postfix/delayed'        => $this->make_hook('postfix_delayed',        AUTH_MDP, 'admin'),
-            'admin/postfix/regexp_bounces' => $this->make_hook('postfix_regexpsbounces', AUTH_MDP, 'admin'),
-            'admin/postfix/whitelist'      => $this->make_hook('postfix_whitelist',      AUTH_MDP, 'admin'),
-            'admin/mx/broken'              => $this->make_hook('mx_broken',              AUTH_MDP, 'admin'),
-            'admin/skins'                  => $this->make_hook('skins',                  AUTH_MDP, 'admin'),
-            'admin/user'                   => $this->make_hook('user',                   AUTH_MDP, 'admin'),
-            'admin/add_accounts'           => $this->make_hook('add_accounts',           AUTH_MDP, 'admin'),
-            'admin/validate'               => $this->make_hook('validate',               AUTH_MDP, 'admin,edit_directory'),
-            'admin/validate/answers'       => $this->make_hook('validate_answers',       AUTH_MDP, 'admin'),
-            'admin/wiki'                   => $this->make_hook('wiki',                   AUTH_MDP, 'admin'),
-            'admin/ipwatch'                => $this->make_hook('ipwatch',                AUTH_MDP, 'admin'),
-            'admin/icons'                  => $this->make_hook('icons',                  AUTH_MDP, 'admin'),
-            'admin/geocoding'              => $this->make_hook('geocoding',              AUTH_MDP, 'admin'),
-            'admin/accounts'               => $this->make_hook('accounts',               AUTH_MDP, 'admin'),
-            'admin/account/watch'          => $this->make_hook('account_watch',          AUTH_MDP, 'admin'),
-            'admin/account/types'          => $this->make_hook('account_types',          AUTH_MDP, 'admin'),
-            'admin/jobs'                   => $this->make_hook('jobs',                   AUTH_MDP, 'admin,edit_directory'),
-            'admin/profile'                => $this->make_hook('profile',                AUTH_MDP, 'admin,edit_directory')
+            'admin'                        => $this->make_hook('default',                AUTH_MDP,    'admin'),
+            'admin/dead-but-active'        => $this->make_hook('dead_but_active',        AUTH_MDP,    'admin'),
+            'admin/deaths'                 => $this->make_hook('deaths',                 AUTH_MDP,    'admin'),
+            'admin/downtime'               => $this->make_hook('downtime',               AUTH_MDP,    'admin'),
+            'admin/homonyms'               => $this->make_hook('homonyms',               AUTH_MDP,    'admin'),
+            'admin/logger'                 => $this->make_hook('logger',                 AUTH_MDP,    'admin'),
+            'admin/logger/actions'         => $this->make_hook('logger_actions',         AUTH_MDP,    'admin'),
+            'admin/postfix/blacklist'      => $this->make_hook('postfix_blacklist',      AUTH_MDP,    'admin'),
+            'admin/postfix/delayed'        => $this->make_hook('postfix_delayed',        AUTH_MDP,    'admin'),
+            'admin/postfix/regexp_bounces' => $this->make_hook('postfix_regexpsbounces', AUTH_MDP,    'admin'),
+            'admin/postfix/whitelist'      => $this->make_hook('postfix_whitelist',      AUTH_MDP,    'admin'),
+            'admin/mx/broken'              => $this->make_hook('mx_broken',              AUTH_MDP,    'admin'),
+            'admin/skins'                  => $this->make_hook('skins',                  AUTH_MDP,    'admin'),
+            'admin/user'                   => $this->make_hook('user',                   AUTH_MDP,    'admin'),
+            'admin/add_accounts'           => $this->make_hook('add_accounts',           AUTH_MDP,    'admin'),
+            'admin/validate'               => $this->make_hook('validate',               AUTH_MDP,    'admin,edit_directory'),
+            'admin/validate/answers'       => $this->make_hook('validate_answers',       AUTH_MDP,    'admin'),
+            'admin/wiki'                   => $this->make_hook('wiki',                   AUTH_MDP,    'admin'),
+            'admin/ipwatch'                => $this->make_hook('ipwatch',                AUTH_MDP,    'admin'),
+            'admin/icons'                  => $this->make_hook('icons',                  AUTH_MDP,    'admin'),
+            'admin/geocoding'              => $this->make_hook('geocoding',              AUTH_MDP,    'admin'),
+            'admin/accounts'               => $this->make_hook('accounts',               AUTH_MDP,    'admin'),
+            'admin/account/watch'          => $this->make_hook('account_watch',          AUTH_MDP,    'admin'),
+            'admin/account/types'          => $this->make_hook('account_types',          AUTH_MDP,    'admin'),
+            'admin/xnet_without_group'     => $this->make_hook('xnet_without_group',     AUTH_MDP,    'admin'),
+            'admin/jobs'                   => $this->make_hook('jobs',                   AUTH_MDP,    'admin,edit_directory'),
+            'admin/profile'                => $this->make_hook('profile',                AUTH_MDP,    'admin,edit_directory'),
+            'admin/phd'                    => $this->make_hook('phd',                    AUTH_MDP,    'admin'),
+            'admin/add_secondary_edu'      => $this->make_hook('add_secondary_edu',      AUTH_MDP,    'admin')
         );
     }
 
@@ -442,19 +445,32 @@ class AdminModule extends PLModule
         }
 
         // Account Form {{{
+        require_once 'emails.inc.php';
         $to_update = array();
         if (Post::has('disable_weak_access')) {
             $to_update['weak_password'] = null;
         } else if (Post::has('update_account')) {
             if (!$user->hasProfile()) {
-                if (Post::s('full_name') != $user->fullName()) {
-                    $to_update['full_name'] = Post::s('full_name');
+                $name_update = false;
+                if (Post::s('lastname') != $user->lastname) {
+                    $to_update['lastname'] = Post::s('lastname');
+                    $name_update = true;
+                }
+                if (Post::s('type') != 'virtual' && Post::s('firstname') != $user->firstname) {
+                    $to_update['firstname'] = Post::s('firstname');
+                    $name_update = true;
+                }
+                if ($name_update) {
+                    if (Post::s('type') != 'virtual') {
+                        $to_update['full_name'] = Post::s('firstname') . ' ' . Post::s('lastname');
+                        $to_update['directory_name'] = mb_strtoupper(Post::s('lastname')) . ' ' . Post::s('firstname');
+                    } else {
+                        $to_update['full_name'] = Post::s('lastname');
+                        $to_update['directory_name'] = mb_strtoupper(Post::s('lastname'));
+                    }
                 }
                 if (Post::s('display_name') != $user->displayName()) {
                     $to_update['display_name'] = Post::s('display_name');
-                }
-                if (Post::s('directory_name') != $user->directoryName()) {
-                    $to_update['directory_name'] = Post::s('directory_name');
                 }
             }
             if (Post::s('sex') != ($user->isFemale() ? 'female' : 'male')) {
@@ -502,9 +518,10 @@ class AdminModule extends PLModule
             if (Post::t('comment') != $user->comment) {
                 $to_update['comment'] = Post::blank('comment') ? null : Post::t('comment');
             }
-            if (!$user->checkPerms(User::PERM_MAIL) && Post::t('email') != $user->forlifeEmail()) {
+            if (require_email_update($user, Post::t('email'))) {
                 $to_update['email'] = Post::t('email');
                 $listClient->change_user_email($user->forlifeEmail(), Post::t('email'));
+                update_alias_user($user->forlifeEmail(), Post::t('email'));
             }
         }
         if (!empty($to_update)) {
@@ -572,7 +589,6 @@ class AdminModule extends PLModule
         // }}}
 
         // Email forwards form {{{
-        require_once("emails.inc.php");
         $redirect = ($registered ? new Redirect($user) : null);
         if (Post::has('add_fwd')) {
             $email = Post::t('email');
@@ -801,8 +817,6 @@ class AdminModule extends PLModule
             $lines = explode("\n", Env::t('people'));
             $separator = Env::t('separator');
             $promotion = Env::i('promotion');
-            $nameTypes = DirEnum::getOptions(DirEnum::NAMETYPES);
-            $nameTypes = array_flip($nameTypes);
 
             if (Env::t('add_type') == 'promo') {
                 $eduSchools = DirEnum::getOptions(DirEnum::EDUSCHOOLS);
@@ -830,12 +844,12 @@ class AdminModule extends PLModule
                     $degreeid = $eduDegrees[Profile::DEGREE_D];
                     $grad_year = $promotion;
                     $entry_year = $promotion - 3;
-                    $promo = 'D' . $promotion;
-                    $hrpromo = $promo;
+                    $promo = 'D (en cours)';
+                    $hrpromo = 'D' . $promotion;
                     $type = 'phd';
                     break;
                   default:
-                    $page->killError("La formation n'est pas reconnue:" . Env::t('edu_type') . '.');
+                    $page->killError("La formation n'est pas reconnue : " . Env::t('edu_type') . '.');
                 }
 
                 XDB::startTransaction();
@@ -848,8 +862,10 @@ class AdminModule extends PLModule
                             $birthDate = self::formatBirthDate($infos[2]);
                             if ($type == 'x') {
                                 $xorgId = Profile::getXorgId($infos[4]);
-                            } else {
+                            } elseif (isset($infos[4])) {
                                 $xorgId = trim($infos[4]);
+                            } else {
+                                $xorgId = 0;
                             }
                             if (is_null($xorgId)) {
                                 $page->trigError("La ligne $line n'a pas été ajoutée car le matricule École est mal renseigné.");
@@ -858,27 +874,23 @@ class AdminModule extends PLModule
 
                             XDB::execute('INSERT INTO  profiles (hrpid, xorg_id, ax_id, birthdate_ref, sex)
                                                VALUES  ({?}, {?}, {?}, {?}, {?})',
-                                         $infos['hrid'], $xorgId, $infos[5], $birthDate, $sex);
+                                         $infos['hrid'], $xorgId, (isset($infos[5]) ? $infos[5] : null), $birthDate, $sex);
                             $pid = XDB::insertId();
-                            XDB::execute('INSERT INTO  profile_name (pid, name, typeid)
-                                               VALUES  ({?}, {?}, {?}),
-                                                       ({?}, {?}, {?}),
-                                                       ({?}, {?}, {?}),
-                                                       ({?}, {?}, {?})',
-                                         $pid, $infos[0], $nameTypes['name_ini'],
-                                         $pid, $infos[0], $nameTypes['lastname'],
-                                         $pid, $infos[1], $nameTypes['firstname_ini'],
-                                         $pid, $infos[1], $nameTypes['firstname']);
+                            XDB::execute('INSERT INTO  profile_public_names (pid, lastname_initial, lastname_main, firstname_initial, firstname_main)
+                                               VALUES  ({?}, {?}, {?}, {?}, {?})',
+                                         $pid, $infos[0], $infos[0], $infos[1], $infos[1]);
                             XDB::execute('INSERT INTO  profile_display (pid, yourself, public_name, private_name,
                                                                         directory_name, short_name, sort_name, promo)
                                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
                                          $pid, $infos[1], $fullName, $fullName, $directoryName, $fullName, $directoryName, $promo);
-                            XDB::execute('INSERT INTO  profile_education (id, pid, eduid, degreeid, entry_year, grad_year, flags)
-                                               VALUES  (100, {?}, {?}, {?}, {?}, {?}, \'primary\')',
-                                         $pid, $eduSchools[Profile::EDU_X], $degreeid, $entry_year, $grad_year);
-                            XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, full_name, directory_name, display_name, sex)
-                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                                         $infos['hrid'], $type, 0, 'pending', $fullName, $directoryName, $infos[1], $sex);
+                            XDB::execute('INSERT INTO  profile_education (id, pid, eduid, degreeid, entry_year, grad_year, promo_year, flags)
+                                               VALUES  (100, {?}, {?}, {?}, {?}, {?}, {?}, \'primary\')',
+                                         $pid, $eduSchools[Profile::EDU_X], $degreeid, $entry_year, $grad_year, $promotion);
+                            XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, full_name, directory_name,
+                                                                 display_name, lastname, firstname, sex)
+                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                                         $infos['hrid'], $type, 0, 'pending', $fullName, $directoryName,
+                                         $infos[1], $infos[0], $infos[1], $sex);
                             $uid = XDB::insertId();
                             XDB::execute('INSERT INTO  account_profiles (uid, pid, perms)
                                                VALUES  ({?}, {?}, {?})',
@@ -897,14 +909,11 @@ class AdminModule extends PLModule
                         if (!is_null($sex)) {
                             $fullName = $infos[1] . ' ' . $infos[0];
                             $directoryName = $infos[0] . ' ' . $infos[1];
-                            XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state,
-                                                                 email, full_name, directory_name,
-                                                                 display_name, sex)
-                                               VALUES  ({?}, {?}, {?}, {?},
-                                                        {?}, {?}, {?}, {?}, {?})',
-                                         $infos['hrid'], $type, 0, 'pending',
-                                         $infos[2], $fullName, $directoryName, 
-                                         $infos[1], $sex);
+                            XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, email, full_name, directory_name,
+                                                                 display_name, lastname, firstname, sex)
+                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                                         $infos['hrid'], $type, 0, 'pending', $infos[2], $fullName, $directoryName,
+                                         $infos[1], $infos[0], $infos[1], $sex);
                             $newAccounts[$infos['hrid']] = $infos[1] . ' ' . $infos[0];
                         }
                     }
@@ -960,14 +969,12 @@ class AdminModule extends PLModule
 
         // When we have a valid target, prepare emails.
         if ($target) {
-            require_once 'emails.inc.php';
             // Examine what operation needs to be performed.
             switch ($op) {
                 case 'mail':
                     S::assert_xsrf_token();
 
-                    send_warning_homonyme($user, $loginbis);
-                    fix_bestalias($user);
+                    send_warning_homonym($user, $loginbis);
                     $op = 'list';
                     $page->trigSuccess('Email envoyé à ' . $user->forlifeEmail() . '.');
                     break;
@@ -975,16 +982,8 @@ class AdminModule extends PLModule
                 case 'correct':
                     S::assert_xsrf_token();
 
-                    XDB::execute('DELETE FROM  email_source_account
-                                        WHERE  email = {?} AND type = \'alias\'',
-                                 $loginbis);
-                    XDB::execute('INSERT INTO  email_source_other (hrmid, email, domain, type, expire)
-                                       SELECT  {?}, {?}, id, \'homonym\', NOW()
-                                         FROM  email_virtual_domains
-                                        WHERE  name = {?}',
-                                 User::makeHomonymHrmid($loginbis), $loginbis, $user->mainEmailDomain());
-                    fix_bestalias($user);
-                    send_robot_homonyme($user, $loginbis);
+                    fix_homonym($user, $loginbis);
+                    send_robot_homonym($user, $loginbis);
                     $op = 'list';
                     $page->trigSuccess('Email envoyé à ' . $user->forlifeEmail() . ', alias supprimé.');
                     break;
@@ -1018,6 +1017,14 @@ class AdminModule extends PLModule
                 $homonyms_to_fix[$item['homonym']][] = $item;
             }
             $page->assign_by_ref('homonyms_to_fix', $homonyms_to_fix);
+        }
+
+        if ($op == 'correct-conf') {
+            $page->assign('robot_mail_text', get_robot_mail_text($user, $loginbis));
+        }
+
+        if ($op == 'mail-conf') {
+            $page->assign('warning_mail_text', get_warning_mail_text($user, $loginbis));
         }
     }
 
@@ -1264,7 +1271,7 @@ class AdminModule extends PLModule
 
     private static function updateLanguage(array $item) {}
 
-    function handler_geocoding(&$page, $category = null, $action = null, $id = null)
+    function handler_geocoding($page, $category = null, $action = null, $id = null)
     {
         // Warning, this handler requires the following packages:
         //  * pkg-isocodes
@@ -1455,7 +1462,7 @@ class AdminModule extends PLModule
         if (Post::has('create_account')) {
             S::assert_xsrf_token();
             $firstname = Post::t('firstname');
-            $lastname = strtoupper(Post::t('lastname'));
+            $lastname = mb_strtoupper(Post::t('lastname'));
             $sex = Post::s('sex');
             $email = Post::t('email');
             $type = Post::s('type');
@@ -1469,10 +1476,11 @@ class AdminModule extends PLModule
                 $directory_name = $lastname . ' ' . $firstname;
                 XDB::execute("INSERT INTO  accounts (hruid, type, state, password,
                                                      registration_date, email, full_name,
-                                                     display_name, sex, directory_name)
-                                   VALUES  ({?}, {?}, 'active', {?}, NOW(), {?}, {?}, {?}, {?}, {?})",
+                                                     display_name, sex, directory_name,
+                                                     lastname, firstname)
+                                   VALUES  ({?}, {?}, 'active', {?}, NOW(), {?}, {?}, {?}, {?}, {?}, {?}, {?})",
                              $login, $type, Post::s('pwhash'), $email, $full_name, $full_name, $sex,
-                             $directory_name);
+                             $directory_name, $lastname, $firstname);
             }
         }
 
@@ -1698,6 +1706,16 @@ class AdminModule extends PLModule
                                              ORDER BY  a.hruid'));
     }
 
+    function handler_xnet_without_group($page)
+    {
+        $page->changeTpl('admin/xnet_without_group.tpl');
+        $page->assign('accounts', XDB::iterator('SELECT  a.hruid, a.state
+                                                   FROM  accounts      AS a
+                                              LEFT JOIN  group_members AS m ON (a.uid = m.uid)
+                                                  WHERE  a.type = \'xnet\' AND m.uid IS NULL
+                                               ORDER BY  a.state, a.hruid'));
+    }
+
     function handler_jobs($page, $id = -1)
     {
         $page->changeTpl('admin/jobs.tpl');
@@ -1810,6 +1828,170 @@ class AdminModule extends PLModule
                             GROUP BY  pd.directory_name
                             ORDER BY  pd.directory_name');
         $page->assign('updates', $res);
+    }
+
+    function handler_phd($page, $promo = null, $validate = false)
+    {
+        $page->changeTpl('admin/phd.tpl');
+        $eduDegrees = DirEnum::getOptions(DirEnum::EDUDEGREES);
+        $eduDegrees = array_flip($eduDegrees);
+
+        if (is_null($promo)) {
+            $promo_list = XDB::fetchColumn('SELECT  DISTINCT(grad_year)
+                                              FROM  profile_education
+                                             WHERE  FIND_IN_SET(\'primary\', flags) AND NOT FIND_IN_SET(\'completed\', flags) AND degreeid = {?}
+                                          ORDER BY  grad_year',
+                                           $eduDegrees[Profile::DEGREE_D]);
+            $page->assign('promo_list', $promo_list);
+            $page->assign('nothing', count($promo_list) == 0);
+            return;
+        }
+
+        if ($validate) {
+            S::assert_xsrf_token();
+
+            $list = XDB::iterator('SELECT  pe.pid, pd.directory_name
+                                     FROM  profile_education AS pe
+                               INNER JOIN  profile_display   AS pd ON (pe.pid = pd.pid)
+                                    WHERE  FIND_IN_SET(\'primary\', pe.flags) AND NOT FIND_IN_SET(\'completed\', pe.flags)
+                                           AND pe.degreeid = {?} AND pe.grad_year = {?}',
+                                  $eduDegrees[Profile::DEGREE_D], $promo);
+            while ($res = $list->next()) {
+                $pid = $res['pid'];
+                $name = $res['directory_name'];
+                if (Post::b('completed_' . $pid)) {
+                    $grad_year = Post::t('grad_year_' . $pid);
+                    XDB::execute('UPDATE  profile_education
+                                     SET  flags = \'primary,completed\', grad_year = {?}
+                                   WHERE  FIND_IN_SET(\'primary\', flags) AND pid = {?}',
+                                 $grad_year, $pid);
+                    XDB::execute('UPDATE  profile_display
+                                     SET  promo = {?}
+                                   WHERE  pid = {?}',
+                                 'D' . $grad_year, $pid);
+                    $page->trigSuccess("Promotion de $name validée.");
+                }
+            }
+        }
+
+        $list = XDB::iterator('SELECT  pe.pid, pd.directory_name
+                                 FROM  profile_education AS pe
+                           INNER JOIN  profile_display   AS pd ON (pe.pid = pd.pid)
+                                WHERE  FIND_IN_SET(\'primary\', pe.flags) AND NOT FIND_IN_SET(\'completed\', pe.flags)
+                                       AND pe.degreeid = {?} AND pe.grad_year = {?}
+                             ORDER BY  pd.directory_name',
+                              $eduDegrees[Profile::DEGREE_D], $promo);
+        $page->assign('list', $list);
+        $page->assign('promo', $promo);
+    }
+
+    function handler_add_secondary_edu($page)
+    {
+        $page->changeTpl('admin/add_secondary_edu.tpl');
+
+        if (!(Post::has('verify') || Post::has('add'))) {
+            return;
+        } elseif (!Post::has('people')) {
+            $page->trigWarning("Aucune information n'a été fournie.");
+            return;
+        }
+
+        require_once 'name.func.inc.php';
+        $lines = explode("\n", Post::t('people'));
+        $separator = Post::t('separator');
+        $degree = Post::v('degree');
+        $promotion = Post::i('promotion');
+        $schoolsList = array_flip(DirEnum::getOptions(DirEnum::EDUSCHOOLS));
+        $degreesList = array_flip(DirEnum::getOptions(DirEnum::EDUDEGREES));
+        $edu_id = $schoolsList[Profile::EDU_X];
+        $degree_id = $degreesList[$degree];
+
+        $res = array(
+            'incomplete' => array(),
+            'empty'      => array(),
+            'multiple'   => array(),
+            'already'    => array(),
+            'new'        => array()
+        );
+        $old_pids = array();
+        $new_pids = array();
+        foreach ($lines as $line) {
+            $line = trim($line);
+            $line_array = explode($separator, $line);
+            array_walk($line_array, 'trim');
+            if (count($line_array) != 3) {
+                $page->trigError("La ligne « $line » est incomplète.");
+                $res['incomplete'][] = $line;
+                continue;
+            }
+            $cond = new PFC_And(new UFC_NameTokens(split_name_for_search($line_array[0]), array(), false, false, Profile::LASTNAME));
+            $cond->addChild(new UFC_NameTokens(split_name_for_search($line_array[1]), array(), false, false, Profile::FIRSTNAME));
+            $cond->addChild(new UFC_Promo('=', UserFilter::DISPLAY, $line_array[2]));
+            $uf = new UserFilter($cond);
+            $pid = $uf->getPIDs();
+            $count = count($pid);
+            if ($count == 0) {
+                $page->trigError("La ligne « $line » ne correspond à aucun profil existant.");
+                $res['empty'][] = $line;
+                continue;
+            } elseif ($count > 1) {
+                $page->trigError("La ligne « $line » correspond à plusieurs profils existant.");
+                $res['multiple'][] = $line;
+                continue;
+            } else {
+                $count = XDB::fetchOneCell('SELECT  COUNT(*) AS count
+                                              FROM  profile_education
+                                             WHERE  pid = {?} AND eduid = {?} AND degreeid = {?}',
+                                      $pid, $edu_id, $degree_id);
+                if ($count == 1) {
+                    $res['already'][] = $line;
+                    $old_pids[] = $pid[0];
+                } else {
+                    $res['new'][] = $line;
+                    $new_pids[] = $pid[0];
+                }
+            }
+        }
+
+        $display = array();
+        foreach ($res as $type => $res_type) {
+            if (count($res_type) > 0) {
+                $display = array_merge($display, array('--------------------' . $type . ':'), $res_type);
+            }
+        }
+        $page->assign('people', implode("\n", $display));
+        $page->assign('promotion', $promotion);
+        $page->assign('degree', $degree);
+
+        if (Post::has('add')) {
+            $entry_year = $promotion - Profile::educationDuration($degree);
+
+            if (Post::b('force_addition')) {
+                $pids = array_unique(array_merge($old_pids, $new_pids));
+            } else {
+                $pids = array_unique($new_pids);
+
+                // Updates years.
+                XDB::execute('UPDATE  profile_education
+                                 SET  entry_year = {?}, grad_year = {?}, promo_year = {?}
+                               WHERE  pid IN {?} AND eduid = {?} AND degreeid = {?}',
+                             $entry_year, $promotion, $promotion, $old_pids, $edu_id, $degree_id);
+            }
+
+            // Precomputes values common to all users.
+            $select = XDB::format('MAX(id) + 1, pid, {?}, {?}, {?}, {?}, {?}, \'secondary\'',
+                                  $edu_id, $degree_id, $entry_year, $promotion, $promotion );
+            XDB::startTransaction();
+            foreach ($pids as $pid) {
+                XDB::execute('INSERT INTO  profile_education (id, pid, eduid, degreeid, entry_year, grad_year, promo_year, flags)
+                                   SELECT  ' . $select . '
+                                     FROM  profile_education
+                                    WHERE  pid = {?}',
+                             $pid);
+            }
+            XDB::commit();
+        }
+
     }
 }
 

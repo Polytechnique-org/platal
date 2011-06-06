@@ -1,9 +1,109 @@
 ================================================================================
-VERSION 1.1.0                                                         XX XX XXXX
+VERSION 1.1.2                                                         XX XX XXXX
+
+New:
+
+    * Geoloc:
+        - Updates geocoding to Google Maps API v3                          -JAC
+        - Reintroduces maps, now based on Google Maps                      -JAC
+
+Bug/Wish:
+
+    * Paiement:
+        - #192: Displays users donations                                   -JAC
+        - #1499: Fixes session user's payment display in xnet admin page   -JAC
+
+    * Profile:
+        - #1489: Enables automatic procecessing for secondary education    -JAC
+        - #1497: Fixes issues with ordinary names                          -JAC
+
+    * Register:
+        - #1501: Displays redirections in succesful registration summary   -JAC
+        - #1506: Displays errors summary on registration alert emails      -JAC
+
+    * Search:
+        - #1285: Autocompletes on internal words in university search      -JAC
+
+    * XnetGrp:
+        - #947: Lists group former members to group admins                 -JAC
+        - #1481: Adds group nl subscription from group profile edition     -JAC
+        - #1504: Displays users without profile in alphabetic lists        -JAC
+
+    * XnetEvent:
+        - #1487: Removes link to event attending users to group outsiders  -JAC
+        - #1491: Fixes participants multi-page display                     -JAC
+
+================================================================================
+VERSION 1.1.1                                                         09 05 2011
+
+New:
+
+    * XnetGrp:
+        - Enables creation of multiple Xnet accounts for groups            -JAC
+
+Bug/Wish:
+
+    * Auth:
+        - #1474: Provides accounts data for accounts without profile       -JAC
+        - #1476: Logs last use of Auth-Groupe-X keys                       -JAC
+
+    * Carnet:
+        - #1486: Allows deletion of deceased contact/watched user          -JAC
+
+    * Core:
+        - #1484: Fix reference to is_IE that does not exist anymore        -FRU
+
+    * Emails:
+        - #1110: Improves email combobox                                   -JAC
+        - #1459: Lists and administrates aliases on main domain            -JAC
+        - #1477: Fixes display and (de)activation of email storages        -JAC
+        - #1479: Fixes display of corps in bounce list                     -JAC
+
+    * Events:
+        - #1475: Fixes date storage for next reminder                      -JAC
+
+    * Newsletter:
+        - #1394: Links nl unsubscribtions to the issues that caused them   -JAC
+
+    * Paiement:
+        - #1485: Properly formats name and comment field in paiements      -JAC
+
+    * Profile:
+        - #1445: Add job entry year                                        -JAC
+        - #1478: Uses user's visibility limitations to display vcards      -JAC
+
+    * Search:
+        - #911: Adds search on corps                                       -JAC
+        - #990: Adds search on broken redirections                         -JAC
+        - #1469: Adds search on firstname/lastname/nickname                -JAC
+        - #1470: Fixes autocomplete on countries                           -JAC
+
+    * XnetGrp:
+        - Enables NLs filling from group members                           -JAC
+        - #1179: Adds alphabetic choices for group directories             -XEL
+        - #1460: Enables NLs creation for groups                           -XEL
+        - #1473: Enables group filling from its MLs and aliases            -JAC
+
+    * XnetList:
+        - #957: Allows xnet list sorting by description and members count  -JAC
+
+From 1.1.0 branch:
+
+    * Search:
+        - #1449: Load json2 on IE because IE<=7 do not implement JSON      -FRU
+
+================================================================================
+VERSION 1.1.0                                                         26 03 2011
+
+New:
+
+    * Search:
+        - Add suggestions on quicksearch box                               -FRU
 
 Bug/Wish:
 
     * Admin:
+        - #1042: Implements a url-shortener                                -JAC
         - #1315: Displays antispam level in users email admin pages        -JAC
         - #1399: Displays all similar entreprises only on demand           -JAC
         - #1403: Displays grade if any in medal validation process         -JAC
@@ -13,6 +113,11 @@ Bug/Wish:
         - #1035: Bases emails on users types (eg educationnal types)       -JAC
         - #1404: Implements best_domain                                    -JAC
 
+    * Newsletter:
+        - #664: Adds tool to search in nl archives                         -JAC
+        - #908: Displays remaining lines and characters in submission      -JAC
+        - #1393: Logs main nl events (create, delete, validate, cancel)    -JAC
+
     * Payments:
         - #1398: Creates csv for payments                                  -JAC
 
@@ -21,6 +126,9 @@ Bug/Wish:
         - #1380: Allows multiple entries for some medals                   -JAC
         - #1389: Do not require validation for private names modifications -JAC
         - #1401: Main addresses are displayed before secondary addresses   -JAC
+
+    * Xnet:
+        - Accounts for xnet only users                                     -JAC
 
     * XnetGrp:
         - #907: Adds more info about groups (address, phones, positions)   -JAC

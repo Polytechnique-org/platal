@@ -103,9 +103,19 @@
         {/if}
       {/if}
     </div>
+    {elseif hasPerm('directory_private') && $hasowner && $dead}
+    <div>
+      {if $smarty.session.user->isWatchedUser($profile)}
+      <a href="carnet/notifs/del_nonins/{$user->login()}?token={xsrf_token}">{*
+      *}{icon name=cross title="Retirer de la liste de mes surveillances"}</a>
+      {elseif $smarty.session.user->isContact($profile)}
+      <a href="carnet/contacts?action=retirer&amp;user={$profile->hrid()}&amp;token={xsrf_token}">{*
+      *}{icon name=cross title="Retirer de mes contacts"}</a>
+      {/if}
+    </div>
     {/if}
 
-    {if hasPerm('admin') || $smarty.session.user->canEdit($profile)}
+    {if hasPerm('admin') || ($smarty.session.user->canEdit($profile) && !$smarty.session.user->isMe($user))}
     <div>
       [{if hasPerm('admin') && $hasowner}{if !$registered && !$dead}
       <a href="marketing/private/{$user->login()}">{*
@@ -115,7 +125,8 @@
       *}{icon name=wrench title="administrer user"}</a>{/if}{*
       *}{if hasPerm('admin') || $smarty.session.user->canEdit($profile)}{*
       *}<a href="profile/edit/{$user->login()}">{*
-      *}{icon name=user_edit title="modifier la fiche"}</a>{*
+      *}{icon name=user_edit title="modifier la fiche"}</a>{/if}{*
+      *}{if hasPerm('admin,edit_directory')}{*
       *}<a href="profile/ax/{$user->login()}">{*
       *}{icon name=user_gray title="fiche AX"}</a>{/if}]
     </div>

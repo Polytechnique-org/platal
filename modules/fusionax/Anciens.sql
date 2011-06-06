@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS fusionax_anciens (
   AN CHAR(2) NOT NULL COMMENT 'Vaut toujours AN pour cette table',
   ax_id VARCHAR(8) NOT NULL COMMENT 'Id unique de l''ancien',
   promotion_etude SMALLINT(4) NOT NULL COMMENT 'Promotion avec laquelle il/elle a fait ses études',
+  groupe_promo CHAR(1) NOT NULL COMMENT '0, M ou D',
   Nom_patronymique VARCHAR(255) NOT NULL COMMENT 'Nom patronymique (nom de jeune fille) sans la particule',
   partic_patro VARCHAR(5) NOT NULL COMMENT 'Particule du nom patronymique',
   prenom VARCHAR(30) NOT NULL COMMENT 'Prénom',
@@ -27,7 +28,7 @@ CREATE TABLE IF NOT EXISTS fusionax_anciens (
 ) ENGINE=InnoDB, CHARSET=utf8;
 
 LOAD DATA LOCAL INFILE '{?}Anciens.txt' INTO TABLE `fusionax_anciens` CHARACTER SET utf8 FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\r\n'
-(AN, ax_id, @login, @password, promotion_etude, @gpe_promo, Nom_patronymique, partic_patro, prenom, Nom_usuel, partic_nom,
+(AN, ax_id, @login, @password, promotion_etude, groupe_promo, Nom_patronymique, partic_patro, prenom, Nom_usuel, partic_nom,
   Nom_complet, @civilite, Code_nationalite, @type, corps_sortie, @StringDate_deces, grade, Mel_usage, Mel_publiable, @xxx, Mob_publiable,
   tel_mobile, @xxx, @xxx, @xxx, @xxx, @xxx, @xxx, @xxx, @X_M_D, @xxx, @xxx, @xxx, @xxx, @xxx, @xxx, @Type_adr,
   @Ligne1, @Ligne2, @Ligne3, @code_postal, @ville, @zip_cedex, @etat_distr, @pays, @tel, @fax, @StringDate_maj)
@@ -38,6 +39,8 @@ SET
 
 ALTER TABLE fusionax_anciens ADD INDEX (ax_id);
 UPDATE fusionax_anciens SET corps_sortie = TRIM(corps_sortie), grade = TRIM(grade);
+UPDATE fusionax_anciens SET groupe_promo = 'X' WHERE groupe_promo NOT IN ('M', 'D');
+UPDATE fusionax_anciens SET promotion_etude = SUBSTRING(ax_id, 1, 4) WHERE groupe_promo != 'X';
 
 -- Correspondances entre fiches X.org et fiches AX
 DROP TABLE IF EXISTS `fusionax_import`;

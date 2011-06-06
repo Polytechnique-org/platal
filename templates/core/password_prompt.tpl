@@ -56,7 +56,7 @@
           <option value="alias" {if t($smarty.cookies.ORGdomain) && $smarty.cookies.ORGdomain eq "alias"}selected="selected"{/if}>
             @ {#globals.mail.alias_dom#} / {#globals.mail.alias_dom2#}
           </option>
-          <option value="ax" {if t($smarty.cookies.ORGdomain) && $smarty.cookies.ORGdomain eq "ax"}selected="selected"{/if}>
+          <option value="hruid" {if t($smarty.cookies.ORGdomain) && $smarty.cookies.ORGdomain eq "ax"}selected="selected"{/if}>
             Identifiant
           </option>
         </select>
@@ -88,14 +88,8 @@
     </tr>
     <tr>
       <td colspan="2">
-      <table width="100%"><tr>
-      <td>
-        <a href="recovery">Mot de passe perdu&nbsp;?</a>
-      </td>
-      <td class="right">
-        <input type="submit" name="submitbtn" value="Me connecter" />
-      </td>
-      </tr></table>
+        <a href="recovery" style="float: left">Mot de passe perdu&nbsp;?</a>
+        <input type="submit" name="submitbtn" value="Me connecter" style="float: right" />
       </td>
     </tr>
   </table>

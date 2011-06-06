@@ -71,7 +71,8 @@ function searchX()
   <table class="tinybicol">
     <tr>
       <td class="center" colspan="2">
-        <input type="text" id="email" name="email" size="40" value="{$platal->argv[1]}" />
+        <input type="text" id="email" name="email" size="40" value="{if t($platal->argv[1])}{$platal->argv[1]}{/if}" />
+        <input type="hidden" name="force_continue" value="{if t($force_continue)}1{else}0{/if}" />
         <input type='submit' value='Ajouter'
           onclick='this.form.action += this.form.email.value' />
       </td>
@@ -80,7 +81,7 @@ function searchX()
       <td colspan="2">
         <input type="checkbox" id="x" name="x" onchange="xStateChange(this);" />
         {* TODO: adapts text for masters and doctorates when required. *}
-        <label for="x">Coche cette case s'il s'agit d'un X non inscrit à Polytechnique.org.</label>
+        <label for="x">Coche cette case s'il s'agit d'un X ou un master ou doctorant de l'X non inscrit à Polytechnique.org.</label>
       </td>
     </tr>
     <tr id="xnom" style="display: none">
@@ -98,7 +99,7 @@ function searchX()
     </tr>
     <tr id="xsearch" style="display: none" class="pair">
       <td colspan="2" id="search_result">
-        {include file="xnet/groupe/membres-new-search.tpl"}
+        {include file="xnetgrp/membres-new-search.tpl"}
       </td>
     </tr>
   </table>

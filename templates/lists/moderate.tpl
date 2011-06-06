@@ -42,7 +42,7 @@
     </td>
     <td>{$s.addr}</td>
     <td class='action'>
-      <a href='{$platal->pl_self(1)}?sadd={$s.id}&amp;token={xsrf_token}'>{icon name=add title="Valider l'inscription"}</a>
+      <a href='{$platal->pl_self(1)}?sadd={$s.id}&amp;token={xsrf_token}'>{icon name=tick title="Valider l'inscription"}</a>
       <a href='{$platal->pl_self(1)}?sid={$s.id}'>{icon name=delete title="Refuser l'inscription"}</a>
     </td>
   </tr>
@@ -59,7 +59,7 @@
 {if $mails|@count}
 <ul>
   <li>
-  <strong>{icon name=add}accepter&nbsp;:</strong> l'email est immédiatement libéré, et envoyé à la
+  <strong>{icon name=tick}accepter&nbsp;:</strong> l'email est immédiatement libéré, et envoyé à la
   liste.
   </li>
   <li>
@@ -126,7 +126,7 @@ function toggleAll() {
       {$m.size} octets</small>
     </td>
     <td class='action'>
-      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mok=1&amp;token={xsrf_token}'>{icon name=add title="Accepter le message"}</a>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mok=1&amp;token={xsrf_token}'>{icon name=tick title="Accepter le message"}</a>
     </td>
     <td class='action'>
       <a href='{$platal->pl_self(1)}?mid={$m.id}'>{icon name=magnifier title="Voir le message"}</a><br/>
@@ -168,7 +168,7 @@ function toggleAll() {
       {$m.size} octets</small>
     </td>
     <td class='action'>
-      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mok=1&amp;token={xsrf_token}'>{icon name=add title="Accepter le message"}</a>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mok=1&amp;token={xsrf_token}'>{icon name=tick title="Accepter le message"}</a>
     </td>
     <td class='action'>
       <a href='{$platal->pl_self(1)}?mid={$m.id}'>{icon name=magnifier title="Voir le message"}</a><br/>

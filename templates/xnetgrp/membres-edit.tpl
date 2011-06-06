@@ -28,6 +28,7 @@
       document.getElementById('prenom').style.display = state;
       document.getElementById('sexe').style.display = state;
       document.getElementById('make_X').style.display = state;
+      document.getElementById('password').style.display = state;
   }
 
   function showXInput(box)
@@ -89,7 +90,7 @@
         </select>
       </td>
     </tr>
-    {if $user->type eq 'virtual' || $user->type eq 'xnet'}
+    {if $user->type eq 'virtual' || ($user->type eq 'xnet' && !$user->perms)}
     <tr class="impair">
       <td class="titre">
         Type d'utilisateur&nbsp;:
@@ -101,30 +102,34 @@
         </select>
       </td>
     </tr>
-      <tr id="prenom" class="impair" {if $user->type eq "virtual"}style="display: none"{/if}>
-      <td class="titre">
-        Nom affiché&nbsp;:
+    <tr class="impair">
+      <td class="titre">Nom complet&nbsp;:</td>
+      <td>{$user->fullName()}</td>
+    </tr>
+    <tr class="impair">
+      <td class="titre">Nom annuaire&nbsp;:</td>
+      <td>{$user->directoryName()}</td>
+    </tr>
+    <tr class="impair">
+      <td class="titre">Nom&nbsp;:</td>
+      <td>
+        <input type="text" value="{$user->lastname}" name="lastname" size="40" />
       </td>
+    </tr>
+    {if $user->type neq "virtual"}
+    <tr class="impair">
+      <td class="titre">Prénom&nbsp;:</td>
+      <td>
+        <input type="text" value="{$user->firstname}" name="firstname" size="40" />
+      </td>
+    </tr>
+    <tr class="impair">
+      <td class="titre">Nom affiché&nbsp;:</td>
       <td>
         <input type="text" value="{$user->displayName()}" name="display_name" size="40" />
       </td>
     </tr>
-    <tr class="impair">
-      <td class="titre">
-        Nom complet&nbsp;:
-      </td>
-      <td>
-        <input type="text" value="{$user->fullName()}" name="full_name" size="40" />
-      </td>
-    </tr>
-    <tr class="impair">
-      <td class="titre">
-        Nom annuaire&nbsp;:
-      </td>
-      <td>
-        <input type="text" value="{$user->directoryName()}" name="directory_name" size="40" />
-      </td>
-    </tr>
+    {/if}
     <tr id="sexe" class="impair" {if $user->type eq "virtual"}style="display: none"{/if}>
       <td class="titre">
         Sexe&nbsp;:
@@ -156,17 +161,42 @@
         <small>Poste, origine&hellip; (accessible à toutes les personnes autorisées à consulter l'annuaire)</small>
       </td>
     </tr>
+    {if $asso->has_nl}
+    <tr class="impair">
+      <td class="titre">
+        Newsletter&nbsp;:
+      </td>
+      <td>
+        <label>Inscrit<input type="radio" name="newsletter" value="1" {if $nl_registered eq 1}checked="checked"{/if} /></label>
+        &nbsp;-&nbsp;
+        <label><input type="radio" name="newsletter" value="0" {if $nl_registered eq 0}checked="checked"{/if} />Non inscrit</label>
+      </td>
+    </tr>
+    {/if}
     {if $user->type eq 'xnet'}
     <tr id="make_X">
       <td colspan="2">
         <span id="make_X_cb">
           <input type="checkbox" name="is_x" id="is_x" onclick="showXInput(this);" onchange="showXInput(this);" />
-          <label for="is_x">coche cette case s'il s'agit d'un X</label>
+          <label for="is_x">coche cette case s'il s'agit d'un X ou un master ou doctorant de l'X</label>
         </span>
         <span id="make_X_login" style="display: none">
           <span class="titre">Identifiant (prenom.nom.promo)&nbsp;:</span>
           <input type="text" name="login_X" value="" />
         </span>
+      </td>
+    </tr>
+    {/if}
+    {if $user->type eq 'xnet' && $suggest}
+    <tr>
+      <td colspan="2">
+        <label>
+          <input type="checkbox" name="suggest" />
+          coche cette case si tu souhaites qu'un compte « Extérieur » soit créé
+          pour cette personne et que nous lui envoyions un email afin qu'il ait
+          accès aux nombreuses fonctionnalités de Polytechnique.net (inscription
+          aux évènements, télépaiement, modération des listes de diffusion&hellip;)
+        </label>
       </td>
     </tr>
     {/if}
@@ -223,7 +253,7 @@
 
   <div class="center">
     <br />
-    <input type="submit" name='change' value="Valider ces changements" />
+    <input type="submit" name='change' value="Valider ces changements" onclick="return hashResponse('new_plain_password', false, false, false);" />
     &nbsp;
     <input type="reset" value="Annuler ces changements" />
   </div>

@@ -79,12 +79,14 @@ class MarkReq extends Validate
 
     protected function _mail_body($isok)
     {
+        $your1 = ($this->formal ? 'votre' : 'ton');
+        $your2 = ($this->formal ? 'votre' : 'ta');
         if ($isok) {
             return "  Un email de marketing vient d'être envoyé "
-                . ($this->perso ? 'en ton nom' : 'en notre nom')
+                . ($this->perso ? "en $your1 nom" : 'en notre nom')
                 . " à {$this->m_user->fullName()} ({$this->m_user->promo()}) "
                 . "pour l'encourager à s'inscrire !\n\n"
-                . "Merci de ta participation !\n";
+                . "Merci de $your2 participation !\n";
         } else {
             return "  Nous n'avons pas jugé bon d'envoyer d'email de marketing à "
                 . "{$this->m_user->fullName()} ({$this->m_user->promo()}).";

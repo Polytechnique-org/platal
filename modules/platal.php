@@ -21,7 +21,7 @@
 
 function bugize($list)
 {
-    $list = preg_split('/,/', Env::s('libs'), -1, PREG_SPLIT_NO_EMPTY);
+    $list = preg_split('/,/', $list, -1, PREG_SPLIT_NO_EMPTY);
     $ans  = array();
 
     foreach ($list as $bug) {
@@ -229,6 +229,7 @@ class PlatalModule extends PLModule
 
         $page->changeTpl('platal/password.tpl');
         $page->setTitle('Mon mot de passe');
+        $page->assign('do_auth', 0);
     }
 
     function handler_smtppass($page)
@@ -275,7 +276,7 @@ class PlatalModule extends PLModule
             return;
         }
 
-        if (!ereg('[0-3][0-9][0-1][0-9][1][9]([0-9]{2})', Env::v('birth'))) {
+        if (!preg_match('/^[0-3][0-9][0-1][0-9][1][9]([0-9]{2})$/', Env::v('birth'))) {
             $page->trigError('Date de naissance incorrecte ou incohérente');
             return;
         }
@@ -339,12 +340,11 @@ Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la
 Polytechnique.org
 \"Le portail des élèves & anciens élèves de l'École polytechnique\"
 
-Email envoyé à ".Env::v('login') . (Post::has('email') ? "
-Adresse de secours : " . Post::v('email') : ""));
+Email envoyé à ".Env::v('login') . (is_null($to) ? '' : '
+Adresse de secours : ' . $to));
         $mymail->send();
 
-        // on cree un objet logger et on log l'evenement
-        S::logger($user->id())->log('recovery', $mails);
+        S::logger($user->id())->log('recovery', is_null($to) ? $inactives_to . ', ' . $user->bestEmail() : $to);
     }
 
     function handler_tmpPWD($page, $certif = null)
@@ -383,9 +383,20 @@ Adresse de secours : " . Post::v('email') : ""));
             }
 
             S::logger($uid)->log("passwd", "");
+
+            // Try to start a session (so the user don't have to log in); we will use
+            // the password available in Post:: to authenticate the user.
+            Platal::session()->start(AUTH_MDP);
+
             $page->changeTpl('platal/tmpPWD.success.tpl');
         } else {
+            $hruid = XDB::fetchOneCell('SELECT  hruid
+                                          FROM  accounts
+                                         WHERE  uid = {?}',
+                                       $uid);
             $page->changeTpl('platal/password.tpl');
+            $page->assign('hruid', $hruid);
+            $page->assign('do_auth', 1);
         }
     }
 

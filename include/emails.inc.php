@@ -24,38 +24,79 @@ define('ERROR_INACTIVE_REDIRECTION', 2);
 define('ERROR_INVALID_EMAIL', 3);
 define('ERROR_LOOP_EMAIL', 4);
 
-function add_to_list_alias(User $user, $local_part, $domain, $type = 'alias')
+// Checks if an email update is required in MLs and aliases.
+// This occurs when the user don't have email permissions and her email has changed.
+function require_email_update(User $user, $new_email)
 {
-    Platal::assert($user !== null);
+    Platal::assert(!is_null($user), 'User cannot be null.');
+
+    return !$user->checkPerms(User::PERM_MAIL) && $new_email != $user->forlifeEmail();
+}
+
+function format_email_alias($email)
+{
+    if ($user = User::getSilent($email)) {
+        return $user->forlifeEmail();
+    }
+    if (isvalid_email($email)) {
+        return $email;
+    }
+    return null;
+}
+
+function add_to_list_alias($email, $local_part, $domain, $type = 'alias')
+{
+    $email = format_email_alias($email);
+    if (is_null($email)) {
+        return false;
+    }
 
     XDB::execute('INSERT IGNORE INTO  email_virtual (email, domain, redirect, type)
                               SELECT  {?}, id, {?}, {?}
                                 FROM  email_virtual_domains
                                WHERE  name = {?}',
-                 $local_part, $user->forlifeEmail(), $type, $domain);
+                 $local_part, $email, $type, $domain);
+    return true;
 }
 
-function delete_from_list_alias(User $user, $local_part, $domain, $type = 'alias')
+function delete_from_list_alias($email, $local_part, $domain, $type = 'alias')
 {
-    Platal::assert($user !== null);
+    $email = format_email_alias($email);
+    if (is_null($email)) {
+        return false;
+    }
 
     XDB::execute('DELETE  v
                     FROM  email_virtual         AS v
               INNER JOIN  email_virtual_domains AS m ON (v.domain = m.id)
               INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
                    WHERE  v.email = {?} AND d.name = {?} AND v.redirect = {?} AND type = {?}',
-                 $local_part, $domain, $user->forlifeEmail(), $type);
+                 $local_part, $domain, $email, $type);
+    return true;
 }
 
-function update_list_alias(User $user, $former_email, $local_part, $domain, $type = 'alias')
+function update_list_alias($email, $former_email, $local_part, $domain, $type = 'alias')
 {
-    Platal::assert($user !== null);
+    $email = format_email_alias($email);
+    if (is_null($email)) {
+        return false;
+    }
 
     XDB::execute('UPDATE  email_virtual         AS v
               INNER JOIN  email_virtual_domains AS d ON (v.domain = d.id)
                      SET  v.redirect = {?}
                    WHERE  v.redirect = {?} AND d.name = {?} AND v.email = {?} AND v.type = {?}',
-                 $user->forlifeEmail(), $former_email, $domain, $local_part, $type);
+                 $email, $former_email, $domain, $local_part, $type);
+    return true;
+}
+
+// Updates an email in all aliases (groups and events).
+function update_alias_user($former_email, $new_email)
+{
+    XDB::execute('UPDATE  email_virtual
+                     SET  redirect = {?}
+                   WHERE  redirect = {?} AND (type = \'alias\' OR type = \'event\')',
+                 $new_email, $former_email);
 }
 
 function list_alias_members($local_part, $domain)
@@ -67,12 +108,20 @@ function list_alias_members($local_part, $domain)
                                  WHERE  v.email = {?} AND d.name = {?} AND type = \'alias\'',
                                $local_part, $domain);
 
-    $members = array();
+    $users = array();
+    $nonusers = array();
     foreach ($emails as $email) {
-        $members[] = User::getSilent($email);
+        if ($user = User::getSilent($email)) {
+            $users[] = $user;
+        } else {
+            $nonusers[] = $email;
+        }
     }
 
-    return $members;
+    return array(
+        'users'    => $users,
+        'nonusers' => $nonusers
+    );
 }
 
 function delete_list_alias($local_part, $domain)
@@ -116,8 +165,8 @@ function delete_list($local_part, $domain)
 
     $redirect = $domain . '_' . $local_part . '+';
     foreach(array('post', 'owner', 'admin', 'bounces', 'unsubscribe') as $suffix) {
-        XDB::execute('DELETE  email_virtual
-                       WHERE  redirect = {?} AND type = \'list\'',
+        XDB::execute('DELETE FROM  email_virtual
+                            WHERE  redirect = {?} AND type = \'list\'',
                      $redirect . $suffix . '@' . $globals->lists->redirect_domain);
     }
 }
@@ -140,7 +189,8 @@ function mark_broken_email($email, $admin = false)
         return;
     }
 
-    $user = XDB::fetchOneAssoc('SELECT  r1.uid, r1.broken_level != 0 AS broken, a.hruid, COUNT(r2.uid) AS nb_mails, a.full_name, s.email AS alias
+    $user = XDB::fetchOneAssoc('SELECT  r1.uid, a.hruid, a.full_name, r1.broken_level != 0 AS broken, COUNT(r2.uid) AS nb_mails,
+                                        s.email AS alias, DATE_ADD(r1.last, INTERVAL 14 DAY) < CURDATE() as notify
                                   FROM  email_redirect_account AS r1
                             INNER JOIN  accounts               AS a  ON (a.uid = r1.uid)
                             INNER JOIN  email_source_account   AS s  ON (a.uid = s.uid AND s.flags = \'bestalias\')
@@ -324,6 +374,9 @@ function ids_from_mails(array $emails)
 // The Bogo class represents a spam filtering level in plat/al architecture.
 class Bogo
 {
+    const MAIN_DEFAULT = 'default';
+    const IMAP_DEFAULT = 'let_spams';
+
     public static $states = array(
         0 => 'default',
         1 => 'let_spams',
@@ -347,7 +400,8 @@ class Bogo
         $this->user = &$user;
         $res = XDB::fetchOneAssoc('SELECT  COUNT(DISTINCT(action)) AS action_count, COUNT(redirect) AS redirect_count, action
                                      FROM  email_redirect_account
-                                    WHERE  uid = {?} AND (type = \'smtp\' OR type = \'googleapps\') AND flags = \'active\'',
+                                    WHERE  uid = {?} AND (type = \'smtp\' OR type = \'googleapps\') AND flags = \'active\'
+                                 GROUP BY  uid',
                                   $user->id());
         if ($res['redirect_count'] == 0) {
             return;
@@ -415,6 +469,7 @@ class Email
 
     // Basic email properties; $sufficient indicates if the email can be used as
     // an unique redirection; $redirect contains the delivery email address.
+    public $id;
     public $type;
     public $sufficient;
     public $email;
@@ -456,6 +511,11 @@ class Email
         }
         $this->sufficient = ($this->type == 'smtp' || $this->type == 'googleapps');
         $this->filter_level = ($this->type == 'imap') ? null : array_search($this->action, Bogo::$states);
+        if (array_key_exists($this->type , self::$storage_domains)) {
+            $this->id = $this->type;
+        } else {
+            $this->id = str_replace(array('@', '.'), array('_at_', '_dot_'), $this->email);
+        }
         $this->user = &$user;
     }
 
@@ -463,10 +523,14 @@ class Email
     public function activate()
     {
         if ($this->inactive) {
-            XDB::execute('UPDATE  email_redirect_account
-                             SET  broken_level = IF(flags = \'broken\', broken_level - 1, broken_level), flags = \'active\'
-                           WHERE  uid = {?} AND redirect = {?}',
-                         $this->user->id(), $this->email);
+            if (in_array($this->type, self::get_allowed_storages($this->user))) {
+                self::activate_storage($this->user, $this->type, $this->action);
+            } else {
+                XDB::execute('UPDATE  email_redirect_account
+                                 SET  broken_level = IF(flags = \'broken\', broken_level - 1, broken_level), flags = \'active\'
+                               WHERE  uid = {?} AND redirect = {?}',
+                             $this->user->id(), $this->email);
+            }
             S::logger()->log('email_on', $this->email . ($this->user->id() != S::v('uid') ? "(admin on {$this->user->login()})" : ''));
             $this->inactive = false;
             $this->active   = true;
@@ -477,10 +541,14 @@ class Email
     public function deactivate()
     {
         if ($this->active) {
-            XDB::execute('UPDATE  email_redirect_account
-                             SET  flags = \'inactive\'
-                           WHERE  uid = {?} AND redirect = {?}',
-                         $this->user->id(), $this->email);
+            if (in_array($this->type, self::get_allowed_storages($this->user))) {
+                self::deactivate_storage($this->user, $this->type);
+            } else {
+                XDB::execute('UPDATE  email_redirect_account
+                                 SET  flags = \'inactive\'
+                               WHERE  uid = {?} AND redirect = {?}',
+                             $this->user->id(), $this->email);
+            }
             S::logger()->log('email_off', $this->email . ($this->user->id() != S::v('uid') ? "(admin on {$this->user->login()})" : "") );
             $this->inactive = true;
             $this->active   = false;
@@ -566,14 +634,15 @@ class Email
     }
 
     // Returns the list of allowed storages for the @p user.
-    static private function get_allowed_storages(User $user)
+    static public function get_allowed_storages(User $user)
     {
         global $globals;
         $storages = array();
 
         // Google Apps storage is available for users with valid Google Apps account.
         require_once 'googleapps.inc.php';
-        if ($globals->mailstorage->googleapps_domain &&
+        if ($user->checkPerms('gapps') &&
+            $globals->mailstorage->googleapps_domain &&
             GoogleAppsAccount::account_status($user->id()) == 'active') {
             $storages[] = 'googleapps';
         }
@@ -587,23 +656,33 @@ class Email
         return $storages;
     }
 
-    static public function activate_storage(User $user, $storage)
+    static public function make_storage_redirection(User $user, $storage)
     {
-        Platal::assert(in_array($storage, self::get_allowed_storages($user)));
+        return $user->hruid . '@' . self::$storage_domains[$storage] . '.' . Platal::globals()->mail->domain;
+    }
+
+    static public function activate_storage(User $user, $storage, $action = null)
+    {
+        Platal::assert(in_array($storage, self::get_allowed_storages($user)), 'Unknown storage.');
+
+        // We first need to retrieve the value for the antispam filter if not
+        // provided: it is either the user's redirections common value, or if
+        // they differ, our default value.
+        if (is_null($action)) {
+            $bogo = new Bogo($user);
+            $action = ($bogo->single_state ? Bogo::$states[$bogo->state] : Bogo::MAIN_DEFAULT);
+        }
 
         if (!self::is_active_storage($user, $storage)) {
-            global $globals;
-
-            XDB::execute('INSERT INTO  email_redirect_account (uid, type, redirect, flags)
-                               VALUES  ({?}, {?}, {?}, \'active\')',
-                         $user->id(), $storage,
-                         $user->hruid . '@' . self::$storage_domains[$storage] . '.' . $globals->mail->domain);
+            XDB::execute('INSERT INTO  email_redirect_account (uid, type, action, redirect, flags)
+                               VALUES  ({?}, {?}, {?}, {?}, \'active\')',
+                         $user->id(), $storage, $action, self::make_storage_redirection($user, $storage));
         }
     }
 
     static public function deactivate_storage(User $user, $storage)
     {
-        if (in_array($storage, self::$storage_domains)) {
+        if (in_array($storage, self::get_allowed_storages($user))) {
             XDB::execute('DELETE FROM  email_redirect_account
                                 WHERE  uid = {?} AND type = {?}',
                          $user->id(), $storage);
@@ -612,7 +691,7 @@ class Email
 
     static public function is_active_storage(User $user, $storage)
     {
-        if (!in_array($storage, self::$storage_domains)) {
+        if (!in_array($storage, self::get_allowed_storages($user))) {
             return false;
         }
         $res = XDB::fetchOneCell('SELECT  COUNT(*)
@@ -644,6 +723,30 @@ class Redirect
         $this->emails = array();
         while ($row = $res->next()) {
             $this->emails[] = new Email($user, $row);
+        }
+
+        if ($storages = Email::get_allowed_storages($user)) {
+            // We first need to retrieve the value for the antispam filter: it is
+            // either the user's redirections common value, or if they differ, our
+            // default value.
+            $bogo = new Bogo($user);
+            $filter = ($bogo->single_state ? Bogo::$states[$bogo->state] : Bogo::MAIN_DEFAULT);
+
+            foreach ($storages as $storage) {
+                if (!Email::is_active_storage($user, $storage)) {
+                    $this->emails[] = new Email($user, array(
+                            'redirect'      => Email::make_storage_redirection($user, $storage),
+                            'rewrite'       => '',
+                            'type'          => $storage,
+                            'action'        => $filter,
+                            'broken_date'   => 0,
+                            'broken_level'  => '0000-00-00',
+                            'last'          => '0000-00-00',
+                            'flags'         => 'inactive',
+                            'hash'          => '',
+                            'allow_rewrite' => 0));
+                }
+            }
         }
     }
 
@@ -689,7 +792,7 @@ class Redirect
         // either the user's redirections common value, or if they differ, our
         // default value.
         $bogo = new Bogo($this->user);
-        $filter = ($bogo->single_state ? Bogo::$states[$bogo->state] : Bogo::$states[0]);
+        $filter = ($bogo->single_state ? Bogo::$states[$bogo->state] : Bogo::MAIN_DEFAULT);
         // If the email was already present for this user, we reset it to the default values, we thus use REPLACE INTO.
         XDB::execute('REPLACE INTO  email_redirect_account (uid, redirect, flags, action)
                             VALUES  ({?}, {?}, \'active\', {?})',

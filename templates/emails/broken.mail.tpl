@@ -30,7 +30,7 @@ Bonjour !
   Nous t'écrivons car lors de l'envoi de la lettre d'information mensuelle
 de Polytechnique.org à ton adresse polytechnicienne :
 
-    {$user->bestAlias()},
+    {$user.alias},
 
 l'adresse {$email}, sur laquelle tu rediriges tes emails, ne fonctionnait pas.
 

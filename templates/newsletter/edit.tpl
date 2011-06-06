@@ -63,7 +63,8 @@
 {else}
   Envoyée
 {/if}
-
+      </td>
+    </tr>
     <tr>
       <td class='titre'>
         ID
@@ -126,7 +127,7 @@
         Signature de la lettre
       </td>
       <td>
-        <input type='text' size='60' name='signature' value="{$issue->signature}"</input>
+        <input type='text' size='60' name='signature' value="{$issue->signature}" />
       </td>
     </tr>
     {if $nl->automaticMailingEnabled() && ($issue->isEditable() || $issue->isPending())}
@@ -174,6 +175,11 @@
           &nbsp;et&nbsp;
           <input type="text" name="egal2" size="1" style="text-align:center" value="{if t($smarty.request.egal2) eq '&lt;'}&lt;{else}&gt;{/if}" readonly="readonly" />
           <input type="text" name="promo2" size="4" maxlength="4" value="{$smarty.request.promo2}" />
+          <select name="edu_type" style="text-align:center">
+            <option value="{#UserFilter::GRADE_ING#}" {if $smarty.request.edu_type eq #UserFilter::GRADE_ING#}selected="selected"{/if}>X</option>
+            <option value="{#UserFilter::GRADE_MST#}" {if $smarty.request.edu_type eq #UserFilter::GRADE_MST#}selected="selected"{/if}>Master</option>
+            <option value="{#UserFilter::GRADE_PHD#}" {if $smarty.request.edu_type eq #UserFilter::GRADE_PHD#}selected="selected"{/if}>Docteur</option>
+          </select>
         </td>
       </tr>
       {/if}

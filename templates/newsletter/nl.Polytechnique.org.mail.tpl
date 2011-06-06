@@ -63,11 +63,11 @@ l'intermédiaire de Polytechnique.org.
 {if $is_mail}
 archives         : <https://www.polytechnique.org/nl>
 écrire           : <https://www.polytechnique.org/nl/submit>
-ne plus recevoir : <https://www.polytechnique.org/nl/out>
+ne plus recevoir : <https://www.polytechnique.org/nl/out/nohash/{$issue->id}>
 {else}
 archives         : &lt;https://www.polytechnique.org/nl&gt;
 écrire           : &lt;https://www.polytechnique.org/nl/submit&gt;
-ne plus recevoir : &lt;https://www.polytechnique.org/nl/out&gt;
+ne plus recevoir : &lt;https://www.polytechnique.org/nl/out/nohash/{$issue->id}&gt;
 {/if}
 {if !$is_mail}
 </pre>
@@ -119,7 +119,7 @@ ne plus recevoir : &lt;https://www.polytechnique.org/nl/out&gt;
       <div class="foot2">
         [<a href="https://www.polytechnique.org/nl">archives</a>&nbsp;|
          <a href="https://www.polytechnique.org/nl/submit">écrire dans la NL</a>&nbsp;|
-         <a href="https://www.polytechnique.org/nl/out">ne plus recevoir</a>]
+         <a href="https://www.polytechnique.org/nl/out/nohash/{$issue->id}">ne plus recevoir</a>]
       </div>
       </div>
 {if $is_mail}

@@ -86,7 +86,7 @@ liste&nbsp;:
         <input type='text' name='desc' size='50' value='{$smarty.post.desc}' />
       </td>
     </tr>
-    <tr>
+    <tr style="white-space: nowrap">
       <td class='titre'>Propriétés&nbsp;:</td>
       <td>visibilité&nbsp;:</td>
       <td><label><input type='radio' name='advertise' value='0'

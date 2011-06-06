@@ -25,10 +25,7 @@ function smarty_function_test_email($params, $smarty) {
     $hruid = isset($params['hruid']) ? "'" . $params['hruid'] . "'" : '';
     return '<div class="center">'
          . '  <div id="mail_sent" style="position: absolute;"></div><br />'
-         . '  <form action="emails/test" method="get" onsubmit="return sendTestEmail(' . $token . $hruid . ')">'
-         . '    <div><input type="hidden" name="token" value="' . S::v('xsrf_token') . '" />'
-         . '    <input type="submit" name="send" value="' . $label . '" /></div>'
-         . '  </form>'
+         . '  <div><input type="submit" name="send" value="' . $label . '" onclick="sendTestEmail(' . $token . $hruid . ')" /></div>'
          . '</div>';
 }
 

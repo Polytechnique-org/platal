@@ -64,6 +64,7 @@ while (<FILE>)
   s/^.*\tFO\t\w{8}\tProgramme International de l'Ec Polytechnique$//;
   s/^.*\tFO\t\w{8}\tInst d'Optique théorique et appliquée$//;
   s/^.*\tFO\t\w{8}\tExpert-Comptable$//;
+  s/^.*\tFO\t\w{8}\tCertified Internal Auditor$//;
   s/^.*\tFO\t\w{8}\tDoct de l'Ec polytechniqueHumanité & Sc sociales$//;
   s/^\n//;
   # Places education in third place as if it is not reconized, it will only be stored as a description.
@@ -169,10 +170,12 @@ while (<FILE>)
   s/\t\t\tIngcivGM$/\tÉcole Nationale Supérieure du Génie Maritime\tIng.\t/;
   s/\t\t\tENSGM$/\tÉcole Nationale Supérieure du Génie Maritime\tIng.\t/;
   s/\t\t\tIngcivENSTA$/\tENSTA\tIng.\t/;
+  s/\t\t\tIngcivGM diplomé de l'ENSTA$/\tENSTA\tIng.\t/;
   s/\t\t\tIng ENSTA$/\tENSTA\tIng.\t/;
   s/\t\t\tENSTA$/\tENSTA\tIng.\t/;
   s/\t\t\tENSTA Environnement marin$/\tENSTA\tIng.\tEnvironnement marint/;
   s/\t\t\tMBA ENSTA$/\tENSTA\tMBA\t/;
+  s/\t\t\tMSc ENSTA$/\tENSTA\tMSc\t/;
   s/\t\t\tThèse Chimie Organique ENSTA$/\tENSTA\tPhD\tChimie Organique/;
   s/\t\t\tIngcivGREF$/\tENGREF\tIng.\t/;
   s/\t\t\tENGREF$/\tENGREF\tIng.\t/;
@@ -202,6 +205,7 @@ while (<FILE>)
   s/\t\t\tPhD INPG$/\tGrenoble INP\tPhD\t/;
   s/\t\t\tPhD : INPG$/\tGrenoble INP\tPhD\t/;
   s/\t\t\tMSc Toulouse School of Economics$/\tTSE\tMSc\t/;
+  s/\t\t\tMSc Toulouse School of Eco$/\tTSE\tMSc\t/;
   s/\t\t\tPhD Toulouse School of Economics$/\tTSE\tPhD\t/;
   s/\t\t\tDEA IHM INPT$/\tINP Toulouse\tDEA\tIHM/;
   s/\t\t\tDocteur INP Toulouse maths info$/\tINP Toulouse\tPhD\tMathématiques Informatique/;
@@ -233,6 +237,7 @@ while (<FILE>)
   s/\t\t\tDEA ENS Lyon$/\tENS Lyon\tDEA\t/;
   s/\t\t\tDEA PhysThéor ENS Lyon$/\tENS Lyon\tDEA\tPhysique théorique/;
   s/\t\t\tENS Lyon$/\tENS Lyon\tM\t/;
+  s/\t\t\tEcole Nationale Supérieure de Lyon$/\tENS Lyon\tM\t/;
   s/\t\t\tDoct ENS Lyon$/\tENS Lyon\tPhD\t/;
   s/\t\t\tDoctorat ENS Lyon$/\tENS Lyon\tPhD\t/;
   s/\t\t\tDEA Normale Sup$/\tENS Ulm\tDEA\t/;
@@ -542,6 +547,7 @@ while (<FILE>)
   s/\t\t\tPhD Université Paul Sabatier Toulouse$/\tUniversité Paul-Sabatier\tPhD\t/;
   s/\t\t\tMSc Univ Grenoble I$/\tUJF\tMSc\t/;
   s/\t\t\tPhD Univ Grenoble I$/\tUJF\tPhD\t/;
+  s/\t\t\tDoct Univ Grenoble$/\tUJF\tPhD\t/;
   s/\t\t\tDEA Informatique Univ de Grenoble$/\tUJF\tDEA\tInformatique/;
   s/\t\t\tDoctUnivGrenoble$/\tUJF\tPhD\t/;
   s/\t\t\tPhD Grenoble$/\tUJF\tPhD\t/;
@@ -556,6 +562,7 @@ while (<FILE>)
   s/\t\t\tPhD Univ Aix-Marseille I$/\tUniversité de Provence\tPhD\t/;
   s/\t\t\tDoctUnivde Rennes$/\tUniversité de Rennes 1\tPhD\t/;
   s/\t\t\tLic Théologie & Sc des religions Univ Strasbourg$/\tUDS\tLic.\tThéologie Science des religion/;
+  s/\t\t\tLic Univ de Strasbourg$/\tUDS\tLic.\t/;
   s/\t\t\tDoct Univ Strasbourg$/\tUDS\tPhD\t/;
   s/\t\t\tDocten Informatique et Applications de l'Univ de Caen$/\tUCBN\tPhD\tInformatique/;
   s/\t\t\tDEA IGP Bordeaux$/\tUniversité de Bordeaux\tDEA\tIGP/;
@@ -737,6 +744,7 @@ while (<FILE>)
   s/\t\t\tIng EP fédérale de Lausanne$/\tEPFL\tIng.\t/;
   s/\t\t\tMSc Ecole polytechnique fédérale de Lausanne$/\tEPFL\tMSc\t/;
   s/\t\t\tMSc EP fédérale de Lausanne$/\tEPFL\tMSc\t/;
+  s/\t\t\tMSc Ecole polytechnique de Lausanne$/\tEPFL\tMSc\t/;
   s/\t\t\tEP Fédérale Lausanne$/\tEPFL\tM\t/;
   s/\t\t\tcycle postgrade EPFL option Finance$/\tEPFL\tM\tFinance/;
   s/\t\t\tEPFL Génie Mécanique$/\tEPFL\tM\t/;

@@ -28,15 +28,22 @@ function smarty_insert_getUsername()
         return '';
     }
 
-    if (Cookie::v('domain', 'login') != 'alias') {
+    $domain = Cookie::v('domain', 'login');
+    if ($domain == 'hruid') {
+        return XDB::fetchOneCell('SELECT  hruid
+                                    FROM  accounts
+                                   WHERE  uid = {?}',
+                                 $id);
+    } elseif ($domain == 'alias') {
         return XDB::fetchOneCell('SELECT  email
                                     FROM  email_source_account
-                                   WHERE  uid = {?} AND type != \'alias_aux\' AND FIND_IN_SET(\'bestalias\', flags)',
+                                   WHERE  uid = {?} AND type = \'alias_aux\'',
                                  $id);
     } else {
         return XDB::fetchOneCell('SELECT  email
                                     FROM  email_source_account
-                                   WHERE  uid = {?} AND type = \'alias_aux\'',
+                                   WHERE  uid = {?} AND type != \'alias_aux\'
+                                ORDER BY  NOT FIND_IN_SET(\'bestalias\', flags), CHAR_LENGTH(email)',
                                  $id);
     }
 
