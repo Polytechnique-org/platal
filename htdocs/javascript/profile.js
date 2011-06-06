@@ -317,8 +317,13 @@ function addressChanged(prefid, color)
     var text = $('#' + prefid + '_cont').find("[name*='[text]']").val();
     $('#' + prefid + '_cont').find('[name*=changed]').val("1");
     $.xpost('map_url/', { text:text, color:color }, function(data) {
-        $('#' + prefid + '_static_map_url').show();
-        $('#' + prefid + '_static_map_url').find('img').attr('src', data);
+        if (data) {
+            $('#' + prefid + '_static_map_url').show();
+            $('#' + prefid + '_static_map_url').find('img').attr('src', data);
+        } else {
+            $('#' + prefid + '_static_map_url').hide();
+            $('#' + prefid + '_geocoding_removal').find('[name*=request]:checkbox').removeAttr('checked');
+        }
     });
 }
 

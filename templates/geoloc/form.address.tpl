@@ -52,7 +52,7 @@
   </td>
   <td>
 {/if}
-  <div id="{$prefid}_static_map_url" {if !t($address.latitude)}style="display: none"{/if}>
+  <div id="{$prefid}_static_map_url" {if !t($address.componentsIds)}style="display: none"{/if}>
     <img src="{insert name="getStaticMapURL" latitude=$address.latitude longitude=$address.longitude color=$profile->promoColor()}" alt="Position de l'adresse" />
     {if t($geocoding_removal)}
     <br />

@@ -32,13 +32,16 @@ class GMapsGeocoder extends Geocoder {
 
     static public function buildStaticMapURL($latitude, $longitude, $color, $separator = '&')
     {
+        if (!$latitude || !$longitude) {
+            return null;
+        }
+
         $parameters = array(
             'size'    => '300x100',
             'markers' => 'color:' . $color . '|' . $latitude . ',' . $longitude,
             'zoom'    => '12',
             'sensor'  => 'false'
         );
-        global $globals;
 
         return Platal::globals()->maps->static_map . '?' . http_build_query($parameters, '', $separator);
     }
