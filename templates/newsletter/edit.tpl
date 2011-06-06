@@ -147,9 +147,7 @@
     {if $issue->isEditable()}
       {if $nl->criteria->hasFlag('promo')}
       <tr>
-        <td class='titre'>
-          Promotions
-        </td>
+        <td class="titre">Promotions</td>
         <td>
           <script type="text/javascript">/*<![CDATA[*/
             {literal}
@@ -185,7 +183,7 @@
       {/if}
       {if $nl->criteria->hasFlag('axid')}
       <tr>
-        <td>Matricule AX</td>
+        <td class="titre">Matricule AX</td>
         <td>
           <textarea name="axid" rows="10" cols="12">{$smarty.request.axid}</textarea>
           <br />
