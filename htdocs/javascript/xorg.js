@@ -839,6 +839,26 @@ function previewWiki(idFrom, idTo, withTitle, idShow)
 }
 
 // }}}
+// {{{ updatepromofields
+
+function updatepromofields(egal1, egal2, promo2) {
+    var comparator = egal1.val();
+
+    if (comparator == '=') {
+        egal2.attr('disabled', 'disabled');
+        promo2.attr('disabled', 'disabled');
+    } else if (comparator == '<=' || comparator == '>=') {
+        egal2.removeAttr('disabled');
+        promo2.removeAttr('disabled');
+        if (comparator == '<=') {
+            egal2.val('>=');
+        } else {
+            egal2.val('<=');
+        }
+    }
+}
+
+// }}}
 
 /***************************************************************************
  * Quick search
