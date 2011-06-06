@@ -52,7 +52,7 @@ class MarketingModule extends PLModule
         $registered = array(
             'all'    => new ProfileFilter(new PFC_And(new UFC_Registered(true), new PFC_Not(new UFC_Dead()))),
             'women'  => new ProfileFilter(new PFC_And(new UFC_Registered(true), new UFC_Sex(User::GENDER_FEMALE), new PFC_Not(new UFC_Dead()))),
-            'x'      => new ProfileFilter(new PFC_And(new UFC_Registered(true), new PFC_Not(new UFC_Dead(), new UFC_AccountType('x')))),
+            'x'      => new ProfileFilter(new PFC_And(new UFC_Registered(true), new PFC_Not(new UFC_Dead()), new UFC_AccountType('x'))),
             '72'     => new ProfileFilter(new PFC_And(new UFC_Registered(true), new UFC_Promo('>=', UserFilter::GRADE_ING, 1972), new PFC_Not(new UFC_Dead()))),
             'master' => new ProfileFilter(new PFC_And(new UFC_Registered(true), new PFC_Not(new UFC_Dead()), new UFC_AccountType('master'))),
             'phd'    => new ProfileFilter(new PFC_And(new UFC_Registered(true), new PFC_Not(new UFC_Dead()), new UFC_AccountType('phd')))
