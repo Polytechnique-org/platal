@@ -41,23 +41,35 @@ class MarketingModule extends PLModule
         $page->changeTpl('marketing/index.tpl');
         $page->setTitle('Marketing');
 
-        $alive = new ProfileFilter(new PFC_Not(new UFC_Dead()));
-        $registered = new ProfileFilter(new PFC_And(new UFC_Registered(true), new PFC_Not(new UFC_Dead())));
-        $alive72 = new ProfileFilter(new PFC_And(new UFC_Promo('>=', UserFilter::GRADE_ING, 1972), new PFC_Not(new UFC_Dead())));
-        $registered72 = new ProfileFilter(new PFC_And(new UFC_Registered(true), new UFC_Promo('>=', UserFilter::GRADE_ING, 1972), new PFC_Not(new UFC_Dead())));
-        $aliveWomen = new ProfileFilter(new PFC_And(new UFC_Sex(User::GENDER_FEMALE) , new PFC_Not(new UFC_Dead())));
-        $registeredWomen = new ProfileFilter(new PFC_And(new UFC_Registered(true), new UFC_Sex(User::GENDER_FEMALE), new PFC_Not(new UFC_Dead())));
-        $statistics = array(
-            'alive'           => $alive->getTotalCount(),
-            'registered'      => $registered->getTotalCount(),
-            'alive72'         => $alive72->getTotalCount(),
-            'registered72'    => $registered72->getTotalCount(),
-            'womenAlive'      => $aliveWomen->getTotalCount(),
-            'womenRegistered' => $registeredWomen->getTotalCount(),
+        $alive = array(
+            'all'    => new ProfileFilter(new PFC_Not(new UFC_Dead())),
+            'women'  => new ProfileFilter(new PFC_And(new UFC_Sex(User::GENDER_FEMALE) , new PFC_Not(new UFC_Dead()))),
+            'x'      => new ProfileFilter(new PFC_And(new PFC_Not(new UFC_Dead()), new UFC_AccountType('x'))),
+            '72'     => new ProfileFilter(new PFC_And(new UFC_Promo('>=', UserFilter::GRADE_ING, 1972), new PFC_Not(new UFC_Dead()))),
+            'master' => new ProfileFilter(new PFC_And(new PFC_Not(new UFC_Dead()), new UFC_AccountType('master'))),
+            'phd'    => new ProfileFilter(new PFC_And(new PFC_Not(new UFC_Dead()), new UFC_AccountType('phd')))
         );
-        $statistics['registeredRate']      = $statistics['registered'] / $statistics['alive'] * 100;
-        $statistics['registeredRate72']    = $statistics['registered72'] / $statistics['alive72'] * 100;
-        $statistics['womenRegisteredRate'] = $statistics['womenRegistered'] / $statistics['womenAlive'] * 100;
+        $registered = array(
+            'all'    => new ProfileFilter(new PFC_And(new UFC_Registered(true), new PFC_Not(new UFC_Dead()))),
+            'women'  => new ProfileFilter(new PFC_And(new UFC_Registered(true), new UFC_Sex(User::GENDER_FEMALE), new PFC_Not(new UFC_Dead()))),
+            'x'      => new ProfileFilter(new PFC_And(new UFC_Registered(true), new PFC_Not(new UFC_Dead(), new UFC_AccountType('x')))),
+            '72'     => new ProfileFilter(new PFC_And(new UFC_Registered(true), new UFC_Promo('>=', UserFilter::GRADE_ING, 1972), new PFC_Not(new UFC_Dead()))),
+            'master' => new ProfileFilter(new PFC_And(new UFC_Registered(true), new PFC_Not(new UFC_Dead()), new UFC_AccountType('master'))),
+            'phd'    => new ProfileFilter(new PFC_And(new UFC_Registered(true), new PFC_Not(new UFC_Dead()), new UFC_AccountType('phd')))
+        );
+        $statistics = array(
+            'all'    => array('description' => "Étudiants et anciens de l'X"),
+            'women'  => array('description' => "Étudiantes et anciennes de l'X"),
+            'x'      => array('description' => 'X'),
+            '72'     => array('description' => 'X vivants depuis la promo 1972'),
+            'master' => array('description' => "Masters de l'X"),
+            'phd'    => array('description' => "Docteurs de l'X")
+        );
+        foreach ($statistics as $key => &$data) {
+            $data['alive'] = $alive[$key]->getTotalCount();
+            $data['registered'] = $registered[$key]->getTotalCount();
+            $data['rate'] = round($data['registered'] / $data['alive'] * 100, 2);
+        }
 
         $registeredWeek = new ProfileFilter(new PFC_And(new UFC_Registered(true, '>=', strtotime('1 week ago')), new PFC_Not(new UFC_Dead())));
         $registrationPending = XDB::fetchOneCell('SELECT  COUNT(*)
