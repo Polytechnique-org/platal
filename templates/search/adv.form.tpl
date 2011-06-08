@@ -469,7 +469,7 @@ function cleanForm(f) {
       <td colspan="2">
         <label for="only_current">
           <input name="only_current" id="only_current" type="checkbox"{if $smarty.request.only_current} checked="checked"{/if}/>
-          Chercher uniquement les adresses où les camarades sont actuellement.
+          Chercher uniquement les adresses actuelles.
         </label>
       </td>
     </tr>
