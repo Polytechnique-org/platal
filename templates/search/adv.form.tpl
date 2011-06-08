@@ -423,6 +423,9 @@ function cleanForm(f) {
       <th colspan="2">Géographie</th>
     </tr>
     <tr>
+      <td colspan="2" class="center"><small>Seuls les lieux où résident des camarades sont proposés ci-dessous.</small></td>
+    </tr>
+    <tr>
       <td>Pays</td>
       <td>
         <input name="countryTxt" type="text" class="autocomplete" style="display:none" size="32"
