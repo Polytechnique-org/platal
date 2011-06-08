@@ -36,8 +36,8 @@ class GeolocModule extends PLModule
         $map_url = $globals->maps->dynamic_map . '?&sensor=false&v=' . $globals->maps->api_version . '&language=' . $globals->maps->language;
         $page->addJsLink($map_url, false);
         $page->addJsLink('maps.js');
-        $page->addJsLink('markerclusterer_packed.js');
-        $page->addJsLink('markerwithlabel_packed.js');
+        $page->addJsLink('markerclusterer.js');
+        $page->addJsLink('markerwithlabel.js');
         $page->assign('pl_extra_header', '<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />');
     }
 
