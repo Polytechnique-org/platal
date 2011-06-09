@@ -164,9 +164,11 @@ function select_autocomplete(name)
 {
     var field_name = name.replace(/_text$/, '');
 
-    // nothing to do if field is not a text field for a list
+    // just display field as valid if field is not a text field for a list
     if (field_name == name) {
-        return null;
+        return function(i) {
+            $(".autocomplete[name='" + name + "']").addClass('hidden_valid');
+        }
     }
 
     // When changing country or locality, open next address component.
@@ -200,7 +202,7 @@ function select_autocomplete(name)
         }
 
         $(".autocomplete_target[name='" + field_name + "']").attr('value', i.extra[1]);
-        $(".autocomplete[name='" + this.field + "']").addClass('hidden_valid');
+        $(".autocomplete[name='" + name + "']").addClass('hidden_valid');
     }
 }
 
