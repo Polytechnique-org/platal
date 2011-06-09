@@ -171,28 +171,24 @@ function select_autocomplete(name)
         }
     }
 
-    // When changing country or locality, open next address component.
-    if (field_name == 'country' || field_name == 'locality') {
+    // When changing country, locality or school, open next address component.
+    if (field_name == 'country' || field_name == 'locality' || field_name == 'school') {
         return function(i) {
             if (i.extra[0] < 0) {
                 cancel_autocomplete(name, field_name);
                 i.extra[1] = '';
             }
-            $("[name='" + field_name + "']").parent().load(baseurl + 'list/' + field_name, function() {
-                $("select[name='" + field_name + "']").attr('value', i.extra[1]);
-            });
-            changeAddressComponents(field_name, i.extra[1]);
+
+            if (field_name == 'school') {
+                changeSchool(i.extra[1], '');
+            } else {
+                changeAddressComponents(field_name, i.extra[1]);
+            }
+
+            $(".autocomplete_target[name='" + field_name + "']").attr('value', i.extra[1]);
+            $(".autocomplete[name='" + name + "']").addClass('hidden_valid');
         }
     }
-
-    if (field_name == 'school')
-        return function(i) {
-            if (i.extra[0] < 0) {
-                cancel_autocomplete('school_text', 'school');
-                i.extra[1] = '';
-            }
-            changeSchool(i.extra[1], '');
-        }
 
     // change field in list and display text field as valid
     return function(i) {
