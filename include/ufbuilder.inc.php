@@ -351,8 +351,8 @@ class UFB_AdvancedSearch extends UserFilterBuilder
             new UFBF_AddressIndex('administrative_area_level_3', 'Canton', 'ADMNISTRATIVEAREAS3'),
             new UFBF_AddressIndex('administrative_area_level_2', 'Département', 'ADMNISTRATIVEAREAS2'),
             new UFBF_AddressIndex('administrative_area_level_1', 'Région', 'ADMNISTRATIVEAREAS1'),
-            new UFBF_AddressMixed('localityTxt', 'locality', 'Ville', 'LOCALITIES'),
-            new UFBF_AddressMixed('countryTxt', 'country', 'Pays', 'COUNTRIES'),
+            new UFBF_AddressMixed('locality_text', 'locality', 'Ville', 'LOCALITIES'),
+            new UFBF_AddressMixed('country_text', 'country', 'Pays', 'COUNTRIES'),
 
             new UFBF_JobCompany('entreprise', 'Entreprise'),
             new UFBF_JobDescription('jobdescription', 'Fonction'),
@@ -363,14 +363,14 @@ class UFB_AdvancedSearch extends UserFilterBuilder
             new UFBF_CurrentCorps('current_corps', 'Corps actuel'),
             new UFBF_CorpsRank('corps_rank', 'Grade'),
 
-            new UFBF_Nationality('nationaliteTxt', 'nationalite', 'Nationalité'),
-            new UFBF_Binet('binetTxt', 'binet', 'Binet'),
-            new UFBF_Group('groupexTxt', 'groupex', 'Groupe X'),
-            new UFBF_Section('sectionTxt', 'section', 'Section'),
+            new UFBF_Nationality('nationalite_text', 'nationalite', 'Nationalité'),
+            new UFBF_Binet('binet_text', 'binet', 'Binet'),
+            new UFBF_Group('groupex_text', 'groupex', 'Groupe X'),
+            new UFBF_Section('section_text', 'section', 'Section'),
 
-            new UFBF_EducationSchool('schoolTxt', 'school', "École d'application"),
-            new UFBF_EducationDegree('diplomaTxt', 'diploma', 'Diplôme'),
-            new UFBF_EducationField('fieldTxt', 'field', "Domaine d'études"),
+            new UFBF_EducationSchool('school_text', 'school', "École d'application"),
+            new UFBF_EducationDegree('diploma_text', 'diploma', 'Diplôme'),
+            new UFBF_EducationField('field_text', 'field', "Domaine d'études"),
 
             new UFBF_Comment('free', 'Commentaire'),
             new UFBF_Phone('phone_number', 'Téléphone'),

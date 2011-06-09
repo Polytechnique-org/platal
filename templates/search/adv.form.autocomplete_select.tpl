@@ -20,13 +20,14 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<select name="{$name}"{if t($onchange)} onchange="{$onchange}"{/if}{if t($id)} id="{$id}"{/if}>
-    <option value=""> - </option>
-  {if $list}
-  {iterate from=$list item='option'}
-    <option value="{$option.id}">{$option.field|htmlspecialchars}</option>
-  {/iterate}
-  {/if}
-</select>
+<td>{$description}</td>
+<td>
+  <span id="{$name}_list"></span>
+  <input name="{$name}_text" type="text" class="autocomplete" size="32" value="{$value_text}" />
+  <input name="{$name}" type="hidden" class="autocomplete_target" value="{$value}" />
+  <a href="{$name}" class="autocomplete_to_select" title="display" id="{$name}_table">
+    {icon name="table" title=$title}
+  </a>
+</td>
 
-{* vim:set et sws=2 sts=2 sw=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

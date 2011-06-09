@@ -25,27 +25,16 @@ var address_types = new Array('country', 'administrative_area_level_1', 'adminis
 
 function load_advanced_search(request)
 {
-    $('.autocompleteTarget').hide();
+    $('.autocomplete_target').hide();
     $('.autocomplete').show().each(function() {
-        targeted = $('../.autocompleteTarget', this)[0];
-
-        if (targeted && targeted.value) {
-            me = $(this);
-
-            $.get(baseurl + 'list/' + targeted.name + '/' + targeted.value, {}, function(textValue) {
-                me.attr('value', textValue);
-                me.addClass('hidden_valid');
-            });
-        }
-
         $(this).autocomplete(baseurl + 'autocomplete/' + this.name, {
             selectOnly: 1,
             formatItem: make_format_autocomplete(this),
             field: this.name,
             onItemSelect: select_autocomplete(this.name),
             matchSubset: 0,
-            width: $(this).width()}
-        );
+            width: $(this).width()
+        });
     });
 
     $('.autocomplete').change(function() { $(this).removeClass('hidden_valid'); });
@@ -67,30 +56,48 @@ function load_advanced_search(request)
         }
     }
 
-    $(".autocomplete[name='schoolTxt']").change(function() { changeSchool('', ''); });
+    $(".autocomplete[name='school_text']").change(function() { changeSchool('', ''); });
     changeSchool(request['school'], request['diploma']);
 
-    $(".autocompleteToSelect").each(function() {
-        var fieldName = $(this).attr('href');
+    $(".autocomplete_to_select").each(function() {
+        var field_name = $(this).attr('href');
 
-        $(this).attr('href', baseurl + 'list/' + fieldName).click(function() {
-            var oldval = $("input.autocompleteTarget[name='" + fieldName + "']")[0].value;
+        if ($(".autocomplete_target[name='" + field_name + "']").val()) {
+            display_list(field_name);
+        }
 
-            $(".autocompleteTarget[name='" + fieldName + "']").parent().load(baseurl + 'list/' + fieldName, {}, function(selectBox) {
-                $(".autocompleteTarget[name='" + fieldName + "']").remove();
-                $(".autocomplete[name='" + fieldName + "Txt']").remove();
-                $("select[name='" + fieldName + "']").attr('value', oldval);
-            });
+        $(this).attr('href', baseurl + 'list/' + field_name).click(function() {
+            if ($(this).attr('title') == 'display') {
+                display_list(field_name);
+            } else {
+                var value = $("select[name='" + field_name + "']").val();
+                var text_value = $("select[name='" + field_name + "'] option:selected").text();
+                $('#' + field_name + '_list').html('');
+                $(".autocomplete[name='" + field_name + "_text']").show();
+                $('#' + field_name + '_table').attr('title', 'display');
+                if (value) {
+                    $(".autocomplete_target[name='" + field_name + "']").val(value);
+                    $(".autocomplete[name='" + field_name + "_text']").val(text_value).addClass('hidden_valid');
+                }
+            }
 
             return false;
         });
-    }).parent().find('.autocomplete').change(function() {
-        // If we change the value in the type="text" field, then the value in the 'integer id' field must not be used,
-        // to ensure that, we unset it
-        $(this).parent().find('.autocompleteTarget').val('');
     });
 
     $('#only_referent').change(function() { changeOnlyReferent(); });
+}
+
+function display_list(field_name)
+{
+    var value = $("input.autocomplete_target[name='" + field_name + "']").val();
+
+    $('#' + field_name + '_list').load(baseurl + 'list/' + field_name, {}, function(selectBox) {
+        $(".autocomplete_target[name='" + field_name + "']").val('');
+        $(".autocomplete[name='" + field_name + "_text']").hide().val('').removeClass('hidden_valid');
+        $("select[name='" + field_name + "']").val(value);
+        $('#' + field_name + '_table').attr('title', 'hide');
+    });
 }
 
 // }}}
@@ -147,7 +154,7 @@ function cancel_autocomplete(field, realfield)
 {
     $(".autocomplete[name='" + field + "']").removeClass('hidden_valid').val('').focus();
     if (typeof(realfield) != 'undefined') {
-        $(".autocompleteTarget[name='" + realfield + "']").val('');
+        $(".autocomplete_target[name='" + realfield + "']").val('');
     }
     return;
 }
@@ -155,7 +162,7 @@ function cancel_autocomplete(field, realfield)
 // when choosing autocomplete from list, must validate
 function select_autocomplete(name)
 {
-    nameRealField = name.replace(/Txt$/, '');
+    nameRealField = name.replace(/_text$/, '');
 
     // nothing to do if field is not a text field for a list
     if (nameRealField == name) {
@@ -165,7 +172,7 @@ function select_autocomplete(name)
     // When changing country or locality, open next address component.
     if (nameRealField == 'country' || nameRealField == 'locality') {
         return function(i) {
-            nameRealField = name.replace(/Txt$/, '');
+            nameRealField = name.replace(/_text$/, '');
             if (i.extra[0] < 0) {
                 cancel_autocomplete(name, nameRealField);
                 i.extra[1] = '';
@@ -180,7 +187,7 @@ function select_autocomplete(name)
     if (nameRealField == 'school')
         return function(i) {
             if (i.extra[0] < 0) {
-                cancel_autocomplete('schoolTxt', 'school');
+                cancel_autocomplete('school_text', 'school');
                 i.extra[1] = '';
             }
             changeSchool(i.extra[1], '');
@@ -188,13 +195,13 @@ function select_autocomplete(name)
 
     // change field in list and display text field as valid
     return function(i) {
-        nameRealField = this.field.replace(/Txt$/, '');
+        nameRealField = this.field.replace(/_text$/, '');
         if (i.extra[0] < 0) {
             cancel_autocomplete(this.field, nameRealField);
             return;
         }
 
-        $(".autocompleteTarget[name='"+nameRealField+"']").attr('value',i.extra[1]);
+        $(".autocomplete_target[name='" + nameRealField + "']").attr('value', i.extra[1]);
         $(".autocomplete[name='"+this.field+"']").addClass('hidden_valid');
     }
 }
@@ -210,7 +217,7 @@ function setAddress(i, j, values)
 
     if (j == 3) {
         $('tr#locality_text').hide()
-            $("select[name='localityTxt']").attr('value', '');
+            $("select[name='locality_text']").attr('value', '');
     }
 
     $("[name='" + next_type + "']").parent().load(baseurl + 'list/' + next_type, { previous:prev_type, value:values[i] }, function() {
@@ -238,7 +245,7 @@ function displayNextAddressComponent(i, j, value)
 
     if (j == 3) {
         $('tr#locality_text').hide();
-        $("select[name='localityTxt']").attr('value', '');
+        $("select[name='locality_text']").attr('value', '');
     }
 
     $("[name='" + next_type + "']").parent().load(baseurl + 'list/' + next_type, { previous:prev_type, value:value }, function() {
@@ -281,9 +288,9 @@ function changeSchool(schoolId, diploma)
     $(".autocompleteTarget[name='school']").attr('value', schoolId);
 
     if (schoolId) {
-        $(".autocomplete[name='schoolTxt']").addClass('hidden_valid');
+        $(".autocomplete[name='school_text']").addClass('hidden_valid');
     } else {
-        $(".autocomplete[name='schoolTxt']").removeClass('hidden_valid');
+        $(".autocomplete[name='school_text']").removeClass('hidden_valid');
     }
 
     $("[name='diploma']").parent().load(baseurl + 'list/diploma/', { school:schoolId }, function() {
@@ -305,7 +312,7 @@ function changeOnlyReferent()
 function searchForJobTerm(treeid, jtid, full_name)
 {
     $(".term_tree").remove();
-    $("input[name='jobtermTxt']").val(full_name).addClass("hidden_valid").show();
+    $("input[name='jobterm_text']").val(full_name).addClass("hidden_valid").show();
     $("input[name='jobterm']").val(jtid);
 }
 

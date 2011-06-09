@@ -243,17 +243,17 @@ class SearchModule extends PLModule
         }
 
         $enums = array(
-            'binetTxt'           => DirEnum::BINETS,
-            'groupexTxt'         => DirEnum::GROUPESX,
-            'sectionTxt'         => DirEnum::SECTIONS,
-            'networking_typeTxt' => DirEnum::NETWORKS,
-            'localityTxt'        => DirEnum::LOCALITIES,
-            'countryTxt'         => DirEnum::COUNTRIES,
-            'entreprise'         => DirEnum::COMPANIES,
-            'jobtermTxt'         => DirEnum::JOBTERMS,
-            'description'        => DirEnum::JOBDESCRIPTION,
-            'nationaliteTxt'     => DirEnum::NATIONALITIES,
-            'schoolTxt'          => DirEnum::EDUSCHOOLS,
+            'binet_text'           => DirEnum::BINETS,
+            'groupex_text'         => DirEnum::GROUPESX,
+            'section_text'         => DirEnum::SECTIONS,
+            'networking_type_text' => DirEnum::NETWORKS,
+            'locality_text'        => DirEnum::LOCALITIES,
+            'country_text'         => DirEnum::COUNTRIES,
+            'entreprise'           => DirEnum::COMPANIES,
+            'jobterm_text'         => DirEnum::JOBTERMS,
+            'description'          => DirEnum::JOBDESCRIPTION,
+            'nationalite_text'     => DirEnum::NATIONALITIES,
+            'school_text'          => DirEnum::EDUSCHOOLS,
         );
         if (!array_key_exists($type, $enums)) {
             exit();
