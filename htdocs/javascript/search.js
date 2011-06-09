@@ -162,29 +162,28 @@ function cancel_autocomplete(field, realfield)
 // when choosing autocomplete from list, must validate
 function select_autocomplete(name)
 {
-    nameRealField = name.replace(/_text$/, '');
+    var field_name = name.replace(/_text$/, '');
 
     // nothing to do if field is not a text field for a list
-    if (nameRealField == name) {
+    if (field_name == name) {
         return null;
     }
 
     // When changing country or locality, open next address component.
-    if (nameRealField == 'country' || nameRealField == 'locality') {
+    if (field_name == 'country' || field_name == 'locality') {
         return function(i) {
-            nameRealField = name.replace(/_text$/, '');
             if (i.extra[0] < 0) {
-                cancel_autocomplete(name, nameRealField);
+                cancel_autocomplete(name, field_name);
                 i.extra[1] = '';
             }
-            $("[name='" + nameRealField + "']").parent().load(baseurl + 'list/' + nameRealField, function() {
-                $("select[name='" + nameRealField + "']").attr('value', i.extra[1]);
+            $("[name='" + field_name + "']").parent().load(baseurl + 'list/' + field_name, function() {
+                $("select[name='" + field_name + "']").attr('value', i.extra[1]);
             });
-            changeAddressComponents(nameRealField, i.extra[1]);
+            changeAddressComponents(field_name, i.extra[1]);
         }
     }
 
-    if (nameRealField == 'school')
+    if (field_name == 'school')
         return function(i) {
             if (i.extra[0] < 0) {
                 cancel_autocomplete('school_text', 'school');
@@ -195,14 +194,13 @@ function select_autocomplete(name)
 
     // change field in list and display text field as valid
     return function(i) {
-        nameRealField = this.field.replace(/_text$/, '');
         if (i.extra[0] < 0) {
-            cancel_autocomplete(this.field, nameRealField);
+            cancel_autocomplete(this.field, field_name);
             return;
         }
 
-        $(".autocomplete_target[name='" + nameRealField + "']").attr('value', i.extra[1]);
-        $(".autocomplete[name='"+this.field+"']").addClass('hidden_valid');
+        $(".autocomplete_target[name='" + field_name + "']").attr('value', i.extra[1]);
+        $(".autocomplete[name='" + this.field + "']").addClass('hidden_valid');
     }
 }
 
