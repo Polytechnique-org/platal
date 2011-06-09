@@ -149,6 +149,7 @@ class SearchModule extends PLModule
     function handler_advanced($page, $model = null, $byletter = null)
     {
         global $globals;
+        $page->addJsLink('search.js');
         $page->assign('advanced',1);
 
         $networks = DirEnum::getOptions(DirEnum::NETWORKS);
