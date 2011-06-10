@@ -314,7 +314,7 @@ class SearchModule extends PLModule
           case 'administrative_area_level_2':
           case 'locality':
             $page->assign('onchange', 'changeAddressComponents(\'' . $type . '\', this.value)');
-          case 'sublocality':
+          case 'postal_code':
             $ids = XDB::iterator("SELECT  pace1.id, pace1.long_name AS field
                                     FROM  profile_addresses_components_enum AS pace1
                               INNER JOIN  profile_addresses_components      AS pac1  ON (pac1.component_id = pace1.id)

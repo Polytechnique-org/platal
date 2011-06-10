@@ -21,7 +21,7 @@
 // {{{ Page initialization
 
 var baseurl = $.plURL('search/');
-var address_types = new Array('country', 'administrative_area_level_1', 'administrative_area_level_2', 'locality', 'sublocality');
+var address_types = new Array('country', 'administrative_area_level_1', 'administrative_area_level_2', 'locality', 'postal_code');
 var address_types_count = address_types.length;
 
 function load_advanced_search(request)
@@ -45,7 +45,7 @@ function load_advanced_search(request)
                                    request['administrative_area_level_1'],
                                    request['administrative_area_level_2'],
                                    request['locality'],
-                                   request['sublocality'])
+                                   request['postal_code'])
         );
     } else {
         for (var i = 1; i < address_types_count; ++i) {

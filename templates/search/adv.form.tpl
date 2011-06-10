@@ -156,7 +156,7 @@
       <td><input type="text" class="autocomplete" name="locality_text" size="32" value="{$smarty.request.locality_text}" /></td>
     </tr>
     {include file="search/adv.form.address_component.tpl" description="Ville" name="locality" value=$smarty.request.locality}
-    {include file="search/adv.form.address_component.tpl" description="Arrondissement, quartier…" name="sublocality" value=$smarty.request.sublocality}
+    {include file="search/adv.form.address_component.tpl" description="Code postal" name="postal_code" value=$smarty.request.postal_code}
     <tr>
       <td colspan="2">
         <label for="only_current">

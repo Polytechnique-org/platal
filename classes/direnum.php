@@ -616,6 +616,12 @@ class DE_Sublocalities extends DE_AddressesComponents
     protected $ac_where  = 'profile_addresses_components.type = \'home\' AND FIND_IN_SET(\'sublocality\', profile_addresses_components_enum.types)';
 }
 
+class DE_Postalcodes extends DE_AddressesComponents
+{
+    protected $where = 'WHERE  FIND_IN_SET(\'postal_code\', profile_addresses_components_enum.types)';
+    protected $ac_where  = 'profile_addresses_components.type = \'home\' AND FIND_IN_SET(\'postal_code\', profile_addresses_components_enum.types)';
+}
+
 // }}}
 
 /** JOBS

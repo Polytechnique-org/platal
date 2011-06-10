@@ -347,7 +347,7 @@ class UFB_AdvancedSearch extends UserFilterBuilder
             new UFBF_HasEmailRedirect('has_email_redirect', 'A une redirection active'),
             new UFBF_Dead('alive', 'En vie'),
 
-            new UFBF_AddressIndex('sublocality', 'Arrondissement', 'SUBLOCALITIES'),
+            new UFBF_AddressIndex('postal_code', 'Code postal', 'POSTALCODES'),
             new UFBF_AddressIndex('administrative_area_level_3', 'Canton', 'ADMNISTRATIVEAREAS3'),
             new UFBF_AddressIndex('administrative_area_level_2', 'Département', 'ADMNISTRATIVEAREAS2'),
             new UFBF_AddressIndex('administrative_area_level_1', 'Région', 'ADMNISTRATIVEAREAS1'),
