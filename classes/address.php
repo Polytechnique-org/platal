@@ -596,6 +596,10 @@ class Address
             }
             $this->componentsIds = implode(',', $componants);
         }
+        if ($this->componentsIds == '') {
+            $this->latitude = null;
+            $this->longitude = null;
+        }
 
         return true;
     }
