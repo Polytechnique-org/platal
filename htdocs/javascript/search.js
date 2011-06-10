@@ -41,9 +41,6 @@ function load_advanced_search(request)
     $('.autocomplete').change(function() { $(this).removeClass('hidden_valid'); });
 
     if (request['country']) {
-        $("[name='country']").parent().load(baseurl + 'list/country', function() {
-            $("select[name='country']").attr('value', request['country']);
-        });
         setAddress(0, 1, new Array(request['country'],
                                    request['administrative_area_level_1'],
                                    request['administrative_area_level_2'],
