@@ -20,14 +20,13 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<tr>
+<tr id="{$name}">
   <td>{$description}</td>
   <td>
     <span id="{$name}_list"></span>
-    <input name="{$name}_text" type="text" class="autocomplete" size="32" value="{$value_text}" />
-    <input name="{$name}" type="hidden" class="autocomplete_target" value="{$value}" />
-    <a href="{$name}" class="autocomplete_to_select" title="display" id="{$name}_table">
-      {icon name="table" title=$title}
+    <input name="{$name}" type="hidden" class="address_component" value="{$value}" />
+    <a href="{$name}" class="delete_address_component">
+      {icon name="cross" title="Supprimer ce critère"}
     </a>
   </td>
 </tr>

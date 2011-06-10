@@ -21,7 +21,8 @@
 // {{{ Page initialization
 
 var baseurl = $.plURL('search/');
-var address_types = new Array('country', 'administrative_area_level_1', 'administrative_area_level_2', 'administrative_area_level_3', 'locality', 'sublocality');
+var address_types = new Array('country', 'administrative_area_level_1', 'administrative_area_level_2', 'locality', 'sublocality');
+var address_types_count = address_types.length;
 
 function load_advanced_search(request)
 {
@@ -46,13 +47,12 @@ function load_advanced_search(request)
         setAddress(0, 1, new Array(request['country'],
                                    request['administrative_area_level_1'],
                                    request['administrative_area_level_2'],
-                                   request['administrative_area_level_3'],
                                    request['locality'],
                                    request['sublocality'])
         );
     } else {
-        for (var i = 1; i < 6; ++i) {
-            $('tr#' + address_types[i] + '_list').hide();
+        for (var i = 1; i < address_types_count; ++i) {
+            $('tr#' + address_types[i]).hide();
         }
     }
 
@@ -86,6 +86,22 @@ function load_advanced_search(request)
     });
 
     $('#only_referent').change(function() { changeOnlyReferent(); });
+
+    $('.delete_address_component').click(function() {
+        var field_name = $(this).attr('href');
+        var hide = false;
+
+        for (var i = 1; i < address_types_count; ++i) {
+            if (field_name == address_types[i]) {
+                hide = true;
+            }
+            if (hide) {
+                delete_address_component(address_types[i]);
+            }
+        }
+
+        return false;
+    });
 }
 
 function display_list(field_name)
@@ -216,17 +232,17 @@ function setAddress(i, j, values)
             $("select[name='locality_text']").attr('value', '');
     }
 
-    $("[name='" + next_type + "']").parent().load(baseurl + 'list/' + next_type, { previous:prev_type, value:values[i] }, function() {
+    $('#' + next_list).load(baseurl + 'list/' + next_type, { previous:prev_type, value:values[i] }, function() {
         if ($("select[name='" + next_type + "']").children("option").size() > 1) {
-            $("tr#" + next_list).show();
+            $("tr#" + next_type).show();
             $("select[name='" + next_type + "']").attr('value', values[j]);
-            if (j < 6) {
+            if (j < address_types_count) {
                 setAddress(j, j + 1, values);
             }
         } else {
-            $("tr#" + next_list).hide();
+            $("tr#" + next_type).hide();
             $("select[name='" + next_type + "']").attr('value', '');
-            if (j < 6) {
+            if (j < address_types_count) {
                 setAddress(i, j + 1, values);
             }
         }
@@ -239,18 +255,18 @@ function displayNextAddressComponent(i, j, value)
     var next_type = address_types[j];
     var next_list = next_type + '_list';
 
-    if (j == 3) {
+    if (next_type == 'locality') {
         $('tr#locality_text').hide();
         $("select[name='locality_text']").attr('value', '');
     }
 
-    $("[name='" + next_type + "']").parent().load(baseurl + 'list/' + next_type, { previous:prev_type, value:value }, function() {
+    $('#' + next_list).load(baseurl + 'list/' + next_type, { previous:prev_type, value:value }, function() {
         $("select[name='" + next_type + "']").attr('value', '');
         if ($("select[name='" + next_type + "']").children('option').size() > 1) {
-            $('tr#' + next_list).show();
+            $('tr#' + next_type).show();
         } else {
-            $('tr#' + next_list).hide();
-            if (j < 6) {
+            $('tr#' + next_type).hide();
+            if (j < address_types_count) {
                 displayNextAddressComponent(i, j + 1, value);
             }
         }
@@ -259,22 +275,31 @@ function displayNextAddressComponent(i, j, value)
 
 function changeAddressComponents(type, value)
 {
-    var i = 0, j = 0;
+    var i = 0;
 
-    while (address_types[i] != type && i < 6) {
+    while (address_types[i] != type && i < address_types_count) {
         ++i;
     }
 
-    j = i + 1;
-    while (j < 6) {
-        $("select[name='" + address_types[j] + "']").attr('value', '');
-        $('tr#' + address_types[j] + '_list').hide();
-        ++j;
+    for (var j = i + 1; j < address_types_count; ++j) {
+        delete_address_component(address_types[j]);
     }
 
-    if (value != '' && i < 5) {
+    if (value != '' && i < address_types_count) {
         $("select[name='" + type + "']").attr('value', value);
         displayNextAddressComponent(i, i + 1, value);
+    }
+}
+
+function delete_address_component(field_name)
+{
+    $('tr#' + field_name).hide();
+    $('#' + field_name + '_list').html('');
+    $("input[name='" + field_name + "']").val('');
+
+    if (field_name == 'locality') {
+        $("select[name='locality_text']").attr('value', '');
+        $('tr#locality_text').show();
     }
 }
 

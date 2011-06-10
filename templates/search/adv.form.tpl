@@ -145,44 +145,18 @@
     <tr>
       <td colspan="2" class="center"><small>Seuls les lieux où résident des camarades sont proposés ci-dessous.</small></td>
     </tr>
-    <tr>
-      {include file="search/adv.form.autocomplete_select.tpl" description="Pays" name="country"
-        value_text=$smarty.request.country_text value=$smarty.request.country title="Tous les pays"}
-    </tr>
-    <tr id="administrative_area_level_1_list">
-      <td>Région, province, état&hellip;</td>
-      <td>
-        <input name="administrative_area_level_1" type="hidden" size="32" value="{$smarty.request.administrative_area_level_1}" />
-      </td>
-    </tr>
-    <tr id="administrative_area_level_2_list">
-      <td>Département, comté&hellip;</td>
-      <td>
-        <input name="administrative_area_level_2" type="hidden" size="32" value="{$smarty.request.administrative_area_level_2}" />
-      </td>
-    </tr>
-    <tr id="administrative_area_level_3_list">
-      <td>Canton&hellip;</td>
-      <td>
-        <input name="administrative_area_level_3" type="hidden" size="32" value="{$smarty.request.administrative_area_level_3}" />
-      </td>
-    </tr>
+    {include file="search/adv.form.autocomplete_select.tpl" description="Pays" name="country"
+      value_text=$smarty.request.country_text value=$smarty.request.country title="Tous les pays"}
+    {include file="search/adv.form.address_component.tpl" description="Région, province, état…" name="administrative_area_level_1"
+      value=$smarty.request.administrative_area_level_1}
+    {include file="search/adv.form.address_component.tpl" description="Département, comté…" name="administrative_area_level_2"
+      value=$smarty.request.administrative_area_level_2}
     <tr id="locality_text">
       <td>Ville</td>
       <td><input type="text" class="autocomplete" name="locality_text" size="32" value="{$smarty.request.locality_text}" /></td>
     </tr>
-    <tr id="locality_list">
-      <td>Ville</td>
-      <td>
-        <input name="locality" type="hidden" size="32" value="{$smarty.request.locality}" />
-      </td>
-    </tr>
-    <tr id="sublocality_list">
-      <td>Arrondissement, quartier&hellip;</td>
-      <td>
-        <input name="sublocality" type="hidden" size="32" value="{$smarty.request.sublocality}" />
-      </td>
-    </tr>
+    {include file="search/adv.form.address_component.tpl" description="Ville" name="locality" value=$smarty.request.locality}
+    {include file="search/adv.form.address_component.tpl" description="Arrondissement, quartier…" name="sublocality" value=$smarty.request.sublocality}
     <tr>
       <td colspan="2">
         <label for="only_current">
@@ -202,10 +176,8 @@
       <td>Description</td>
       <td><input type="text" class="autocomplete" name="jobdescription" size="32" value="{$smarty.request.jobdescription}" /></td>
     </tr>
-    <tr>
-      {include file="search/adv.form.autocomplete_select.tpl" description="Mots-clefs" name="jobterm"
-        value_text=$smarty.request.jobterm_text value=$smarty.request.jobterm title="Tous les mots-clefs"}
-    </tr>
+    {include file="search/adv.form.autocomplete_select.tpl" description="Mots-clefs" name="jobterm"
+      value_text=$smarty.request.jobterm_text value=$smarty.request.jobterm title="Tous les mots-clefs"}
     {if hasPerm('directory_private')}
     <tr>
       <td>CV contient</td>
@@ -221,30 +193,20 @@
     <tr>
       <th colspan="2">Divers</th>
     </tr>
-    <tr>
-      {include file="search/adv.form.autocomplete_select.tpl" description="Nationalité" name="nationalite"
-        value_text=$smarty.request.nationalite_text value=$smarty.request.nationalite title="Toutes les nationalités"}
-    </tr>
+    {include file="search/adv.form.autocomplete_select.tpl" description="Nationalité" name="nationalite"
+      value_text=$smarty.request.nationalite_text value=$smarty.request.nationalite title="Toutes les nationalités"}
     {if hasPerm('directory_private')}
-    <tr>
-      {include file="search/adv.form.autocomplete_select.tpl" description="Binet" name="binet"
-        value_text=$smarty.request.binet_text value=$smarty.request.binet title="Tous les binets"}
-    </tr>
+    {include file="search/adv.form.autocomplete_select.tpl" description="Binet" name="binet"
+      value_text=$smarty.request.binet_text value=$smarty.request.binet title="Tous les binets"}
     {/if}
-    <tr>
-      {include file="search/adv.form.autocomplete_select.tpl" description="Groupe X" name="groupex"
-        value_text=$smarty.request.groupex_text value=$smarty.request.groupex title="Tous les groupes X"}
-    </tr>
+    {include file="search/adv.form.autocomplete_select.tpl" description="Groupe X" name="groupex"
+      value_text=$smarty.request.groupex_text value=$smarty.request.groupex title="Tous les groupes X"}
     {if hasPerm('directory_private')}
-    <tr>
-      {include file="search/adv.form.autocomplete_select.tpl" description="Section" name="section"
-        value_text=$smarty.request.section_text value=$smarty.request.section title="Toutes les sections"}
-    </tr>
+    {include file="search/adv.form.autocomplete_select.tpl" description="Section" name="section"
+      value_text=$smarty.request.section_text value=$smarty.request.section title="Toutes les sections"}
     {/if}
-    <tr>
-      {include file="search/adv.form.autocomplete_select.tpl" description="Formation" name="school"
-        value_text=$smarty.request.school_text value=$smarty.request.school title="Toutes les formations"}
-    </tr>
+    {include file="search/adv.form.autocomplete_select.tpl" description="Formation" name="school"
+      value_text=$smarty.request.school_text value=$smarty.request.school title="Toutes les formations"}
     <tr>
       <td>Diplôme</td>
       <td>

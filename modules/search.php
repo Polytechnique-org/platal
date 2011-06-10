@@ -312,7 +312,6 @@ class SearchModule extends PLModule
             break;
           case 'administrative_area_level_1':
           case 'administrative_area_level_2':
-          case 'administrative_area_level_3':
           case 'locality':
             $page->assign('onchange', 'changeAddressComponents(\'' . $type . '\', this.value)');
           case 'sublocality':
