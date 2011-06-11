@@ -87,13 +87,17 @@ function load_advanced_search(request)
     $('.delete_address_component').click(function() {
         var field_name = $(this).attr('href');
         var hide = false;
+        var remove = false;
 
         for (var i = 1; i < address_types_count; ++i) {
             if (field_name == address_types[i]) {
                 hide = true;
             }
             if (hide) {
-                delete_address_component(address_types[i]);
+                if (field_name != address_types[i]) {
+                    remove = true;
+                }
+                delete_address_component(address_types[i], remove);
             }
         }
 
@@ -278,7 +282,7 @@ function changeAddressComponents(type, value)
     }
 
     for (var j = i + 1; j < address_types_count; ++j) {
-        delete_address_component(address_types[j]);
+        delete_address_component(address_types[j], true);
     }
 
     if (value != '' && i < address_types_count) {
@@ -287,15 +291,19 @@ function changeAddressComponents(type, value)
     }
 }
 
-function delete_address_component(field_name)
+function delete_address_component(field_name, remove)
 {
-    $('tr#' + field_name).hide();
-    $('#' + field_name + '_list').html('');
-    $("input[name='" + field_name + "']").val('');
+    if (remove || field_name == 'locality') {
+        $('tr#' + field_name).hide();
+        $('#' + field_name + '_list').html('');
 
-    if (field_name == 'locality') {
-        $("select[name='locality_text']").attr('value', '');
-        $('tr#locality_text').show();
+        if (field_name == 'locality') {
+            $("input[name='locality_text']").val('');
+            $('tr#locality_text').show();
+        }
+    } else {
+        $("select[name='" + field_name + "']").val('');
+        $("input[name='" + field_name + "']").val('');
     }
 }
 
