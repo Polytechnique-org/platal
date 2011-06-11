@@ -224,15 +224,14 @@ function setAddress(i, j, values)
     var next_type = address_types[j];
     var next_list = next_type + '_list';
 
-    if (j == 3) {
-        $('tr#locality_text').hide()
-            $("select[name='locality_text']").attr('value', '');
-    }
-
     $('#' + next_list).load(baseurl + 'list/' + next_type, { previous:prev_type, value:values[i] }, function() {
         if ($("select[name='" + next_type + "']").children("option").size() > 1) {
             $("tr#" + next_type).show();
             $("select[name='" + next_type + "']").attr('value', values[j]);
+            if (next_type == 'locality') {
+                $('tr#locality_text').hide();
+                $("select[name='locality_text']").attr('value', '');
+            }
             if (j < address_types_count) {
                 setAddress(j, j + 1, values);
             }
