@@ -245,8 +245,9 @@ $(JSTREE_PATH):
 ##
 maps: htdocs/javascript/markerclusterer.js
 
+## Try and use taged version asap (from http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclusterer/…).
 htdocs/javascript/markerclusterer.js:
-	wget http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclusterer/1.0/src/markerclusterer_compiled.js -O htdocs/javascript/markerclusterer.js
+	wget http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_compiled.js -O htdocs/javascript/markerclusterer.js
 
 ##
 ## lists rpc

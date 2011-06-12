@@ -69,7 +69,7 @@ function map_initialize()
             });
             markers.push(marker);
         }
-        var mc = new MarkerClusterer(map, markers);
+        var mc = new MarkerClusterer(map, markers, {'averageCenter': true});
     });
 }
 
