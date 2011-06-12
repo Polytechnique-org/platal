@@ -51,7 +51,8 @@ class GeolocModule extends PLModule
 
         $data = XDB::rawFetchAllAssoc('SELECT  pa.latitude, pa.longitude, GROUP_CONCAT(DISTINCT p.hrpid SEPARATOR \',\') AS hrpid,
                                                GROUP_CONCAT(pd.promo SEPARATOR \',\') AS promo,
-                                               GROUP_CONCAT(DISTINCT CONCAT(pd.private_name, \' (\', pd.promo, \')\') SEPARATOR \',\') AS name
+                                               GROUP_CONCAT(DISTINCT pd.private_name, \' (\', pd.promo, \')\' SEPARATOR \', \') AS name,
+                                               GROUP_CONCAT(DISTINCT pa.pid SEPARATOR \',\') AS pid
                                          FROM  profile_addresses AS pa
                                    INNER JOIN  profiles          AS p  ON (pa.pid = p.pid)
                                    INNER JOIN  profile_display   AS pd ON (pd.pid = pa.pid)
