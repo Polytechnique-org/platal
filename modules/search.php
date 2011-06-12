@@ -121,9 +121,9 @@ class SearchModule extends PLModule
             require_once 'userset.inc.php';
             $view = new QuickSearchSet();
             $view->addMod('minifiche', 'Mini-fiches', true, array('with_score' => true, 'starts_with' => $byletter));
+            $view->addMod('map', 'Planisphère');
             if (S::logged() && !Env::i('nonins')) {
                 $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true, 'with_score' => true));
-                $view->addMod('map', 'Planisphère');
             }
             $view->apply('search', $page, $model);
 

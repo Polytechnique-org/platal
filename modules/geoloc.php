@@ -49,9 +49,19 @@ class GeolocModule extends PLModule
             $where = '';
         }
 
+        if (!S::logged() || !S::user()->checkPerms('directory_ax')) {
+            $where .= " AND pa.pub = 'public'";
+            $name_publicity = 'public';
+        } else if (!S::user()->checkPerms('directory_private')) {
+            $where .= " AND pa.pub = 'ax'";
+            $name_publicity = 'public';
+        } else {
+            $name_publicity = 'private';
+        }
+
         $data = XDB::rawFetchAllAssoc('SELECT  pa.latitude, pa.longitude, GROUP_CONCAT(DISTINCT p.hrpid SEPARATOR \',\') AS hrpid,
                                                GROUP_CONCAT(pd.promo SEPARATOR \',\') AS promo,
-                                               GROUP_CONCAT(DISTINCT pd.private_name, \' (\', pd.promo, \')\' SEPARATOR \', \') AS name,
+                                               GROUP_CONCAT(DISTINCT pd.' . $name_publicity . '_name, \' (\', pd.promo, \')\' SEPARATOR \', \') AS name,
                                                GROUP_CONCAT(DISTINCT pa.pid SEPARATOR \',\') AS pid
                                          FROM  profile_addresses AS pa
                                    INNER JOIN  profiles          AS p  ON (pa.pid = p.pid)
