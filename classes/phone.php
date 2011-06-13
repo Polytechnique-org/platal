@@ -332,6 +332,7 @@ class Phone
             $phone = new Phone($item);
             $success = (!$phone->error && ($phone->format() || $phone->isEmpty()) && $success);
             if (!$phone->isEmpty()) {
+                // Restrict phone visibility to $maxPublicity
                 if (!is_null($maxPublicity) && $maxPublicity->isVisible($phone->pub)) {
                     $phone->pub = $maxPublicity->level();
                 }
@@ -341,6 +342,7 @@ class Phone
         if (count($phones) == 0 && $requiresEmptyPhone) {
             $phone = new Phone();
             if (!is_null($maxPublicity) && $maxPublicity->isVisible($phone->pub)) {
+                // Restrict phone visibility to $maxPublicity
                 $phone->pub = $maxPublicity->level();
             }
             $phones[] = call_user_func(array($phone, $function));
