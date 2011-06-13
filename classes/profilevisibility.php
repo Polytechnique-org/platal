@@ -95,8 +95,6 @@ class ProfileVisibility
     {
         if ($level != null && !$this->isVisible($level)) {
             $level = $this->level();
-        } else {
-            $level = $this->level();
         }
 
         return new ProfileVisibility($level);

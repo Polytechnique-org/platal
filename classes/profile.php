@@ -387,7 +387,7 @@ class Profile implements PlExportable
     public function displayEmail()
     {
         $o = $this->owner();
-        if ($o != null) {
+        if ($o != null && $this->isVisible(ProfileVisibility::VIS_PRIVATE)) {
             return $o->bestEmail();
         } else {
             return $this->email_directory;
@@ -1107,7 +1107,7 @@ class Profile implements PlExportable
         if (count($uids) == 0) {
             return array();
         }
-        return self::getBulkProfilesWithPIDs(self::getPIDsFromUIDs($uids), $fields, ProfileVisibility $visibility);
+        return self::getBulkProfilesWithPIDs(self::getPIDsFromUIDs($uids), $fields, $visibility);
     }
 
     public static function isDisplayName($name)

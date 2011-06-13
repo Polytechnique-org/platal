@@ -668,6 +668,9 @@ class UFC_NameTokens extends UserFilterCondition
             if ($this->general_type) {
                 $c .= XDB::format(' AND ' . $sub . '.general_type = {?}', $this->general_type);
             }
+            if (!$uf->isVisible(ProfileVisibility::VIS_PRIVATE)) {
+                $c .= XDB::format(' AND ' . $sub . '.general_type != \'nickname\'');
+            }
             $conds[] = $c;
         }
 

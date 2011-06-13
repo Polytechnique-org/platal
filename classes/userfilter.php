@@ -130,9 +130,16 @@ class UserFilter extends PlFilter
         return $this->profile_visibility->level();
     }
 
+    public function getVisibilityLevels()
+    {
+        return $this->profile_visibility->levels();
+    }
+
     public function getVisibilityCondition($field)
     {
-        return XDB::format($field . ' >= {?}', $this->getVisibilityLevel());
+        // Fields are ordered as ('hidden', 'private', 'ax', 'public', 'none')
+        // Which gives 'ax' >= 'private'
+        return XDB::format($field . ' IN {?}', $this->getVisibilityLevels());
     }
 
     private function buildQuery()
