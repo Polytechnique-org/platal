@@ -160,12 +160,15 @@ class Profile implements PlExportable
     private $visibility = null;
 
 
-    private function __construct(array $data)
+    private function __construct(array $data, ProfileVisibility $visibility = null)
     {
         $this->data = $data;
         $this->pid = $this->data['pid'];
         $this->hrpid = $this->data['hrpid'];
-        $this->visibility = new ProfileVisibility();
+        if ($visibility == null) {
+            $visibility = ProfileVisibility::defaultForRead();
+        }
+        $this->visibility = $visibility;
     }
 
     public function id()
@@ -483,15 +486,6 @@ class Profile implements PlExportable
                               email_directory = NULL
                        WHERE  pid = {?}",
                      $this->id());
-    }
-
-    /** Sets the level of visibility of the profile
-     * Sets $this->visibility to a list of valid visibilities.
-     * @param one of the self::VIS_* values
-     */
-    public function setVisibilityLevel($visibility)
-    {
-        $this->visibility->setLevel($visibility);
     }
 
     /** Determine whether an item with visibility $visibility can be displayed
@@ -959,7 +953,7 @@ class Profile implements PlExportable
         );
     }
 
-    private static function fetchProfileData(array $pids, $respect_order = true, $fields = 0x0000, $visibility = null)
+    private static function fetchProfileData(array $pids, $respect_order = true, $fields = 0x0000, ProfileVisibility $visibility = null)
     {
         if (count($pids) == 0) {
             return null;
@@ -971,13 +965,15 @@ class Profile implements PlExportable
             $order = '';
         }
 
-        $visibility = new ProfileVisibility($visibility);
+        if ($visibility == null) {
+            $visibility = ProfileVisibility::defaultForRead();
+        }
 
         $it = XDB::Iterator('SELECT  p.pid, p.hrpid, p.xorg_id, p.ax_id, p.birthdate, p.birthdate_ref,
                                      p.next_birthday, p.deathdate, p.deathdate_rec, p.sex = \'female\' AS sex,
                                      IF ({?}, p.cv, NULL) AS cv, p.medals_pub, p.alias_pub, p.email_directory,
                                      p.last_change, p.nationality1, p.nationality2, p.nationality3,
-                                     IF (p.freetext_pub IN {?}, p.freetext, NULL) AS freetext,
+                                     IF (p.freetext_pub >= {?}, p.freetext, NULL) AS freetext,
                                      pe.entry_year, pe.grad_year, pe.promo_year, pe.program, pe.fieldid,
                                      IF ({?}, pse.text, NULL) AS section,
                                      ppn.firstname_main AS firstname, ppn.lastname_main AS lastname, IF ({?}, pn.name, NULL) AS nickname,
@@ -985,8 +981,8 @@ class Profile implements PlExportable
                                      IF (ppn.lastname_ordinary = \'\', ppn.firstname_main, ppn.lastname_ordinary) AS lastname_ordinary,
                                      pd.yourself, pd.promo, pd.short_name, pd.public_name AS full_name,
                                      pd.directory_name, pd.public_name, pd.private_name,
-                                     IF (pp.pub IN {?}, pp.display_tel, NULL) AS mobile,
-                                     (ph.pub IN {?} AND ph.attach IS NOT NULL) AS has_photo,
+                                     IF (pp.pub >= {?}, pp.display_tel, NULL) AS mobile,
+                                     (ph.pub >= {?} AND ph.attach IS NOT NULL) AS has_photo,
                                      ph.x AS photo_width, ph.y AS photo_height,
                                      p.last_change < DATE_SUB(NOW(), INTERVAL 365 DAY) AS is_old,
                                      pm.expertise AS mentor_expertise,
@@ -1007,11 +1003,11 @@ class Profile implements PlExportable
                            GROUP BY  p.pid
                                      ' . $order,
                            $visibility->isVisible(ProfileVisibility::VIS_PRIVATE), // CV
-                           $visibility->levels(), // freetext
+                           $visibility->level(), // freetext
                            $visibility->isVisible(ProfileVisibility::VIS_PRIVATE), // section
                            $visibility->isVisible(ProfileVisibility::VIS_PRIVATE), // nickname
-                           $visibility->levels(), // mobile
-                           $visibility->levels(), // photo
+                           $visibility->level(), // mobile
+                           $visibility->level(), // photo
                            $visibility->isVisible(ProfileVisibility::VIS_PRIVATE), // deltaten_message
                            $pids
                        );
@@ -1052,11 +1048,14 @@ class Profile implements PlExportable
 
     /** Return the profile associated with the given login.
      */
-    public static function get($login, $fields = 0x0000, $visibility = null)
+    public static function get($login, $fields = 0x0000, ProfileVisibility $visibility = null)
     {
+        if ($visibility == null) {
+            $visibility = ProfileVisibility::defaultForRead();
+        }
+
         if (is_array($login)) {
-            $pf = new Profile($login);
-            $pf->setVisibilityLevel($visibility);
+            $pf = new Profile($login, $visibility);
             return $pf;
         }
         $pid = self::getPID($login);
@@ -1076,19 +1075,19 @@ class Profile implements PlExportable
         }
     }
 
-    public static function iterOverUIDs($uids, $respect_order = true, $fields = 0x0000, $visibility = null)
+    public static function iterOverUIDs($uids, $respect_order = true, $fields = 0x0000, ProfileVisibility $visibility = null)
     {
         return self::iterOverPIDs(self::getPIDsFromUIDs($uids), $respect_order, $fields, $visibility);
     }
 
-    public static function iterOverPIDs($pids, $respect_order = true, $fields = 0x0000, $visibility = null)
+    public static function iterOverPIDs($pids, $respect_order = true, $fields = 0x0000, ProfileVisibility $visibility = null)
     {
         return self::fetchProfileData($pids, $respect_order, $fields, $visibility);
     }
 
     /** Return profiles for the list of pids.
      */
-    public static function getBulkProfilesWithPIDs(array $pids, $fields = 0x0000, $visibility = null)
+    public static function getBulkProfilesWithPIDs(array $pids, $fields = 0x0000, ProfileVisibility $visibility = null)
     {
         if (count($pids) == 0) {
             return array();
@@ -1103,12 +1102,12 @@ class Profile implements PlExportable
 
     /** Return profiles for uids.
      */
-    public static function getBulkProfilesWithUIDS(array $uids, $fields = 0x000, $visibility = null)
+    public static function getBulkProfilesWithUIDS(array $uids, $fields = 0x000, ProfileVisibility $visibility = null)
     {
         if (count($uids) == 0) {
             return array();
         }
-        return self::getBulkProfilesWithPIDs(self::getPIDsFromUIDs($uids), $fields, $visibility);
+        return self::getBulkProfilesWithPIDs(self::getPIDsFromUIDs($uids), $fields, ProfileVisibility $visibility);
     }
 
     public static function isDisplayName($name)
@@ -1276,7 +1275,7 @@ class ProfileIterator implements PlIterator
         require_once 'profilefields.inc.php';
 
         if ($visibility == null) {
-            $visibility = new ProfileVisibility();
+            $visibility = ProfileVisibility::defaultForRead();
         }
 
         $this->fields = $fields;
@@ -1307,8 +1306,7 @@ class ProfileIterator implements PlIterator
 
     private function fillProfile(array $vals)
     {
-        $pf = Profile::get($vals[0]);
-        $pf->setVisibilityLevel($this->visibility->level());
+        $pf = Profile::get($vals[0], $this->visibility);
         $pf->setFetchedFields($this->fields);
 
         if ($this->hasData(Profile::FETCH_PHONES, $vals)) {

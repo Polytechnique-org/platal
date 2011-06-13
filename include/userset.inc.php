@@ -424,7 +424,7 @@ class AddressesView implements PlView
     public function apply(PlPage $page)
     {
         $pids = $this->set->getIds(new PlLimit());
-        $visibility = new ProfileVisibility(ProfileVisibility::VIS_AX);
+        $visibility = ProfileVisibility::defaultForRead(ProfileVisibility::VIS_AX);
         pl_cached_content_headers('text/x-csv', 1);
 
         $csv = fopen('php://output', 'w');

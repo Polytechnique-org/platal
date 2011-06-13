@@ -920,7 +920,7 @@ class UFC_Binet extends UserFilterCondition
     public function buildCondition(PlFilter $uf)
     {
         // Binets are private.
-        if ($uf->getVisibilityLevel() != ProfileVisibility::VIS_PRIVATE) {
+        if (!$uf->isVisible(ProfileVisibility::VIS_PRIVATE)) {
             return self::COND_TRUE;
         }
         $sub = $uf->addBinetsFilter();
@@ -944,7 +944,7 @@ class UFC_Section extends UserFilterCondition
     public function buildCondition(PlFilter $uf)
     {
         // Sections are private.
-        if ($uf->getVisibilityLevel() != ProfileVisibility::VIS_PRIVATE) {
+        if (!$uf->isVisible(ProfileVisibility::VIS_PRIVATE)) {
             return self::COND_TRUE;
         }
         $uf->requireProfiles();
@@ -1281,14 +1281,14 @@ class UFC_Job_Description extends UserFilterCondition
         // CV is private => if only CV requested, and not private,
         // don't do anything. Otherwise restrict to standard job visibility.
         if ($this->fields == UserFilter::JOB_CV) {
-           if ($uf->getVisibilityLevel() != ProfileVisibility::VIS_PRIVATE) {
+            if (!$uf->isVisible(ProfileVisibility::VIS_PRIVATE)) {
                return self::COND_TRUE;
            }
         }
         if ($this->fields & UserFilter::JOB_USERDEFINED) {
             $conds[] = $jsub . '.description ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description);
         }
-        if ($this->fields & UserFilter::JOB_CV && $uf->getVisibilityLevel() == ProfileVisibility::VIS_PRIVATE) {
+        if ($this->fields & UserFilter::JOB_CV && $uf->isVisible(ProfileVisibility::VIS_PRIVATE)) {
             $uf->requireProfiles();
             $conds[] = 'p.cv ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description);
         }

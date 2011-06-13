@@ -225,6 +225,54 @@ class User extends PlUser
         $this->perm_flags = null;
     }
 
+    /** Retrieve the 'general' read visibility.
+     * This is the maximum level of fields that may be viewed by the current user on other profiles.
+     *
+     * Rules are:
+     *  - Everyone can view 'public'
+     *  - directory_ax gives access to 'AX' level
+     *  - directory_private gives access to 'private' level
+     *  - admin gives access to 'hidden' level
+     */
+    public function readVisibility()
+    {
+        $level = ProfileVisibility::VIS_NONE;
+        if ($this->is_admin) {
+            $level = ProfileVisibility::VIS_HIDDEN;
+        } elseif ($this->checkPerms('directory_private')) {
+            $level = ProfileVisibility::VIS_PRIVATE;
+        } elseif ($this->checkPerms('directory_ax')) {
+            $level = ProfileVisibility::VIS_AX;
+        } else {
+            $level = ProfileVisibility::VIS_PUBLIC;
+        }
+        return new ProfileVisibility($level);
+    }
+
+    /** Retrieve the 'general' edit visibility.
+     * This is the maximum level of fields that may be edited by the current user on other profiles.
+     *
+     * Rules are:
+     *  - Only admins can edit the 'hidden' fields
+     *  - If someone has 'directory_edit' and 'directory_ax': AX level
+     *  - If someone has 'directory_edit' and 'directory_private': Private level
+     *  - Otherwise, nothing.
+     */
+    public function editVisibility()
+    {
+        $level = ProfileVisibility::VIS_NONE;
+        if ($this->is_admin) {
+            $level = ProfileVisibility::VIS_HIDDEN;
+        } elseif ($this->checkPerms('directory_edit')) {
+            if ($this->checkPerms('directory_ax')) {
+                $level = ProfileVisibility::VIS_AX;
+            } elseif ($this->checkPerms('directory_private')) {
+                $level = ProfileVisibility::VIS_PRIVATE;
+            }
+        }
+        return new ProfileVisibility($level);
+    }
+
     // We do not want to store the password in the object.
     // So, fetch it 'on demand'
     public function password()

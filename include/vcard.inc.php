@@ -30,7 +30,7 @@ class VCard extends PlVCard
     public function __construct($photos = true, $freetext = null)
     {
         PlVCard::$folding = false;
-        $this->visibility = new ProfileVisibility(ProfileVisibility::VIS_PRIVATE);
+        $this->visibility = ProfileVisibility::defaultForRead(ProfileVisibility::VIS_PRIVATE);
         $this->freetext = $freetext;
         $this->photos   = $photos;
     }

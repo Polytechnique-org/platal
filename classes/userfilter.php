@@ -117,12 +117,12 @@ class UserFilter extends PlFilter
         }
 
         // This will set the visibility to the default correct level.
-        $this->profile_visibility = new ProfileVisibility();
+        $this->profile_visibility = ProfileVisibility::defaultForRead();
     }
 
-    public function getVisibilityLevels()
+    public function isVisible($level)
     {
-        return $this->profile_visibility->levels();
+        return $this->profile_visibility->isVisible($level);
     }
 
     public function getVisibilityLevel()
@@ -130,14 +130,9 @@ class UserFilter extends PlFilter
         return $this->profile_visibility->level();
     }
 
-    public function restrictVisibilityTo($level)
-    {
-        $this->profile_visibility->setLevel($level);
-    }
-
     public function getVisibilityCondition($field)
     {
-        return $field . ' IN ' . XDB::formatArray($this->getVisibilityLevels());
+        return XDB::format($field . ' >= {?}', $this->getVisibilityLevel());
     }
 
     private function buildQuery()
@@ -393,12 +388,12 @@ class UserFilter extends PlFilter
         return User::iterOverUIDs($this->getUIDs($limit));
     }
 
-    public function getProfiles($limit = null, $fields = 0x0000, $visibility = null)
+    public function getProfiles($limit = null, $fields = 0x0000, ProfileVisibility $visibility = null)
     {
         return Profile::getBulkProfilesWithPIDs($this->getPIDs($limit), $fields, $visibility);
     }
 
-    public function getProfile($pos = 0, $fields = 0x0000, $visibility = null)
+    public function getProfile($pos = 0, $fields = 0x0000, ProfileVisibility $visibility = null)
     {
         $pid = $this->getPID($pos);
         if ($pid == null) {
@@ -408,7 +403,7 @@ class UserFilter extends PlFilter
         }
     }
 
-    public function iterProfiles($limit = null, $fields = 0x0000, $visibility = null)
+    public function iterProfiles($limit = null, $fields = 0x0000, ProfileVisibility $visibility = null)
     {
         return Profile::iterOverPIDs($this->getPIDs($limit), true, $fields, $visibility);
     }

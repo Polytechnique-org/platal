@@ -21,57 +21,31 @@
 
 class ProfileVisibility
 {
-    static private $v_values = array(self::VIS_PUBLIC  => array(self::VIS_PUBLIC),
-                                     self::VIS_AX      => array(self::VIS_AX, self::VIS_PUBLIC),
-                                     self::VIS_PRIVATE => array(self::VIS_PRIVATE, self::VIS_AX, self::VIS_PUBLIC));
-
+    /** Visibility levels.
+     * none => Can't see anything
+     * public => Can see public data
+     * ax => Can see AX and public data
+     * private => Can see private, AX and public data
+     * hidden => Can only be seen by admins
+     */
+    const VIS_NONE    = 'none';
     const VIS_PUBLIC  = 'public';
     const VIS_AX      = 'ax';
     const VIS_PRIVATE = 'private';
+    const VIS_HIDDEN  = 'hidden';
 
     private $level;
 
-    public function __construct($level = null, $force = false)
+    static private $v_levels = array(
+        self::VIS_NONE      => array(),
+        self::VIS_PUBLIC    => array(self::VIS_PUBLIC),
+        self::VIS_AX        => array(self::VIS_AX, self::VIS_PUBLIC),
+        self::VIS_PRIVATE   => array(self::VIS_PRIVATE, self::VIS_AX, self::VIS_PUBLIC),
+        self::VIS_HIDDEN    => array(self::VIS_HIDDEN, self::VIS_PRIVATE, self::VIS_AX, self::VIS_PUBLIC),
+    );
+
+    public function __construct($level = null)
     {
-        if ($force) {
-            $this->forceLevel($level);
-        } else {
-            $this->setLevel($level);
-        }
-    }
-
-    public function setLevel($level = self::VIS_PUBLIC)
-    {
-        if ($level != null && $level != self::VIS_PRIVATE && $level != self::VIS_AX && $level != self::VIS_PUBLIC) {
-            Platal::page()->kill("Invalid visibility: " . $level);
-        }
-
-        // Unlogged or not allowed to view directory_ax or requesting public
-        // => public view
-        if (!S::logged() || !S::user()->checkPerms('directory_ax') || $level == self::VIS_PUBLIC) {
-            $level = self::VIS_PUBLIC;
-        // Not allowed to view directory_private or requesting ax
-        } else if (!S::user()->checkPerms('directory_private') || $level == self::VIS_AX) {
-            $level = self::VIS_AX;
-        } else {
-            $level = self::VIS_PRIVATE;
-        }
-
-        if ($this->level == null || $this->level == self::VIS_PRIVATE) {
-            $this->level = $level;
-        } else if ($this->level == self::VIS_AX && $level == self::VIS_PRIVATE) {
-            return;
-        } else {
-            $this->level = self::VIS_PUBLIC;
-        }
-    }
-
-    public function forceLevel($level)
-    {
-        if ($level != self::VIS_PRIVATE && $level != self::VIS_AX && $level != self::VIS_PUBLIC) {
-            Platal::page()->kill('Invalid visibility: ' . $level);
-        }
-
         $this->level = $level;
     }
 
@@ -84,9 +58,53 @@ class ProfileVisibility
         }
     }
 
+    public static function defaultForRead($max_level = null)
+    {
+        if (!S::logged()) {
+            $vis = new ProfileVisibility(self::VIS_PUBLIC);
+        } else {
+            $vis = S::user()->readVisibility();
+        }
+        if ($max_level != null) {
+            return $vis->restrict($max_level);
+        } else {
+            return $vis;
+        }
+    }
+
+    public static function defaultForEdit($max_level = null)
+    {
+        if (!S::logged()) {
+            $vis = new ProfileVisibility(self::VIS_NONE);
+        } else {
+            $vis = S::user()->editVisibility();
+        }
+        if ($max_level != null) {
+            return $vis->restrict($max_level);
+        } else {
+            return $vis;
+        }
+    }
+
+    /** Retrieve a 'restricted' version of the current ProfileVisibility.
+     *
+     * @param $level The visibility level to restrict to
+     * @return A new ProfileVisibility instance, whose level is min($this->level, $level)
+     */
+    public function restrict($level = null)
+    {
+        if ($level != null && !$this->isVisible($level)) {
+            $level = $this->level();
+        } else {
+            $level = $this->level();
+        }
+
+        return new ProfileVisibility($level);
+    }
+
     public function levels()
     {
-        return self::$v_values[$this->level()];
+        return self::$v_levels[$this->level()];
     }
 
     public function isVisible($visibility)
