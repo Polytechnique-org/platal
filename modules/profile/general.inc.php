@@ -507,7 +507,13 @@ class ProfileSettingPromo implements ProfileSetting
                 }
                 Platal::page()->assign('promo_choice', $promoChoice);
             }
-            return $yearpromo;
+
+            // If this profile belongs to an X, return grad year minus education duration.
+            if ($page->profile->mainEducation() == 'X') {
+                return $gradYear - $page->profile->mainEducationDuration();
+            }
+
+            return $gradYear;
         }
 
         // If this profile belongs to an X, $promoNew needs to be changed to
