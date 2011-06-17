@@ -29,6 +29,7 @@ Bug/Wish:
         - #1481: Adds group nl subscription from group profile edition     -JAC
         - #1504: Displays users without profile in alphabetic lists        -JAC
         - #1508: Do not export emails in members csv files                 -JAC
+        - #1511: Adds subscriber position to groups                        -JAC
 
     * XnetEvent:
         - #1487: Removes link to event attending users to group outsiders  -JAC
