@@ -348,7 +348,7 @@ class ListsModule extends PLModule
         $list = list_fetch_basic_info(list_extract_members($members[1]));
         pl_cached_content_headers('text/x-csv', 1);
 
-        echo "email,nom,promo\n";
+        echo "nom,promo\n";
         echo implode("\n", $list);
         exit;
     }

@@ -86,7 +86,7 @@ function list_fetch_basic_info($members)
         if (!$user) {
             $res[] = $member . ',,';
         } else {
-            $res[] = $user->forlifeEmail() . ',' . $user->directoryName() . ',' . $user->promo();
+            $res[] = $user->directoryName() . ',' . $user->promo();
         }
     }
     return $res;

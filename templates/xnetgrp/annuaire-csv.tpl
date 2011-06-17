@@ -19,11 +19,11 @@
 {*  59 Temple Place, Suite 330; Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-Nom,Prénom,Sexe,Promotion,Email,Commentaire
+Nom,Prénom,Sexe,Promotion,Commentaire
 {if $users|@count}
 {foreach from=$users item=user}
 
-{$user->lastName()},{$user->firstName()},{if $user->isFemale()}F{else}M{/if},{$user->promo()},{$user->forlifeEmail()},{$user->group_comm|replace:',':'\,'}
+{$user->lastName()},{$user->firstName()},{if $user->isFemale()}F{else}M{/if},{$user->promo()},{$user->group_comm|replace:',':'\,'}
 
 {/foreach}
 {/if}
