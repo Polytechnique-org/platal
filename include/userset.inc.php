@@ -292,6 +292,11 @@ class GroupMemberView extends MixedView
                     new UFO_Promo(UserFilter::DISPLAY, true),
                     new UFO_Name(Profile::DN_SORT),
                 ), 'promotion'));
+        $this->addSort(new PlViewOrder('date_mod', array(
+                    new UFO_ProfileUpdate(true),
+                    new UFO_Promo(UserFilter::DISPLAY, true),
+                    new UFO_Name(Profile::DN_SORT),
+                ), 'dernière modification'));
         parent::__construct($set, $params);
     }
 
