@@ -1972,10 +1972,12 @@ class AdminModule extends PLModule
                 $pids = array_unique($new_pids);
 
                 // Updates years.
-                XDB::execute('UPDATE  profile_education
-                                 SET  entry_year = {?}, grad_year = {?}, promo_year = {?}
-                               WHERE  pid IN {?} AND eduid = {?} AND degreeid = {?}',
-                             $entry_year, $promotion, $promotion, $old_pids, $edu_id, $degree_id);
+                if (count($old_pids)) {
+                    XDB::execute('UPDATE  profile_education
+                                     SET  entry_year = {?}, grad_year = {?}, promo_year = {?}
+                                   WHERE  pid IN {?} AND eduid = {?} AND degreeid = {?}',
+                                 $entry_year, $promotion, $promotion, $old_pids, $edu_id, $degree_id);
+                }
             }
 
             // Precomputes values common to all users.
