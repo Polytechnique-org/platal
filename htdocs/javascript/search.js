@@ -323,16 +323,6 @@ function changeSchool(schoolId, diploma)
     });
 }
 
-// when checking/unchecking "only_referent", disable/enable some fields
-function changeOnlyReferent()
-{
-    if ($("#only_referent").is(':checked')) {
-        $("input[name='entreprise']").attr('disabled', true);
-    } else {
-        $("input[name='entreprise']").removeAttr('disabled');
-    }
-}
-
 // when choosing a job term in tree, hide tree and set job term field
 function searchForJobTerm(treeid, jtid, full_name)
 {

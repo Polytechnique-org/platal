@@ -23,6 +23,7 @@ Bug/Wish:
 
     * Search:
         - #1285: Autocompletes on internal words in university search      -JAC
+        - #1513: Allows search on both only_referent and compagny fields   -JAC
 
     * XnetGrp:
         - #947: Lists group former members to group admins                 -JAC

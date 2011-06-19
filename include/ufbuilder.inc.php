@@ -1132,34 +1132,9 @@ class UFBF_AddressIndex extends UFBF_Index
 // {{{ class UFBF_JobCompany
 class UFBF_JobCompany extends UFBF_Text
 {
-    private $onlymentorfield;
-
-    public function __construct($envfield, $formtext = '', $onlymentorfield = 'only_referent')
-    {
-        parent::__construct($envfield, $formtext);
-        $this->onlymentorfield = $onlymentorfield;
-    }
-
-    public function check(UserFilterBuilder $ufb) {
-        if (parent::check($ufb)) {
-            # No company check for mentors
-           if ($ufb->isOn($this->onlymentorfield)) {
-                $this->empty = true;
-           }
-           return true;
-        } else {
-            return false;
-        }
-    }
-
     protected function buildUFC(UserFilterBuilder $ufb)
     {
         return new UFC_Job_Company(UFC_Job_Company::JOBNAME, $this->val);
-    }
-
-    public function getEnvFieldNames()
-    {
-        return array($this->envfield, $this->onlymentorfield);
     }
 }
 // }}}
