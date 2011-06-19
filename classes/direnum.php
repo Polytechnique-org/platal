@@ -42,6 +42,7 @@ class DirEnum
     const CORPSRANKS     = 'corpsranks';
 
     const NATIONALITIES       = 'nationalities';
+    const POSTALCODES         = 'postalcodes';
     const SUBLOCALITIES       = 'sublocalities';
     const LOCALITIES          = 'localities';
     const ADMNISTRATIVEAREAS3 = 'admnistrativeareas3';
