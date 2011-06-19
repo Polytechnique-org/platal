@@ -243,13 +243,11 @@ $(JSTREE_PATH):
 ##
 ## Maps auxiliary scripts
 ##
-maps: htdocs/javascript/markerclusterer_packed.js htdocs/javascript/markerwithlabel_packed.js
+maps: htdocs/javascript/markerclusterer.js
 
-htdocs/javascript/markerclusterer_packed.js:
-	wget http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_packed.js -O htdocs/javascript/markerclusterer_packed.js
-
-htdocs/javascript/markerwithlabel_packed.js:
-	wget http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerwithlabel/1.1.4/src/markerwithlabel_packed.js -O htdocs/javascript/markerwithlabel_packed.js
+## Try and use taged version asap (from http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclusterer/…).
+htdocs/javascript/markerclusterer.js:
+	wget "http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_compiled.js?r=308" -O htdocs/javascript/markerclusterer.js
 
 ##
 ## lists rpc

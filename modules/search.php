@@ -121,9 +121,9 @@ class SearchModule extends PLModule
             require_once 'userset.inc.php';
             $view = new QuickSearchSet();
             $view->addMod('minifiche', 'Mini-fiches', true, array('with_score' => true, 'starts_with' => $byletter));
+            $view->addMod('map', 'Planisphère');
             if (S::logged() && !Env::i('nonins')) {
                 $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true, 'with_score' => true));
-                $view->addMod('map', 'Planisphère');
             }
             $view->apply('search', $page, $model);
 
@@ -149,6 +149,7 @@ class SearchModule extends PLModule
     function handler_advanced($page, $model = null, $byletter = null)
     {
         global $globals;
+        $page->addJsLink('search.js');
         $page->assign('advanced',1);
 
         $networks = DirEnum::getOptions(DirEnum::NETWORKS);
@@ -242,17 +243,17 @@ class SearchModule extends PLModule
         }
 
         $enums = array(
-            'binetTxt'           => DirEnum::BINETS,
-            'groupexTxt'         => DirEnum::GROUPESX,
-            'sectionTxt'         => DirEnum::SECTIONS,
-            'networking_typeTxt' => DirEnum::NETWORKS,
-            'localityTxt'        => DirEnum::LOCALITIES,
-            'countryTxt'         => DirEnum::COUNTRIES,
-            'entreprise'         => DirEnum::COMPANIES,
-            'jobtermTxt'         => DirEnum::JOBTERMS,
-            'description'        => DirEnum::JOBDESCRIPTION,
-            'nationaliteTxt'     => DirEnum::NATIONALITIES,
-            'schoolTxt'          => DirEnum::EDUSCHOOLS,
+            'binet_text'           => DirEnum::BINETS,
+            'groupex_text'         => DirEnum::GROUPESX,
+            'section_text'         => DirEnum::SECTIONS,
+            'networking_type_text' => DirEnum::NETWORKS,
+            'locality_text'        => DirEnum::LOCALITIES,
+            'country_text'         => DirEnum::COUNTRIES,
+            'entreprise'           => DirEnum::COMPANIES,
+            'jobterm_text'         => DirEnum::JOBTERMS,
+            'description'          => DirEnum::JOBDESCRIPTION,
+            'nationalite_text'     => DirEnum::NATIONALITIES,
+            'school_text'          => DirEnum::EDUSCHOOLS,
         );
         if (!array_key_exists($type, $enums)) {
             exit();
@@ -311,10 +312,9 @@ class SearchModule extends PLModule
             break;
           case 'administrative_area_level_1':
           case 'administrative_area_level_2':
-          case 'administrative_area_level_3':
           case 'locality':
             $page->assign('onchange', 'changeAddressComponents(\'' . $type . '\', this.value)');
-          case 'sublocality':
+          case 'postal_code':
             $ids = XDB::iterator("SELECT  pace1.id, pace1.long_name AS field
                                     FROM  profile_addresses_components_enum AS pace1
                               INNER JOIN  profile_addresses_components      AS pac1  ON (pac1.component_id = pace1.id)

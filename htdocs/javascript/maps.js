@@ -23,10 +23,9 @@
 
 function map_initialize()
 {
-    var latlng = new google.maps.LatLng(0, 0);
     var myOptions = {
         zoom: 1,
-        center: latlng,
+        center: new google.maps.LatLng(0, 0),
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     var map = new google.maps.Map($('#map_canvas').get(0), myOptions);
@@ -35,6 +34,8 @@ function map_initialize()
         var data = jQuery.parseJSON(json_data);
         var dots = data.data;
         var count = dots.length;
+        var info_window = new google.maps.InfoWindow({});
+        var parameters = ", '_blank', 'toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=840,height=600'";
         var markers = [];
 
         for (var i = 0; i < count; ++i) {
@@ -47,23 +48,28 @@ function map_initialize()
                 var link_array = new Array();
 
                 for (var j = 0; j < hrpids.length; ++j) {
-                    link_array[j] = '<a href="profile/' + hrpids[j] + '">' + names[j] + '</a>';
+                    link_array[j] = '<a href="profile/' + hrpids[j] + '" onclick="window.open(this.href' + parameters + '); return false;">' + names[j] + '</a>';
                 }
                 var link = link_array.join('<br />');
             } else {
-                var link = '<a href="profile/' + dots[i].hrpid + '">' + dots[i].name + '</a>';
+                var link = '<a href="profile/' + dots[i].hrpid + '" onclick="window.open(this.href' + parameters + '); return false;">' + dots[i].name + '</a>';
             }
 
-            var marker = new MarkerWithLabel({
+            var marker = new google.maps.Marker({
                 'position': latLng,
-                'labelContent': link,
-                'labelClass': 'marker_label'
+                'map': map,
+                'title': dots[i].name
             });
             marker.bindTo('icon', new ColoredIcon(color));
             marker.set('color', color);
+            marker.set('html', link);
+            google.maps.event.addListener(marker, 'click', function() {
+                info_window.setContent(this.html);
+                info_window.open(map, this);
+            });
             markers.push(marker);
         }
-        var mc = new MarkerClusterer(map, markers);
+        var mc = new MarkerClusterer(map, markers, {'averageCenter': true});
     });
 }
 

@@ -20,9 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if t($with_text_value)}
-<div>
-{/if}
 <select name="{$name}"{if t($onchange)} onchange="{$onchange}"{/if}{if t($id)} id="{$id}"{/if}>
     <option value=""> - </option>
   {if $list}
@@ -31,9 +28,5 @@
   {/iterate}
   {/if}
 </select>
-{if t($with_text_value)}
-<input type="hidden" value="" name="{$name}Txt" />
-</div>
-{/if}
 
 {* vim:set et sws=2 sts=2 sw=2 enc=utf-8: *}

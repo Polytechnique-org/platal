@@ -330,37 +330,38 @@ abstract class DE_WithSuboption extends DirEnumeration
 
     protected $suboptions = null;
 
-    protected function loadOptions()
+    protected function _fetchSubOptions($subid)
     {
-        $opts = XDB::fetchAllAssoc('id', 'SELECT ' . $this->valfield . ' AS field,
-                                                 ' . $this->optfield . ' AS subid,
-                                                 ' . $this->idfield . ' AS id
-                                            FROM ' . $this->from . '
-                                                 ' . $this->join . '
-                                                 ' . $this->where . '
-                                        GROUP BY ' . $this->valfield . '
-                                        ORDER BY ' . $this->valfield);
-        $this->options = array();
-        $this->suboptions = array();
-        foreach ($opts as $id => $opt) {
-            $this->options[$id] = $opt['field'];
-            if (!array_key_exists($opt['subid'], $this->suboptions)) {
-                $this->suboptions[$opt['subid']] = array();
-            }
-            $this->suboptions[$opt['subid']][$id] = $opt['field'];
+        if (is_null($this->suboptions)) {
+            $this->loadSubOptions($subid);
         }
+    }
+
+    protected function loadSubOptions($subid)
+    {
+        $where = ($this->where == '') ? '' : $this->where . ' AND ';
+        $this->suboptions = XDB::fetchAllAssoc('id', 'SELECT ' . $this->valfield . ' AS field,
+                                                             ' . $this->idfield . ' AS id
+                                                        FROM ' . $this->from . '
+                                                             ' . $this->join . '
+                                                       WHERE ' . $where . $this->optfield . ' = ' . $subid . '
+                                                    GROUP BY ' . $this->valfield . '
+                                                    ORDER BY ' . $this->valfield);
     }
 
     public function getOptions($subid = null)
     {
-        $this->_fetchOptions();
         if ($subid == null) {
+            $this->_fetchOptions();
             return $this->options;
-        } else if (array_key_exists($subid, $this->suboptions)) {
-            return $this->suboptions[$subid];
-        } else {
-            return array();
         }
+
+        $this->_fetchSubOptions($subid);
+        if (is_array($this->suboptions)) {
+            return $this->suboptions;
+        }
+
+        return array();
     }
 
     public function getOptionsIter($subid = null)
@@ -487,7 +488,7 @@ class DE_EducationSchools extends DirEnumeration
 // }}}
 
 // {{{ class DE_EducationDegrees
-class DE_EducationDegrees extends DirEnumeration
+class DE_EducationDegrees extends DE_WithSuboption
 {
     public $capabilities = self::HAS_OPTIONS;
 
@@ -613,6 +614,12 @@ class DE_Sublocalities extends DE_AddressesComponents
 {
     protected $where = 'WHERE  FIND_IN_SET(\'sublocality\', profile_addresses_components_enum.types)';
     protected $ac_where  = 'profile_addresses_components.type = \'home\' AND FIND_IN_SET(\'sublocality\', profile_addresses_components_enum.types)';
+}
+
+class DE_Postalcodes extends DE_AddressesComponents
+{
+    protected $where = 'WHERE  FIND_IN_SET(\'postal_code\', profile_addresses_components_enum.types)';
+    protected $ac_where  = 'profile_addresses_components.type = \'home\' AND FIND_IN_SET(\'postal_code\', profile_addresses_components_enum.types)';
 }
 
 // }}}

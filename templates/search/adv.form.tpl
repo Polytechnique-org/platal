@@ -26,290 +26,10 @@
 <p class="center"><strong>Voulez-vous télécharger le <a href="{$globals->baseurl}/search/adv/addresses{$plset_args}">tableau des adresses postales</a> pour la recette précédente&nbsp;?</strong></p>
 {/if}
 
-<script type="text/javascript">// <!--
-  var baseurl = $.plURL("search/");
-  {literal}
+<script type="text/javascript">//<![CDATA[
+  {literal}$(function() { load_advanced_search({{/literal}{foreach from=$smarty.request key=key item=item}"{$key}":"{$item}",{/foreach}{literal}}); });{/literal}
+//]]></script>
 
-  // display an autocomplete row : blabla (nb of found matches)
-  function make_format_autocomplete(block) {
-    return function(row) {
-        regexp = new RegExp('(' + RegExp.escape(block.value) + ')', 'i');
-
-        name = row[0].htmlEntities().replace(regexp, '<strong>$1<\/strong>');
-
-        if (row[1] === "-1") {
-          return '&hellip;';
-        }
-
-        if (row[1] === "-2") {
-          return '<em>aucun camarade trouvé pour '+row[0].htmlEntities()+'<\/em>';
-        }
-
-        camarades = (row[1] > 1) ? "camarades" : "camarade";
-
-        return name + '<em>&nbsp;&nbsp;-&nbsp;&nbsp;' + row[1].htmlEntities() + '&nbsp;' + camarades + '<\/em>';
-      };
-  }
-
-  function setAddress(i, j, values)
-  {
-    var types = new Array('country', 'administrative_area_level_1', 'administrative_area_level_2', 'administrative_area_level_3', 'locality', 'sublocality');
-    var prev_type = types[i];
-    var next_type = types[j];
-    var next_list = next_type + '_list';
-
-    if (j == 3) {
-      $('tr#locality_text').hide()
-      $("select[name='localityTxt']").attr('value', '');
-    }
-
-    $("[name='" + next_type + "']").parent().load(baseurl + 'list/' + next_type, { previous:prev_type, value:values[i] }, function() {
-      if ($("select[name='" + next_type + "']").children("option").size() > 1) {
-        $("tr#" + next_list).show();
-        $("select[name='" + next_type + "']").attr('value', values[j]);
-        if (j < 6) {
-          setAddress(j, j + 1, values);
-        }
-      } else {
-        $("tr#" + next_list).hide();
-        $("select[name='" + next_type + "']").attr('value', '');
-        if (j < 6) {
-          setAddress(i, j + 1, values);
-        }
-      }
-    });
-
-  }
-
-  function displayNextAddressComponent(i, j, value)
-  {
-    var types = new Array('country', 'administrative_area_level_1', 'administrative_area_level_2', 'administrative_area_level_3', 'locality', 'sublocality');
-    var prev_type = types[i];
-    var next_type = types[j];
-    var next_list = next_type + '_list';
-
-    if (j == 3) {
-      $('tr#locality_text').hide()
-      $("select[name='localityTxt']").attr('value', '');
-    }
-
-    $("[name='" + next_type + "']").parent().load(baseurl + 'list/' + next_type, { previous:prev_type, value:value }, function() {
-      $("select[name='" + next_type + "']").attr('value', '');
-      if ($("select[name='" + next_type + "']").children("option").size() > 1) {
-        $("tr#" + next_list).show();
-      } else {
-        $("tr#" + next_list).hide();
-        if (j < 6) {
-          displayNextAddressComponent(i, j + 1, value);
-        }
-      }
-    });
-  }
-
-  function changeAddressComponents(type, value)
-  {
-    var types = new Array('country', 'administrative_area_level_1', 'administrative_area_level_2', 'administrative_area_level_3', 'locality', 'sublocality');
-    var i = 0, j = 0;
-
-    while (types[i] != type && i < 6) {
-      ++i;
-    }
-
-    j = i + 1;
-    while (j < 6) {
-      $("select[name='" + types[j] + "']").attr('value', '');
-      $("tr#" + types[j] + "_list").hide();
-      ++j;
-    }
-
-    if (value != '' && i < 5) {
-      $("select[name='" + type + "']").attr('value', value);
-      displayNextAddressComponent(i, i + 1, value);
-    }
-  }
-
-  // when changing school, open diploma choice
-  function changeSchool(schoolId) {
-    $(".autocompleteTarget[name='school']").attr('value',schoolId);
-
-    if (schoolId) {
-      $(".autocomplete[name='schoolTxt']").addClass('hidden_valid');
-    } else {
-      $(".autocomplete[name='schoolTxt']").removeClass('hidden_valid');
-    }
-
-    $("[name='diploma']").parent().load(baseurl + 'list/diploma/', { school:schoolId }, function() {
-        $("select[name='diploma']").attr('value', '{/literal}{$smarty.request.diploma}{literal}');
-      });
-  }
-
-  // when checking/unchecking "only_referent", disable/enable some fields
-  function changeOnlyReferent() {
-    if ($("#only_referent").is(':checked')) {
-      $("input[name='entreprise']").attr('disabled', true);
-    } else {
-      $("input[name='entreprise']").removeAttr('disabled');
-    }
-  }
-
-  // when choosing a job term in tree, hide tree and set job term field
-  function searchForJobTerm(treeid, jtid, full_name) {
-    $(".term_tree").remove();
-    $("input[name='jobtermTxt']").val(full_name).addClass("hidden_valid").show();
-    $("input[name='jobterm']").val(jtid);
-  }
-
-  function cancel_autocomplete(field, realfield) {
-    $(".autocomplete[name='"+field+"']").removeClass('hidden_valid').val('').focus();
-    if (typeof(realfield) != "undefined") {
-      $(".autocompleteTarget[name='"+realfield+"']").val('');
-    }
-    return;
-  }
-
-  // when choosing autocomplete from list, must validate
-  function select_autocomplete(name) {
-      nameRealField = name.replace(/Txt$/, '');
-
-      // nothing to do if field is not a text field for a list
-      if (nameRealField == name)
-        return null;
-
-      // When changing country or locality, open next address component.
-      if (nameRealField == 'country' || nameRealField == 'locality') {
-        return function(i) {
-            nameRealField = name.replace(/Txt$/, '');
-            if (i.extra[0] < 0) {
-              cancel_autocomplete(name, nameRealField);
-              i.extra[1] = '';
-            }
-            $("[name='" + nameRealField + "']").parent().load(baseurl + 'list/' + nameRealField, function() {
-              $("select[name='" + nameRealField + "']").attr('value', i.extra[1]);
-            });
-            changeAddressComponents(nameRealField, i.extra[1]);
-          }
-      }
-
-      if (nameRealField == 'school')
-        return function(i) {
-            if (i.extra[0] < 0) {
-              cancel_autocomplete('schoolTxt', 'school');
-              i.extra[1] = '';
-            }
-            changeSchool(i.extra[1]);
-          }
-
-      // change field in list and display text field as valid
-      return function(i) {
-        nameRealField = this.field.replace(/Txt$/, '');
-
-        if (i.extra[0] < 0) {
-          cancel_autocomplete(this.field, nameRealField);
-          return;
-        }
-
-        $(".autocompleteTarget[name='"+nameRealField+"']").attr('value',i.extra[1]);
-
-        $(".autocomplete[name='"+this.field+"']").addClass('hidden_valid');
-      }
-    }
-
-  $(function() {
-      $(".autocompleteTarget").hide();
-      $(".autocomplete").show().each(function() {
-        targeted = $("../.autocompleteTarget",this)[0];
-
-        if (targeted && targeted.value) {
-          me = $(this);
-
-          $.get(baseurl + 'list/'+ targeted.name +'/'+targeted.value, {},function(textValue) {
-            me.attr('value', textValue);
-            me.addClass('hidden_valid');
-          });
-        }
-
-        $(this).autocomplete(baseurl + "autocomplete/"+this.name,{
-          selectOnly:1,
-          formatItem:make_format_autocomplete(this),
-          field:this.name,
-          onItemSelect:select_autocomplete(this.name),
-          matchSubset:0,
-          width:$(this).width()});
-        });
-
-      $(".autocomplete").change(function() { $(this).removeClass('hidden_valid'); });
-
-      if ({/literal}'{$smarty.request.country}'{literal} != '') {
-        $("[name='country']").parent().load(baseurl + 'list/country', function() {
-          $("select[name='country']").attr('value', {/literal}'{$smarty.request.country}'{literal});
-        });
-        setAddress(0, 1, new Array({/literal}'{$smarty.request.country}'{literal},
-                                   {/literal}'{$smarty.request.administrative_area_level_1}'{literal},
-                                   {/literal}'{$smarty.request.administrative_area_level_2}'{literal},
-                                   {/literal}'{$smarty.request.administrative_area_level_3}'{literal},
-                                   {/literal}'{$smarty.request.locality}'{literal},
-                                   {/literal}'{$smarty.request.sublocality}'{literal})
-        );
-      } else {
-        var types = new Array('administrative_area_level_1', 'administrative_area_level_2', 'administrative_area_level_3', 'locality', 'sublocality');
-        for (var i = 0; i < 5; ++i) {
-          $("tr#" + types[i] + '_list').hide();
-        }
-      }
-
-      $(".autocomplete[name='schoolTxt']").change(function() { changeSchool(''); });
-
-      changeSchool({/literal}'{$smarty.request.school}'{literal});
-
-      $(".autocompleteToSelect").each(function() {
-          var fieldName = $(this).attr('href');
-
-          $(this).attr('href', baseurl + 'list/'+fieldName).click(function() {
-              var oldval = $("input.autocompleteTarget[name='"+fieldName+"']")[0].value;
-
-              $(".autocompleteTarget[name='"+fieldName+"']").parent().load(baseurl + 'list/'+fieldName,{},
-                function(selectBox) {
-                  $(".autocompleteTarget[name='"+fieldName+"']").remove();
-                  $(".autocomplete[name='"+fieldName+"Txt']").remove();
-                  $("select[name='"+fieldName+"']").attr('value', oldval);
-                });
-
-              return false;
-            });
-        }).parent().find('.autocomplete').change(function() {
-          // If we change the value in the type="text" field, then the value in the 'integer id' field must not be used,
-          // to ensure that, we unset it
-          $(this).parent().find('.autocompleteTarget').val('');
-        });
-
-      $("#only_referent").change(function() { changeOnlyReferent(); });
-
-    });
-/** Regexps to wipe out from search queries */
-var default_form_values = [ /&woman=0(&|$)/, /&subscriber=0(&|$)/, /&alive=0(&|$)/, /&egal[12]=[^&]*&promo[12]=(&|$)/g, /&networking_type=0(&|$)/, /&[^&=]+=(&|$)/g ];
-/** Uses javascript to clean form from all empty fields */
-function cleanForm(f) {
-  var query = $(f).formSerialize();
-  var old_query;
-  for (var i in default_form_values) {
-    var reg = default_form_values[i];
-    if (typeof(reg) != "undefined") {
-      do {
-        old_query = query;
-        query = query.replace(reg, '$1');
-      } while (old_query != query);
-    }
-  }
-  query = query.replace(/^&*(.*)&*$/, '$1');
-  if (query == "rechercher=Chercher") {
-    alert("Aucun critère n'a été spécifié");
-    return false;
-  }
-  document.location = baseurl + 'adv?' + query;
-  return false;
-}
--->
-{/literal}</script>
 <p class="center">[<a href="search">Revenir à la recherche simple</a>]</p>
 <form id="recherche" action="search/adv" method="get" onsubmit="return cleanForm(this)">
   <table class="bicol" cellpadding="3" summary="Recherche">
@@ -423,53 +143,25 @@ function cleanForm(f) {
       <th colspan="2">Géographie</th>
     </tr>
     <tr>
-      <td>Pays</td>
-      <td>
-        <input name="countryTxt" type="text" class="autocomplete" style="display:none" size="32"
-               value="{$smarty.request.countryTxt}"/>
-        <input name="country" class="autocompleteTarget" type="hidden" value="{$smarty.request.country}"/>
-        <a href="country" class="autocompleteToSelect">{icon name="table" title="Tous les pays"}</a>
-      </td>
+      <td colspan="2" class="center"><small>Seuls les lieux où résident des camarades sont proposés ci-dessous.</small></td>
     </tr>
-    <tr id="administrative_area_level_1_list">
-      <td>Région, province, état&hellip;</td>
-      <td>
-        <input name="administrative_area_level_1" type="hidden" size="32" value="{$smarty.request.administrative_area_level_1}" />
-      </td>
-    </tr>
-    <tr id="administrative_area_level_2_list">
-      <td>Département, comté&hellip;</td>
-      <td>
-        <input name="administrative_area_level_2" type="hidden" size="32" value="{$smarty.request.administrative_area_level_2}" />
-      </td>
-    </tr>
-    <tr id="administrative_area_level_3_list">
-      <td>Canton&hellip;</td>
-      <td>
-        <input name="administrative_area_level_3" type="hidden" size="32" value="{$smarty.request.administrative_area_level_3}" />
-      </td>
-    </tr>
+    {include file="search/adv.form.autocomplete_select.tpl" description="Pays" name="country"
+      value_text=$smarty.request.country_text value=$smarty.request.country title="Tous les pays"}
+    {include file="search/adv.form.address_component.tpl" description="Région, province, état…" name="administrative_area_level_1"
+      value=$smarty.request.administrative_area_level_1}
+    {include file="search/adv.form.address_component.tpl" description="Département, comté…" name="administrative_area_level_2"
+      value=$smarty.request.administrative_area_level_2}
     <tr id="locality_text">
       <td>Ville</td>
-      <td><input type="text" class="autocomplete" name="localityTxt" size="32" value="{$smarty.request.localityTxt}" /></td>
+      <td><input type="text" class="autocomplete" name="locality_text" size="32" value="{$smarty.request.locality_text}" /></td>
     </tr>
-    <tr id="locality_list">
-      <td>Ville</td>
-      <td>
-        <input name="locality" type="hidden" size="32" value="{$smarty.request.locality}" />
-      </td>
-    </tr>
-    <tr id="sublocality_list">
-      <td>Arrondissement, quartier&hellip;</td>
-      <td>
-        <input name="sublocality" type="hidden" size="32" value="{$smarty.request.sublocality}" />
-      </td>
-    </tr>
+    {include file="search/adv.form.address_component.tpl" description="Ville" name="locality" value=$smarty.request.locality}
+    {include file="search/adv.form.address_component.tpl" description="Code postal" name="postal_code" value=$smarty.request.postal_code}
     <tr>
       <td colspan="2">
         <label for="only_current">
           <input name="only_current" id="only_current" type="checkbox"{if $smarty.request.only_current} checked="checked"{/if}/>
-          Chercher uniquement les adresses où les camarades sont actuellement.
+          Chercher uniquement les adresses actuelles.
         </label>
       </td>
     </tr>
@@ -484,15 +176,8 @@ function cleanForm(f) {
       <td>Description</td>
       <td><input type="text" class="autocomplete" name="jobdescription" size="32" value="{$smarty.request.jobdescription}" /></td>
     </tr>
-    <tr>
-      <td>Mots-clefs</td>
-      <td>
-        <input name="jobtermTxt" type="text" class="autocomplete{if $smarty.request.jobterm} hidden_valid{/if}" style="display:none" size="32"
-               value="{$smarty.request.jobtermTxt}"/>
-        <input name="jobterm" class="autocompleteTarget" type="hidden" value="{$smarty.request.jobterm}"/>
-        <a href="jobterm" class="autocompleteToSelect">{icon name="table" title="Tous les mots-clefs"}</a>
-      </td>
-    </tr>
+    {include file="search/adv.form.autocomplete_select.tpl" description="Mots-clefs" name="jobterm"
+      value_text=$smarty.request.jobterm_text value=$smarty.request.jobterm title="Tous les mots-clefs"}
     {if hasPerm('directory_private')}
     <tr>
       <td>CV contient</td>
@@ -508,55 +193,20 @@ function cleanForm(f) {
     <tr>
       <th colspan="2">Divers</th>
     </tr>
-    <tr>
-      <td>Nationalité</td>
-      <td>
-        <input name="nationaliteTxt" type="text" class="autocomplete" style="display:none" size="32"
-               value="{$smarty.request.nationaliteTxt}"/>
-        <input name="nationalite" class="autocompleteTarget" type="hidden" value="{$smarty.request.nationalite}"/>
-        <a href="nationalite" class="autocompleteToSelect">{icon name="table" title="Toutes les nationalités"}</a>
-      </td>
-    </tr>
+    {include file="search/adv.form.autocomplete_select.tpl" description="Nationalité" name="nationalite"
+      value_text=$smarty.request.nationalite_text value=$smarty.request.nationalite title="Toutes les nationalités"}
     {if hasPerm('directory_private')}
-    <tr>
-      <td>Binet</td>
-      <td>
-        <input name="binetTxt" type="text" class="autocomplete" style="display:none" size="32"
-               value="{$smarty.request.binetTxt}"/>
-        <input name="binet" class="autocompleteTarget" type="hidden" value="{$smarty.request.binet}"/>
-        <a href="binet" class="autocompleteToSelect">{icon name="table" title="Tous les binets"}</a>
-      </td>
-    </tr>
+    {include file="search/adv.form.autocomplete_select.tpl" description="Binet" name="binet"
+      value_text=$smarty.request.binet_text value=$smarty.request.binet title="Tous les binets"}
     {/if}
-    <tr>
-      <td>Groupe X</td>
-      <td>
-        <input name="groupexTxt" type="text" class="autocomplete" style="display:none" size="32"
-               value="{$smarty.request.groupexTxt}"/>
-        <input name="groupex" class="autocompleteTarget" type="hidden" value="{$smarty.request.groupex}"/>
-        <a href="groupex" class="autocompleteToSelect">{icon name="table" title="Tous les groupes X"}</a>
-      </td>
-    </tr>
+    {include file="search/adv.form.autocomplete_select.tpl" description="Groupe X" name="groupex"
+      value_text=$smarty.request.groupex_text value=$smarty.request.groupex title="Tous les groupes X"}
     {if hasPerm('directory_private')}
-    <tr>
-      <td>Section</td>
-      <td>
-        <input name="sectionTxt" type="text" class="autocomplete" style="display:none" size="32"
-               value="{$smarty.request.sectionTxt}"/>
-        <input name="section" class="autocompleteTarget" type="hidden" value="{$smarty.request.section}"/>
-        <a href="section" class="autocompleteToSelect">{icon name="table" title="Toutes les sections"}</a>
-      </td>
-    </tr>
+    {include file="search/adv.form.autocomplete_select.tpl" description="Section" name="section"
+      value_text=$smarty.request.section_text value=$smarty.request.section title="Toutes les sections"}
     {/if}
-    <tr>
-      <td>Formation</td>
-      <td>
-        <input name="schoolTxt" type="text" class="autocomplete" style="display:none" size="32"
-               value="{$smarty.request.schoolTxt}"/>
-        <input name="school" class="autocompleteTarget" type="hidden" value="{$smarty.request.school}"/>
-        <a href="school" class="autocompleteToSelect">{icon name="table" title="Toutes les formations"}</a>
-      </td>
-    </tr>
+    {include file="search/adv.form.autocomplete_select.tpl" description="Formation" name="school"
+      value_text=$smarty.request.school_text value=$smarty.request.school title="Toutes les formations"}
     <tr>
       <td>Diplôme</td>
       <td>

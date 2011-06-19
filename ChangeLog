@@ -28,6 +28,9 @@ Bug/Wish:
         - #947: Lists group former members to group admins                 -JAC
         - #1481: Adds group nl subscription from group profile edition     -JAC
         - #1504: Displays users without profile in alphabetic lists        -JAC
+        - #1507: Adds sort on last modification in directory display       -JAC
+        - #1508: Do not export emails in members csv files                 -JAC
+        - #1511: Adds subscriber position to groups                        -JAC
 
     * XnetEvent:
         - #1487: Removes link to event attending users to group outsiders  -JAC

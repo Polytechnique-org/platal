@@ -1080,7 +1080,7 @@ abstract class UFC_Address extends UserFilterCondition
  */
 class UFC_AddressComponent extends UFC_Address
 {
-    static $components = array('sublocality', 'locality', 'administrative_area_level_3', 'administrative_area_level_2', 'administrative_area_level_1', 'country');
+    static $components = array('postal_code', 'locality', 'administrative_area_level_3', 'administrative_area_level_2', 'administrative_area_level_1', 'country');
 
     /** Data of the filter
      */

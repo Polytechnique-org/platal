@@ -254,7 +254,7 @@ class XnetModule extends PLModule
 
         if (Post::has('pwhash') && Post::t('pwhash')) {
             XDB::query('UPDATE  accounts
-                           SET  password = {?}, state = \'active\'
+                           SET  password = {?}, state = \'active\', registration_date = NOW()
                          WHERE  uid = {?} AND state = \'pending\' AND type = \'xnet\'',
                        Post::t('pwhash'), $res['uid']);
             XDB::query('DELETE FROM  register_pending_xnet
