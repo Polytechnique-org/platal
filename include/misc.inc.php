@@ -384,7 +384,7 @@ function ends_with($string, $suffix, $caseSensitive = true)
  */
 function can_convert_to_integer($data)
 {
-    return is_int($data) || ctype_digit($data);
+    return is_int($data) || ctype_digit($data) || ($data[0] == '-' && ctype_digit(substr($data, 1)));
 }
 
 /** Interpret the input data as an integer or return false.
