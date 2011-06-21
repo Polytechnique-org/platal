@@ -224,13 +224,14 @@ class ProfileModule extends PLModule
         }
 
         // Determines the access level at which the profile will be displayed.
-        if (!S::logged() || !S::user()->checkPerms('directory_ax') || Env::v('view') == 'public') {
-            $view = 'public';
-        } else if (!S::user()->checkPerms('directory_private') || Env::v('view') == 'ax') {
-            $view = 'ax';
+        if (Env::v('view') == 'public') {
+            $view = ProfileVisibility::VIS_PUBLIC;
+        } else if (Env::v('view') == 'ax') {
+            $view = ProfileVisibility::VIS_AX;
         } else {
-            $view = 'private';
+            $view = ProfileVisibility::VIS_PRIVATE;
         }
+        $vis = ProfileVisibility::defaultForRead($view);
 
         // Display pending picture
         if (S::logged() && Env::v('modif') == 'new') {
@@ -241,7 +242,7 @@ class ProfileModule extends PLModule
         if (is_null($pid)) {
             $owner = User::getSilent($id);
             if ($owner) {
-                $profile = $owner->profile(true, Profile::FETCH_ALL, $view);
+                $profile = $owner->profile(true, Profile::FETCH_ALL, $vis);
                 if ($profile) {
                     $pid = $profile->id();
                 }
@@ -249,7 +250,7 @@ class ProfileModule extends PLModule
         } else {
             // Fetches profile's and profile's owner information and redirects to
             // marketing if the owner has not subscribed and the requirer has logged in.
-            $profile = Profile::get($pid, Profile::FETCH_ALL, $view);
+            $profile = Profile::get($pid, Profile::FETCH_ALL, $vis);
             $owner = $profile->owner();
         }
         if (is_null($pid)) {
@@ -271,7 +272,7 @@ class ProfileModule extends PLModule
         $page->setTitle($profile->fullName());
 
         // Determines and displays the virtual alias.
-        if (!is_null($owner) && $profile->alias_pub == 'public') {
+        if (!is_null($owner) && $profile->isVisible($profile->alias_pub)) {
             $page->assign('virtualalias', $owner->emailAlias());
         }
 

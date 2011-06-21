@@ -47,7 +47,7 @@ $($.closeOnEsc);
     {assign var=photo value=$profile->getPhoto(false)}
     {if $photo}<img alt="Photo de {$profile->fullName()}" src="photo/{$profile->hrid()}{if $with_pending_pic}/req{/if}" width="{$photo->width()}"/>{/if}
 
-    {if $logged && $view eq 'private' && ( $profile->section|smarty:nodefaults || $profile->getBinets()|smarty:nodefaults || ($owner && $owner->groups(true,true)|smarty:nodefaults))}
+    {if $logged && $profile->isVisible(#ProfileVisibility::VIS_AX#) && ( $profile->section|smarty:nodefaults || $profile->getBinets()|smarty:nodefaults || ($owner && $owner->groups(true,true)|smarty:nodefaults))}
       <h2>À l'X&hellip;</h2>
       {if $profile->section}<div><em class="intitule">Section&nbsp;: </em><span>{$profile->section}</span></div>{/if}
 
@@ -55,7 +55,7 @@ $($.closeOnEsc);
       {if $binets|@count}<div><em class="intitule">Binet{if count($binets) > 1}s{/if}&nbsp;: </em>
       <span>{', '|implode:$profile->getBinetsNames()}</span></div>{/if}
 
-      {if $owner && $view eq 'private'}
+      {if $owner && $profile->isVisible(#ProfileVisibility::VIS_AX#)}
         {assign var=groups value=$owner->groups(true,true)}
         {if $groups|@count}<div><em class="intitule">Groupe{if count($groups) > 1}s{/if} et institution{if count($groups) > 1}s{/if} X&nbsp;: </em>
         <span><br/>
@@ -68,8 +68,7 @@ $($.closeOnEsc);
 
     {/if}
 
-    {* 458752 stands for 0x70000 = Profile::NETWORKING_ALL *}
-    {assign var=networking value=$profile->getNetworking(458752)}
+    {assign var=networking value=$profile->getNetworking(#Profile::NETWORKING_ALL#)}
     {if count($networking) > 0}
       <h2>Sur le web...</h2>
       {foreach from=$networking item=network}
@@ -93,7 +92,7 @@ $($.closeOnEsc);
   <div id="fiche_identite" class="part">
     <div class="civilite">
       {if $profile->isFemale()}&bull;{/if}
-        {if $view eq 'private'}{$profile->private_name}{else}{$profile->public_name}{/if}
+        {if $profile->isVisible(#ProfileVisibility::VIS_PRIVATE#)}{$profile->private_name}{else}{$profile->public_name}{/if}
 
       {if $logged}
         &nbsp;{if !$profile->isDead()}<a href="vcard/{$owner->login()}.vcf">{*
@@ -122,7 +121,7 @@ $($.closeOnEsc);
       {/if}
     </div>
 
-    {if $logged && $view eq 'private' && $owner && $owner->state eq 'active'}
+    {if $logged && $profile->isVisible(#ProfileVisibility::VIS_AX#) && $owner && $owner->state eq 'active'}
     <div class='maj'>
       Fiche mise à jour<br />
       le {$profile->last_change|date_format}
@@ -131,9 +130,9 @@ $($.closeOnEsc);
 
     {* 121634816 is Profile::PHONE_LINK_PROFILE | Profile::PHONE_TYPE_ANY = 0x7400000 *}
     {assign var=phones value=$profile->getPhones(121634816)}
-    {if ($logged && $view eq 'private') || count($phones) > 0}
+    {if ($logged && $profile->isVisible(#ProfileVisibility::VIS_AX#)) || count($phones) > 0}
     <div class="contact">
-      {if $logged && $view eq 'private'}
+      {if $logged && $profile->isVisible(#ProfileVisibility::VIS_AX#)}
       <div class='email'>
         {if $profile->isDead()}
         Décédé{if $profile->isFemale()}e{/if} le {$profile->deathdate|date_format}
@@ -144,7 +143,7 @@ $($.closeOnEsc);
         Cette personne n'est pas inscrite à Polytechnique.org,<br />
         <a href="marketing/public/{$owner->login()}" class="popup">clique ici si tu connais son adresse email&nbsp;!</a>
         {else}
-        {if $virtualalias}
+        {if $virtualalias && $profile->isVisible(#ProfileVisibility::VIS_PRIVATE#)}
         <a href="mailto:{$virtualalias}">{$virtualalias}</a><br />
         {/if}
         <a href="mailto:{$owner->bestEmail()}">{$owner->bestEmail()}</a>
@@ -172,7 +171,7 @@ $($.closeOnEsc);
 
       {$profile->promo('details')}
 
-      {if $logged && $view eq 'private' && $profile->mentor_expertise}
+      {if $logged && $profile->isVisible(#ProfileVisibility::VIS_AX#) && $profile->mentor_expertise}
       [<a href="referent/{$profile->hrid()}" class='popup2'>Ma fiche référent</a>]
       {/if}
 
