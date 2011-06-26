@@ -33,7 +33,7 @@
 </script>
 <table class="bicol">
 <tr>
-  {foreach from=$t->vars item=myval key=myvar}{if $myval.display}
+  {foreach from=$t->vars item=myval key=myvar}{if $myval.display_list}
     <th style="cursor:pointer" onclick="redirect('{$t->pl}/sort{if $t->sortfield eq $myvar && !$t->sortdesc}desc{/if}/{$myvar}')">{$myval.desc}{if $t->sortfield eq $myvar}{if $t->sortdesc}{icon name="bullet_arrow_down"}{else}{icon name="bullet_arrow_up"}{/if}{/if}</th>
   {/if}{/foreach}
   {if !$hideactions}
@@ -54,7 +54,7 @@
 {/if}
 {iterate from=$list item=myrow}
 <tr class="{cycle values="pair,impair"}">
-{foreach from=$t->vars item=myval}{if $myval.display}
+{foreach from=$t->vars item=myval}{if $myval.display_list}
   <td>
     {assign var="myfield" value=$myval.Field}
     {if $myfield eq $t->idfield}
@@ -116,7 +116,7 @@
         {/if}
       </th>
     </tr>
-    {foreach from=$t->vars item=myval}{assign var="myfield" value=$myval.Field}{if (($myfield neq $t->idfield) or ($t->idfield_editable)) and $myval.display}
+    {foreach from=$t->vars item=myval}{assign var="myfield" value=$myval.Field}{if (($myfield neq $t->idfield) or ($t->idfield_editable)) and $myval.display_item}
     <tr class="{cycle values="pair,impair"}">
       <td>
         <strong>{$myval.desc}</strong>

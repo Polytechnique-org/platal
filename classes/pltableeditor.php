@@ -95,7 +95,10 @@ class PLTableEditor
         while ($a = $r->next()) {
             // desc will be the title of the column
             $a['desc'] = $a['Field'];
-            $a['display'] = true;
+            // display_list decides whether to display the field in 'list' mode
+            $a['display_list'] = true;
+            // display_item decides whether a field is displayed in 'item edition' mode
+            $a['display_item'] = true;
 
             if (substr($a['Type'],0,8) == 'varchar(') {
                 // limit editing box size
@@ -181,10 +184,11 @@ class PLTableEditor
     }
 
     // change display of a field
-    public function describe($name, $desc, $display)
+    public function describe($name, $desc, $display_list, $display_item=true)
     {
         $this->vars[$name]['desc'] = $desc;
-        $this->vars[$name]['display'] = $display;
+        $this->vars[$name]['display_list'] = $display_list;
+        $this->vars[$name]['display_item'] = $display_item;
     }
 
     // add a join table, when deleting a row corresponding entries will be deleted in these tables
@@ -361,7 +365,7 @@ class PLTableEditor
                     } elseif ($descr['Type'] == 'ip_address') {
                         $val = ip2long($val);
                     }
-                } elseif ($descr['display']) {
+                } elseif ($descr['display_item']) {
                     $cancel = true;
                     $page->trigError("Il manque le champ ".$field);
                 }
@@ -458,7 +462,7 @@ class PLTableEditor
             $it = XDB::iterator("SELECT t.* {$optional_fields} FROM {$this->table} AS t {$optional_joints} WHERE " . $this->get_where_clause() . " $sort");
             $this->nbfields = 0;
             foreach ($this->vars as $field => $descr)
-                if ($descr['display']) $this->nbfields++;
+                if ($descr['display_list']) $this->nbfields++;
             $page->assign('list', $it);
         }
         $page->assign('t', $this);
