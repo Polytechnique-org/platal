@@ -715,7 +715,7 @@ class ProfileModule extends PLModule
         $table_editor->add_join_table('profile_education', 'eduid', true);
         $table_editor->add_join_table('profile_education_degree', 'eduid', true);
         $table_editor->describe('name', 'intitulé', true);
-        $table_editor->describe('url', 'site web', false);
+        $table_editor->describe('url', 'site web', false, true);
         $table_editor->apply($page, $action, $id);
     }
     function handler_admin_education_field($page, $action = 'list', $id = null) {
@@ -763,7 +763,7 @@ class ProfileModule extends PLModule
         $page->assign('title', 'Gestion des types de networking');
         $table_editor = new PLTableEditor('admin/networking', 'profile_networking_enum', 'nwid');
         $table_editor->describe('name', 'intitulé', true);
-        $table_editor->describe('icon', 'nom de l\'icône', false);
+        $table_editor->describe('icon', 'nom de l\'icône', false, true);
         $table_editor->describe('filter', 'filtre', true);
         $table_editor->describe('link', 'lien web', true);
         $table_editor->apply($page, $action, $id);
@@ -790,7 +790,7 @@ class ProfileModule extends PLModule
         $page->assign('title', 'Gestion des Distinctions');
         $table_editor = new PLTableEditor('admin/medals','profile_medal_enum','id');
         $table_editor->describe('text', 'intitulé',  true);
-        $table_editor->describe('img',  'nom de l\'image', false);
+        $table_editor->describe('img',  'nom de l\'image', false, true);
         $table_editor->describe('flags', 'valider', true);
         $table_editor->apply($page, $action, $id);
         if ($id && $action == 'edit') {

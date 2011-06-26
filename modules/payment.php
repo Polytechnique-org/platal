@@ -552,12 +552,12 @@ class PaymentModule extends PLModule
         $table_editor->add_sort_field('id', true, true);
         $table_editor->on_delete("UPDATE payments SET flags = 'old' WHERE id = {?}", "Le paiement a été archivé");
         $table_editor->describe('text', 'intitulé', true);
-        $table_editor->describe('url', 'site web', false);
-        $table_editor->describe('amount_def', 'montant par défaut', false);
-        $table_editor->describe('amount_min', 'montant minimum', false);
-        $table_editor->describe('amount_max', 'montant maximum', false);
+        $table_editor->describe('url', 'site web', false, true);
+        $table_editor->describe('amount_def', 'montant par défaut', false, true);
+        $table_editor->describe('amount_min', 'montant minimum', false, true);
+        $table_editor->describe('amount_max', 'montant maximum', false, true);
         $table_editor->describe('mail', 'email contact', true);
-        $table_editor->describe('confirmation', 'message confirmation', false);
+        $table_editor->describe('confirmation', 'message confirmation', false, true);
 
         // adds a column with the start date of the linked event if there is one
         $table_editor->add_option_table('group_events', 'group_events.paiement_id = t.id');
@@ -586,7 +586,7 @@ class PaymentModule extends PLModule
         $page->assign('title', "Liste des RIBs");
 
         $table_editor = new PLTableEditor('admin/payments/bankaccounts', 'payment_bankaccounts', 'id');
-        $table_editor->describe('asso_id', 'ID du groupe', false);
+        $table_editor->describe('asso_id', 'ID du groupe', false, false);
         $table_editor->describe('owner', 'titulaire', true);
         $table_editor->add_option_table('groups', 'groups.id = t.asso_id');
         $table_editor->add_option_field('groups.diminutif', 'group_name', 'groupe', 'varchar','account');

@@ -315,11 +315,11 @@ class EventsModule extends PLModule
         $page->assign('title', 'Gestion des Astuces');
         $table_editor = new PLTableEditor('admin/tips', 'reminder_tips', 'id');
         $table_editor->describe('expiration', 'date de péremption', true);
-        $table_editor->describe('promo_min', 'promo. min (0 aucune)', false);
-        $table_editor->describe('promo_max', 'promo. max (0 aucune)', false);
+        $table_editor->describe('promo_min', 'promo. min (0 aucune)', false, true);
+        $table_editor->describe('promo_max', 'promo. max (0 aucune)', false, true);
         $table_editor->describe('title', 'titre', true);
         $table_editor->describe('state', 'actif', true);
-        $table_editor->describe('text', 'texte (html) de l\'astuce', false);
+        $table_editor->describe('text', 'texte (html) de l\'astuce', false, true);
         $table_editor->describe('priority', '0<=priorité<=255', true);
         $table_editor->list_on_edit(false);
         $table_editor->apply($page, $action, $id);

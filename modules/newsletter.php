@@ -451,7 +451,7 @@ class NewsletterModule extends PLModule
             $table_editor->describe('nlid', 'ID NL', true);
         } else {
             $table_editor->force_field_value('nlid', $nl->id);
-            $table_editor->describe('nlid', 'nlid', false);
+            $table_editor->describe('nlid', 'nlid', false, false);
         }
         // Prevent deletion.
         $table_editor->on_delete(null, null);

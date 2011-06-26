@@ -1161,7 +1161,7 @@ class AdminModule extends PLModule
         $table_editor = new PLTableEditor('admin/validate/answers','requests_answers','id');
         $table_editor->describe('category','catégorie',true);
         $table_editor->describe('title','titre',true);
-        $table_editor->describe('answer','texte',false);
+        $table_editor->describe('answer','texte',false, true);
         $table_editor->apply($page, $action, $id);
     }
 
@@ -1172,10 +1172,10 @@ class AdminModule extends PLModule
         $table_editor = new PLTableEditor('admin/skins','skins','id');
         $table_editor->describe('name','nom',true);
         $table_editor->describe('skin_tpl','nom du template',true);
-        $table_editor->describe('auteur','auteur',false);
+        $table_editor->describe('auteur','auteur',false, true);
         $table_editor->describe('comment','commentaire',true);
-        $table_editor->describe('date','date',false);
-        $table_editor->describe('ext','extension du screenshot',false);
+        $table_editor->describe('date','date',false, true);
+        $table_editor->describe('ext','extension du screenshot',false, true);
         $table_editor->apply($page, $action, $id);
     }
 
@@ -1205,7 +1205,7 @@ class AdminModule extends PLModule
         $table_editor = new PLTableEditor('admin/mx/broken', 'mx_watch', 'host', true);
         $table_editor->describe('host', 'Masque', true);
         $table_editor->describe('state', 'Niveau', true);
-        $table_editor->describe('text', 'Description du problème', false);
+        $table_editor->describe('text', 'Description du problème', false, true);
         $table_editor->apply($page, $action, $id);
     }
 
@@ -1225,10 +1225,10 @@ class AdminModule extends PLModule
         $page->assign('title', 'Gestion des coupures');
         $table_editor = new PLTableEditor('admin/downtime','downtimes','id');
         $table_editor->describe('debut','date',true);
-        $table_editor->describe('duree','durée',false);
+        $table_editor->describe('duree','durée',false, true);
         $table_editor->describe('resume','résumé',true);
         $table_editor->describe('services','services affectés',true);
-        $table_editor->describe('description','description',false);
+        $table_editor->describe('description','description',false, true);
         $table_editor->apply($page, $action, $id);
     }
 

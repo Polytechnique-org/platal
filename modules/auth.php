@@ -167,7 +167,7 @@ class AuthModule extends PLModule
         $page->assign('title', 'Gestion de l\'authentification centralisée');
         $table_editor = new PLTableEditor('admin/auth-groupes-x','group_auth','id');
         $table_editor->describe('name','nom',true);
-        $table_editor->describe('privkey','clé privée',false);
+        $table_editor->describe('privkey','clé privée',false, true);
         $table_editor->describe('datafields','champs renvoyés',true);
         $table_editor->describe('returnurls','urls de retour',true);
         $table_editor->describe('last_used', 'dernière utilisation', true);
