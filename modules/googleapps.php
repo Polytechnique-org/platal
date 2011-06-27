@@ -49,11 +49,13 @@ class GoogleAppsModule extends PLModule
         // Fills up the 'is Google Apps redirection active' variable.
         $redirect_active = false;
         $redirect_unique = true;
+        $gapps_email = '';
 
         if ($account->active()) {
             $redirect = new Redirect($user);
             foreach ($redirect->emails as $email) {
                 if ($email->type == 'googleapps') {
+                    $gapps_email = $email->email;
                     $redirect_active = $email->active;
                     $redirect_unique = !$redirect->other_active($email->email);
                 }
@@ -83,7 +85,7 @@ class GoogleAppsModule extends PLModule
                 if ($account->pending_update_suspension) {
                     $page->trigWarning("Ton compte est déjà en cours de désactivation.");
                 } else {
-                    if (!$redirect_active || $redirect->modify_one_email('googleapps', false) == SUCCESS) {
+                    if (!$redirect_active || $redirect->modify_one_email($gapps_email, false) == SUCCESS) {
                         $account->suspend();
                         $page->trigSuccess("Ton compte Google Apps est dorénavant désactivé.");
                     } else {
