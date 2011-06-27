@@ -1,4 +1,11 @@
 ================================================================================
+VERSION 1.1.5                                                         XX XX XXXX
+
+Bug:
+
+    * #1506: Fix the behaviour of PlTableEditor with 'display=false' fields -XEL
+
+================================================================================
 VERSION 1.1.4                                                         09 05 2011
 
 New:
@@ -107,7 +114,7 @@ ACRONYMS:
     * THD: Thomas Deniau        (Totom)     <thomas.deniau@m4x.org>
     * VP : Vincent Palatin                  <vincent.palatin@m4x.org>
     * XdX: Alexandre Hô         (XandreX)   <alexandre.ho@m4x.org>
-    * XEL: Raphaël Barrois      (XELnor)    <raphael.barrois@m4x.org>
+    * XEL: Raphaël Barrois      (Xelnor)    <raphael.barrois@m4x.org>
     * VZA: Vincent Zanotti      (vinZ2)     <vincent.zanotti@m4x.org>
 
 ================================================================================
