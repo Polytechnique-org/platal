@@ -782,6 +782,8 @@ class User extends PlUser
 
             // Change email used in mailing lists.
             if ($this->forlifeEmail() != $newuser->forlifeEmail()) {
+                // The super user is the user who has the right to do the modification.
+                $super_user = S::user();
                 // group mailing lists
                 $group_domains = XDB::fetchColumn('SELECT  g.mail_domain
                                                      FROM  groups        AS g
@@ -789,11 +791,11 @@ class User extends PlUser
                                                     WHERE  g.mail_domain != \'\' AND gm.uid = {?}',
                                                   $this->id());
                 foreach ($group_domains as $mail_domain) {
-                    $mmlist = new MMList($this, $mail_domain);
+                    $mmlist = new MMList($super_user, $mail_domain);
                     $mmlist->replace_email_in_all($this->forlifeEmail(), $newuser->forlifeEmail());
                 }
                 // main domain lists
-                $mmlist = new MMList($this);
+                $mmlist = new MMList($super_user);
                 $mmlist->replace_email_in_all($this->forlifeEmail(), $newuser->forlifeEmail());
             }
         }
