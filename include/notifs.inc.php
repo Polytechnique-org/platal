@@ -302,7 +302,7 @@ class Watch
         if (!isset($this->filters[$class])) {
             $event = $this->fetchEventWatch($class);
             $this->filters[$class] = new UserFilter($event->getCondition($this),
-                                                    array($event->getOrder(), new UFO_Name(Profile::DN_SORT)));
+                                                    array($event->getOrder(), new UFO_Name()));
         }
         return $this->filters[$class];
     }

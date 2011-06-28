@@ -336,7 +336,7 @@ class CarnetModule extends PLModule
 
         Platal::session()->close();
 
-        $order = array(new UFO_Name(Profile::LASTNAME), new UFO_Name(Profile::FIRSTNAME));
+        $order = array(new UFO_Name());
         if ($arg0 == 'promo') {
             $order = array_unshift($order, new UFO_Promo());
         } else {

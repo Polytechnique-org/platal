@@ -219,21 +219,21 @@ class MinificheView extends MixedView
                     new UFO_Score(true),
                     new UFO_ProfileUpdate(true),
                     new UFO_Promo(UserFilter::DISPLAY, true),
-                    new UFO_Name(Profile::DN_SORT),
+                    new UFO_Name(),
                 ), 'pertinence'));
         }
         $this->addSort(new PlViewOrder(
                             'name',
-                            array(new UFO_Name(Profile::DN_SORT)),
+                            array(new UFO_Name()),
                             'nom'));
         $this->addSort(new PlViewOrder('promo', array(
                     new UFO_Promo(UserFilter::DISPLAY, true),
-                    new UFO_Name(Profile::DN_SORT),
+                    new UFO_Name(),
                 ), 'promotion'));
         $this->addSort(new PlViewOrder('date_mod', array(
                     new UFO_ProfileUpdate(true),
                     new UFO_Promo(UserFilter::DISPLAY, true),
-                    new UFO_Name(Profile::DN_SORT),
+                    new UFO_Name(),
                 ), 'dernière modification'));
         parent::__construct($set, $params);
     }
@@ -263,15 +263,15 @@ class MentorView extends MixedView
     {
         $this->entriesPerPage = 10;
         $this->addSort(new PlViewOrder('rand', array(new PFO_Random(S::i('uid'))), 'aléatoirement'));
-        $this->addSort(new PlViewOrder('name', array(new UFO_Name(Profile::DN_SORT)), 'nom'));
+        $this->addSort(new PlViewOrder('name', array(new UFO_Name()), 'nom'));
         $this->addSort(new PlViewOrder('promo', array(
                     new UFO_Promo(UserFilter::DISPLAY, true),
-                    new UFO_Name(Profile::DN_SORT),
+                    new UFO_Name(),
                 ), 'promotion'));
         $this->addSort(new PlViewOrder('date_mod', array(
                     new UFO_ProfileUpdate(true),
                     new UFO_Promo(UserFilter::DISPLAY, true),
-                    new UFO_Name(Profile::DN_SORT),
+                    new UFO_Name(),
                 ), 'dernière modification'));
         parent::__construct($set, $params);
     }
@@ -287,15 +287,15 @@ class GroupMemberView extends MixedView
     public function __construct(PlSet $set, array $params)
     {
         $this->entriesPerPage = 20;
-        $this->addSort(new PlViewOrder('name', array(new UFO_Name(Profile::DN_SORT)), 'nom'));
+        $this->addSort(new PlViewOrder('name', array(new UFO_Name()), 'nom'));
         $this->addSort(new PlViewOrder('promo', array(
                     new UFO_Promo(UserFilter::DISPLAY, true),
-                    new UFO_Name(Profile::DN_SORT),
+                    new UFO_Name(),
                 ), 'promotion'));
         $this->addSort(new PlViewOrder('date_mod', array(
                     new UFO_ProfileUpdate(true),
                     new UFO_Promo(UserFilter::DISPLAY, true),
-                    new UFO_Name(Profile::DN_SORT),
+                    new UFO_Name(),
                 ), 'dernière modification'));
         parent::__construct($set, $params);
     }
@@ -311,10 +311,10 @@ class ListMemberView extends MixedView
     public function __construct(PlSet $set, array $params)
     {
         $this->entriesPerPage = 100;
-        $this->addSort(new PlViewOrder('name', array(new UFO_Name(Profile::DN_SORT)), 'nom'));
+        $this->addSort(new PlViewOrder('name', array(new UFO_Name()), 'nom'));
         $this->addSort(new PlViewOrder('promo', array(
                     new UFO_Promo(UserFilter::DISPLAY, true),
-                    new UFO_Name(Profile::DN_SORT),
+                    new UFO_Name(),
                 ), 'promotion'));
         parent::__construct($set, $params);
     }
@@ -336,14 +336,14 @@ class TrombiView extends MixedView
                             new UFO_Score(true),
                             new UFO_ProfileUpdate(true),
                             new UFO_Promo(UserFilter::DISPLAY, true),
-                            new UFO_Name(Profile::DN_SORT),
+                            new UFO_Name(),
             ), 'pertinence'));
         }
         $set->addCond(new UFC_Photo());
-        $this->addSort(new PlViewOrder('name', array(new UFO_Name(Profile::DN_SORT)), 'nom'));
+        $this->addSort(new PlViewOrder('name', array(new UFO_Name()), 'nom'));
         $this->addSort(new PlViewOrder('promo', array(
                         new UFO_Promo(UserFilter::DISPLAY, true),
-                        new UFO_Name(Profile::DN_SORT),
+                        new UFO_Name(),
                     ), 'promotion'));
         parent::__construct($set, $params);
     }
