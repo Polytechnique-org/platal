@@ -75,9 +75,9 @@ class PayPal
                             LEFT JOIN  profile_phones                    AS pp2   ON (pp2.pid = pa.pid AND pp2.link_type = 'user' AND pp2.link_id = 0)
                             LEFT JOIN  profile_addresses_components      AS pc    ON (pa.pid = pc.pid AND pa.jobid = pc.jobid AND pa.groupid = pc.groupid
                                                                                       AND pa.type = pc.type AND pa.id = pc.id)
-                            LEFT JOIN  profile_addresses_components_enum AS pace1 ON (FIND_IN_SET(\'country\', pace1.types) AND pace1.id = pc.component_id)
-                            LEFT JOIN  profile_addresses_components_enum AS pace2 ON (FIND_IN_SET(\'locality\', pace2.types) AND pace2.id = pc.component_id)
-                            LEFT JOIN  profile_addresses_components_enum AS pace3 ON (FIND_IN_SET(\'postal_code\', pace3.types) AND pace3.id = pc.component_id)
+                            LEFT JOIN  profile_addresses_components_enum AS pace1 ON (FIND_IN_SET('country', pace1.types) AND pace1.id = pc.component_id)
+                            LEFT JOIN  profile_addresses_components_enum AS pace2 ON (FIND_IN_SET('locality', pace2.types) AND pace2.id = pc.component_id)
+                            LEFT JOIN  profile_addresses_components_enum AS pace3 ON (FIND_IN_SET('postal_code', pace3.types) AND pace3.id = pc.component_id)
                                 WHERE  pa.pid = {?} AND FIND_IN_SET('current', pa.flags)
                              GROUP BY  pa.pid, pa.jobid, pa.groupid, pa.id, pa.type
                                 LIMIT  1",
