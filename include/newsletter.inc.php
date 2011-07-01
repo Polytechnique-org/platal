@@ -361,7 +361,7 @@ class NewsLetter
         }
         if (self::maySubscribe($user)) {
             XDB::execute('INSERT IGNORE INTO  newsletter_ins (nlid, uid, last, hash)
-                                      VALUES  ({?}, {?}, NULL, hash)',
+                                      VALUES  ({?}, {?}, 0, hash)',
                          $this->id, $user->id());
         }
     }
@@ -1190,20 +1190,23 @@ class NLIssue
                        $this->id);
 
         $ufc = new PFC_And($this->getRecipientsUFC(), new UFC_NLSubscribed($this->nl->id, $this->id), new UFC_HasValidEmail());
-        $emailsCount = 0;
         $uf = new UserFilter($ufc, array(new UFO_IsAdmin(), new UFO_Uid()));
         $limit = new PlLimit(self::BATCH_SIZE);
+        $global_sent = array();
 
         while (true) {
             $sent = array();
             $users = $uf->getUsers($limit);
             if (count($users) == 0) {
-                return $emailsCount;
+                break;
             }
             foreach ($users as $user) {
+                if (array_key_exists($user->id(), $global_sent)) {
+                    Platal::kill('Sending the same newsletter issue ' . $this->id . ' to user ' . $user->id() . ' twice, something must be wrong.');
+                }
                 $sent[] = $user->id();
+                $global_sent[$user->id()] = true;
                 $this->sendTo($user, $hash);
-                ++$emailsCount;
             }
             XDB::execute("UPDATE  newsletter_ins
                              SET  last = {?}
@@ -1211,7 +1214,7 @@ class NLIssue
 
             sleep(60);
         }
-        return $emailsCount;
+        return count($global_sent);
     }
 
     // }}}
