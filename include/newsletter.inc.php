@@ -361,9 +361,24 @@ class NewsLetter
         }
         if (self::maySubscribe($user)) {
             XDB::execute('INSERT IGNORE INTO  newsletter_ins (nlid, uid, last, hash)
-                                      VALUES  ({?}, {?}, 0, hash)',
+                                      VALUES  ({?}, {?}, NULL, hash)',
                          $this->id, $user->id());
         }
+    }
+
+    /** Subscribe a batch of users to a newsletter.
+     * This skips 'maySubscribe' test.
+     *
+     * @p $user_ids Array of user IDs to subscribe to the newsletter.
+     */
+    public function bulkSubscribe($user_ids)
+    {
+        // TODO: use a 'bulkMaySubscribe'.
+        XDB::execute('INSERT IGNORE INTO  newsletter_ins (nlid, uid, last, hash)
+                                  SELECT  {?}, a.uid, NULL, NULL
+                                    FROM  accounts AS a
+                                   WHERE  a.uid IN {?}',
+                     $this->id, $user_ids);
     }
 
     /** Retrieve subscription state of a user
