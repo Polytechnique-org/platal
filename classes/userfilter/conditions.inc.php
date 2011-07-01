@@ -846,7 +846,7 @@ class UFC_NLSubscribed extends UserFilterCondition
     public function buildCondition(PlFilter $uf)
     {
         $sub = $uf->addNewsLetterFilter($this->nlid);
-        return XDB::format($sub . '.last < {?}', $this->issue_id);
+        return XDB::format($sub . '.nlid IS NOT NULL AND ( ' . $sub . ' IS NULL OR ' . $sub . '.last < {?})', $this->issue_id);
     }
 }
 // }}}
