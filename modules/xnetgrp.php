@@ -1278,7 +1278,7 @@ class XnetGrpModule extends PLModule
             }
 
             if ($globals->asso('has_nl')) {
-                $nl = NewsLetter::forGroup($globals->asso('shortname');
+                $nl = NewsLetter::forGroup($globals->asso('shortname'));
                 // Updates group's newsletter subscription.
                 if (Post::i('newsletter') == 1) {
                     $nl->subscribe($user);
