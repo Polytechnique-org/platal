@@ -97,12 +97,18 @@ while ($nickname = $res->next()) {
     // we might run in troubler later if we don't keep the two repos. If we need
     // to add a forlife-looking nickname at some point, we'll do it manually.
     if (!preg_match('/^[-a-z]+\.[-a-z]+\.\d{4}$/', $nickname['nickname'])) {
-        XDB::execute(
-            "INSERT  INTO gapps_queue
-                SET  q_recipient_id = {?}, p_entry_date = NOW(), p_notbefore_date = NOW(),
-                     p_priority = 'offline', j_type = 'n_create', j_parameters = {?}",
-            $nickname['uid'],
-            json_encode($nickname));
+        $pending_tasks = XDB::fetchOneCell(
+            "SELECT  COUNT(*)
+               FROM  gapps_queue
+              WHERE  q_recipient_id = {?} AND p_status = 'idle' AND j_type = 'n_create' AND j_parameters = {?}",
+            $nickname['id'], json_encode($nickname));
+        if ($pending_tasks == 0) {
+            XDB::execute(
+                "INSERT  INTO gapps_queue
+                    SET  q_recipient_id = {?}, p_entry_date = NOW(), p_notbefore_date = NOW(),
+                         p_priority = 'offline', j_type = 'n_create', j_parameters = {?}",
+                $nickname['id'], json_encode($nickname));
+        }
     }
 }
 
@@ -114,12 +120,18 @@ $res = XDB::iterator(
   LEFT JOIN  email_source_account AS s ON (s.uid = g.l_userid AND s.type = 'alias' AND s.email = g.g_nickname)
       WHERE  g.l_userid IS NOT NULL AND s.email IS NULL");
 while ($nickname = $res->next()) {
-    XDB::execute(
-        "INSERT  INTO gapps_queue
-            SET  q_recipient_id = {?}, p_entry_date = NOW(), p_notbefore_date = NOW(),
-                 p_priority = 'offline', j_type = 'n_delete', j_parameters = {?}",
-        $nickname['uid'],
-        json_encode($nickname));
+    $pending_tasks = XDB::fetchOneCell(
+        "SELECT  COUNT(*)
+           FROM  gapps_queue
+          WHERE  q_recipient_id = {?} AND p_status = 'idle' AND j_type = 'n_delete' AND j_parameters = {?}",
+        $nickname['id'], json_encode($nickname));
+    if ($pending_tasks == 0) {
+        XDB::execute(
+            "INSERT  INTO gapps_queue
+                SET  q_recipient_id = {?}, p_entry_date = NOW(), p_notbefore_date = NOW(),
+                     p_priority = 'offline', j_type = 'n_delete', j_parameters = {?}",
+            $nickname['id'], json_encode($nickname));
+    }
 }
 
 /* Retrieves successful job queues for post-queue processing. */
