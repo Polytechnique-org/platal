@@ -160,14 +160,11 @@ class Profile implements PlExportable
     private $visibility = null;
 
 
-    private function __construct(array $data, ProfileVisibility $visibility = null)
+    private function __construct(array $data, Visibility $visibility)
     {
         $this->data = $data;
         $this->pid = $this->data['pid'];
         $this->hrpid = $this->data['hrpid'];
-        if ($visibility == null) {
-            $visibility = ProfileVisibility::defaultForRead();
-        }
         $this->visibility = $visibility;
     }
 
@@ -387,7 +384,7 @@ class Profile implements PlExportable
     public function displayEmail()
     {
         $o = $this->owner();
-        if ($o != null && $this->isVisible(ProfileVisibility::VIS_PRIVATE)) {
+        if ($o != null && $this->isVisible(Visibility::EXPORT_PRIVATE)) {
             return $o->bestEmail();
         } else {
             return $this->email_directory;
@@ -877,7 +874,7 @@ class Profile implements PlExportable
      */
     public function getBinets()
     {
-        if ($this->visibility->isVisible(ProfileVisibility::VIS_PRIVATE)) {
+        if ($this->visibility->isVisible(Visibility::EXPORT_PRIVATE)) {
             return XDB::fetchColumn('SELECT  binet_id
                                        FROM  profile_binets
                                       WHERE  pid = {?}', $this->id());
@@ -887,7 +884,7 @@ class Profile implements PlExportable
     }
     public function getBinetsNames()
     {
-        if ($this->visibility->isVisible(ProfileVisibility::VIS_PRIVATE)) {
+        if ($this->visibility->isVisible(Visibility::EXPORT_PRIVATE)) {
             return XDB::fetchColumn('SELECT  text
                                        FROM  profile_binets AS pb
                                   LEFT JOIN  profile_binet_enum AS pbe ON (pbe.id = pb.binet_id)
@@ -953,7 +950,7 @@ class Profile implements PlExportable
         );
     }
 
-    private static function fetchProfileData(array $pids, $respect_order = true, $fields = 0x0000, ProfileVisibility $visibility = null)
+    private static function fetchProfileData(array $pids, $respect_order = true, $fields = 0x0000, $visibility = null)
     {
         if (count($pids) == 0) {
             return null;
@@ -965,8 +962,8 @@ class Profile implements PlExportable
             $order = '';
         }
 
-        if ($visibility == null) {
-            $visibility = ProfileVisibility::defaultForRead();
+        if ($visibility === null) {
+            $visibility = Visibility::defaultForRead();
         }
 
         $it = XDB::Iterator('SELECT  p.pid, p.hrpid, p.xorg_id, p.ax_id, p.birthdate, p.birthdate_ref,
@@ -1002,13 +999,13 @@ class Profile implements PlExportable
                               WHERE  p.pid IN {?}
                            GROUP BY  p.pid
                                      ' . $order,
-                           $visibility->isVisible(ProfileVisibility::VIS_PRIVATE), // CV
+                           $visibility->isVisible(Visibility::EXPORT_PRIVATE), // CV
                            $visibility->level(), // freetext
-                           $visibility->isVisible(ProfileVisibility::VIS_PRIVATE), // section
-                           $visibility->isVisible(ProfileVisibility::VIS_PRIVATE), // nickname
+                           $visibility->isVisible(Visibility::EXPORT_PRIVATE), // section
+                           $visibility->isVisible(Visibility::EXPORT_PRIVATE), // nickname
                            $visibility->level(), // mobile
                            $visibility->level(), // photo
-                           $visibility->isVisible(ProfileVisibility::VIS_PRIVATE), // deltaten_message
+                           $visibility->isVisible(Visibility::EXPORT_PRIVATE), // deltaten_message
                            $pids
                        );
         return new ProfileIterator($it, $pids, $fields, $visibility);
@@ -1048,10 +1045,10 @@ class Profile implements PlExportable
 
     /** Return the profile associated with the given login.
      */
-    public static function get($login, $fields = 0x0000, ProfileVisibility $visibility = null)
+    public static function get($login, $fields = 0x0000, $visibility = null)
     {
-        if ($visibility == null) {
-            $visibility = ProfileVisibility::defaultForRead();
+        if ($visibility === null) {
+            $visibility = Visibility::defaultForRead();
         }
 
         if (is_array($login)) {
@@ -1068,26 +1065,26 @@ class Profile implements PlExportable
             if (!($login instanceof PlUser)) {
                 $user = User::getSilent($login);
                 if ($user && $user->hasProfile()) {
-                    return $user->profile();
+                    return $user->profile(false, $fields, $visibility);
                 }
             }
             return null;
         }
     }
 
-    public static function iterOverUIDs($uids, $respect_order = true, $fields = 0x0000, ProfileVisibility $visibility = null)
+    public static function iterOverUIDs($uids, $respect_order = true, $fields = 0x0000, $visibility = null)
     {
         return self::iterOverPIDs(self::getPIDsFromUIDs($uids), $respect_order, $fields, $visibility);
     }
 
-    public static function iterOverPIDs($pids, $respect_order = true, $fields = 0x0000, ProfileVisibility $visibility = null)
+    public static function iterOverPIDs($pids, $respect_order = true, $fields = 0x0000, $visibility = null)
     {
         return self::fetchProfileData($pids, $respect_order, $fields, $visibility);
     }
 
     /** Return profiles for the list of pids.
      */
-    public static function getBulkProfilesWithPIDs(array $pids, $fields = 0x0000, ProfileVisibility $visibility = null)
+    public static function getBulkProfilesWithPIDs(array $pids, $fields = 0x0000, $visibility = null)
     {
         if (count($pids) == 0) {
             return array();
@@ -1102,7 +1099,7 @@ class Profile implements PlExportable
 
     /** Return profiles for uids.
      */
-    public static function getBulkProfilesWithUIDS(array $uids, $fields = 0x000, ProfileVisibility $visibility = null)
+    public static function getBulkProfilesWithUIDS(array $uids, $fields = 0x000, $visibility = null)
     {
         if (count($uids) == 0) {
             return array();
@@ -1270,12 +1267,12 @@ class ProfileIterator implements PlIterator
 
     const FETCH_ALL    = 0x000033F; // FETCH_ADDRESSES | FETCH_CORPS | FETCH_EDU | FETCH_JOBS | FETCH_MEDALS | FETCH_NETWORKING | FETCH_PHONES | FETCH_JOB_TERMS
 
-    public function __construct(PlIterator $it, array $pids, $fields = 0x0000, ProfileVisibility $visibility = null)
+    public function __construct(PlIterator $it, array $pids, $fields = 0x0000, $visibility = null)
     {
         require_once 'profilefields.inc.php';
 
-        if ($visibility == null) {
-            $visibility = ProfileVisibility::defaultForRead();
+        if ($visibility === null) {
+            $visibility = Visibility::defaultForRead();
         }
 
         $this->fields = $fields;
@@ -1306,7 +1303,7 @@ class ProfileIterator implements PlIterator
 
     private function fillProfile(array $vals)
     {
-        $pf = Profile::get($vals[0], $this->visibility);
+        $pf = Profile::get($vals[0], 0x0, $this->visibility);
         $pf->setFetchedFields($this->fields);
 
         if ($this->hasData(Profile::FETCH_PHONES, $vals)) {

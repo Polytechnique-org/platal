@@ -131,7 +131,7 @@ class ProfileSettingJob implements ProfileSetting
         return $jobs;
     }
 
-    private function cleanJob(ProfilePage $page, $jobid, array &$job, &$success, $maxPublicity)
+    private function cleanJob(ProfilePage $page, $jobid, array &$job, &$success, $job_level)
     {
         if ($job['w_email'] == "new@example.org") {
             $job['w_email'] = $job['w_email_new'];
@@ -178,10 +178,10 @@ class ProfileSettingJob implements ProfileSetting
             }
         }
 
-        if ($maxPublicity->isVisible($job['w_email_pub'])) {
-            $job['w_email_pub'] = $maxPublicity->level();
+        if (Visibility::isLessRestrictive($job['w_email_pub'], $job_level)) {
+            $job['w_email_pub'] = $job_level;
         }
-        $job['w_phone'] = Phone::formatFormArray($job['w_phone'], $s, $maxPublicity);
+        $job['w_phone'] = Phone::formatFormArray($job['w_phone'], $s, $job_level);
 
         if ($job['w_entry_year'] && strlen($job['w_entry_year']) != 4) {
             $job['w_entry_year_error'] = true;
@@ -244,17 +244,20 @@ class ProfileSettingJob implements ProfileSetting
         foreach ($value as $key => &$job) {
             $address = new Address($job['w_address']);
             $s = $address->format();
-            $maxPublicity = new ProfileVisibility($job['pub']);
-            if ($maxPublicity->isVisible($address->pub)) {
-                $address->pub = $maxPublicity->level();
+
+            // Force the address publicity to be at least as restricted as
+            // the job publicity.
+            $job_level = $job['pub'];
+            if (Visibility::isLessRestrictive($address->pub, $job_level)) {
+                $address->pub = $job_level;
             }
             $job['w_address'] = $address->toFormArray();
-            $this->cleanJob($page, $key, $job, $s, $maxPublicity);
+            $this->cleanJob($page, $key, $job, $s, $job_level);
             if (!$init) {
                 $success = ($success && $s);
             }
         }
-        usort($value, 'ProfileVisibility::comparePublicity');
+        usort($value, 'Visibility::comparePublicity');
         return $value;
     }
 

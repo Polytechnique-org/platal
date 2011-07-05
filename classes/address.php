@@ -575,7 +575,7 @@ class Address
     public function format()
     {
         $this->text = trim($this->text);
-        $this->phones = Phone::formatFormArray($this->phones, $this->error, new ProfileVisibility($this->pub));
+        $this->phones = Phone::formatFormArray($this->phones, $this->error, $this->pub);
         if ($this->removed == 1) {
             if (!S::user()->checkPerms('directory_private') && Phone::hasPrivate($this->phones)) {
                 Platal::page()->trigWarning("L'adresse ne peut être supprimée car elle contient des informations pour lesquelles vous n'avez le droit d'édition.");
@@ -826,7 +826,7 @@ class Address
     // addresses before secondary addresses.
     static private function compare(array $a, array $b)
     {
-        $value = ProfileVisibility::comparePublicity($a, $b);
+        $value = Visibility::comparePublicity($a, $b);
         if ($value == 0) {
             if ($a['secondary'] != $b['secondary']) {
                 $value = $a['secondary'] ? 1 : -1;
@@ -878,9 +878,9 @@ class Address
     }
 
     static public function iterate(array $pids = array(), array $types = array(),
-                                   array $jobids = array(), array $pubs = array())
+                                   array $jobids = array(), Visibility $visibility)
     {
-        return new AddressIterator($pids, $types, $jobids, $pubs);
+        return new AddressIterator($pids, $types, $jobids, $visibility);
     }
 }
 
@@ -895,7 +895,7 @@ class AddressIterator implements PlIterator
 {
     private $dbiter;
 
-    public function __construct(array $pids, array $types, array $jobids, array $pubs)
+    public function __construct(array $pids, array $types, array $jobids, Visibility $visibility)
     {
         $where = array();
         if (count($pids) != 0) {
@@ -907,9 +907,11 @@ class AddressIterator implements PlIterator
         if (count($jobids) != 0) {
             $where[] = XDB::format('(pa.jobid IN {?})', $jobids);
         }
-        if (count($pubs) != 0) {
-            $where[] = XDB::format('(pa.pub IN {?})', $pubs);
+        if ($visibility == null) {
+            $visibility = Visibility::defaultForRead();
         }
+        $where[] = 'pve.best_display_level+0 <= pa.pub+0';
+
         $sql = 'SELECT  pa.pid, pa.jobid, pa.groupid, pa.type, pa.id, pa.flags, pa.text, pa.postalText, pa.pub, pa.comment,
                         pa.types, pa.formatted_address, pa.location_type, pa.partial_match, pa.latitude, pa.longitude,
                         pa.southwest_latitude, pa.southwest_longitude, pa.northeast_latitude, pa.northeast_longitude,
@@ -924,10 +926,11 @@ class AddressIterator implements PlIterator
              LEFT JOIN  profile_addresses_components_enum AS pace2 ON (FIND_IN_SET(\'locality\', pace2.types) AND pace2.id = pc.component_id)
              LEFT JOIN  profile_addresses_components_enum AS pace3 ON (FIND_IN_SET(\'administrative_area_level_1\', pace3.types) AND pace3.id = pc.component_id)
              LEFT JOIN  profile_addresses_components_enum AS pace4 ON (FIND_IN_SET(\'country\', pace4.types) AND pace4.id = pc.component_id)
-                 ' . ((count($where) > 0) ? 'WHERE  ' . implode(' AND ', $where) : '') . '
+             LEFT JOIN  profile_visibility_enum AS pve ON (pve.access_level = {?})
+                 WHERE  ' . implode(' AND ', $where) . '
               GROUP BY  pa.pid, pa.jobid, pa.groupid, pa.type, pa.id
               ORDER BY  pa.pid, pa.jobid, pa.id';
-        $this->dbiter = XDB::iterator($sql);
+        $this->dbiter = XDB::iterator($sql, $visibility->level());
     }
 
     public function next()

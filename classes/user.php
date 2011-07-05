@@ -236,17 +236,17 @@ class User extends PlUser
      */
     public function readVisibility()
     {
-        $level = ProfileVisibility::VIS_NONE;
+        $level = Visibility::VIEW_NONE;
         if ($this->is_admin) {
-            $level = ProfileVisibility::VIS_HIDDEN;
+            $level = Visibility::VIEW_ADMIN;
         } elseif ($this->checkPerms('directory_private')) {
-            $level = ProfileVisibility::VIS_PRIVATE;
+            $level = Visibility::VIEW_PRIVATE;
         } elseif ($this->checkPerms('directory_ax')) {
-            $level = ProfileVisibility::VIS_AX;
+            $level = Visibility::VIEW_AX;
         } else {
-            $level = ProfileVisibility::VIS_PUBLIC;
+            $level = Visibility::VIEW_PUBLIC;
         }
-        return new ProfileVisibility($level);
+        return Visibility::get($level);
     }
 
     /** Retrieve the 'general' edit visibility.
@@ -254,23 +254,18 @@ class User extends PlUser
      *
      * Rules are:
      *  - Only admins can edit the 'hidden' fields
-     *  - If someone has 'directory_edit' and 'directory_ax': AX level
-     *  - If someone has 'directory_edit' and 'directory_private': Private level
+     *  - If someone has 'directory_edit' (which is actually directory_ax_edit): AX level
      *  - Otherwise, nothing.
      */
     public function editVisibility()
     {
-        $level = ProfileVisibility::VIS_NONE;
+        $level = Visibility::VIEW_NONE;
         if ($this->is_admin) {
-            $level = ProfileVisibility::VIS_HIDDEN;
+            $level = Visibility::VIEW_ADMIN;
         } elseif ($this->checkPerms('directory_edit')) {
-            if ($this->checkPerms('directory_ax')) {
-                $level = ProfileVisibility::VIS_AX;
-            } elseif ($this->checkPerms('directory_private')) {
-                $level = ProfileVisibility::VIS_PRIVATE;
-            }
+            $level = Visibility::VIEW_AX;
         }
-        return new ProfileVisibility($level);
+        return Visibility::get($level);
     }
 
     // We do not want to store the password in the object.
@@ -368,6 +363,8 @@ class User extends PlUser
         if (!$this->_profile_fetched || $forceFetch) {
             $this->_profile_fetched = true;
             $this->_profile = Profile::get($this, $fields, $visibility);
+        } else if (!$this->_profile->visibility->equals($visibility)) {
+            return Profile::get($this, $fields, $visibility);
         }
         return $this->_profile;
     }

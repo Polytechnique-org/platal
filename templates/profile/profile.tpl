@@ -41,13 +41,12 @@ $($.closeOnEsc);
 
 //]]></script>
 {/literal}
-
 <div id="fiche">
   <div id="photo" class="part">
     {assign var=photo value=$profile->getPhoto(false)}
     {if $photo}<img alt="Photo de {$profile->fullName()}" src="photo/{$profile->hrid()}{if $with_pending_pic}/req{/if}" width="{$photo->width()}"/>{/if}
 
-    {if $logged && $profile->isVisible(#ProfileVisibility::VIS_AX#) && ( $profile->section|smarty:nodefaults || $profile->getBinets()|smarty:nodefaults || ($owner && $owner->groups(true,true)|smarty:nodefaults))}
+    {if $logged && $view->isVisible(#Visibility::EXPORT_AX#) && ( $profile->section|smarty:nodefaults || $profile->getBinets()|smarty:nodefaults || ($owner && $owner->groups(true,true)|smarty:nodefaults))}
       <h2>À l'X&hellip;</h2>
       {if $profile->section}<div><em class="intitule">Section&nbsp;: </em><span>{$profile->section}</span></div>{/if}
 
@@ -55,7 +54,7 @@ $($.closeOnEsc);
       {if $binets|@count}<div><em class="intitule">Binet{if count($binets) > 1}s{/if}&nbsp;: </em>
       <span>{', '|implode:$profile->getBinetsNames()}</span></div>{/if}
 
-      {if $owner && $profile->isVisible(#ProfileVisibility::VIS_AX#)}
+      {if $owner && $view->isVisible(#Visibility::EXPORT_AX#)}
         {assign var=groups value=$owner->groups(true,true)}
         {if $groups|@count}<div><em class="intitule">Groupe{if count($groups) > 1}s{/if} et institution{if count($groups) > 1}s{/if} X&nbsp;: </em>
         <span><br/>
@@ -92,7 +91,7 @@ $($.closeOnEsc);
   <div id="fiche_identite" class="part">
     <div class="civilite">
       {if $profile->isFemale()}&bull;{/if}
-        {if $profile->isVisible(#ProfileVisibility::VIS_PRIVATE#)}{$profile->private_name}{else}{$profile->public_name}{/if}
+        {if $view->isVisible(#Visibility::EXPORT_PRIVATE#)}{$profile->private_name}{else}{$profile->public_name}{/if}
 
       {if $logged}
         &nbsp;{if !$profile->isDead()}<a href="vcard/{$owner->login()}.vcf">{*
@@ -121,7 +120,7 @@ $($.closeOnEsc);
       {/if}
     </div>
 
-    {if $logged && $profile->isVisible(#ProfileVisibility::VIS_AX#) && $owner && $owner->state eq 'active'}
+    {if $logged && $view->isVisible(#Visibility::EXPORT_AX#) && $owner && $owner->state eq 'active'}
     <div class='maj'>
       Fiche mise à jour<br />
       le {$profile->last_change|date_format}
@@ -130,9 +129,9 @@ $($.closeOnEsc);
 
     {* 121634816 is Profile::PHONE_LINK_PROFILE | Profile::PHONE_TYPE_ANY = 0x7400000 *}
     {assign var=phones value=$profile->getPhones(121634816)}
-    {if ($logged && $profile->isVisible(#ProfileVisibility::VIS_AX#)) || count($phones) > 0}
+    {if ($logged && $view->isVisible(#Visibility::EXPORT_AX#)) || count($phones) > 0}
     <div class="contact">
-      {if $logged && $profile->isVisible(#ProfileVisibility::VIS_AX#)}
+      {if $logged && $view->isVisible(#Visibility::EXPORT_AX#)}
       <div class='email'>
         {if $profile->isDead()}
         Décédé{if $profile->isFemale()}e{/if} le {$profile->deathdate|date_format}
@@ -143,7 +142,7 @@ $($.closeOnEsc);
         Cette personne n'est pas inscrite à Polytechnique.org,<br />
         <a href="marketing/public/{$owner->login()}" class="popup">clique ici si tu connais son adresse email&nbsp;!</a>
         {else}
-        {if $virtualalias && $profile->isVisible(#ProfileVisibility::VIS_PRIVATE#)}
+        {if $virtualalias && $view->isVisible(#Visibility::EXPORT_PRIVATE#)}
         <a href="mailto:{$virtualalias}">{$virtualalias}</a><br />
         {/if}
         <a href="mailto:{$owner->bestEmail()}">{$owner->bestEmail()}</a>
@@ -171,7 +170,7 @@ $($.closeOnEsc);
 
       {$profile->promo('details')}
 
-      {if $logged && $profile->isVisible(#ProfileVisibility::VIS_AX#) && $profile->mentor_expertise}
+      {if $logged && $view->isVisible(#Visibility::EXPORT_AX#) && $profile->mentor_expertise}
       [<a href="referent/{$profile->hrid()}" class='popup2'>Ma fiche référent</a>]
       {/if}
 
@@ -273,14 +272,14 @@ $($.closeOnEsc);
   </div>
   {/if}
 
-  {if $view eq 'public'}
+  {if $view->level() eq #Visibility::VIEW_PUBLIC#}
   <div class="part">
     <small>
     Cette fiche est publique et visible par tout internaute,<br />
     vous pouvez aussi voir <a href="profile/private/{$profile->hrid()}?display=light">celle&nbsp;réservée&nbsp;aux&nbsp;X</a>.
     </small>
   </div>
-  {elseif $view eq 'ax'}
+  {elseif $view->level() eq #Visibility::VIEW_AX#}
   <div class="part">
     <small>
     Cette fiche est privée et ne recense que les informations transmises à l'AX.

@@ -225,13 +225,13 @@ class ProfileModule extends PLModule
 
         // Determines the access level at which the profile will be displayed.
         if (Env::v('view') == 'public') {
-            $view = ProfileVisibility::VIS_PUBLIC;
+            $view = Visibility::VIEW_PUBLIC;
         } else if (Env::v('view') == 'ax') {
-            $view = ProfileVisibility::VIS_AX;
+            $view = Visibility::VIEW_AX;
         } else {
-            $view = ProfileVisibility::VIS_PRIVATE;
+            $view = Visibility::VIEW_PRIVATE;
         }
-        $vis = ProfileVisibility::defaultForRead($view);
+        $visibility = Visibility::defaultForRead($view);
 
         // Display pending picture
         if (S::logged() && Env::v('modif') == 'new') {
@@ -242,7 +242,7 @@ class ProfileModule extends PLModule
         if (is_null($pid)) {
             $owner = User::getSilent($id);
             if ($owner) {
-                $profile = $owner->profile(true, Profile::FETCH_ALL, $vis);
+                $profile = $owner->profile(true, Profile::FETCH_ALL, $visibility);
                 if ($profile) {
                     $pid = $profile->id();
                 }
@@ -250,7 +250,7 @@ class ProfileModule extends PLModule
         } else {
             // Fetches profile's and profile's owner information and redirects to
             // marketing if the owner has not subscribed and the requirer has logged in.
-            $profile = Profile::get($pid, Profile::FETCH_ALL, $vis);
+            $profile = Profile::get($pid, Profile::FETCH_ALL, $visibility);
             $owner = $profile->owner();
         }
         if (is_null($pid)) {
@@ -259,6 +259,7 @@ class ProfileModule extends PLModule
             }
             return PL_NOT_FOUND;
         }
+
         // Now that we know this is an existing profile, we can switch to the
         // appropriate template.
         $page->changeTpl('profile/profile.tpl', SIMPLE);
@@ -278,7 +279,7 @@ class ProfileModule extends PLModule
 
         $page->assign_by_ref('profile', $profile);
         $page->assign_by_ref('owner', $owner);
-        $page->assign('view', $view);
+        $page->assign('view', $visibility);
         $page->assign('logged', S::logged());
 
         header('Last-Modified: ' . date('r', strtotime($profile->last_change)));

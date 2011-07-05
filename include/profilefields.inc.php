@@ -50,12 +50,12 @@ abstract class ProfileField
      *
      * MUST be reimplemented for each kind of ProfileField.
      */
-    public static function fetchData(array $pids, ProfileVisibility $visibility)
+    public static function fetchData(array $pids, Visibility $visibility)
     {
         return PlIteratorUtils::emptyIterator();
     }
 
-    public static function buildForPID($cls, $pid, ProfileVisibility $visibility)
+    public static function buildForPID($cls, $pid, Visibility $visibility)
     {
         $res = self::buildFromPIDs($cls, array($pid), $visibility);
         return array_pop($res);
@@ -67,7 +67,7 @@ abstract class ProfileField
      * @param $visibility An array of allowed visibility contexts
      * @return An array of $pid => ProfileField
      */
-    public static function buildFromPIDs($cls, array $pids, ProfileVisibility $visibility)
+    public static function buildFromPIDs($cls, array $pids, Visibility $visibility)
     {
         $it = new ProfileFieldIterator($cls, $pids, $visibility);
         $res = array();
@@ -77,7 +77,7 @@ abstract class ProfileField
         return $res;
     }
 
-    public static function getForPID($cls, $pid, ProfileVisibility $visibility)
+    public static function getForPID($cls, $pid, Visibility $visibility)
     {
         $it = new ProfileFieldIterator($cls, array($pid), $visibility);
         return $it->next();
@@ -91,7 +91,7 @@ class ProfileFieldIterator implements PlIterator
     private $data;
     private $cls;
 
-    public function __construct($cls, array $pids, ProfileVisibility $visibility)
+    public function __construct($cls, array $pids, Visibility $visibility)
     {
         if (is_numeric($cls) && isset(ProfileField::$fields[$cls])) {
             $cls = ProfileField::$fields[$cls];
@@ -333,7 +333,7 @@ class ProfileEducation extends ProfileField
         return $educations;
     }
 
-    public static function fetchData(array $pids, ProfileVisibility $visibility)
+    public static function fetchData(array $pids, Visibility $visibility)
     {
         $data = XDB::iterator('SELECT  pe.id, pe.pid,
                                        pe.entry_year, pe.grad_year, pe.program, pe.flags,
@@ -368,16 +368,17 @@ class ProfileMedals extends ProfileField
         }
     }
 
-    public static function fetchData(array $pids, ProfileVisibility $visibility)
+    public static function fetchData(array $pids, Visibility $visibility)
     {
         $data = XDB::iterator('SELECT  pm.pid, pm.mid, pm.gid, pme.text, pme.img, pmge.text AS grade
                                  FROM  profile_medals AS pm
                             LEFT JOIN  profiles AS p ON (pm.pid = p.pid)
                             LEFT JOIN  profile_medal_enum AS pme ON (pme.id = pm.mid)
                             LEFT JOIN  profile_medal_grade_enum AS pmge ON (pmge.mid = pm.mid AND pmge.gid = pm.gid)
-                                WHERE  pm.pid IN {?} AND p.medals_pub IN {?}
+                            LEFT JOIN  profile_visibility_enum AS pve ON (pve.access_level = {?})
+                                WHERE  pm.pid IN {?} AND pve.best_display_level + 0 <= p.medals_pub + 0
                              ORDER BY  ' . XDB::formatCustomOrder('pm.pid', $pids),
-                                $pids, $visibility->levels());
+                                $visibility->level(), $pids);
 
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
@@ -397,15 +398,16 @@ class ProfileNetworking extends ProfileField
         }
     }
 
-    public static function fetchData(array $pids, ProfileVisibility $visibility)
+    public static function fetchData(array $pids, Visibility $visibility)
     {
         $data = XDB::iterator('SELECT  pid, id, address, pne.nwid, pne.network_type, pne.link, pne.name
                                  FROM  profile_networking AS pn
                             LEFT JOIN  profile_networking_enum AS pne USING(nwid)
-                                WHERE  pid IN {?} AND pub IN {?}
+                            LEFT JOIN  profile_visibility_enum AS pve ON (pve.access_level = {?})
+                                WHERE  pn.pid IN {?} AND pve.best_display_level + 0 <= pn.pub + 0
                              ORDER BY  ' . XDB::formatCustomOrder('pid', $pids) . ',
                                        pn.nwid, id',
-                               $pids, $visibility->levels());
+                               $visibility->level(), $pids);
 
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
@@ -453,7 +455,7 @@ class ProfileCorps extends ProfileField
         }
     }
 
-    public static function fetchData(array $pids, ProfileVisibility $visibility)
+    public static function fetchData(array $pids, Visibility $visibility)
     {
         $data = XDB::iterator('SELECT  pc.pid, pc.original_corpsid AS original, pc.current_corpsid AS current,
                                        pceo.name AS original_name, pceo.abbreviation AS original_abbrev,
@@ -466,9 +468,10 @@ class ProfileCorps extends ProfileField
                             LEFT JOIN  profile_corps_enum AS pceo ON (pceo.id = pc.original_corpsid)
                             LEFT JOIN  profile_corps_enum AS pcec ON (pcec.id = pc.current_corpsid)
                             LEFT JOIN  profile_corps_rank_enum AS pcrec ON (pcrec.id = pc.rankid)
-                                WHERE  pc.pid IN {?} AND pc.corps_pub IN {?} AND pceo.id != 1
+                            LEFT JOIN  profile_visibility_enum AS pve ON (pve.access_level = {?})
+                                WHERE  pc.pid IN {?} AND pve.best_display_level + 0 <= pc.corps_pub + 0 AND pceo.id != 1
                              ORDER BY  ' . XDB::formatCustomOrder('pid', $pids),
-                                $pids, $visibility->levels());
+                                $visibility->level(), $pids);
 
         return $data;
     }
@@ -487,7 +490,7 @@ class ProfileMentoringCountries extends ProfileField
         }
     }
 
-    public static function fetchData(array $pids, ProfileVisibility $visibility)
+    public static function fetchData(array $pids, Visibility $visibility)
     {
         $data = XDB::iterator('SELECT  pmc.pid, pmc.country AS id, gc.country AS name
                                  FROM  profile_mentor_country AS pmc
@@ -533,9 +536,9 @@ class ProfileAddresses extends ProfileField
         return $addresses;
     }
 
-    public static function fetchData(array $pids, ProfileVisibility $visibility)
+    public static function fetchData(array $pids, Visibility $visibility)
     {
-        $it = Address::iterate($pids, array(), array(), $visibility->levels());
+        $it = Address::iterate($pids, array(), array(), $visibility);
         return PlIteratorUtils::subIterator($it->value(), PlIteratorUtils::arrayValueCallback('pid'));
     }
 
@@ -584,9 +587,9 @@ class ProfilePhones extends ProfileField
         return $phones;
     }
 
-    public static function fetchData(array $pids, ProfileVisibility $visibility)
+    public static function fetchData(array $pids, Visibility $visibility)
     {
-        $it = Phone::iterate($pids, array(), array(), $visibility->levels());
+        $it = Phone::iterate($pids, array(), array(), $visibility);
         return PlIteratorUtils::subIterator($it->value(), PlIteratorUtils::arrayValueCallback('pid'));
     }
 }
@@ -604,15 +607,16 @@ class ProfileJobs extends ProfileField
         }
     }
 
-    public static function fetchData(array $pids, ProfileVisibility $visibility)
+    public static function fetchData(array $pids, Visibility $visibility)
     {
         CompanyList::preload($pids);
         $data = XDB::iterator('SELECT  id, pid, description, url as user_site, jobid,
-                                       IF(email_pub IN {?}, email, NULL) AS user_email
+                                       IF(pve.best_display_level + 0 <= email_pub + 0, email, NULL) AS user_email
                                  FROM  profile_job
-                                WHERE  pid IN {?} AND pub IN {?}
+                            LEFT JOIN  profile_visibility_enum AS pve ON (pve.access_level = {?})
+                                WHERE  pid IN {?} AND pve.best_display_level + 0 <= pub + 0
                              ORDER BY  ' . XDB::formatCustomOrder('pid', $pids) . ', id',
-                                 $visibility->levels(), $pids, $visibility->levels());
+                                 $visibility->level(), $pids);
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
 
@@ -686,15 +690,16 @@ class ProfileJobTerms extends ProfileField
         return $this->jobterms;
     }
 
-    public static function fetchData(array $pids, ProfileVisibility $visibility)
+    public static function fetchData(array $pids, Visibility $visibility)
     {
         $data = XDB::iterator('SELECT  jt.jtid, jte.full_name, jt.pid, jt.jid
                                  FROM  profile_job_term AS jt
                            INNER JOIN  profile_job AS j ON (jt.pid = j.pid AND jt.jid = j.id)
                             LEFT JOIN  profile_job_term_enum AS jte USING(jtid)
-                                WHERE  jt.pid IN {?} AND j.pub IN {?}
+                            LEFT JOIN  profile_visibility_enum AS pve ON (pve.access_level = {?})
+                                WHERE  jt.pid IN {?} AND pve.best_display_level + 0 <= j.pub + 0
                              ORDER BY  ' . XDB::formatCustomOrder('jt.pid', $pids),
-                                 $pids, $visibility->levels());
+                                 $visibility->level(), $pids);
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
 }
@@ -702,7 +707,7 @@ class ProfileJobTerms extends ProfileField
 // {{{ class ProfileMentoringTerms                    [ Field ]
 class ProfileMentoringTerms extends ProfileJobTerms
 {
-    public static function fetchData(array $pids, ProfileVisibility $visibility)
+    public static function fetchData(array $pids, Visibility $visibility)
     {
         $data = XDB::iterator('SELECT  mt.jtid, jte.full_name, mt.pid
                                  FROM  profile_mentor_term AS mt
@@ -753,7 +758,7 @@ class CompanyList
 
         // Add phones to hq
         if (count($newcompanies)) {
-            $it = Phone::iterate(array(), array(Phone::LINK_COMPANY), $newcompanies);
+            $it = Phone::iterate(array(), array(Phone::LINK_COMPANY), $newcompanies, Visibility::defaultForRead());
             while ($phone = $it->next()) {
                 self::$companies[$phone->link_id]->setPhone($phone);
             }

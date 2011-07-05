@@ -333,17 +333,17 @@ class Phone
             $success = (!$phone->error && ($phone->format() || $phone->isEmpty()) && $success);
             if (!$phone->isEmpty()) {
                 // Restrict phone visibility to $maxPublicity
-                if (!is_null($maxPublicity) && $maxPublicity->isVisible($phone->pub)) {
-                    $phone->pub = $maxPublicity->level();
+                if (!is_null($maxPublicity) && Visibility::isLessRestrictive($phone->pub, $maxPublicity)) {
+                    $phone->pub = $maxPublicity;
                 }
                 $phones[] = call_user_func(array($phone, $function));
             }
         }
         if (count($phones) == 0 && $requiresEmptyPhone) {
             $phone = new Phone();
-            if (!is_null($maxPublicity) && $maxPublicity->isVisible($phone->pub)) {
+            if (!is_null($maxPublicity) && Visibility::isLessRestrictive($phone->pub, $maxPublicity)) {
                 // Restrict phone visibility to $maxPublicity
-                $phone->pub = $maxPublicity->level();
+                $phone->pub = $maxPublicity;
             }
             $phones[] = call_user_func(array($phone, $function));
         }
@@ -354,7 +354,7 @@ class Phone
     static public function formatFormArray(array $data, &$success = true, $maxPublicity = null)
     {
         $phones = self::formArrayWalk($data, 'toFormArray', $success, true, $maxPublicity);
-        usort($phones, 'ProfileVisibility::comparePublicity');
+        usort($phones, 'Visibility::comparePublicity');
         return $phones;
     }
 
@@ -374,9 +374,9 @@ class Phone
     }
 
     static public function iterate(array $pids = array(), array $link_types = array(),
-                                   array $link_ids = array(), array $pubs = array())
+                                   array $link_ids = array(), Visibility $visibility)
     {
-        return new PhoneIterator($pids, $link_types, $link_ids, $pubs);
+        return new PhoneIterator($pids, $link_types, $link_ids, $visibility);
     }
 }
 
@@ -391,7 +391,7 @@ class PhoneIterator implements PlIterator
 {
     private $dbiter;
 
-    public function __construct(array $pids, array $link_types, array $link_ids, array $pubs)
+    public function __construct(array $pids, array $link_types, array $link_ids, Visibility $visibility)
     {
         $where = array();
         if (count($pids) != 0) {
@@ -403,15 +403,18 @@ class PhoneIterator implements PlIterator
         if (count($link_ids) != 0) {
             $where[] = XDB::format('(link_id IN {?})', $link_ids);
         }
-        if (count($pubs) != 0) {
-            $where[] = XDB::format('(pub IN {?})', $pubs);
+        if ($visibility == null) {
+            $visibility = Visibility::defaultForRead();
         }
+        $where[] = 'pve.best_display_level+0 <= pub+0';
+
         $sql = 'SELECT  search_tel AS search, display_tel AS display, comment, link_id,
                         tel_type AS type, link_type, tel_id AS id, pid, pub
                   FROM  profile_phones
-                 ' . ((count($where) > 0) ? 'WHERE  ' . implode(' AND ', $where) : '') . '
+             LEFT JOIN  profile_visibility_enum AS pve ON (pve.access_level = {?})
+                 WHERE  ' . implode(' AND ', $where) . '
               ORDER BY  pid, link_id, tel_id';
-        $this->dbiter = XDB::iterator($sql);
+        $this->dbiter = XDB::iterator($sql, $visibility->level());
     }
 
     public function next()

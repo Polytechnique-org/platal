@@ -85,7 +85,9 @@ class UserFilter extends PlFilter
     private $orderby = null;
 
     // Store the current 'search' visibility.
-    private $profile_visibility = null;
+    private $visibility = null;
+    // If the 'search' visibility should be based on a DB field instead.
+    private $visibility_field = null;
 
     private $lastusercount = null;
     private $lastprofilecount = null;
@@ -117,29 +119,50 @@ class UserFilter extends PlFilter
         }
 
         // This will set the visibility to the default correct level.
-        $this->profile_visibility = ProfileVisibility::defaultForRead();
+        $this->visibility = Visibility::defaultForRead();
     }
 
-    public function isVisible($level)
+    /** Get the SQL condition to filter by visibility level for a field.
+     * This will return a SQL condition which evaluates to True if the given
+     * field display level is available from the current access level.
+     * @param $field Name of the field holding a display level
+     * @return string SQL condition, properly escaped, for that field.
+     */
+    public function getVisibilityConditionForField($field)
     {
-        return $this->profile_visibility->isVisible($level);
+        if ($this->visibility_field != null) {
+            // Use enum 'bit' arithmetic.
+            // Display levels are ordered as 'hidden, private, ax, public'
+            // Thus ax > private.
+            // The $sub.display_level cell will contain the 'most private' display
+            // level available based on $field. If it is 'ax' and $field is
+            // 'private','ax' <= 'private' is false.
+            $sub = $this->addVisibilityFieldFilter($this->visibility_field);
+            return $sub . '.best_display_level + 0 <= 0 + ' . $field;
+        } else {
+            $sub = $this->addVisibilityAbsoluteFilter($this->visibility->level());
+            return $sub . '.best_display_level + 0 <= 0 + ' . $field;
+        }
     }
 
-    public function getVisibilityLevel()
+    /** Get the SQL condition to filter by a given visibility level.
+     * @param $level One of Visibility::EXPORT_*
+     * @return string A SQL condition, properly escaped, which evaluates to 'true' if the $level can be viewed with the current access level.
+     */
+    public function getVisibilityConditionAbsolute($level)
     {
-        return $this->profile_visibility->level();
-    }
-
-    public function getVisibilityLevels()
-    {
-        return $this->profile_visibility->levels();
-    }
-
-    public function getVisibilityCondition($field)
-    {
-        // Fields are ordered as ('hidden', 'private', 'ax', 'public', 'none')
-        // Which gives 'ax' >= 'private'
-        return XDB::format($field . ' IN {?}', $this->getVisibilityLevels());
+        if ($this->visibility_field != null) {
+            // The $sub.display_levels cell will contain allowed display levels
+            // for an access level of $this->visibility_field.
+            $sub = $this->addVisibilityFieldFilter($this->visibility_field);
+            return XDB::format('FIND_IN_SET({?}, ' . $sub . '.display_levels', $level);
+        } else {
+            if ($this->visibility->isVisible($level)) {
+                return 'TRUE';
+            } else {
+                return 'FALSE';
+            }
+        }
     }
 
     private function buildQuery()
@@ -395,12 +418,12 @@ class UserFilter extends PlFilter
         return User::iterOverUIDs($this->getUIDs($limit));
     }
 
-    public function getProfiles($limit = null, $fields = 0x0000, ProfileVisibility $visibility = null)
+    public function getProfiles($limit = null, $fields = 0x0000, $visibility = null)
     {
         return Profile::getBulkProfilesWithPIDs($this->getPIDs($limit), $fields, $visibility);
     }
 
-    public function getProfile($pos = 0, $fields = 0x0000, ProfileVisibility $visibility = null)
+    public function getProfile($pos = 0, $fields = 0x0000, $visibility = null)
     {
         $pid = $this->getPID($pos);
         if ($pid == null) {
@@ -410,7 +433,7 @@ class UserFilter extends PlFilter
         }
     }
 
-    public function iterProfiles($limit = null, $fields = 0x0000, ProfileVisibility $visibility = null)
+    public function iterProfiles($limit = null, $fields = 0x0000, $visibility = null)
     {
         return Profile::iterOverPIDs($this->getPIDs($limit), true, $fields, $visibility);
     }
@@ -616,6 +639,36 @@ class UserFilter extends PlFilter
         if ($this->with_profiles && $this->with_accounts) {
             $joins['ap'] = PlSqlJoin::left('account_profiles', '$ME.uid = $UID AND FIND_IN_SET(\'owner\', ap.perms)');
             $joins['p'] = PlSqlJoin::left('profiles', '$PID = ap.pid');
+        }
+        return $joins;
+    }
+
+    /** VISIBILITY
+     */
+    private $vlevels = array();
+    private $vfields = array();
+    public function addVisibilityAbsoluteFilter($level)
+    {
+        $sub = 'pvel_' . $level;
+        $this->vlevels[$level] = $sub;
+        return $sub;
+    }
+
+    public function addVisibilityFieldFilter($field)
+    {
+        $sub = 'pvef_' . self::getDBSuffix($field);
+        $this->vfields[$field] = $sub;
+        return $sub;
+    }
+
+    protected function visibilityJoins()
+    {
+        $joins = array();
+        foreach ($this->vlevels as $level => $sub) {
+            $joins[$sub] = PlSqlJoin::inner('profile_visibility_enum', '$ME.access_level = {?}', $level);
+        }
+        foreach ($this->vfields as $field => $sub) {
+            $joins[$sub] = PlSqlJoin::inner('profile_visibility_enum', '$ME.access_level = ' . $field);
         }
         return $joins;
     }

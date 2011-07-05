@@ -410,7 +410,7 @@ class UFC_Comment extends UserFilterCondition
     public function buildCondition(PlFilter $uf)
     {
         $uf->requireProfiles();
-        return $uf->getVisibilityCondition('p.freetext_pub') . ' AND p.freetext ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->text);
+        return $uf->getVisibilityConditionForField('p.freetext_pub') . ' AND p.freetext ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->text);
     }
 
     public function export()
@@ -668,9 +668,7 @@ class UFC_NameTokens extends UserFilterCondition
             if ($this->general_type) {
                 $c .= XDB::format(' AND ' . $sub . '.general_type = {?}', $this->general_type);
             }
-            if (!$uf->isVisible(ProfileVisibility::VIS_PRIVATE)) {
-                $c .= XDB::format(' AND ' . $sub . '.general_type != \'nickname\'');
-            }
+            $c .= ' AND (' . $uf->getVisibilityConditionAbsolute(Visibility::EXPORT_PRIVATE) . ' OR ' . $sub . '.general_type != \'nickname\')';
             $conds[] = $c;
         }
 
@@ -922,12 +920,9 @@ class UFC_Binet extends UserFilterCondition
 
     public function buildCondition(PlFilter $uf)
     {
-        // Binets are private.
-        if (!$uf->isVisible(ProfileVisibility::VIS_PRIVATE)) {
-            return self::COND_TRUE;
-        }
         $sub = $uf->addBinetsFilter();
-        return XDB::format($sub . '.binet_id IN {?}', $this->val);
+        // Binets are private.
+        return XDB::format($uf->getVisibilityConditionAbsolute(Visibility::EXPORT_PRIVATE) . ' AND ' . $sub . '.binet_id IN {?}', $this->val);
     }
 }
 // }}}
@@ -947,11 +942,8 @@ class UFC_Section extends UserFilterCondition
     public function buildCondition(PlFilter $uf)
     {
         // Sections are private.
-        if (!$uf->isVisible(ProfileVisibility::VIS_PRIVATE)) {
-            return self::COND_TRUE;
-        }
         $uf->requireProfiles();
-        return XDB::format('p.section IN {?}', $this->section);
+        return XDB::format($uf->getVisibilityConditionAbsolute(Visibility::EXPORT_PRIVATE) . ' AND p.section IN {?}', $this->section);
     }
 }
 // }}}
@@ -1109,7 +1101,7 @@ class UFC_AddressComponent extends UFC_Address
     public function buildCondition(PlFilter $uf)
     {
         $sub = $uf->addAddressFilter($this->fieldtype);
-        $conds = $this->initConds($sub, $uf->getVisibilityCondition('pa' . $sub . '.pub'));
+        $conds = $this->initConds($sub, $uf->getVisibilityConditionForField('pa' . $sub . '.pub'));
         $conds[] = XDB::format('pace' . $sub . '.id IN {?}', $this->val);
 
         return implode(' AND ', $conds);
@@ -1152,7 +1144,7 @@ class UFC_Corps extends UserFilterCondition
         }
         // XXX(x2006barrois): find a way to get rid of that hardcoded
         // reference to 'pc'.
-        $cond .= ' AND ' . $uf->getVisibilityCondition('pc.corps_pub');
+        $cond .= ' AND ' . $uf->getVisibilityConditionForField('pc.corps_pub');
         return $cond;
     }
 }
@@ -1186,7 +1178,7 @@ class UFC_Corps_Rank extends UserFilterCondition
         }
         // XXX(x2006barrois): find a way to get rid of that hardcoded
         // reference to 'pc'.
-        $cond .= ' AND ' . $uf->getVisibilityCondition('pc.corps_pub');
+        $cond .= ' AND ' . $uf->getVisibilityConditionForField('pc.corps_pub');
         return $cond;
     }
 }
@@ -1224,7 +1216,7 @@ class UFC_Job_Company extends UserFilterCondition
         $sub = $uf->addJobCompanyFilter();
         $cond  = $sub . '.' . $this->type . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->value);
         $jsub = $uf->addJobFilter();
-        $cond .= ' AND ' . $uf->getVisibilityCondition($jsub . '.pub');
+        $cond .= ' AND ' . $uf->getVisibilityConditionForField($jsub . '.pub');
         return $cond;
     }
 }
@@ -1254,7 +1246,7 @@ class UFC_Job_Terms extends UserFilterCondition
             $conditions[] = $sub[$i] . '.jtid_1 = ' . XDB::escape($jtid);
         }
         $jsub = $uf->addJobFilter();
-        $conditions[] = $uf->getVisibilityCondition($jsub . '.pub');
+        $conditions[] = $uf->getVisibilityConditionForField($jsub . '.pub');
         return implode(' AND ', $conditions);
     }
 }
@@ -1281,24 +1273,18 @@ class UFC_Job_Description extends UserFilterCondition
         $conds = array();
 
         $jsub = $uf->addJobFilter();
-        // CV is private => if only CV requested, and not private,
-        // don't do anything. Otherwise restrict to standard job visibility.
-        if ($this->fields == UserFilter::JOB_CV) {
-            if (!$uf->isVisible(ProfileVisibility::VIS_PRIVATE)) {
-               return self::COND_TRUE;
-           }
-        }
         if ($this->fields & UserFilter::JOB_USERDEFINED) {
             $conds[] = $jsub . '.description ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description);
         }
-        if ($this->fields & UserFilter::JOB_CV && $uf->isVisible(ProfileVisibility::VIS_PRIVATE)) {
+        if ($this->fields & UserFilter::JOB_CV) {
             $uf->requireProfiles();
-            $conds[] = 'p.cv ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description);
+            // CV is private
+            $conds[] = '( ' . $uf->getVisibilityConditionAbsolute(Visibility::EXPORT_PRIVATE) . ' AND p.cv ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description) . ')';
         }
         if (count($conds) == 0) {
             return self::COND_TRUE;
         }
-        return $uf->getVisibilityCondition($jsub . '.pub') . ' AND ( ' . implode(' OR ', $conds) . ' )';
+        return $uf->getVisibilityConditionForField($jsub . '.pub') . ' AND ( ' . implode(' OR ', $conds) . ' )';
     }
 }
 // }}}
@@ -1322,7 +1308,7 @@ class UFC_Networking extends UserFilterCondition
     {
         $sub = $uf->addNetworkingFilter();
         $conds = array();
-        $conds[] = $uf->getVisibilityCondition($sub . '.pub');
+        $conds[] = $uf->getVisibilityConditionForField($sub . '.pub');
         $conds[] = $sub . '.address ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->value);
         if ($this->type != -1) {
             $conds[] = $sub . '.nwid = ' . XDB::format('{?}', $this->type);
@@ -1367,7 +1353,7 @@ class UFC_Phone extends UserFilterCondition
         $sub = $uf->addPhoneFilter();
         $conds = array();
 
-        $conds[] = $uf->getVisibilityCondition($sub . '.pub');
+        $conds[] = $uf->getVisibilityConditionForField($sub . '.pub');
 
         $conds[] = $sub . '.search_tel = ' . XDB::format('{?}', $this->number);
         if ($this->num_type != self::NUM_ANY) {
@@ -1403,7 +1389,7 @@ class UFC_Medal extends UserFilterCondition
         // This will require profiles => table 'p' will be available.
         $sub = $uf->addMedalFilter();
 
-        $conds[] = $uf->getVisibilityCondition('p.medals_pub');
+        $conds[] = $uf->getVisibilityConditionForField('p.medals_pub');
 
         $conds[] = $sub . '.mid = ' . XDB::format('{?}', $this->medal);
         if ($this->grade != null) {
@@ -1421,7 +1407,7 @@ class UFC_Photo extends UserFilterCondition
     public function buildCondition(PlFilter $uf)
     {
         $sub = $uf->addPhotoFilter();
-        return $sub . '.attach IS NOT NULL AND ' . $uf->getVisibilityCondition($sub . '.pub');
+        return $sub . '.attach IS NOT NULL AND ' . $uf->getVisibilityConditionForField($sub . '.pub');
     }
 }
 // }}}
