@@ -67,9 +67,12 @@ class EmailModule extends PLModule
                            WHERE  uid = {?}", $user->id());
             // Then gives the bestalias flag to the given email.
             list($email, $domain) = explode('@', $email);
-            XDB::execute("UPDATE  email_source_account
+            XDB::execute("UPDATE  email_source_account  AS s
+                      INNER JOIN  email_virtual_domains AS m ON (m.id = s.domain)
+                      INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
                              SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'bestalias')
-                           WHERE  uid = {?} AND email = {?}", $user->id(), $email);
+                           WHERE  s.uid = {?} AND s.email = {?} AND d.name = {?}",
+                         $user->id(), $email, $domain);
             XDB::execute('UPDATE  accounts              AS a
                       INNER JOIN  email_virtual_domains AS d ON (d.name = {?})
                       INNER JOIN  email_virtual_domains AS m ON (d.aliasing = m.id)
