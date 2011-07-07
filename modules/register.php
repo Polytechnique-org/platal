@@ -178,7 +178,7 @@ class RegisterModule extends PLModule
                         if (abs($ref_year - $year) > 2) {
                             $error[] = "La 'Date de naissance' n'est pas correcte.";
                             $alert[] = "Date de naissance incorrecte à l'inscription";
-                            $alert_details .= "\n   * Date de naissance renseignée : " . $birth . ' (date connue : ' . $subState->v('birthdateRef') . ')';
+                            $alert_details .= "\n   * Date de naissance renseignée : " . Post::t('birthdate') . ' (date connue : ' . $subState->v('birthdateRef') . ')';
                             $subState->set('wrong_birthdate', $birth);
                         }
                     }
@@ -234,7 +234,7 @@ class RegisterModule extends PLModule
                         if ($subState->s('birthdateRef') != '0000-00-00'
                             && $subState->s('birthdateRef') != $subState->s('birthdate')) {
                             $alert[] = "Date de naissance incorrecte à l'inscription";
-                            $alert_details .= "\n   * Date de naissance renseignée : " . $subState->s('birthdateRef') . ' (date connue : ' . $subState->s('birthdateRef') . ')';
+                            $alert_details .= "\n   * Date de naissance renseignée : " . $subState->s('birthdate') . ' (date connue : ' . $subState->s('birthdateRef') . ')';
                         }
                         if ($bannedIp) {
                             $alert[] = "Tentative d'inscription depuis une IP surveillée";
