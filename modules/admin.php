@@ -1988,7 +1988,8 @@ class AdminModule extends PLModule
                 XDB::execute('INSERT INTO  profile_education (id, pid, eduid, degreeid, entry_year, grad_year, promo_year, flags)
                                    SELECT  ' . $select . '
                                      FROM  profile_education
-                                    WHERE  pid = {?}',
+                                    WHERE  pid = {?}
+                                 GROUP BY  pid',
                              $pid);
             }
             XDB::commit();

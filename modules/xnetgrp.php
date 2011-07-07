@@ -1278,30 +1278,24 @@ class XnetGrpModule extends PLModule
             }
 
             if ($globals->asso('has_nl')) {
+                $nl = NewsLetter::forGroup($globals->asso('shortname'));
                 // Updates group's newsletter subscription.
                 if (Post::i('newsletter') == 1) {
-                    XDB::execute('INSERT IGNORE INTO  newsletter_ins (uid, nlid)
-                                              SELECT  {?}, id
-                                                FROM  newsletters
-                                               WHERE  group_id = {?}',
-                                 $user->id(), $globals->asso('id'));
+                    $nl->subscribe($user);
                 } else {
-                    XDB::execute('DELETE  ni
-                                    FROM  newsletter_ins AS ni
-                              INNER JOIN  newsletters    AS n  ON (n.id = ni.nlid)
-                                   WHERE  ni.uid = {?} AND n.group_id = {?}',
-                                 $user->id(), $globals->asso('id'));
+                    $nl->unsubscribe(null, $user->id);
                 }
             }
         }
 
         $res = XDB::rawFetchAllAssoc('SHOW COLUMNS FROM group_members LIKE \'position\'');
         $positions = str_replace(array('enum(', ')', '\''), '', $res[0]['Type']);
-        $nl_registered = XDB::fetchOneCell('SELECT  COUNT(ni.uid)
-                                              FROM  newsletter_ins AS ni
-                                        INNER JOIN  newsletters    AS n  ON (n.id = ni.nlid)
-                                             WHERE  ni.uid = {?} AND n.group_id = {?}',
-                                           $user->id(), $globals->asso('id'));
+        if ($globals->asso('has_nl')) {
+            $nl = NewsLetter::forGroup($globals->asso('shortname'));
+            $nl_registered = $nl->subscriptionState($user);
+        } else {
+            $nl_registered = false;
+        }
 
         $page->assign('user', $user);
         $page->assign('suggest', $this->suggest($user));

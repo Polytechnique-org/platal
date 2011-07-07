@@ -366,6 +366,21 @@ class NewsLetter
         }
     }
 
+    /** Subscribe a batch of users to a newsletter.
+     * This skips 'maySubscribe' test.
+     *
+     * @p $user_ids Array of user IDs to subscribe to the newsletter.
+     */
+    public function bulkSubscribe($user_ids)
+    {
+        // TODO: use a 'bulkMaySubscribe'.
+        XDB::execute('INSERT IGNORE INTO  newsletter_ins (nlid, uid, last, hash)
+                                  SELECT  {?}, a.uid, NULL, NULL
+                                    FROM  accounts AS a
+                                   WHERE  a.uid IN {?}',
+                     $this->id, $user_ids);
+    }
+
     /** Retrieve subscription state of a user
      * @p $user Target user; if null, use current user.
      * @return Boolean: true if the user has subscribed to the NL.
@@ -1190,20 +1205,23 @@ class NLIssue
                        $this->id);
 
         $ufc = new PFC_And($this->getRecipientsUFC(), new UFC_NLSubscribed($this->nl->id, $this->id), new UFC_HasValidEmail());
-        $emailsCount = 0;
         $uf = new UserFilter($ufc, array(new UFO_IsAdmin(), new UFO_Uid()));
         $limit = new PlLimit(self::BATCH_SIZE);
+        $global_sent = array();
 
         while (true) {
             $sent = array();
             $users = $uf->getUsers($limit);
             if (count($users) == 0) {
-                return $emailsCount;
+                break;
             }
             foreach ($users as $user) {
+                if (array_key_exists($user->id(), $global_sent)) {
+                    Platal::kill('Sending the same newsletter issue ' . $this->id . ' to user ' . $user->id() . ' twice, something must be wrong.');
+                }
                 $sent[] = $user->id();
+                $global_sent[$user->id()] = true;
                 $this->sendTo($user, $hash);
-                ++$emailsCount;
             }
             XDB::execute("UPDATE  newsletter_ins
                              SET  last = {?}
@@ -1211,7 +1229,7 @@ class NLIssue
 
             sleep(60);
         }
-        return $emailsCount;
+        return count($global_sent);
     }
 
     // }}}

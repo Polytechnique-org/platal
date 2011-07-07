@@ -57,16 +57,12 @@ class XnetNlModule extends NewsletterModule
         if (Env::has('add_users')) {
             S::assert_xsrf_token();
 
-            XDB::execute('INSERT IGNORE INTO  newsletter_ins (uid, nlid)
-                                      SELECT  g.uid, n.id
-                                        FROM  group_members AS g
-                                  INNER JOIN  newsletters   AS n  ON (n.group_id = g.asso_id)
-                                       WHERE  g.uid IN {?} AND g.asso_id = {?}',
-                         array_keys(Env::v('add_users')), $globals->asso('id'));
+            $nl->bulkSubscribe(array_keys(Env::v('add_users')));
 
             $page->trigSuccess('Ajouts réalisés avec succès.');
         }
 
+        // TODO(x2006barrois): remove raw SQL query.
         $uids = XDB::fetchColumn('SELECT  DISTINCT(g.uid)
                                     FROM  group_members AS g
                                    WHERE  g.asso_id = {?} AND NOT EXISTS (SELECT  ni.*
