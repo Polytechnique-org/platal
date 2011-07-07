@@ -5,7 +5,7 @@ require 'connect.db.inc.php';
 
 $message = '';
 
-$res = XDB::iterRow("SELECT  a.registration_date, a.hruid, s.email, GROUP_CONCAT(r.redirect SEPARATOR ', ')
+$res = XDB::iterRow("SELECT  DATE(a.registration_date), a.hruid, GROUP_CONCAT(DISTINCT r.redirect SEPARATOR ', ')
                        FROM  accounts               AS a
                  INNER JOIN  account_profiles       AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
                  INNER JOIN  profile_display        AS pd ON (ap.pid = pd.pid)
