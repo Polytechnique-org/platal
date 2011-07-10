@@ -29,232 +29,11 @@
 
 <a id="deltaten"></a>
 
-<script type="text/javascript">// <!--
-  var baseurl = $.plURL("deltaten/");
-  var baseurl_search = $.plURL("search/");
-  {literal}
+<script type="text/javascript">//<![CDATA[
+  {literal}$(function() { load_advanced_search({{/literal}{foreach from=$smarty.request key=key item=item}"{$key}":"{$item}",{/foreach}{literal}}); });{/literal}
+//]]></script>
 
-  // display an autocomplete row : blabla (nb of found matches)
-  function make_format_autocomplete(block) {
-    return function(row) {
-        regexp = new RegExp('(' + RegExp.escape(block.value) + ')', 'i');
-
-        name = row[0].htmlEntities().replace(regexp, '<strong>$1<\/strong>');
-
-        if (row[1] === "-1") {
-          return '&hellip;';
-        }
-
-        if (row[1] === "-2") {
-          return '<em>aucun camarade trouvé pour '+row[0].htmlEntities()+'<\/em>';
-        }
-
-        camarades = (row[1] > 1) ? "camarades" : "camarade";
-
-        return name + '<em>&nbsp;&nbsp;-&nbsp;&nbsp;' + row[1].htmlEntities() + '&nbsp;' + camarades + '<\/em>';
-      };
-  }
-
-  // when changing country, open up administrativearea choice
-  function changeCountry(a2) {
-    $(".autocompleteTarget[name='country']").attr('value',a2);
-
-    if (a2) {
-      $(".autocomplete[name='countryTxt']").addClass('hidden_valid');
-
-      $("[name='administrativearea']").parent().load(baseurl_search + 'list/administrativearea/', { country:a2 }, function() {
-          if ($("select[name='administrativearea']").children("option").size() > 1) {
-            $("select[name='administrativearea']").attr('value', '{/literal}{$smarty.request.administrativearea}{literal}');
-
-            $("tr#administrativearea_list").show();
-          } else {
-            $("select[name='administrativearea']").attr('value', '');
-
-            $("tr#administrativearea_list").hide();
-          }
-        });
-    } else {
-      $(".autocomplete[name='countryTxt']").removeClass('hidden_valid');
-
-      $("select[name='administrativearea']").attr('value', '');
-      $("select[name='subadministrativearea']").attr('value', '');
-
-      $("tr#administrativearea_list").hide();
-      $("tr#subadministrativearea_list").hide();
-    }
-  }
-
-  // when changing administrativearea, open up subadministrativearea choice
-  function changeAdministrativeArea(id) {
-    if (id) {
-      $("[name='subadministrativearea']").parent().load(baseurl_search + 'list/subadministrativearea/', { administrativearea:id }, function() {
-          if ($("select[name='subadministrativearea']").children("option").size() > 1) {
-            $("select[name='subadministrativearea']").attr('value', '{/literal}{$smarty.request.subadministrativearea}{literal}');
-            $("tr#subadministrativearea_list").show();
-          } else {
-            $("select[name='subadministrativearea']").attr('value', '');
-            $("tr#subadministrativearea_list").hide();
-          }
-        });
-    } else {
-      $("select[name='subadministrativearea']").attr('value', '');
-      $("tr#subadministrativearea_list").hide();
-    }
-  }
-
-  // when changing school, open diploma choice
-  function changeSchool(schoolId) {
-    $(".autocompleteTarget[name='school']").attr('value',schoolId);
-
-    if (schoolId) {
-      $(".autocomplete[name='schoolTxt']").addClass('hidden_valid');
-    } else {
-      $(".autocomplete[name='schoolTxt']").removeClass('hidden_valid');
-    }
-
-    $("[name='diploma']").parent().load(baseurl_search + 'list/diploma/', { school:schoolId }, function() {
-        $("select[name='diploma']").attr('value', '{/literal}{$smarty.request.diploma}{literal}');
-      });
-  }
-
-  // when choosing a job term in tree, hide tree and set job term field
-  function searchForJobTerm(treeid, jtid, full_name) {
-    $(".term_tree").remove();
-    $("input[name='jobtermTxt']").val(full_name).addClass("hidden_valid").show();
-    $("input[name='jobterm']").val(jtid);
-  }
-
-  function cancel_autocomplete(field, realfield) {
-    $(".autocomplete[name='"+field+"']").removeClass('hidden_valid').val('').focus();
-    if (typeof(realfield) != "undefined") {
-      $(".autocompleteTarget[name='"+realfield+"']").val('');
-    }
-    return;
-  }
-
-  // when choosing autocomplete from list, must validate
-  function select_autocomplete(name) {
-      nameRealField = name.replace(/Txt$/, '');
-
-      // nothing to do if field is not a text field for a list
-      if (nameRealField == name)
-        return null;
-
-      // if changing country, might want to open administrativearea choice
-      if (nameRealField == 'country')
-        return function(i) {
-            if (i.extra[0] < 0) {
-              cancel_autocomplete('countryTxt', 'country');
-              i.extra[1] = '';
-            }
-            changeCountry(i.extra[1]);
-          }
-
-      if (nameRealField == 'school')
-        return function(i) {
-            if (i.extra[0] < 0) {
-              cancel_autocomplete('schoolTxt', 'school');
-              i.extra[1] = '';
-            }
-            changeSchool(i.extra[1]);
-          }
-
-      // change field in list and display text field as valid
-      return function(i) {
-        nameRealField = this.field.replace(/Txt$/, '');
-
-        if (i.extra[0] < 0) {
-          cancel_autocomplete(this.field, nameRealField);
-          return;
-        }
-
-        $(".autocompleteTarget[name='"+nameRealField+"']").attr('value',i.extra[1]);
-
-        $(".autocomplete[name='"+this.field+"']").addClass('hidden_valid');
-      }
-    }
-
-  $(function() {
-      $(".autocompleteTarget").hide();
-      $(".autocomplete").show().each(function() {
-        targeted = $("../.autocompleteTarget",this)[0];
-
-        if (targeted && targeted.value) {
-          me = $(this);
-
-          $.get(baseurl_search + 'list/'+ targeted.name +'/'+targeted.value, {},function(textValue) {
-            me.attr('value', textValue);
-            me.addClass('hidden_valid');
-          });
-        }
-
-        $(this).autocomplete(baseurl_search + "autocomplete/"+this.name,{
-          selectOnly:1,
-          formatItem:make_format_autocomplete(this),
-          field:this.name,
-          onItemSelect:select_autocomplete(this.name),
-          matchSubset:0,
-          width:$(this).width()});
-        });
-
-      $(".autocomplete").change(function() { $(this).removeClass('hidden_valid'); });
-
-      $(".autocomplete[name='countryTxt']").change(function() { changeCountry(''); });
-
-      changeCountry({/literal}'{$smarty.request.country}'{literal});
-      changeAdministrativeArea({/literal}'{$smarty.request.administrativearea}'{literal});
-
-      $(".autocomplete[name='schoolTxt']").change(function() { changeSchool(''); });
-
-      changeSchool({/literal}'{$smarty.request.school}'{literal});
-
-      $(".autocompleteToSelect").each(function() {
-          var fieldName = $(this).attr('href');
-
-          $(this).attr('href', baseurl_search + 'list/'+fieldName).click(function() {
-              var oldval = $("input.autocompleteTarget[name='"+fieldName+"']")[0].value;
-
-              $(".autocompleteTarget[name='"+fieldName+"']").parent().load(baseurl_search + 'list/'+fieldName,{},
-                function(selectBox) {
-                  $(".autocompleteTarget[name='"+fieldName+"']").remove();
-                  $(".autocomplete[name='"+fieldName+"Txt']").remove();
-                  $("select[name='"+fieldName+"']").attr('value', oldval);
-                });
-
-              return false;
-            });
-        }).parent().find('.autocomplete').change(function() {
-          // If we change the value in the type="text" field, then the value in the 'integer id' field must not be used,
-          // to ensure that, we unset it
-          $(this).parent().find('.autocompleteTarget').val('');
-        });
-    });
-/** Regexps to wipe out from search queries */
-var default_form_values = [ /&woman=0(&|$)/, /&[^&=]+=(&|$)/g ];
-/** Uses javascript to clean form from all empty fields */
-function cleanForm(f) {
-  var query = $(f).formSerialize();
-  var old_query;
-  for (var i in default_form_values) {
-    var reg = default_form_values[i];
-    if (typeof(reg) != "undefined") {
-      do {
-        old_query = query;
-        query = query.replace(reg, '$1');
-      } while (old_query != query);
-    }
-  }
-  query = query.replace(/^&*(.*)&*$/, '$1');
-  if (query == "rechercher=Chercher") {
-    alert("Aucun critère n'a été spécifié");
-    return false;
-  }
-  document.location = baseurl + 'search?' + query;
-  return false;
-}
--->
-{/literal}</script>
-<form id="recherche" action="deltaten/search" method="get" onsubmit="return cleanForm(this)">
+<form id="recherche" action="deltaten/search" method="get" onsubmit="return cleanForm(this, 'deltaten/search')">
   <table class="bicol" cellpadding="3" summary="Recherche">
     <tr>
       <th colspan="2">
@@ -269,36 +48,23 @@ function cleanForm(f) {
     <tr>
       <th colspan="2">Géographie</th>
     </tr>
-    <tr>
-      <td>Ville ou code postal</td>
-      <td><input type="text" class="autocomplete" name="city" size="32" value="{$smarty.request.city}" /></td>
+    {include file="search/adv.form.autocomplete_select.tpl" description="Pays" name="country"
+      value_text=$smarty.request.country_text value=$smarty.request.country title="Tous les pays"}
+    {include file="search/adv.form.address_component.tpl" description="Région, province, état…" name="administrative_area_level_1"
+      value=$smarty.request.administrative_area_level_1}
+    {include file="search/adv.form.address_component.tpl" description="Département, comté…" name="administrative_area_level_2"
+      value=$smarty.request.administrative_area_level_2}
+    <tr id="locality_text">
+      <td>Ville</td>
+      <td><input type="text" class="autocomplete" name="locality_text" size="32" value="{$smarty.request.locality_text}" /></td>
     </tr>
-    <tr>
-      <td>Pays</td>
-      <td>
-        <input name="countryTxt" type="text" class="autocomplete" style="display:none" size="32"
-               value="{$smarty.request.countryTxt}"/>
-        <input name="country" class="autocompleteTarget" type="hidden" value="{$smarty.request.country}"/>
-        <a href="country" class="autocompleteToSelect">{icon name="table" title="Tous les pays"}</a>
-      </td>
-    </tr>
-    <tr id="administrativearea_list">
-      <td>Région, province, état&hellip;</td>
-      <td>
-        <input name="administrativearea" type="hidden" size="32" value="{$smarty.request.administrativearea}" />
-      </td>
-    </tr>
-    <tr id="subadministrativearea_list">
-      <td>Département, comté&hellip;</td>
-      <td>
-        <input name="subadministrativearea" type="hidden" size="32" value="{$smarty.request.subadministrativearea}" />
-      </td>
-    </tr>
+    {include file="search/adv.form.address_component.tpl" description="Ville" name="locality" value=$smarty.request.locality}
+    {include file="search/adv.form.address_component.tpl" description="Code postal" name="postal_code" value=$smarty.request.postal_code}
     <tr>
       <td colspan="2">
         <label for="only_current">
           <input name="only_current" id="only_current" type="checkbox"{if $smarty.request.only_current} checked="checked"{/if}/>
-          Chercher uniquement les adresses où les camarades sont actuellement.
+          Chercher uniquement les adresses actuelles.
         </label>
       </td>
     </tr>

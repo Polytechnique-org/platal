@@ -64,6 +64,7 @@ class DeltaTenModule extends PLModule
 
         require_once 'ufbuilder.inc.php';
         $ufb = new UFB_DeltaTenSearch();
+        $page->addJsLink('search.js');
         if (!$ufb->isEmpty()) {
             require_once 'userset.inc.php';
             $ufc = $ufb->getUFC();

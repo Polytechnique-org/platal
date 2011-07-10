@@ -123,7 +123,7 @@ function display_list(field_name)
 var default_form_values = [ /&woman=0(&|$)/, /&subscriber=0(&|$)/, /&alive=0(&|$)/, /&egal[12]=[^&]*&promo[12]=(&|$)/g, /&networking_type=0(&|$)/, /&[^&=]+=(&|$)/g ];
 
 /** Uses javascript to clean form from all empty fields */
-function cleanForm(f)
+function cleanForm(f, targeturl)
 {
     var query = $(f).formSerialize();
     var old_query;
@@ -141,7 +141,7 @@ function cleanForm(f)
         alert("Aucun critère n'a été spécifié.");
         return false;
     }
-    document.location = baseurl + 'adv?' + query;
+    document.location = targeturl + '?' + query;
     return false;
 }
 

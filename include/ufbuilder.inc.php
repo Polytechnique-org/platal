@@ -411,11 +411,10 @@ class UFB_DeltaTenSearch extends UserFilterBuilder
         $fields = array(
             new UFBF_DeltaTenMessage('deltaten_message'),
 
-            new UFBF_Town('city', 'Ville / Code Postal'),
-            new UFBF_Country('countryTxt', 'country', 'Pays'),
-            new UFBF_AdminArea('administrativearea', 'Région'),
-            new UFBF_SubAdminArea('subadministrativearea', 'Département'),
-
+            new UFBF_AddressIndex('administrative_area_level_2', 'Département', 'ADMNISTRATIVEAREAS2'),
+            new UFBF_AddressIndex('administrative_area_level_1', 'Région', 'ADMNISTRATIVEAREAS1'),
+            new UFBF_AddressMixed('locality_text', 'locality', 'Ville', 'LOCALITIES'),
+            new UFBF_AddressMixed('country_text', 'country', 'Pays', 'COUNTRIES'),
 
             new UFBF_EducationSchool('schoolTxt', 'school', "École d'application"),
             new UFBF_EducationDegree('diplomaTxt', 'diploma', 'Diplôme'),
