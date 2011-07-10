@@ -31,7 +31,7 @@
 //]]></script>
 
 <p class="center">[<a href="search">Revenir à la recherche simple</a>]</p>
-<form id="recherche" action="search/adv" method="get" onsubmit="return cleanForm(this)">
+<form id="recherche" action="search/adv" method="get" onsubmit="return cleanForm(this, 'search/adv')">
   <table class="bicol" cellpadding="3" summary="Recherche">
     <tr>
       <th colspan="2">
