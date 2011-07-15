@@ -141,7 +141,7 @@ function cleanForm(f, targeturl)
         alert("Aucun critère n'a été spécifié.");
         return false;
     }
-    document.location = targeturl + '?' + query;
+    document.location = $.plURL(targeturl + '?' + query);
     return false;
 }
 
