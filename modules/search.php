@@ -30,10 +30,10 @@ class SearchModule extends PLModule
             'search/autocomplete'       => $this->make_hook('autocomplete',       AUTH_COOKIE, 'directory_ax', NO_AUTH),
             'search/list'               => $this->make_hook('list',               AUTH_COOKIE, 'directory_ax', NO_AUTH),
             'search/list/count'         => $this->make_hook('list_count',         AUTH_COOKIE, 'directory_ax', NO_AUTH),
-            'jobs'                      => $this->make_hook('referent',           AUTH_COOKIE),
-            'emploi'                    => $this->make_hook('referent',           AUTH_COOKIE),
-            'referent/search'           => $this->make_hook('referent',           AUTH_COOKIE),
-            'search/referent/countries' => $this->make_hook('referent_countries', AUTH_COOKIE),
+            'jobs'                      => $this->make_hook('referent',           AUTH_COOKIE, 'user'),
+            'emploi'                    => $this->make_hook('referent',           AUTH_COOKIE, 'user'),
+            'referent/search'           => $this->make_hook('referent',           AUTH_COOKIE, 'user'),
+            'search/referent/countries' => $this->make_hook('referent_countries', AUTH_COOKIE, 'user'),
         );
     }
 

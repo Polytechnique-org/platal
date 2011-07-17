@@ -27,10 +27,10 @@ class EmailModule extends PLModule
             'emails'                  => $this->make_hook('emails',      AUTH_COOKIE, 'mail'),
             'emails/alias'            => $this->make_hook('alias',       AUTH_MDP,    'mail'),
             'emails/antispam'         => $this->make_hook('antispam',    AUTH_MDP,    'mail'),
-            'emails/broken'           => $this->make_hook('broken',      AUTH_COOKIE),
+            'emails/broken'           => $this->make_hook('broken',      AUTH_COOKIE, 'user'),
             'emails/redirect'         => $this->make_hook('redirect',    AUTH_MDP,    'mail'),
             'emails/send'             => $this->make_hook('send',        AUTH_MDP,    'mail'),
-            'emails/antispam/submit'  => $this->make_hook('submit',      AUTH_COOKIE),
+            'emails/antispam/submit'  => $this->make_hook('submit',      AUTH_COOKIE, 'user'),
             'emails/test'             => $this->make_hook('test',        AUTH_COOKIE, 'mail', NO_AUTH),
 
             'emails/rewrite/in'       => $this->make_hook('rewrite_in',  AUTH_PUBLIC),

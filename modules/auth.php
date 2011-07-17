@@ -29,9 +29,9 @@ class AuthModule extends PLModule
 
             'webservices/manageurs.php'     => $this->make_hook('manageurs',          AUTH_PUBLIC, 'user', NO_HTTPS),
 
-            'auth-redirect.php'             => $this->make_hook('redirect',           AUTH_COOKIE),
-            'auth-groupex.php'              => $this->make_hook('groupex_old',        AUTH_COOKIE),
-            'auth-groupex'                  => $this->make_hook('groupex',            AUTH_COOKIE),
+            'auth-redirect.php'             => $this->make_hook('redirect',           AUTH_COOKIE, 'user'),
+            'auth-groupex.php'              => $this->make_hook('groupex_old',        AUTH_COOKIE, 'user'),
+            'auth-groupex'                  => $this->make_hook('groupex',            AUTH_COOKIE, 'user'),
             'admin/auth-groupes-x'          => $this->make_hook('admin_authgroupesx', AUTH_MDP,    'admin'),
         );
     }

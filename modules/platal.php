@@ -43,15 +43,15 @@ class PlatalModule extends PLModule
             'changelog'         => $this->make_hook('changelog', AUTH_PUBLIC),
 
             // Preferences thingies
-            'prefs'             => $this->make_hook('prefs',     AUTH_COOKIE),
-            'prefs/rss'         => $this->make_hook('prefs_rss', AUTH_COOKIE),
-            'prefs/webredirect' => $this->make_hook('webredir',  AUTH_MDP, 'mail'),
-            'prefs/skin'        => $this->make_hook('skin',      AUTH_COOKIE),
+            'prefs'             => $this->make_hook('prefs',     AUTH_COOKIE, 'user'),
+            'prefs/rss'         => $this->make_hook('prefs_rss', AUTH_COOKIE, 'user'),
+            'prefs/webredirect' => $this->make_hook('webredir',  AUTH_MDP,    'mail'),
+            'prefs/skin'        => $this->make_hook('skin',      AUTH_COOKIE, 'user'),
 
             // password related thingies
-            'password'          => $this->make_hook('password',  AUTH_MDP),
+            'password'          => $this->make_hook('password',  AUTH_MDP,    'user'),
             'tmpPWD'            => $this->make_hook('tmpPWD',    AUTH_PUBLIC),
-            'password/smtp'     => $this->make_hook('smtppass',  AUTH_MDP, 'mail'),
+            'password/smtp'     => $this->make_hook('smtppass',  AUTH_MDP,    'mail'),
             'recovery'          => $this->make_hook('recovery',  AUTH_PUBLIC),
             'exit'              => $this->make_hook('exit',      AUTH_PUBLIC),
             'review'            => $this->make_hook('review',    AUTH_PUBLIC),

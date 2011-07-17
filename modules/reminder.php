@@ -24,7 +24,7 @@ class ReminderModule extends PLModule
     function handlers()
     {
         return array(
-            'ajax/reminder' => $this->make_hook('reminder', AUTH_COOKIE),
+            'ajax/reminder' => $this->make_hook('reminder', AUTH_COOKIE, 'user'),
         );
     }
 

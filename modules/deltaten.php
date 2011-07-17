@@ -26,8 +26,8 @@ class DeltaTenModule extends PLModule
     function handlers()
     {
         return array(
-            'deltaten/search'   => $this->make_hook('index', AUTH_COOKIE),
-            'deltaten'          => $this->make_hook('index', AUTH_COOKIE),
+            'deltaten/search'   => $this->make_hook('index', AUTH_COOKIE, 'user'),
+            'deltaten'          => $this->make_hook('index', AUTH_COOKIE, 'user'),
         );
     }
 

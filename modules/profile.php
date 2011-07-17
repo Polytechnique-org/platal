@@ -25,15 +25,15 @@ class ProfileModule extends PLModule
     {
         return array(
             'photo'                      => $this->make_hook('photo',                      AUTH_PUBLIC),
-            'photo/change'               => $this->make_hook('photo_change',               AUTH_MDP),
+            'photo/change'               => $this->make_hook('photo_change',               AUTH_MDP,    'user'),
 
             'fiche.php'                  => $this->make_hook('fiche',                      AUTH_PUBLIC),
             'profile'                    => $this->make_hook('profile',                    AUTH_PUBLIC),
-            'profile/private'            => $this->make_hook('profile',                    AUTH_COOKIE),
+            'profile/private'            => $this->make_hook('profile',                    AUTH_COOKIE, 'user'),
             'profile/ax'                 => $this->make_hook('ax',                         AUTH_COOKIE, 'admin,edit_directory'),
-            'profile/edit'               => $this->make_hook('p_edit',                     AUTH_MDP),
+            'profile/edit'               => $this->make_hook('p_edit',                     AUTH_MDP,    'user'),
             'profile/ajax/address'       => $this->make_hook('ajax_address',               AUTH_COOKIE, 'user', NO_AUTH),
-            'profile/ajax/address/del'   => $this->make_hook('ajax_address_del',           AUTH_MDP),
+            'profile/ajax/address/del'   => $this->make_hook('ajax_address_del',           AUTH_MDP,    'user'),
             'profile/ajax/tel'           => $this->make_hook('ajax_tel',                   AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/edu'           => $this->make_hook('ajax_edu',                   AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/medal'         => $this->make_hook('ajax_medal',                 AUTH_COOKIE, 'user', NO_AUTH),
@@ -45,15 +45,15 @@ class ProfileModule extends PLModule
             'profile/ajax/buildnames'    => $this->make_hook('ajax_buildnames',            AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/tree/jobterms' => $this->make_hook('ajax_tree_job_terms',        AUTH_COOKIE, 'user', NO_AUTH),
             'profile/jobterms'           => $this->make_hook('jobterms',                   AUTH_COOKIE, 'user', NO_AUTH),
-            'javascript/education.js'    => $this->make_hook('education_js',               AUTH_COOKIE),
-            'javascript/grades.js'       => $this->make_hook('grades_js',                  AUTH_COOKIE),
+            'javascript/education.js'    => $this->make_hook('education_js',               AUTH_COOKIE, 'user'),
+            'javascript/grades.js'       => $this->make_hook('grades_js',                  AUTH_COOKIE, 'user'),
             'profile/medal'              => $this->make_hook('medal',                      AUTH_PUBLIC),
 
-            'referent'                   => $this->make_hook('referent',                   AUTH_COOKIE),
+            'referent'                   => $this->make_hook('referent',                   AUTH_COOKIE, 'user'),
             'referent/country'           => $this->make_hook('ref_country',                AUTH_COOKIE, 'user', NO_AUTH),
             'referent/autocomplete'      => $this->make_hook('ref_autocomplete',           AUTH_COOKIE, 'user', NO_AUTH),
 
-            'groupes-x'                  => $this->make_hook('xnet',                       AUTH_COOKIE),
+            'groupes-x'                  => $this->make_hook('xnet',                       AUTH_COOKIE, 'user'),
             'groupes-x/logo'             => $this->make_hook('xnetlogo',                   AUTH_PUBLIC),
 
             'vcard'                      => $this->make_hook('vcard',                      AUTH_COOKIE, 'user', NO_HTTPS),

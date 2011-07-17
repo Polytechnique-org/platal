@@ -40,11 +40,11 @@ class XnetGrpModule extends PLModule
             '%grp/directory/unact' => $this->make_hook('non_active',            AUTH_MDP, 'groupadmin'),
             '%grp/trombi'          => $this->make_hook('trombi',                AUTH_MDP, 'groupannu'),
             '%grp/geoloc'          => $this->make_hook('geoloc',                AUTH_MDP, 'groupannu'),
-            '%grp/subscribe'       => $this->make_hook('subscribe',             AUTH_MDP),
+            '%grp/subscribe'       => $this->make_hook('subscribe',             AUTH_MDP, 'user'),
             '%grp/subscribe/valid' => $this->make_hook('subscribe_valid',       AUTH_MDP, 'groupadmin'),
             '%grp/unsubscribe'     => $this->make_hook('unsubscribe',           AUTH_MDP, 'groupmember'),
 
-            '%grp/change_rights'   => $this->make_hook('change_rights',         AUTH_MDP),
+            '%grp/change_rights'   => $this->make_hook('change_rights',         AUTH_MDP, 'user'),
             '%grp/admin/annuaire'  => $this->make_hook('admin_annuaire',        AUTH_MDP, 'groupadmin'),
             '%grp/member'          => $this->make_hook('admin_member',          AUTH_MDP, 'groupadmin'),
             '%grp/member/new'      => $this->make_hook('admin_member_new',      AUTH_MDP, 'groupadmin'),

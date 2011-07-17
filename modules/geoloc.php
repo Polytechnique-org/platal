@@ -24,8 +24,8 @@ class GeolocModule extends PLModule
     function handlers()
     {
         return array(
-            'map'     => $this->make_hook('map', AUTH_COOKIE),
-            'map_url' => $this->make_hook('map_url', AUTH_COOKIE)
+            'map'     => $this->make_hook('map',     AUTH_COOKIE, 'user'),
+            'map_url' => $this->make_hook('map_url', AUTH_COOKIE, 'user')
         );
     }
 

@@ -36,11 +36,11 @@ class StatsModule extends PLModule
     function handlers()
     {
         return array(
-            'stats'                 => $this->make_hook('stats',     AUTH_COOKIE),
-            'stats/evolution'       => $this->make_hook('evolution', AUTH_COOKIE),
-            'stats/graph'           => $this->make_hook('graph',     AUTH_COOKIE),
-            'stats/graph/evolution' => $this->make_hook('graph_evo', AUTH_COOKIE),
-            'stats/promos'          => $this->make_hook('promos',    AUTH_COOKIE),
+            'stats'                 => $this->make_hook('stats',     AUTH_COOKIE, 'user'),
+            'stats/evolution'       => $this->make_hook('evolution', AUTH_COOKIE, 'user'),
+            'stats/graph'           => $this->make_hook('graph',     AUTH_COOKIE, 'user'),
+            'stats/graph/evolution' => $this->make_hook('graph_evo', AUTH_COOKIE, 'user'),
+            'stats/promos'          => $this->make_hook('promos',    AUTH_COOKIE, 'user'),
 
             'stats/coupures'        => $this->make_hook('coupures',  AUTH_PUBLIC),
         );

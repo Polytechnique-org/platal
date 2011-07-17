@@ -26,16 +26,16 @@ class EPLetterModule extends NewsletterModule
     function handlers()
     {
         return array(
-            'epletter'                   => $this->make_hook('nl',              AUTH_COOKIE),
+            'epletter'                   => $this->make_hook('nl',              AUTH_COOKIE, 'user'),
             'epletter/out'               => $this->make_hook('out',             AUTH_PUBLIC),
-            'epletter/show'              => $this->make_hook('nl_show',         AUTH_COOKIE),
-            'epletter/search'            => $this->make_hook('nl_search',       AUTH_COOKIE),
-            'epletter/admin'             => $this->make_hook('admin_nl',        AUTH_MDP),
-            'epletter/admin/edit'        => $this->make_hook('admin_nl_edit',   AUTH_MDP),
-            'epletter/admin/edit/valid'  => $this->make_hook('admin_nl_valid',  AUTH_MDP),
-            'epletter/admin/edit/cancel' => $this->make_hook('admin_nl_cancel', AUTH_MDP),
-            'epletter/admin/edit/delete' => $this->make_hook('admin_nl_delete', AUTH_MDP),
-            'epletter/admin/categories'  => $this->make_hook('admin_nl_cat',    AUTH_MDP),
+            'epletter/show'              => $this->make_hook('nl_show',         AUTH_COOKIE, 'user'),
+            'epletter/search'            => $this->make_hook('nl_search',       AUTH_COOKIE, 'user'),
+            'epletter/admin'             => $this->make_hook('admin_nl',        AUTH_MDP,    'user'),
+            'epletter/admin/edit'        => $this->make_hook('admin_nl_edit',   AUTH_MDP,    'user'),
+            'epletter/admin/edit/valid'  => $this->make_hook('admin_nl_valid',  AUTH_MDP,    'user'),
+            'epletter/admin/edit/cancel' => $this->make_hook('admin_nl_cancel', AUTH_MDP,    'user'),
+            'epletter/admin/edit/delete' => $this->make_hook('admin_nl_delete', AUTH_MDP,    'user'),
+            'epletter/admin/categories'  => $this->make_hook('admin_nl_cat',    AUTH_MDP,    'user'),
         );
     }
 

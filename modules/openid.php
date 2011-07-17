@@ -64,8 +64,8 @@ class OpenidModule extends PLModule
             'openid'               => $this->make_hook('openid',        AUTH_PUBLIC),
             'openid/melix'         => $this->make_hook('melix',         AUTH_PUBLIC),
             'openid/xrds'          => $this->make_hook('xrds',          AUTH_PUBLIC),
-            'openid/trust'         => $this->make_hook('trust',         AUTH_MDP),
-            'openid/trusted'       => $this->make_hook('trusted',       AUTH_MDP),
+            'openid/trust'         => $this->make_hook('trust',         AUTH_MDP, 'user'),
+            'openid/trusted'       => $this->make_hook('trusted',       AUTH_MDP, 'user'),
             'admin/openid/trusted' => $this->make_hook('admin_trusted', AUTH_MDP, 'admin'),
         );
     }
