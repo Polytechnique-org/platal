@@ -104,7 +104,7 @@ class AddressReq extends ProfileValidate
     protected function _mail_body($isok)
     {
         if ($isok) {
-            return "  Nous avons réussit à mieux localiser l'adresse.";
+            return "  Nous avons réussi à mieux localiser l'adresse suivante :\n{$this->given_text}.";
         } else {
             return "  L'adresse est suffisemment bien localisée pour les besoins du site (recherche avancée, planisphère), nous avons donc choisi de ne pas la modifier.";
         }
