@@ -55,15 +55,25 @@ class NewsletterModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $page->changeTpl('newsletter/index.tpl');
-        $page->setTitle('Lettres mensuelles');
-
         $hash = ($hash == 'nohash') ? null : $hash;
         switch ($action) {
-          case 'out': $nl->unsubscribe($issue_id, $hash, $hash != null); break;
+          case 'out':
+            $success = $nl->unsubscribe($issue_id, $hash, $hash != null);
+            if (!is_null($hash)) {
+                if ($success) {
+                    $page->trigSuccess('La désinscription a été effectuée avec succès.');
+                } else {
+                    $page->trigError("La désinscription n'a été pas pu être effectuée.");
+                }
+                return;
+            }
+            break;
           case 'in':  $nl->subscribe(); break;
           default: ;
         }
+
+        $page->changeTpl('newsletter/index.tpl');
+        $page->setTitle('Lettres mensuelles');
 
         $page->assign_by_ref('nl', $nl);
         $page->assign('nls', $nl->subscriptionState());
