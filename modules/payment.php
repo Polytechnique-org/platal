@@ -960,7 +960,7 @@ class PaymentLogsImporter extends CSVImporter {
 
     static public function compute_systempay_commission($line, $key, $relation) {
         static $EEE_countries = array(
-            'France', 'Allemagne', 'Autriche', 'Belgique', 'Bulgarie', 'Chypre',
+            'France', 'Allemagne', 'Autriche', 'Belgique', 'Bulgarie', 'Chypre', 'Suisse',
             'Danemark', 'Espagne', 'Estonie', 'Finlande', 'Grèce', 'Hongrie', 'Irlande', 'Islande', 'Italie',
             'Lettonie', 'Liechtenstein', 'Lituanie', 'Luxembourg', 'Malte', 'Norvège', 'Pays-Bas', 'Pologne',
             'Portugal', 'Roumanie', 'Royaume-Uni', 'Slovaquie', 'Slovénie', 'Suède', 'République Tchèque'
