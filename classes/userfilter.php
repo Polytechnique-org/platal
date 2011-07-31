@@ -155,7 +155,7 @@ class UserFilter extends PlFilter
             // The $sub.display_levels cell will contain allowed display levels
             // for an access level of $this->visibility_field.
             $sub = $this->addVisibilityFieldFilter($this->visibility_field);
-            return XDB::format('FIND_IN_SET({?}, ' . $sub . '.display_levels', $level);
+            return XDB::format('FIND_IN_SET({?}, ' . $sub . '.display_levels)', $level);
         } else {
             if ($this->visibility->isVisible($level)) {
                 return 'TRUE';
@@ -639,36 +639,6 @@ class UserFilter extends PlFilter
         if ($this->with_profiles && $this->with_accounts) {
             $joins['ap'] = PlSqlJoin::left('account_profiles', '$ME.uid = $UID AND FIND_IN_SET(\'owner\', ap.perms)');
             $joins['p'] = PlSqlJoin::left('profiles', '$PID = ap.pid');
-        }
-        return $joins;
-    }
-
-    /** VISIBILITY
-     */
-    private $vlevels = array();
-    private $vfields = array();
-    public function addVisibilityAbsoluteFilter($level)
-    {
-        $sub = 'pvel_' . $level;
-        $this->vlevels[$level] = $sub;
-        return $sub;
-    }
-
-    public function addVisibilityFieldFilter($field)
-    {
-        $sub = 'pvef_' . self::getDBSuffix($field);
-        $this->vfields[$field] = $sub;
-        return $sub;
-    }
-
-    protected function visibilityJoins()
-    {
-        $joins = array();
-        foreach ($this->vlevels as $level => $sub) {
-            $joins[$sub] = PlSqlJoin::inner('profile_visibility_enum', '$ME.access_level = {?}', $level);
-        }
-        foreach ($this->vfields as $field => $sub) {
-            $joins[$sub] = PlSqlJoin::inner('profile_visibility_enum', '$ME.access_level = ' . $field);
         }
         return $joins;
     }
@@ -1441,6 +1411,36 @@ class UserFilter extends PlFilter
         $sub = $this->addPartnerSharingFilter($partner_id);
         $this->visibility_field = $sub . '.sharing_level';
     }
+    /** VISIBILITY
+     */
+    private $vlevels = array();
+    private $vfields = array();
+    public function addVisibilityAbsoluteFilter($level)
+    {
+        $sub = 'pvel_' . $level;
+        $this->vlevels[$level] = $sub;
+        return $sub;
+    }
+
+    public function addVisibilityFieldFilter($field)
+    {
+        $sub = 'pvef_' . self::getDBSuffix($field);
+        $this->vfields[$field] = $sub;
+        return $sub;
+    }
+
+    protected function visibilityJoins()
+    {
+        $joins = array();
+        foreach ($this->vlevels as $level => $sub) {
+            $joins[$sub] = PlSqlJoin::inner('profile_visibility_enum', '$ME.access_level = {?}', $level);
+        }
+        foreach ($this->vfields as $field => $sub) {
+            $joins[$sub] = PlSqlJoin::inner('profile_visibility_enum', '$ME.access_level = ' . $field);
+        }
+        return $joins;
+    }
+
 }
 // }}}
 // {{{ class ProfileFilter

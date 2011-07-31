@@ -1623,16 +1623,16 @@ class UFC_PartnerSharing extends UserFilterCondition
 {
     const PTA = 'pta';
 
-    private $partner;
+    private $partner_id;
 
-    public function __construct($partner)
+    public function __construct($partner_id)
     {
-        $this->partner = $partner;
+        $this->partner_id = $partner_id;
     }
 
     public function buildCondition(PlFilter $uf)
     {
-        $sub = $uf->addPartnerSharingFilter($this->partner);
+        $sub = $uf->addPartnerSharingFilter($this->partner_id);
         return XDB::format("$sub.exposed_uid IS NOT NULL");
     }
 }
@@ -1643,16 +1643,16 @@ class UFC_PartnerSharing extends UserFilterCondition
  */
 class UFC_PartnerSharingEmail extends UserFilterCondition
 {
-    private $partner;
+    private $partner_id;
 
-    public function __construct($partner)
+    public function __construct($partner_id)
     {
-        $this->partner = $partner;
+        $this->partner_id = $partner_id;
     }
 
     public function buildCondition(PlFilter $uf)
     {
-        $sub = $uf->addPartnerSharingFilter($this->partner);
+        $sub = $uf->addPartnerSharingFilter($this->partner_id);
         return XDB::format("$sub.allow_email IN ('digest', 'direct')");
     }
 }
@@ -1662,12 +1662,12 @@ class UFC_PartnerSharingEmail extends UserFilterCondition
  */
 class UFC_PartnerSharingID extends UserFilterCondition
 {
-    private $partner;
+    private $partner_id;
     private $ids;
 
-    public function __construct($partner)
+    public function __construct($partner_id)
     {
-        $this->partner = $partner;
+        $this->partner_id = $partner_id;
         $ids = func_get_args();
         array_shift($ids);
         $this->ids   = pl_flatten($ids);
@@ -1677,7 +1677,7 @@ class UFC_PartnerSharingID extends UserFilterCondition
     {
         $uf->requireProfiles();
         $ids = $this->ids;
-        $sub = $uf->addPartnerSharingFilter($this->partner);
+        $sub = $uf->addPartnerSharingFilter($this->partner_id);
         return XDB::format("$sub.exposed_uid IN {?}", $ids);
     }
 }

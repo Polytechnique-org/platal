@@ -1000,7 +1000,7 @@ class Profile implements PlExportable
                                      pd.yourself, pd.promo, pd.short_name, pd.public_name AS full_name,
                                      pd.directory_name, pd.public_name, pd.private_name,
                                      IF (pp.pub >= {?}, pp.display_tel, NULL) AS mobile,
-                                     (ph.pub >= {?} AND ph.attach IS NOT NULL) AS has_photo,
+                                     (ph.pub >= {?} AND ph.attach IS NOT NULL) AS has_photo, ph.pub as photo_pub,
                                      ph.x AS photo_width, ph.y AS photo_height,
                                      p.last_change < DATE_SUB(NOW(), INTERVAL 365 DAY) AS is_old,
                                      pm.expertise AS mentor_expertise,

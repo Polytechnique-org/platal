@@ -193,6 +193,9 @@ class Job
     public $user_site;
     public $user_email;
 
+    public $pub;
+    public $email_pub;
+
     /** Fields are:
      * pid, id, company_id, description, url, email
      */
@@ -611,8 +614,7 @@ class ProfileJobs extends ProfileField
     public static function fetchData(array $pids, Visibility $visibility)
     {
         CompanyList::preload($pids);
-        $data = XDB::iterator('SELECT  id, pid, description, url as user_site, jobid,
-                                       IF(pve.best_display_level + 0 <= email_pub + 0, email, NULL) AS user_email
+        $data = XDB::iterator('SELECT  id, pid, description, url as user_site, jobid, pub,                                       IF(pve.best_display_level + 0 <= email_pub + 0, email, NULL) AS user_email, email_pub
                                  FROM  profile_job
                             LEFT JOIN  profile_visibility_enum AS pve ON (pve.access_level = {?})
                                 WHERE  pid IN {?} AND pve.best_display_level + 0 <= pub + 0

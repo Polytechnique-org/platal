@@ -85,7 +85,7 @@ class WSDirectoryRequest
         $profiles = array();
         if ($matches) {
             // TODO : improve fetching by passing an adequate FETCH field
-            $iter = $pf->iterProfiles(new PlLimit($this->amount), 0x0000, Visibility::VIEW_PRIVATE);
+            $iter = $pf->iterProfiles(new PlLimit($this->amount), 0x0000, Visibility::get(Visibility::VIEW_PRIVATE));
             while ($profile = $iter->next()) {
                 if ($profile->getPartnerSettings($this->partner->id)->exposed_uid !== 0) {
                     $profile_data = new WSRequestEntry($this->partner, $profile);
@@ -411,7 +411,7 @@ class WSRequestEntry
                 return null;
             }
         case WSRequestFields::MOBILE_PHONE:
-            $phones = $p->getPhones(Phone::TYPE_MOBILE);
+            $phones = $p->getPhones(Profile::PHONE_TYPE_MOBILE | Profile::PHONE_LINK_PROFILE);
             if (count($phones)) {
                 $phone = array_pop($phones);
                 if ($this->isVisible($phone->pub)) {
@@ -428,7 +428,7 @@ class WSRequestEntry
                                     WHERE  pid = {?}', $p->pid);
                 XDB::execute('INSERT INTO  profile_photo_tokens
                                       SET  pid = {?}, token = {?},
-                                           expires = ADDTIME(NOW(), \'0:05:00\'',
+                                           expires = ADDTIME(NOW(), \'0:05:00\')',
                                            $p->pid, $token);
                 $size_mappings = array(
                     WSRequestFields::PIC_SMALL => 'small',
@@ -445,14 +445,14 @@ class WSRequestEntry
         case WSRequestFields::CURRENT_CITY:
             $address = $p->getMainAddress();
             if ($address != null && $this->isVisible($address->pub)) {
-                return $address->localityName;
+                return $address->locality;
             } else {
                 return null;
             }
         case WSRequestFields::CURRENT_COUNTRY:
             $address = $p->getMainAddress();
             if ($address != null && $this->isVisible($address->pub)) {
-                return $address->countryId;
+                return $address->country;
             } else {
                 return null;
             }
@@ -477,10 +477,10 @@ class WSRequestEntry
             $res = array();
             foreach ($jobs as $job) {
                 if ($this->isVisible($job->pub)) {
-                    $jobs[] = $this->jobToResponse($job);
+                    $res[] = $this->jobToResponse($job);
                 }
             }
-            return $jobs;
+            return $res;
         case WSRequestFields::MINI_RESUME:
             if ($this->isVisible(Visibility::EXPORT_PRIVATE)) {
                 return $p->cv;
@@ -500,8 +500,13 @@ class WSRequestEntry
         case WSRequestFields::FRIENDS:
             $friends = array();
             if ($this->isVisible(Visibility::EXPORT_PRIVATE)) {
-                while ($contact = $p->owner()->iterContacts()) {
-                    $cps = $contact->getPartnerSettings(UFC_PartnerSharing::PTA);
+                $contacts = $p->owner()->iterContacts();
+                if ($contacts == null) {
+                    return $friends;
+                }
+
+                while ($contact = $contacts->next()) {
+                    $cps = $contact->getPartnerSettings($this->partner->id);
                     if ($cps->sharing_visibility->isVisible(Visibility::EXPORT_PRIVATE)) {
                         $friends[] = $cps->exposed_uid;
                     }
@@ -550,8 +555,8 @@ class WSRequestEntry
         $data = array();
         $data['street'] = $address->postalText;
         $data['zipcode'] = $address->postalCode;
-        $data['city'] = $address->localityName;
-        $data['country'] = $address->countryId;
+        $data['city'] = $address->locality;
+        $data['country'] = $address->country;
         $data['latitude'] = $address->latitude;
         $data['longitude'] = $address->longitude;
         return $data;
@@ -696,6 +701,10 @@ class WSRequestFields
 
     const GENDER_MAN = 'man';
     const GENDER_WOMAN = 'woman';
+
+    const DIPLOMA_ING = 'engineer';
+    const DIPLOMA_MASTER = 'master';
+    const DIPLOMA_PHD = 'phd';
 
     public static $CHOICES = array(
         self::UID,
