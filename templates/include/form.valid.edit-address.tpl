@@ -20,6 +20,11 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<p>L'adresse saisie ci-dessous sert uniquement pour la géolocalisation ;
+utiliser le bouton <em>Éditer</em> pour visualiser sur la carte la nouvelle position de l'adresse.</p>
+<p>La case <em>Utiliser la version modifiée</em> va remplacer l'adresse saisie par l'utilisateur par l'adresse modifiée ci-dessous.
+À n'utiliser qu'en cas d'adresse manifestement invalide, ou pour corriger une faute d'orthographe.</p>
+
 {include file="geoloc/form.address.tpl" prefname="valid" prefid=0 address=$valid->address validation=1}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

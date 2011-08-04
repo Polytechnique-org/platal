@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 <tr class="pair">
-  <td class="titre">Adresse fournie</td>
+  <td class="titre">Adresse saisie par l'utilisateur</td>
   <td>{$valid->given_text}</td>
 </tr>
 
