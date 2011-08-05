@@ -35,7 +35,7 @@ class WSDirectoryRequest
     const ORDER_NAME = 'name';
     const ORDER_PROMOTION = 'promotion';
 
-    public static $ORDER_CHOICES = array(
+    public static $order_choices = array(
         self::ORDER_RAND,
         self::ORDER_NAME,
         self::ORDER_PROMOTION,
@@ -46,30 +46,30 @@ class WSDirectoryRequest
         $this->partner = $partner;
         global $globals;
 
-        $this->fields = array_intersect($payload->v('fields'), WSRequestFields::$CHOICES);
-        $this->order = array_intersect($payload->v('order', array()), self::$ORDER_CHOICES);
+        $this->fields = array_intersect($payload->v('fields'), WSRequestFields::$choices);
+        $this->order = array_intersect($payload->v('order', array()), self::$order_choices);
 
         $this->criteria = array();
         $criteria = new PlDict($payload->v('criteria'));
-        foreach (WSRequestCriteria::$CHOICES_SIMPLE as $criterion) {
+        foreach (WSRequestCriteria::$choices_simple as $criterion) {
             if ($criteria->has($criterion)) {
                 $this->criteria[$criterion] = $criteria->s($criterion);
             }
         }
-        foreach (WSRequestCriteria::$CHOICES_ENUM as $criterion) {
+        foreach (WSRequestCriteria::$choices_enum as $criterion) {
             if ($criteria->has($criterion)) {
                 $this->criteria[$criterion] = $criteria->s($criterion);
             }
         }
-        foreach (WSRequestCriteria::$CHOICES_LIST as $criterion) {
+        foreach (WSRequestCriteria::$choices_list as $criterion) {
             if ($criteria->has($criterion)) {
                 $this->criteria[$criterion] = $criteria->v($criterion);
             }
         }
 
-        // Amount may not exceed $globals->pta->max_result_per_query.
+        // Amount may not exceed $globals->sharingapi->max_result_per_query.
         $amount = $payload->i('amount', self::DEFAULT_AMOUNT);
-        $this->amount = min($amount, $globals->pta->max_result_per_query);
+        $this->amount = min($amount, $globals->sharingapi->max_result_per_query);
     }
 
     public function get()
@@ -141,14 +141,14 @@ class WSDirectoryRequest
             // ENUM fields
             case WSRequestCriteria::SCHOOL:
                 // Useless criterion: we don't need to check on origin school
-                if (WSRequestCriteria::$CHOICES_ENUM[$criterion][$value]) {
+                if (WSRequestCriteria::$choices_enum[$criterion][$value]) {
                     $cond->addChild(new PFC_True());
                 } else {
                     $cond->addChild(new PFC_False());
                 };
                 break;
             case WSRequestCriteria::DIPLOMA:
-                $diploma = WSRequestCriteria::$CHOICES_ENUM[$criterion][$value];
+                $diploma = WSRequestCriteria::$choices_enum[$criterion][$value];
                 $id_X = XDB::fetchOneCell('SELECT  id
                                              FROM  profile_education_enum
                                             WHERE  abbreviation = {?}', 'X');
@@ -436,7 +436,7 @@ class WSRequestEntry
                     WSRequestFields::PIC_LARGE => 'large',
                 );
                 $size = $size_mappings[$field];
-                return pl_url("pta/picture/$size/$token");
+                return pl_url("api/1/sharing/picture/$size/$token");
             } else {
                 return null;
             }
@@ -532,12 +532,13 @@ class WSRequestEntry
 
     protected function jobToResponse($job)
     {
-        $data = array();
-        $data['company'] = $job->company->name;
-        $data['title'] = $job->description;
-        $data['sector'] = array_pop($job->terms);
-        $data['entry'] = null;
-        $data['left'] = null;
+        $data = array(
+            'company' => $job->company->name,
+            'title' => $job->description,
+            'sector' => array_pop($job->terms),
+            'entry' => null,
+            'left' => null,
+        );
         foreach($job->phones() as $phone) {
             if ($this->isVisible($phone->pub)) {
                 $data['phone'] = $phone->display;
@@ -552,13 +553,14 @@ class WSRequestEntry
 
     protected function addressToResponse($address)
     {
-        $data = array();
-        $data['street'] = $address->postalText;
-        $data['zipcode'] = $address->postalCode;
-        $data['city'] = $address->locality;
-        $data['country'] = $address->country;
-        $data['latitude'] = $address->latitude;
-        $data['longitude'] = $address->longitude;
+        $data = array(
+            'street' => $address->postalText,
+            'zipcode' => $address->postalCode,
+            'city' => $address->locality,
+            'country' => $address->country,
+            'latitude' => $address->latitude,
+            'longitude' => $address->longitude,
+        );
         return $data;
     }
 }
@@ -592,7 +594,7 @@ class WSRequestCriteria
     const ALT_DIPLOMA = 'alt_diploma';
     const NOT_UID = 'not_uid';
 
-    public static $CHOICES_SIMPLE = array(
+    public static $choices_simple = array(
         self::FIRSTNAME,
         self::LASTNAME,
         self::PROMOTION,
@@ -629,7 +631,7 @@ class WSRequestCriteria
     const DIPLOMA_MASTER = 'MASTER';
     const DIPLOMA_PHD = 'PHD';
 
-    public static $CHOICES_ENUM = array(
+    public static $choices_enum = array(
         self::SCHOOL => array(
             self::SCHOOL_AGRO => false,
             self::SCHOOL_ENSAE => false,
@@ -652,7 +654,7 @@ class WSRequestCriteria
         ),
     );
 
-    public static $CHOICES_LIST = array(
+    public static $choices_list = array(
         self::HOBBIES,
         self::JOB_COMPETENCIES,
         self::JOB_RESUME,
@@ -706,7 +708,7 @@ class WSRequestFields
     const DIPLOMA_MASTER = 'master';
     const DIPLOMA_PHD = 'phd';
 
-    public static $CHOICES = array(
+    public static $choices = array(
         self::UID,
         self::FIRSTNAME,
         self::LASTNAME,
@@ -743,14 +745,14 @@ class WSRequestFields
     public static function profileDegreeToWSDiploma($degree)
     {
         switch ($degree) {
-        case Profile::DEGREE_X:
-            return self::DIPLOMA_ING;
-        case Profile::DEGREE_M:
-            return self::DIPLOMA_MASTER;
-        case Profile::DEGREE_D:
-            return self::DIPLOMA_PHD;
-        default:
-            return null;
+            case Profile::DEGREE_X:
+                return self::DIPLOMA_ING;
+            case Profile::DEGREE_M:
+                return self::DIPLOMA_MASTER;
+            case Profile::DEGREE_D:
+                return self::DIPLOMA_PHD;
+            default:
+                return null;
         }
     }
 

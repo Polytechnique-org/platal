@@ -20,14 +20,14 @@
  ***************************************************************************/
 
 
-class PTAWebServiceModule extends PlModule
+class SharingAPIModule extends PlModule
 {
     function handlers()
     {
         return array(
-            'pta/ws/directory/1/search'     => $this->make_api_hook('search',   AUTH_COOKIE, 'api_user_readonly'),
-            'pta/ws/bulkmail/1/get_context' => $this->make_api_hook('bulkmail', AUTH_COOKIE, 'api_user_readonly'),
-            'pta/picture'                   => $this->make_hook('picture_token', AUTH_PUBLIC),
+            'api/1/sharing/search'    => $this->make_api_hook('search',    AUTH_COOKIE, 'api_user_readonly'),
+            'api/1/sharing/bulkmail'  => $this->make_api_hook('bulkmail',  AUTH_COOKIE, 'api_user_readonly'),
+            'api/1/sharing/picture'   => $this->make_hook('picture_token', AUTH_PUBLIC),
         );
     }
 

@@ -925,10 +925,10 @@ class Profile implements PlExportable
 
     public function getPartnerSettings($partner_id)
     {
-        if ($this->partners_settings == null && !$this->fetched(self::FETCH_PARTNER)) {
+        if ($this->partners_settings === null && !$this->fetched(self::FETCH_PARTNER)) {
             $this->setPartnersSettings($this->getProfileField(self::FETCH_PARTNER));
         }
-        if ($this->partners_settings == null) {
+        if ($this->partners_settings === null) {
             return PartnerSettings::getEmpty($partner_id);
         }
         return $this->partners_settings->get($partner_id);

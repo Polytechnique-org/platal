@@ -1392,7 +1392,7 @@ class UserFilter extends PlFilter
     public function addPartnerSharingFilter($partner_id)
     {
         $this->requireProfiles();
-        $sub = "ppss_$partner_id";
+        $sub = "ppss_" . $partner_id;
         $this->ppss[$sub] = $partner_id;
         return $sub;
     }
@@ -1411,6 +1411,7 @@ class UserFilter extends PlFilter
         $sub = $this->addPartnerSharingFilter($partner_id);
         $this->visibility_field = $sub . '.sharing_level';
     }
+
     /** VISIBILITY
      */
     private $vlevels = array();
@@ -1429,6 +1430,12 @@ class UserFilter extends PlFilter
         return $sub;
     }
 
+    /** Since this method might perform inner joins on tables which have been
+     * joined previously (e.g when using addVisibilityFieldFilter), it has to
+     * come after the Joins() methods for those tables.
+     * This is due to the implementation logic for discovering joins and the
+     * ordering used by PHP introspection.
+     */
     protected function visibilityJoins()
     {
         $joins = array();

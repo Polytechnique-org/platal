@@ -29,7 +29,7 @@ class Xorg extends Platal
                             'newsletter', 'axletter', 'epletter', 'bandeau', 'survey',
                             'fusionax', 'gadgets', 'googleapps', 'poison',
                             'openid', 'reminder', 'api', 'urlshortener', 'deltaten',
-                            'geoloc', 'ptawebservice');
+                            'geoloc', 'sharingapi');
     }
 
     public function find_hook()
