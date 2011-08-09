@@ -23,13 +23,39 @@ class Xorg extends Platal
 {
     public function __construct()
     {
-        parent::__construct('auth', 'carnet', 'email', 'events', 'forums',
-                            'lists', 'marketing', 'payment', 'platal',
-                            'profile', 'register', 'search', 'stats', 'admin',
-                            'newsletter', 'axletter', 'epletter', 'bandeau', 'survey',
-                            'fusionax', 'gadgets', 'googleapps', 'poison',
-                            'openid', 'reminder', 'api', 'urlshortener', 'deltaten',
-                            'geoloc', 'sharingapi');
+        parent::__construct(
+            'auth',
+
+            'admin',
+            'api',
+            'axletter',
+            'bandeau',
+            'carnet',
+            'deltaten',
+            'email',
+            'epletter',
+            'events',
+            'forums',
+            'fusionax',
+            'gadgets',
+            'geoloc',
+            'googleapps',
+            'lists',
+            'marketing',
+            'newsletter',
+            'openid',
+            'payment',
+            'platal',
+            'poison',
+            'profile',
+            'register',
+            'reminder',
+            'search',
+            'sharingapi',
+            'stats',
+            'survey',
+            'urlshortener'
+        );
     }
 
     public function find_hook()

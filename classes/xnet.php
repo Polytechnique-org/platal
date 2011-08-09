@@ -23,8 +23,17 @@ class Xnet extends Platal
 {
     public function __construct()
     {
-        parent::__construct('xnet', 'xnetgrp', 'xnetlists', 'xnetevents',
-                            'payment', 'bandeau', 'xnetnl', 'geoloc');
+        parent::__construct(
+            'xnet',
+
+            'bandeau',
+            'geoloc',
+            'payment',
+            'xnetevents',
+            'xnetgrp',
+            'xnetlists',
+            'xnetnl'
+        );
     }
 
     public function hook_map($name)
