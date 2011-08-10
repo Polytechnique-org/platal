@@ -109,24 +109,33 @@ class AuthModule extends PLModule
         return $this->handler_groupex($page, 'iso-8859-1');
     }
 
+    /** Handles the 'auth-groupe-x' authentication.
+     * Expects the following GET parameters:
+     * - pass: the 'password' for the authentication
+     * - challenge: the authentication challenge
+     * - url: the return URL
+     * - session: the remote PHP session ID
+     */
     function handler_groupex($page, $charset = 'utf8')
     {
         $this->load('auth.inc.php');
         $page->assign('referer', true);
 
-        $gpex_pass = $_GET["pass"];
-        $gpex_url  = urldecode($_GET["url"]);
-        if (strpos($gpex_url, '?') === false) {
-            $gpex_url .= "?PHPSESSID=" . $_GET["session"];
-        } else {
-            $gpex_url .= "&PHPSESSID=" . $_GET["session"];
+        $gpex_pass = Get::s('pass');
+        $gpex_url  = urldecode(Get::s('url'));
+        if (Get::has('session')) {
+            if (strpos($gpex_url, '?') === false) {
+                $gpex_url .= "?PHPSESSID=" . Get::s('session');
+            } else {
+                $gpex_url .= "&PHPSESSID=" . Get::s('session');
+            }
         }
 
         // Normalize the return URL.
         if (!preg_match("/^(http|https):\/\/.*/",$gpex_url)) {
             $gpex_url = "http://$gpex_url";
         }
-        $gpex_challenge = $_GET["challenge"];
+        $gpex_challenge = Get::s('challenge');
 
         // Update the last login information (unless the user is in SUID).
         $uid = S::i('uid');
@@ -137,7 +146,7 @@ class AuthModule extends PLModule
 
         // Iterate over the auth token to find which one did sign the request.
         $res = XDB::iterRow('SELECT privkey, name, datafields, returnurls FROM group_auth');
-        while (list($privkey,$name,$datafields,$returnurls) = $res->next()) {
+        while (list($privkey, $name, $datafields, $returnurls) = $res->next()) {
             if (md5($gpex_challenge.$privkey) == $gpex_pass) {
                 $returnurls = trim($returnurls);
                 // We check that the return url matches a per-key regexp to prevent
