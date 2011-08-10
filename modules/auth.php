@@ -31,7 +31,7 @@ class AuthModule extends PLModule
 
             'auth-redirect.php'             => $this->make_hook('redirect',           AUTH_COOKIE, 'user'),
             'auth-groupex.php'              => $this->make_hook('groupex_old',        AUTH_COOKIE, 'user'),
-            'auth-groupex'                  => $this->make_hook('groupex',            AUTH_COOKIE, 'user'),
+            'auth-groupex'                  => $this->make_hook('groupex',            AUTH_PUBLIC),
             'admin/auth-groupes-x'          => $this->make_hook('admin_authgroupesx', AUTH_MDP,    'admin'),
         );
     }
@@ -118,8 +118,12 @@ class AuthModule extends PLModule
      */
     function handler_groupex($page, $charset = 'utf8')
     {
+        if (!S::logged()) {
+            $page->assign('referer', true);
+            return PL_DO_AUTH;
+        }
+
         $this->load('auth.inc.php');
-        $page->assign('referer', true);
 
         $gpex_pass = Get::s('pass');
         $gpex_url  = urldecode(Get::s('url'));
