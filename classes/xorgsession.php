@@ -228,7 +228,10 @@ class XorgSession extends PlSession
         $this->securityChecks();
         $this->setSkin();
         $this->updateNbNotifs();
-        check_redirect();
+        // Only check email redirection for 'internal' users.
+        if ($user->checkPerms(PERMS_USER)) {
+            check_redirect();
+        }
 
         // We should not have to use this private data anymore
         S::kill('auth_by_cookie');

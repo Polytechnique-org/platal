@@ -886,7 +886,6 @@ class User extends PlUser
     public static function makePerms($perms, $is_admin)
     {
         $flags = new PlFlagSet($perms);
-        $flags->addFlag(PERMS_USER);
         if ($is_admin) {
             $flags->addFlag(PERMS_ADMIN);
         }
