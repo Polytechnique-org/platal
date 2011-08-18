@@ -671,7 +671,7 @@ class XnetGrpModule extends PLModule
             $append = "\n"
                     . "-- \n"
                     . "Ce message a été envoyé suite à la demande d'inscription de\n"
-                    . S::user()->fullName(true) . ")\n"
+                    . S::user()->fullName(true) . "\n"
                     . "Via le site www.polytechnique.net. Tu peux choisir de valider ou\n"
                     . "de refuser sa demande d'inscription depuis la page :\n"
                     . "http://www.polytechnique.net/" . $globals->asso("diminutif") . "/subscribe/" . S::user()->login() . "\n"
