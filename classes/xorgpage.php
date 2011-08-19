@@ -21,6 +21,9 @@
 
 class XorgPage extends PlPage
 {
+    protected $forced_skin = null;
+    protected $default_skin = null;
+
     public function __construct()
     {
         parent::__construct();
@@ -52,13 +55,36 @@ class XorgPage extends PlPage
         }
     }
 
+    /** Force the skin to use, bypassing user choice.
+     * Typically used for the 'register' page.
+     * @param $skin The skin to use.
+     */
+    public function forceSkin($skin)
+    {
+        $this->forced_skin = $skin;
+    }
+
+    /** Choose another 'default' skin.
+     * Typically used for the 'Auth Groupe X' login page.
+     * @param $skin The default skin to use.
+     */
+    public function setDefaultSkin($skin)
+    {
+        $this->default_skin = $skin;
+    }
+
     public function run()
     {
         global $globals, $platal;
-        if (isset($platal) && $platal->path == 'register') {
-            $skin = $globals->register_skin . ".tpl";
+        if ($this->forced_skin !== null) {
+            $skin = $this->forced_skin . '.tpl';
         } else {
-            $skin = S::v('skin', $globals->skin . ".tpl");
+            if ($this->default_skin === null) {
+                $default_skin = $globals->skin;
+            } else {
+                $default_skin = $this->default_skin;
+            }
+            $skin = S::v('skin', $default_skin . '.tpl');
         }
         $this->_run('skin/' . $skin);
     }

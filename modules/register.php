@@ -31,6 +31,8 @@ class RegisterModule extends PLModule
 
     function handler_register($page, $hash = null)
     {
+        $page->forceSkin('register');
+
         $alert = array();
         $alert_details = '';
         $subState = new PlDict(S::v('subState', array()));
