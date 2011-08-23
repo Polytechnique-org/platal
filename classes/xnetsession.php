@@ -118,6 +118,7 @@ class XnetSession extends XorgSession
         if (!$user->checkPerms('groups')) {
             return false;
         }
+        S::v('perms')->addFlag(PERMS_USER);
         if ($level == AUTH_SUID) {
             S::set('auth', AUTH_MDP);
         }
