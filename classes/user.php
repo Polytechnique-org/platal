@@ -363,7 +363,7 @@ class User extends PlUser
         if (!$this->_profile_fetched || $forceFetch) {
             $this->_profile_fetched = true;
             $this->_profile = Profile::get($this, $fields, $visibility);
-        } else if (!$this->_profile->visibility->equals($visibility)) {
+        } else if ($this->_profile !== null && !$this->_profile->visibility->equals($visibility)) {
             return Profile::get($this, $fields, $visibility);
         }
         return $this->_profile;
