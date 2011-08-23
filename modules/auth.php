@@ -120,6 +120,17 @@ class AuthModule extends PLModule
     {
         if (!S::logged()) {
             $page->assign('referer', true);
+            $page->setTitle('Authentification');
+            $page->setDefaultSkin('group_login');
+
+            if (Get::has('group')) {
+                $res = XDB::query('SELECT  nom
+                                     FROM  groups
+                                    WHERE  diminutif = {?}', Get::s('group'));
+                $page->assign('group', $res->fetchOneCell());
+            } else {
+                $page->assign('group', null);
+            }
             return PL_DO_AUTH;
         }
 
