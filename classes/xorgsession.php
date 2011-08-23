@@ -77,36 +77,29 @@ class XorgSession extends PlSession
         return self::INVALID_USER;
     }
 
-    private function checkPassword($uname, $login, $response, $login_type)
+    const TEXT_INVALID_LOGIN = "Mot de passe ou nom d'utilisateur invalide";
+    const TEXT_INVALID_PASS = "Mot de passe invalide";
+
+    private function checkPassword($login, User $user, $response)
     {
-        if ($login_type == 'alias') {
-            $res = XDB::query('SELECT  a.uid, a.password
-                                 FROM  accounts             AS a
-                           INNER JOIN  email_source_account AS e ON (e.uid = a.uid)
-                                WHERE  e.email = {?}',
-                              $login);
+        if ($user === null) {
+            Platal::page()->trigError(self::TEXT_INVALID_LOGIN);
+            return false;
         } else {
-            $res = XDB::query('SELECT  uid, password
-                                 FROM  accounts
-                                WHERE  ' . $login_type . ' = {?}',
-                              $login);
-        }
-        if (list($uid, $password) = $res->fetchOneRow()) {
-            $expected_response = sha1("$uname:$password:" . S::v('challenge'));
+            $password = $user->password();
+            $expected_response = sha1("$login:$password:" . S::v('challenge'));
             /* Deprecates len(password) > 10 conversion. */
             if ($response != $expected_response) {
                 if (!S::logged()) {
-                    Platal::page()->trigError('Mot de passe ou nom d\'utilisateur invalide');
+                    Platal::page()->trigError(self::TEXT_INVALID_LOGIN);
                 } else {
-                    Platal::page()->trigError('Mot de passe invalide');
+                    Platal::page()->trigError(self::TEXT_INVALID_PASS);
                 }
                 S::logger($uid)->log('auth_fail', 'bad password');
-                return null;
+                return false;
             }
-            return $uid;
+            return true;
         }
-        Platal::page()->trigError('Mot de passe ou nom d\'utilisateur invalide');
-        return null;
     }
 
 
@@ -138,60 +131,27 @@ class XorgSession extends PlSession
         /** We come from an authentication form.
          */
         if (S::suid()) {
-            $login = $uname = S::suid('uid');
-            $loginType = 'uid';
+            $login = S::suid('uid');
         } else {
-            $uname = Post::v('username');
-            if (Post::s('domain') == "alias") {
-                $login = XDB::fetchOneCell('SELECT  uid
-                                              FROM  email_source_account
-                                             WHERE  email = {?} AND type = \'alias_aux\'',
-                                           $uname);
-                $loginType = 'uid';
-            } else if (Post::s('domain') == 'hruid') {
-                $login = $uname;
-                $loginType = 'hruid';
-            } else if ((Post::s('domain') == 'email')) {
-                $login = XDB::fetchOneCell('SELECT  SQL_CALC_FOUND_ROWS uid
-                                              FROM  accounts
-                                             WHERE  email = {?}',
-                                           $uname);
-                if (!(XDB::fetchOneCell('SELECT FOUND_ROWS()') == 1)) {
-                    $login =null;
-                }
-                $loginType = 'uid';
-            } else {
-                $login = $uname;
-                $loginType = is_numeric($uname) ? 'uid' : 'alias';
-            }
+            $login = Post::v('username');
         }
 
-        $uid = $this->checkPassword($uname, $login, Post::v('response'), $loginType);
-        if (!is_null($uid) && S::suid()) {
-            if (S::suid('uid') == $uid) {
-                $uid = S::i('uid');
-            } else {
-                $uid = null;
-            }
+        $user = User::getSilent($login);
+
+        $success = $this->checkPassword($login, $user, Post::v('response'));
+
+        if (!is_null($user) && S::suid()) {
+            $success = (S::suid('uid') == $user->id());
+        } else {
+            $success = $this->checkPassword($login, $user, Post::v('response'));
         }
-        if (!is_null($uid)) {
+
+        if ($success) {
             S::set('auth', AUTH_MDP);
-            if (!S::suid()) {
-                if (Post::has('domain')) {
-                    $domain = Post::v('domain', 'login');
-                    if ($domain == 'alias') {
-                        Cookie::set('domain', 'alias', 300);
-                    } else if ($domain == 'ax') {
-                        Cookie::set('domain', 'ax', 300);
-                    } else {
-                        Cookie::kill('domain');
-                    }
-                }
-            }
             S::kill('challenge');
-            S::logger($uid)->log('auth_ok');
+            S::logger($user->id())->log('auth_ok');
         }
-        return User::getSilentWithUID($uid);
+        return $user;
     }
 
     protected function startSessionAs($user, $level)

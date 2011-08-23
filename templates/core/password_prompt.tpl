@@ -26,8 +26,12 @@
 </h1>
 <p>
   Bonjour,<br />
-  la page que vous avez demandée
-  (<strong>{if $referer}{$smarty.server.HTTP_REFERER}{else}{$globals->baseurl}/{$platal->pl_self()}{/if}</strong>)
+  {if t($group)}
+    le site du groupe {$group}
+  {else}
+    la page que vous avez demandée
+  {/if}
+  (<strong>{if t($referer)}{$smarty.server.HTTP_REFERER}{else}{$globals->baseurl}/{$platal->pl_self()}{/if}</strong>)
   nécessite une authentification.
 </p>
 {else}
@@ -47,19 +51,10 @@
     </tr>
     <tr style="white-space: nowrap">
       <td class="titre">
-        Identifiant&nbsp;:
+        Identifiant ou email&nbsp;:
       </td>
       <td>
-        <input type="text" name="username" size="20" maxlength="50" value="{insert name="getUserName"}" />
-        <select name="domain">
-          <option value="login">@alumni. {#globals.mail.domain#} / {#globals.mail.domain2#}</option>
-          <option value="alias" {if t($smarty.cookies.ORGdomain) && $smarty.cookies.ORGdomain eq "alias"}selected="selected"{/if}>
-            @ {#globals.mail.alias_dom#} / {#globals.mail.alias_dom2#}
-          </option>
-          <option value="hruid" {if t($smarty.cookies.ORGdomain) && $smarty.cookies.ORGdomain eq "ax"}selected="selected"{/if}>
-            Identifiant
-          </option>
-        </select>
+        <input type="text" name="username" size="40" maxlength="100" value="{insert name="getUserName"}" />
       </td>
     </tr>
     <tr>
@@ -153,7 +148,6 @@
     <input type="hidden" name="xorpass"   value="" />
     <input type="hidden" name="username"  value="" />
     <input type="hidden" name="remember"  value="" />
-    <input type="hidden" name="domain"    value="" />
   </div>
 </form>
 

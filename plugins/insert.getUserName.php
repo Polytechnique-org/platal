@@ -28,26 +28,8 @@ function smarty_insert_getUsername()
         return '';
     }
 
-    $domain = Cookie::v('domain', 'login');
-    if ($domain == 'hruid') {
-        return XDB::fetchOneCell('SELECT  hruid
-                                    FROM  accounts
-                                   WHERE  uid = {?}',
-                                 $id);
-    } elseif ($domain == 'alias') {
-        return XDB::fetchOneCell('SELECT  email
-                                    FROM  email_source_account
-                                   WHERE  uid = {?} AND type = \'alias_aux\'',
-                                 $id);
-    } else {
-        return XDB::fetchOneCell('SELECT  email
-                                    FROM  email_source_account
-                                   WHERE  uid = {?} AND type != \'alias_aux\'
-                                ORDER BY  NOT FIND_IN_SET(\'bestalias\', flags), CHAR_LENGTH(email)',
-                                 $id);
-    }
-
-     return '';
+    $user = User::getSilentWithUID($id);
+    return $user->bestEmail();
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
