@@ -31,14 +31,14 @@ class XnetModule extends PLModule
             'groups'       => $this->make_hook('groups',       AUTH_PUBLIC),
             'groupes.php'  => $this->make_hook('groups2',      AUTH_PUBLIC),
             'plan'         => $this->make_hook('plan',         AUTH_PUBLIC),
-            'photo'        => $this->make_hook('photo',        AUTH_MDP, 'user'),
-            'autologin'    => $this->make_hook('autologin',    AUTH_MDP, 'user'),
+            'photo'        => $this->make_hook('photo',        AUTH_MDP, 'groups'),
+            'autologin'    => $this->make_hook('autologin',    AUTH_MDP, 'groups'),
             'login/ext'    => $this->make_hook('login_ext',    AUTH_PUBLIC),
             'register/ext' => $this->make_hook('register_ext', AUTH_PUBLIC),
             'recovery/ext' => $this->make_hook('recovery_ext', AUTH_PUBLIC),
             'tmpPWD/ext'   => $this->make_hook('tmpPWD_ext',   AUTH_PUBLIC),
-            'edit'         => $this->make_hook('edit',         AUTH_MDP, 'user'),
-            'password'     => $this->make_hook('password',     AUTH_MDP, 'user'),
+            'edit'         => $this->make_hook('edit',         AUTH_MDP, 'groups'),
+            'password'     => $this->make_hook('password',     AUTH_MDP, 'groups'),
 
             'Xnet'         => $this->make_wiki_hook(),
         );

@@ -40,15 +40,15 @@ class XnetGrpModule extends PLModule
             '%grp/directory/unact' => $this->make_hook('non_active',            AUTH_MDP, 'groupadmin'),
             '%grp/trombi'          => $this->make_hook('trombi',                AUTH_MDP, 'groupannu'),
             '%grp/geoloc'          => $this->make_hook('geoloc',                AUTH_MDP, 'groupannu'),
-            '%grp/subscribe'       => $this->make_hook('subscribe',             AUTH_MDP, 'user'),
+            '%grp/subscribe'       => $this->make_hook('subscribe',             AUTH_MDP, 'groups'),
             '%grp/subscribe/valid' => $this->make_hook('subscribe_valid',       AUTH_MDP, 'groupadmin'),
             '%grp/unsubscribe'     => $this->make_hook('unsubscribe',           AUTH_MDP, 'groupmember'),
 
-            '%grp/change_rights'   => $this->make_hook('change_rights',         AUTH_MDP, 'user'),
+            '%grp/change_rights'   => $this->make_hook('change_rights',         AUTH_MDP, 'groups'),
             '%grp/admin/annuaire'  => $this->make_hook('admin_annuaire',        AUTH_MDP, 'groupadmin'),
             '%grp/member'          => $this->make_hook('admin_member',          AUTH_MDP, 'groupadmin'),
             '%grp/member/new'      => $this->make_hook('admin_member_new',      AUTH_MDP, 'groupadmin'),
-            '%grp/member/new/ajax' => $this->make_hook('admin_member_new_ajax', AUTH_MDP, 'user', NO_AUTH),
+            '%grp/member/new/ajax' => $this->make_hook('admin_member_new_ajax', AUTH_MDP, 'groups', NO_AUTH),
             '%grp/member/del'      => $this->make_hook('admin_member_del',      AUTH_MDP, 'groupadmin'),
             '%grp/member/suggest'  => $this->make_hook('admin_member_suggest',  AUTH_MDP, 'groupadmin'),
 
