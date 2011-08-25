@@ -10,6 +10,7 @@ Bug/Wish:
 
     * Email:
         - #1517: Fixes bestalias update when two local_part are identical  -JAC
+        - #1533: Fixes bestalias after updating melix alias                -JAC
 
 From 1.1.2 branch:
 

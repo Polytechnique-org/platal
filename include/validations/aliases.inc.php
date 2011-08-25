@@ -99,6 +99,12 @@ class AliasReq extends Validate
                                      $this->alias, $this->user->id(), Platal::globals()->mail->alias_dom);
         }
 
+        if ($success) {
+            // Update the local User object, to pick up the new bestalias.
+            fix_bestalias($this->user);
+            $this->user = User::getSilentWithUID($this->user->id());
+        }
+
         return $success;
     }
 }
