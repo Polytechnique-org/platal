@@ -571,6 +571,7 @@ class ProfilePageGeneral extends ProfilePage
         if (!S::user()->isMe($this->owner)) {
             $this->settings['deathdate'] = new ProfileSettingDate(true);
             $this->settings['birthdate'] = new ProfileSettingDate(true);
+            $this->settings['birthdate_ref'] = new ProfileSettingDate(true);
         } else {
             $this->settings['yourself'] = null;
             $this->settings['birthdate'] = new ProfileSettingDate();
@@ -592,7 +593,7 @@ class ProfilePageGeneral extends ProfilePage
         $res = XDB::query("SELECT  p.nationality1, p.nationality2, p.nationality3, IF(p.birthdate = 0, '', p.birthdate) AS birthdate,
                                    p.email_directory as email_directory, pd.promo AS promo_display,
                                    p.freetext, p.freetext_pub, p.ax_id AS matricule_ax, pd.yourself,
-                                   p.deathdate
+                                   p.deathdate, IF(p.birthdate_ref = 0, '', p.birthdate_ref) AS birthdate_ref
                              FROM  profiles              AS p
                        INNER JOIN  profile_display       AS pd ON (pd.pid = p.pid)
                             WHERE  p.pid = {?}", $this->pid());
@@ -696,6 +697,12 @@ class ProfilePageGeneral extends ProfilePage
                                  $yearpromo, $this->pid());
                 }
             }
+        }
+        if ($this->orig['birthdate_ref'] == 0 && !S::user()->isMe($this->owner) && $this->changed['birthdate_ref']) {
+            XDB::execute('UPDATE  profiles
+                             SET  birthdate_ref = {?}
+                           WHERE  pid = {?}',
+                         ProfileSettingDate::toSQLDate($this->values['birthdate_ref']), $this->pid());
         }
         if (!S::user()->isMe($this->owner) && $this->changed['deathdate']) {
             XDB::execute('UPDATE  profiles

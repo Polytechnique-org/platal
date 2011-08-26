@@ -12,6 +12,9 @@ Bug/Wish:
         - #1517: Fixes bestalias update when two local_part are identical  -JAC
         - #1533: Fixes bestalias after updating melix alias                -JAC
 
+    * Profile:
+        - #1532: Allows edition of empty reference birthdates              -JAC
+
 From 1.1.2 branch:
 
     * Newsletter:

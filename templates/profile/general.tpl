@@ -147,6 +147,18 @@
     </td>
     <td><input type="text" {if $errors.deathdate}class="error"{/if} name="deathdate" value="{$deathdate}" /></td>
   </tr>
+  <tr>
+    <td>
+      <span class="titre">Date de naissance de référence</span>
+    </td>
+    <td>
+    {if $birthdate_ref eq 0}
+      <input type="text" {if $errors.birthdate_ref}class="error"{/if} name="birthdate_ref" value="{$birthdate_ref}" />
+    {else}
+      {$birthdate_ref}
+    {/if}
+    </td>
+  </tr>
   {/if}
   <tr>
     <td>
