@@ -33,13 +33,8 @@ class XnetModule extends PLModule
             'plan'         => $this->make_hook('plan',         AUTH_PUBLIC),
             'photo'        => $this->make_hook('photo',        AUTH_MDP, 'groups'),
             'autologin'    => $this->make_hook('autologin',    AUTH_MDP, 'groups'),
-            'login/ext'    => $this->make_hook('login_ext',    AUTH_PUBLIC),
             'register/ext' => $this->make_hook('register_ext', AUTH_PUBLIC),
-            'recovery/ext' => $this->make_hook('recovery_ext', AUTH_PUBLIC),
-            'tmpPWD/ext'   => $this->make_hook('tmpPWD_ext',   AUTH_PUBLIC),
             'edit'         => $this->make_hook('edit',         AUTH_MDP, 'groups'),
-            'password'     => $this->make_hook('password',     AUTH_MDP, 'groups'),
-
             'Xnet'         => $this->make_wiki_hook(),
         );
     }
@@ -230,146 +225,6 @@ class XnetModule extends PLModule
         exit;
     }
 
-    function handler_login_ext($page)
-    {
-        if (!S::logged()) {
-            $page->changeTpl('xnet/login.tpl');
-        } else {
-            pl_redirect('');
-        }
-    }
-
-    function handler_register_ext($page, $hash = null)
-    {
-        XDB::execute('DELETE FROM  register_pending_xnet
-                            WHERE  DATE_SUB(NOW(), INTERVAL 1 MONTH) > date');
-        $res = XDB::fetchOneAssoc('SELECT  uid, hruid
-                                     FROM  register_pending_xnet
-                                    WHERE  hash = {?}',
-                                  $hash);
-
-        if (is_null($hash) || is_null($res)) {
-            $page->trigErrorRedirect('Cette adresse n\'existe pas ou n\'existe plus sur le serveur.', '');
-        }
-
-        if (Post::has('pwhash') && Post::t('pwhash')) {
-            XDB::query('UPDATE  accounts
-                           SET  password = {?}, state = \'active\', registration_date = NOW()
-                         WHERE  uid = {?} AND state = \'pending\' AND type = \'xnet\'',
-                       Post::t('pwhash'), $res['uid']);
-            XDB::query('DELETE FROM  register_pending_xnet
-                              WHERE  uid = {?}',
-                       $res['uid']);
-
-            S::logger($res['uid'])->log('passwd', '');
-
-            // Try to start a session (so the user don't have to log in); we will use
-            // the password available in Post:: to authenticate the user.
-            Post::kill('wait');
-            Platal::session()->startAvailableAuth();
-
-            $page->changeTpl('xnet/register.success.tpl');
-            $page->assign('email', $res['email']);
-        } else {
-            $page->changeTpl('platal/password.tpl');
-            $page->assign('xnet', true);
-            $page->assign('hruid', $res['hruid']);
-            $page->assign('do_auth', 1);
-        }
-    }
-
-    function handler_recovery_ext($page)
-    {
-        $page->changeTpl('xnet/recovery.tpl');
-
-        if (!Post::has('login')) {
-            return;
-        }
-
-        $user = User::getSilent(Post::t('login'));
-        if (is_null($user)) {
-            $page->trigError('Le compte n\'existe pas.');
-            return;
-        }
-        if ($user->state != 'active') {
-            $page->trigError('Ton compte n\'est pas activé.');
-            return;
-        }
-
-        $page->assign('ok', true);
-
-        $hash = rand_url_id();
-        XDB::execute('INSERT INTO  account_xnet_lost_passwords (uid, date, hash)
-                           VALUES  ({?}, NOW(), {?})',
-                     $user->id(), $hash);
-
-        $mymail = new PlMailer();
-        $mymail->setFrom('"Gestion des mots de passe" <support+password@' . Platal::globals()->mail->domain . '>');
-        $mymail->addTo($user);
-        $mymail->setSubject("Votre certificat d'authentification");
-        $mymail->setTxtBody("Visitez la page suivante qui expire dans six heures :
-http://polytechnique.net/tmpPWD/ext/$hash
-
-Si en cliquant dessus vous n'y arrivez pas, copiez intégralement l'adresse dans la barre de votre navigateur. Si vous n'avez pas utilisé ce lien dans six heures, vous pouvez tout simplement recommencer cette procédure.
-
---
-Polytechnique.org
-\"Le portail des élèves & anciens élèves de l'École polytechnique\"
-
-Email envoyé à " . Post::t('login'));
-        $mymail->send();
-
-        S::logger($user->id())->log('recovery', $user->bestEmail());
-    }
-
-    function handler_tmpPWD_ext($page, $hash = null)
-    {
-        global $globals;
-        XDB::execute('DELETE FROM  account_xnet_lost_passwords
-                            WHERE  DATE_SUB(NOW(), INTERVAL 380 MINUTE) > date');
-
-        $uid = XDB::fetchOneCell('SELECT  uid
-                                    FROM  account_xnet_lost_passwords
-                                   WHERE  hash = {?}',
-                                 $hash);
-        if (is_null($uid)) {
-            $page->trigErrorRedirect("Cette adresse n'existe pas ou n'existe plus sur le serveur.", '');
-        }
-
-        $email = XDB::fetchOneCell('SELECT  email
-                                      FROM  accounts
-                                     WHERE  uid = {?}',
-                                   $uid);
-
-        if (Post::has('pwhash') && Post::t('pwhash')) {
-            $password = Post::t('pwhash');
-            XDB::query('UPDATE  accounts
-                           SET  password = {?}
-                         WHERE  uid = {?} AND state = \'active\'',
-                       $password, $uid);
-            XDB::query('DELETE FROM  account_xnet_lost_passwords
-                              WHERE  hash = {?}',
-                       $hash);
-
-            S::logger($uid)->log('passwd', '');
-
-            // Try to start a session (so the user don't have to log in); we will use
-            // the password available in Post:: to authenticate the user.
-            Post::kill('wait');
-            Platal::session()->startAvailableAuth();
-
-            $page->changeTpl('xnet/register.success.tpl');
-            $page->assign('email', $email);
-        } else {
-            $page->changeTpl('platal/password.tpl');
-            $page->assign('xnet_reset', true);
-            $page->assign('email', $email);
-            $page->assign('do_auth', 1);
-        }
-    }
-
-
-
     function handler_edit($page)
     {
         global $globals;
@@ -421,26 +276,6 @@ Email envoyé à " . Post::t('login'));
         $page->assign('user', $user);
     }
 
-    function handler_password ($page)
-    {
-        if (Post::has('pwhash') && Post::t('pwhash'))  {
-            S::assert_xsrf_token();
-
-            S::set('password', $password = Post::t('pwhash'));
-            XDB::execute('UPDATE  accounts
-                             SET  password = {?}
-                           WHERE  uid={?}', $password,
-                         S::i('uid'));
-            S::logger()->log('passwd');
-            Platal::session()->setAccessCookie(true);
-            $page->changeTpl('platal/password.success.tpl');
-            $page->run();
-        }
-
-        $page->changeTpl('platal/password.tpl');
-        $page->assign('xnet_reset', true);
-        $page->assign('do_auth', 0);
-    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

@@ -50,11 +50,13 @@
     {assign var="has_cs" value="true"}
   {/if}
   {/iterate}
+  {if hasPerm('user')}
   <tr class="impair">
     <td colspan="3" style="text-align: right">
       {if $smarty.session.auth}<a href="survey/edit/new">{icon name=page_edit} Proposer un sondage</a>{/if}
     </td>
   </tr>
+  {/if}
 </table>
 {/if}
 

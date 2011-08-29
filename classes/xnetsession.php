@@ -34,26 +34,6 @@ class XnetSession extends XorgSession
             }
         }
 
-        if (!S::logged() && Post::has('auth_type') && Post::v('auth_type') == 'xnet' && !Post::has('wait')) {
-            $email = Post::v('username');
-            $type = XDB::fetchOneCell('SELECT  type
-                                         FROM  accounts
-                                        WHERE  email = {?}',
-                                      $email);
-            if ((!is_null($type) && $type != 'xnet') || !User::isForeignEmailAddress($email)) {
-                Platal::page()->trigErrorRedirect('Ce formulaire d\'authentification est réservé aux extérieurs à la communauté polytechnicienne.', '');
-            }
-
-            $user = parent::doAuth(AUTH_MDP);
-            if (is_null($user)) {
-                return false;
-            }
-            if (!parent::checkAuth(AUTH_MDP) || !parent::startSessionAs($user, AUTH_MDP)) {
-                $this->destroy();
-                return false;
-            }
-        }
-
         global $globals;
         if (!S::logged() && $globals->xnet->auth_baseurl) {
             // prevent connection to be linked to disconnection
@@ -97,7 +77,7 @@ class XnetSession extends XorgSession
 
     protected function doAuth($level)
     {
-        if (S::identified()) { // ok, c'est bon, on n'a rien à faire
+        if (S::identified()) { // Nothing to do there
             return User::getSilentWithValues(null, array('uid' => S::i('uid')));
         }
         if (!Get::has('auth')) {
@@ -118,7 +98,7 @@ class XnetSession extends XorgSession
         if (!$user->checkPerms('groups')) {
             return false;
         }
-        S::v('perms')->addFlag(PERMS_USER);
+
         if ($level == AUTH_SUID) {
             S::set('auth', AUTH_MDP);
         }
@@ -135,8 +115,8 @@ class XnetSession extends XorgSession
         S::set('perms', $user->perms);
         S::set('is_admin', $user->is_admin);
 
-
-        $this->makePerms($user->perms, $user->is_admin);
+        // Add the 'user' perms to the user.
+        $this->makePerms($user->perms . ',' . PERMS_USER, $user->is_admin);
         S::kill('challenge');
         S::kill('loginX');
         S::kill('may_update');
@@ -157,7 +137,7 @@ class XnetSession extends XorgSession
         if (!$this->startSUID($user)) {
             return false;
         }
-        S::set('perms', User::makePerms(PERMS_USER));
+        S::set('perms', User::makePerms(PERMS_USER . ",groups"));
         return true;
     }
 

@@ -348,6 +348,9 @@ class Survey
         default:
             return null;
         }
+        if (!S::user()->checkPerms(PERMS_USER)) {
+            $where .=  XDB::format(' AND mode = {?}', self::MODE_ALL);
+        }
         $sql = 'SELECT id, title, end, mode
                   FROM surveys
                  WHERE '.$where.'

@@ -31,7 +31,7 @@
   {else}
     la page que vous avez demandée
   {/if}
-  (<strong>{if t($referer)}{$smarty.server.HTTP_REFERER}{else}{$globals->baseurl}/{$platal->pl_self()}{/if}</strong>)
+  (<strong>{if t($referer)}{$smarty.server.HTTP_REFERER|truncate:120:"...":false}{else}{$globals->baseurl}/{$platal->pl_self()}{/if}</strong>)
   nécessite une authentification.
 </p>
 {else}
@@ -83,7 +83,12 @@
     </tr>
     <tr>
       <td colspan="2">
-        <a href="recovery" style="float: left">Mot de passe perdu&nbsp;?</a>
+        <span style="float: left">
+        Mot de passe perdu&nbsp;:
+        <a href="recovery">Étudiants et diplômés de l'X</a> |
+        <a href="recovery/ext">Extérieurs</a>
+        </span>
+
         <input type="submit" name="submitbtn" value="Me connecter" style="float: right" />
       </td>
     </tr>

@@ -43,11 +43,13 @@ $(function() {
   <form action="prefs" method="post" id="form">
   {xsrf_token_field}
   <dl>
+    {if hasPerm('user')}
     <dt>Apparence du site</dt>
     <dd>
       Tu peux changer l'apparence du site en choisissant une autre skin.<br />
       <a href="prefs/skin">Changer de skin</a>
     </dd>
+    {/if}
     <dt>Format des emails envoyés par le site</dt>
     <dd>
       Lorsque le site t'envoie des emails (lettre mensuelle, carnet, ...) ceux-ci peuvent

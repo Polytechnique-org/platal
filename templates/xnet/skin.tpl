@@ -168,17 +168,9 @@
             <td id="perso">
               {list_all_my_groups}
               {if !$smarty.session.auth}
-                <div>Me connecter&nbsp;:</div>
-                <table style="margin-left: 1em">
-                  <tr>
-                    <td>
-                      <a class="gp" href="login/{if $platal->pl_self() eq 'exit'}index{else}{$platal->pl_self()}{/if}">X, masters, doctorants&hellip;</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a class="gp" href="login/ext">Extérieurs</a></td>
-                  </tr>
-                </table>
+                <div>
+                  <a href="login/{if $platal->pl_self() eq 'exit'}index{else}{$platal->pl_self()}{/if}">Connexion</a>
+                </div>
               {/if}
             </td>
             <td class="right" style="vertical-align: middle">

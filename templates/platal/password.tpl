@@ -67,7 +67,7 @@
       </tr>
       <tr>
         <td>
-          <input type="hidden" name="username" value="{$email}" />
+          <input type="hidden" name="username" value="{$hruid}" />
           <input type="hidden" name="password" value="" />
           <input type="hidden" name="domain" value="email" />
         </td>

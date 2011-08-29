@@ -53,7 +53,7 @@ class ProfileModule extends PLModule
             'referent/country'           => $this->make_hook('ref_country',                AUTH_COOKIE, 'user', NO_AUTH),
             'referent/autocomplete'      => $this->make_hook('ref_autocomplete',           AUTH_COOKIE, 'user', NO_AUTH),
 
-            'groupes-x'                  => $this->make_hook('xnet',                       AUTH_COOKIE, 'user'),
+            'groupes-x'                  => $this->make_hook('xnet',                       AUTH_COOKIE, 'groups'),
             'groupes-x/logo'             => $this->make_hook('xnetlogo',                   AUTH_PUBLIC),
 
             'vcard'                      => $this->make_hook('vcard',                      AUTH_COOKIE, 'user', NO_HTTPS),

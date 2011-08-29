@@ -27,7 +27,7 @@
 </p>
 <p>
   Votre compte est maintenant activé et votre passe créé. Vous pouvez donc
-  profiter dès à présent des multiples fonctionnalités de Polytechnique.net.
+  profiter dès à présent des multiples fonctionnalités de <a href="http://www.polytechnique.net/">Polytechnique.net</a>.
 </p>
 <p>
   Pour rappel, votre identifiant est&nbsp;: <strong>{$email}</strong>
