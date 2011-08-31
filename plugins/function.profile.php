@@ -27,6 +27,7 @@ function smarty_function_profile($params, $smarty)
     $with_link  = $params->b('link', true);
     $with_dir   = $params->b('directory', true);
     $with_groupperms = $params->b('groupperms', true);
+    $raw = $params->b('raw', true);
     $user = $params->v('user');
     if (is_int($user) || ctype_digit($user)) {
         $user = User::getWithUID($user);
@@ -37,14 +38,18 @@ function smarty_function_profile($params, $smarty)
     } else {
         $name = pl_entities($user->fullName());
     }
-    if ($with_sex && $user->isFemale()) {
-        $name = '&bull;' . $name;
-    }
     if ($with_promo) {
         $promo = $user->category();
         if ($promo) {
             $name .= ' (' . pl_entities($promo) . ')';
         }
+    }
+    if ($raw) {
+        return $name;
+    }
+
+    if ($with_sex && $user->isFemale()) {
+        $name = '&bull;' . $name;
     }
     if ($with_link) {
         $profile = ($user instanceof Profile) ? $user : $user->profile();
