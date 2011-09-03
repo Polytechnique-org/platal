@@ -32,7 +32,7 @@
   <tr class="{cycle values="pair,impair"}">
     <td class="titre">{$nl->id}</td>
     <td>{$nl->group}</td>
-    <td>{$nl->name}</td>
+    <td><a href=http://www.polytechnique.net/{$nl->group}/admin/nl>{$nl->name}</a></td>
     <td>{if $nl->hasCustomCss()}Oui{else}Non{/if}</td>
     <td>{$nl->criteria->flags()}</td>
   </tr>
