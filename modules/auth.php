@@ -160,8 +160,13 @@ class AuthModule extends PLModule
         }
 
         // Iterate over the auth token to find which one did sign the request.
-        $res = XDB::iterRow('SELECT privkey, name, datafields, returnurls FROM group_auth');
-        while (list($privkey, $name, $datafields, $returnurls) = $res->next()) {
+        $res = XDB::iterRow(
+            'SELECT  ga.privkey, ga.name, ga.datafields, ga.returnurls,
+                     ga.group_id, ga.group_strict, g.nom
+               FROM  group_auth AS ga
+          LEFT JOIN  groups AS g ON (g.id = ga.group_id)');
+
+        while (list($privkey, $name, $datafields, $returnurls, $group_id, $group_strict, $group_name) = $res->next()) {
             if (md5($gpex_challenge.$privkey) == $gpex_pass) {
                 $returnurls = trim($returnurls);
                 // We check that the return url matches a per-key regexp to prevent
@@ -173,6 +178,30 @@ class AuthModule extends PLModule
                                      SET  last_used = DATE(NOW())
                                    WHERE  name = {?}',
                                  $name);
+
+                    // Two conditions control access to the return URL:
+                    // - If that URL is attached to a group:
+                    //   - If the user belongs to the group, OK
+                    //   - If the user is 'xnet' and doesn't belong, NOK
+                    //   - If the user is not 'xnet' and the group is not 'strict', OK
+                    //   - If the user is not 'xnet' and the group is 'strict', NOK
+                    // - Otherwise, all but 'xnet' accounts may access the URL.
+                    $user_is_xnet = S::user()->type == 'xnet';
+
+                    if ($group_id) {
+                        // Check group permissions
+                        $is_member = XDB::fetchOneCell('SELECT  COUNT(*)
+                                                          FROM  group_members
+                                                         WHERE  uid = {?} AND asso_id = {?}',
+                                                         S::user()->id(), $group_id);
+                        if (!$is_member && ($user_is_xnet || $group_strict)) {
+                            $page->kill("Le site demandé est réservé aux membres du groupe $group_name.");
+                        }
+
+                    } else if ($user_is_xnet) {
+                        $page->kill("Le site demandé est réservé aux polytechniciens.");
+                    }
+
                     http_redirect($returl);
                 } else if (S::admin()) {
                     $page->kill("La requête d'authentification a échouée (url de retour invalide).");
