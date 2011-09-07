@@ -374,20 +374,10 @@ Adresse de secours : ' . $to));
                            VALUES  ({?}, NOW(), {?})',
                      $user->id(), $hash);
 
-        $mymail = new PlMailer();
-        $mymail->setFrom('"Gestion des mots de passe" <support+password@' . Platal::globals()->mail->domain . '>');
+        $mymail = new PlMailer('platal/password_recovery_xnet.mail.tpl');
         $mymail->addTo($user);
-        $mymail->setSubject("Votre certificat d'authentification");
-        $mymail->setTxtBody("Visitez la page suivante qui expire dans six heures :
-https://www.polytechnique.org/tmpPWD/$hash
-
-Si en cliquant dessus vous n'y arrivez pas, copiez intégralement l'adresse dans la barre de votre navigateur. Si vous n'avez pas utilisé ce lien dans six heures, vous pouvez tout simplement recommencer cette procédure.
-
---
-Polytechnique.org
-\"Le portail des élèves & anciens élèves de l'École polytechnique\"
-
-Email envoyé à " . Post::t('login'));
+        $mymail->assign('hash', $hash);
+        $mymail->assign('email', Post::t('login'));
         $mymail->send();
 
         S::logger($user->id())->log('recovery', $user->bestEmail());
@@ -449,7 +439,7 @@ Email envoyé à " . Post::t('login'));
     {
         XDB::execute('DELETE FROM  register_pending_xnet
                             WHERE  DATE_SUB(NOW(), INTERVAL 1 MONTH) > date');
-        $res = XDB::fetchOneAssoc('SELECT  uid, hruid
+        $res = XDB::fetchOneAssoc('SELECT  uid, hruid, email
                                      FROM  register_pending_xnet
                                     WHERE  hash = {?}',
                                   $hash);
@@ -459,13 +449,15 @@ Email envoyé à " . Post::t('login'));
         }
 
         if (Post::has('pwhash') && Post::t('pwhash')) {
+            XDB::startTransaction();
             XDB::query('UPDATE  accounts
                            SET  password = {?}, state = \'active\', registration_date = NOW()
                          WHERE  uid = {?} AND state = \'pending\' AND type = \'xnet\'',
                        Post::t('pwhash'), $res['uid']);
             XDB::query('DELETE FROM  register_pending_xnet
                               WHERE  uid = {?}',
-                       $res['uid']);
+                              $res['uid']);
+            XDB::commit();
 
             S::logger($res['uid'])->log('passwd', '');
 
