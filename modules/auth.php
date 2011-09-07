@@ -159,14 +159,23 @@ class AuthModule extends PLModule
             S::logger($uid)->log('connexion_auth_ext', $platal->path.' '.urldecode($_GET['url']));
         }
 
+        if (Get::has('group')) {
+            $req_group_id = XDB::fetchOneCell('SELECT  asso_id
+                                                 FROM  groups
+                                                WHERE  diminutif = {?}',
+                                              Get::s('group'));
+        } else {
+            $req_group_id = null;
+        }
+
         // Iterate over the auth token to find which one did sign the request.
         $res = XDB::iterRow(
             'SELECT  ga.privkey, ga.name, ga.datafields, ga.returnurls,
-                     ga.group_id, ga.group_strict, g.nom
+                     ga.group_id, ga.flags, g.nom
                FROM  group_auth AS ga
           LEFT JOIN  groups AS g ON (g.id = ga.group_id)');
 
-        while (list($privkey, $name, $datafields, $returnurls, $group_id, $group_strict, $group_name) = $res->next()) {
+        while (list($privkey, $name, $datafields, $returnurls, $group_id, $group_flags, $group_name) = $res->next()) {
             if (md5($gpex_challenge.$privkey) == $gpex_pass) {
                 $returnurls = trim($returnurls);
                 // We check that the return url matches a per-key regexp to prevent
@@ -187,6 +196,14 @@ class AuthModule extends PLModule
                     //   - If the user is not 'xnet' and the group is 'strict', NOK
                     // - Otherwise, all but 'xnet' accounts may access the URL.
                     $user_is_xnet = S::user()->type == 'xnet';
+                    $group_flags = new PlFlagSet($group_flags);
+
+                    // If this key is not attached to a group, but a group was
+                    // requested (e.g query from wiki / blogs / ...), use the
+                    // requested group_id.
+                    if (!$group_id && $req_group_id) {
+                        $group_id = $req_group_id;
+                    }
 
                     if ($group_id) {
                         // Check group permissions
@@ -194,11 +211,11 @@ class AuthModule extends PLModule
                                                           FROM  group_members
                                                          WHERE  uid = {?} AND asso_id = {?}',
                                                          S::user()->id(), $group_id);
-                        if (!$is_member && ($user_is_xnet || $group_strict)) {
+                        if (!$is_member && ($user_is_xnet || $group_flags->hasFlag('group_only'))) {
                             $page->kill("Le site demandé est réservé aux membres du groupe $group_name.");
                         }
 
-                    } else if ($user_is_xnet) {
+                    } else if ($user_is_xnet && !$group_flags->hasFlag('allow_xnet')) {
                         $page->kill("Le site demandé est réservé aux polytechniciens.");
                     }
 

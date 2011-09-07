@@ -6,4 +6,6 @@ ALTER TABLE group_auth
 ADD FOREIGN KEY (group_id) REFERENCES groups (id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE group_auth
-ADD COLUMN group_strict BOOL DEFAULT FALSE COMMENT 'Whether to only accept member of the groups';
+ADD COLUMN flags SET('allow_xnet', 'group_only') DEFAULT '';
+
+UPDATE group_auth SET flags = 'allow_xnet' WHERE name = 'Polytechnique.net';
