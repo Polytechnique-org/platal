@@ -69,6 +69,7 @@ def get_config(sec, val, default=None):
 
 MYSQL_USER     = get_config('Core', 'dbuser')
 MYSQL_PASS     = get_config('Core', 'dbpwd')
+MYSQL_HOST     = get_config('Core', 'dbhost')
 MYSQL_DB       = get_config('Core', 'dbdb')
 
 PLATAL_DOMAIN  = get_config('Mail', 'domain')
@@ -167,7 +168,7 @@ def connectDB():
             db=MYSQL_DB,
             user=MYSQL_USER,
             passwd=MYSQL_PASS,
-            unix_socket='/var/run/mysqld/mysqld.sock')
+            host=MYSQL_HOST)
     db.ping()
     db.autocommit(True)
     return db.cursor()
