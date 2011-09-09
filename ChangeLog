@@ -3,8 +3,17 @@ VERSION 1.1.3                                                         XX XX XXXX
 
 New:
 
+    * API:
+        - Enable the 'sharing' API (profile exchange with other sites)     -XEL
+
+    * Auth:
+        - Add per-group options to configure the auth-groupe-x behaviour   -XEL
+
     * Profile:
-        - Significantly improve visibility handlind                        -XEL
+        - Significantly improve visibility handling                        -XEL
+
+    * Xnet:
+        - Allow auth-groupe-x for X.net accounts                           -XEL
 
 Bug/Wish:
 
