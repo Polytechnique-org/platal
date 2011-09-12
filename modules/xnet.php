@@ -31,9 +31,10 @@ class XnetModule extends PLModule
             'groups'       => $this->make_hook('groups',       AUTH_PUBLIC),
             'groupes.php'  => $this->make_hook('groups2',      AUTH_PUBLIC),
             'plan'         => $this->make_hook('plan',         AUTH_PUBLIC),
+            // Should be removed in a future release as links will have expired anyway.
+            'register/ext' => $this->make_hook('register_ext', AUTH_PUBLIC),
             'photo'        => $this->make_hook('photo',        AUTH_MDP, 'groups'),
             'autologin'    => $this->make_hook('autologin',    AUTH_MDP, 'groups'),
-            'register/ext' => $this->make_hook('register_ext', AUTH_PUBLIC),
             'edit'         => $this->make_hook('edit',         AUTH_MDP, 'groups'),
             'Xnet'         => $this->make_wiki_hook(),
         );
@@ -276,6 +277,10 @@ class XnetModule extends PLModule
         $page->assign('user', $user);
     }
 
+    function handler_register_ext($page, $hash = null)
+    {
+        http_redirect(Platal::globals()->xnet->xorg_baseurl . 'register/ext/' . $hash);
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

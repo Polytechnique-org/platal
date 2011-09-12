@@ -160,7 +160,7 @@ class AuthModule extends PLModule
         }
 
         if (Get::has('group')) {
-            $req_group_id = XDB::fetchOneCell('SELECT  asso_id
+            $req_group_id = XDB::fetchOneCell('SELECT  id
                                                  FROM  groups
                                                 WHERE  diminutif = {?}',
                                               Get::s('group'));
