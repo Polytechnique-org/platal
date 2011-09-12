@@ -375,7 +375,7 @@ Adresse de secours : ' . $to));
                      $user->id(), $hash);
 
         $mymail = new PlMailer('platal/password_recovery_xnet.mail.tpl');
-        $mymail->addTo($user);
+        $mymail->setTo($user);
         $mymail->assign('hash', $hash);
         $mymail->assign('email', Post::t('login'));
         $mymail->send();
