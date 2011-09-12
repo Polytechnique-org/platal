@@ -389,23 +389,18 @@ Adresse de secours : ' . $to));
         XDB::execute('DELETE FROM  account_lost_passwords
                             WHERE  DATE_SUB(NOW(), INTERVAL 380 MINUTE) > created');
 
-        $res = XDB::query('SELECT  uid
-                             FROM  account_lost_passwords WHERE certificat={?}', $certif);
-        $ligne = $res->fetchOneAssoc();
-        if (!$ligne) {
-            $page->changeTpl('platal/index.tpl');
-            $page->kill("Cette adresse n'existe pas ou n'existe plus sur le serveur.");
-        }
-
-        $uid = $ligne["uid"];
         if (Post::has('pwhash') && Post::t('pwhash')) {
+            $uid = XDB::fetchOneCell('SELECT  uid
+                                        FROM  accounts
+                                       WHERE  hruid = {?}',
+                                     Post::t('username'));
             $password = Post::t('pwhash');
             XDB::query('UPDATE  accounts
-                           SET  password={?}
+                           SET  password = {?}
                          WHERE  uid = {?} AND state = \'active\'',
                        $password, $uid);
             XDB::query('DELETE FROM  account_lost_passwords
-                              WHERE  certificat={?}', $certif);
+                              WHERE  certificat = {?}', $certif);
 
             // If GoogleApps is enabled, and the user did choose to use synchronized passwords,
             // updates the Google Apps password as well.
@@ -425,10 +420,19 @@ Adresse de secours : ' . $to));
 
             $page->changeTpl('platal/tmpPWD.success.tpl');
         } else {
+            $res = XDB::query('SELECT  uid
+                                 FROM  account_lost_passwords
+                                WHERE  certificat = {?}', $certif);
+            $ligne = $res->fetchOneAssoc();
+            if (!$ligne) {
+                $page->changeTpl('platal/index.tpl');
+                $page->kill("Cette adresse n'existe pas ou n'existe plus sur le serveur.");
+            }
+
             $hruid = XDB::fetchOneCell('SELECT  hruid
                                           FROM  accounts
                                          WHERE  uid = {?}',
-                                       $uid);
+                                       $ligne['uid']);
             $page->changeTpl('platal/password.tpl');
             $page->assign('hruid', $hruid);
             $page->assign('do_auth', 1);
