@@ -138,8 +138,6 @@ class XorgSession extends PlSession
 
         $user = User::getSilent($login);
 
-        $success = $this->checkPassword($login, $user, Post::v('response'));
-
         if (!is_null($user) && S::suid()) {
             $success = (S::suid('uid') == $user->id());
         } else {
