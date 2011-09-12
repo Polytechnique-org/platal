@@ -33,7 +33,6 @@ class XnetModule extends PLModule
             'plan'         => $this->make_hook('plan',         AUTH_PUBLIC),
             'photo'        => $this->make_hook('photo',        AUTH_MDP, 'groups'),
             'autologin'    => $this->make_hook('autologin',    AUTH_MDP, 'groups'),
-            'register/ext' => $this->make_hook('register_ext', AUTH_PUBLIC),
             'edit'         => $this->make_hook('edit',         AUTH_MDP, 'groups'),
             'Xnet'         => $this->make_wiki_hook(),
         );
