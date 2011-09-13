@@ -37,8 +37,8 @@ Tu trouveras les mêmes informations sur [[https://www.polytechnique.org/carnet/
 {$cat.title} :
 
 {foreach from=$cat.users item=user}
-{if not isset($user->death())}
 {assign var=profile value=$user->profile()}
+{if !$profile->isDead()}
 * Le {$cat.operation->getDate($user)|date_format:"%d %B %Y"}, [[https://www.polytechnique.org/profile/private/{$profile->hrid()}|{$profile->fullname(true)}]]
 {/if}
 {/foreach}
