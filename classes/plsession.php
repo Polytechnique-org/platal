@@ -28,7 +28,7 @@ define('AUTH_PUBLIC', 0);
 define('AUTH_COOKIE', 5);
 define('AUTH_PASSWD', 10);
 // Backwards compatibility: AUTH_MDP must be an alias for AUTH_PASSWD.
-define('AUTH_MDP',    10);
+define('AUTH_MDP',    10);
 
 
 /** The PlSession is a wrapper around the user session management.
