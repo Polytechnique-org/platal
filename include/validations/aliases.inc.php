@@ -101,6 +101,7 @@ class AliasReq extends Validate
 
         if ($success) {
             // Update the local User object, to pick up the new bestalias.
+            require_once 'emails.inc.php';
             fix_bestalias($this->user);
             $this->user = User::getSilentWithUID($this->user->id());
         }
