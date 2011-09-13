@@ -21,39 +21,33 @@
 
 class Payment
 {
-    // {{{ properties
+    public $id;
+    public $text;
+    public $url;
+    public $flags;
+    public $mvarail;
+    public $amount_min;
+    public $amount_max;
+    public $amount_def;
+    public $asso_id;
 
-    var $id;
-    var $text;
-    var $url;
-    var $flags;
-    var $mail;
-    var $amount_min;
-    var $amount_max;
-    var $amount_def;
-    var $asso_id;
+    public $api = null;
 
-    var $api = null;
-
-    // }}}
-    // {{{ constructor
-
-    function Payment($ref=-1)
+    function Payment($ref = -1)
     {
         global $globals;
-        $r   = $ref==-1 ? $globals->money->mpay_def_id : $ref;
-        $res = XDB::query("SELECT  id, text, url, flags, mail, amount_min, amount_max, amount_def, asso_id
-                             FROM  payments WHERE id={?}", $r);
+
+        $r   = ($ref == -1) ? $globals->money->mpay_def_id : $ref;
+        $res = XDB::query('SELECT  id, text, url, flags, mail, amount_min, amount_max, amount_def, asso_id
+                             FROM  payments
+                            WHERE  id = {?}', $r);
         list($this->id, $this->text, $this->url, $flags, $this->mail,
              $this->amount_min, $this->amount_max, $this->amount_def, $this->asso_id) = $res->fetchOneRow();
 
         $this->amount_min = (float)$this->amount_min;
         $this->amount_max = (float)$this->amount_max;
-        $this->flags       = new PlFlagSet($flags);
+        $this->flags      = new PlFlagSet($flags);
     }
-
-    // }}}
-    // {{{ function check()
 
     function check($value)
     {
@@ -67,17 +61,11 @@ class Payment
         }
     }
 
-    // }}}
-    // {{{ function init()
-
     function init($val, $meth)
     {
-        require_once dirname(__FILE__).'/money/'.$meth->inc;
+        require_once dirname(__FILE__) . '/money/' . $meth->inc;
         $this->api = new $api($val);
     }
-
-    // }}}
-    // {{{ function prepareform()
 
     function prepareform()
     {
@@ -98,34 +86,25 @@ class Payment
         }
         return null;
     }
-    // }}}
 }
-
-// {{{ class PayMethod
 
 class PayMethod
 {
-    // {{{ properties
+    public $id;
+    public $text;
+    public $inc;
 
-    var $id;
-    var $text;
-    var $inc;
-
-    // }}}
-    // {{{ constructor
-
-    function PayMethod($id=-1)
+    function PayMethod($id = -1)
     {
         global $globals;
-        $i   = $id==-1 ? $globals->money->mpay_def_meth : $id;
-        $res = XDB::query("SELECT id,text,include FROM payment_methods WHERE id={?}", $i);
+
+        $i   = ($id == -1) ? $globals->money->mpay_def_meth : $id;
+        $res = XDB::query('SELECT  id, text, include
+                             FROM  payment_methods
+                            WHERE  id = {?}', $i);
         list($this->id, $this->text, $this->inc) = $res->fetchOneRow();
     }
-
-    // }}}
 }
-
-// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
