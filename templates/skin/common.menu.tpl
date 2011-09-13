@@ -71,9 +71,6 @@
 {if hasPerm('user')}
 <div class="menu_item"><a href="lists">Listes de diffusion</a></div>
 {/if}
-{if hasPerm('payment')}
-<div class="menu_item"><a href="payment">Télépaiements</a></div>
-{/if}
 {if hasPerm('mail')}
 <div class="menu_item"><a href="emails/antispam/submit">Soumettre un spam</a></div>
 {/if}

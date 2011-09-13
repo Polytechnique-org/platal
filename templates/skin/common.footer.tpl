@@ -26,6 +26,10 @@
   <a href="Reference/Convention-AX">Lien avec l'AX</a>
   &nbsp;-&nbsp;
   <a href="Equipe/APropos">À propos de ce site et ses équipes</a>
+  {if hasPerm('payment')}
+  &nbsp;-&nbsp;
+  <a href="donation">Faire un don</a>
+  {/if}
 <br />
   <a href="Docs/Ethique">Services et éthique</a>
   | <a href="Reference/Charte">Charte</a>

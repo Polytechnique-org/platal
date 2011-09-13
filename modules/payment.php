@@ -105,9 +105,9 @@ class PaymentModule extends PLModule
     function handlers()
     {
         return array(
-            'payment'                      => $this->make_hook('payment',          AUTH_PASSWD, 'payment'),
-            'payment/cyber2_return'        => $this->make_hook('cyber2_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
-            'payment/paypal_return'        => $this->make_hook('paypal_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
+            'donation'                     => $this->make_hook('donation',         AUTH_COOKIE, 'user'),
+            'donation/cyber2_return'       => $this->make_hook('cyber2_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
+            'donation/paypal_return'       => $this->make_hook('paypal_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
             '%grp/paiement'                => $this->make_hook('xnet_payment',     AUTH_PASSWD, 'user'),
             '%grp/payment'                 => $this->make_hook('xnet_payment',     AUTH_PASSWD, 'user'),
             '%grp/payment/csv'             => $this->make_hook('payment_csv',      AUTH_PASSWD, 'groupadmin'),
@@ -123,43 +123,25 @@ class PaymentModule extends PLModule
         );
     }
 
-    function handler_payment($page, $ref = -1)
+    function handler_donation($page)
     {
         global $globals;
 
         $this->load('money.inc.php');
 
-        if (!empty($GLOBALS['IS_XNET_SITE'])) {
-            if (!$globals->asso('id')) {
-                return PL_NOT_FOUND;
-            }
-            $res = XDB::query('SELECT  asso_id
-                                 FROM  payments
-                                WHERE  asso_id = {?} AND id = {?}',
-                              $globals->asso('id'), $ref);
-            if (!$res->numRows()) {
-                return PL_FORBIDDEN;
-            }
-        }
-        $page->changeTpl('payment/index.tpl');
-        $page->setTitle('Télépaiements');
+        $page->changeTpl('payment/donation.tpl');
+        $page->setTitle("Don à l'association Polytechnique.org");
 
-        // initialisation
-        $op   = Env::v('op', 'select');
         $meth = new PayMethod(Env::i('methode', -1));
-        $pay  = new Payment($ref);
+        $pay  = new Payment();
 
-        if($pay->flags->hasflag('old')){
-            $page->trigError("La transaction selectionnée est périmée.");
-            $pay = new Payment();
-        }
-        $val = Env::v('montant') != 0 ? Env::v('montant') : $pay->amount_def;
+        $val = (Post::v('amount') != 0) ? Post::v('amount') : $pay->amount_def;
 
-        if (($e = $pay->check($val)) !== true) {
-            $page->trigError($e);
+        if (($error = $pay->check($val)) !== true) {
+            $page->trigError($error);
         }
 
-        if ($op == 'submit') {
+        if (Post::has('op') && Post::v('op', 'select') == 'submit') {
             $pay->init($val, $meth);
             $pay->prepareform($pay);
         } else {
@@ -167,42 +149,47 @@ class PaymentModule extends PLModule
                                     FROM  payment_transactions
                                    WHERE  uid = {?} AND ref = {?}
                                 ORDER BY  ts_confirmed DESC',
-                                 S::v('uid', -1), $ref);
+                                 S::v('uid', -1), $pay->id);
 
             if ($res->total()) {
                 $page->assign('transactions', $res);
             }
 
-            if ($pay->flags->hasflag('donation')) {
-                $donations = XDB::fetchAllAssoc('SELECT  IF(p.display,
-                                                            IF(ap.pid IS NOT NULL, CONCAT(a.full_name, \' (\', pd.promo, \')\'), a.full_name),
-                                                            \'XXXX\') AS name, p.amount
-                                                   FROM  payment_transactions AS p
-                                             INNER JOIN  accounts             AS a  ON (a.uid = p.uid)
-                                              LEFT JOIN  account_profiles     AS ap ON (a.uid = ap.uid AND FIND_IN_SET(\'owner\', ap.perms))
-                                              LEFT JOIN  profile_display      AS pd ON (ap.pid = pd.pid)
-                                                  WHERE  p.ref = {?}
-                                               ORDER BY  LENGTH(p.amount) DESC, p.amount DESC, name',
-                                                $ref);
-                $sum = 0;
-                foreach ($donations as $d) {
-                    $sum += $d['amount'];
-                }
+            $biggest_donations = XDB::fetchAllAssoc('SELECT  IF(p.display,
+                                                                IF(ap.pid IS NOT NULL, CONCAT(a.full_name, \' (\', pd.promo, \')\'), a.full_name),
+                                                                \'XXXX\') AS name, p.amount, p.ts_confirmed
+                                                       FROM  payment_transactions AS p
+                                                 INNER JOIN  accounts             AS a  ON (a.uid = p.uid)
+                                                  LEFT JOIN  account_profiles     AS ap ON (a.uid = ap.uid AND FIND_IN_SET(\'owner\', ap.perms))
+                                                  LEFT JOIN  profile_display      AS pd ON (ap.pid = pd.pid)
+                                                      WHERE  p.ref = {?}
+                                                   ORDER BY  LENGTH(p.amount) DESC, p.amount DESC, name
+                                                      LIMIT  10',
+                                                    $pay->id);
 
-                $page->assign('donations', $donations);
-                $page->assign('sum', strtr($sum, '.', ','));
-            }
+            $donations = XDB::fetchAllAssoc('(SELECT  SUM(amount) AS amount, YEAR(ts_confirmed) AS year, MONTH(ts_confirmed) AS month, ts_confirmed
+                                                FROM  payment_transactions
+                                               WHERE  ref = {?} AND YEAR(ts_confirmed) = YEAR(CURDATE())
+                                            GROUP BY  month)
+                                             UNION
+                                             (SELECT  SUM(amount) AS amount, YEAR(ts_confirmed) AS year, 0 AS month, ts_confirmed
+                                                FROM  payment_transactions
+                                               WHERE  ref = {?} AND YEAR(ts_confirmed) < YEAR(CURDATE())
+                                            GROUP BY  year)
+                                            ORDER BY  year DESC, month DESC',
+                                            $pay->id, $pay->id);
+
+            $page->assign('biggest_donations', $biggest_donations);
+            $page->assign('donations', $donations);
         }
 
-        $val = floor($val*100)/100;
-        $page->assign('montant', $val);
+        $val = floor($val * 100) / 100;
+        $page->assign('amount', $val);
         $page->assign('comment', Env::v('comment'));
 
         $page->assign('meth', $meth);
         $page->assign('pay', $pay);
-        $page->assign('evtlink', $pay->event());
         $page->assign('sex', S::user()->isFemale());
-        $page->assign('donation', $pay->flags->hasflag('donation'));
     }
 
     function handler_cyber2_return($page, $uid = null)
@@ -925,7 +912,7 @@ class PaymentLogsImporter extends CSVImporter {
             // convert date
             $a['date'] = preg_replace('/([0-9]{2})\/([0-9]{2})\/([0-9]{4}).*/', '\3-\2-\1', $a['date']);
             $a['date'] = preg_replace('/T.*/','', $a['date']);
-            
+
             // convert money
             $a['amount'] = str_replace(',', '.', $a['amount']);
             $a['commission'] = str_replace(',', '.', $a['commission']);

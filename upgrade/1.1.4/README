@@ -1,0 +1,5 @@
+platal.conf:
+[Money]
+mpay_def_id = 386 # donation id
+
+https://www.polytechnique.org/Docs/Dons must be adapted after the release (cf https://dev.m4x.org/~x2004jacob/Docs/Dons).

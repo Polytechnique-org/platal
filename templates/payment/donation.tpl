@@ -20,10 +20,9 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-<h1>Télépaiements</h1>
-
 {if $smarty.request.op eq "submit" and !$pl_errors}
+
+<h1>Don à l'association Polytechnique.org</h1>
 
 <table class="bicol">
   <tr>
@@ -35,7 +34,7 @@
   </tr>
   <tr>
     <td><b>Montant</b></td>
-    <td>{$montant} &euro;</td>
+    <td>{$amount} &euro;</td>
   </tr>
 {if $comment}
   <tr>
@@ -73,7 +72,7 @@
 </table>
 <p>
 En cliquant sur "Valider", tu seras redirigé{if $sex}e{/if} vers le site de {$pay->api->nomsite}, où il te
-sera demandé de saisir ton numéro de carte bancaire.  Lorsque le paiement aura été effectué, tu
+sera demandé de saisir ton numéro de carte bancaire. Lorsque le paiement aura été effectué, tu
 recevras une confirmation par email.
 </p>
 {if $pay->api->text}
@@ -81,48 +80,15 @@ recevras une confirmation par email.
 {$pay->api->text}
 </p>
 {/if}
-{if $evtlink}
-<p class="erreur">
-Si tu n'es pas encore inscrit à cet événement, n'oublie pas d'aller t'<a href='http://www.polytechnique.net/{$evtlink.diminutif}/events/sub/{$evtlink.eid}'>inscrire</a>.
-</p>
-{/if}
 
 {else}
 
-<script type='text/javascript'>
-{literal}
-function payment_submit(form)
-{
-    form.op.value = 'select';
-    form.montant.value = 0;
-    form.action = 'payment/' + form.ref.value;
-    form.submit();
-}
-{/literal}
-</script>
+{include wiki=Docs.Dons}
 
 <form method="post" action="{$platal->pl_self()}">
   <table class="bicol">
     <tr>
-      <th colspan="2">Effectuer un télépaiement</th>
-    </tr>
-    <tr>
-      <td>Transaction</td>
-      <td>
-        {if t($asso)}
-        <strong>{$pay->text}</strong><input type="hidden" name="ref" value="{$pay->id}" />
-        {else}
-        <select name="ref" onchange="payment_submit(this.form)">
-          {select_db_table table="payments" valeur=$pay->id
-                           where="WHERE FIND_IN_SET('old', t.flags) = 0"
-                           join="LEFT JOIN groups AS g ON (t.asso_id = g.id)" group="g.nom"}
-        </select>
-        {/if}
-        {if $pay->url}
-        <br />
-        <a href="{$pay->url}">plus d'informations</a>
-        {/if}
-      </td>
+      <th colspan="2">Effectuer le don</th>
     </tr>
     <tr>
       <td>Méthode</td>
@@ -134,26 +100,23 @@ function payment_submit(form)
     </tr>
     <tr>
       <td>Montant</td>
-      <td><input type="text" name="montant" size="13" class='right' value="{$montant}" /> &euro;</td>
+      <td><input type="text" name="amount" size="13" class='right' value="{$pay->amount_def}" /> &euro;</td>
     </tr>
     <tr>
       <td>Commentaire</td>
       <td><textarea name="comment" rows="5" cols="30"></textarea></td>
     </tr>
-    {if t($donation)}
     <tr>
-      <td>Afficher ton nom dans la liste des donateurs sur {#globals.core.sitename#}</td>
+      <td>Afficher ton nom dans la liste des donateurs</td>
       <td>
         <label>Oui<input type="radio" name="display" value="1" checked="checked" /></label>
         &nbsp;-&nbsp;
         <label><input type="radio" name="display" value="0" />Non</label>
       </td>
     </tr>
-    {/if}
     <tr>
       <td>&nbsp;</td>
       <td>
-        {if !t($donation)}<input type="hidden" name="display" value="0" />{/if}
         <input type="hidden" name="op" value="submit" />
         <input type="submit" value="Continuer" />
       </td>
@@ -162,7 +125,7 @@ function payment_submit(form)
 </form>
 
 {if t($transactions)}
-<p class="descr">Tu as déjà effectué des paiements pour cette transaction&nbsp;:</p>
+<p class="descr">Tu as déjà effectué les dons suivants&nbsp;:</p>
 <table class="bicol">
 <tr><th>Date</th><th>Montant</th></tr>
 {iterate from=$transactions item=t}
@@ -174,27 +137,36 @@ function payment_submit(form)
 </table>
 {/if}
 
-{if t($donation)}
-{if !t($donations)}
-<p class="descr">Aucun don n'a encore été recueilli.</p>
-{else}
-<p class="descr">Les dons suivants ont déjà été recueillis (pour un total de {$sum} &euro;)&nbsp;:</p>
+<p class="descr">Les 10 plus gros dons sont les suivants&nbsp;:</p>
 <table class="bicol">
   <tr>
     <th>Nom</th>
     <th>Montant</th>
+    <th>Date</th>
   </tr>
-  {foreach from=$donations item=d}
+  {foreach from=$biggest_donations item=d}
   <tr class="{cycle values="pair,impair"}">
     <td>{$d.name}</td>
     <td class="center">{$d.amount|replace:'.':','} &euro;</td>
+    <td>{$d.ts_confirmed|date_format}</td>
   </tr>
   {/foreach}
 </table>
-{/if}
-{/if}
+
+<p class="descr">Les dons par période&nbsp;:</p>
+<table class="tinybicol">
+  <tr>
+    <th>Période</th>
+    <th>Montant</th>
+  </tr>
+  {foreach from=$donations item=d}
+  <tr class="{cycle values="pair,impair"}">
+    <td>{if $d.month neq 0}{$d.ts_confirmed|date_format:"%B %Y"}{else}{$d.ts_confirmed|date_format:"%Y"}{/if}</td>
+    <td style="text-align: right">{$d.amount|replace:'.':','} &euro;</td>
+  </tr>
+  {/foreach}
+</table>
 
 {/if}
-
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
