@@ -30,10 +30,10 @@ class SurveyModule extends PLModule
             'survey/result'      => $this->make_hook('result',        AUTH_PUBLIC),
             'survey/edit'        => $this->make_hook('edit',          AUTH_COOKIE, 'user'),
             'survey/ajax'        => $this->make_hook('ajax',          AUTH_COOKIE, 'user'),
-            'survey/admin'       => $this->make_hook('admin',         AUTH_MDP,    'admin'),
-            'survey/admin/edit'  => $this->make_hook('adminEdit',     AUTH_MDP,    'admin'),
-            'survey/admin/valid' => $this->make_hook('adminValidate', AUTH_MDP,    'admin'),
-            'survey/admin/del'   => $this->make_hook('adminDelete',   AUTH_MDP,    'admin'),
+            'survey/admin'       => $this->make_hook('admin',         AUTH_PASSWD, 'admin'),
+            'survey/admin/edit'  => $this->make_hook('adminEdit',     AUTH_PASSWD, 'admin'),
+            'survey/admin/valid' => $this->make_hook('adminValidate', AUTH_PASSWD, 'admin'),
+            'survey/admin/del'   => $this->make_hook('adminDelete',   AUTH_PASSWD, 'admin'),
         );
     }
     // }}}

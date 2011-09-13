@@ -27,16 +27,16 @@ class NewsletterModule extends PLModule
             'nl'                           => $this->make_hook('nl',              AUTH_COOKIE, 'user'),
             'nl/show'                      => $this->make_hook('nl_show',         AUTH_COOKIE, 'user'),
             'nl/search'                    => $this->make_hook('nl_search',       AUTH_COOKIE, 'user'),
-            'nl/submit'                    => $this->make_hook('nl_submit',       AUTH_MDP,    'user'),
-            'nl/remaining'                 => $this->make_hook('nl_remaining',    AUTH_MDP,    'user'),
-            'admin/nls'                    => $this->make_hook('admin_nl_groups', AUTH_MDP,    'admin'),
-            'admin/newsletter'             => $this->make_hook('admin_nl',        AUTH_MDP,    'admin'),
-            'admin/newsletter/categories'  => $this->make_hook('admin_nl_cat',    AUTH_MDP,    'admin'),
-            'admin/newsletter/edit'        => $this->make_hook('admin_nl_edit',   AUTH_MDP,    'admin'),
-            'admin/newsletter/edit/delete' => $this->make_hook('admin_nl_delete', AUTH_MDP,    'admin'),
+            'nl/submit'                    => $this->make_hook('nl_submit',       AUTH_PASSWD, 'user'),
+            'nl/remaining'                 => $this->make_hook('nl_remaining',    AUTH_PASSWD, 'user'),
+            'admin/nls'                    => $this->make_hook('admin_nl_groups', AUTH_PASSWD, 'admin'),
+            'admin/newsletter'             => $this->make_hook('admin_nl',        AUTH_PASSWD, 'admin'),
+            'admin/newsletter/categories'  => $this->make_hook('admin_nl_cat',    AUTH_PASSWD, 'admin'),
+            'admin/newsletter/edit'        => $this->make_hook('admin_nl_edit',   AUTH_PASSWD, 'admin'),
+            'admin/newsletter/edit/delete' => $this->make_hook('admin_nl_delete', AUTH_PASSWD, 'admin'),
             // Automatic mailing is disabled for X.org NL
-//            'admin/newsletter/edit/cancel' => $this->make_hook('cancel', AUTH_MDP, 'admin'),
-//            'admin/newsletter/edit/valid'  => $this->make_hook('valid',  AUTH_MDP, 'admin'),
+//            'admin/newsletter/edit/cancel' => $this->make_hook('cancel', AUTH_PASSWD, 'admin'),
+//            'admin/newsletter/edit/valid'  => $this->make_hook('valid',  AUTH_PASSWD, 'admin'),
         );
     }
 

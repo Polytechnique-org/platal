@@ -25,11 +25,11 @@ class EmailModule extends PLModule
     {
         return array(
             'emails'                  => $this->make_hook('emails',      AUTH_COOKIE, 'mail'),
-            'emails/alias'            => $this->make_hook('alias',       AUTH_MDP,    'mail'),
-            'emails/antispam'         => $this->make_hook('antispam',    AUTH_MDP,    'mail'),
+            'emails/alias'            => $this->make_hook('alias',       AUTH_PASSWD, 'mail'),
+            'emails/antispam'         => $this->make_hook('antispam',    AUTH_PASSWD, 'mail'),
             'emails/broken'           => $this->make_hook('broken',      AUTH_COOKIE, 'user'),
-            'emails/redirect'         => $this->make_hook('redirect',    AUTH_MDP,    'mail'),
-            'emails/send'             => $this->make_hook('send',        AUTH_MDP,    'mail'),
+            'emails/redirect'         => $this->make_hook('redirect',    AUTH_PASSWD, 'mail'),
+            'emails/send'             => $this->make_hook('send',        AUTH_PASSWD, 'mail'),
             'emails/antispam/submit'  => $this->make_hook('submit',      AUTH_COOKIE, 'user'),
             'emails/test'             => $this->make_hook('test',        AUTH_COOKIE, 'mail', NO_AUTH),
 
@@ -38,10 +38,10 @@ class EmailModule extends PLModule
 
             'emails/imap/in'          => $this->make_hook('imap_in',     AUTH_PUBLIC),
 
-            'admin/emails/duplicated' => $this->make_hook('duplicated',  AUTH_MDP,    'admin'),
-            'admin/emails/watch'      => $this->make_hook('duplicated',  AUTH_MDP,    'admin'),
-            'admin/emails/lost'       => $this->make_hook('lost',        AUTH_MDP,    'admin'),
-            'admin/emails/broken'     => $this->make_hook('broken_addr', AUTH_MDP,    'admin'),
+            'admin/emails/duplicated' => $this->make_hook('duplicated',  AUTH_PASSWD, 'admin'),
+            'admin/emails/watch'      => $this->make_hook('duplicated',  AUTH_PASSWD, 'admin'),
+            'admin/emails/lost'       => $this->make_hook('lost',        AUTH_PASSWD, 'admin'),
+            'admin/emails/broken'     => $this->make_hook('broken_addr', AUTH_PASSWD, 'admin'),
         );
     }
 

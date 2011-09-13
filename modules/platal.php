@@ -38,26 +38,26 @@ class PlatalModule extends PLModule
     function handlers()
     {
         return array(
-            'index'             => $this->make_hook('index',     AUTH_PUBLIC),
-            'cacert.pem'        => $this->make_hook('cacert',    AUTH_PUBLIC),
-            'changelog'         => $this->make_hook('changelog', AUTH_PUBLIC),
+            'index'             => $this->make_hook('index',        AUTH_PUBLIC),
+            'cacert.pem'        => $this->make_hook('cacert',       AUTH_PUBLIC),
+            'changelog'         => $this->make_hook('changelog',    AUTH_PUBLIC),
 
             // Preferences thingies
-            'prefs'             => $this->make_hook('prefs',     AUTH_COOKIE, 'user,groups'),
-            'prefs/rss'         => $this->make_hook('prefs_rss', AUTH_COOKIE, 'user'),
-            'prefs/webredirect' => $this->make_hook('webredir',  AUTH_MDP,    'mail'),
-            'prefs/skin'        => $this->make_hook('skin',      AUTH_COOKIE, 'user'),
+            'prefs'             => $this->make_hook('prefs',        AUTH_COOKIE, 'user,groups'),
+            'prefs/rss'         => $this->make_hook('prefs_rss',    AUTH_COOKIE, 'user'),
+            'prefs/webredirect' => $this->make_hook('webredir',     AUTH_PASSWD, 'mail'),
+            'prefs/skin'        => $this->make_hook('skin',         AUTH_COOKIE, 'user'),
 
             // password related thingies
-            'password'          => $this->make_hook('password',  AUTH_MDP,    'user,groups'),
-            'tmpPWD'            => $this->make_hook('tmpPWD',    AUTH_PUBLIC),
-            'password/smtp'     => $this->make_hook('smtppass',  AUTH_MDP,    'mail'),
-            'recovery'          => $this->make_hook('recovery',  AUTH_PUBLIC),
+            'password'          => $this->make_hook('password',     AUTH_PASSWD, 'user,groups'),
+            'password/smtp'     => $this->make_hook('smtppass',     AUTH_PASSWD, 'mail'),
+            'tmpPWD'            => $this->make_hook('tmpPWD',       AUTH_PUBLIC),
+            'recovery'          => $this->make_hook('recovery',     AUTH_PUBLIC),
             'recovery/ext'      => $this->make_hook('recovery_ext', AUTH_PUBLIC),
             'register/ext'      => $this->make_hook('register_ext', AUTH_PUBLIC),
-            'exit'              => $this->make_hook('exit',      AUTH_PUBLIC),
-            'review'            => $this->make_hook('review',    AUTH_PUBLIC),
-            'deconnexion.php'   => $this->make_hook('exit',      AUTH_PUBLIC),
+            'exit'              => $this->make_hook('exit',         AUTH_PUBLIC),
+            'review'            => $this->make_hook('review',       AUTH_PUBLIC),
+            'deconnexion.php'   => $this->make_hook('exit',         AUTH_PUBLIC),
         );
     }
 
@@ -416,7 +416,7 @@ Adresse de secours : ' . $to));
 
             // Try to start a session (so the user don't have to log in); we will use
             // the password available in Post:: to authenticate the user.
-            Platal::session()->start(AUTH_MDP);
+            Platal::session()->start(AUTH_PASSWD);
 
             $page->changeTpl('platal/tmpPWD.success.tpl');
         } else {

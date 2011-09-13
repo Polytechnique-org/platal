@@ -35,22 +35,22 @@ class FusionAxModule extends PLModule
     {
         if (Platal::globals()->merge->state == 'pending') {
             return array(
-                'fusionax'                  => $this->make_hook('index',    AUTH_MDP, 'admin'),
-                'fusionax/import'           => $this->make_hook('import',   AUTH_MDP, 'admin'),
-                'fusionax/view'             => $this->make_hook('view',     AUTH_MDP, 'admin'),
-                'fusionax/ids'              => $this->make_hook('ids',      AUTH_MDP, 'admin'),
-                'fusionax/deceased'         => $this->make_hook('deceased', AUTH_MDP, 'admin'),
-                'fusionax/promo'            => $this->make_hook('promo',    AUTH_MDP, 'admin'),
-                'fusionax/names'            => $this->make_hook('names',    AUTH_MDP, 'admin'),
-                'fusionax/edu'              => $this->make_hook('edu',      AUTH_MDP, 'admin'),
-                'fusionax/corps'            => $this->make_hook('corps',    AUTH_MDP, 'admin')
+                'fusionax'                  => $this->make_hook('index',    AUTH_PASSWD, 'admin'),
+                'fusionax/import'           => $this->make_hook('import',   AUTH_PASSWD, 'admin'),
+                'fusionax/view'             => $this->make_hook('view',     AUTH_PASSWD, 'admin'),
+                'fusionax/ids'              => $this->make_hook('ids',      AUTH_PASSWD, 'admin'),
+                'fusionax/deceased'         => $this->make_hook('deceased', AUTH_PASSWD, 'admin'),
+                'fusionax/promo'            => $this->make_hook('promo',    AUTH_PASSWD, 'admin'),
+                'fusionax/names'            => $this->make_hook('names',    AUTH_PASSWD, 'admin'),
+                'fusionax/edu'              => $this->make_hook('edu',      AUTH_PASSWD, 'admin'),
+                'fusionax/corps'            => $this->make_hook('corps',    AUTH_PASSWD, 'admin')
             );
         } elseif (Platal::globals()->merge->state == 'done') {
             return array(
-                'fusionax'                  => $this->make_hook('index',            AUTH_MDP, 'admin,edit_directory'),
-                'fusionax/issues'           => $this->make_hook('issues',           AUTH_MDP, 'admin,edit_directory'),
-                'fusionax/issues/deathdate' => $this->make_hook('issues_deathdate', AUTH_MDP, 'admin,edit_directory'),
-                'fusionax/issues/promo'     => $this->make_hook('issues_promo',     AUTH_MDP, 'admin,edit_directory'),
+                'fusionax'                  => $this->make_hook('index',            AUTH_PASSWD, 'admin,edit_directory'),
+                'fusionax/issues'           => $this->make_hook('issues',           AUTH_PASSWD, 'admin,edit_directory'),
+                'fusionax/issues/deathdate' => $this->make_hook('issues_deathdate', AUTH_PASSWD, 'admin,edit_directory'),
+                'fusionax/issues/promo'     => $this->make_hook('issues_promo',     AUTH_PASSWD, 'admin,edit_directory'),
             );
         }
     }

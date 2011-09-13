@@ -28,8 +28,8 @@ class XnetListsModule extends ListsModule
     function handlers()
     {
         return array(
-            '%grp/lists'              => $this->make_hook('lists',    AUTH_MDP,    'groupmember'),
-            '%grp/lists/create'       => $this->make_hook('create',   AUTH_MDP,    'groupmember'),
+            '%grp/lists'              => $this->make_hook('lists',    AUTH_PASSWD, 'groupmember'),
+            '%grp/lists/create'       => $this->make_hook('create',   AUTH_PASSWD, 'groupmember'),
 
             '%grp/lists/members'      => $this->make_hook('members',  AUTH_COOKIE, 'groups'),
             '%grp/lists/csv'          => $this->make_hook('csv',      AUTH_COOKIE, 'groups'),
@@ -37,17 +37,17 @@ class XnetListsModule extends ListsModule
             '%grp/lists/archives'     => $this->make_hook('archives', AUTH_COOKIE, 'groups'),
             '%grp/lists/archives/rss' => $this->make_hook('rss',      AUTH_PUBLIC),
 
-            '%grp/lists/moderate'     => $this->make_hook('moderate', AUTH_MDP,    'groups'),
-            '%grp/lists/admin'        => $this->make_hook('admin',    AUTH_MDP,    'groups'),
-            '%grp/lists/options'      => $this->make_hook('options',  AUTH_MDP,    'groups'),
-            '%grp/lists/delete'       => $this->make_hook('delete',   AUTH_MDP,    'groups'),
+            '%grp/lists/moderate'     => $this->make_hook('moderate', AUTH_PASSWD, 'groups'),
+            '%grp/lists/admin'        => $this->make_hook('admin',    AUTH_PASSWD, 'groups'),
+            '%grp/lists/options'      => $this->make_hook('options',  AUTH_PASSWD, 'groups'),
+            '%grp/lists/delete'       => $this->make_hook('delete',   AUTH_PASSWD, 'groups'),
 
-            '%grp/lists/soptions'     => $this->make_hook('soptions', AUTH_MDP,    'groups'),
-            '%grp/lists/check'        => $this->make_hook('check',    AUTH_MDP,    'groups'),
-            '%grp/lists/sync'         => $this->make_hook('sync',     AUTH_MDP,    'groups'),
+            '%grp/lists/soptions'     => $this->make_hook('soptions', AUTH_PASSWD, 'groups'),
+            '%grp/lists/check'        => $this->make_hook('check',    AUTH_PASSWD, 'groups'),
+            '%grp/lists/sync'         => $this->make_hook('sync',     AUTH_PASSWD, 'groups'),
 
-            '%grp/alias/admin'        => $this->make_hook('aadmin',   AUTH_MDP,    'groupadmin'),
-            '%grp/alias/create'       => $this->make_hook('acreate',  AUTH_MDP,    'groupadmin'),
+            '%grp/alias/admin'        => $this->make_hook('aadmin',   AUTH_PASSWD, 'groupadmin'),
+            '%grp/alias/create'       => $this->make_hook('acreate',  AUTH_PASSWD, 'groupadmin'),
 
             /* hack: lists uses that */
             'profile'                 => $this->make_hook('profile',  AUTH_PUBLIC),

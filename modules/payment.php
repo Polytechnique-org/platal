@@ -105,21 +105,21 @@ class PaymentModule extends PLModule
     function handlers()
     {
         return array(
-            'payment'                      => $this->make_hook('payment',          AUTH_MDP,    'payment'),
+            'payment'                      => $this->make_hook('payment',          AUTH_PASSWD, 'payment'),
             'payment/cyber2_return'        => $this->make_hook('cyber2_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
             'payment/paypal_return'        => $this->make_hook('paypal_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
-            '%grp/paiement'                => $this->make_hook('xnet_payment',     AUTH_MDP,    'user'),
-            '%grp/payment'                 => $this->make_hook('xnet_payment',     AUTH_MDP,    'user'),
-            '%grp/payment/csv'             => $this->make_hook('payment_csv',      AUTH_MDP,    'groupadmin'),
+            '%grp/paiement'                => $this->make_hook('xnet_payment',     AUTH_PASSWD, 'user'),
+            '%grp/payment'                 => $this->make_hook('xnet_payment',     AUTH_PASSWD, 'user'),
+            '%grp/payment/csv'             => $this->make_hook('payment_csv',      AUTH_PASSWD, 'groupadmin'),
             '%grp/payment/cyber2_return'   => $this->make_hook('cyber2_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
             '%grp/payment/paypal_return'   => $this->make_hook('paypal_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
-            'admin/payments'               => $this->make_hook('admin',            AUTH_MDP,    'admin'),
-            'admin/payments/methods'       => $this->make_hook('adm_methods',      AUTH_MDP,    'admin'),
-            'admin/payments/transactions'  => $this->make_hook('adm_transactions', AUTH_MDP,    'admin'),
-            'admin/reconcile'              => $this->make_hook('adm_reconcile',    AUTH_MDP,    'admin'),
-            'admin/reconcile/importlogs'   => $this->make_hook('adm_importlogs',   AUTH_MDP,    'admin'),
-            'admin/reconcile/transfers'    => $this->make_hook('adm_transfers',    AUTH_MDP,    'admin'),
-            'admin/reconcile/bankaccounts' => $this->make_hook('adm_bankaccounts', AUTH_MDP,    'admin'),
+            'admin/payments'               => $this->make_hook('admin',            AUTH_PASSWD, 'admin'),
+            'admin/payments/methods'       => $this->make_hook('adm_methods',      AUTH_PASSWD, 'admin'),
+            'admin/payments/transactions'  => $this->make_hook('adm_transactions', AUTH_PASSWD, 'admin'),
+            'admin/reconcile'              => $this->make_hook('adm_reconcile',    AUTH_PASSWD, 'admin'),
+            'admin/reconcile/importlogs'   => $this->make_hook('adm_importlogs',   AUTH_PASSWD, 'admin'),
+            'admin/reconcile/transfers'    => $this->make_hook('adm_transfers',    AUTH_PASSWD, 'admin'),
+            'admin/reconcile/bankaccounts' => $this->make_hook('adm_bankaccounts', AUTH_PASSWD, 'admin'),
         );
     }
 

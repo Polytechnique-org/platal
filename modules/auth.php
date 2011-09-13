@@ -32,7 +32,7 @@ class AuthModule extends PLModule
             'auth-redirect.php'             => $this->make_hook('redirect',           AUTH_COOKIE, 'user'),
             'auth-groupex.php'              => $this->make_hook('groupex_old',        AUTH_COOKIE, 'user'),
             'auth-groupex'                  => $this->make_hook('groupex',            AUTH_PUBLIC),
-            'admin/auth-groupes-x'          => $this->make_hook('admin_authgroupesx', AUTH_MDP,    'admin'),
+            'admin/auth-groupes-x'          => $this->make_hook('admin_authgroupesx', AUTH_PASSWD, 'admin'),
         );
     }
 

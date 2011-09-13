@@ -27,15 +27,15 @@ class XnetModule extends PLModule
             'index'        => $this->make_hook('index',        AUTH_PUBLIC),
             'exit'         => $this->make_hook('exit',         AUTH_PUBLIC),
 
-            'admin'        => $this->make_hook('admin',        AUTH_MDP, 'admin'),
+            'admin'        => $this->make_hook('admin',        AUTH_PASSWD, 'admin'),
             'groups'       => $this->make_hook('groups',       AUTH_PUBLIC),
             'groupes.php'  => $this->make_hook('groups2',      AUTH_PUBLIC),
             'plan'         => $this->make_hook('plan',         AUTH_PUBLIC),
             // Should be removed in a future release as links will have expired anyway.
             'register/ext' => $this->make_hook('register_ext', AUTH_PUBLIC),
-            'photo'        => $this->make_hook('photo',        AUTH_MDP, 'groups'),
-            'autologin'    => $this->make_hook('autologin',    AUTH_MDP, 'groups'),
-            'edit'         => $this->make_hook('edit',         AUTH_MDP, 'groups'),
+            'photo'        => $this->make_hook('photo',        AUTH_PASSWD, 'groups'),
+            'autologin'    => $this->make_hook('autologin',    AUTH_PASSWD, 'groups'),
+            'edit'         => $this->make_hook('edit',         AUTH_PASSWD, 'groups'),
             'Xnet'         => $this->make_wiki_hook(),
         );
     }

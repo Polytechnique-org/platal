@@ -38,7 +38,7 @@
 
 {else}
 
-{if $smarty.session.auth == AUTH_MDP}
+{if $smarty.session.auth == AUTH_PASSWD}
 <div class="menu_item"><a href="exit">Déconnexion</a></div>
 {elseif $smarty.cookies.ORGaccess}
 <div class="menu_item"><a href="exit/forget">Déconnexion totale</a></div>

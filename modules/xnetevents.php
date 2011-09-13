@@ -26,12 +26,12 @@ class XnetEventsModule extends PLModule
     function handlers()
     {
         return array(
-            '%grp/events'       => $this->make_hook('events', AUTH_MDP, 'groups'),
-            '%grp/events/sub'   => $this->make_hook('sub',    AUTH_MDP, 'groups'),
-            '%grp/events/csv'   => $this->make_hook('csv',    AUTH_MDP, 'groups', NO_HTTPS),
-            '%grp/events/ical'  => $this->make_hook('ical',   AUTH_MDP, 'groups', NO_HTTPS),
-            '%grp/events/edit'  => $this->make_hook('edit',   AUTH_MDP, 'groupadmin'),
-            '%grp/events/admin' => $this->make_hook('admin',  AUTH_MDP, 'groupmember'),
+            '%grp/events'       => $this->make_hook('events', AUTH_PASSWD, 'groups'),
+            '%grp/events/sub'   => $this->make_hook('sub',    AUTH_PASSWD, 'groups'),
+            '%grp/events/csv'   => $this->make_hook('csv',    AUTH_PASSWD, 'groups', NO_HTTPS),
+            '%grp/events/ical'  => $this->make_hook('ical',   AUTH_PASSWD, 'groups', NO_HTTPS),
+            '%grp/events/edit'  => $this->make_hook('edit',   AUTH_PASSWD, 'groupadmin'),
+            '%grp/events/admin' => $this->make_hook('admin',  AUTH_PASSWD, 'groupmember'),
         );
     }
 

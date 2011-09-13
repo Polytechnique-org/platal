@@ -25,15 +25,15 @@ class ProfileModule extends PLModule
     {
         return array(
             'photo'                      => $this->make_hook('photo',                      AUTH_PUBLIC),
-            'photo/change'               => $this->make_hook('photo_change',               AUTH_MDP,    'user'),
+            'photo/change'               => $this->make_hook('photo_change',               AUTH_PASSWD, 'user'),
 
             'fiche.php'                  => $this->make_hook('fiche',                      AUTH_PUBLIC),
             'profile'                    => $this->make_hook('profile',                    AUTH_PUBLIC),
             'profile/private'            => $this->make_hook('profile',                    AUTH_COOKIE, 'user'),
             'profile/ax'                 => $this->make_hook('ax',                         AUTH_COOKIE, 'admin,edit_directory'),
-            'profile/edit'               => $this->make_hook('p_edit',                     AUTH_MDP,    'user'),
+            'profile/edit'               => $this->make_hook('p_edit',                     AUTH_PASSWD, 'user'),
             'profile/ajax/address'       => $this->make_hook('ajax_address',               AUTH_COOKIE, 'user', NO_AUTH),
-            'profile/ajax/address/del'   => $this->make_hook('ajax_address_del',           AUTH_MDP,    'user'),
+            'profile/ajax/address/del'   => $this->make_hook('ajax_address_del',           AUTH_PASSWD, 'user'),
             'profile/ajax/tel'           => $this->make_hook('ajax_tel',                   AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/edu'           => $this->make_hook('ajax_edu',                   AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/medal'         => $this->make_hook('ajax_medal',                 AUTH_COOKIE, 'user', NO_AUTH),
@@ -57,17 +57,17 @@ class ProfileModule extends PLModule
             'groupes-x/logo'             => $this->make_hook('xnetlogo',                   AUTH_PUBLIC),
 
             'vcard'                      => $this->make_hook('vcard',                      AUTH_COOKIE, 'user', NO_HTTPS),
-            'admin/binets'               => $this->make_hook('admin_binets',               AUTH_MDP,    'admin'),
-            'admin/medals'               => $this->make_hook('admin_medals',               AUTH_MDP,    'admin'),
-            'admin/education'            => $this->make_hook('admin_education',            AUTH_MDP,    'admin'),
-            'admin/education_field'      => $this->make_hook('admin_education_field',      AUTH_MDP,    'admin'),
-            'admin/education_degree'     => $this->make_hook('admin_education_degree',     AUTH_MDP,    'admin'),
-            'admin/education_degree_set' => $this->make_hook('admin_education_degree_set', AUTH_MDP,    'admin'),
-            'admin/sections'             => $this->make_hook('admin_sections',             AUTH_MDP,    'admin'),
-            'admin/networking'           => $this->make_hook('admin_networking',           AUTH_MDP,    'admin'),
-            'admin/trombino'             => $this->make_hook('admin_trombino',             AUTH_MDP,    'admin'),
-            'admin/corps_enum'           => $this->make_hook('admin_corps_enum',           AUTH_MDP,    'admin'),
-            'admin/corps_rank'           => $this->make_hook('admin_corps_rank',           AUTH_MDP,    'admin'),
+            'admin/binets'               => $this->make_hook('admin_binets',               AUTH_PASSWD, 'admin'),
+            'admin/medals'               => $this->make_hook('admin_medals',               AUTH_PASSWD, 'admin'),
+            'admin/education'            => $this->make_hook('admin_education',            AUTH_PASSWD, 'admin'),
+            'admin/education_field'      => $this->make_hook('admin_education_field',      AUTH_PASSWD, 'admin'),
+            'admin/education_degree'     => $this->make_hook('admin_education_degree',     AUTH_PASSWD, 'admin'),
+            'admin/education_degree_set' => $this->make_hook('admin_education_degree_set', AUTH_PASSWD, 'admin'),
+            'admin/sections'             => $this->make_hook('admin_sections',             AUTH_PASSWD, 'admin'),
+            'admin/networking'           => $this->make_hook('admin_networking',           AUTH_PASSWD, 'admin'),
+            'admin/trombino'             => $this->make_hook('admin_trombino',             AUTH_PASSWD, 'admin'),
+            'admin/corps_enum'           => $this->make_hook('admin_corps_enum',           AUTH_PASSWD, 'admin'),
+            'admin/corps_rank'           => $this->make_hook('admin_corps_rank',           AUTH_PASSWD, 'admin'),
         );
     }
 

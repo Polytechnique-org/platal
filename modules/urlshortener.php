@@ -25,7 +25,7 @@ class UrlShortenerModule extends PLModule
     {
         return array(
             'url'       => $this->make_hook('url',       AUTH_PUBLIC),
-            'admin/url' => $this->make_hook('admin_url', AUTH_MDP, 'admin')
+            'admin/url' => $this->make_hook('admin_url', AUTH_PASSWD, 'admin')
         );
     }
 

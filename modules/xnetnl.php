@@ -26,16 +26,16 @@ class XnetNlModule extends NewsletterModule
     function handlers()
     {
         return array(
-            '%grp/nl'                   => $this->make_hook('nl',              AUTH_MDP, 'groups'),
-            '%grp/nl/show'              => $this->make_hook('nl_show',         AUTH_MDP, 'groups'),
-            '%grp/nl/search'            => $this->make_hook('nl_search',       AUTH_MDP, 'groups'),
-            '%grp/admin/nl'             => $this->make_hook('admin_nl',        AUTH_MDP, 'groupadmin'),
-            '%grp/admin/nl/sync'        => $this->make_hook('admin_nl_sync',   AUTH_MDP, 'groupadmin'),
-            '%grp/admin/nl/enable'      => $this->make_hook('admin_nl_enable', AUTH_MDP, 'groupadmin'),
-            '%grp/admin/nl/edit'        => $this->make_hook('admin_nl_edit',   AUTH_MDP, 'groupadmin'),
-            '%grp/admin/nl/edit/cancel' => $this->make_hook('admin_nl_cancel', AUTH_MDP, 'groupadmin'),
-            '%grp/admin/nl/edit/valid'  => $this->make_hook('admin_nl_valid',  AUTH_MDP, 'groupadmin'),
-            '%grp/admin/nl/categories'  => $this->make_hook('admin_nl_cat',    AUTH_MDP, 'groupadmin'),
+            '%grp/nl'                   => $this->make_hook('nl',              AUTH_PASSWD, 'groups'),
+            '%grp/nl/show'              => $this->make_hook('nl_show',         AUTH_PASSWD, 'groups'),
+            '%grp/nl/search'            => $this->make_hook('nl_search',       AUTH_PASSWD, 'groups'),
+            '%grp/admin/nl'             => $this->make_hook('admin_nl',        AUTH_PASSWD, 'groupadmin'),
+            '%grp/admin/nl/sync'        => $this->make_hook('admin_nl_sync',   AUTH_PASSWD, 'groupadmin'),
+            '%grp/admin/nl/enable'      => $this->make_hook('admin_nl_enable', AUTH_PASSWD, 'groupadmin'),
+            '%grp/admin/nl/edit'        => $this->make_hook('admin_nl_edit',   AUTH_PASSWD, 'groupadmin'),
+            '%grp/admin/nl/edit/cancel' => $this->make_hook('admin_nl_cancel', AUTH_PASSWD, 'groupadmin'),
+            '%grp/admin/nl/edit/valid'  => $this->make_hook('admin_nl_valid',  AUTH_PASSWD, 'groupadmin'),
+            '%grp/admin/nl/categories'  => $this->make_hook('admin_nl_cat',    AUTH_PASSWD, 'groupadmin'),
         );
     }
 

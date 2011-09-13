@@ -145,7 +145,7 @@ class XorgSession extends PlSession
         }
 
         if ($success) {
-            S::set('auth', AUTH_MDP);
+            S::set('auth', AUTH_PASSWD);
             S::kill('challenge');
             S::logger($user->id())->log('auth_ok');
         }
@@ -161,7 +161,7 @@ class XorgSession extends PlSession
             return true;
         }
         if ($level == AUTH_SUID) {
-            S::set('auth', AUTH_MDP);
+            S::set('auth', AUTH_PASSWD);
         }
 
         // Loads uid and hruid into the session for developement conveniance.
@@ -301,7 +301,7 @@ class XorgSession extends PlSession
 
     public function sureLevel()
     {
-        return AUTH_MDP;
+        return AUTH_PASSWD;
     }
 
 

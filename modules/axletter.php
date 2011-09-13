@@ -30,12 +30,12 @@ class AXLetterModule extends NewsletterModule
             'ax/out'               => $this->make_hook('out',             AUTH_PUBLIC),
             'ax/show'              => $this->make_hook('nl_show',         AUTH_COOKIE, 'user'),
             'ax/search'            => $this->make_hook('nl_search',       AUTH_COOKIE, 'user'),
-            'ax/admin'             => $this->make_hook('admin_nl',        AUTH_MDP,    'user'),
-            'ax/admin/edit'        => $this->make_hook('admin_nl_edit',   AUTH_MDP,    'user'),
-            'ax/admin/edit/valid'  => $this->make_hook('admin_nl_valid',  AUTH_MDP,    'user'),
-            'ax/admin/edit/cancel' => $this->make_hook('admin_nl_cancel', AUTH_MDP,    'user'),
-            'ax/admin/edit/delete' => $this->make_hook('admin_nl_delete', AUTH_MDP,    'user'),
-            'ax/admin/categories'  => $this->make_hook('admin_nl_cat',    AUTH_MDP,    'user'),
+            'ax/admin'             => $this->make_hook('admin_nl',        AUTH_PASSWD, 'user'),
+            'ax/admin/edit'        => $this->make_hook('admin_nl_edit',   AUTH_PASSWD, 'user'),
+            'ax/admin/edit/valid'  => $this->make_hook('admin_nl_valid',  AUTH_PASSWD, 'user'),
+            'ax/admin/edit/cancel' => $this->make_hook('admin_nl_cancel', AUTH_PASSWD, 'user'),
+            'ax/admin/edit/delete' => $this->make_hook('admin_nl_delete', AUTH_PASSWD, 'user'),
+            'ax/admin/categories'  => $this->make_hook('admin_nl_cat',    AUTH_PASSWD, 'user'),
         );
     }
 

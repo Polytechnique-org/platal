@@ -381,7 +381,7 @@ class RegisterModule extends PLModule
 
         // Try to start a session (so the user don't have to log in); we will use
         // the password available in Post:: to authenticate the user.
-        Platal::session()->start(AUTH_MDP);
+        Platal::session()->start(AUTH_PASSWD);
 
         // Subscribe the user to the services she did request at registration time.
         require_once 'newsletter.inc.php';

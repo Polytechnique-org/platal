@@ -27,12 +27,12 @@ class EventsModule extends PLModule
             'events'         => $this->make_hook('ev',           AUTH_COOKIE, 'user'),
             'events/preview' => $this->make_hook('preview',      AUTH_PUBLIC, 'user', NO_AUTH),
             'events/photo'   => $this->make_hook('photo',        AUTH_PUBLIC),
-            'events/submit'  => $this->make_hook('ev_submit',    AUTH_MDP,    'user'),
-            'admin/events'   => $this->make_hook('admin_events', AUTH_MDP,    'admin'),
+            'events/submit'  => $this->make_hook('ev_submit',    AUTH_PASSWD, 'user'),
+            'admin/events'   => $this->make_hook('admin_events', AUTH_PASSWD, 'admin'),
             'rss'            => $this->make_token_hook('rss',    AUTH_COOKIE, 'user'),
 
             'ajax/tips'      => $this->make_hook('tips',         AUTH_COOKIE, 'user', NO_AUTH),
-            'admin/tips'     => $this->make_hook('admin_tips',   AUTH_MDP,    'admin'),
+            'admin/tips'     => $this->make_hook('admin_tips',   AUTH_PASSWD, 'admin'),
         );
     }
 

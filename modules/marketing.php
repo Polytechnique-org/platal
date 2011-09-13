@@ -24,13 +24,13 @@ class MarketingModule extends PLModule
     function handlers()
     {
         return array(
-            'marketing'            => $this->make_hook('marketing',  AUTH_MDP,    'admin'),
-            'marketing/promo'      => $this->make_hook('promo',      AUTH_MDP,    'admin'),
-            'marketing/relance'    => $this->make_hook('relance',    AUTH_MDP,    'admin'),
-            'marketing/this_week'  => $this->make_hook('week',       AUTH_MDP,    'admin'),
-            'marketing/volontaire' => $this->make_hook('volontaire', AUTH_MDP,    'admin'),
+            'marketing'            => $this->make_hook('marketing',  AUTH_PASSWD, 'admin'),
+            'marketing/promo'      => $this->make_hook('promo',      AUTH_PASSWD, 'admin'),
+            'marketing/relance'    => $this->make_hook('relance',    AUTH_PASSWD, 'admin'),
+            'marketing/this_week'  => $this->make_hook('week',       AUTH_PASSWD, 'admin'),
+            'marketing/volontaire' => $this->make_hook('volontaire', AUTH_PASSWD, 'admin'),
 
-            'marketing/private'    => $this->make_hook('private',    AUTH_MDP,    'admin'),
+            'marketing/private'    => $this->make_hook('private',    AUTH_PASSWD, 'admin'),
             'marketing/public'     => $this->make_hook('public',     AUTH_COOKIE, 'user'),
             'marketing/broken'     => $this->make_hook('broken',     AUTH_COOKIE, 'user'),
         );

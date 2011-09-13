@@ -29,7 +29,7 @@ class XnetSession extends XorgSession
     public function startAvailableAuth()
     {
         if (!S::logged() && Get::has('auth')) {
-            if (!$this->start(AUTH_MDP)) {
+            if (!$this->start(AUTH_PASSWD)) {
                 return false;
             }
         }
@@ -88,7 +88,7 @@ class XnetSession extends XorgSession
             return null;
         }
         Get::kill('auth');
-        S::set('auth', AUTH_MDP);
+        S::set('auth', AUTH_PASSWD);
         return User::getSilentWithValues(null, array('uid' => Get::i('uid')));
     }
 
@@ -100,7 +100,7 @@ class XnetSession extends XorgSession
         }
 
         if ($level == AUTH_SUID) {
-            S::set('auth', AUTH_MDP);
+            S::set('auth', AUTH_PASSWD);
         }
 
         S::set('uid', $user->uid);
