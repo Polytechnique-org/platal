@@ -3,6 +3,9 @@ VERSION 1.1.4                                                         XX XX XXXX
 
 Bug/Wish:
 
+    * Carnet:
+        - #1528: Do not display birthday of deceased users in emails       -FUL
+
     * Core:
         - #1523: Rename AUTH_MDP to AUTH_PASSWD                            -JAC
 
@@ -1789,6 +1792,7 @@ ACRONYMS:
     * CAT: Florian El Ahdab     (LeChat)    <florian.el-ahdab@m4x.org>
     * FAL: Raphaël Marichez     (Falco)     <raphael.marichez@m4x.org>
     * FRU: Florent Bruneau      (Fruneau)   <florent.bruneau@m4x.org>
+    * FUL: Thomas Minvielle     (Fulanor)   <thomas.minvielle@m4x.org>
     * GUI: Guillaume Bandet     (GUI)       <guillaume.bandet@m4x.org>
     * JAC: Stéphane Jacob       (jacou)     <stephane.jacob@m4x.org>
     * JM : Jean-Marc Bécu                   <jean-marc.becu@m4x.org>
