@@ -22,7 +22,7 @@
 
 {if $smarty.request.op eq "submit" and !$pl_errors}
 
-<h1>Don à l'association Polytechnique.org</h1>
+<h1>Télépaiements</h1>
 
 <table class="bicol">
   <tr>
@@ -80,15 +80,32 @@ recevras une confirmation par email.
 {$pay->api->text}
 </p>
 {/if}
+{if $evtlink}
+<p class="erreur">
+Si tu n'es pas encore inscrit à cet événement, n'oublie pas d'aller t'<a href='http://www.polytechnique.net/{$evtlink.diminutif}/events/sub/{$evtlink.eid}'>inscrire</a>.
+</p>
+{/if}
 
 {else}
 
+{if t($donation)}
 {include wiki=Docs.Dons}
+{/if}
 
 <form method="post" action="{$platal->pl_self()}">
   <table class="bicol">
     <tr>
-      <th colspan="2">Effectuer le don</th>
+      <th colspan="2">Effectuer un télépaiement</th>
+    </tr>
+    <tr>
+      <td>Transaction</td>
+      <td>
+        <strong>{$pay->text}</strong><input type="hidden" name="ref" value="{$pay->id}" />
+        {if $pay->url}
+        <br />
+        <a href="{$pay->url}">plus d'informations</a>
+        {/if}
+      </td>
     </tr>
     <tr>
       <td>Méthode</td>
@@ -106,6 +123,7 @@ recevras une confirmation par email.
       <td>Commentaire</td>
       <td><textarea name="comment" rows="5" cols="30"></textarea></td>
     </tr>
+    {if t($donation)}
     <tr>
       <td>Afficher ton nom dans la liste des donateurs</td>
       <td>
@@ -114,6 +132,7 @@ recevras une confirmation par email.
         <label><input type="radio" name="display" value="0" />Non</label>
       </td>
     </tr>
+    {/if}
     <tr>
       <td>&nbsp;</td>
       <td>
@@ -125,7 +144,7 @@ recevras une confirmation par email.
 </form>
 
 {if t($transactions)}
-<p class="descr">Tu as déjà effectué les dons suivants&nbsp;:</p>
+<p class="descr">Tu as déjà effectué des paiements pour cette transaction&nbsp;:</p>
 <table class="bicol">
 <tr><th>Date</th><th>Montant</th></tr>
 {iterate from=$transactions item=t}
@@ -137,6 +156,7 @@ recevras une confirmation par email.
 </table>
 {/if}
 
+{if t($donation)}
 <p class="descr">Les 10 plus gros dons sont les suivants&nbsp;:</p>
 <table class="bicol">
   <tr>
@@ -166,6 +186,7 @@ recevras une confirmation par email.
   </tr>
   {/foreach}
 </table>
+{/if}
 
 {/if}
 
