@@ -485,9 +485,10 @@ class XnetEventsModule extends PLModule
         }
 
         // get a list of all the payment for this asso
-        $res = XDB::iterator("SELECT id, text
-                                FROM payments
-                               WHERE asso_id = {?}", $globals->asso('id'));
+        $res = XDB::iterator("SELECT  id, text
+                                FROM  payments
+                               WHERE  asso_id = {?} AND NOT FIND_IN_SET('old', flags)",
+                             $globals->asso('id'));
         $paiements = array();
         while ($a = $res->next()) $paiements[$a['id']] = $a['text']; {
             $page->assign('paiements', $paiements);
