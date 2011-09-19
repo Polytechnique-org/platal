@@ -28,6 +28,12 @@
   <tr>
     <th colspan="2">Paiement via {$meth->text}</th>
   </tr>
+{if t($public)}
+  <tr>
+    <td><b>Nom</b></td>
+    <td>{$full_name}</td>
+  </tr>
+{/if}
   <tr>
     <td><b>Transaction</b></td>
     <td>{$pay->text}</td>

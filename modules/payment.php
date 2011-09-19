@@ -162,6 +162,7 @@ class PaymentModule extends PLModule
             } else {
                 $pay->init($val, $meth);
                 $pay->prepareform($user);
+                $page->assign('full_name', $user->fullName(true));
                 $page->assign('sex', $user->isFemale());
             }
         } elseif (S::logged()) {
