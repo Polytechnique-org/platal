@@ -32,7 +32,7 @@
   qui aura lieu {$evt.date}.
 </p>
 
-{if $participants|@count && $is_admin}
+{if $evt.short_name && $participants|@count && $is_admin}
 <p class="center">
   [<a href="mailto:?bcc={$evt.short_name}-participants@{#globals.xnet.evts_domain#}">envoyer un email à ceux qui viennent</a>]
   <br />
