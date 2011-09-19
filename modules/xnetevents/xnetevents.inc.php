@@ -272,20 +272,23 @@ function event_change_shortname($page, $eid, $old, $new)
         // if we have a first new short_name create the lists
         $lastid = array();
         $where = array(
-            $globals->xnet->participant_list => 'nb > 0',
-            $globals->xnet->payed_list       => 'paid > 0',
-            $globals->xnet->unpayed_list     => 'nb > 0 AND paid = 0'
+            $globals->xnet->participant_list => 'g.nb > 0',
+            $globals->xnet->payed_list       => '(g.paid > 0 OR p.amount > 0)',
+            $globals->xnet->unpayed_list     => 'g.nb > 0 AND g.paid = 0 AND p.amount IS NULL'
         );
 
         foreach (array($globals->xnet->participant_list, $globals->xnet->payed_list, $globals->xnet->unpayed_list) as $suffix) {
-            $uids = XDB::fetchColumn('SELECT  uid
-                                        FROM  group_event_participants
-                                       WHERE  eid = {?} AND ' . $where[$suffix],
+            $uids = XDB::fetchColumn('SELECT  g.uid
+                                        FROM  group_event_participants AS g
+                                  INNER JOIN  group_events             AS e ON (g.eid = e.eid)
+                                   LEFT JOIN  payment_transactions     AS p ON (e.paiement_id = p.ref AND g.uid = p.uid)
+                                       WHERE  g.eid = {?} AND ' . $where[$suffix],
                                      $eid);
             foreach ($uids as $uid) {
                 add_to_list_alias($uid, $new . $suffix, $globals->xnet->evts_domain, 'event');
             }
         }
+
         $uids = XDB::fetchColumn('SELECT  m.uid
                                     FROM  group_members            AS m
                                LEFT JOIN  group_event_participants AS e ON (e.uid = m.uid AND e.eid = {?})
