@@ -27,7 +27,7 @@ function smarty_function_profile($params, $smarty)
     $with_link  = $params->b('link', true);
     $with_dir   = $params->b('directory', true);
     $with_groupperms = $params->b('groupperms', true);
-    $raw = $params->b('raw', true);
+    $raw = $params->b('raw', false);
     $user = $params->v('user');
     if (is_int($user) || ctype_digit($user)) {
         $user = User::getWithUID($user);
