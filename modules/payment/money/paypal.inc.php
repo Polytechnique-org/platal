@@ -33,7 +33,7 @@ class PayPal
         $this->val_number = $val;
     }
 
-    function prepareform($pay)
+    function prepareform($pay, $user)
     {
         // Documentation:
         // https://www.paypal.com/developer
@@ -43,7 +43,6 @@ class PayPal
         global $globals, $platal;
 
         $this->urlform = 'https://' . $globals->money->paypal_site . '/cgi-bin/webscr';
-        $user = S::user();
 
         $roboturl = str_replace("https://","http://",$globals->baseurl)
                   . '/' . $platal->ns . "payment/paypal_return/" . S::v('uid')

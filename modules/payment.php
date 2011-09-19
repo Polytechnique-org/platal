@@ -105,7 +105,7 @@ class PaymentModule extends PLModule
     function handlers()
     {
         return array(
-            'payment'                      => $this->make_hook('payment',          AUTH_COOKIE, 'user'),
+            'payment'                      => $this->make_hook('payment',          AUTH_PUBLIC, 'user'),
             'payment/cyber2_return'        => $this->make_hook('cyber2_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
             'payment/paypal_return'        => $this->make_hook('paypal_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
             '%grp/paiement'                => $this->make_hook('xnet_payment',     AUTH_PASSWD, 'user'),
@@ -125,15 +125,20 @@ class PaymentModule extends PLModule
 
     function handler_payment($page, $ref = -1)
     {
-        $this->load('money.inc.php');
-
         $page->changeTpl('payment/payment.tpl');
         $page->setTitle('Télépaiement');
+        $this->load('money.inc.php');
 
         $meth = new PayMethod(Env::i('methode', -1));
         $pay  = new Payment($ref);
 
-        if($pay->flags->hasflag('old')){
+        if (!$pay->flags->hasflag('public') && (!S::user() || !S::logged())) {
+            $page->kill("Vous n'avez pas les permissions nécessaires pour accéder à cette page.");
+        } else {
+            $page->assign('public', true);
+        }
+
+        if ($pay->flags->hasflag('old')) {
             $page->kill('La transaction selectionnée est périmée.');
         }
 
@@ -144,9 +149,22 @@ class PaymentModule extends PLModule
         }
 
         if (Post::has('op') && Post::v('op', 'select') == 'submit') {
-            $pay->init($val, $meth);
-            $pay->prepareform($pay);
-        } else {
+            if (S::logged()) {
+                $user = S::user();
+            } else {
+                $user = User::getSilent(Post::t('login'));
+            }
+
+            if (is_null($user)) {
+                $page->trigError("L'identifiant est erroné.");
+                $page->assign('login_error', true);
+                $page->assign('login', Post::t('login'));
+            } else {
+                $pay->init($val, $meth);
+                $pay->prepareform($user);
+                $page->assign('sex', $user->isFemale());
+            }
+        } elseif (S::logged()) {
             $res = XDB::iterator('SELECT  ts_confirmed, amount
                                     FROM  payment_transactions
                                    WHERE  uid = {?} AND ref = {?}
@@ -196,7 +214,6 @@ class PaymentModule extends PLModule
         $page->assign('meth', $meth);
         $page->assign('pay', $pay);
         $page->assign('evtlink', $pay->event());
-        $page->assign('sex', S::user()->isFemale());
     }
 
     function handler_cyber2_return($page, $uid = null)

@@ -67,9 +67,9 @@ class Payment
         $this->api = new $api($val);
     }
 
-    function prepareform()
+    function prepareform(User $user)
     {
-        return $this->api->prepareform($this);
+        return $this->api->prepareform($this, $user);
     }
 
     function event()

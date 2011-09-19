@@ -117,8 +117,14 @@ Si tu n'es pas encore inscrit à cet événement, n'oublie pas d'aller t'<a href
     </tr>
     <tr>
       <td>Montant</td>
-      <td><input type="text" name="amount" size="13" class='right' value="{$pay->amount_def}" /> &euro;</td>
+      <td><input type="text" name="amount" size="13" class="right" value="{$pay->amount_def}" /> &euro;</td>
     </tr>
+    {if t($public)}
+    <tr>
+      <td>Identifiant <small>(prenom.nom.promo)</small></td>
+      <td><input type="text" name="login" size="30" /></td>
+    </tr>
+    {/if}
     <tr>
       <td>Commentaire</td>
       <td><textarea name="comment" rows="5" cols="30"></textarea></td>

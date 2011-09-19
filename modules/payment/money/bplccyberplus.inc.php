@@ -60,7 +60,7 @@ class BPLCCyberPlus
         return trim(preg_replace('/\s\s+/', ' ', preg_replace('/[^a-zA-Z0-9]/', ' ', $string)));
     }
 
-    function prepareform($pay)
+    function prepareform($pay, $user)
     {
         global $globals, $platal;
         $log = S::v('log');
@@ -79,9 +79,9 @@ class BPLCCyberPlus
             'vads_return_mode' => 'NONE',
             'vads_url_return' => $pay->url ? $pay->url : $globals->baseurl . '/' . $platal->ns);
         $this->infos['client'] = Array(
-            'vads_cust_email' => S::user()->bestEmail(),
+            'vads_cust_email' => $user->bestEmail(),
             'vads_cust_id' => S::v('uid'),
-            'vads_cust_name' => substr(self::replaceNonAlpha(replace_accent(S::user()->shortName())), 0, 127));
+            'vads_cust_name' => substr(self::replaceNonAlpha(replace_accent($user->shortName())), 0, 127));
         $this->infos['commande'] = Array(
             'vads_amount' => $this->val,
             'vads_currency' => '978', # Euro
