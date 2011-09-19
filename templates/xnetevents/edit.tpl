@@ -201,6 +201,11 @@ Ton inscription à [METS LE NOM DE L'ÉVÉNEMENT ICI] a bien été enregistrée 
 {$profile->fullName("promo")}{/if}</textarea><br />
         {assign var='asso_url' value=$globals->baseurl|cat:'/'|cat:$platal->ns}
         Page internet de l'événement&nbsp;: <input size="40" name="site" value="{$paiement_site|default:$asso->site|default:$asso_url}" /><br />
+        Rendre public le télépaiement&nbsp;:
+        <label><input type="radio" name="payment_public" value="no" {if !t($payment_public)}checked="checked"{/if} />Non</label>
+        &nbsp;-&nbsp;
+        <label>Oui<input type="radio" name="payment_public" value="yes" {if t($payment_public)}checked="checked"{/if} /></label><br />
+        Attention&nbsp;: cela aura pour effet de rendre accessible ce télépaiement à tout le monde, même aux personnes non connectées.<br />
         Le nouveau paiement sera activé automatiquement après validation par le trésorier de Polytechnique.org,
         ce qui sera fait sous peu.
         <script type="text/javascript">//<![CDATA[

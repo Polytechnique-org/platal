@@ -463,7 +463,7 @@ class XnetEventsModule extends PLModule
                                 Post::v('intitule')." - ".$globals->asso('nom'),
                                 Post::v('site'), $money_defaut,
                                 Post::v('confirmation'), 0, 999,
-                                $globals->asso('id'), $eid);
+                                $globals->asso('id'), $eid, Post::v('payment_public') == 'yes');
                 if ($p->accept()) {
                     $p->submit();
                 } else {

@@ -59,4 +59,9 @@
 </tr>
 {/if}
 {/if}
+<tr class="pair">
+  <td class="titre">Public&nbsp;:</td>
+  <td>{if $valid->public}Oui{else}Non{/if}</td>
+</tr>
+
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

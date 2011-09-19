@@ -31,5 +31,10 @@
 <strong>Montant&nbsp;:</strong> <input type="text" name="pay_montant" size="5" value="{$valid->montant}" />
 (min <input type="text" name="pay_montant_min" size="5" value="{$valid->montant_min}" />
 &nbsp;->&nbsp; max <input type="text" name="pay_montant_max" size="5" value="{$valid->montant_max}" />)
+<br />
+<strong>Public&nbsp;:</strong>
+<label><input type="radio" name="pay_public" value="no" {if !t($valid->public)}checked="checked"{/if} />Non</label>
+&nbsp;-&nbsp;
+<label>Oui<input type="radio" name="pay_public" value="yes" {if t($valid->public)}checked="checked"{/if} /></label><br />
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
