@@ -89,7 +89,7 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
     public function accept()
     {
         // no text [AI JMIAJM IJA MIJ]
-        if (preg_match('/\[[-\'"A-Z ]+\]/', $this->msg_reponse)) {
+        if (preg_match('/\[[-\'"a-zA-Z ]+\]/', replace_accent($this->msg_reponse))) {
             $this->trigError("La demande de paiement n'est pas valide. Merci de compléter le texte avant de la soumettre");
             return false;
         }
