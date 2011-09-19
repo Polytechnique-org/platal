@@ -203,4 +203,13 @@ interprétée comme polémique par un lecteur.
 </div>
 {/if}
 
+{if t($payments)}
+<p>Télépaiements publics pour le groupe {$asso->nom}&nbsp;:</p>
+<ul>
+{foreach from=$payments item=payment}
+<li><a href="{$platal->ns}payment/{$payment.id}">{icon name=money title="Télépaiement"}{$payment.text}</a></li>
+{/foreach}
+</ul>
+{/if}
+
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -120,6 +120,12 @@ class XnetGrpModule extends PLModule
                                     WHERE  asso_id = {?} AND expiration >= CURRENT_DATE()
                                            AND FIND_IN_SET('public', flags)",
                                   $globals->asso('id'));
+            $payments = XDB::fetchAllAssoc("SELECT  id, text
+                                              FROM  payments
+                                             WHERE  asso_id = {?} AND NOT FIND_IN_SET('old', flags) AND FIND_IN_SET('public', flags)
+                                          ORDER BY  id DESC",
+                                           $globals->asso('id'));
+            $page->assign('payments', $payments);
         }
         if (may_update()) {
             $subs_valid = XDB::query("SELECT  uid
