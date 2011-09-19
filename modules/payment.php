@@ -108,8 +108,8 @@ class PaymentModule extends PLModule
             'payment'                      => $this->make_hook('payment',          AUTH_PUBLIC, 'user'),
             'payment/cyber2_return'        => $this->make_hook('cyber2_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
             'payment/paypal_return'        => $this->make_hook('paypal_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
-            '%grp/paiement'                => $this->make_hook('xnet_payment',     AUTH_PASSWD, 'user'),
-            '%grp/payment'                 => $this->make_hook('xnet_payment',     AUTH_PASSWD, 'user'),
+            '%grp/paiement'                => $this->make_hook('xnet_payment',     AUTH_PUBLIC, 'user'),
+            '%grp/payment'                 => $this->make_hook('xnet_payment',     AUTH_PUBLIC, 'user'),
             '%grp/payment/csv'             => $this->make_hook('payment_csv',      AUTH_PASSWD, 'groupadmin'),
             '%grp/payment/cyber2_return'   => $this->make_hook('cyber2_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
             '%grp/payment/paypal_return'   => $this->make_hook('paypal_return',    AUTH_PUBLIC, 'user', NO_HTTPS),
@@ -415,7 +415,7 @@ class PaymentModule extends PLModule
         global $globals;
 
         $perms = S::v('perms');
-        if (!$perms->hasFlag('groupmember')) {
+        if (!(S::identified() && $perms->hasFlag('groupmember'))) {
             if (is_null($pid)) {
                 return PL_FORBIDDEN;
             }
@@ -424,7 +424,12 @@ class PaymentModule extends PLModule
                            INNER JOIN  group_event_participants AS ep ON (ep.eid = e.eid AND ep.uid = {?})
                                 WHERE  e.paiement_id = {?} AND e.asso_id = {?}",
                               S::i('uid'), $pid, $globals->asso('id'));
-            if ($res->numRows() == 0) {
+            $public = XDB::query("SELECT  1
+                                    FROM  payments     AS p
+                              INNER JOIN  group_events AS g ON (g.paiement_id = p.id)
+                                   WHERE  g.asso_id = {?} AND p.id = {?} AND FIND_IN_SET('public', p.flags)",
+                                 $globals->asso('id'), $pid);
+            if ($res->numRows() == 0 && $public->numRows() == 0) {
                 return PL_FORBIDDEN;
             }
         }
