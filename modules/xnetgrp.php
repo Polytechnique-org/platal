@@ -888,40 +888,45 @@ class XnetGrpModule extends PLModule
                 }
             }
         } else {
-            // User is of type xnet. There are 3 possible cases:
-            //  * the email is not known yet: we create a new account and
-            //      propose to send an email to the user so he can activate
-            //      his account,
-            //  * the email is known but the user was not contacted in order to
-            //      activate yet: we propose to send an email to the user so he
-            //      can activate his account,
-            //  * the email is known and the user was already contacted or has
-            //      an active account: nothing to be done.
-            list($mbox, $domain) = explode('@', strtolower($email));
-            $hruid = User::makeHrid($mbox, $domain, 'ext');
-            // User might already have an account (in another group for example).
-            $user = User::getSilent($hruid);
+            // Check if the email is a redirection.
+            $user = User::getSilent($email);
 
-            // If the user has no account yet, creates new account: build names from email address.
-            if (empty($user)) {
-                $parts = explode('.', $mbox);
-                if (count($parts) == 1) {
-                    $lastname = $display_name = $full_name = $directory_name = ucfirst($mbox);
-                    $firstname = '';
-                } else {
-                    $firstname = ucfirst($parts[0]);
-                    $lastname = ucwords(implode(' ', array_slice($parts, 1)));
-                    $display_name = $firstname;
-                    $full_name = "$firstname $lastname";
-                    $directory_name = strtoupper($lastname) . " " . $firstname;
-                }
-                XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, directory_name, firstname, lastname, email, type, state)
-                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, \'xnet\', \'disabled\')',
-                             $hruid, $display_name, $full_name, $directory_name, $firstname, $lastname, $email);
+            if (is_null($user) || $user->type == 'xnet') {
+                // User is of type xnet. There are 3 possible cases:
+                //  * the email is not known yet: we create a new account and
+                //      propose to send an email to the user so he can activate
+                //      his account,
+                //  * the email is known but the user was not contacted in order to
+                //      activate yet: we propose to send an email to the user so he
+                //      can activate his account,
+                //  * the email is known and the user was already contacted or has
+                //      an active account: nothing to be done.
+                list($mbox, $domain) = explode('@', strtolower($email));
+                $hruid = User::makeHrid($mbox, $domain, 'ext');
+                // User might already have an account (in another group for example).
                 $user = User::getSilent($hruid);
-            }
 
-            $suggest_account_activation = $this->suggest($user);
+                // If the user has no account yet, creates new account: build names from email address.
+                if (empty($user)) {
+                    $parts = explode('.', $mbox);
+                    if (count($parts) == 1) {
+                        $lastname = $display_name = $full_name = $directory_name = ucfirst($mbox);
+                        $firstname = '';
+                    } else {
+                        $firstname = ucfirst($parts[0]);
+                        $lastname = ucwords(implode(' ', array_slice($parts, 1)));
+                        $display_name = $firstname;
+                        $full_name = "$firstname $lastname";
+                        $directory_name = strtoupper($lastname) . " " . $firstname;
+                    }
+                    XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, directory_name, firstname, lastname, email, type, state)
+                                       VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, \'xnet\', \'disabled\')',
+                                 $hruid, $display_name, $full_name, $directory_name, $firstname, $lastname, $email);
+                    $user = User::getSilent($hruid);
+                }
+
+                $suggest_account_activation = $this->suggest($user);
+            }
         }
 
         if ($user) {
