@@ -111,10 +111,12 @@ class Profile implements PlExportable
     const FETCH_MENTOR_TERMS   = 0x000400;
     const FETCH_DELTATEN       = 0x000800;
     const FETCH_PARTNER        = 0x001000;
+    const FETCH_SKILL          = 0x002000;
+    const FETCH_LANGUAGE       = 0x004000;
 
     const FETCH_MINIFICHES   = 0x00012D; // FETCH_ADDRESSES | FETCH_EDU | FETCH_JOBS | FETCH_NETWORKING | FETCH_PHONES
 
-    const FETCH_ALL          = 0x001FFF; // OR of FETCH_*
+    const FETCH_ALL          = 0x007FFF; // OR of FETCH_*
 
     static public $descriptions = array(
         'search_names'    => 'Noms',
@@ -830,6 +832,44 @@ class Profile implements PlExportable
             return array();
         } else {
             return $this->mentor_terms->get();
+        }
+    }
+
+    /* Skills */
+    private $skills = null;
+    public function setSkills(ProfileSkills $skills)
+    {
+        $this->skills = $skills;
+    }
+    public function getSkills()
+    {
+        if ($this->skills == null && !$this->fetched(self::FETCH_SKILL)) {
+            $this->setSkills($this->getProfileField(self::FETCH_SKILL));
+        }
+
+        if ($this->skills == null) {
+            return array();
+        } else {
+            return $this->skills->skills;
+        }
+    }
+
+    /* Languades */
+    private $languages = null;
+    public function setLanguages(ProfileLanguages $languages)
+    {
+        $this->languages = $languages;
+    }
+    public function getLanguages()
+    {
+        if ($this->languages == null && !$this->fetched(self::FETCH_LANGUAGE)) {
+            $this->setLanguages($this->getProfileField(self::FETCH_LANGUAGE));
+        }
+
+        if ($this->languages == null) {
+            return array();
+        } else {
+            return $this->languages->languages;
         }
     }
 

@@ -13,6 +13,9 @@ Bug/Wish:
         - #1512: Allows payments for unlogged users                        -JAC
         - #1537: Replaces payments page on main site by a donation page    -JAC
 
+    * Profile:
+        - #1535: Moves and displays skills with mentoring informations     -JAC
+
 ================================================================================
 VERSION 1.1.3                                                         10 09 2011
 

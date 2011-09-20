@@ -26,6 +26,8 @@
 
 {assign var=terms value=$profile->getMentoringTerms()}
 {assign var=countries value=$profile->getMentoringCountries()}
+{assign var=skills value=$profile->getSkills()}
+{assign var=languages value=$profile->getLanguages()}
 <div id="fiche">
 <div id="fiche_referent">
   <div id="fiche_identite">
@@ -36,8 +38,35 @@
   </div>
   <div class="spacer"></div>
 
+  {if $skills|count || $languages|count}
+  <div class="part">
+    <h2>Compétences&nbsp;:</h2>
+    {if $skills|count}
+    <div style="float: left">
+      <em>Professionnelles&nbsp;:</em><br />
+      <ul>
+        {foreach from=$skills item="skill"}
+        <li>{$skill.text_fr} ({$skill.level})</li>
+        {/foreach}
+      </ul>
+    </div>
+    {/if}
+    {if $languages|count}
+    <div {if $skills|count}style="float: right"{/if}>
+      <em>Linguistiques&nbsp;:</em><br />
+      <ul>
+        {foreach from=$languages item="language"}
+        <li>{$language.language} ({$language.level})</li>
+        {/foreach}
+      </ul>
+    </div>
+    {/if}
+    <div class="spacer">&nbsp;</div>
+  </div>
+  {/if}
+
   {if $profile->mentor_expertise != '' || $terms|count || $countries|count }
-  <div id="part">
+  <div class="part">
     <h2>Informations de référent&nbsp;:</h2>
     {if $profile->mentor_expertise}
     <div class="rubrique_referent">

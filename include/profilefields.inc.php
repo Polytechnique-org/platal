@@ -36,6 +36,8 @@ abstract class ProfileField
         Profile::FETCH_MENTOR_COUNTRY => 'ProfileMentoringCountries',
         Profile::FETCH_JOB_TERMS      => 'ProfileJobTerms',
         Profile::FETCH_MENTOR_TERMS   => 'ProfileMentoringTerms',
+        Profile::FETCH_SKILL          => 'ProfileSkills',
+        Profile::FETCH_LANGUAGE       => 'ProfileLanguages',
         Profile::FETCH_PARTNER        => 'ProfilePartnerSharing',
     );
 
@@ -718,6 +720,66 @@ class ProfileMentoringTerms extends ProfileJobTerms
                                 WHERE  mt.pid IN {?}
                              ORDER BY  ' . XDB::formatCustomOrder('mt.pid', $pids),
                                 $pids);
+        return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
+    }
+}
+// }}}
+// {{{ class ProfileSkills                                   [ Field ]
+class ProfileSkills extends ProfileField
+{
+    public $skills = array();
+
+    public function __construct(PlInnerSubIterator $it)
+    {
+        $this->pid = $it->value();
+        while ($skill = $it->next()) {
+            $this->skills[$skill['cid']] = $skill;
+        }
+    }
+
+    public static function fetchData(array $pids, Visibility $visibility)
+    {
+        $data = XDB::iterator('SELECT  ps.cid, pse.text_fr, ps.level, ps.pid
+                                 FROM  profile_skills          AS ps
+                           INNER JOIN  profile_skill_enum      AS pse ON (pse.id = ps.cid)
+                                WHERE  ps.pid IN {?}
+                             ORDER BY  ' . XDB::formatCustomOrder('ps.pid', $pids),
+                              $pids);
+        return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
+    }
+}
+// }}}
+// {{{ class ProfileLanguages                                [ Field ]
+class ProfileLanguages extends ProfileField
+{
+    public $languages = array();
+
+    public function __construct(PlInnerSubIterator $it)
+    {
+        static $levels = array(
+            1 => 'connaissance basique',
+            2 => 'maîtrise des bases',
+            3 => 'maîtrise limitée',
+            4 => 'maîtrise générale',
+            5 => 'bonne maîtrise',
+            6 => 'maîtrise complète'
+        );
+
+        $this->pid = $it->value();
+        while ($language = $it->next()) {
+            $this->languages[$language['lid']] = $language;
+            $this->languages[$language['lid']]['level'] = $levels[$language['level']];
+        }
+    }
+
+    public static function fetchData(array $pids, Visibility $visibility)
+    {
+        $data = XDB::iterator('SELECT  ps.lid, pse.language, ps.level, ps.pid
+                                 FROM  profile_langskills     AS ps
+                           INNER JOIN  profile_langskill_enum AS pse ON (pse.iso_639_2b = ps.lid)
+                                WHERE  ps.pid IN {?}
+                             ORDER BY  ' . XDB::formatCustomOrder('ps.pid', $pids),
+                              $pids);
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
 }
