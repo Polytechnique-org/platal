@@ -678,7 +678,10 @@ class Profile implements PlExportable
     public function getEducations($flags, $limit = null)
     {
         if ($this->educations == null && !$this->fetched(self::FETCH_EDU)) {
-            $this->setEducations($this->getProfileField(self::FETCH_EDU));
+            $educations = $this->getProfileField(self::FETCH_EDU);
+            if ($educations) {
+                $this->setEducations($educations);
+            }
         }
 
         if ($this->educations == null) {
@@ -703,7 +706,10 @@ class Profile implements PlExportable
     public function getCorps()
     {
         if ($this->corps == null && !$this->fetched(self::FETCH_CORPS)) {
-            $this->setCorps($this->getProfileField(self::FETCH_CORPS));
+            $corps = $this->getProfileField(self::FETCH_CORPS);
+            if ($corps) {
+                $this->setCorps($corps);
+            }
         }
         return $this->corps;
     }
@@ -798,7 +804,10 @@ class Profile implements PlExportable
     public function getMentoringCountries()
     {
         if ($this->mentor_countries == null && !$this->fetched(self::FETCH_MENTOR_COUNTRY)) {
-            $this->setMentoringCountries($this->getProfileField(self::FETCH_MENTOR_COUNTRY));
+            $countries = $this->getProfileField(self::FETCH_MENTOR_COUNTRY);
+            if ($countries) {
+                $this->setMentoringCountries($countries);
+            }
         }
 
         if ($this->mentor_countries == null) {
@@ -825,7 +834,10 @@ class Profile implements PlExportable
     public function getMentoringTerms()
     {
         if ($this->mentor_terms == null && !$this->fetched(self::FETCH_MENTOR_TERMS)) {
-            $this->setMentoringTerms($this->getProfileField(self::FETCH_MENTOR_TERMS));
+            $terms = $this->getProfileField(self::FETCH_MENTOR_TERMS);
+            if ($terms) {
+                $this->setMentoringTerms($terms);
+            }
         }
 
         if ($this->mentor_terms == null) {
@@ -844,7 +856,10 @@ class Profile implements PlExportable
     public function getSkills()
     {
         if ($this->skills == null && !$this->fetched(self::FETCH_SKILL)) {
-            $this->setSkills($this->getProfileField(self::FETCH_SKILL));
+            $skills = $this->getProfileField(self::FETCH_SKILL);
+            if ($skills) {
+                $this->setSkills($skills);
+            }
         }
 
         if ($this->skills == null) {
@@ -863,7 +878,10 @@ class Profile implements PlExportable
     public function getLanguages()
     {
         if ($this->languages == null && !$this->fetched(self::FETCH_LANGUAGE)) {
-            $this->setLanguages($this->getProfileField(self::FETCH_LANGUAGE));
+            $languages = $this->getProfileField(self::FETCH_LANGUAGE);
+            if ($languages) {
+                $this->setLanguages($languages);
+            }
         }
 
         if ($this->languages == null) {
@@ -947,7 +965,10 @@ class Profile implements PlExportable
     public function getMedals()
     {
         if ($this->medals == null && !$this->fetched(self::FETCH_MEDALS)) {
-            $this->setMedals($this->getProfileField(self::FETCH_MEDALS));
+            $medals = $this->getProfileField(self::FETCH_MEDALS);
+            if ($medals) {
+                $this->setMedals($medals);
+            }
         }
         if ($this->medals == null) {
             return array();
@@ -966,7 +987,10 @@ class Profile implements PlExportable
     public function getPartnerSettings($partner_id)
     {
         if ($this->partners_settings === null && !$this->fetched(self::FETCH_PARTNER)) {
-            $this->setPartnersSettings($this->getProfileField(self::FETCH_PARTNER));
+            $settings = $this->getProfileField(self::FETCH_PARTNER);
+            if ($settings) {
+                $this->setPartnersSettings($settings);
+            }
         }
         if ($this->partners_settings === null) {
             return PartnerSettings::getEmpty($partner_id);
