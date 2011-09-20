@@ -1323,7 +1323,7 @@ class XnetGrpModule extends PLModule
                 if (Post::i('newsletter') == 1) {
                     $nl->subscribe($user);
                 } else {
-                    $nl->unsubscribe(null, $user->id);
+                    $nl->unsubscribe(null, $user->id());
                 }
             }
         }
