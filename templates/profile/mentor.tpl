@@ -46,6 +46,79 @@
   <li>ou bien, plus âgés, qui souhaitent réorienter leur carrière.</li>
 </ul>
 
+<table class="bicol" id="competences_table" style="margin-bottom: 1em">
+  <tr>
+    <th>
+      <div class="flags" style="float: left">
+        <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
+        {icon name="flag_red" title="privé"}
+      </div>
+      Compétences professionnelles
+    </th>
+  </tr>
+  <tr>
+    <td>
+      <span class="titre">Domaine&nbsp;:</span>
+      <select name="competences_sel" onchange="updateElement('competences')">
+        <option value="">&nbsp;</option>
+        {assign var=ingroup value=false}
+        {iterate from=$comp_list item=comp}
+        {if $comp.title}
+        {if $ingroup}</optgroup>{/if}
+        <optgroup label="{$comp.text_fr}">
+        {assign var=ingroup value=true}
+        {/if}
+        <option value="{$comp.id}">{$comp.text_fr}</option>
+        {/iterate}
+        {if $ingroup}</optgroup>{/if}
+      </select>
+      <span id="competences_add" style="display: none">
+        <a href="javascript:addSkill('competences')">{icon name=add title="Ajouter cette compétence"}</a>
+      </span>
+    </td>
+  </tr>
+  <tr class="pair">
+    <td id="competences">
+      {foreach from=$competences item=competence key=id}
+      {include file="profile/skill.skill.tpl" cat='competences' skill=$competence id=$id levels=$comp_level}
+      {/foreach}
+    </td>
+  </tr>
+</table>
+
+<table class="bicol" id="langues_table" style="margin-bottom: 1em">
+  <tr>
+    <th>
+      <div class="flags" style="float: left">
+        <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
+        {icon name="flag_red" title="privé"}
+      </div>
+      Compétences linguistiques
+    </th>
+  </tr>
+  <tr>
+    <td>
+      <span class="titre">Domaine&nbsp;:</span>
+      <select name="langues_sel" onchange="updateElement('langues')">
+        <option value="">&nbsp;</option>
+        {iterate from=$lang_list item=lang}
+        <option value="{$lang.iso_639_2b}">{$lang.language}</option>
+        {/iterate}
+      </select>
+      <span id="langues_add" style="display: none">
+        <a href="javascript:addSkill('langues')">{icon name=add title="Ajouter cette langue"}</a>
+      </span>
+    </td>
+  </tr>
+  <tr class="pair">
+    <td id="langues">
+      {foreach from=$langues item=langue key=id}
+      {include file="profile/skill.skill.tpl" cat='langues' skill=$langue id=$id levels=$lang_level}
+      {/foreach}
+    </td>
+  </tr>
+ </table>
+
 <table class="bicol" id="countries_table" style="margin-bottom: 1em" summary="Profil&nbsp;: Mentoring">
   <tr>
     <th>

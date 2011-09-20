@@ -19,6 +19,91 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+class ProfileSettingSkill implements ProfileSetting
+{
+    private $table;
+    private $id;
+    private $skill_field;
+    private $text_field;
+
+    public function __construct($table, $id, $skill, $text)
+    {
+        $this->table = $table;
+        $this->id = $id;
+        $this->skill_field = $skill;
+        $this->text_field = $text;
+    }
+
+    public function value(ProfilePage $page, $field, $value, &$success)
+    {
+        if (is_null($value)) {
+            $value = array();
+            $res = XDB::iterRow("SELECT  s.{$this->id}, s.{$this->text_field}, i.level
+                                   FROM  profile_{$this->table}_enum AS s
+                             INNER JOIN  profile_{$this->table}s     AS i ON (s.{$this->id} = i.{$this->skill_field})
+                                  WHERE  i.pid = {?}",
+                                $page->pid());
+            while (list($sid, $text, $level) = $res->next()) {
+                $value[$sid] = array('text' => $text, 'level' => $level);
+            }
+        }
+        if (!is_array($value)) {
+            $value = array();
+        } else {
+            foreach ($value as $id=>&$skill) {
+                if (!isset($skill['text']) || empty($skill['text'])) {
+                    $res = XDB::query("SELECT  {$this->text_field}
+                                         FROM  profile_{$this->table}_enum
+                                        WHERE  {$this->id} = {?}", $id);
+                    $skill['text'] = $res->fetchOneCell();
+                }
+            }
+        }
+        ksort($value);
+        $success = true;
+        return $value;
+    }
+
+    public function save(ProfilePage $page, $field, $value)
+    {
+        XDB::execute("DELETE FROM  profile_{$this->table}s
+                            WHERE  pid = {?}",
+                     $page->pid());
+        if (!count($value)) {
+            return;
+        }
+        foreach ($value as $id=>&$skill) {
+            XDB::execute("INSERT INTO  profile_{$this->table}s (pid, {$this->skill_field}, level)
+                               VALUES  ({?}, {?}, {?})",
+                         $page->pid(), $id, $skill['level']);
+        }
+    }
+
+    public function getText($value) {
+        $skills = array();
+
+        if ($this->table == 'langskill') {
+            static $levels = array(
+                1 => 'connaissance basique',
+                2 => 'maîtrise des bases',
+                3 => 'maîtrise limitée',
+                4 => 'maîtrise générale',
+                5 => 'bonne maîtrise',
+                6 => 'maîtrise complète'
+            );
+            foreach ($value as $skill) {
+                $skills[] = $skill['text'] . ' (' . $levels[$skill['level']] . ')';
+            }
+        } else {
+            foreach ($value as $skill) {
+                $skills[] = $skill['text'] . ' (' . $skill['level'] . ')';
+            }
+        }
+
+        return implode(', ' , $skills);
+    }
+}
+
 /** Terms associated to profile mentoring */
 class ProfileSettingTerms implements ProfileSetting
 {
@@ -143,6 +228,8 @@ class ProfilePageMentor extends ProfilePage
         $this->settings['expertise'] = null;
         $this->settings['terms'] = new ProfileSettingTerms();
         $this->settings['countries'] = new ProfileSettingCountry();
+        $this->settings['competences'] = new ProfileSettingSkill('skill', 'id', 'cid', 'text_fr');
+        $this->settings['langues'] = new ProfileSettingSkill('langskill', 'iso_639_2b', 'lid', 'language');
     }
 
     protected function _fetchData()
@@ -179,6 +266,20 @@ class ProfilePageMentor extends ProfilePage
                                                       FROM  geoloc_countries
                                                   ORDER BY  country"));
         $page->assign('hrpid', $this->profile->hrpid);
+        $page->assign('comp_list', XDB::iterator("SELECT  id, text_fr, FIND_IN_SET('titre',flags) AS title
+                                                    FROM  profile_skill_enum"));
+        $page->assign('comp_level', array('initié' => 'initié',
+                                          'bonne connaissance' => 'bonne connaissance',
+                                          'expert' => 'expert'));
+        $page->assign('lang_list', XDB::iterator('SELECT  iso_639_2b, language
+                                                    FROM  profile_langskill_enum
+                                                ORDER BY  language'));
+        $page->assign('lang_level', array(1 => 'connaissance basique',
+                                          2 => 'maîtrise des bases',
+                                          3 => 'maîtrise limitée',
+                                          4 => 'maîtrise générale',
+                                          5 => 'bonne maîtrise',
+                                          6 => 'maîtrise complète'));
     }
 }
 

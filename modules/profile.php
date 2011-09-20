@@ -301,7 +301,7 @@ class ProfileModule extends PLModule
     {
         global $globals;
 
-        if (in_array($hrpid, array('general', 'adresses', 'emploi', 'poly', 'deco', 'skill', 'mentor', 'deltaten'))) {
+        if (in_array($hrpid, array('general', 'adresses', 'emploi', 'poly', 'deco', 'mentor', 'deltaten'))) {
             $aux = $opened_tab;
             $opened_tab = $hrpid;
             $hrpid = $aux;
@@ -333,7 +333,6 @@ class ProfileModule extends PLModule
         }
         $wiz->addPage('ProfilePageDecos', 'Décorations - Medailles', 'deco');
         if (S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE)) {
-            $wiz->addPage('ProfilePageSkills', 'Compétences diverses', 'skill');
             $wiz->addPage('ProfilePageMentor', 'Mentoring', 'mentor');
         }
         if (S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE) && $profile->isDeltatenEnabled(Profile::DELTATEN_OLD)) {
