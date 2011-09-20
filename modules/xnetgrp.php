@@ -1164,8 +1164,6 @@ class XnetGrpModule extends PLModule
             }
 
             // Update user info
-            $email_changed = (!$user->profile() && strtolower($user->forlifeEmail()) != strtolower(Post::v('email')));
-            $from_email = $user->forlifeEmail();
             if ($user->type == 'virtual' || ($user->type == 'xnet' && !$user->perms)) {
                 $lastname = Post::s('lastname');
                 if (Post::s('type') != 'virtual') {
@@ -1189,11 +1187,11 @@ class XnetGrpModule extends PLModule
                                SET  email = {?}
                              WHERE  uid = {?}',
                            Post::t('email'), $user->id());
-            }
-            if (require_email_update($user, Post::t('email'))) {
-                $listClient = new MMList(S::user());
-                $listClient->change_user_email($user->forlifeEmail(), Post::t('email'));
-                update_alias_user($user->forlifeEmail(), Post::t('email'));
+                if (Post::has('email') && require_email_update($user, Post::t('email'))) {
+                    $listClient = new MMList(S::user());
+                    $listClient->change_user_email($user->forlifeEmail(), Post::t('email'));
+                    update_alias_user($user->forlifeEmail(), Post::t('email'));
+                }
             }
             if (XDB::affectedRows()) {
                 $page->trigSuccess('Données de l\'utilisateur mises à jour.');
@@ -1235,10 +1233,6 @@ class XnetGrpModule extends PLModule
             foreach (Env::v('ml1', array()) as $ml => $state) {
                 $ask = empty($_REQUEST['ml2'][$ml]) ? 0 : 2;
                 if ($ask == $state) {
-                    if ($state && $email_changed) {
-                        $mmlist->replace_email($ml, $from_email, $user->forlifeEmail());
-                        $page->trigSuccess("L'abonnement de {$user->fullName()} à $ml@ a été mis à jour.");
-                    }
                     continue;
                 }
                 if ($state == '1') {
@@ -1249,11 +1243,7 @@ class XnetGrpModule extends PLModule
                     $mmlist->mass_subscribe($ml, Array($user->forlifeEmail()));
                     $page->trigSuccess("{$user->fullName()} a été abonné à $ml@.");
                 } else {
-                    if ($email_changed) {
-                        $mmlist->mass_unsubscribe($ml, Array($from_email));
-                    } else {
-                        $mmlist->mass_unsubscribe($ml, Array($user->forlifeEmail()));
-                    }
+                    $mmlist->mass_unsubscribe($ml, Array($user->forlifeEmail()));
                     $page->trigSuccess("{$user->fullName()} a été désabonné de $ml@.");
                 }
             }
@@ -1263,12 +1253,10 @@ class XnetGrpModule extends PLModule
                 require_once 'emails.inc.php';
                 $ask = !empty($_REQUEST['ml4'][$ml]);
                 list($local_part, ) = explode('@', $ml);
-                if($state == $ask) {
-                    if ($state && $email_changed) {
-                        update_list_alias($user->id(), $from_email, $local_part, $globals->asso('mail_domain'));
-                        $page->trigSuccess("L'abonnement de {$user->fullName()} à $ml a été mis à jour.");
-                    }
-                } else if($ask) {
+                if ($ask == $state) {
+                    continue;
+                }
+                if ($ask) {
                     add_to_list_alias($user->id(), $local_part, $globals->asso('mail_domain'));
                     $page->trigSuccess("{$user->fullName()} a été abonné à $ml.");
                 } else {
