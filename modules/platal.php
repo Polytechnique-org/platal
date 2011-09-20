@@ -47,6 +47,7 @@ class PlatalModule extends PLModule
             'prefs/rss'         => $this->make_hook('prefs_rss',    AUTH_COOKIE, 'user'),
             'prefs/webredirect' => $this->make_hook('webredir',     AUTH_PASSWD, 'mail'),
             'prefs/skin'        => $this->make_hook('skin',         AUTH_COOKIE, 'user'),
+            'prefs/email'       => $this->make_hook('prefs_email',  AUTH_COOKIE, 'mail'),
 
             // password related thingies
             'password'          => $this->make_hook('password',     AUTH_PASSWD, 'user,groups'),
@@ -197,6 +198,47 @@ class PlatalModule extends PLModule
             $this->__set_rss_state(true);
             $page->trigSuccess("Ton Fil RSS est activé.");
         }
+    }
+
+    function handler_prefs_email($page)
+    {
+        $page->changeTpl('platal/email_preferences.tpl');
+
+        if (Post::has('submit')) {
+            S::assert_xsrf_token();
+
+            $from_email = Post::t('from_email');
+            $from_format = Post::v('from_format');
+
+            // Checks email.
+            $email_regex = '/^[a-z0-9.\-+_\$]+@([\-.+_]?[a-z0-9])+$/i';
+            if (!preg_match($email_regex, $from_email)) {
+                $full_regex = '/^[^<]*<[a-z0-9.\-+_\$]+@([\-.+_]?[a-z0-9])+>$/i';
+                if (!preg_match($full_regex, $from_email)) {
+                    $page->trigError("L'adresse email est erronée.");
+                    $error = true;
+                    $page->assign('from_email', $from_email);
+                    $page->assign('from_format', $from_format);
+                    $page->assign('error', true);
+                    return;
+                }
+            }
+
+            // Saves data.
+            XDB::execute('UPDATE  accounts
+                             SET  from_email = {?}, from_format = {?}
+                           WHERE  uid = {?}',
+                         $from_email, ($from_format == 'html' ? 'html' : 'text'), S::user()->id());
+            $page->trigSuccess('Données enregistrées.');
+        }
+
+        $data = XDB::fetchOneAssoc('SELECT  from_email, from_format
+                                      FROM  accounts
+                                     WHERE  uid = {?}',
+                                   S::user()->id());
+        $page->assign('from_email', $data['from_email']);
+        $page->assign('from_format', $data['from_format']);
+        $page->assign('error', false);
     }
 
     function handler_password($page)

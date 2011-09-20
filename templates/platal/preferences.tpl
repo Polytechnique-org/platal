@@ -100,6 +100,11 @@ $(function() {
       http://www.carva.org/{$smarty.session.user->hruid} vers la page de ton choix.<br />
       <a href="prefs/webredirect">Gérer ta redirection Web</a>
     </dd>
+    <dt>Paramètres d'envois d'emails depuis le site</dt>
+    <dd>
+      Tu peux faire retenir au site les paramètres d'envoi par défaut des emails depuis <a href="emails/send">le site</a>.<br />
+      <a href="prefs/email">Gérer tes envois d'emails depuis le site</a>
+    </dd>
   </dl>
 </fieldset>
 {/if}

@@ -142,6 +142,15 @@
     }
   }
 
+  function toggleWiki()
+  {
+    if ($('[name="wiki"]').val() == 'text') {
+      $('[name="wiki"]').val('wiki');
+    } else {
+      $('[name="wiki"]').val('text');
+    }
+  }
+
   $(window).unload(
     function() {
       if (sent) {
@@ -180,11 +189,8 @@
       <td class="titre">de&nbsp;:</td>
       <td>
         <input type='hidden' name='signature' value='1' />
-        <input type='text' name='from' size='60' value='{if $smarty.request.from}
-{$smarty.request.from}
-{else}
-"{$user->fullName()}" &lt;{$user->bestEmail()}&gt;
-{/if}' />
+        <input type='text' name='from' size='60'
+          value="{if $smarty.request.from}{$smarty.request.from}{else}{$preferences.from_email}{/if}" />
       </td>
     </tr>
     <tr>
@@ -284,8 +290,12 @@
     <legend>Sujet&nbsp;:&nbsp;<input type='text' name='sujet' size='60' value="{$smarty.request.sujet}" /></legend>
     <div class="center">
       Tu peux utiliser des <a href="wiki_help" class="popup3">{icon name=information title="Syntaxe wiki"} marqueurs wiki</a> pour formatter ton texte.<br />
-      <small><label><input type="checkbox" name="nowiki" value="1" {if $smarty.request.nowiki}checked="checked"{/if} onchange="updateWikiView(this);" />
-      coche cette case pour envoyer l'email en texte brut, sans formattage</label></small>
+      <small><label>
+        <input type="hidden"  name="wiki" value="{$smarty.request.wiki|default:$preferences.from_format}" />
+        <input type="checkbox" {if $smarty.request.wiki eq "text" || (!$smarty.request.wiki && $preferences.from_format eq "text")}checked="checked"{/if}
+        onchange="updateWikiView(this); toggleWiki();" />
+        coche cette case pour envoyer l'email en texte brut, sans formattage
+      </label></small>
     </div>
     <div id="preview">
       <div id="preview_pv" style="display: none">

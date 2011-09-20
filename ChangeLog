@@ -9,6 +9,9 @@ Bug/Wish:
     * Core:
         - #1523: Rename AUTH_MDP to AUTH_PASSWD                            -JAC
 
+    * Email:
+        - #1529: Stores and uses preferences for sending emails from site  -JAC
+
     * Payments:
         - #1512: Allows payments for unlogged users                        -JAC
         - #1537: Replaces payments page on main site by a donation page    -JAC

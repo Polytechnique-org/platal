@@ -463,7 +463,7 @@ class EmailModule extends PLModule
                     foreach ($files as $name=>&$upload) {
                         $mymail->addUploadAttachment($upload, $name);
                     }
-                    if (Env::v('nowiki')) {
+                    if (Env::v('wiki') == 'text') {
                         $mymail->setTxtBody(wordwrap($txt, 78, "\n"));
                     } else {
                         $mymail->setWikiBody($txt);
@@ -498,6 +498,14 @@ class EmailModule extends PLModule
         $page->assign('contacts', $contacts);
         $page->assign('maxsize', ini_get('upload_max_filesize') . 'o');
         $page->assign('user', S::user());
+        $preferences = XDB::fetchOneAssoc('SELECT  from_email, from_format
+                                             FROM  accounts
+                                            WHERE  uid = {?}',
+                                          S::user()->id());
+        if ($preferences['from_email'] == '') {
+            $preferences['from_email'] = '"' . S::user()->fullName() . '" <' . S::user()->bestEmail() . '>';
+        }
+        $page->assign('preferences', $preferences);
     }
 
     function handler_test($page, $hruid = null)
