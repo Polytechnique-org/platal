@@ -16,6 +16,9 @@ Bug/Wish:
     * Profile:
         - #1535: Moves and displays skills with mentoring informations     -JAC
 
+    * XnetGrp:
+        - #1525: Fixes broken page on erroneous group page edition         -JAC
+
 ================================================================================
 VERSION 1.1.3                                                         10 09 2011
 
