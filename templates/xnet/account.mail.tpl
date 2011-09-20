@@ -28,7 +28,7 @@
 {elseif $mail_part eq 'text'}
 Bonjour,
 
-{$sender_name} nous a demandé de vous créer un compte pour que vous puissiez disposer pleinement de toutes les fonctionnalités liées au groupe {$group}.
+{$sender_name} nous a demandé de vous {if $again}relancer{else}créer un compte{/if} pour que vous puissiez disposer pleinement de toutes les fonctionnalités liées au groupe {$group}.
 
 Après activation, vos paramètres de connexion seront :
 

@@ -192,10 +192,21 @@
       <td colspan="2">
         <label>
           <input type="checkbox" name="suggest" />
-          coche cette case si tu souhaites qu'un compte « Extérieur » soit créé
+          coche cette case si tu souhaites qu'un compte «&nbsp;Extérieur&nbsp;» soit créé
           pour cette personne et que nous lui envoyions un email afin qu'il ait
           accès aux nombreuses fonctionnalités de Polytechnique.net (inscription
           aux évènements, télépaiement, modération des listes de diffusion&hellip;)
+        </label>
+      </td>
+    </tr>
+    {/if}
+    {if $user->type eq 'xnet' && $pending_xnet_account}
+    <tr>
+      <td colspan="2">
+        <label>
+          <input type="checkbox" name="again" />
+          Cette personne a un compte «&nbsp;Extérieur&nbsp;» en attente d'activation de sa part. Pour la relancer, il suffit
+          de cocher la case ci-contre.
         </label>
       </td>
     </tr>

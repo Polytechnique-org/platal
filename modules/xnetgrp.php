@@ -1239,10 +1239,29 @@ class XnetGrpModule extends PLModule
                 $page->trigSuccess('Données de l\'utilisateur mises à jour.');
             }
 
-            if (($user->type == 'xnet' && !$user->perms) && Post::b('suggest')) {
-                $request = new AccountReq(S::user(), $user->hruid, Post::t('email'), $globals->asso('nom'));
-                $request->submit();
-                $page->trigSuccess('Le compte va bientôt être activé.');
+            if (($user->type == 'xnet' && !$user->perms)) {
+                if (Post::b('suggest')) {
+                    $request = new AccountReq(S::user(), $user->hruid, Post::t('email'), $globals->asso('nom'));
+                    $request->submit();
+                    $page->trigSuccess('Le compte va bientôt être activé.');
+                }
+                if (Post::b('again')) {
+                    $data = XDB::fetchOneAssoc('SELECT  hash, group_name, sender_name, email
+                                                  FROM  register_pending_xnet
+                                                 WHERE  uid = {?}',
+                                               $user->id());
+
+                    $mailer = new PlMailer('xnet/account.mail.tpl');
+                    $mailer->addCc('validation+xnet_account@polytechnique.org');
+                    $mailer->setTo($data['email']);
+                    $mailer->assign('hash', $data['hash']);
+                    $mailer->assign('email', $data['email']);
+                    $mailer->assign('group', $data['group_name']);
+                    $mailer->assign('sender_name', $data['sender_name']);
+                    $mailer->assign('again', true);
+                    $mailer->send();
+                    $page->trigSuccess('Relance effectuée avec succès.');
+                }
             }
 
             // Update group params for user
@@ -1343,6 +1362,10 @@ class XnetGrpModule extends PLModule
         $page->assign('alias', $user->emailGroupAliases($globals->asso('mail_domain')));
         $page->assign('positions', explode(',', $positions));
         $page->assign('nl_registered', $nl_registered);
+        $page->assign('pending_xnet_account', XDB::fetchOneCell('SELECT  1
+                                                                   FROM  register_pending_xnet
+                                                                  WHERE  uid = {?}',
+                                                                $user->id()));
     }
 
     function handler_rss(PlPage $page, PlUser $user)

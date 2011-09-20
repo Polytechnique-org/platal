@@ -40,6 +40,7 @@ foreach ($users as $user) {
     $mailer->assign('email', $user['email']);
     $mailer->assign('group', $user['group_name']);
     $mailer->assign('sender_name', $user['sender_name']);
+    $mailer->assign('again', false);
     $mailer->send();
 
     XDB::execute('UPDATE  accounts
