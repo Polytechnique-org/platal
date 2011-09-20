@@ -131,7 +131,7 @@ class Visibility
     {
         // self::$display_levels is order from least restrictive
         // to most restrictive.
-        return self::$display_levels[$a] >= self::$display_levels[$b];
+        return self::$display_levels[$level_a] >= self::$display_levels[$level_b];
     }
 
     /** Compare the visibility of two fields.

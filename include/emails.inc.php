@@ -30,7 +30,7 @@ function require_email_update(User $user, $new_email)
 {
     Platal::assert(!is_null($user), 'User cannot be null.');
 
-    return !$user->checkPerms(User::PERM_MAIL) && $new_email != $user->forlifeEmail();
+    return !$user->checkPerms(User::PERM_MAIL) && strtolower($new_email) != strtolower($user->forlifeEmail());
 }
 
 function format_email_alias($email)

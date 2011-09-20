@@ -30,8 +30,8 @@ class AuthModule extends PLModule
             'webservices/manageurs.php'     => $this->make_hook('manageurs',          AUTH_PUBLIC, 'user', NO_HTTPS),
 
             'auth-redirect.php'             => $this->make_hook('redirect',           AUTH_COOKIE, 'user'),
-            'auth-groupex.php'              => $this->make_hook('groupex_old',        AUTH_COOKIE, 'user'),
-            'auth-groupex'                  => $this->make_hook('groupex',            AUTH_PUBLIC),
+            'auth-groupex.php'              => $this->make_hook('groupex_old',        AUTH_COOKIE, ''),
+            'auth-groupex'                  => $this->make_hook('groupex',            AUTH_PUBLIC, ''),
             'admin/auth-groupes-x'          => $this->make_hook('admin_authgroupesx', AUTH_PASSWD, 'admin'),
         );
     }
@@ -132,6 +132,10 @@ class AuthModule extends PLModule
                 $page->assign('group', null);
             }
             return PL_DO_AUTH;
+        }
+
+        if (!S::user()->checkPerms('groups')) {
+            return PL_FORBIDDEN;
         }
 
         $this->load('auth.inc.php');
