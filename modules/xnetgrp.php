@@ -168,12 +168,13 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
         $page->changeTpl('xnetgrp/edit.tpl');
+        $error = false;
 
         if (S::admin()) {
-            $dom = XDB::iterator('SELECT  *
-                                    FROM  group_dom
-                                ORDER BY  nom');
-            $page->assign('dom', $dom);
+            $domains = XDB::iterator('SELECT  *
+                                        FROM  group_dom
+                                    ORDER BY  nom');
+            $page->assign('domains', $domains);
             $page->assign('super', true);
         }
 
@@ -196,12 +197,38 @@ class XnetGrpModule extends PLModule
 
                 if (Post::v('mail_domain') && (strstr(Post::v('mail_domain'), '.') === false)) {
                     $page->trigError('Le domaine doit être un FQDN (aucune modification effectuée)&nbsp;!!!');
-                    return;
+                    $error = true;
                 }
                 if (Post::t('nom') == '' || Post::t('diminutif') == '') {
                     $page->trigError('Ni le nom ni le diminutif du groupe ne peuvent être vide.');
+                    $error = true;
+                }
+                if ($error) {
+                    $page->assign('nom', Post::t('nom'));
+                    $page->assign('diminutif', Post::t('diminutif'));
+                    $page->assign('mail_domain', Post::t('mail_domain'));
+                    $page->assign('cat', Post::v('cat'));
+                    $page->assign('dom', Post::v('dom'));
+                    $page->assign('ax', Post::v('ax'));
+                    $page->assign('axDate', Post::t('axDate'));
+                    $page->assign('site', $site);
+                    $page->assign('resp', Post::t('resp'));
+                    $page->assign('mail', Post::t('mail'));
+                    $page->assign('phone', Post::t('phone'));
+                    $page->assign('fax', Post::t('fax'));
+                    $page->assign('address', Post::t('address'));
+                    $page->assign('forum', Post::t('forum'));
+                    $page->assign('inscriptible', Post::v('inscriptible'));
+                    $page->assign('sub_url', Post::t('sub_url'));
+                    $page->assign('unsub_url', Post::t('unsub_url'));
+                    $page->assign('welcome_msg', Post::t('welcome_msg'));
+                    $page->assign('pub', Post::v('pub'));
+                    $page->assign('notif_unsub', Post::i('notif_unsub'));
+                    $page->assign('descr', Post::t('descr'));
+                    $page->assign('error', $error);
                     return;
                 }
+
                 $axDate = make_datetime(Post::v('axDate'));
                 if (Post::t('axDate') != '') {
                     $axDate = make_datetime(Post::v('axDate'))->format('Y-m-d');
@@ -275,6 +302,13 @@ class XnetGrpModule extends PLModule
 
             pl_redirect('../' . Post::v('diminutif', $globals->asso('diminutif')) . '/edit');
         }
+        $page->assign('error', $error);
+        $page->assign('cat', $globals->asso('cat'));
+        $page->assign('dom', $globals->asso('dom'));
+        $page->assign('ax', $globals->asso('ax'));
+        $page->assign('inscriptible', $globals->asso('inscriptible'));
+        $page->assign('pub', $globals->asso('pub'));
+        $page->assign('notif_unsub', $globals->asso('notif_unsub'));
     }
 
     function handler_mail($page)

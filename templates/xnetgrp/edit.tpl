@@ -31,7 +31,7 @@
         Nom&nbsp;:
       </td>
       <td>
-        <input type="text" size="40" value="{$asso->nom}" name="nom" />
+        <input type="text" size="40" value="{if $error}{$nom}{else}{$asso->nom}{/if}" name="nom" />
       </td>
     </tr>
     <tr>
@@ -39,7 +39,7 @@
         Diminutif&nbsp;:
       </td>
       <td>
-        <input type="text" size="40" value="{$asso->diminutif}" name="diminutif" />
+        <input type="text" size="40" value="{if $error}{$diminutif}{else}{$asso->diminutif}{/if}" name="diminutif" />
       </td>
     </tr>
     <tr>
@@ -47,7 +47,7 @@
         Domaine DNS&nbsp;:
       </td>
       <td>
-        <input type="text" size="40" value="{$asso->mail_domain}" name="mail_domain" />
+        <input type="text" size="40" value="{if $error}{$mail_domain}{else}{$asso->mail_domain}{/if}" name="mail_domain" />
       </td>
     </tr>
     <tr>
@@ -56,10 +56,10 @@
       </td>
       <td>
         <select name="cat">
-          <option value="groupesx" {if $asso->cat eq 'GroupesX'}selected="selected"{/if}>Groupes X</option>
-          <option value="binets" {if $asso->cat eq 'Binets'}selected="selected"{/if}>Binets</option>
-          <option value="promotions" {if $asso->cat eq 'Promotions'}selected="selected"{/if}>Promotions</option>
-          <option value="institutions" {if $asso->cat eq 'Institutions'}selected="selected"{/if}>Institutions</option>
+          <option value="groupesx" {if $cat eq 'GroupesX'}selected="selected"{/if}>Groupes X</option>
+          <option value="binets" {if $cat eq 'Binets'}selected="selected"{/if}>Binets</option>
+          <option value="promotions" {if $cat eq 'Promotions'}selected="selected"{/if}>Promotions</option>
+          <option value="institutions" {if $cat eq 'Institutions'}selected="selected"{/if}>Institutions</option>
         </select>
       </td>
     </tr>
@@ -70,16 +70,16 @@
       <td>
         <select name="dom">
           <option value="">&nbsp;</option>
-          {iterate from=$dom item=d}
-          <option value="{$d.id}" {if $d.id eq $asso->dom}selected="selected"{/if}>{$d.nom} [{$d.cat}]</option>
+          {iterate from=$domains item=d}
+          <option value="{$d.id}" {if $d.id eq $dom}selected="selected"{/if}>{$d.nom} [{$d.cat}]</option>
           {/iterate}
         </select>
       </td>
     </tr>
     <tr>
       <td class="titre center" colspan="2">
-        <label><input type="checkbox" value="1" name="ax" {if $asso->ax}checked="checked"{/if} />
-        groupe agréé par l'AX</label> le <input type="text" size="10" maxlength="10" value="{$asso->axDate}" name="axDate" />
+        <label><input type="checkbox" value="1" name="ax" {if $ax}checked="checked"{/if} />
+        groupe agréé par l'AX</label> le <input type="text" size="10" maxlength="10" value="{if $error}{$axDate}{$asso->axDate}{/if}" name="axDate" />
         <small>(ex: 01/01/1970)</small>
       </td>
     </tr>
@@ -102,7 +102,7 @@
         Site web&nbsp;:
       </td>
       <td>
-        <input type="text" size="40" value="{$asso->site|default:"http://"}" name="site" />
+        <input type="text" size="40" value="{if $error}{$site}{else}{$asso->site|default:"http://"}{/if}" name="site" />
       </td>
     </tr>
 
@@ -111,7 +111,7 @@
         Contact&nbsp;:
       </td>
       <td>
-        <input type="text" size="40" name="resp" value="{$asso->resp}" />
+        <input type="text" size="40" name="resp" value="{if $error}{$resp}{else}{$asso->resp}{/if}" />
       </td>
     </tr>
 
@@ -120,26 +120,26 @@
         Adresse email&nbsp;:
       </td>
       <td>
-        <input type="text" size="40" name="mail" value="{$asso->mail}" />
+        <input type="text" size="40" name="mail" value="{if $error}{$mail}{else}{$asso->mail}{/if}" />
       </td>
     </tr>
 
     <tr>
       <td class="titre">Téléphone</td>
       <td>
-        <input type="text" maxlength="28" name="phone" value="{$asso->phone}" />
+        <input type="text" maxlength="28" name="phone" value="{if $error}{$phone}{else}{$asso->phone}{/if}" />
       </td>
     </tr>
     <tr>
       <td class="titre">Fax</td>
       <td>
-        <input type="text" maxlength="28" name="fax" value="{$asso->fax}" />
+        <input type="text" maxlength="28" name="fax" value="{if $error}{$fax}{else}{$asso->fax}{/if}" />
       </td>
     </tr>
     <tr>
       <td class="titre">Adresse</td>
       <td>
-        <textarea name="address" cols="30" rows="4">{$asso->address}</textarea>
+        <textarea name="address" cols="30" rows="4">{if $error}{$address}{else}{$asso->address}{/if}</textarea>
       </td>
     </tr>
 
@@ -148,7 +148,7 @@
         Forum&nbsp;:
       </td>
       <td>
-        <input type="text" size="40" name="forum" value="{$asso->forum}" />
+        <input type="text" size="40" name="forum" value="{if $error}{$forum}{else}{$asso->forum}{/if}" />
       </td>
     </tr>
 
@@ -157,14 +157,8 @@
         Inscription possible&nbsp;:
       </td>
       <td>
-        <input type="radio" value="1" id="inscr_yes"
-          {if $asso->inscriptible eq 1}checked="checked"{/if}
-          name="inscriptible" />
-        <label for="inscr_yes">oui</label>
-        <input type="radio" value="0" id="inscr_no"
-          {if $asso->inscriptible neq 1}checked="checked"{/if}
-          name="inscriptible" />
-        <label for="inscr_no">non</label>
+        <label><input type="radio" value="1" {if $inscriptible eq 1}checked="checked"{/if} name="inscriptible" />oui</label>
+        <label><input type="radio" value="0" {if $inscriptible neq 1}checked="checked"{/if} name="inscriptible" />non</label>
       </td>
     </tr>
 
@@ -174,7 +168,7 @@
         <em>laisser vide par défaut</em>
       </td>
       <td>
-        <input type="text" size="40" name="sub_url" value="{$asso->sub_url}" />
+        <input type="text" size="40" name="sub_url" value="{if $error}{$sub_url}{else}{$asso->sub_url}{/if}" />
       </td>
     </tr>
 
@@ -184,7 +178,7 @@
         <em>laisser vide par défaut</em>
       </td>
       <td>
-        <input type="text" size="40" name="unsub_url" value="{$asso->unsub_url}" />
+        <input type="text" size="40" name="unsub_url" value="{if $error}{$unsub_url}{else}{$asso->unsub_url}{/if}" />
       </td>
     </tr>
 
@@ -194,7 +188,7 @@
         <em>envoyé à l'inscription</em>
       </td>
       <td>
-        <textarea cols='40' rows='8' name='welcome_msg'>{$asso->welcome_msg}</textarea>
+        <textarea cols='40' rows='8' name='welcome_msg'>{if $error}{$welcome_msg}{else}{$asso->welcome_msg}{/if}</textarea>
       </td>
     </tr>
 
@@ -202,15 +196,15 @@
       <td class="titre center" colspan="2">
         Diffusion de la liste des membres&nbsp;:
         <select name="pub">
-          <option value="public" {if $asso->pub eq 'public'}selected="selected"{/if}>Publique</option>
-          <option value="membre" {if $asso->pub eq 'membre'}selected="selected"{/if}>Aux membres du groupe</option>
-          <option value="private" {if $asso->pub eq 'private'}selected="selected"{/if}>Aux animateurs du groupe</option>
+          <option value="public" {if $pub eq 'public'}selected="selected"{/if}>Publique</option>
+          <option value="membre" {if $pub eq 'membre'}selected="selected"{/if}>Aux membres du groupe</option>
+          <option value="private" {if $pub eq 'private'}selected="selected"{/if}>Aux animateurs du groupe</option>
         </select>
       </td>
     </tr>
     <tr>
       <td class="titre center" colspan="2">
-        <label><input type="checkbox" value="1" name="notif_unsub" {if $asso->notif_unsub}checked="checked"{/if} />
+        <label><input type="checkbox" value="1" name="notif_unsub" {if $notif_unsub}checked="checked"{/if} />
         prévenir les animateurs lors de la désinscription d'un membre</label>
       </td>
     </tr>
@@ -226,7 +220,7 @@
     <a href="wiki_help" class="popup3">
       {icon name=information title="Syntaxe wiki"} Voir la syntaxe wiki autorisée pour la description.
     </a>
-    <textarea name="descr" cols="70" rows="15" id="descr">{$asso->descr}</textarea>
+    <textarea name="descr" cols="70" rows="15" id="descr">{if $error}{$descr}{else}{$asso->descr}{/if}</textarea>
     <input type="submit" name="preview" value="Aperçu de la description"
            onclick="previewWiki('descr', 'preview_descr', true, 'preview_descr'); return false;" /><br />
     <input type="submit" name="submit" value="Enregistrer" />
