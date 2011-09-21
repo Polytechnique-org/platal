@@ -1182,16 +1182,14 @@ class XnetGrpModule extends PLModule
                            $full_name, $directory_name, Post::t('display_name'), $firstname, $lastname,
                            (Post::t('sex') == 'male') ? 'male' : 'female', Post::t('email'),
                            (Post::t('type') == 'xnet') ? 'xnet' : 'virtual', $user->id());
-            } else if (!$user->perms) {
+            } else if (!$user->perms && Post::has('email') && require_email_update($user, Post::t('email'))) {
                 XDB::query('UPDATE  accounts
                                SET  email = {?}
                              WHERE  uid = {?}',
                            Post::t('email'), $user->id());
-                if (Post::has('email') && require_email_update($user, Post::t('email'))) {
-                    $listClient = new MMList(S::user());
-                    $listClient->change_user_email($user->forlifeEmail(), Post::t('email'));
-                    update_alias_user($user->forlifeEmail(), Post::t('email'));
-                }
+                $listClient = new MMList(S::user());
+                $listClient->change_user_email($user->forlifeEmail(), Post::t('email'));
+                update_alias_user($user->forlifeEmail(), Post::t('email'));
             }
             if (XDB::affectedRows()) {
                 $page->trigSuccess('Données de l\'utilisateur mises à jour.');
