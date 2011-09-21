@@ -13,6 +13,7 @@ Bug/Wish:
 
     * Core:
         - #1523: Rename AUTH_MDP to AUTH_PASSWD                            -JAC
+        - #1534: Fixes birthday calendar downloading with IE               -JAC
 
     * Email:
         - #1529: Stores and uses preferences for sending emails from site  -JAC

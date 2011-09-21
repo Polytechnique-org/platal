@@ -396,7 +396,7 @@ class CarnetModule extends PLModule
         } else {
             $encoding = 'utf-8';
         }
-        pl_content_headers("text/comma-separated-values;charset=".$encoding);
+        pl_cached_content_headers('text/comma-separated-values; charset=' . $encoding, 1);
     }
 
     function handler_ical(PlPage $page, PlUser $user)
@@ -409,7 +409,7 @@ class CarnetModule extends PLModule
         $profiles = $filter->iterProfiles();
         $page->assign('events', PlIteratorUtils::map($profiles, array($this, 'buildBirthRef')));
 
-        pl_content_headers("text/calendar");
+        pl_cached_content_headers('text/calendar', 1);
     }
 
     function handler_vcard($page, $photos = null)
