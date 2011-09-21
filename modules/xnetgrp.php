@@ -850,20 +850,10 @@ class XnetGrpModule extends PLModule
         // + (the data) => %2B (in the url) => + (first decoding) => ' ' (second decoding)
         // Since there can be no spaces in emails, we can fix this with :
         $email = str_replace(' ', '+', $email);
+        $is_valid_email = isvalid_email($email);
 
-        // Finds or creates account: first cases are for users with an account.
-        if (!User::isForeignEmailAddress($email)) {
-            // Standard account
-            $user = User::getSilent($email);
-        } else if (!isvalid_email($email)) {
-            // email might not be a regular email but an alias or a hruid
-            $user = User::getSilent($email);
-            if (!$user) {
-                // need a valid email address
-                $page->trigError('«&nbsp;<strong>' . $email . '</strong>&nbsp;» n\'est pas une adresse email valide.');
-                return;
-            }
-        } else if (Env::v('x') && Env::i('userid')) {
+        // X not registered to main site.
+        if (Env::v('x') && Env::i('userid') && $is_valid_email) {
             $user = User::getSilentWithUID(Env::i('userid'));
             if (!$user) {
                 $page->trigError('Utilisateur invalide.');
@@ -888,9 +878,15 @@ class XnetGrpModule extends PLModule
                 }
             }
         } else {
-            // Check if the email is a redirection.
             $user = User::getSilent($email);
 
+            // Wrong email and no user: failure.
+            if (is_null($user) && !$is_valid_email) {
+                $page->trigError('«&nbsp;<strong>' . $email . '</strong>&nbsp;» n\'est pas une adresse email valide.');
+                return;
+            }
+
+            // Deals with xnet accounts.
             if (is_null($user) || $user->type == 'xnet') {
                 // User is of type xnet. There are 3 possible cases:
                 //  * the email is not known yet: we create a new account and
