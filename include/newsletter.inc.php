@@ -407,6 +407,20 @@ class NewsLetter
                                    WHERE  nlid = {?}', $this->id);
     }
 
+    /** Get the count of subscribers with non valid redirection.
+     */
+    public function lostSubscriberCount()
+    {
+        return XDB::fetchOneCell('SELECT  COUNT(DISTINCT(n.uid))
+                                    FROM  newsletter_ins         AS n
+                              INNER JOIN  accounts               AS a ON (n.uid = a.uid)
+                              INNER JOIN  account_types          AS t ON (t.type = a.type)
+                               LEFT JOIN  email_redirect_account AS r ON (r.uid = a.uid AND r.flags = \'active\' AND r.broken_level < 3
+                                                                          AND r.type != \'imap\' AND r.type != \'homonym\')
+                                   WHERE  n.nlid = {?} AND r.redirect IS NULL AND a.state = \'active\' AND FIND_IN_SET(\'mail\', t.perms)',
+                                 $this->id);
+    }
+
     /** Get the number of subscribers to the NL whose last received mailing was $last.
      * @p $last ID of the issue for which subscribers should be counted.
      * @return Number of subscribers

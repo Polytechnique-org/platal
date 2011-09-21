@@ -74,7 +74,7 @@ Tu n'es actuellement pas inscrit à la {$nl->name}.
 </table>
 
 {if $nl->mayEdit()}
-<p>Il y a actuellement {$nl->subscriberCount()} inscrits aux envois.</p>
+<p>Il y a actuellement {$nl->subscriberCount()} inscrits aux envois, parmi lesquels {$nl->lostSubscriberCount()} n'ont aucune redirection active.</p>
 {/if}
 
 
