@@ -32,6 +32,14 @@ class MiniWiki
         // retours à la ligne avec \\
         MiniWiki::Markup("/\\\\(?".">(\\\\*))\n/e", "str_repeat('<br />\n',mb_strlen('$1'))", "str_repeat('\n',mb_strlen('$1'))", "ligne1\\\\\nligne2");
 
+        // || Tables
+        MiniWiki::Markup("/((^|\n)\|\|(([^\n]*(\n|$))(\|\|[^\n]*(\n|$))*))/se",
+                         "'</p><table class=\"tinybicol\">'
+                         . str_replace(\"\n\", '', str_replace('||', '</td><td>', preg_replace(\"/\|\|($|\\n)/\", '</td></tr>\n', preg_replace(\"/(^|\\n)\|\|/\", '\n<tr><td>', '$1'))))
+                         . '</table><p>'",
+                         "str_replace('||', '|', '$1')",
+                         "||ligne1 colonne1||ligne1 colonne2||\n||ligne2 colonne1||ligne2 colonne2||");
+
         // * unordered list
         MiniWiki::Markup("/(^|\n)\*(([^\n]*(\n|$))(\*[^\n]*(\n|$))*)/se",
                          "'</p><ul><li>'.str_replace(\"\\n*\",'</li><li>','$2').'</li></ul><p>'",
