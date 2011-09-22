@@ -374,7 +374,7 @@ class Phone
     }
 
     static public function iterate(array $pids = array(), array $link_types = array(),
-                                   array $link_ids = array(), Visibility $visibility)
+                                   array $link_ids = array(), $visibility = null)
     {
         return new PhoneIterator($pids, $link_types, $link_ids, $visibility);
     }
@@ -391,7 +391,7 @@ class PhoneIterator implements PlIterator
 {
     private $dbiter;
 
-    public function __construct(array $pids, array $link_types, array $link_ids, Visibility $visibility)
+    public function __construct(array $pids, array $link_types, array $link_ids, $visibility)
     {
         $where = array();
         if (count($pids) != 0) {
@@ -403,7 +403,7 @@ class PhoneIterator implements PlIterator
         if (count($link_ids) != 0) {
             $where[] = XDB::format('(link_id IN {?})', $link_ids);
         }
-        if ($visibility == null) {
+        if ($visibility == null || !($visibility instanceof Visibility)) {
             $visibility = Visibility::defaultForRead();
         }
         $where[] = 'pve.best_display_level+0 <= pub+0';
