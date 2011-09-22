@@ -878,7 +878,7 @@ class Address
     }
 
     static public function iterate(array $pids = array(), array $types = array(),
-                                   array $jobids = array(), Visibility $visibility)
+                                   array $jobids = array(), $visibility = null)
     {
         return new AddressIterator($pids, $types, $jobids, $visibility);
     }
@@ -895,7 +895,7 @@ class AddressIterator implements PlIterator
 {
     private $dbiter;
 
-    public function __construct(array $pids, array $types, array $jobids, Visibility $visibility)
+    public function __construct(array $pids, array $types, array $jobids, $visibility)
     {
         $where = array();
         if (count($pids) != 0) {
@@ -907,7 +907,7 @@ class AddressIterator implements PlIterator
         if (count($jobids) != 0) {
             $where[] = XDB::format('(pa.jobid IN {?})', $jobids);
         }
-        if ($visibility == null) {
+        if ($visibility == null || !($visibility instanceof Visibility)) {
             $visibility = Visibility::defaultForRead();
         }
         $where[] = 'pve.best_display_level+0 <= pa.pub+0';
