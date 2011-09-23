@@ -130,6 +130,14 @@
         <input type='text' size='60' name='signature' value="{$issue->signature}" />
       </td>
     </tr>
+    <tr>
+      <td class='titre'>
+        Adresse de réponse (optionnelle)
+      </td>
+      <td>
+        <input type='text' size='60' name='reply_to' value="{$issue->reply_to}" />
+      </td>
+    </tr>
     {if $nl->automaticMailingEnabled() && ($issue->isEditable() || $issue->isPending())}
     <tr>
       <td class='titre'>

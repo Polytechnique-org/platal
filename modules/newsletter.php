@@ -247,6 +247,7 @@ class NewsletterModule extends PLModule
 
         // Convert NLIssue error messages to human-readable errors
         $error_msgs = array(
+            NLIssue::ERROR_INVALID_REPLY_TO => "L'adresse de réponse est invalide.",
             NLIssue::ERROR_INVALID_SHORTNAME => "Le nom court est invalide ou vide.",
             NLIssue::ERROR_INVALID_UFC => "Le filtre des destinataires est invalide.",
             NLIssue::ERROR_TOO_LONG_UFC => "Le nombre de matricules AX renseigné est trop élevé.",
@@ -261,6 +262,7 @@ class NewsletterModule extends PLModule
             $issue->title_mail = Post::s('title_mail');
             $issue->head       = Post::s('head');
             $issue->signature  = Post::s('signature');
+            $issue->reply_to   = Post::s('reply_to');
 
             if ($issue->isEditable()) {
                 // Date and shortname may only be modified for pending NLs, otherwise all links get broken.

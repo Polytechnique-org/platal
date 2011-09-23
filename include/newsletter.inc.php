@@ -637,6 +637,7 @@ class NLIssue
     public $send_before;  // Date at which issue should be sent
     public $head;  // Foreword of the issue (or body for letters with no articles)
     public $signature;  // Signature of the letter
+    public $reply_to;  // Adress to reply to the message (can be empty)
     public $arts = array();  // Articles of the issue
 
     const BATCH_SIZE = 60;  // Number of emails to send every minute.
@@ -661,7 +662,7 @@ class NLIssue
     {
         // Load this issue
         $res = XDB::query('SELECT  nlid, short_name, date, send_before, state, sufb_json,
-                                   title, mail_title, head, signature
+                                   title, mail_title, head, signature, reply_to
                              FROM  newsletter_issues
                             WHERE  id = {?}',
                           $id);
@@ -684,6 +685,7 @@ class NLIssue
         $this->title_mail  = $issue['mail_title'];
         $this->head        = $issue['head'];
         $this->signature   = $issue['signature'];
+        $this->reply_to    = $issue['reply_to'];
         $this->sufb        = $this->importJSonStoredUFB($issue['sufb_json']);
 
         if ($fetch_articles) {
@@ -886,6 +888,7 @@ class NLIssue
     // }}}
     // {{{ Edition, articles
 
+    const ERROR_INVALID_REPLY_TO = 'invalid_reply_to';
     const ERROR_INVALID_SHORTNAME = 'invalid_shortname';
     const ERROR_INVALID_UFC = 'invalid_ufc';
     const ERROR_TOO_LONG_UFC = 'too_long_ufc';
@@ -904,6 +907,12 @@ class NLIssue
             'head' => $this->head,
             'signature' => $this->signature,
         );
+
+        if (!empty($this->reply_to) && !isvalid_email($this->reply_to)) {
+            $errors[] = self::ERROR_INVALID_REPLY_TO ;
+        } else {
+            $fields['reply_to'] = $this->reply_to;
+        }
 
         if ($this->isEditable()) {
             $fields['date'] = $this->date;
@@ -1181,6 +1190,9 @@ class NLIssue
         $mailer->assign('user', $user);
         $mailer->assign('prefix',  null);
         $mailer->assign('hash',    $hash);
+        if (!empty($this->reply_to)) {
+            $mailer->addHeader('Reply-To', $this->reply_to);
+        }
         $mailer->sendTo($user);
     }
 
