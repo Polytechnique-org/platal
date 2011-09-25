@@ -130,7 +130,8 @@ class WatchRegistration extends WatchOperation
     {
         return new PFC_And(new UFC_Registered(false, '>', $watch->date()),
                            new PFC_Or($watch->contactCondition(),
-                                      $watch->promoCondition()));
+                                      $watch->promoCondition(),
+                                      $watch->groupCondition()));
     }
 
     public function getOrder()
@@ -158,7 +159,8 @@ class WatchDeath extends WatchOperation
     {
         return new PFC_And(new UFC_Dead('>', $watch->date(), true),
                            new PFC_Or($watch->contactCondition(),
-                                      $watch->promoCondition()));
+                                      $watch->promoCondition(),
+                                      $watch->groupCondition()));
     }
 
     public function getOrder()
@@ -205,7 +207,8 @@ class WatchBirthday extends WatchOperation
             $cond = new PFC_Or($cond,
                                new PFC_And($watch->promoCondition(),
                                            new UFC_Promo('>=', $profile->mainGrade(), $profile->yearpromo() - 1),
-                                           new UFC_Promo('<=', $profile->mainGrade(), $profile->yearpromo() + 1)));
+                                           new UFC_Promo('<=', $profile->mainGrade(), $profile->yearpromo() + 1)),
+                               $watch->groupCondition());
         }
         return new PFC_And($select_date, $cond);
     }
@@ -248,6 +251,7 @@ class Watch
     private $date = null;
     private $contactCond = null;
     private $promoCond = null;
+    private $groupCond = null;
 
     private $filters = array();
 
@@ -286,6 +290,14 @@ class Watch
             $this->promoCond = new UFC_WatchPromo($this->user);
         }
         return $this->promoCond;
+    }
+
+    public function groupCondition()
+    {
+        if (!$this->groupCond) {
+            $this->groupCond = new UFC_WatchGroup($this->user);
+        }
+        return $this->groupCond;
     }
 
     private function fetchEventWatch($class)

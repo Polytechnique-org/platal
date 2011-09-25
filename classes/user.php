@@ -568,6 +568,10 @@ class User extends PlUser
         $watch['watch_promos'] = XDB::fetchColumn('SELECT  promo
                                                      FROM  watch_promo
                                                     WHERE  uid = {?}', $this->id());
+        $watch['watch_groups'] = XDB::fetchColumn("SELECT  w.groupid
+                                                     FROM  watch_group AS w
+                                               INNER JOIN  groups      AS g ON (w.groupid = g.id AND NOT FIND_IN_SET('private', pub))
+                                                    WHERE  w.uid = {?}", $this->id());
         $watch['watch_users'] = XDB::fetchColumn('SELECT  ni_id
                                                     FROM  watch_nonins
                                                    WHERE  uid = {?}', $this->id());
@@ -598,6 +602,12 @@ class User extends PlUser
         return $this->watch_promos;
     }
 
+    public function watchGroups()
+    {
+        $this->fetchWatchData();
+        return $this->watch_groups;
+    }
+
     public function watchUsers()
     {
         $this->fetchWatchData();
@@ -616,6 +626,7 @@ class User extends PlUser
         unset($this->watch_users);
         unset($this->watch_last);
         unset($this->watch_promos);
+        unset($this->watch_groups);
     }
 
 
@@ -708,7 +719,7 @@ class User extends PlUser
     /**
      * Clears a user.
      *  *always deletes in: account_lost_passwords, register_marketing,
-     *      register_pending, register_subs, watch_nonins, watch, watch_promo
+     *      register_pending, register_subs, watch_nonins, watch, watch_promo, watch_group,
      *  *always keeps in: account_types, accounts, email_virtual, carvas,
      *      group_members, homonyms_list, newsletter_ins, register_mstats, email_source_account
      *  *deletes if $clearAll: account_auth_openid, announce_read, contacts,
@@ -728,7 +739,7 @@ class User extends PlUser
     {
         $tables = array('account_lost_passwords', 'register_marketing',
                         'register_pending', 'register_subs', 'watch_nonins',
-                        'watch', 'watch_promo');
+                        'watch', 'watch_promo', 'watch_group');
 
         foreach ($tables as $t) {
             XDB::execute('DELETE FROM  ' . $t . '

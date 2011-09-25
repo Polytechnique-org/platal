@@ -1582,6 +1582,27 @@ class UFC_WatchPromo extends UFC_UserRelated
     }
 }
 // }}}
+// {{{ class UFC_WatchGroup
+/** Filters users belonging to a group watched by selected user
+ * @param $user Selected user (the one watching group)
+ */
+class UFC_WatchGroup extends UFC_UserRelated
+{
+    public function buildCondition(PlFilter $uf)
+    {
+        $groups = $this->user->watchGroups();
+        if (count($groups) == 0) {
+            return PlFilterCondition::COND_FALSE;
+        }
+        $conditions = array();
+        foreach ($groups as $group) {
+            $sub = $uf->addGroupFilter($group);
+            $conditions[] = 'gpm' . $sub . '.perms IS NOT NULL';
+        }
+        return implode(' OR ', $conditions);
+    }
+}
+// }}}
 // {{{ class UFC_WatchContact
 /** Filters users watched by selected user
  */

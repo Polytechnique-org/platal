@@ -152,6 +152,51 @@ class CarnetModule extends PLModule
         Platal::session()->updateNbNotifs();
     }
 
+    private function getGroup(PlPage $page, $group)
+    {
+        $groupid = XDB::fetchOneCell("SELECT  id
+                                        FROM  groups
+                                       WHERE  (nom = {?} OR diminutif = {?}) AND NOT FIND_IN_SET('private', pub)",
+                                     $group, $group);
+        if (is_null($groupid)) {
+            $search = XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $group);
+            $res = XDB::query('SELECT  id
+                                 FROM  groups
+                                WHERE  (nom ' . $search . ' OR diminutif ' . $search . ") AND NOT FIND_IN_SET('private', pub)",
+                              $search, $search);
+            if ($res->numRows() == 1) {
+                $groupid = $res->fetchOneCell();
+            }
+        }
+        return $groupid;
+    }
+
+    private function addGroup(PlPage $page, $group)
+    {
+        $groupid = $this->getGroup($page, $group);
+        if (is_null($groupid)) {
+            return;
+        }
+        XDB::execute('INSERT IGNORE INTO  watch_group (uid, groupid)
+                                  VALUES  ({?}, {?})',
+                     S::i('uid'), $groupid);
+        S::user()->invalidWatchCache();
+        Platal::session()->updateNbNotifs();
+    }
+
+    private function delGroup(PlPage $page, $group)
+    {
+        $groupid = $this->getGroup($page, $group);
+        if (is_null($groupid)) {
+            return;
+        }
+        XDB::execute('DELETE FROM  watch_group
+                            WHERE  uid = {?} AND groupid = {?}',
+                     S::i('uid'), $groupid);
+        S::user()->invalidWatchCache();
+        Platal::session()->updateNbNotifs();
+    }
+
     public function addNonRegistered(PlPage $page, PlUser $user)
     {
         XDB::execute('INSERT IGNORE INTO  watch_nonins (uid, ni_id)
@@ -182,6 +227,14 @@ class CarnetModule extends PLModule
 
               case 'del_promo':
                 $this->delPromo($page, $arg);
+                break;
+
+              case 'add_group':
+                $this->addGroup($page, $arg);
+                break;
+
+              case 'del_group':
+                $this->delGroup($page, $arg);
                 break;
 
               case 'del_nonins':
@@ -256,6 +309,14 @@ class CarnetModule extends PLModule
         $page->assign('promo_ranges', $ranges);
         $page->assign('nonins', $nonins->getUsers());
 
+        $groups = XDB::fetchColumn('SELECT  g.nom
+                                      FROM  watch_group AS w
+                                INNER JOIN  groups      AS g ON (g.id = w.groupid)
+                                     WHERE  w.uid = {?}
+                                  ORDER BY  g.nom',
+                                   S::i('uid'));
+        $page->assign('groups', $groups);
+        $page->assign('groups_count', count($groups));
         list($flags, $actions) = XDB::fetchOneRow('SELECT  flags, actions
                                                      FROM  watch
                                                     WHERE  uid = {?}', S::i('uid'));

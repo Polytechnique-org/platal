@@ -116,6 +116,36 @@ Attention&nbsp;: pour les promos, tu n'es pas notifié des événements trop fr�
   </fieldset>
 </form>
 
+<h2>Surveiller des groupes X</h2>
+
+<p>
+Attention&nbsp;: comme pour les promos, pour les groupes X, tu n'es pas notifié des événements trop fréquents (par exemple les changements de fiche).
+</p>
+
+<form action="carnet/notifs/" method="post">
+  {xsrf_token_field}
+  <fieldset>
+    <legend>{icon name="group"} Ajouter un groupe X</legend>
+    Tu peux surveiller des groupes X (mettre le nom ou le diminutif du groupe).<br />
+    <input type='text' name='group' />
+    <input type='submit' name='add_group' value='ajouter'
+      onclick="this.form.action += 'add_group/' + this.form.group.value;" />
+    <input type='submit' name='del_group' value='retirer'
+      onclick="this.form.action += 'del_group/' + this.form.group.value;" />
+    <br />
+    {if $groups_count eq 0}
+    <p>Tu ne surveilles actuellement aucun groupe X.</p>
+    {else}
+    <p>Tu surveilles {if $groups_count eq 1}le groupe suivant&nbsp;:{else}les groupes suivants&nbsp;:{/if}</p>
+    <ul>
+    {foreach from=$groups item=group}
+      <li>{$group}</li>
+    {/foreach}
+    </ul>
+    {/if}
+  </fieldset>
+</form>
+
 <h2>Surveiller des non inscrits</h2>
 
 <p>
