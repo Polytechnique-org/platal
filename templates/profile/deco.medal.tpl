@@ -33,6 +33,19 @@
       <input type="hidden" name="medals_{$id}_grade" value="{$medal.grade}" />
       <input type="hidden" name="medals[{$id}][id]" value="{$medal.id}" />
       <input type="hidden" name="medals[{$id}][valid]" value="{$medal.valid}" />
+      <input type="hidden" name="medals[{$id}][has_levels]" value="{$medal.has_levels}" />
+    </div>
+    <div>
+    {if $medal.has_levels}
+    Niveau / Échelon :
+    <select name="medals[{$id}][level]">
+      <option value="Or" {if $medal.level eq "Or"}selected="selected"{/if}>Or</option>
+      <option value="Argent" {if $medal.level eq "Argent"}selected="selected"{/if}>Argent</option>
+      <option value="Bronze" {if $medal.level eq "Bronze"}selected="selected"{/if}>Bronze</option>
+    </select>
+    {else}
+    <input type="hidden" name="medals[{$id}][level]" value="" />
+    {/if}
     </div>
   </div>
   <a class="removeMedal" href="javascript:removeMedal({$id})" style="vertical-align: middle">

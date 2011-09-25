@@ -376,7 +376,7 @@ class ProfileMedals extends ProfileField
 
     public static function fetchData(array $pids, Visibility $visibility)
     {
-        $data = XDB::iterator('SELECT  pm.pid, pm.mid, pm.gid, pme.text, pme.img, pmge.text AS grade
+        $data = XDB::iterator('SELECT  pm.pid, pm.mid, pm.gid, pme.text, pme.img, pmge.text AS grade, pm.level
                                  FROM  profile_medals AS pm
                             LEFT JOIN  profiles AS p ON (pm.pid = p.pid)
                             LEFT JOIN  profile_medal_enum AS pme ON (pme.id = pm.mid)

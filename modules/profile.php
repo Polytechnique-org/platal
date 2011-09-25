@@ -426,12 +426,12 @@ class ProfileModule extends PLModule
     {
         pl_content_headers("text/html");
         $page->changeTpl('profile/deco.medal.tpl', NO_SKIN);
-        $valid = XDB::fetchOneCell("SELECT  NOT FIND_IN_SET('validation', flags)
-                                      FROM  profile_medal_enum
-                                     WHERE  id = {?}",
-                                   $id);
+        list($valid, $has_levels) = XDB::fetchOneRow("SELECT  NOT FIND_IN_SET('validation', flags), FIND_IN_SET('has_levels', flags)
+                                                        FROM  profile_medal_enum
+                                                       WHERE  id = {?}",
+                                                     $id);
         $page->assign('id', $i);
-        $page->assign('medal', array('id' => $id, 'grade' => 0, 'valid' => $valid));
+        $page->assign('medal', array('id' => $id, 'grade' => 0, 'valid' => $valid, 'has_levels' => $has_levels));
     }
 
     function handler_ajax_job($page, $id, $pid)

@@ -24,6 +24,9 @@ class ProfileSettingDeco implements ProfileSetting
     private static function compareMedals(array $a, array $b)
     {
         if ($a['id'] == $b['id']) {
+            if ($a['grade'] == $b['grade']) {
+                return $a['level'] > $b['level'];
+            }
             return $a['grade'] > $b['grade'];
         }
         return $a['id'] > $b['id'];
@@ -34,18 +37,21 @@ class ProfileSettingDeco implements ProfileSetting
         $success = true;
         if (is_null($value)) {
             // Fetch already attributed medals
-            $value = XDB::fetchAllAssoc('SELECT  mid AS id, gid AS grade, 1 AS valid
-                                           FROM  profile_medals
-                                          WHERE  pid = {?}',
+            $value = XDB::fetchAllAssoc("SELECT  m.mid AS id, m.gid AS grade, 1 AS valid, FIND_IN_SET('has_levels', e.flags) AS has_levels, m.level
+                                           FROM  profile_medals     AS m
+                                     INNER JOIN  profile_medal_enum AS e ON (m.mid = e.id)
+                                          WHERE  m.pid = {?}",
                                         $page->pid());
 
             // Fetch not yet validated medals
             $medals = ProfileValidate::get_typed_requests($page->pid(), 'medal');
             foreach ($medals as &$medal) {
                 $value[] = array(
-                    'id'    => $medal->mid,
-                    'grade' => $medal->gid,
-                    'valid' => '0'
+                    'id'         => $medal->mid,
+                    'grade'      => $medal->gid,
+                    'level'      => $medal->level,
+                    'has_levels' => $medal->has_levels,
+                    'valid'      => '0'
                 );
             }
         } elseif (!is_array($value)) {
@@ -65,7 +71,7 @@ class ProfileSettingDeco implements ProfileSetting
 
         while ($i < $total_original || $j < $total_value) {
             if (isset($value[$j]) && (!isset($original[$i]) || self::compareMedals($original[$i], $value[$j]))) {
-                $req = new MedalReq(S::user(), $page->profile, $value[$j]['id'], $value[$j]['grade']);
+                $req = new MedalReq(S::user(), $page->profile, $value[$j]['id'], $value[$j]['grade'], $value[$j]['level'], $value[$j]['has_levels']);
                 $req->submit();
                 sleep(1);
                 ++$j;
@@ -75,7 +81,7 @@ class ProfileSettingDeco implements ProfileSetting
                                         WHERE  pid = {?} AND mid = {?} AND gid = {?}',
                                  $page->pid(), $original[$i]['id'], $original[$i]['grade']);
                 } else {
-                    $req = MedalReq::get_request($page->pid(), $original[$i]['id'], $original[$i]['grade']);
+                    $req = MedalReq::get_request($page->pid(), $original[$i]['id'], $original[$i]['grade'], $value[$j]['level']);
                     if ($req) {
                         $req->clean();
                     }

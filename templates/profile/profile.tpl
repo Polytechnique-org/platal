@@ -257,7 +257,7 @@ $($.closeOnEsc);
       <div class="medal_frame">
         <img src="profile/medal/thumb/{$m.mid}" height="50px" alt="{$m.text}" title="{$m.text}" style='float: left;' />
         <div class="medal_text">
-          {$m.text}<br />{$m.grade}
+          {$m.text}{if $m.level} ({$m.level}){/if}<br />{$m.grade}
         </div>
       </div>
       {/foreach}

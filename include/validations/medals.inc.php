@@ -27,17 +27,24 @@ class MedalReq extends ProfileValidate
 
     public $mid;
     public $gid;
+    public $level;
+    public $has_levels;
 
     // }}}
     // {{{ constructor
 
-    public function __construct(User $_user, Profile $_profile, $_idmedal, $_subidmedal, $_stamp = 0)
+    public function __construct(User $_user, Profile $_profile, $_idmedal, $_subidmedal, $_level, $has_levels, $_stamp = 0)
     {
         parent::__construct($_user, $_profile, false, 'medal', $_stamp);
         $this->mid = $_idmedal;
         $this->gid = $_subidmedal;
+        $this->level = $_level;
+        $this->has_levels = $has_levels;
         if (is_null($this->gid)) {
             $this->gid = 0;
+        }
+        if (!$this->has_levels) {
+            $this->level = '';
         }
     }
 
@@ -107,21 +114,21 @@ class MedalReq extends ProfileValidate
 
     public function commit ()
     {
-        return XDB::execute('INSERT INTO  profile_medals (pid, mid, gid)
-                                  VALUES  ({?}, {?}, {?})
+        return XDB::execute('INSERT INTO  profile_medals (pid, mid, gid, level)
+                                  VALUES  ({?}, {?}, {?}, {?})
                  ON DUPLICATE KEY UPDATE  gid = VALUES(gid)',
                             $this->profile->id(), $this->mid,
-                            is_null($this->gid) ? 0 : $this->gid);
+                            is_null($this->gid) ? 0 : $this->gid, $this->level);
     }
 
     // }}}
     // {{{ function get_request($medal)
 
-    static public function get_request($pid, $type, $grade)
+    static public function get_request($pid, $type, $grade, $level)
     {
         $reqs = parent::get_typed_requests($pid, 'medal');
         foreach ($reqs as &$req) {
-            if ($req->mid == $type && $req->gid == $grade) {
+            if ($req->mid == $type && $req->gid == $grade && $req->level == $level) {
                 return $req;
             }
         }
