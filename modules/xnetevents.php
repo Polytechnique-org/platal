@@ -467,8 +467,10 @@ class XnetEventsModule extends PLModule
                 if ($p->accept()) {
                     $p->submit();
                 } else {
-                    $page->assign('paiement_message', Post::v('confirmation'));
-                    $page->assign('paiement_site', Post::v('site'));
+                    $page->assign('payment_message', Post::v('confirmation'));
+                    $page->assign('payment_site', Post::v('site'));
+                    $page->assign('payment_public', Post::v('payment_public') == 'yes');
+                    $page->assign('error', true);
                     $error = true;
                 }
             }
@@ -507,7 +509,7 @@ class XnetEventsModule extends PLModule
             $res = XDB::query("SELECT  stamp
                                  FROM  requests
                                 WHERE  type = 'paiements' AND data LIKE {?}",
-                               PayReq::same_event($eid, $globals->asso('id')));
+                              PayReq::same_event($eid, $globals->asso('id')));
             $stamp = $res->fetchOneCell();
             if ($stamp) {
                 $evt['paiement_id']  = -2;

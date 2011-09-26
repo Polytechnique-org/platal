@@ -167,11 +167,12 @@ function deadlineChange(box)
           <option value='-2'>Paiement en attente de validation</option>
           {/if}
           <option value=''>Pas de paiement</option>
-          <option value='-1' {if $paiement_message}selected="selected"{/if}>- Nouveau paiement -</option>
+          <option value='-1' {if $error}selected="selected"{/if}>- Nouveau paiement -</option>
           {html_options options=$paiements selected=$evt.paiement_id}
         </select>
       </th>
     </tr>
+    {if $evt.paiement_id neq -2}
     <tr id="new_pay" style="display:none">
       <td colspan="2">
         Il faut que tu définisses le texte de l'email de confirmation de paiement. Pour ceci, tu peux adapter le modèle qui suit&nbsp;:
@@ -186,7 +187,7 @@ function deadlineChange(box)
           <div id="preview"></div>
           <hr />
         </div>
-        <textarea name="confirmation" id="payment_text" rows="12" cols="65">{if $paiement_message}{$paiement_message}{else}&lt;salutation&gt; &lt;prenom&gt; &lt;nom&gt;,
+        <textarea name="confirmation" id="payment_text" rows="12" cols="65">{if $payment_message}{$payment_message}{else}&lt;salutation&gt; &lt;prenom&gt; &lt;nom&gt;,
 
 Ton inscription à [METS LE NOM DE L'ÉVÉNEMENT ICI] a bien été enregistrée et ton paiement de &lt;montant&gt; a bien
 été reçu avec le commentaire suivant&nbsp;:
@@ -200,7 +201,7 @@ Ton inscription à [METS LE NOM DE L'ÉVÉNEMENT ICI] a bien été enregistrée 
 {assign var="profile" value=$smarty.session.user->profile()}
 {$profile->fullName("promo")}{/if}</textarea><br />
         {assign var='asso_url' value=$globals->baseurl|cat:'/'|cat:$platal->ns}
-        Page internet de l'événement&nbsp;: <input size="40" name="site" value="{$paiement_site|default:$asso->site|default:$asso_url}" /><br />
+        Page internet de l'événement&nbsp;: <input size="40" name="site" value="{$payment_site|default:$asso->site|default:$asso_url}" /><br />
         Rendre public le télépaiement&nbsp;:
         <label><input type="radio" name="payment_public" value="no" {if !t($payment_public)}checked="checked"{/if} />Non</label>
         &nbsp;-&nbsp;
@@ -215,6 +216,7 @@ Ton inscription à [METS LE NOM DE L'ÉVÉNEMENT ICI] a bien été enregistrée 
         <input type="submit" name="preview" value="Aperçu" onclick="previewWiki('payment_text', 'preview', true, 'pay_preview'); return false;" />
       </td>
     </tr>
+    {/if}
   </table>
 
   <hr />
