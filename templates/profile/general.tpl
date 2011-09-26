@@ -342,7 +342,6 @@
   {if t($email_error)}
     {include file="include/emails.combobox.tpl" name="email_directory" val=$email_directory_error error=$email_error i="0"}
   {else}{include file="include/emails.combobox.tpl" name="email_directory" val=$email_directory error=false i="0"}{/if}
-  {if $viewPrivate || $isMe}
   <tr>
     <td colspan="2">
       <span class="titre">Messageries, networking et sites web</span>
@@ -383,6 +382,7 @@
       </div>
     </td>
   </tr>
+  {if $viewPrivate || $isMe}
   <tr class="pair">
     <td>
       <div>
