@@ -261,6 +261,44 @@ function updateNetworking(i)
     $('#networking_' + i).find("[name='networking[" + i + "][name]']").val($('#networking_' + i).find('select option:selected').text());
 }
 
+// Hobby {{{1
+
+function addHobby()
+{
+    var i = 0;
+    while ($('#hobby_' + i).length != 0) {
+        ++i;
+    }
+    var html = '<tr id="hobby_' + i + '">'
+        + '  <td colspan="2">'
+        + '    <div style="float: left; width: 200px;">'
+        + '      <span class="flags">'
+        + '        <input type="checkbox" name="hobbies[' + i + '][pub]"/>'
+        + '        <img src="images/icons/flag_green.gif" alt="site public" title="site public">'
+        + '      </span>&nbsp;'
+        + '      <select name="hobbies[' + i + '][type]">'
+        + '        <option value="Sport">Sport</option>'
+        + '        <option value="Loisir">Loisir</option>'
+        + '        <option value="Hobby">Hobby</option>'
+        + '      </select>'
+        + '    </div>'
+        + '    <div style="float: left">'
+        + '      <input type="text" name="hobbies[' + i + '][text]" value="" size="30"/>'
+        + '      <a href="javascript:removeHobby(' + i + ')">'
+        + '        <img src="images/icons/cross.gif" alt="cross" title="Supprimer cet élément"/>'
+        + '      </a>'
+        + '    </div>'
+        + '  </td>'
+        + '</tr>';
+
+    $('#hobby').before(html);
+}
+
+function removeHobby(id)
+{
+    $('#hobby_' + id).remove();
+}
+
 // Addresses {{{1
 
 function toggleAddress(id, val)

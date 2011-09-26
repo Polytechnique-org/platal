@@ -366,6 +366,23 @@
       </div>
     </td>
   </tr>
+  <tr>
+    <td colspan="2">
+      <span class="titre">Sports, loisirs, hobbies&hellip;</span>
+    </td>
+  </tr>
+  {foreach from=$hobbies item=hobby key=id}
+    {include file="profile/general.hobby.tpl" hobby=$hobby i=$id}
+  {/foreach}
+  <tr id="hobby">
+    <td colspan="2">
+      <div id="hobby_add" class="center">
+        <a href="javascript:addHobby();">
+          {icon name=add title="Ajouter un hobby"} Ajouter un hobby
+        </a>
+      </div>
+    </td>
+  </tr>
   <tr class="pair">
     <td>
       <div>

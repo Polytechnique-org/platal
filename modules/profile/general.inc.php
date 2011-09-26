@@ -338,11 +338,11 @@ class ProfileSettingMainEdu implements ProfileSetting
         $educations = array();
         foreach ($value as $item) {
             $details = array($this->cycles[$item['degreeid']]);
-            if ($education['program']) {
-                $details[] = '« ' . $education['program'] . ' »';
+            if ($item['program']) {
+                $details[] = '« ' . $item['program'] . ' »';
             }
-            if ($education['fieldid']) {
-                $details[] = $fieldsList[$education['fieldid']];
+            if ($item['fieldid']) {
+                $details[] = $fieldsList[$item['fieldid']];
             }
         }
         return implode(', ', $educations);
@@ -460,6 +460,79 @@ class ProfileSettingNetworking implements ProfileSetting
     }
 }
 
+class ProfileSettingHobby implements ProfileSetting
+{
+    private $pub;
+    static private $type = array('Sport', 'Loisir', 'Hobby');
+
+    public function __construct()
+    {
+        $this->pub = new ProfileSettingPub();
+    }
+
+    public function value(ProfilePage $page, $field, $value, &$success)
+    {
+        if (is_null($value)) {
+            $value = XDB::fetchAllAssoc('SELECT  type, text, pub
+                                           FROM  profile_hobby
+                                          WHERE  pid = {?}',
+                                         $page->pid());
+        }
+        if (!is_array($value)) {
+            return array();
+        }
+        $success = true;
+        foreach($value as $i => &$hobby) {
+            $hobby['text'] = trim($hobby['text']);
+            if (!$hobby['text'] ||!in_array($hobby['type'], self::$type)) {
+                unset($value[$i]);
+            } else {
+                if (!isset($hobby['pub'])) {
+                    $hobby['pub'] = 'private';
+                }
+                $s = true;
+                $hobby['pub'] = $this->pub->value($page, 'pub', $hobby['pub'], $s);
+                $success = $success && $s;
+            }
+        }
+        return $value;
+    }
+
+    public function save(ProfilePage $page, $field, $value)
+    {
+        XDB::execute('DELETE FROM profile_hobby
+                            WHERE pid = {?}',
+                     $page->pid());
+        if (!count($value)) {
+            return;
+        }
+        foreach ($value as $id => $hobby) {
+            XDB::execute("INSERT INTO  profile_hobby (pid, id, type, text, pub)
+                               VALUES  ({?}, {?}, {?}, {?}, {?})",
+                         $page->pid(), $id, $hobby['type'], $hobby['text'], $hobby['pub']);
+        }
+    }
+
+    public function getText($value) {
+        static $pubs = array('public' => 'publique', 'private' => 'privé');
+        $hobbies = array();
+        foreach (self::$type as $type) {
+            $hobbies[$type] = array();
+        }
+        foreach ($value as $hobby) {
+            $hobbies[$hobby['type']][] = $hobby['text'] . ' (affichage ' . $pubs[$hobby['pub']] . ')';
+        }
+        $text = array();
+        foreach (self::$type as $type) {
+            if (!empty($hobbies[$type])) {
+                $text[] = $hobbies[$type] . ' : ' . implode(', ' , $hobbies[$type]);
+            }
+        }
+        return implode(', ' , $text);
+    }
+}
+
+
 class ProfileSettingPromo implements ProfileSetting
 {
     public function __construct(){}
@@ -557,6 +630,7 @@ class ProfilePageGeneral extends ProfilePage
         $this->settings['edus'] = new ProfileSettingEdu();
         $this->settings['main_edus'] = new ProfileSettingMainEdu();
         $this->settings['promo']  = new ProfileSettingPromo();
+        $this->settings['hobbies'] = new ProfileSettingHobby();
         $this->watched = array('tels' => true,
                                'networking' => true, 'edus' => true,
                                'nationality1' => true, 'nationality2' => true,
