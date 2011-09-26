@@ -557,7 +557,6 @@ class ProfilePageGeneral extends ProfilePage
                                   = new ProfileSettingEmail();
         $this->settings['email_directory_new']
                                   = new ProfileSettingEmailDirectory();
-        $this->settings['networking'] = new ProfileSettingNetworking();
         $this->settings['tels']   = new ProfileSettingPhones();
         $this->settings['edus']   = new ProfileSettingEdu();
         $this->settings['main_edus'] = new ProfileSettingMainEdu();
@@ -578,6 +577,7 @@ class ProfilePageGeneral extends ProfilePage
         }
         if (S::user()->checkPerms('directory_private')
             || S::user()->isMyProfile($this->owner)) {
+            $this->settings['networking'] = new ProfileSettingNetworking();
             $this->settings['freetext'] = null;
             $this->settings['freetext_pub']
                                       = $this->settings['photo_pub']
