@@ -546,25 +546,21 @@ class ProfilePageGeneral extends ProfilePage
     public function __construct(PlWizard $wiz)
     {
         parent::__construct($wiz);
-        $this->settings['search_names']
-                                  = new ProfileSettingSearchNames();
-        $this->settings['nationality1']
-                                  = $this->settings['nationality2']
-                                  = $this->settings['nationality3']
-                                  = $this->settings['promo_display']
-                                  = null;
-        $this->settings['email_directory']
-                                  = new ProfileSettingEmail();
-        $this->settings['email_directory_new']
-                                  = new ProfileSettingEmailDirectory();
-        $this->settings['tels']   = new ProfileSettingPhones();
-        $this->settings['edus']   = new ProfileSettingEdu();
+        $this->settings['search_names'] = new ProfileSettingSearchNames();
+        $this->settings['nationality1'] = $this->settings['nationality2']
+                                        = $this->settings['nationality3']
+                                        = $this->settings['promo_display']
+                                        = null;
+        $this->settings['email_directory'] = new ProfileSettingEmail();
+        $this->settings['email_directory_new'] = new ProfileSettingEmailDirectory();
+        $this->settings['tels'] = new ProfileSettingPhones();
+        $this->settings['edus'] = new ProfileSettingEdu();
         $this->settings['main_edus'] = new ProfileSettingMainEdu();
         $this->settings['promo']  = new ProfileSettingPromo();
-        $this->watched= array('tels' => true,
-                              'networking' => true, 'edus' => true,
-                              'nationality1' => true, 'nationality2' => true,
-                              'nationality3' => true, 'search_names' => true);
+        $this->watched = array('tels' => true,
+                               'networking' => true, 'edus' => true,
+                               'nationality1' => true, 'nationality2' => true,
+                               'nationality3' => true, 'search_names' => true);
 
         /* Some fields editable under condition */
         if (!S::user()->isMe($this->owner)) {
@@ -579,9 +575,8 @@ class ProfilePageGeneral extends ProfilePage
             || S::user()->isMyProfile($this->owner)) {
             $this->settings['networking'] = new ProfileSettingNetworking();
             $this->settings['freetext'] = null;
-            $this->settings['freetext_pub']
-                                      = $this->settings['photo_pub']
-                                      = new ProfileSettingPub();
+            $this->settings['freetext_pub'] = $this->settings['photo_pub']
+                                            = new ProfileSettingPub();
             $this->watched['freetext'] = true;
         }
 
