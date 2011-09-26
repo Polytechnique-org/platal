@@ -46,6 +46,15 @@
       </div>
     </td>
   </tr>
+  <tr class="impair">
+    <td colspan="2">
+      <h3><a href="carnet/batch">Ajouter plusieurs camarades à ses contacts</a></h3>
+      <div class="explication">
+        De cette façon, tu peux aussi suggérer d'un seul coup plusieurs camarades dont tu connais les adresses email de s'inscrire à Polytechnique.org.
+        Ceux déjà isncrits seront directement ajoutés à tes contacts.
+      </div>
+    </td>
+  </tr>
 </table>
 
 <br />

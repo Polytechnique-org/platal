@@ -9,6 +9,7 @@ New:
 Bug/Wish:
 
     * Carnet:
+        - #709: Adds multiple contacts, and markets those unregistered     -JAC
         - #808: Enables watch of groups                                    -JAC
         - #1528: Do not display birthday of deceased users in emails       -FUL
 

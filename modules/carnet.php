@@ -34,6 +34,7 @@ class CarnetModule extends PLModule
             'carnet/contacts/ical'         => $this->make_token_hook('ical',         AUTH_COOKIE, 'directory_private'),
             'carnet/contacts/csv'          => $this->make_token_hook('csv',          AUTH_COOKIE, 'directory_private'),
             'carnet/contacts/csv/birthday' => $this->make_token_hook('csv_birthday', AUTH_COOKIE, 'directory_private'),
+            'carnet/batch'                 => $this->make_hook('batch',              AUTH_COOKIE, 'directory_private'),
 
             'carnet/rss'                   => $this->make_token_hook('rss',          AUTH_COOKIE, 'directory_private'),
         );
@@ -201,8 +202,13 @@ class CarnetModule extends PLModule
     {
         XDB::execute('INSERT IGNORE INTO  watch_nonins (uid, ni_id)
                                   VALUES  ({?}, {?})', S::i('uid'), $user->id());
-        S::user()->invalidWatchCache();
-        Platal::session()->updateNbNotifs();
+        if (XDB::affectedRows() > 0) {
+            S::user()->invalidWatchCache();
+            Platal::session()->updateNbNotifs();
+            $page->trigSuccess('Contact ajouté&nbsp;: ' . $user->fullName(true));
+        } else {
+            $page->trigWarning('Contact déjà dans la liste&nbsp;: ' . $user->fullName(true));
+        }
     }
 
     public function delNonRegistered(PlPage $page, PlUser $user)
@@ -212,6 +218,33 @@ class CarnetModule extends PLModule
                     S::i('uid'), $user->id());
         S::user()->invalidWatchCache();
         Platal::session()->updateNbNotifs();
+    }
+
+    public function addRegistered(PlPage $page, Profile $profile)
+    {
+        XDB::execute('INSERT IGNORE INTO  contacts (uid, contact)
+                                  VALUES  ({?}, {?})',
+                     S::i('uid'), $profile->id());
+        if (XDB::affectedRows() > 0) {
+            S::user()->invalidWatchCache();
+            Platal::session()->updateNbNotifs();
+            $page->trigSuccess('Contact ajouté&nbsp;: ' . $profile->fullName(true));
+        } else {
+            $page->trigWarning('Contact déjà dans la liste&nbsp;: ' . $profile->fullName(true));
+        }
+    }
+
+    public function delRegistered(PlPage $page, Profile $profile)
+    {
+        XDB::execute('DELETE FROM  contacts
+                            WHERE  uid = {?} AND contact = {?}',
+                     S::i('uid'), $profile->id());
+        if (XDB::affectedRows() > 0) {
+            S::user()->invalidWatchCache();
+            Platal::session()->updateNbNotifs();
+            $page->trigSuccess("Contact retiré&nbsp;!");
+        }
+
     }
 
     public function handler_notifs($page, $action = null, $arg = null)
@@ -331,9 +364,6 @@ class CarnetModule extends PLModule
         $page->setTitle('Mes contacts');
         $this->_add_rss_link($page);
 
-        $uid  = S::i('uid');
-        $user = S::user();
-
         // For XSRF protection, checks both the normal xsrf token, and the special RSS token.
         // It allows direct linking to contact adding in the RSS feed.
         if (Env::v('action') && Env::v('token') !== S::user()->token) {
@@ -342,26 +372,13 @@ class CarnetModule extends PLModule
         switch (Env::v('action')) {
             case 'retirer':
                 if (($contact = Profile::get(Env::v('user')))) {
-                    if (XDB::execute("DELETE FROM  contacts
-                                            WHERE  uid = {?} AND contact = {?}",
-                                     $uid, $contact->id())) {
-                        Platal::session()->updateNbNotifs();
-                        $page->trigSuccess("Contact retiré&nbsp;!");
-                    }
+                    $this->delRegistered($page, $contact);
                 }
                 break;
 
             case 'ajouter':
                 if (($contact = Profile::get(Env::v('user')))) {
-                    XDB::execute('INSERT IGNORE INTO  contacts (uid, contact)
-                                              VALUES  ({?}, {?})',
-                                 $uid, $contact->id());
-                    if (XDB::affectedRows() > 0) {
-                        Platal::session()->updateNbNotifs();
-                        $page->trigSuccess('Contact ajouté&nbsp;!');
-                    } else {
-                        $page->trigWarning('Contact déjà dans la liste&nbsp;!');
-                    }
+                    $this->addRegistered($page, $contact);
                 }
                 break;
         }
@@ -487,6 +504,85 @@ class CarnetModule extends PLModule
         $pf = new ProfileFilter(new UFC_Contact($user));
         require_once 'carnet/outlook.inc.php';
         Outlook::output_profiles($pf->getProfiles(), 'fr');
+    }
+
+    function handler_batch($page)
+    {
+        $page->changeTpl('carnet/batch.tpl');
+        $errors = false;
+        $incomplete = array();
+
+        if (Post::has('add')) {
+            S::assert_xsrf_token();
+            require_once 'userset.inc.php';
+            require_once 'emails.inc.php';
+            require_once 'marketing.inc.php';
+
+            $list = explode("\n", Post::v('list'));
+            $origin = Post::v('origin');
+
+            foreach ($list as $item) {
+                if ($item = trim($item)) {
+                    $elements = preg_split("/\s/", $item);
+                    $email = array_pop($elements);
+                    if (!isvalid_email($email)) {
+                        $page->trigError('Email invalide&nbsp;: ' . $email);
+                        $incomplete[] = $item;
+                        $errors = true;
+                        continue;
+                    }
+
+                    $user = User::getSilent($email);
+                    if (is_null($user)) {
+                        $details = implode(' ', $elements);
+                        $promo = trim(array_pop($elements));
+                        $cond = new PFC_And();
+                        if (preg_match('/^[MDX]\d{4}$/', $promo)) {
+                            $cond->addChild(new UFC_Promo('=', UserFilter::DISPLAY, $promo));
+                        } else {
+                            $cond->addChild(new UFC_NameTokens($promo));
+                        }
+                        foreach ($elements as $element) {
+                            $cond->addChild(new UFC_NameTokens($element));
+                        }
+                        $uf = new UserFilter($cond);
+                        $count = $uf->getTotalCount();
+                        if ($count == 0) {
+                            $page->trigError('Les informations : « ' . $item . ' » ne correspondent à aucun camarade.');
+                            $incomplete[] = $item;
+                            $errors = true;
+                            continue;
+                        } elseif ($count > 1) {
+                            $page->trigError('Les informations : « ' . $item . ' » sont ambigues et correspondent à plusieurs camarades.');
+                            $incomplete[] = $item;
+                            $errors = true;
+                            continue;
+                        } else {
+                            $user = $uf->getUser();
+                        }
+                    }
+
+                    if ($user->state == 'active') {
+                        $this->addRegistered($page, $user->profile());
+                    } else {
+                        if (!User::isForeignEmailAddress($email)) {
+                            $page->trigError('Email pas encore attribué&nbsp;: ' . $email);
+                            $incomplete[] = $item;
+                            $errors = true;
+                        } else {
+                            $this->addNonRegistered($page, $user);
+                            if (!Marketing::get($user->id(), $email, true)) {
+                                check_email($email, "Une adresse surveillée est proposée au marketing par " . S::user()->login());
+                                $market = new Marketing($user->id(), $email, 'default', null, $origin, S::v('uid'), null);
+                                $market->add();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        $page->assign('errors', $errors);
+        $page->assign('incomplete', $incomplete);
     }
 }
 
