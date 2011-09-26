@@ -77,9 +77,9 @@ class AccountReq extends Validate
     protected function _mail_body($isok)
     {
         if ($isok) {
-            return "  Un email vient d'être envoyé à {$this->email} pour qu'il puisse activer son compte sur Polytechnique.net.";
+            return "  Un email vient d'être envoyé à {$this->email} pour que cette personne puisse activer son compte sur Polytechnique.net.";
         } else {
-            return "  Nous n'avons pas jugé bon d'envoyer d'email à {$this->email} pour qu'il puisse activer son compte sur Polytechnique.net.";
+            return "  Nous n'avons pas jugé bon d'envoyer d'email à {$this->email} pour que cette personne puisse activer son compte sur Polytechnique.net.";
         }
     }
 
