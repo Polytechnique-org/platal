@@ -152,27 +152,54 @@
       </td>
     </tr>
     {/if}
-    {if $issue->isEditable()}
-      {if $nl->criteria->hasFlag('promo')}
+    {if $nl->criteria->hasFlag('promo')}
       <tr>
         <td class="titre">Promotions</td>
         <td>
-          {include file="include/select_promo.tpl" promo_data=$smarty.request egal1="egal1" egal2="egal2" promo1="promo1" promo2="promo2" edu_type="edu_type"}
+          {if $issue->isEditable()}
+            {include file="include/select_promo.tpl" promo_data=$smarty.request egal1="egal1" egal2="egal2" promo1="promo1" promo2="promo2" edu_type="edu_type"}
+          {else}
+            {if t($smarty.request.promo1)}
+              {if $smarty.request.egal1 eq "="}
+                {$smarty.request.promo1}
+              {elseif t($smarty.request.promo2)}
+                {if $smarty.request.egal1 eq "&gt;="}
+                  {$smarty.request.promo1} à {$smarty.request.promo2}
+                {else}
+                  {$smarty.request.promo2} à {$smarty.request.promo1}
+                {/if}
+              {else}
+                {if $smarty.request.egal1 eq "&gt;="}
+                  après {$smarty.request.promo1}
+                {else}
+                  avant {$smarty.request.promo1}
+                {/if}
+              {/if}
+            {else}
+              Toutes les promotions
+            {/if}
+            {if $smarty.request.edu_type eq #UserFilter::GRADE_ING#}(X){/if}
+            {if $smarty.request.edu_type eq #UserFilter::GRADE_MST#}(Master){/if}
+            {if $smarty.request.edu_type eq #UserFilter::GRADE_PHD#}(Docteur){/if}
+          {/if}
         </td>
       </tr>
-      {/if}
-      {if $nl->criteria->hasFlag('axid')}
+    {/if}
+    {if $nl->criteria->hasFlag('axid')}
       <tr>
         <td class="titre">Matricule AX</td>
         <td>
-          <textarea name="axid" rows="10" cols="12">{$smarty.request.axid}</textarea>
-          <br />
-          <i>Entrer une liste de matricules AX (un par ligne)</i><br />
-          <input type="checkbox" name="axid_reversed" id="axid_reversed" {if $smarty.request.axid_reversed}checked="checked"{/if} value="1" />
-          Inverser la sélection <i>(sélectionner dans l'intervalle de promotions, à l'exception des matricules indiqués)</i>
+          {if $issue->isEditable()}
+            <textarea name="axid" rows="10" cols="12">{$smarty.request.axid}</textarea>
+            <br />
+            <i>Entrer une liste de matricules AX (un par ligne)</i><br />
+            <input type="checkbox" name="axid_reversed" id="axid_reversed" {if $smarty.request.axid_reversed}checked="checked"{/if} value="1" />
+            Inverser la sélection <i>(sélectionner dans l'intervalle de promotions, à l'exception des matricules indiqués)</i>
+          {else}
+            {$smarty.request.axid}
+          {/if}
         </td>
       </tr>
-      {/if}
     {/if}
     <tr class='center'>
       <td colspan='2'>
