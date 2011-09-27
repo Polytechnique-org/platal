@@ -331,5 +331,14 @@ function searchForJobTerm(treeid, jtid, full_name)
     $("input[name='jobterm']").val(jtid);
 }
 
+function addressesDump()
+{
+    if ($('#addresses_dump:checked').length > 0) {
+        $('#recherche').attr('action', 'search/adv/addresses').attr('method', 'post').removeAttr('onsubmit');
+    } else {
+        $('#recherche').attr('action', 'search/adv').attr('method', 'get');
+    }
+}
+
 // }}}
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

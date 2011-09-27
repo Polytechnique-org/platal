@@ -272,7 +272,7 @@
         </table>
       </td>
     </tr>
-        {if hasPerm('admin,edit_directory')}
+    {if hasPerm('admin,edit_directory')}
     <tr>
       <td>Matricule AX</td>
       <td>
@@ -280,9 +280,9 @@
         <br />
         <i>Entrer une liste de matricules AX (un par ligne)</i>
       </td>
-        {/if}
-        {if $smarty.session.auth ge AUTH_COOKIE}
     </tr>
+    {/if}
+    {if $smarty.session.auth ge AUTH_COOKIE}
     <tr>
       <td colspan="2">
           <input type='checkbox' name='order' value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} id="order"/>
@@ -295,7 +295,14 @@
            <label for="exact">Faire une recherche exacte.</label>
       </td>
     </tr>
-        {/if}
+    {/if}
+    {if hasPerm('admin,edit_directory')}
+    <tr>
+      <td colspan="2">
+           <label><input type="checkbox" id="addresses_dump" onclick="addressesDump();" />Tableau des adresses postales.</label>
+      </td>
+    </tr>
+    {/if}
     <tr><td colspan="2"></td></tr>
     <tr>
       <td colspan="2" style="text-align: center">
