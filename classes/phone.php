@@ -333,7 +333,7 @@ class Phone
             $success = (!$phone->error && ($phone->format() || $phone->isEmpty()) && $success);
             if (!$phone->isEmpty()) {
                 // Restrict phone visibility to $maxPublicity
-                if (!is_null($maxPublicity) && Visibility::isLessRestrictive($phone->pub, $maxPublicity)) {
+                if (!is_null($maxPublicity) && Visibility::isLessRestrictive($maxPublicity, $phone->pub)) {
                     $phone->pub = $maxPublicity;
                 }
                 $phones[] = call_user_func(array($phone, $function));
@@ -341,7 +341,7 @@ class Phone
         }
         if (count($phones) == 0 && $requiresEmptyPhone) {
             $phone = new Phone();
-            if (!is_null($maxPublicity) && Visibility::isLessRestrictive($phone->pub, $maxPublicity)) {
+            if (!is_null($maxPublicity) && Visibility::isLessRestrictive($maxPublicity, $phone->pub)) {
                 // Restrict phone visibility to $maxPublicity
                 $phone->pub = $maxPublicity;
             }
