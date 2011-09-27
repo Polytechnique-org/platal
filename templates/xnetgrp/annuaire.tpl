@@ -23,7 +23,7 @@
 <h1>{$asso->nom}&nbsp;: Annuaire du groupe </h1>
 
 <p class="descr">
-Le groupe {$asso->nom} compte {$plset_count} membres&nbsp;:
+Le groupe {$asso->nom} compte {$plset_total_count} membres&nbsp;:
 </p>
 
 <ul class="descr">
