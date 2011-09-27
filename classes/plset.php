@@ -31,6 +31,7 @@ abstract class PlSet
     protected $limit   = null;
 
     protected $count   = null;
+    protected $total_count = null;
     protected $groups = false;
 
     // Handle the "restrict to values of the current order"
@@ -158,6 +159,7 @@ abstract class PlSet
         }
         $pf_res = $this->buildFilterHelper($orders);
         $pf_groups = $pf_res;
+        $this->total_count = $pf_res->getTotalCount();
         if ($this->restrict_to != null
             && count($this->orders)
             && $this->orders[0] instanceof PlFilterGroupableOrder)
@@ -275,6 +277,7 @@ abstract class PlSet
         }
         $page->assign('plset_content', $view->apply($page));
         $page->assign('plset_count', $this->count);
+        $page->assign('plset_total_count', $this->total_count);
         $page->assign('plset_has_groups', $this->groups != null);
         $page->assign('plset_groups', $this->groups);
         return true;
