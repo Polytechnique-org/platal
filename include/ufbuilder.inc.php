@@ -839,9 +839,10 @@ class UFBF_SchoolIds extends UFB_Field
         }
 
         $value = $ufb->t($this->envfield);
-        $values = explode("\r\n", $value);
+        $values = explode("\n", $value);
         $ids = array();
         foreach ($values as $val) {
+            $val = trim($val);
             if (preg_match('/^[0-9A-Z]{0,8}$/', $val)) {
                 $ids[] = $val;
             }
