@@ -157,9 +157,10 @@ class RegisterModule extends PLModule
                     // Validate the email address format and domain.
                     require_once 'emails.inc.php';
 
+                    $user = User::get($subState->s('uid'));
                     if (!isvalid_email(Post::v('email'))) {
                         $error[] = "Le champ 'Email' n'est pas valide.";
-                    } elseif (!isvalid_email_redirection(Post::v('email'))) {
+                    } elseif (!isvalid_email_redirection(Post::v('email'), $user)) {
                         $error[] = $subState->s('forlife') . ' doit renvoyer vers un email existant '
                                  . 'valide, en particulier, il ne peut pas être renvoyé vers lui-même.';
                     }

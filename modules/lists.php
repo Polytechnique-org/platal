@@ -618,8 +618,9 @@ class ListsModule extends PLModule
 
                   case 'marketu': case 'markets':
                     require_once 'emails.inc.php';
+                    $user = User::get($uids[$key]);
                     $mail = valide_email($mails[$key]);
-                    if (isvalid_email_redirection($mail)) {
+                    if (isvalid_email_redirection($mail, $user)) {
                         $from = ($action == 'marketu') ? 'user' : 'staff';
                         $market = Marketing::get($uids[$key], $mail);
                         if (!$market) {

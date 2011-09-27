@@ -592,7 +592,7 @@ class AdminModule extends PLModule
         $redirect = ($registered ? new Redirect($user) : null);
         if (Post::has('add_fwd')) {
             $email = Post::t('email');
-            if (!isvalid_email_redirection($email)) {
+            if (!isvalid_email_redirection($email, $user)) {
                 $page->trigError("Email non valide: $email");
             } else {
                 $redirect->add_email($email);

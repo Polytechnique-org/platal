@@ -237,7 +237,7 @@ class MarketingModule extends PLModule
         if (Post::has('mail')) {
             $email = valide_email(Post::v('mail'));
         }
-        if (Post::has('valide') && isvalid_email_redirection($email)) {
+        if (Post::has('valide') && isvalid_email_redirection($email, $user)) {
             S::assert_xsrf_token();
 
             // security stuff
@@ -303,7 +303,7 @@ class MarketingModule extends PLModule
             $email = trim(Post::v('mail'));
 
             require_once 'emails.inc.php';
-            if (!isvalid_email_redirection($email)) {
+            if (!isvalid_email_redirection($email, $user)) {
                 $page->trigError('Email invalide&nbsp;!');
             } else {
                 // On cherche les marketings précédents sur cette adresse

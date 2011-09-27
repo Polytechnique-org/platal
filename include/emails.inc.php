@@ -298,11 +298,17 @@ function valide_email($str)
 // function isvalid_email_redirection() {{{1
 /** Checks if an email is a suitable redirection.
  * @param $email the email to check
+ * @param $user  the user asking for the redirection
  * @return BOOL
  */
-function isvalid_email_redirection($email)
+function isvalid_email_redirection($email, User $user)
 {
-    return isvalid_email($email) && !preg_match("/@polytechnique\.edu$/", $email) && User::isForeignEmailAddress($email);
+    $valid = isvalid_email($email) && User::isForeignEmailAddress($email);
+    if (!$user->hasProfile() || ($user->profile()->grad_year > date('Y') - 3)) {
+        return $valid && !preg_match("/@polytechnique\.edu$/", $email);
+    } else {
+        return $valid;
+    }
 }
 
 // function ids_from_mails() {{{1
@@ -785,7 +791,7 @@ class Redirect
         if (!isvalid_email($email_stripped)) {
             return ERROR_INVALID_EMAIL;
         }
-        if (!isvalid_email_redirection($email_stripped)) {
+        if (!isvalid_email_redirection($email_stripped, $this->user)) {
             return ERROR_LOOP_EMAIL;
         }
         // We first need to retrieve the value for the antispam filter: it is
