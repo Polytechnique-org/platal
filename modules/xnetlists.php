@@ -259,7 +259,7 @@ class XnetListsModule extends ListsModule
             S::assert_xsrf_token();
 
             if (add_to_list_alias(Env::t('add_member'), $local_part, $domain)) {
-                $page->trigSuccess('Ajout réussit.');
+                $page->trigSuccess('Ajout réussi.');
             } else {
                 $page->trigError('Ajout infructueux.');
             }
