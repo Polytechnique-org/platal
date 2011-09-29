@@ -138,10 +138,15 @@ class XorgSession extends PlSession
 
         $user = User::getSilent($login);
 
-        if (!is_null($user) && S::suid()) {
-            $success = (S::suid('uid') == $user->id());
+        if (is_null($user)) {
+            Platal::page()->trigError(self::TEXT_INVALID_LOGIN);
+            $success = false;
         } else {
-            $success = $this->checkPassword($login, $user, Post::v('response'));
+            if (S::suid()) {
+                $success = (S::suid('uid') == $user->id());
+            } else {
+                $success = $this->checkPassword($login, $user, Post::v('response'));
+            }
         }
 
         if ($success) {
