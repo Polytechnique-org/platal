@@ -119,14 +119,14 @@ class DirEnum
      * @param $text Text to autocomplete
      * @return PlIterator over the results
      */
-    static public function getAutoComplete($type, $text)
+    static public function getAutoComplete($type, $text, $sub_id = null)
     {
         if (!array_key_exists($type, self::$enumerations)) {
             self::init($type);
         }
         $obj = self::$enumerations[$type];
         if ($obj->capabilities & DirEnumeration::HAS_AUTOCOMP) {
-            return call_user_func(array($obj, 'getAutoComplete'), $text);
+            return call_user_func_array(array($obj, 'getAutoComplete'), array($text, $sub_id));
         } else {
             return array();
         }
@@ -252,7 +252,7 @@ abstract class DirEnumeration
     /** Builds a list of query parts for searching @$text in @$field :
      * field LIKE 'text%', field LIKE '% text%', field LIKE '%-text%'
      */
-    private function mkTests($field, $text)
+    protected function mkTests($field, $text)
     {
         $tests = array();
         $tests[] = $field . XDB::formatWildcards(XDB::WILDCARD_PREFIX, $text);
@@ -276,7 +276,7 @@ abstract class DirEnumeration
     }
 
     // {{{ function getAutoComplete
-    public function getAutoComplete($text)
+    public function getAutoComplete($text, $sub_id = null)
     {
         $text = str_replace(array('%', '_'), '', $text);
 
@@ -609,6 +609,28 @@ class DE_Localities extends DE_AddressesComponents
 {
     protected $where = 'WHERE  FIND_IN_SET(\'locality\', profile_addresses_components_enum.types)';
     protected $ac_where  = 'profile_addresses_components.type = \'home\' AND FIND_IN_SET(\'locality\', profile_addresses_components_enum.types)';
+
+    // {{{ function getAutoComplete
+    public function getAutoComplete($text, $sub_id = null)
+    {
+        if (is_null($sub_id)) {
+            return parent::getAutoComplete($text);
+        } else {
+            $tests = $this->mkTests('pace1.long_name', $text);
+            $where .= '(' . implode(' OR ', $tests) . ')';
+            $query = "SELECT  pace1.id AS id, pace1.long_name AS field, COUNT(DISTINCT(pac1.pid)) AS nb
+                        FROM  profile_addresses_components_enum AS pace1
+                  INNER JOIN  profile_addresses_components      AS pac1  ON (pac1.component_id = pace1.id)
+                  INNER JOIN  profile_addresses_components      AS pac2  ON (pac1.pid = pac2.pid AND pac1.jobid = pac2.jobid AND pac1.id = pac2.id
+                                                                             AND pac1.groupid = pac2.groupid AND pac1.type = pac2.type)
+                  INNER JOIN  profile_addresses_components_enum AS pace2 ON (pac2.component_id = pace2.id AND FIND_IN_SET('country', pace2.types))
+                       WHERE  pace2.id = {?} AND FIND_IN_SET('locality', pace1.types) AND pac1.type = 'home' AND " . $where . "
+                    GROUP BY  pace1.long_name";
+            return XDB::fetchAllAssoc($query, $sub_id);
+        }
+    }
+    // }}}
+
 }
 
 class DE_Sublocalities extends DE_AddressesComponents
@@ -659,7 +681,7 @@ class DE_JobTerms extends DirEnumeration
     protected $idfield = 'profile_job_term_enum.jtid';
 
     // {{{ function getAutoComplete
-    public function getAutoComplete($text)
+    public function getAutoComplete($text, $sub_id = null)
     {
         $tokens = JobTerms::tokenize($text.'%');
         if (count($tokens) == 0) {

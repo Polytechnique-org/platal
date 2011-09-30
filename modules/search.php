@@ -218,7 +218,7 @@ class SearchModule extends PLModule
         return $item['field'] . ' (' . $item['nb'] . ' camarade' . ($item['nb'] > 1 ? 's' : '') . ')';
     }
 
-    function handler_autocomplete($page, $type = null)
+    function handler_autocomplete($page, $type = null, $sub_id = null)
     {
         // Autocompletion : according to type required, return
         // a list of results matching with the number of matches.
@@ -237,13 +237,18 @@ class SearchModule extends PLModule
         if (!$q) {
             exit();
         }
+        if (!is_null($sub_id)) {
+            $query = $q . "\t" . $sub_id;
+        } else {
+            $query = $q;
+        }
 
         // Try to look in cached results.
         $cached = false;
         $cache = XDB::query('SELECT  result
                                FROM  search_autocomplete
                               WHERE  name = {?} AND query = {?} AND generated > NOW() - INTERVAL 1 DAY',
-                             $type, $q);
+                             $type, $query);
 
         if ($cache->numRows() > 0) {
             $cached = true;
@@ -279,7 +284,11 @@ class SearchModule extends PLModule
                 exit();
             }
 
-            $list = DirEnum::getAutoComplete($enums[$type], $q);
+            if (is_null($sub_id)) {
+                $list = DirEnum::getAutoComplete($enums[$type], $q);
+            } else {
+                $list = DirEnum::getAutoComplete($enums[$type], $q, $sub_id);
+            }
             $to_cache = '';
             foreach ($list as &$item) {
                 $to_cache .= $item['field'] . "\t" . $item['nb'] . "\t" . $item['id'] . "\n";
@@ -308,7 +317,7 @@ class SearchModule extends PLModule
             XDB::query('INSERT INTO  search_autocomplete (name, query, result, generated)
                              VALUES  ({?}, {?}, {?}, NOW())
             ON DUPLICATE KEY UPDATE  result = VALUES(result), generated = VALUES(generated)',
-                       $type, $q, $to_cache);
+                       $type, $query, $to_cache);
         }
         echo json_encode($list);
         exit();

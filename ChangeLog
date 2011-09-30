@@ -37,6 +37,9 @@ Bug/Wish:
         - #1446: Adds field for sports and hobbies                         -JAC
         - #1535: Moves and displays skills with mentoring informations     -JAC
 
+    * Search:
+        - #1284: If a country is chosen, only proposes its cities          -JAC
+
     * XnetGrp:
         - #1525: Fixes broken page on erroneous group page edition         -JAC
         - #1530: Enables reminder for xnet accounts                        -JAC

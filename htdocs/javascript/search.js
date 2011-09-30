@@ -23,6 +23,7 @@
 var baseurl = $.plURL('search/');
 var address_types = new Array('country', 'administrative_area_level_1', 'administrative_area_level_2', 'locality', 'postal_code');
 var address_types_count = address_types.length;
+var autocomplete_sub = {'country': 'locality_text'};
 
 function load_advanced_search(request)
 {
@@ -164,6 +165,9 @@ function cancel_autocomplete(field, realfield)
 function select_autocomplete(name, id)
 {
     var field_name = name.replace(/_text$/, '');
+    if (autocomplete_sub[field_name] != null) {
+        $(".autocomplete[name='" + autocomplete_sub[field_name] + "']").autocomplete('option', 'source', baseurl + 'autocomplete/' + autocomplete_sub[field_name] + '/' + id);
+    }
 
     // just display field as valid if field is not a text field for a list
     if (field_name == name) {
@@ -238,6 +242,10 @@ function displayNextAddressComponent(i, j, value)
     if (next_type == 'locality') {
         $('tr#locality_text').hide();
         $("select[name='locality_text']").attr('value', '');
+    }
+
+    if (autocomplete_sub[prev_type] != null) {
+        $(".autocomplete[name='" + autocomplete_sub[prev_type] + "']").autocomplete('option', 'source', baseurl + 'autocomplete/' + autocomplete_sub[prev_type] + '/' + value);
     }
 
     $('#' + next_list).load(baseurl + 'list/' + next_type, { previous:prev_type, value:value }, function() {
