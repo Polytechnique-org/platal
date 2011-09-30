@@ -6,6 +6,9 @@ New:
     * Newsletter:
         - Displays number of subscribers without any valid redirection     -JAC
 
+    * Search:
+        - Switches autocomplete to jQuery UI                               -JAC
+
 Bug/Wish:
 
     * Carnet:

@@ -149,6 +149,7 @@ class SearchModule extends PLModule
     function handler_advanced($page, $model = null, $byletter = null)
     {
         global $globals;
+        $page->addJsLink('jquery.ui.xorg.js');
         $page->addJsLink('search.js');
         $page->assign('advanced',1);
 
@@ -212,6 +213,11 @@ class SearchModule extends PLModule
         $page->assign('public_directory',0);
     }
 
+    private function format_autocomplete(array $item)
+    {
+        return $item['field'] . ' (' . $item['nb'] . ' camarade' . ($item['nb'] > 1 ? 's' : '') . ')';
+    }
+
     function handler_autocomplete($page, $type = null)
     {
         // Autocompletion : according to type required, return
@@ -227,66 +233,84 @@ class SearchModule extends PLModule
                            array('',
                                  '\\\\\1',
                                  '.*'),
-                           Env::s('q'));
-        if (!$q) exit();
-
-        // try to look in cached results
-        $cache = XDB::query('SELECT  result
-                               FROM  search_autocomplete
-                              WHERE  name = {?} AND
-                                     query = {?} AND
-                                     generated > NOW() - INTERVAL 1 DAY',
-                             $type, $q);
-        if ($res = $cache->fetchOneCell()) {
-            echo $res;
-            die();
-        }
-
-        $enums = array(
-            'binet_text'           => DirEnum::BINETS,
-            'groupex_text'         => DirEnum::GROUPESX,
-            'section_text'         => DirEnum::SECTIONS,
-            'networking_type_text' => DirEnum::NETWORKS,
-            'locality_text'        => DirEnum::LOCALITIES,
-            'country_text'         => DirEnum::COUNTRIES,
-            'entreprise'           => DirEnum::COMPANIES,
-            'jobterm_text'         => DirEnum::JOBTERMS,
-            'description'          => DirEnum::JOBDESCRIPTION,
-            'nationalite_text'     => DirEnum::NATIONALITIES,
-            'school_text'          => DirEnum::EDUSCHOOLS,
-        );
-        if (!array_key_exists($type, $enums)) {
+                           Get::t('term'));
+        if (!$q) {
             exit();
         }
 
-        $enum = $enums[$type];
+        // Try to look in cached results.
+        $cached = false;
+        $cache = XDB::query('SELECT  result
+                               FROM  search_autocomplete
+                              WHERE  name = {?} AND query = {?} AND generated > NOW() - INTERVAL 1 DAY',
+                             $type, $q);
 
-        $list = DirEnum::getAutoComplete($enum, $q);
-        $nbResults = 0;
-        $res = "";
-        while ($result = $list->next()) {
-            $nbResults++;
-            if ($nbResults == 11) {
-                $res .= $q."|-1\n";
-            } else {
-                $res .= $result['field'].'|';
-                if (isset($result['nb'])) {
-                    $res .= $result['nb'];
+        if ($cache->numRows() > 0) {
+            $cached = true;
+            $data = explode("\n", $cache->fetchOneCell());
+            $list = array();
+            foreach ($data as $line) {
+                if ($line != '') {
+                    $aux = explode("\t", $line);
+                    $item = array(
+                        'field' => $aux[0],
+                        'nb'    => $aux[1],
+                        'id'    => $aux[2]
+                    );
+                    $item['value'] = $this->format_autocomplete($item);
+                    array_push($list, $item);
                 }
-                if (isset($result['id'])) {
-                    $res  .= '|'.$result['id'];
-                }
-                $res .= "\n";
+            }
+        } else {
+            $enums = array(
+                'binet_text'           => DirEnum::BINETS,
+                'groupex_text'         => DirEnum::GROUPESX,
+                'section_text'         => DirEnum::SECTIONS,
+                'networking_type_text' => DirEnum::NETWORKS,
+                'locality_text'        => DirEnum::LOCALITIES,
+                'country_text'         => DirEnum::COUNTRIES,
+                'entreprise'           => DirEnum::COMPANIES,
+                'jobterm_text'         => DirEnum::JOBTERMS,
+                'description'          => DirEnum::JOBDESCRIPTION,
+                'nationalite_text'     => DirEnum::NATIONALITIES,
+                'school_text'          => DirEnum::EDUSCHOOLS,
+            );
+            if (!array_key_exists($type, $enums)) {
+                exit();
+            }
+
+            $list = DirEnum::getAutoComplete($enums[$type], $q);
+            $to_cache = '';
+            foreach ($list as &$item) {
+                $to_cache .= $item['field'] . "\t" . $item['nb'] . "\t" . $item['id'] . "\n";
+                $item['value'] = $this->format_autocomplete($item);
             }
         }
-        if ($nbResults == 0) {
-            $res = $q."|-2\n";
+
+        $count = count($list);
+        if ($count == DirEnumeration::AUTOCOMPLETE_LIMIT) {
+            $list[] = array(
+                'value' => '…',
+                'field' => '',
+                'nb'    => 0,
+                'id'    => -1
+            );
+        } elseif ($count == 0) {
+            $list[] = array(
+                'value' => 'Aucun camarade trouvé pour ' . $q . '.',
+                'field' => '',
+                'nb'    => 0,
+                'id'    => -1
+            );
         }
-        XDB::query('INSERT INTO  search_autocomplete (name, query, result, generated)
-                         VALUES  ({?}, {?}, {?}, NOW())
-        ON DUPLICATE KEY UPDATE  result = VALUES(result), generated = VALUES(generated)',
-                   $type, $q, $res);
-        echo $res;
+
+        if (!$cached) {
+            XDB::query('INSERT INTO  search_autocomplete (name, query, result, generated)
+                             VALUES  ({?}, {?}, {?}, NOW())
+            ON DUPLICATE KEY UPDATE  result = VALUES(result), generated = VALUES(generated)',
+                       $type, $q, $to_cache);
+        }
+        echo json_encode($list);
         exit();
     }
 

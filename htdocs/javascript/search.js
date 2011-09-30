@@ -28,13 +28,16 @@ function load_advanced_search(request)
 {
     $('.autocomplete_target').hide();
     $('.autocomplete').show().each(function() {
-        $(this).autocomplete(baseurl + 'autocomplete/' + this.name, {
-            selectOnly: 1,
-            formatItem: make_format_autocomplete(this),
-            field: this.name,
-            onItemSelect: select_autocomplete(this.name),
-            matchSubset: 0,
-            width: $(this).width()
+        $(this).autocomplete({
+            source: baseurl + 'autocomplete/' + this.name,
+            select: function(event, ui) {
+                select_autocomplete(this.name, ui.item.id);
+            },
+            change: function(event, ui) {
+                if (ui.item != null && ui.item.field != null) {
+                    $(this).val(ui.item.field);
+                }
+            }
         });
     });
 
@@ -148,25 +151,6 @@ function cleanForm(f, targeturl)
 // }}}
 // {{{ Autocomplete related functions.
 
-// display an autocomplete row : blabla (nb of found matches)
-function make_format_autocomplete(block)
-{
-    return function(row) {
-        regexp = new RegExp('(' + RegExp.escape(block.value) + ')', 'i');
-        name = row[0].htmlEntities().replace(regexp, '<strong>$1<\/strong>');
-
-        if (row[1] === '-1') {
-            return '&hellip;';
-        }
-        if (row[1] === '-2') {
-            return '<em>aucun camarade trouvé pour '+row[0].htmlEntities()+'<\/em>';
-        }
-
-        mate = (row[1] > 1) ? 'camarades' : 'camarade';
-        return name + '<em>&nbsp;&nbsp;-&nbsp;&nbsp;' + row[1].htmlEntities() + '&nbsp;' + mate + '<\/em>';
-    };
-}
-
 function cancel_autocomplete(field, realfield)
 {
     $(".autocomplete[name='" + field + "']").removeClass('hidden_valid').val('').focus();
@@ -177,46 +161,42 @@ function cancel_autocomplete(field, realfield)
 }
 
 // when choosing autocomplete from list, must validate
-function select_autocomplete(name)
+function select_autocomplete(name, id)
 {
     var field_name = name.replace(/_text$/, '');
 
     // just display field as valid if field is not a text field for a list
     if (field_name == name) {
-        return function(i) {
-            $(".autocomplete[name='" + name + "']").addClass('hidden_valid');
-        }
+        $(".autocomplete[name='" + name + "']").addClass('hidden_valid');
+        return;
     }
 
     // When changing country, locality or school, open next address component.
     if (field_name == 'country' || field_name == 'locality' || field_name == 'school') {
-        return function(i) {
-            if (i.extra[0] < 0) {
-                cancel_autocomplete(name, field_name);
-                i.extra[1] = '';
-            }
-
-            if (field_name == 'school') {
-                changeSchool(i.extra[1], '');
-            } else {
-                changeAddressComponents(field_name, i.extra[1]);
-            }
-
-            $(".autocomplete_target[name='" + field_name + "']").attr('value', i.extra[1]);
-            $(".autocomplete[name='" + name + "']").addClass('hidden_valid');
+        if (id < 0) {
+            cancel_autocomplete(name, field_name);
+            id = '';
         }
+
+        if (field_name == 'school') {
+            changeSchool(id, '');
+        } else {
+            changeAddressComponents(field_name, id);
+        }
+
+        $(".autocomplete_target[name='" + field_name + "']").attr('value', id);
+        $(".autocomplete[name='" + name + "']").addClass('hidden_valid');
+        return;
     }
 
     // change field in list and display text field as valid
-    return function(i) {
-        if (i.extra[0] < 0) {
-            cancel_autocomplete(this.field, field_name);
-            return;
-        }
-
-        $(".autocomplete_target[name='" + field_name + "']").attr('value', i.extra[1]);
-        $(".autocomplete[name='" + name + "']").addClass('hidden_valid');
+    if (id < 0) {
+        cancel_autocomplete(this.field, field_name);
+        return;
     }
+
+    $(".autocomplete_target[name='" + field_name + "']").attr('value', id);
+    $(".autocomplete[name='" + name + "']").addClass('hidden_valid');
 }
 
 // }}}

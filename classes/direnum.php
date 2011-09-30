@@ -128,7 +128,7 @@ class DirEnum
         if ($obj->capabilities & DirEnumeration::HAS_AUTOCOMP) {
             return call_user_func(array($obj, 'getAutoComplete'), $text);
         } else {
-            return PlIteratorUtils::fromArray(array());
+            return array();
         }
     }
 
@@ -293,15 +293,15 @@ abstract class DirEnumeration
 
         $where .= '(' . implode(' OR ', $tests) . ')';
 
-        return XDB::iterator('SELECT ' . $this->valfield . ' AS field'
-                                       . ($this->ac_distinct ? (', COUNT(DISTINCT ' . $this->ac_unique . ') AS nb') : '')
-                                       . ($this->ac_withid ? (', ' . $this->idfield . ' AS id') : '') . '
-                                FROM ' . $this->from . '
-                                     ' . $this->ac_join . '
-                               WHERE ' . $where . '
-                            GROUP BY ' . $this->valfield . '
-                            ORDER BY ' . ($this->ac_distinct ? 'nb DESC' : $this->valfield) . '
-                               LIMIT ' . self::AUTOCOMPLETE_LIMIT);
+        return XDB::fetchAllAssoc('SELECT ' . $this->valfield . ' AS field'
+                                            . ($this->ac_distinct ? (', COUNT(DISTINCT ' . $this->ac_unique . ') AS nb') : '')
+                                            . ($this->ac_withid ? (', ' . $this->idfield . ' AS id') : '') . '
+                                     FROM ' . $this->from . '
+                                          ' . $this->ac_join . '
+                                    WHERE ' . $where . '
+                                 GROUP BY ' . $this->valfield . '
+                                 ORDER BY ' . ($this->ac_distinct ? 'nb DESC' : $this->valfield) . '
+                                    LIMIT ' . self::AUTOCOMPLETE_LIMIT);
     }
     // }}}
 
@@ -421,15 +421,15 @@ abstract class DE_WithSuboption extends DirEnumeration
 
         $where .= '(' . implode(' OR ', $tests) . ')';
 
-        return XDB::iterator('SELECT ' . $this->valfield . ' AS field'
-                                       . ($this->ac_distinct ? (', COUNT(DISTINCT ' . $this->ac_unique . ') AS nb') : '')
-                                       . ($this->ac_withid ? (', ' . $this->idfield . ' AS id') : '') . '
-                                FROM ' . $this->from . '
-                                     ' . $this->ac_join . '
-                               WHERE ' . $where . '
-                            GROUP BY ' . $this->valfield . '
-                            ORDER BY ' . ($this->ac_distinct ? 'nb DESC' : $this->valfield) . '
-                               LIMIT ' . self::AUTOCOMPLETE_LIMIT);
+        return XDB::fetchAllAssoc('SELECT ' . $this->valfield . ' AS field'
+                                            . ($this->ac_distinct ? (', COUNT(DISTINCT ' . $this->ac_unique . ') AS nb') : '')
+                                            . ($this->ac_withid ? (', ' . $this->idfield . ' AS id') : '') . '
+                                     FROM ' . $this->from . '
+                                          ' . $this->ac_join . '
+                                    WHERE ' . $where . '
+                                 GROUP BY ' . $this->valfield . '
+                                 ORDER BY ' . ($this->ac_distinct ? 'nb DESC' : $this->valfield) . '
+                                    LIMIT ' . self::AUTOCOMPLETE_LIMIT);
     }
 }
 // }}}
@@ -663,17 +663,17 @@ class DE_JobTerms extends DirEnumeration
     {
         $tokens = JobTerms::tokenize($text.'%');
         if (count($tokens) == 0) {
-            return PlIteratorUtils::fromArray(array());
+            return array();
         }
         $token_join = JobTerms::token_join_query($tokens, 'e');
-        return XDB::iterator('SELECT  e.jtid AS id, e.full_name AS field, COUNT(DISTINCT p.pid) AS nb
-                                 FROM  profile_job_term_enum AS e
-                           INNER JOIN  profile_job_term_relation AS r ON (r.jtid_1 = e.jtid)
-                           INNER JOIN  profile_job_term AS p ON (r.jtid_2 = p.jtid)
-                           '.$token_join.'
-                             GROUP BY  e.jtid
-                             ORDER BY  nb DESC, field
-                                LIMIT ' . self::AUTOCOMPLETE_LIMIT);
+        return XDB::fetchAllAssoc('SELECT  e.jtid AS id, e.full_name AS field, COUNT(DISTINCT p.pid) AS nb
+                                     FROM  profile_job_term_enum AS e
+                               INNER JOIN  profile_job_term_relation AS r ON (r.jtid_1 = e.jtid)
+                               INNER JOIN  profile_job_term AS p ON (r.jtid_2 = p.jtid)
+                               '.$token_join.'
+                                 GROUP BY  e.jtid
+                                 ORDER BY  nb DESC, field
+                                    LIMIT ' . self::AUTOCOMPLETE_LIMIT);
     }
     // }}}
 }

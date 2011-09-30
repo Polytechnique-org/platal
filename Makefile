@@ -174,7 +174,7 @@ JQUERY_PLUGINS=color form
 JQUERY_PLUGINS_PATHES=$(addprefix htdocs/javascript/jquery.,$(addsuffix .js,$(JQUERY_PLUGINS)))
 
 JQUERY_UI_VERSION=1.8.10
-JQUERY_UI=core widget tabs datepicker
+JQUERY_UI=core widget tabs datepicker autocomplete position
 JQUERY_UI_PATHES=$(addprefix htdocs/javascript/jquery.ui.,$(addsuffix .js,$(JQUERY_UI)))
 
 JQUERY_TMPL_VERSION=vBeta1.0.0
@@ -183,12 +183,9 @@ JQUERY_TMPL_PATH=htdocs/javascript/jquery.tmpl.js
 JSTREE_VERSION=1.0rc2
 JSTREE_PATH=htdocs/javascript/jquery.jstree.js
 
-# TODO: jquery.autocomplete.js should rather be downloaded from an official source. The issue
-# is that the version we use is not available anymore on the Internet, and the latest version
-# we could use is not backward compatible with our current code.
 jquery: htdocs/javascript/jquery.xorg.js htdocs/javascript/jquery.ui.xorg.js $(JSTREE_PATH)
 
-htdocs/javascript/jquery.xorg.js: htdocs/javascript/jquery.js $(JQUERY_PLUGINS_PATHES) $(JQUERY_TMPL_PATH) htdocs/javascript/jquery.autocomplete.js
+htdocs/javascript/jquery.xorg.js: htdocs/javascript/jquery.js $(JQUERY_PLUGINS_PATHES) $(JQUERY_TMPL_PATH)
 	cat $^ > $@
 
 htdocs/javascript/jquery.ui.xorg.js: $(JQUERY_UI_PATHES) htdocs/javascript/jquery.ui.datepicker-fr.js
