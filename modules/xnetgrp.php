@@ -983,11 +983,10 @@ class XnetGrpModule extends PLModule
         if (Post::has('suggest')) {
             if (Post::t('suggest') == 'yes') {
                 $user = S::user();
-                $group = Platal::globals()->asso('nom');
-                $request = new AccountReq($user, $hruid, $email, $group);
+                $request = new AccountReq($user, $hruid, $email, Platal::globals()->asso('nom'));
                 $request->submit();
                 $page->trigSuccessRedirect('Un email va bien être envoyé à ' . $email . ' pour l\'activation de son compte.',
-                                           $group . '/member/' . $hruid);
+                                           Platal::globals()->asso('diminutif') . '/member/' . $hruid);
             } else {
                 pl_redirect('member/' . $hruid);
             }
