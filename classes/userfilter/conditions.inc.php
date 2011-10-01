@@ -966,7 +966,7 @@ class UFC_Email extends UserFilterCondition
         $cond    = array();
 
         if (count($this->emails) == 0) {
-            return PlFilterCondition::COND_TRUE;
+            return PlFilterCondition::COND_FALSE;
         }
 
         foreach ($this->emails as $entry) {

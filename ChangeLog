@@ -24,6 +24,9 @@ Bug/Wish:
         - #1529: Stores and uses preferences for sending emails from site  -JAC
         - #1516: Enables @polytechnique.edu adresses for old promotions    -GLN
 
+    * Lists:
+        - #1543: Displays no member in directory view for empty lists      -JAC
+
     * Newsletter:
         - #1509: Adds a Reply-To field for newsletters                     -GLN
         - #1526: Shows user filter used after sending                      -GLN
