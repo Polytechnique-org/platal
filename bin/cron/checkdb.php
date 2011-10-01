@@ -217,6 +217,20 @@ check("SELECT  evd.name
         WHERE  evd2.id != evd2.aliasing",
       "Domaines aliasés de niveau 2 ou plus qui ne sont pas vu par postfix.");
 
+// Account viewing statistics
+info("SELECT  nb_profiles, hruid
+        FROM  (
+           SELECT  a.hruid AS hruid, COUNT(DISTINCT le.data) AS nb_profiles
+             FROM  log_events AS le
+        LEFT JOIN  log_sessions AS ls ON (ls.id = le.session)
+        LEFT JOIN  accounts AS a ON (a.uid = ls.uid)
+            WHERE  le.action = 30 AND ls.start >= DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)
+         GROUP BY  a.hruid
+              ) AS profile_views
+       WHERE  nb_profiles >= 100
+    ORDER BY  nb_profiles DESC",
+     "Camarades ayant consulté plus de 100 fiches au cours des 7 derniers jours.");
+
 // Counts empty profile fields that should never be empty.
 infoCountEmpty('profile_addresses', 'type');
 infoCountEmpty('profile_phones', 'link_type');
