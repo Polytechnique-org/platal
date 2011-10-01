@@ -94,7 +94,7 @@
   <div class="center"><input type="submit" name="action" value="Enregistrer" /></div>
 </form>
 {/if}
-{if !$it_is_xnet}
+{if !t($it_is_xnet)}
 <p class="smaller">
   {icon name="lightbulb" title="Astuce"}Astuce&nbsp;:
   tu peux également consulter les forums en utilisant un client NNTP tel que

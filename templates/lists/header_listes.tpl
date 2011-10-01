@@ -91,7 +91,7 @@
     </td>
   </tr>
   {/if}
-  {if $it_is_xnet && ($details.own || $is_admin)}
+  {if t($it_is_xnet) && ($details.own || $is_admin)}
   <tr>
     <td><strong>Synchroniser&nbsp;:</strong></td>
     {if $on neq 'sync'}
