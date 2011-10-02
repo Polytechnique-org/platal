@@ -191,6 +191,9 @@
             source: $.plURL('profile/jobterms'),
             select: function(event, ui) {ldelim}
               selectJobTerm(ui.item.id, ui.item.value, -1);
+            {rdelim},
+            change: function(event, ui) {ldelim}
+              $(this).val('');
             {rdelim}
         {rdelim});
       {rdelim});
