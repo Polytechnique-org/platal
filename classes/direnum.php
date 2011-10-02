@@ -625,7 +625,9 @@ class DE_Localities extends DE_AddressesComponents
                                                                              AND pac1.groupid = pac2.groupid AND pac1.type = pac2.type)
                   INNER JOIN  profile_addresses_components_enum AS pace2 ON (pac2.component_id = pace2.id AND FIND_IN_SET('country', pace2.types))
                        WHERE  pace2.id = {?} AND FIND_IN_SET('locality', pace1.types) AND pac1.type = 'home' AND " . $where . "
-                    GROUP BY  pace1.long_name";
+                    GROUP BY  pace1.long_name
+                    ORDER BY  nb DESC, field
+                       LIMIT  " . self::AUTOCOMPLETE_LIMIT;
             return XDB::fetchAllAssoc($query, $sub_id);
         }
     }
