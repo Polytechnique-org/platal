@@ -48,12 +48,12 @@ function toggleJobTermsTree()
 }
 
 /** Function called by autocomplete when a term is selected */
-function selectJobTerm(li)
+function selectJobTerm(id, value)
 {
-    if (li.extra[1] < 0) {
+    if (value < 0) {
         return;
     }
-    chooseJobTermInTree(null,li.extra[1],li.selectValue);
+    chooseJobTermInTree(null, id, value);
 }
 
 /** Prepares display for a jobterm in select's dropdown
@@ -146,13 +146,16 @@ function validateSearchForm(f)
 {literal}
 $(function() {
   createJobTermsTree('#mentoring_terms', 'profile/ajax/tree/jobterms/mentors', 'mentor', 'chooseJobTermInTree');
-  $("#jobtermText").autocomplete(baseurl + "autocomplete",
-  {
-    "selectOnly":1,
-    "width":$("#jobtermText").width()*2,
-    "onItemSelect" : selectJobTerm,
-    "formatItem" : displayJobTerm,
-    "matchSubset" : false
+  $('#jobtermText').autocomplete({
+      source: $.plURL(baseurl + 'autocomplete'),
+      select: function(event, ui) {
+          selectJobTerm(ui.item.id, ui.item.value);
+      },
+      change: function(event, ui) {
+          if (ui.item != null && ui.item.field != null) {
+              $(this).val(ui.item.field);
+          }
+      }
   });
   $('#jobTermsTreeToggle').click(toggleJobTermsTree);
 {/literal}

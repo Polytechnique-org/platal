@@ -141,13 +141,12 @@
           {foreach from=$job.terms item=term}
           addJobTerm("{$i}", "{$term.jtid}", "{$term.full_name|replace:'"':'\\"'}");
           {/foreach}
-          $('#jobs_{$i} .term_search').autocomplete($.plURL('profile/jobterms'),
+          $('#jobs_{$i} .term_search').autocomplete(
             {ldelim}
-              "formatItem" : displayJobTerm,
-              "extraParams" : {ldelim} "jobid" : "{$i}" {rdelim},
-              "width" : $('#jobs_{$i} .term_search').width()*2,
-              "onItemSelect" : selectJobTerm,
-              "matchSubset" : false
+              source: $.plURL('profile/jobterms'),
+              select: function(event, ui) {ldelim}
+                selectJobTerm(ui.item.id, ui.item.value, {$i});
+              {rdelim}
             {rdelim});
         {rdelim});
         /* ]]> */

@@ -213,7 +213,7 @@ class SearchModule extends PLModule
         $page->assign('public_directory',0);
     }
 
-    private function format_autocomplete(array $item)
+    static public function format_autocomplete(array $item)
     {
         return $item['field'] . ' (' . $item['nb'] . ' camarade' . ($item['nb'] > 1 ? 's' : '') . ')';
     }
@@ -262,7 +262,7 @@ class SearchModule extends PLModule
                         'nb'    => $aux[1],
                         'id'    => $aux[2]
                     );
-                    $item['value'] = $this->format_autocomplete($item);
+                    $item['value'] = self::format_autocomplete($item);
                     array_push($list, $item);
                 }
             }
@@ -292,7 +292,7 @@ class SearchModule extends PLModule
             $to_cache = '';
             foreach ($list as &$item) {
                 $to_cache .= $item['field'] . "\t" . $item['nb'] . "\t" . $item['id'] . "\n";
-                $item['value'] = $this->format_autocomplete($item);
+                $item['value'] = self::format_autocomplete($item);
             }
         }
 
@@ -414,6 +414,7 @@ class SearchModule extends PLModule
         $wp->buildCache();
 
         $page->setTitle('Emploi et Carrières');
+        $page->addJsLink('jquery.ui.xorg.js');
 
         // Count mentors
         $res = XDB::query("SELECT count(distinct pid) FROM profile_mentor_term");

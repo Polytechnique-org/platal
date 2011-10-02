@@ -657,44 +657,28 @@ function removeJobTerm()
 }
 
 /**
- * Prepare display for autocomplete suggestions in job terms
- * @param row an array of (title of term, id of term)
- * @return text to display
- * If id is negative, it is because there are too much terms to
- * be displayed.
- */
-function displayJobTerm(row)
-{
-    if (row[1] < 0) {
-        return '... <em>parcourir les résultats dans un arbre</em> ...';
-    }
-    return row[0];
-}
-
-/**
  * Function called when a job term has been selected from autocompletion
  * in search
  * @param li is the list item (<li>) that has been clicked
  * The context is the jsquery autocomplete object.
  */
-function selectJobTerm(li)
+function selectJobTerm(id, value, jobid)
 {
-    var jobid = this.extraParams.jobid;
-    if (li.extra[0] >= 0) {
-        addJobTerm(jobid,li.extra[0],$(li).text());
+    if (id >= 0) {
+        addJobTerm(jobid, id, value);
     }
     var search_input;
     if (jobid < 0) {
         search_input = $('.term_search')[0];
     } else {
-        search_input = $('#jobs_'+jobid+' .term_search')[0];
+        search_input = $('#jobs_' + jobid + ' .term_search')[0];
     }
-    if (li.extra[0] >= 0) {
+    if (id >= 0) {
         search_input.value = '';
         search_input.focus();
     } else {
-        search_input.value = li.selectValue.replace(/%$/,'');
-        toggleJobTermsTree(jobid, li.selectValue);
+        search_input.value = value.replace(/%$/, '');
+        toggleJobTermsTree(jobid, ''); // Use given value instead
     }
 }
 

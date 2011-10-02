@@ -561,7 +561,7 @@ class ProfileModule extends PLModule
     {
         pl_content_headers("text/plain");
 
-        $q = Env::v('q').'%';
+        $q = Env::v('term') . '%';
         $tokens = JobTerms::tokenize($q);
         if (count($tokens) == 0) {
             exit;
@@ -569,51 +569,79 @@ class ProfileModule extends PLModule
         sort($tokens);
         $q_normalized = implode(' ', $tokens);
 
-        // try to look in cached results
+        // Try to look in cached results.
+        $cached = false;
         $cache = XDB::query('SELECT  result
                                FROM  search_autocomplete
-                              WHERE  name = {?} AND
-                                     query = {?} AND
-                                     generated > NOW() - INTERVAL 1 DAY',
-                            $type, $q_normalized);
-        if ($res = $cache->fetchOneCell()) {
-            echo $res;
-            die();
+                              WHERE  name = {?} AND query = {?} AND generated > NOW() - INTERVAL 1 DAY',
+                             $type, $q_normalized);
+
+        if ($cache->numRows() > 0) {
+            $cached = true;
+            $data = explode("\n", $cache->fetchOneCell());
+            $list = array();
+            foreach ($data as $line) {
+                if ($line != '') {
+                    $aux = explode("\t", $line);
+                    if ($type == 'mentor') {
+                        $item = array(
+                            'field' => $aux[0],
+                            'nb'    => $aux[1],
+                            'id'    => $aux[2]
+                        );
+                        $item['value'] = SearchModule::format_autocomplete($item);
+                    } else {
+                        $item = array(
+                            'value' => $aux[0],
+                            'id'    => $aux[1]
+                        );
+                    }
+                    array_push($list, $item);
+                }
+            }
+        } else {
+            $joins = JobTerms::token_join_query($tokens, 'e');
+            if ($type == 'mentor') {
+                $count = ', COUNT(DISTINCT pid) AS nb';
+                $countjoin = ' INNER JOIN  profile_job_term_relation AS r ON(r.jtid_1 = e.jtid) INNER JOIN  profile_mentor_term AS m ON(r.jtid_2 = m.jtid)';
+                $countorder = 'nb DESC, ';
+            } else {
+                $count = $countjoin = $countorder = '';
+            }
+            $list = XDB::fetchAllAssoc('SELECT  e.jtid AS id, e.full_name AS field' . $count . '
+                                          FROM  profile_job_term_enum AS e ' . $joins . $countjoin . '
+                                      GROUP BY  e.jtid
+                                      ORDER BY  ' . $countorder . 'field
+                                         LIMIT  ' . DirEnumeration::AUTOCOMPLETE_LIMIT);
+            $to_cache = '';
+            if ($type == 'mentor') {
+                foreach ($list as &$item) {
+                    $to_cache .= $item['field'] . "\t" . $item['nb'] . "\t" . $item['id'] . "\n";
+                    $item['value'] = SearchModule::format_autocomplete($item);
+                }
+            } else {
+                foreach ($list as &$item) {
+                    $to_cache .= $item['field'] . "\t" . $item['id'] . "\n";
+                    $item['value'] = $item['field'];
+                }
+            }
         }
 
-        $joins = JobTerms::token_join_query($tokens, 'e');
-        if ($type == 'mentor') {
-            $count = ', COUNT(DISTINCT pid) AS nb';
-            $countjoin = ' INNER JOIN  profile_job_term_relation AS r ON(r.jtid_1 = e.jtid) INNER JOIN  profile_mentor_term AS m ON(r.jtid_2 = m.jtid)';
-            $countorder = 'nb DESC, ';
-        } else {
-            $count = $countjoin = $countorder = '';
+        if (count($list) == DirEnumeration::AUTOCOMPLETE_LIMIT && $type == 'nomentor') {
+            $list[] = array(
+                'value' => '… parcourir les résultats dans un arbre …',
+                'field' => '',
+                'id'    => -1
+            );
         }
-        $list = XDB::iterator('SELECT  e.jtid AS id, e.full_name AS field'.$count.'
-                                 FROM  profile_job_term_enum AS e '.$joins.$countjoin.'
-                             GROUP BY  e.jtid
-                             ORDER BY  '.$countorder.'field
-                                LIMIT  11');
-        $nbResults = 0;
-        $res = '';
-        while ($result = $list->next()) {
-            $nbResults++;
-            if ($nbResults == 11) {
-                $res .= $q."|-1\n";
-            } else {
-                $res .= $result['field'].'|';
-                if ($count) {
-                    $res .= $result['nb'].'|';
-                }
-                $res .= $result['id'];
-            }
-            $res .= "\n";
+
+        if (!$cached) {
+            XDB::query('INSERT INTO  search_autocomplete (name, query, result, generated)
+                             VALUES  ({?}, {?}, {?}, NOW())
+            ON DUPLICATE KEY UPDATE  result = VALUES(result), generated = VALUES(generated)',
+                       $type, $q_normalized, $to_cache);
         }
-        XDB::query('INSERT INTO  search_autocomplete (name, query, result, generated)
-                         VALUES  ({?}, {?}, {?}, NOW())
-        ON DUPLICATE KEY UPDATE  result = VALUES(result), generated = VALUES(generated)',
-                    $type, $q_normalized, $res);
-        echo $res;
+        echo json_encode($list);
         exit();
     }
 
