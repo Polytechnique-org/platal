@@ -73,7 +73,7 @@
         {/if}
         {else}
         {if t($job.tmp_name)}{$job.tmp_name} <small>(en cours de validation)</small>{else}
-        <input type="text" class="enterpriseName{if t($job.name_error)} error{/if}" size="35" maxlength="100"
+        <input type="text" class="enterprise_name{if t($job.name_error)} error{/if}" size="35" maxlength="100"
                name="{$jobpref}[name]" value="{$job.name}" />
         {/if}
         {/if}

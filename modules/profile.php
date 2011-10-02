@@ -318,6 +318,7 @@ class ProfileModule extends PLModule
         }
 
         // Build the page
+        $page->addJsLink('jquery.ui.xorg.js');
         $page->addJsLink('education.js', true, false); /* dynamic content */
         $page->addJsLink('grades.js', true, false);    /* dynamic content */
         $page->addJsLink('profile.js');

@@ -766,31 +766,18 @@ function addCountry()
 
 function registerEnterpriseAutocomplete(id)
 {
-    $(".enterpriseName").each(
-      function() {
+    $('.enterprise_name').each(function() {
         if (id == -1 || this.name == "jobs[" + id + "][name]") {
-            $(this).autocomplete($.plURL("search/autocomplete/entreprise"),
-                                 {
-                                     selectOnly:1,
-                                     field:this.name,
-                                     matchSubset:0,
-                                     width:$(this).width()
-                                 });
+            $(this).autocomplete({
+                source: $.plURL('search/autocomplete/entreprise/') + this.name,
+                change: function(event, ui) {
+                    if (ui.item != null && ui.item.field != null) {
+                        $(this).val(ui.item.field);
+                    }
+                }
+            });
         }
-      });
-
-    $(".sectorName").each(
-      function() {
-        if (id == -1 || this.name == "jobs[" + id + "][subSubSectorName]") {
-            $(this).autocomplete($.plURL("search/autocomplete/subSubSector"),
-                                 {
-                                     selectOnly:1,
-                                     field:this.name,
-                                     matchSubset:0,
-                                     width:$(this).width()
-                                 });
-        }
-      });
+    });
 }
 
 // {{{1 Multiusage functions
