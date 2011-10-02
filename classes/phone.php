@@ -188,6 +188,7 @@ class Phone
             $res = XDB::query('SELECT  phonePrefix AS phoneprf, phoneFormat AS format
                                  FROM  geoloc_countries
                                 WHERE  phonePrefix = {?} OR phonePrefix = {?} OR phonePrefix = {?}
+                             ORDER BY  phonePrefix DESC
                                 LIMIT  1',
                               substr($tel, 0, 1), substr($tel, 0, 2), substr($tel, 0, 3));
             if ($res->numRows() == 0) {
