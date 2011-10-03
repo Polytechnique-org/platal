@@ -384,6 +384,7 @@ class CarnetModule extends PLModule
         }
 
         $search = false;
+        $user = S::user();
 
         require_once 'userset.inc.php';
 
