@@ -425,7 +425,7 @@ class AddressesView implements PlView
     {
         $pids = $this->set->getIds(new PlLimit());
         $visibility = Visibility::defaultForRead(Visibility::VIEW_AX);
-        pl_cached_content_headers('text/x-csv', 1);
+        pl_cached_content_headers('text/x-csv', 'utf-8', 1, 'adresses.csv');
 
         $csv = fopen('php://output', 'w');
         fputcsv($csv, array('adresses'), ';');
