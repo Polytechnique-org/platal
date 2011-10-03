@@ -429,13 +429,15 @@ class AddressesView implements PlView
 
         $csv = fopen('php://output', 'w');
         fputcsv($csv, array('adresses'), ';');
-        $res = XDB::query('SELECT  pd.public_name, pa.postalText
-                             FROM  profile_addresses AS pa
-                       INNER JOIN  profile_display   AS pd ON (pd.pid = pa.pid)
-                            WHERE  pa.type = \'home\' AND pa.pub IN (\'public\', \'ax\') AND FIND_IN_SET(\'mail\', pa.flags) AND pa.pid IN {?}
-                         GROUP BY  pa.pid', $pids);
-        foreach ($res->fetchAllAssoc() as $item) {
-            fputcsv($csv, $item, ';');
+        if (!empty($pids)) {
+            $res = XDB::query('SELECT  pd.public_name, pa.postalText
+                                 FROM  profile_addresses AS pa
+                           INNER JOIN  profile_display   AS pd ON (pd.pid = pa.pid)
+                                WHERE  pa.type = \'home\' AND pa.pub IN (\'public\', \'ax\') AND FIND_IN_SET(\'mail\', pa.flags) AND pa.pid IN {?}
+                             GROUP BY  pa.pid', $pids);
+            foreach ($res->fetchAllAssoc() as $item) {
+                fputcsv($csv, $item, ';');
+            }
         }
         fclose($csv);
         exit();
