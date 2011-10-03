@@ -261,7 +261,7 @@ function pl_content_headers($content_type, $encoding = 'utf-8')
  * cache duration defaults to the global static_cache_duration. No encoding is
  * applied by default.
  */
-function pl_cached_content_headers($content_type, $encoding = null, $cache_duration = -1)
+function pl_cached_content_headers($content_type, $encoding = null, $cache_duration = -1, $filename = null)
 {
     global $globals;
     $cache_duration = ($cache_duration < 0 ? $globals->static_cache_duration : $cache_duration);
@@ -270,6 +270,9 @@ function pl_cached_content_headers($content_type, $encoding = null, $cache_durat
     header("Expires: " . gmdate('D, d M Y H:i:s', time() + $cache_duration) . " GMT");
     header("Pragma: ");
     pl_content_headers($content_type, $encoding);
+    if (!is_null($filename)) {
+         header('Content-Disposition: attachment; filename=' . $filename);
+    }
 }
 
 /**
