@@ -187,10 +187,10 @@ class Phone
         if ((!isset($format['phoneprf'])) || ($format['phoneprf'] == '')) {
             $res = XDB::query('SELECT  phonePrefix AS phoneprf, phoneFormat AS format
                                  FROM  geoloc_countries
-                                WHERE  phonePrefix = {?} OR phonePrefix = {?} OR phonePrefix = {?}
-                             ORDER BY  phonePrefix DESC
+                                WHERE  phonePrefix = SUBSTRING({?}, 1, LENGTH(phonePrefix))
+                             ORDER BY  LENGTH(phonePrefix) DESC
                                 LIMIT  1',
-                              substr($tel, 0, 1), substr($tel, 0, 2), substr($tel, 0, 3));
+                              $tel);
             if ($res->numRows() == 0) {
                 // No country found, does not format more than prepending a '+' sign.
                 $this->error = true;
