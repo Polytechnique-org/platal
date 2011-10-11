@@ -46,7 +46,7 @@ class PayPal
 
         $roboturl = str_replace("https://","http://",$globals->baseurl)
                   . '/' . $platal->ns . "payment/paypal_return/" . S::v('uid')
-                  . "?comment=" . urlencode(Env::v('comment')) . '?display=' . Post::i('display');
+                  . "?comment=" . urlencode(Env::v('comment')) . '&display=' . Post::i('display');
 
         $this->infos = array(
             'commercant' => array(
