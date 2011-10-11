@@ -47,6 +47,11 @@ Bug/Wish:
         - #1525: Fixes broken page on erroneous group page edition         -JAC
         - #1530: Enables reminder for xnet accounts                        -JAC
 
+From 1.1.3 branch:
+
+    * Profile:
+        - #1545: Fixes link to profiles on IE7                             -FRU
+
 ================================================================================
 VERSION 1.1.3                                                         10 09 2011
 
