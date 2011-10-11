@@ -179,7 +179,7 @@ function auto_links() {
         }
         if ((!href.contains(fqdn) && !this.className.contains('popup')) || node.hasClass('popup')) {
             node.click(function () {
-                window.open(this.href);
+                window.open($.plURL(this.href));
                 return false;
             });
         }
@@ -816,7 +816,7 @@ function sendTestEmail(token, hruid)
 
         popWin: function(w, h) {
             return this.click(function() {
-                window.open(this.href, '_blank',
+                window.open($.plURL(this.href), '_blank',
                             'toolbar=0,location=0,directories=0,status=0,'
                            +'menubar=0,scrollbars=1,resizable=1,'
                            +'width='+w+',height='+h);
@@ -1065,7 +1065,7 @@ function updatepromofields(egal1, egal2, promo2) {
                         break;
                       case 'admin':
                         $(this).attr('href', 'admin/user/' + profile.hrpid)
-                        .click(function() { window.open($(this).attr('href')); return false });
+                        .click(function() { window.open($.plURL(this.href)); return false });
                         break;
                     }
                 }
