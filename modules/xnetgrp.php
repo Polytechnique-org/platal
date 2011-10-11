@@ -374,6 +374,7 @@ class XnetGrpModule extends PLModule
         $view = new UserSet(new UFC_Group($globals->asso('id'), $admins));
         $view->addMod('groupmember', 'Annuaire');
         $view->addMod('trombi', 'Trombinoscope');
+        $view->addMod('map', 'Planisphère');
         $view->apply('annuaire', $page, $action);
         $page->assign('only_admin', $admins);
         $page->changeTpl('xnetgrp/annuaire.tpl');
