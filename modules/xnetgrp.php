@@ -1218,19 +1218,23 @@ class XnetGrpModule extends PLModule
                 }
                 XDB::query('UPDATE  accounts
                                SET  full_name = {?}, directory_name = {?}, display_name = {?},
-                                    firstname = {?}, lastname = {?}, sex = {?}, email = {?}, type = {?}
+                                    firstname = {?}, lastname = {?}, sex = {?}, type = {?}
                              WHERE  uid = {?}',
                            $full_name, $directory_name, Post::t('display_name'), $firstname, $lastname,
-                           (Post::t('sex') == 'male') ? 'male' : 'female', Post::t('email'),
+                           (Post::t('sex') == 'male') ? 'male' : 'female',
                            (Post::t('type') == 'xnet') ? 'xnet' : 'virtual', $user->id());
-            } else if (!$user->perms && Post::has('email') && require_email_update($user, Post::t('email'))) {
+            }
+
+            // Updates email.
+            $new_email = strtolower(Post::t('email'));
+            if (!$user->perms && require_email_update($user, $new_email)) {
                 XDB::query('UPDATE  accounts
                                SET  email = {?}
                              WHERE  uid = {?}',
-                           Post::t('email'), $user->id());
+                           $new_email, $user->id());
                 $listClient = new MMList(S::user());
-                $listClient->change_user_email($user->forlifeEmail(), Post::t('email'));
-                update_alias_user($user->forlifeEmail(), Post::t('email'));
+                $listClient->change_user_email($user->forlifeEmail(), $new_email);
+                update_alias_user($user->forlifeEmail(), $new_email);
             }
             if (XDB::affectedRows()) {
                 $page->trigSuccess('Données de l\'utilisateur mises à jour.');

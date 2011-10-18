@@ -30,7 +30,20 @@ function require_email_update(User $user, $new_email)
 {
     Platal::assert(!is_null($user), 'User cannot be null.');
 
-    return !$user->checkPerms(User::PERM_MAIL) && strtolower($new_email) != strtolower($user->forlifeEmail());
+    $is_new = !$user->checkPerms(User::PERM_MAIL) && $new_email != strtolower($user->email);
+    if ($new_email && $is_new) {
+        $already = XDB::fetchOneCell('SELECT  hruid
+                                        FROM  accounts
+                                       WHERE  email = {?} AND uid != {?}',
+                                     $new_email, $user->id());
+        if ($already) {
+            Platal::page()->trigError("L'email ne peut pas être utilisé pour ce compte car il correspond déjà au compte : "
+                                      . $already . ". Si l'utilisateur courant et cette personne ne sont en fait qu'une "
+                                      . "seul et même personne, ou en cas de problème, contacter : contact@polytechnique.org");
+            return false;
+        }
+    }
+    return $is_new;
 }
 
 function format_email_alias($email)

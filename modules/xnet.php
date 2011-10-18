@@ -255,22 +255,27 @@ class XnetModule extends PLModule
             $directory_name = mb_strtoupper(Post::t('lastname')) . ' ' . Post::t('firstname');
             XDB::query('UPDATE  accounts
                            SET  full_name = {?}, directory_name = {?}, display_name = {?},
-                                firstname = {?}, lastname = {?}, sex = {?}, email = {?}
+                                firstname = {?}, lastname = {?}, sex = {?}
                          WHERE  uid = {?}',
                        $full_name, $directory_name, Post::t('display_name'),
                        Post::t('firstname'), Post::t('lastname'),
-                       (Post::t('sex') == 'male') ? 'male' : 'female', Post::t('email'), $user->id());
-            if (XDB::affectedRows()) {
-                require_once 'emails.inc.php';
-                if (require_email_update($user, Post::t('email'))) {
+                       (Post::t('sex') == 'male') ? 'male' : 'female', $user->id());
+
+            // Updates email.
+            require_once 'emails.inc.php';
+            $new_email = strtolower(Post::t('email'));
+            if (require_email_update($user, $new_email)) {
+                    XDB::query('UPDATE  accounts
+                                   SET  email = {?}
+                                 WHERE  uid = {?}',
+                               $new_email, $user->id());
                     $listClient = new MMList(S::user());
-                    $listClient->change_user_email($user->forlifeEmail(), Post::t('email'));
-                    update_alias_user($user->forlifeEmail(), Post::t('email'));
-                }
-                $user = User::getWithUID($user->id());
-                S::set('user', $user);
-                $page->trigSuccess('Données mises à jour.');
+                    $listClient->change_user_email($user->forlifeEmail(), $new_email);
+                    update_alias_user($user->forlifeEmail(), $new_email);
             }
+            $user = User::getWithUID($user->id());
+            S::set('user', $user);
+            $page->trigSuccess('Données mises à jour.');
         }
 
         $page->addJsLink('password.js');

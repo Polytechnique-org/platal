@@ -518,10 +518,11 @@ class AdminModule extends PLModule
             if (Post::t('comment') != $user->comment) {
                 $to_update['comment'] = Post::blank('comment') ? null : Post::t('comment');
             }
-            if (require_email_update($user, Post::t('email'))) {
-                $to_update['email'] = Post::t('email');
-                $listClient->change_user_email($user->forlifeEmail(), Post::t('email'));
-                update_alias_user($user->forlifeEmail(), Post::t('email'));
+            $new_email = strtolower(Post::t('email'));
+            if (require_email_update($user, $new_email)) {
+                $to_update['email'] = $new_email;
+                $listClient->change_user_email($user->forlifeEmail(), $new_email);
+                update_alias_user($user->forlifeEmail(), $new_email);
             }
         }
         if (!empty($to_update)) {
