@@ -209,7 +209,7 @@
   </tr>
   <tr class="{$class}">
     <td><span class="titre">Promotion&nbsp;:</span></td>
-    <td>{$main_edu.promo_year}</td>
+    <td>{if t($main_edu.promo_year)}{$main_edu.promo_year}{/if}</td>
   </tr>
   <tr class="{$class}">
     <td><span class="titre">Domaine de formation&nbsp;:</span></td>

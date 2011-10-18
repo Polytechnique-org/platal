@@ -96,10 +96,12 @@ class ProfileSettingSearchNames implements ProfileSetting
             foreach ($value['public_names'] as $key => $name) {
                 $value['public_names'][$key] = trim($name);
             }
-            foreach ($value['private_names'] as $key => $name) {
-                $value['private_names'][$key]['name'] = trim($name['name']);
-                if ($value['private_names'][$key]['name'] == '') {
-                    unset($value['private_names'][$key]);
+            if (isset($value['private_names'])) {
+                foreach ($value['private_names'] as $key => $name) {
+                    $value['private_names'][$key]['name'] = trim($name['name']);
+                    if ($value['private_names'][$key]['name'] == '') {
+                        unset($value['private_names'][$key]);
+                    }
                 }
             }
 
@@ -110,8 +112,13 @@ class ProfileSettingSearchNames implements ProfileSetting
 
         require_once 'name.func.inc.php';
         $public_name = build_first_name($value['public_names']) . ' ' . build_full_last_name($value['public_names'], $page->profile->isFemale());
-        $private_name_end = build_private_name($value['private_names']);
-        $private_name = $public_name . $private_name_end;
+        if (isset($value['private_names'])) {
+            $private_name_end = build_private_name($value['private_names']);
+            $private_name = $public_name . $private_name_end;
+        } else {
+            $value['private_names'] = array();
+            $private_name = $public_name;
+        }
 
         Platal::page()->assign('public_name', $public_name);
         Platal::page()->assign('private_name', $private_name);
@@ -142,8 +149,10 @@ class ProfileSettingSearchNames implements ProfileSetting
                      $page->pid());
         $values = array();
         $nickname = $lastname = $firstname = 0;
-        foreach ($value['private_names'] as $name) {
-            $values[] = XDB::format('({?}, {?}, {?}, {?})', $page->pid(), $name['type'], $$name['type']++, $name['name']);
+        if (isset($value['private_names'])) {
+            foreach ($value['private_names'] as $name) {
+                $values[] = XDB::format('({?}, {?}, {?}, {?})', $page->pid(), $name['type'], $$name['type']++, $name['name']);
+            }
         }
         if (count($values)) {
             XDB::rawExecute('INSERT INTO  profile_private_names (pid, type, id, name)
@@ -153,7 +162,8 @@ class ProfileSettingSearchNames implements ProfileSetting
         if ($has_diff) {
             update_display_names($page->profile, $old, $value['private_names']);
         } else {
-            update_display_names($page->profile, $value['public_names'], $value['private_names']);
+            update_display_names($page->profile,
+                                 $value['public_names'], (isset($value['private_names']) ? $value['private_names'] : null));
         }
     }
 
@@ -165,7 +175,7 @@ class ProfileSettingSearchNames implements ProfileSetting
             }
         }
 
-        if (count($value['private_names'])) {
+        if (isset($value['private_names']) && count($value['private_names'])) {
             $private_names = array();
             foreach ($value['private_names'] as $name) {
                 $private_names[] = $name['name'];
