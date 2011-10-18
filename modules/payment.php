@@ -278,7 +278,7 @@ class PaymentModule extends PLModule
             list($eid, $asso_id) = $res->fetchOneRow();
             require_once dirname(__FILE__) . '/xnetevents/xnetevents.inc.php';
             $evt = get_event_detail($eid, false, $asso_id);
-            subscribe_lists_event($user->id(), $evt['short_name'], 1, $amount, true);
+            subscribe_lists_event($user->id(), $evt['short_name'], 1, $montant, true);
         }
 
         /* on genere le mail de confirmation */
@@ -369,12 +369,13 @@ class PaymentModule extends PLModule
                     $no_transaction, $user->id(), $ref, $fullref, $montant, $clef, Env::v('comment'), Get::i('display'));
 
         // We check if it is an Xnet payment and then update the related ML.
-        $res = XDB::query('SELECT  eid
+        $res = XDB::query('SELECT  eid, asso_id
                              FROM  group_events
                             WHERE  paiement_id = {?}', $ref);
-        if ($eid = $res->fetchOneCell()) {
+        if ($res->numRows() == 1) {
+            list($eid, $asso_id) = $res->fetchOneRow();
             require_once dirname(__FILE__) . '/xnetevents/xnetevents.inc.php';
-            $evt = get_event_detail($eid);
+            $evt = get_event_detail($eid, false, $asso_id);
             subscribe_lists_event($user->id(), $evt['short_name'], 1, $montant, true);
         }
 
