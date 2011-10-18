@@ -1217,7 +1217,7 @@ class NLIssue
             }
             foreach ($users as $user) {
                 if (array_key_exists($user->id(), $global_sent)) {
-                    Platal::kill('Sending the same newsletter issue ' . $this->id . ' to user ' . $user->id() . ' twice, something must be wrong.');
+                    Platal::page()->kill('Sending the same newsletter issue ' . $this->id . ' to user ' . $user->id() . ' twice, something must be wrong.');
                 }
                 $sent[] = $user->id();
                 $global_sent[$user->id()] = true;
