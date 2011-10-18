@@ -482,6 +482,7 @@ class ProfileSettingHobby implements ProfileSetting
 
     public function value(ProfilePage $page, $field, $value, &$success)
     {
+        $success = true;
         if (is_null($value)) {
             $value = XDB::fetchAllAssoc('SELECT  type, text, pub
                                            FROM  profile_hobby
@@ -491,7 +492,6 @@ class ProfileSettingHobby implements ProfileSetting
         if (!is_array($value)) {
             return array();
         }
-        $success = true;
         foreach($value as $i => &$hobby) {
             $hobby['text'] = trim($hobby['text']);
             if (!$hobby['text'] ||!in_array($hobby['type'], self::$type)) {
