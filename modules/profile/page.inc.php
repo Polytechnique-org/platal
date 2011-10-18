@@ -108,7 +108,7 @@ class ProfileSettingPhones implements ProfileSetting
         $phones = array();
 
         if (is_null($value)) {
-            $it = Phone::iterate(array($page->pid()), array(Phone::LINK_PROFILE), array(0), Visibility::defaultForEdit());
+            $it = Phone::iterate(array($page->pid()), array(Phone::LINK_PROFILE), array(0));
             while ($phone = $it->next()) {
                 $success = ($phone->format() && $success);
                 $phones[] = $phone->toFormArray();
