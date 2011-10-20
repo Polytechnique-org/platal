@@ -1231,7 +1231,7 @@ class NLIssue
                        $this->id);
 
         $ufc = new PFC_And($this->getRecipientsUFC(), new UFC_NLSubscribed($this->nl->id, $this->id), new UFC_HasValidEmail());
-        $uf = new UserFilter($ufc, array(new UFO_IsAdmin(), new UFO_Uid()));
+        $uf = new UserFilter($ufc, array(new UFO_IsAdmin(true), new UFO_Uid()));
         $limit = new PlLimit(self::BATCH_SIZE);
         $global_sent = array();
 
