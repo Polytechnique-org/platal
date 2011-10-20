@@ -816,6 +816,9 @@ class Redirect
         XDB::execute('REPLACE INTO  email_redirect_account (uid, redirect, flags, action)
                             VALUES  ({?}, {?}, \'active\', {?})',
                      $this->user->id(), $email, $filter);
+        $listClient = new MMList(S::user());
+        $listClient->change_user_email($this->user->forlifeEmail(), $new_email);
+        update_alias_user($this->user->forlifeEmail(), $new_email);
         if ($logger = S::v('log', null)) { // may be absent --> step4.php
             S::logger()->log('email_add', $email . ($this->user->id() != S::v('uid') ? " (admin on {$this->user->login()})" : ""));
         }
