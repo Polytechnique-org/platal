@@ -452,7 +452,7 @@ class PaymentModule extends PLModule
         $trans = array();
         $event = array();
         if (may_update()) {
-            static $orders = array('timestamp' => 'p', 'directory_name' => 'a', 'promo' => 'pd', 'comment' => 'p', 'amount' => 'p');
+            static $orders = array('ts_confirmed' => 'p', 'directory_name' => 'a', 'promo' => 'pd', 'comment' => 'p', 'amount' => 'p');
 
             if (Get::has('order_id') && Get::has('order') && array_key_exists(Get::v('order'), $orders)) {
                 $order_id = Get::i('order_id');
