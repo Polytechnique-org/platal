@@ -216,14 +216,36 @@ class NewsletterModule extends PLModule
         $page->assign('nl_list', $nl->listAllIssues());
     }
 
-    function handler_admin_nl_groups($page)
+    function handler_admin_nl_groups($page, $sort = 'id', $order = 'ASC')
     {
         require_once 'newsletter.inc.php';
 
+        static $titles = array(
+            'id'         => 'Id',
+            'group_name' => 'Groupe',
+            'name'       => 'Titre',
+            'custom_css' => 'CSS spécifique',
+            'criteria'   => 'Critères actifs'
+        );
+        static $next_orders = array(
+            'ASC'  => 'DESC',
+            'DESC' => 'ASC'
+        );
+
+        if (!array_key_exists($sort, $titles)) {
+            $sort = 'id';
+        }
+        if (!in_array($order, array('ASC', 'DESC'))) {
+            $order = 'ASC';
+        }
+
         $page->changeTpl('newsletter/admin_all.tpl');
         $page->setTitle('Administration - Newsletters : Liste des Newsletters');
-
-        $page->assign('nls', Newsletter::getAll());
+        $page->assign('nls', Newsletter::getAll($sort, $order));
+        $page->assign('sort', $sort);
+        $page->assign('order', $order);
+        $page->assign('next_order', $next_orders[$order]);
+        $page->assign('titles', $titles);
     }
 
     function handler_admin_nl_edit($page, $nid = 'last', $aid = null, $action = 'edit') {

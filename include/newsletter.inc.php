@@ -105,15 +105,13 @@ class NewsLetter
     /** Retrieve all newsletters
      * @return An array of $id => NewsLetter objects
      */
-    public static function getAll()
+    public static function getAll($sort = 'id', $order = 'ASC')
     {
-        $res = XDB::query('SELECT  id
-                             FROM  newsletters');
-        $nls = array();
-        foreach ($res->fetchColumn() as $id) {
-            $nls[$id] = new NewsLetter($id);
-        }
-        return $nls;
+        $res = XDB::fetchAllAssoc('SELECT  n.id, g.nom AS group_name, n.name, n.custom_css, n.criteria, g.diminutif AS group_link
+                                     FROM  newsletters AS n
+                               INNER JOIN  groups      AS g ON (n.group_id = g.id)
+                                 ORDER BY  ' . $sort . ' ' . $order);
+        return $res;
     }
 
     // }}}

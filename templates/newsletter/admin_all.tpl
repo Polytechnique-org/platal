@@ -22,19 +22,30 @@
 
 <table class="bicol" cellpadding="3" cellspacing="0" summary="Liste des Newsletter actives">
   <tr>
-    <th>Id</th>
-    <th>Groupe</th>
-    <th>Titre</th>
-    <th>CSS spécifique</th>
-    <th>Critères actifs</th>
+    {foreach from=$titles item=title key=key}
+    <th>
+      {if $sort eq $key}
+      <a href="admin/nls/{$key}/{$next_order}">
+      {if $order eq "DESC"}
+      <img src="images/dn.png" alt="tri descendant" />
+      {else if $order eq "ASC"}
+      <img src="images/up.png" alt="tri ascendant" />
+      {/if}
+      {else}
+      <a href="admin/nls/{$key}">
+      {/if}
+      {$title}
+      </a>
+    </th>
+    {/foreach}
   </tr>
   {foreach from=$nls item=nl}
   <tr class="{cycle values="pair,impair"}">
-    <td class="titre">{$nl->id}</td>
-    <td>{$nl->group}</td>
-    <td><a href="http://www.polytechnique.net/{$nl->group}/admin/nl">{$nl->name}</a></td>
-    <td>{if $nl->hasCustomCss()}Oui{else}Non{/if}</td>
-    <td>{$nl->criteria->flags()}</td>
+    <td class="titre">{$nl.id}</td>
+    <td>{$nl.group_name}</td>
+    <td><a href="http://www.polytechnique.net/{$nl.group_link}/admin/nl">{$nl.name}</a></td>
+    <td>{if $nl.custom_css}Oui{else}Non{/if}</td>
+    <td>{$nl.criteria}</td>
   </tr>
   {/foreach}
 </table>
