@@ -31,6 +31,7 @@ Bug/Wish:
     * Newsletter:
         - #1509: Adds a Reply-To field for newsletters                     -GLN
         - #1526: Shows user filter used after sending                      -GLN
+        - #1538: Improves display in main NL administration page       -FUL/JAC
 
     * Payments:
         - #1512: Allows payments for unlogged users                        -JAC
