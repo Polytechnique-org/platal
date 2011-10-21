@@ -664,6 +664,7 @@ class ProfilePageGeneral extends ProfilePage
             $this->watched['freetext'] = true;
         }
 
+        Platal::page()->assign('is_registered', ($this->owner->perms ? true : false));
     }
 
     protected function _fetchData()
@@ -777,7 +778,7 @@ class ProfilePageGeneral extends ProfilePage
                 }
             }
         }
-        if ($this->orig['birthdate_ref'] == 0 && !S::user()->isMe($this->owner) && $this->changed['birthdate_ref']) {
+        if ($this->changed['birthdate_ref'] && S::admin() && !$this->owner->perms) {
             XDB::execute('UPDATE  profiles
                              SET  birthdate_ref = {?}
                            WHERE  pid = {?}',

@@ -152,7 +152,7 @@
       <span class="titre">Date de naissance de référence</span>
     </td>
     <td>
-    {if $birthdate_ref eq 0}
+    {if hasPerm('admin') && !$is_registered}
       <input type="text" {if $errors.birthdate_ref}class="error"{/if} name="birthdate_ref" value="{$birthdate_ref}" />
     {else}
       {$birthdate_ref}
