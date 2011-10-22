@@ -140,7 +140,7 @@ emails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la
     <tr class="pair">
       <td class="titre">ou fichier(*)</td>
       <td colspan="2">
-        <input type="file" name="add_member_file" />*
+        <input type="file" size="40" name="add_member_file" />*
       </td>
     </tr>
     <tr class="pair">
