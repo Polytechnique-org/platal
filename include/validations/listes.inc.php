@@ -134,10 +134,14 @@ class ListeReq extends Validate
                 add_to_list_alias($member, $this->liste, $this->domain);
             }
         } else {
+            $members = User::getBulkForlifeEmails($this->members, true,
+                                                  array('ListsModule', 'no_login_callback'));
+            $owners = User::getBulkForlifeEmails($this->owners, true,
+                                                 array('ListsModule', 'no_login_callback'));
             $list = new MMList(S::user(), $this->domain);
             $success = $list->create_list($this->liste, utf8_decode($this->desc), $this->advertise,
                                           $this->modlevel, $this->inslevel,
-                                          $this->owners, $this->members);
+                                          $owners, $members);
             if ($success) {
                 create_list($this->liste, $this->domain);
             }
