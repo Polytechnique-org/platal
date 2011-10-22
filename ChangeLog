@@ -27,6 +27,7 @@ Bug/Wish:
 
     * Lists:
         - #1543: Displays no member in directory view for empty lists      -JAC
+        - #1555: Ensures an email is given only once in mass subscription  -JAC
 
     * Newsletter:
         - #1509: Adds a Reply-To field for newsletters                     -GLN
