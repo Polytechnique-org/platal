@@ -467,6 +467,8 @@ def mass_subscribe(userdesc, perms, mlist, users):
             @edit
             @admin
     """
+    if isinstance(users, dict):
+        users = users.values()
     if not isinstance(users, list):
         raise Exception("userlist must be a list")
     members = mlist.getRegularMemberKeys()
