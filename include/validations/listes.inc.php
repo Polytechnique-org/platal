@@ -139,6 +139,11 @@ class ListeReq extends Validate
             $owners = User::getBulkForlifeEmails($this->owners, true,
                                                  array('ListsModule', 'no_login_callback'));
             $list = new MMList(S::user(), $this->domain);
+
+            // Make sure we send a list (array_values) of unique (array_unique)
+            // emails.
+            $owners = array_values(array_unique($owners));
+            $members = array_values(array_unique($members));
             $success = $list->create_list($this->liste, utf8_decode($this->desc), $this->advertise,
                                           $this->modlevel, $this->inslevel,
                                           $owners, $members);

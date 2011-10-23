@@ -644,6 +644,10 @@ class ListsModule extends PLModule
             $members = User::getBulkForlifeEmails(Env::v('add_member'),
                                                   true,
                                                   array('ListsModule', 'no_login_callback'));
+            // Make sure we send a list (array_values) of unique (array_unique)
+            // emails.
+            $members = array_values(array_unique($members));
+
             $arr = $this->client->mass_subscribe($liste, $members);
             if (is_array($arr)) {
                 foreach($arr as $addr) {
@@ -662,6 +666,10 @@ class ListsModule extends PLModule
                 $members = User::getBulkForlifeEmails($upload->getContents(),
                                                       true,
                                                       array('ListsModule', 'no_login_callback'));
+                // Make sure we send a list (array_values) of unique (array_unique)
+                // emails.
+                $members = array_values(array_unique($members));
+
                 $arr = $this->client->mass_subscribe($liste, $members);
                 if (is_array($arr)) {
                     foreach($arr as $addr) {
