@@ -172,11 +172,12 @@ class EmailModule extends PLModule
             }
 
             // Checks special charaters in alias.
-            if (!preg_match("/^[a-zA-Z0-9\-.]{3,20}$/", $new_alias)) {
+            if (!preg_match("/^[a-zA-Z0-9\-.]{2,19}[a-zA-Z0-9\-]$/", $new_alias)) {
                 $page->trigError("L'adresse demandée n'est pas valide."
                             . " Vérifie qu'elle comporte entre 3 et 20 caractères"
                             . " et qu'elle ne contient que des lettres non accentuées,"
-                            . " des chiffres ou les caractères - et .");
+                            . " des chiffres ou les caractères '-' et '.'. De plus, elle ne"
+                            . " peut pas se terminer par un point.");
                 return;
             } else {
                 // Checks if the alias has already been given.
