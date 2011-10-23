@@ -24,17 +24,18 @@ require './connect.db.inc.php';
 require_once '../classes/address.php';
 require_once '../classes/geocoder.php';
 require_once '../classes/gmapsgeocoder.php';
+require_once '../classes/visibility.php';
 
 $globals->debug = 0; // Do not store backtraces
 
 $targets = array(
-    'g' => 'formatted_address',
-    'p' => 'postalText'
+    'g' => 'pa.formatted_address',
+    'p' => 'pa.postalText'
 );
 $ranges = array(
     'f' => ' != \'\'',
     'e' => ' = \'\'',
-    'a' => 'IS NOT NULL'
+    'a' => ' IS NOT NULL'
 );
 
 $options = getopt('g::t:r:h::', array('geocode::', 'target:', 'range:', 'help::'));
@@ -87,9 +88,10 @@ EOF;
 
 print "Formats addresses addresses.\n";
 
-$where = '';
 if ($range != 'a') {
-    $where = 'WHERE  ' . $targets[$target] . $ranges[$range];
+    $where = $targets[$target] . $ranges[$range];
+} else {
+    $where = null;
 }
 
 if ($geocoding_required) {
@@ -102,10 +104,7 @@ if ($geocoding_required) {
     $display_limit = 100;
 }
 
-$it = XDB::rawIterator('SELECT  *
-                          FROM  profile_addresses
-                        ' . $where . '
-                      ORDER BY  pid, jobid, type, id');
+$it = Address::iterate(array(), array(), array(), Visibility::get(Visibility::VIEW_PRIVATE), $where);
 
 $total = $it->total();
 $i = 0;
@@ -113,8 +112,7 @@ $j = 0;
 $skipped = 0;
 printf("\r%u / %u",  $i, $total);
 
-while ($item = $it->next()) {
-    $address = new Address($item);
+while ($address = $it->next()) {
     $address->changed = ($geocoding_required ? 1 : 0);
     $address->format();
     if ($address->delete()) {

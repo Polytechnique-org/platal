@@ -878,9 +878,9 @@ class Address
     }
 
     static public function iterate(array $pids = array(), array $types = array(),
-                                   array $jobids = array(), $visibility = null)
+                                   array $jobids = array(), $visibility = null, $where = null)
     {
-        return new AddressIterator($pids, $types, $jobids, $visibility);
+        return new AddressIterator($pids, $types, $jobids, $visibility, $where);
     }
 }
 
@@ -895,9 +895,12 @@ class AddressIterator implements PlIterator
 {
     private $dbiter;
 
-    public function __construct(array $pids, array $types, array $jobids, $visibility)
+    public function __construct(array $pids, array $types, array $jobids, $visibility, $_where)
     {
         $where = array();
+        if (!is_null($_where)) {
+            $where[] = $_where;
+        }
         if (count($pids) != 0) {
             $where[] = XDB::format('(pa.pid IN {?})', $pids);
         }
