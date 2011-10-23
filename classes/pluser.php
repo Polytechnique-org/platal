@@ -355,16 +355,16 @@ abstract class PlUser implements PlUserInterface
 
         if ($logins) {
             $list = array();
-            foreach ($logins as $login) {
+            foreach ($logins as $i => $login) {
                 $login = trim($login);
                 if (empty($login)) {
                     continue;
                 }
 
                 if (($user = User::get($login, $callback))) {
-                    $list[] = $user->$property();
+                    $list[$i] = $user->$property();
                 } else if (!$strict || (User::isForeignEmailAddress($login) && isvalid_email($login))) {
-                    $list[] = $login;
+                    $list[$i] = $login;
                 }
             }
             return array_unique($list);
