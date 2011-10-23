@@ -116,7 +116,7 @@ while ($address = $it->next()) {
     $address->changed = ($geocoding_required ? 1 : 0);
     $address->format();
     if ($address->delete()) {
-        $address->save();
+        $address->save(false);
     } else {
         ++$skipped;
     }

@@ -685,7 +685,7 @@ class Address
         return (!$this->text || $this->text == '');
     }
 
-    public function save()
+    public function save($notify_ungeocoded = true)
     {
         if (!$this->isEmpty()) {
             XDB::execute('INSERT IGNORE INTO  profile_addresses (pid, jobid, groupid, type, id, flags, text, postalText, pub, comment,
@@ -704,7 +704,7 @@ class Address
                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?})',
                                  $this->pid, $this->jobid, $this->groupid, $this->type, $this->id, $component_id);
                 }
-            } else {
+            } elseif ($notify_ungeocoded) {
                 // If the address was not geocoded, notifies it to the appropriate ML.
                 $mailer = new PlMailer('profile/no_geocoding.mail.tpl');
                 $mailer->assign('text', $this->text);
