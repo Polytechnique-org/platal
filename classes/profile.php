@@ -483,7 +483,7 @@ class Profile implements PlExportable
 
         XDB::execute("UPDATE  profiles
                          SET  cv = NULL, freetext = NULL, freetext_pub = 'private',
-                              medals_pub = 'private', alias_pub = 'private',
+                              medals_pub = 'private', alias_pub = 'hidden',
                               email_directory = NULL
                        WHERE  pid = {?}",
                      $this->id());

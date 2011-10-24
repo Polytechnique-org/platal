@@ -152,7 +152,7 @@ class EmailModule extends PLModule
                                                  INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
                                                       WHERE  s.uid = {?} AND s.type = \'alias_aux\'',
                                                     $user->id());
-        $visibility = $user->hasProfile() && ($user->profile(true)->alias_pub == 'public');
+        $visibility = $user->hasProfile() && $user->profile()->isVisible($user->profile()->alias_pub);
         $page->assign('current', $alias);
         $page->assign('user', $user);
         $page->assign('mail_public', $visibility);
@@ -163,11 +163,11 @@ class EmailModule extends PLModule
             // Retrieves user request.
             $new_alias  = Env::v('alias');
             $reason = Env::v('reason');
-            $public = (Env::v('public', 'off') == 'on') ? 'public' : 'private';
+            $public = (Env::v('public', 'off') == 'on') ? 'private' : 'hidden';
 
             $page->assign('r_alias', $new_alias);
             $page->assign('r_reason', $reason);
-            if ($public == 'public') {
+            if ($public == 'private') {
                 $page->assign('r_public', true);
             }
 

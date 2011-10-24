@@ -41,7 +41,7 @@
     <tr>
       <td class="orange">
         <input type="checkbox" {if $mail_public}checked="checked"{/if}
-            onclick="$.xget('{$globals->baseurl}/emails/alias/set/'+(this.checked?'public':'private')+'?token={xsrf_token}');
+            onclick="$.xget('{$globals->baseurl}/emails/alias/set/'+(this.checked?'private':'hidden')+'?token={xsrf_token}');
                 $('#mail_public').html((this.checked?'public et apparaît donc sur ta fiche':'privé et n\'apparaît nulle part sur le site') + '.');
             " />
       </td>
