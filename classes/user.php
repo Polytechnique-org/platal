@@ -306,7 +306,7 @@ class User extends PlUser
     public function firstName()
     {
         if (!$this->hasProfile()) {
-            return $this->displayName();
+            return $this->firstname;
         }
         return $this->profile()->firstName();
     }
@@ -314,7 +314,7 @@ class User extends PlUser
     public function lastName()
     {
         if (!$this->hasProfile()) {
-            return '';
+            return $this->lastname;
         }
         return $this->profile()->lastName();
     }
