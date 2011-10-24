@@ -178,7 +178,7 @@ class ProfileSettingJob implements ProfileSetting
             }
         }
 
-        if (Visibility::isLessRestrictive($job['w_email_pub'], $job_level)) {
+        if (Visibility::isLessRestrictive($job_level, $job['w_email_pub'])) {
             $job['w_email_pub'] = $job_level;
         }
         $job['w_phone'] = Phone::formatFormArray($job['w_phone'], $s, $job_level);
@@ -248,7 +248,7 @@ class ProfileSettingJob implements ProfileSetting
             // Force the address publicity to be at least as restricted as
             // the job publicity.
             $job_level = $job['pub'];
-            if (Visibility::isLessRestrictive($address->pub, $job_level)) {
+            if (Visibility::isLessRestrictive($job_level, $address->pub)) {
                 $address->pub = $job_level;
             }
             $job['w_address'] = $address->toFormArray();
