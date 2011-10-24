@@ -66,9 +66,12 @@ publicity['public']  = 2;
 
 // Names {{{1
 
-function toggleNamesAdvanced()
+function toggleNamesAdvanced(togglePrivate)
 {
-    $('.names_advanced').toggle();
+    $('.names_advanced_public').toggle();
+    if (togglePrivate) {
+        $('.names_advanced_private').toggle();
+    }
 }
 
 function addSearchName(isFemale)

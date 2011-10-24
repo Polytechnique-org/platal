@@ -24,7 +24,7 @@
 {assign var=type value="lastname_"|cat:$suffix}
 {assign var=error value=$type|cat:"_error"}
 {assign var=particle value="particle_"|cat:$suffix}
-<tr class="names_advanced" {if !$errors.search_names}style="display: none"{/if}>
+<tr class="names_advanced_public" {if !$errors.search_names}style="display: none"{/if}>
   <td>
     <span class="flags">{icon name="flag_green" title="site public"}</span>&nbsp;{$description}
   </td>
@@ -42,7 +42,7 @@
 
 {foreach from=$firstnames key=type item=description}
 {assign var=error value=$type|cat:"_error"}
-<tr class="names_advanced" {if !$errors.search_names}style="display: none"{/if}>
+<tr class="names_advanced_public" {if !$errors.search_names}style="display: none"{/if}>
   <td>
     <span class="flags">{icon name="flag_green" title="site public"}</span>&nbsp;{$description}
   </td>

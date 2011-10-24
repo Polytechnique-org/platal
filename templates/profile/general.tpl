@@ -32,7 +32,7 @@
       {$public_name}
     </td>
     <td>
-      <a href="javascript:toggleNamesAdvanced();">
+      <a href="javascript:toggleNamesAdvanced({$viewPrivate});">
         {icon name="page_edit" title="Plus de détail"}
       </a>
     </td>
@@ -74,7 +74,7 @@
   {foreach from=$search_names.private_names key=id item=name}
     {include file="profile/general.private_name.tpl"}
   {/foreach}
-  <tr class="names_advanced" id="searchname" {if !$errors.search_names}style="display: none"{/if}>
+  <tr class="names_advanced_private" id="searchname" {if !$errors.search_names}style="display: none"{/if}>
     <td colspan="3">
       <div id="sn_add" class="center">
         <a href="javascript:addSearchName({$isFemale});">

@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 {assign var=type value=$name.type}
-<tr class="names_advanced" id="search_name_{$id}" {if !$errors.search_names && !t($new_name)}style="display: none"{/if}>
+<tr class="names_advanced_private" id="search_name_{$id}" {if !$errors.search_names && !t($new_name)}style="display: none"{/if}>
   <td>
     <span class="flags">{icon name="flag_red" title="site privé"}</span>{if !t($new_name)}&nbsp;{$other_names.$type}{else}
     <select name="search_names[private_names][{$id}][type]">
