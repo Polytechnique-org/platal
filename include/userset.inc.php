@@ -428,13 +428,18 @@ class AddressesView implements PlView
         pl_cached_content_headers('text/x-csv', 'iso-8859-1', 1, 'adresses.csv');
 
         $csv = fopen('php://output', 'w');
-        fputcsv($csv, array('adresses'), ';');
+        fputcsv($csv,  array('PROMOTION', 'TITRE', 'NOM', 'SOCIETE', 'ADRESSE', 'EMAIL'), ';');
         if (!empty($pids)) {
-            $res = XDB::query('SELECT  pd.public_name, pa.postalText
-                                 FROM  profile_addresses AS pa
-                           INNER JOIN  profile_display   AS pd ON (pd.pid = pa.pid)
-                                WHERE  pa.type = \'home\' AND pa.pub IN (\'public\', \'ax\') AND FIND_IN_SET(\'mail\', pa.flags) AND pa.pid IN {?}
-                             GROUP BY  pa.pid', $pids);
+            $res = XDB::query("SELECT  pd.promo, IF(p.sex = 'female', 'Mme', 'M'), pd.short_name, pje.name,
+                                       pa.postalText, p.email_directory
+                                 FROM  profile_addresses    AS pa
+                           INNER JOIN  profiles             AS p   ON (pa.pid = p.pid)
+                           INNER JOIN  profile_display      AS pd  ON (pd.pid = pa.pid)
+                            LEFT JOIN  profile_job          AS pj  ON (pj.pid = pa.pid)
+                            LEFT JOIN  profile_job_enum     AS pje ON (pj.jobid = pje.id)
+                                WHERE  pa.type = 'home' AND pa.pub IN ('public', 'ax') AND FIND_IN_SET('mail', pa.flags)
+                                       AND pa.pid IN {?}
+                             GROUP BY  pa.pid", $pids);
             foreach ($res->fetchAllAssoc() as $item) {
                 fputcsv($csv, array_map('utf8_decode', $item), ';');
             }
