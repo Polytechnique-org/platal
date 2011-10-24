@@ -329,14 +329,15 @@ class ProfileModule extends PLModule
         $wiz->addPage('ProfilePageGeneral', 'Général', 'general');
         $wiz->addPage('ProfilePageAddresses', 'Adresses personnelles', 'adresses');
         $wiz->addPage('ProfilePageJobs', 'Informations professionnelles', 'emploi');
-        if (S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE)) {
+        $viewPrivate = S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE);
+        if ($viewPrivate) {
             $wiz->addPage('ProfilePageGroups', 'Groupes X - Binets', 'poly');
         }
         $wiz->addPage('ProfilePageDecos', 'Décorations - Medailles', 'deco');
-        if (S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE)) {
+        if ($viewPrivate) {
             $wiz->addPage('ProfilePageMentor', 'Mentoring', 'mentor');
         }
-        if (S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE) && $profile->isDeltatenEnabled(Profile::DELTATEN_OLD)) {
+        if ($viewPrivate && $profile->isDeltatenEnabled(Profile::DELTATEN_OLD)) {
             $wiz->addPage('ProfilePageDeltaten', 'Opération N N-10', 'deltaten');
         }
         $wiz->apply($page, 'profile/edit/' . $profile->hrid(), $opened_tab, $mode);
@@ -348,6 +349,8 @@ class ProfileModule extends PLModule
 
        $page->setTitle('Mon Profil');
        $page->assign('hrpid', $profile->hrid());
+       $page->assign('viewPrivate', $viewPrivate);
+       $page->assign('isMe', S::user()->isMyProfile($profile));
        if (isset($success) && $success) {
            $page->trigSuccess('Ton profil a bien été mis à jour.');
        }

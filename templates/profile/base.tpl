@@ -20,18 +20,13 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{assign var=isMe value=$smarty.session.user->isMyProfile($profile)}
-{if hasPerm('directory_private')}
-{assign var=viewPrivate value=true}
-{/if}
-
 <form action="{$wiz_baseurl}/{$lookup[$current]}" method="post" id="prof_annu">
   {xsrf_token_field}
   <div>
     {icon name=information title="Voir ma fiche"} Tu peux consulter
-    {if $smarty.session.user->isMyProfile($profile)}ta{else}cette{/if} fiche telle que la
+    {if $isMe}ta{else}cette{/if} fiche telle que la
     voient <a class="popup2" href="profile/{$profile->hrpid}?view=public">n'importe quel internaute</a>,
-    <a class="popup2" href="profile/{$profile->hrpid}?view=ax">l'AX</a>{if hasPerm('directory_private')}ou
+    <a class="popup2" href="profile/{$profile->hrpid}?view=ax">l'AX</a>{if $viewPrivate}ou
     <a class="popup2" href="profile/{$profile->hrpid}">les X</a>{/if}.
   </div>
   <div class="flags">
