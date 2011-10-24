@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS fusionax_anciens (
   Nom_usuel VARCHAR(255) NOT NULL COMMENT 'Nom usuel (nom marital par exemple) sans la particule',
   partic_nom VARCHAR(5) NOT NULL COMMENT 'Particule du nom usuel',
   Nom_complet VARCHAR(255) NOT NULL COMMENT 'Nom patronymique complet (avec la particule)',
+  Civilité ENUM('M', 'MLLE', 'MME') NOT NULL DEFAULT 'M',
   Code_nationalite CHAR(4) NOT NULL COMMENT 'Nationalité (code)',
   corps_sortie VARCHAR(50) NOT NULL COMMENT 'Corps de sortie (ou D si aucun)',
   Date_deces DATE COMMENT 'Date de décès',
@@ -29,7 +30,7 @@ CREATE TABLE IF NOT EXISTS fusionax_anciens (
 
 LOAD DATA LOCAL INFILE '{?}Anciens.txt' INTO TABLE `fusionax_anciens` CHARACTER SET utf8 FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\r\n'
 (AN, ax_id, @login, @password, promotion_etude, groupe_promo, Nom_patronymique, partic_patro, prenom, Nom_usuel, partic_nom,
-  Nom_complet, @civilite, Code_nationalite, @type, corps_sortie, @StringDate_deces, grade, Mel_usage, Mel_publiable, @xxx, Mob_publiable,
+  Nom_complet, Civilite, Code_nationalite, @type, corps_sortie, @StringDate_deces, grade, Mel_usage, Mel_publiable, @xxx, Mob_publiable,
   tel_mobile, @xxx, @xxx, @xxx, @xxx, @xxx, @xxx, @xxx, @X_M_D, @xxx, @xxx, @xxx, @xxx, @xxx, @xxx, @Type_adr,
   @Ligne1, @Ligne2, @Ligne3, @code_postal, @ville, @zip_cedex, @etat_distr, @pays, @tel, @fax, @StringDate_maj)
 SET

@@ -633,6 +633,7 @@ class ProfilePageGeneral extends ProfilePage
         $this->settings['nationality1'] = $this->settings['nationality2']
                                         = $this->settings['nationality3']
                                         = $this->settings['promo_display']
+                                        = $this->settings['profile_title']
                                         = null;
         $this->settings['email_directory'] = new ProfileSettingEmail();
         $this->settings['email_directory_new'] = new ProfileSettingEmailDirectory();
@@ -673,7 +674,8 @@ class ProfilePageGeneral extends ProfilePage
         $res = XDB::query("SELECT  p.nationality1, p.nationality2, p.nationality3, IF(p.birthdate = 0, '', p.birthdate) AS birthdate,
                                    p.email_directory as email_directory, pd.promo AS promo_display,
                                    p.freetext, p.freetext_pub, p.ax_id AS matricule_ax, pd.yourself,
-                                   p.deathdate, IF(p.birthdate_ref = 0, '', p.birthdate_ref) AS birthdate_ref
+                                   p.deathdate, IF(p.birthdate_ref = 0, '', p.birthdate_ref) AS birthdate_ref,
+                                   p.title AS profile_title
                              FROM  profiles              AS p
                        INNER JOIN  profile_display       AS pd ON (pd.pid = p.pid)
                             WHERE  p.pid = {?}", $this->pid());
@@ -704,7 +706,7 @@ class ProfilePageGeneral extends ProfilePage
     {
         if ($this->changed['nationality1'] || $this->changed['nationality2'] || $this->changed['nationality3']
             || $this->changed['birthdate'] || $this->changed['freetext'] || $this->changed['freetext_pub']
-            || $this->changed['email_directory']) {
+            || $this->changed['email_directory'] || $this->changed['profile_title']) {
             if ($this->values['nationality3'] == "") {
                 $this->values['nationality3'] = NULL;
             }
@@ -737,11 +739,12 @@ class ProfilePageGeneral extends ProfilePage
 
             XDB::execute("UPDATE  profiles
                              SET  nationality1 = {?}, nationality2 = {?}, nationality3 = {?}, birthdate = {?},
-                                  freetext = {?}, freetext_pub = {?}, email_directory = {?}
+                                  freetext = {?}, freetext_pub = {?}, email_directory = {?}, title = {?}
                            WHERE  pid = {?}",
                           $this->values['nationality1'], $this->values['nationality2'], $this->values['nationality3'],
                           ProfileSettingDate::toSQLDate($this->values['birthdate']),
-                          $this->values['freetext'], $this->values['freetext_pub'], $new_email, $this->pid());
+                          $this->values['freetext'], $this->values['freetext_pub'], $new_email,
+                          $this->values['profile_title'], $this->pid());
         }
         if ($this->changed['photo_pub']) {
             XDB::execute("UPDATE  profile_photos

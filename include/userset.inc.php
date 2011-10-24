@@ -428,9 +428,9 @@ class AddressesView implements PlView
         pl_cached_content_headers('text/x-csv', 'iso-8859-1', 1, 'adresses.csv');
 
         $csv = fopen('php://output', 'w');
-        fputcsv($csv,  array('PROMOTION', 'TITRE', 'NOM', 'SOCIETE', 'ADRESSE', 'EMAIL'), ';');
+        fputcsv($csv,  array('PROMOTION', 'CIVILITE', 'NOM', 'SOCIETE', 'ADRESSE', 'EMAIL'), ';');
         if (!empty($pids)) {
-            $res = XDB::query("SELECT  pd.promo, IF(p.sex = 'female', 'Mme', 'M'), pd.short_name, pje.name,
+            $res = XDB::query("SELECT  pd.promo, p.title, pd.short_name, pje.name,
                                        pa.postalText, p.email_directory
                                  FROM  profile_addresses    AS pa
                            INNER JOIN  profiles             AS p   ON (pa.pid = p.pid)

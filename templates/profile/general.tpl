@@ -189,6 +189,16 @@
       <a href="javascript:delNationality('3');">{icon name=cross title="Supprimer cette nationalité"}</a>
     </td>
   </tr>
+  <tr>
+    <td><span class="titre">Civilité</span></td>
+    <td>
+      <select name="profile_title">
+        <option value="M" {if $profile_title eq "M"}selected="selected"{/if}>M</option>
+        <option value="MLLE" {if $profile_title eq "MLLE"}selected="selected"{/if}>MLLE</option>
+        <option value="MME" {if $profile_title eq "MME"}selected="selected"{/if}>MME</option>
+      </select>
+    </td>
+  </tr>
 </table>
 
 <table class="bicol" style="margin-bottom: 1em" summary="Profil&nbsp;: Formations à l'X">

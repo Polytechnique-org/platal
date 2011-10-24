@@ -184,6 +184,11 @@ XDB::rawExecute("UPDATE  profile_corps           AS c
 XDB::rawExecute("DELETE FROM  profile_corps_rank_enum
                        WHERE  name LIKE 'DEL%'");
 
+// Updates title.
+XDB::rawExecute("UPDATE  profiles         AS p
+             INNER JOIN  fusionax_anciens AS f ON (p.pid = f.pid)
+                    SET  p.title = f.Civilite");
+
 // Updates email_directory.
 XDB::rawExecute("UPDATE  profiles         AS p
              INNER JOIN  fusionax_anciens AS f ON (p.pid = f.pid)

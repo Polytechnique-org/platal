@@ -815,6 +815,7 @@ class AdminModule extends PLModule
         $page->changeTpl('admin/add_accounts.tpl');
 
         if (Env::has('add_type') && Env::has('people')) {
+            static $titles = array('male' => 'M', 'female' => 'MLLE');
             $lines = explode("\n", Env::t('people'));
             $separator = Env::t('separator');
             $promotion = Env::i('promotion');
@@ -873,9 +874,10 @@ class AdminModule extends PLModule
                                 continue;
                             }
 
-                            XDB::execute('INSERT INTO  profiles (hrpid, xorg_id, ax_id, birthdate_ref, sex)
-                                               VALUES  ({?}, {?}, {?}, {?}, {?})',
-                                         $infos['hrid'], $xorgId, (isset($infos[5]) ? $infos[5] : null), $birthDate, $sex);
+                            XDB::execute('INSERT INTO  profiles (hrpid, xorg_id, ax_id, birthdate_ref, sex, title)
+                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?})',
+                                         $infos['hrid'], $xorgId, (isset($infos[5]) ? $infos[5] : null),
+                                         $birthDate, $sex, $titles[$sex]);
                             $pid = XDB::insertId();
                             XDB::execute('INSERT INTO  profile_public_names (pid, lastname_initial, lastname_main, firstname_initial, firstname_main)
                                                VALUES  ({?}, {?}, {?}, {?}, {?})',
