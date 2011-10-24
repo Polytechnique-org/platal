@@ -425,7 +425,7 @@ class AddressesView implements PlView
     {
         $pids = $this->set->getIds(new PlLimit());
         $visibility = Visibility::defaultForRead(Visibility::VIEW_AX);
-        pl_cached_content_headers('text/x-csv', 'utf-8', 1, 'adresses.csv');
+        pl_cached_content_headers('text/x-csv', 'iso-8859-1', 1, 'adresses.csv');
 
         $csv = fopen('php://output', 'w');
         fputcsv($csv, array('adresses'), ';');
@@ -436,7 +436,7 @@ class AddressesView implements PlView
                                 WHERE  pa.type = \'home\' AND pa.pub IN (\'public\', \'ax\') AND FIND_IN_SET(\'mail\', pa.flags) AND pa.pid IN {?}
                              GROUP BY  pa.pid', $pids);
             foreach ($res->fetchAllAssoc() as $item) {
-                fputcsv($csv, $item, ';');
+                fputcsv($csv, array_map('utf8_decode', $item), ';');
             }
         }
         fclose($csv);
