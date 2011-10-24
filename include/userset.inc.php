@@ -430,7 +430,7 @@ class AddressesView implements PlView
         $csv = fopen('php://output', 'w');
         fputcsv($csv,  array('PROMOTION', 'CIVILITE', 'NOM', 'SOCIETE', 'ADRESSE', 'EMAIL'), ';');
         if (!empty($pids)) {
-            $res = XDB::query("SELECT  pd.promo, p.title, pd.short_name, pje.name,
+            $res = XDB::query("SELECT  pd.promo, p.title, pd.short_name, UPPER(pje.name),
                                        pa.postalText, p.email_directory
                                  FROM  profile_addresses    AS pa
                            INNER JOIN  profiles             AS p   ON (pa.pid = p.pid)
