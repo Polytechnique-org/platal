@@ -625,14 +625,16 @@ class Address
             'request'             => $this->request
         );
 
-        if ($this->type == self::LINK_PROFILE || $this->type == self::LINK_JOB) {
-            $address['pub'] = $this->pub;
+        if ($this->type == self::LINK_JOB) {
+            $address['pub']  = $this->pub;
+            $address['mail'] = $this->flags->hasFlag('mail');
         }
         if ($this->type == self::LINK_PROFILE) {
             static $flags = array('current', 'temporary', 'secondary', 'mail', 'cedex', 'deliveryIssue');
             foreach ($flags as $flag) {
                 $address[$flag] = $this->flags->hasFlag($flag);
             }
+            $address['pub']     = $this->pub;
             $address['comment'] = $this->comment;
             $address['phones']  = Phone::formatFormArray($this->phones);
         }
