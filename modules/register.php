@@ -276,7 +276,9 @@ class RegisterModule extends PLModule
 
         $_SESSION['subState'] = $subState->dict();
         if (count($alert)) {
-            $alert_details = "Détails des alertes :" . $alert_details . "\n\n\n";
+            $alert_details = "Détails des alertes :" . $alert_details . "\n\n";
+            $alert_details .= 'Compte concerné : ' . $subState->s('forlife') . ' (redirection vers : '
+                           . ($subState->s('email') == '' ? Post::t('email') : $subState->s('email')). ")\n\n\n";
             send_warning_mail(implode(' - ', $alert), $alert_details);
         }
 
