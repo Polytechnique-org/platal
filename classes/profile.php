@@ -1060,7 +1060,7 @@ class Profile implements PlExportable
                                      IF ({?}, pse.text, NULL) AS section,
                                      ppn.firstname_main AS firstname, ppn.lastname_main AS lastname, IF ({?}, pn.name, NULL) AS nickname,
                                      IF (ppn.firstname_ordinary = \'\', ppn.firstname_main, ppn.firstname_ordinary) AS firstname_ordinary,
-                                     IF (ppn.lastname_ordinary = \'\', ppn.firstname_main, ppn.lastname_ordinary) AS lastname_ordinary,
+                                     IF (ppn.lastname_ordinary = \'\', ppn.lastname_main, ppn.lastname_ordinary) AS lastname_ordinary,
                                      pd.yourself, pd.promo, pd.short_name, pd.public_name AS full_name,
                                      pd.directory_name, pd.public_name, pd.private_name,
                                      IF (pp.pub >= {?}, pp.display_tel, NULL) AS mobile,
