@@ -189,8 +189,7 @@ function deadlineChange(box)
         </div>
         <textarea name="confirmation" id="payment_text" rows="12" cols="65">{if $payment_message}{$payment_message}{else}&lt;salutation&gt; &lt;prenom&gt; &lt;nom&gt;,
 
-Ton inscription à [METS LE NOM DE L'ÉVÉNEMENT ICI] a bien été enregistrée et ton paiement de &lt;montant&gt; a bien
-été reçu avec le commentaire suivant&nbsp;:
+Ton inscription à [METS LE NOM DE L'ÉVÉNEMENT ICI] a bien été enregistrée et ton paiement de &lt;montant&gt; a bien été reçu avec le commentaire suivant&nbsp;:
 &lt;comment&gt;
 
 [COMPLÈTE EN PRÉCISANT LA DATE ET LA PERSONNE À CONTACTER]
