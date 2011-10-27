@@ -356,7 +356,7 @@ class Profile implements PlExportable
 
     public function firstName()
     {
-        return $this->firstname;
+        return $this->firstname_ordinary;
     }
 
     public function firstNames()
@@ -366,7 +366,7 @@ class Profile implements PlExportable
 
     public function lastName()
     {
-        return $this->lastname;
+        return $this->lastname_ordinary;
     }
 
     public function lastNames()
