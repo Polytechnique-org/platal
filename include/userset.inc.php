@@ -428,17 +428,26 @@ class AddressesView implements PlView
         pl_cached_content_headers('text/x-csv', 'iso-8859-1', 1, 'adresses.csv');
 
         $csv = fopen('php://output', 'w');
-        fputcsv($csv,  array('PROMOTION', 'CIVILITE', 'NOM', 'SOCIETE', 'ADRESSE', 'EMAIL'), ';');
+        fputcsv($csv,  array('PROMOTION', 'CIVILITE', 'NOM', 'PRENOM', 'SOCIETE', 'ADRESSE', 'CP', 'EMAIL'), ';');
         if (!empty($pids)) {
-            $res = XDB::query("SELECT  pd.promo, p.title, pd.short_name, UPPER(pje.name),
-                                       pa.postalText, p.email_directory
-                                 FROM  (SELECT  pid, postalText
-                                          FROM  profile_addresses
-                                         WHERE  pub IN ('public', 'ax') AND FIND_IN_SET('mail', flags) AND pid IN {?}
-                                      ORDER BY  pid, NOT FIND_IN_SET('current', flags),
-                                                FIND_IN_SET('secondary', flags), type = 'job') AS pa
+            $res = XDB::query("SELECT  pd.promo, p.title,
+                                       IF (pn.firstname_ordinary = '', UPPER(pn.firstname_main), UPPER(pn.firstname_ordinary)) AS firstname,
+                                       IF (pn.lastname_ordinary = '', UPPER(pn.lastname_main), UPPER(pn.lastname_ordinary)) AS lastname,
+                                       UPPER(pje.name), pa.postalText, pa.postal_code, p.email_directory
+                                 FROM  (SELECT  pa.pid, pa.postalText, pace.long_name AS postal_code
+                                          FROM  profile_addresses                 AS pa
+                                     LEFT JOIN  profile_addresses_components      AS pac  ON (pa.pid = pac.pid
+                                                                                              AND pa.jobid = pac.jobid
+                                                                                              AND pa.groupid = pac.groupid
+                                                                                              AND pa.type = pac.type)
+                                     LEFT JOIN  profile_addresses_components_enum AS pace ON (pac.component_id = pace.id
+                                                                                              AND FIND_IN_SET('postal_code', pace.types))
+                                         WHERE  pa.pub IN ('public', 'ax') AND FIND_IN_SET('mail', pa.flags) AND pa.pid IN {?}
+                                      ORDER BY  pa.pid, NOT FIND_IN_SET('current', pa.flags),
+                                                FIND_IN_SET('secondary', pa.flags), pa.type = 'job', pace.long_name IS NULL) AS pa
                            INNER JOIN  profiles             AS p   ON (pa.pid = p.pid)
                            INNER JOIN  profile_display      AS pd  ON (pd.pid = pa.pid)
+                           INNER JOIN  profile_public_names AS pn  ON (pn.pid = pa.pid)
                             LEFT JOIN  profile_job          AS pj  ON (pj.pid = pa.pid)
                             LEFT JOIN  profile_job_enum     AS pje ON (pj.jobid = pje.id)
                              GROUP BY  pa.pid", $pids);
