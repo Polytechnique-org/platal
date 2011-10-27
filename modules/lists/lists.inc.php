@@ -84,9 +84,9 @@ function list_fetch_basic_info($members)
     foreach ($members as $member) {
         $user = User::getSilent($member);
         if (!$user) {
-            $res[] = $member . ',,';
+            $res[] = $member . ';;';
         } else {
-            $res[] = $user->directoryName() . ',' . $user->promo();
+            $res[] = $user->lastName() . ';' . $user->firstName() . ';' . $user->promo();
         }
     }
     return $res;

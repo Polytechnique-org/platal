@@ -346,11 +346,11 @@ class ListsModule extends PLModule
         $this->prepare_client($page);
         $members = $this->client->get_members($liste);
         $list = list_fetch_basic_info(list_extract_members($members[1]));
-        pl_cached_content_headers('text/x-csv', 1);
+        pl_cached_content_headers('text/x-csv', 'iso-8859-1', 1);
 
-        echo "nom,promo\n";
-        echo implode("\n", $list);
-        exit;
+        echo utf8_decode("Nom;Prénom;Promotion\n");
+        echo utf8_decode(implode("\n", $list));
+        exit();
     }
 
     function handler_annu($page, $liste = null, $action = null, $subaction = null)
