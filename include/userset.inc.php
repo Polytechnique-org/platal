@@ -432,13 +432,15 @@ class AddressesView implements PlView
         if (!empty($pids)) {
             $res = XDB::query("SELECT  pd.promo, p.title, pd.short_name, UPPER(pje.name),
                                        pa.postalText, p.email_directory
-                                 FROM  profile_addresses    AS pa
+                                 FROM  (SELECT  pid, postalText
+                                          FROM  profile_addresses
+                                         WHERE  pub IN ('public', 'ax') AND FIND_IN_SET('mail', flags) AND pid IN {?}
+                                      ORDER BY  pid, NOT FIND_IN_SET('current', flags),
+                                                FIND_IN_SET('secondary', flags), type = 'job') AS pa
                            INNER JOIN  profiles             AS p   ON (pa.pid = p.pid)
                            INNER JOIN  profile_display      AS pd  ON (pd.pid = pa.pid)
                             LEFT JOIN  profile_job          AS pj  ON (pj.pid = pa.pid)
                             LEFT JOIN  profile_job_enum     AS pje ON (pj.jobid = pje.id)
-                                WHERE  pa.type = 'home' AND pa.pub IN ('public', 'ax') AND FIND_IN_SET('mail', pa.flags)
-                                       AND pa.pid IN {?}
                              GROUP BY  pa.pid", $pids);
             foreach ($res->fetchAllAssoc() as $item) {
                 fputcsv($csv, array_map('utf8_decode', $item), ';');
