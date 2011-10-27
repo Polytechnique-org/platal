@@ -225,7 +225,7 @@ class AuthModule extends PLModule
 
                     http_redirect($returl);
                 } else if (S::admin()) {
-                    $page->kill("La requête d'authentification a échouée (url de retour invalide).");
+                    $page->kill("La requête d'authentification a échoué (url de retour invalide).");
                 }
             }
         }
