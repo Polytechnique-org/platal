@@ -461,9 +461,9 @@ class RegisterModule extends PLModule
 
         // Notify other users which were watching for her arrival.
         XDB::execute('INSERT INTO  contacts (uid, contact)
-                           SELECT  uid, ni_id
+                           SELECT  uid, {?}
                              FROM  watch_nonins
-                            WHERE  ni_id = {?}', $uid);
+                            WHERE  ni_id = {?}', $pid, $uid);
         XDB::execute('DELETE FROM  watch_nonins
                             WHERE  ni_id = {?}', $uid);
         Platal::session()->updateNbNotifs();
