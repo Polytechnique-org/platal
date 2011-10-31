@@ -896,6 +896,7 @@ class Address
 class AddressIterator implements PlIterator
 {
     private $dbiter;
+    private $visibility;
 
     public function __construct(array $pids, array $types, array $jobids, $visibility, $_where)
     {
@@ -936,6 +937,7 @@ class AddressIterator implements PlIterator
               GROUP BY  pa.pid, pa.jobid, pa.groupid, pa.type, pa.id
               ORDER BY  pa.pid, pa.jobid, pa.id';
         $this->dbiter = XDB::iterator($sql, $visibility->level());
+        $this->visibility = $visibility;
     }
 
     public function next()
@@ -948,7 +950,7 @@ class AddressIterator implements PlIterator
             return null;
         }
         // Adds phones to addresses.
-        $it = Phone::iterate(array($data['pid']), array(Phone::LINK_ADDRESS), array($data['id']));
+        $it = Phone::iterate(array($data['pid']), array(Phone::LINK_ADDRESS), array($data['id']), $this->visibility);
         while ($phone = $it->next()) {
             $data['phones'][$phone->id] = $phone->toFormArray();
         }

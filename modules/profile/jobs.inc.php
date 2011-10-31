@@ -86,11 +86,11 @@ class ProfileSettingJob implements ProfileSetting
             $backtrack[$job['id']] = $key;
         }
 
-        $it = Address::iterate(array($page->pid()), array(Address::LINK_JOB));
+        $it = Address::iterate(array($page->pid()), array(Address::LINK_JOB), array(), Visibility::get(Visibility::VIEW_PRIVATE));
         while ($address = $it->next()) {
             $jobs[$address->id]['w_address'] = $address->toFormArray();
         }
-        $it = Phone::iterate(array($page->pid()), array(Phone::LINK_JOB));
+        $it = Phone::iterate(array($page->pid()), array(Phone::LINK_JOB), array(), Visibility::get(Visibility::VIEW_PRIVATE));
         while ($phone = $it->next()) {
             $jobs[$phone->link_id]['w_phone'][$phone->id] = $phone->toFormArray();
         }

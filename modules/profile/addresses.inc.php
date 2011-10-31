@@ -27,7 +27,7 @@ class ProfileSettingAddresses implements ProfileSetting
         $addresses = array();
 
         if (is_null($value)) {
-            $it = Address::iterate(array($page->pid()), array(Address::LINK_PROFILE), array(0));
+            $it = Address::iterate(array($page->pid()), array(Address::LINK_PROFILE), array(0), Visibility::get(Visibility::VIEW_PRIVATE));
             while ($address = $it->next()) {
                 $addresses[] = $address->toFormArray();
             }

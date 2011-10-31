@@ -193,7 +193,7 @@
       </td>
     </tr>
     {include file="geoloc/form.address.tpl" prefname="`$jobpref`[w_address]"
-                     prefid=$jobid address=$job.w_address class="pair"}
+                     prefid=$jobid address=$job.w_address class="pair" hiddenaddr=$hiddenaddr}
     <tr class="pair" {if $hiddenjob || $hiddenaddr}style="display: none"{/if}>
       <td colspan="2">
         <label>

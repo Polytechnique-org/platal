@@ -61,7 +61,7 @@
       {include file="include/flags.radio.tpl" name="`$prefname`[pub]" val=$address.pub mainField='addresses' mainId=$i subField='phones' subId=-1}
     </td>
   </tr>
-  {include file="geoloc/form.address.tpl" prefname=$prefname prefid=$prefid address=$address id=$i}
+  {include file="geoloc/form.address.tpl" prefname=$prefname prefid=$prefid address=$address id=$i hiddenaddr=$hiddenaddr}
   <tr {if $hiddenaddr}style="display: none"{/if}>
   {if !$isMe}
     <td>
