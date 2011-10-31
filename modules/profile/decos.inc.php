@@ -35,7 +35,8 @@ class ProfileSettingDeco implements ProfileSetting
     public function value(ProfilePage $page, $field, $value, &$success)
     {
         $success = true;
-        if (is_null($value)) {
+        if (is_null($value) || !S::user()->isMyProfile($profile) &&
+            $page->values['medals_pub'] == 'private' && !S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE)) {
             // Fetch already attributed medals
             $value = XDB::fetchAllAssoc("SELECT  m.mid AS id, m.gid AS grade, 1 AS valid, FIND_IN_SET('has_levels', e.flags) AS has_levels, m.level
                                            FROM  profile_medals     AS m
@@ -68,6 +69,11 @@ class ProfileSettingDeco implements ProfileSetting
         $i = $j = 0;
         $total_original = count($original);
         $total_value = count($value);
+
+        if ($total_original && !S::user()->isMyProfile($profile) &&
+            $page->values['medals_pub'] == 'private' && !S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE)) {
+            return;
+        }
 
         while ($i < $total_original || $j < $total_value) {
             if (isset($value[$j]) && (!isset($original[$i]) || self::compareMedals($original[$i], $value[$j]))) {
@@ -111,8 +117,8 @@ class ProfilePageDecos extends ProfilePage
     public function __construct(PlWizard $wiz)
     {
         parent::__construct($wiz);
-        $this->settings['medals'] = new ProfileSettingDeco();
         $this->settings['medals_pub'] = new ProfileSettingPub();
+        $this->settings['medals'] = new ProfileSettingDeco();
         $this->watched['medals'] = true;
     }
 
@@ -127,7 +133,7 @@ class ProfilePageDecos extends ProfilePage
 
     protected function _saveData()
     {
-        if ($this->changed['medals_pub']) {
+        if ($this->changed['medals_pub'] && (S::user()->isMyProfile($profile) || S::user()->checkPerms(User::PERM_DIRECTORY_PRIVATE))) {
             XDB::execute("UPDATE  profiles
                              SET  medals_pub = {?}
                            WHERE  pid = {?}",

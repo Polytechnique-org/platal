@@ -20,16 +20,22 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{if !hasPerm('directory_private') && ($medals_pub eq 'private') && ($medals|@count neq 0)}
+{assign var=hidden_medal value=true}
+{else}
+{assign var=hidden_medal value=false}
+{/if}
 <table class="bicol">
   <tr>
     <th>
       <div class="flags" style="float: left">
-        <label><input type="checkbox" name="medals_pub"{if $medals_pub eq 'public'} checked="checked"{/if} />
+        <label><input type="checkbox" name="medals_pub"{if $medals_pub eq 'public'} checked="checked"{/if}{if $hidden_medal} disabled="disabled"{/if} />
         {icon name="flag_green" title="site public"}</label>
       </div>
-      Médailles, Décorations, Prix&hellip;
+      Médailles, Décorations, Prix&hellip;{if $hidden_medal} (masqué){/if}
     </th>
   </tr>
+{if !$hidden_medal}
   <tr>
     <td>
       <div style="clear: both; margin-top: 0.2em" id="medals">
@@ -59,6 +65,7 @@
       </p>
     </td>
   </tr>
+{/if}
 </table>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
