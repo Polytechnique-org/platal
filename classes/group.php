@@ -94,6 +94,17 @@ class Group
         return $uf->iterUsers($limit);
     }
 
+    public function iterToNotify()
+    {
+        if ($this->data['notify_all']) {
+            $condition = UFC_Group::BOTH;
+        } else {
+            $condition = UFC_Group::NOTIFIED;
+        }
+        $uf = New UserFilter(New UFC_Group($this->id, true, $condition));
+        return $uf->iterUsers();
+    }
+
     public function getLogo($fallback = true)
     {
         if (!empty($this->logo)) {

@@ -737,8 +737,7 @@ class XnetGrpModule extends PLModule
             XDB::execute('DELETE FROM  group_former_members
                                 WHERE  uid = {?} AND asso_id = {?}',
                          S::i('uid'), $globals->asso('id'));
-            $uf = New UserFilter(New UFC_Group($globals->asso('id'), true));
-            $admins = $uf->iterUsers();
+            $admins = $globals->asso()->iterToNotify();
             $admin = $admins->next();
             $to = $admin->bestEmail();
             while ($admin = $admins->next()) {
@@ -1072,7 +1071,7 @@ class XnetGrpModule extends PLModule
 
         if ($globals->asso('notif_unsub')) {
             $mailer = new PlMailer('xnetgrp/unsubscription-notif.mail.tpl');
-            $admins = $globals->asso()->iterAdmins();
+            $admins = $globals->asso()->iterToNotify();
             while ($admin = $admins->next()) {
                 $mailer->addTo($admin);
             }
