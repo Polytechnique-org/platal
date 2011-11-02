@@ -858,12 +858,19 @@ class UFC_NLSubscribed extends UserFilterCondition
  */
 class UFC_Group extends UserFilterCondition
 {
+    const BOTH = 0;
+    const NOTIFIED = 1;
+    const UNNOTIFIED = 2;
+
     private $group;
     private $anim;
-    public function __construct($group, $anim = false)
+    private $notified;
+
+    public function __construct($group, $anim = false, $notified = self::BOTH)
     {
         $this->group = $group;
         $this->anim = $anim;
+        $this->notified = $notified;
     }
 
     public function buildCondition(PlFilter $uf)
@@ -876,6 +883,10 @@ class UFC_Group extends UserFilterCondition
         $where = 'gpm' . $sub . '.perms IS NOT NULL';
         if ($this->anim) {
             $where .= ' AND gpm' . $sub . '.perms = \'admin\'';
+        }
+        if ($this->notified != self::BOTH) {
+            $where .= ' AND ' . ($this->notified == self::UNNOTIFIED ? 'NOT ' : '')
+                   . "FIND_IN_SET('notify', gpm" . $sub . '.flags)';
         }
         return $where;
     }
