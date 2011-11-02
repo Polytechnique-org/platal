@@ -117,6 +117,7 @@ class Group
         $res = XDB::query('SELECT  a.*, d.nom AS domnom,
                                    FIND_IN_SET(\'wiki_desc\', a.flags) AS wiki_desc,
                                    FIND_IN_SET(\'notif_unsub\', a.flags) AS notif_unsub,
+                                   FIND_IN_SET(\'notify_all\', a.flags) AS notify_all,
                                    (nls.id IS NOT NULL) AS has_nl, ad.text AS address,
                                    p.display_tel AS phone, f.display_tel AS fax
                              FROM  groups AS a
