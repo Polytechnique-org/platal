@@ -79,7 +79,7 @@
   <tr>
     <td>Nom</td>
     <td>Prénom</td>
-    <td>Date de naissance</td>
+    <td>Date de naissance (JJ/MM/AAAA)</td>
     <td>Sexe (F/M)</td>
     <td>Matricule École</td>
     <td>Matricule AX</td>
