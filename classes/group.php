@@ -160,6 +160,21 @@ class Group
         XDB::execute('DELETE FROM  group_members
                             WHERE  uid = {?} AND asso_id = {?}',
                      $uid, $group_id);
+        self::fix_notification($group_id);
+    }
+
+    static private function fix_notification($group_id)
+    {
+        $count = XDB::fetchOneCell("SELECT  COUNT(uid)
+                                      FROM  group_members
+                                     WHERE  asso_id = {?} AND perms = 'admin' AND FIND_IN_SET('notify', flags)",
+                                   $group_id);
+        if ($count == 0) {
+            XDB::execute("UPDATE  groups
+                             SET  flags = IF(flags = '', 'notify_all', CONCAT(flags, ',', 'notify_all'))
+                           WHERE  id = {?}",
+                         $group_id);
+        }
     }
 }
 
