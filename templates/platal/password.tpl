@@ -31,9 +31,7 @@
   Attention au type de clavier que tu utilises (qwerty&nbsp;?) et aux majuscules/minuscules.
 </p>
 <p>
-  Pour une sécurité optimale, le mot de passe
-  {if !t($xnet)}{if !t($xnet_reset)} circule de manière chiffrée (https) et{/if}{/if}
-  est stocké chiffré irréversiblement sur nos serveurs.
+  Pour une sécurité optimale, le mot de passe {if !t($xnet)}{if !t($xnet_reset)} circule de manière chiffrée (https) et{/if}{/if} est stocké chiffré irréversiblement sur nos serveurs.
 </p>
 <br />
 <fieldset style="width: 70%; margin-left: 15%">
