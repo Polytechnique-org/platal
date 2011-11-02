@@ -192,6 +192,24 @@ class XnetGrpModule extends PLModule
             } else {
                 $site = "";
             }
+
+            $notify_all = (Post::v('notify_all') ? true : false);
+            if (!$notify_all) {
+                $to_notify = array();
+                $uf = New UserFilter(New UFC_Group($globals->asso('id'), true));
+                $uids = $uf->getIds();
+                foreach ($uids as $uid) {
+                    if (Post::b('to_notify_' . $uid)) {
+                        $to_notify[] = $uid;
+                    }
+                }
+                if (count($to_notify) == 0) {
+                    $notify_all = true;
+                    $page->trigWarning("Aucun animateur n'ayant été selectionné pour recevoir les demandes d'inscriptions, tous le seront.");
+                }
+            }
+            $flags->addFlag('notify_all', $notify_all);
+
             if (S::admin()) {
                 $page->assign('super', true);
 
@@ -300,8 +318,25 @@ class XnetGrpModule extends PLModule
                 }
             }
 
+            XDB::execute("UPDATE  group_members
+                             SET  flags = ''
+                           WHERE  asso_id = {?}",
+                         $globals->asso('id'));
+            if (!$notify_all) {
+                XDB::execute("UPDATE  group_members
+                                 SET  flags = 'notify'
+                               WHERE  asso_id = {?} AND uid IN {?}",
+                             $globals->asso('id'), $to_notify);
+            }
+
             pl_redirect('../' . Post::v('diminutif', $globals->asso('diminutif')) . '/edit');
         }
+
+        $uf = New UserFilter(New UFC_Group($globals->asso('id'), true, UFC_Group::NOTIFIED));
+        $page->assign('notified', $uf->getUsers());
+        $uf = New UserFilter(New UFC_Group($globals->asso('id'), true, UFC_Group::UNNOTIFIED));
+        $page->assign('unnotified', $uf->getUsers());
+
         $page->assign('error', $error);
         $page->assign('cat', $globals->asso('cat'));
         $page->assign('dom', $globals->asso('dom'));
@@ -309,6 +344,7 @@ class XnetGrpModule extends PLModule
         $page->assign('inscriptible', $globals->asso('inscriptible'));
         $page->assign('pub', $globals->asso('pub'));
         $page->assign('notif_unsub', $globals->asso('notif_unsub'));
+        $page->assign('notify_all', $globals->asso('notify_all'));
     }
 
     function handler_mail($page)

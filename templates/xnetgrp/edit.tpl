@@ -164,6 +164,41 @@
 
     <tr>
       <td class="titre">
+        Notifier les demandes d'inscriptions&nbsp;:
+      </td>
+      <td>
+        <label><input type="radio" value="1" {if $notify_all}checked="checked"{/if} name="notify_all"
+          onclick="$('#notification').hide()"/>à tous les animateurs</label>
+        <label><input type="radio" value="0" {if !$notify_all}checked="checked"{/if} name="notify_all"
+          onclick="$('#notification').show()" />seulement à certains</label>
+      </td>
+    </tr>
+    <tr id="notification" {if $notify_all}style="display: none"{/if}>
+      <td></td>
+      <td>
+      {if $notified || $unnotified}
+        <ul>
+        {if $notified}
+        {foreach from=$notified item=user}
+          <li>
+            <label><input type="checkbox" name="to_notify_{$user->id()}" checked="checked" />{$user->fullName(true)}</label>
+          </li>
+        {/foreach}
+        {/if}
+        {if $unnotified}
+        {foreach from=$unnotified item=user}
+          <li>
+            <label><input type="checkbox" name="to_notify_{$user->id()}" />{$user->fullName(true)}</label>
+          </li>
+        {/foreach}
+        {/if}
+        </ul>
+      {/if}
+      </td>
+    </tr>
+
+    <tr>
+      <td class="titre">
         Lien pour l'inscription&nbsp;:<br />
         <em>laisser vide par défaut</em>
       </td>
