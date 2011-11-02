@@ -20,10 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-<h1>
-  {$nl->name}
-</h1>
+{include file="newsletter/header.tpl" current="admin"}
 
 <h3>
   <a href="{$nl->adminPrefix()}/categories">Gérer les catégories d'articles</a>

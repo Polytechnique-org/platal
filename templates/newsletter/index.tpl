@@ -20,13 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-<h1>
-  {$nl->name}
-{if $nl->mayEdit() && $nl->adminLinksEnabled()}
-  [<a href="{$nl->adminPrefix()}">Administrer</a>]
-{/if}
-</h1>
+{include file="newsletter/header.tpl" current="index"}
 
 {if $nl->maySubmit()}
 <p class="center">

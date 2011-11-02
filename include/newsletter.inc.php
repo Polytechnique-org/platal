@@ -574,6 +574,16 @@ class NewsLetter
         }
     }
 
+    /** Get links for nl pages.
+     */
+    public function adminLinks()
+    {
+        return array(
+            'index' => array('link' => $this->prefix(), 'title' => 'Archives'),
+            'admin' => array('link' => $this->adminPrefix(), 'title' => 'Administrer')
+        );
+    }
+
     /** Hack used to remove "admin" links on X.org page on X.net
      * The 'admin' links are enabled for all pages, except for X.org when accessing NL through X.net
      */
