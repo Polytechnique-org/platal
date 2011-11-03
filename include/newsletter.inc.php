@@ -567,13 +567,38 @@ class NewsLetter
         }
     }
 
+    /** Get the prefix to use for all 'stat' pages of this NL.
+     */
+    public function statPrefix($enforce_xnet = true, $with_group = true)
+    {
+        if (!empty($GLOBALS['IS_XNET_SITE'])) {
+            if ($with_group) {
+                return $this->group . '/stat/nl';
+            } else {
+                return 'stat/nl';
+            }
+        }
+        switch ($this->group) {
+        case self::GROUP_XORG:
+            return 'stat/newsletter';
+        case self::GROUP_AX:
+            return 'ax/stat';
+        case self::GROUP_EP:
+            return 'epletter/stat';
+        default:
+            // Don't display groups NLs on X.org
+            assert(!$enforce_xnet);
+        }
+    }
+
     /** Get links for nl pages.
      */
     public function adminLinks()
     {
         return array(
             'index' => array('link' => $this->prefix(), 'title' => 'Archives'),
-            'admin' => array('link' => $this->adminPrefix(), 'title' => 'Administrer')
+            'admin' => array('link' => $this->adminPrefix(), 'title' => 'Administrer'),
+            'stats' => array('link' => $this->statPrefix(), 'title' => 'Statistiques')
         );
     }
 

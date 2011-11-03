@@ -36,6 +36,7 @@ class XnetNlModule extends NewsletterModule
             '%grp/admin/nl/edit/cancel' => $this->make_hook('admin_nl_cancel', AUTH_PASSWD, 'groupadmin'),
             '%grp/admin/nl/edit/valid'  => $this->make_hook('admin_nl_valid',  AUTH_PASSWD, 'groupadmin'),
             '%grp/admin/nl/categories'  => $this->make_hook('admin_nl_cat',    AUTH_PASSWD, 'groupadmin'),
+            '%grp/stat'                 => $this->make_hook('stat_nl',         AUTH_PASSWD, 'groupadmin')
         );
     }
 

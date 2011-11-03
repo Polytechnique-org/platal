@@ -36,6 +36,7 @@ class AXLetterModule extends NewsletterModule
             'ax/admin/edit/cancel' => $this->make_hook('admin_nl_cancel', AUTH_PASSWD, 'user'),
             'ax/admin/edit/delete' => $this->make_hook('admin_nl_delete', AUTH_PASSWD, 'user'),
             'ax/admin/categories'  => $this->make_hook('admin_nl_cat',    AUTH_PASSWD, 'user'),
+            'ax/stat'              => $this->make_hook('stat_nl',         AUTH_PASSWD, 'user')
         );
     }
 

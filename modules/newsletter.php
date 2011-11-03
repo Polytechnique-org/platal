@@ -34,6 +34,7 @@ class NewsletterModule extends PLModule
             'admin/newsletter/categories'  => $this->make_hook('admin_nl_cat',    AUTH_PASSWD, 'admin'),
             'admin/newsletter/edit'        => $this->make_hook('admin_nl_edit',   AUTH_PASSWD, 'admin'),
             'admin/newsletter/edit/delete' => $this->make_hook('admin_nl_delete', AUTH_PASSWD, 'admin'),
+            'stat/newsletter'              => $this->make_hook('stat_nl',         AUTH_PASSWD, 'admin')
             // Automatic mailing is disabled for X.org NL
 //            'admin/newsletter/edit/cancel' => $this->make_hook('cancel', AUTH_PASSWD, 'admin'),
 //            'admin/newsletter/edit/valid'  => $this->make_hook('valid',  AUTH_PASSWD, 'admin'),
@@ -490,6 +491,21 @@ class NewsletterModule extends PLModule
         // Prevent deletion.
         $table_editor->on_delete(null, null);
         $table_editor->apply($page, $action, $id);
+    }
+
+    function handler_stat_nl($page)
+    {
+        $nl = $this->getNl();
+        if (!$nl) {
+            return PL_NOT_FOUND;
+        }
+        if (!$nl->mayEdit()) {
+            return PL_FORBIDDEN;
+        }
+
+        $page->setTitle('Statistiques - Newsletter');
+        $page->changeTpl('newsletter/statistics.tpl');
+        $page->assign_by_ref('nl', $nl);
     }
 }
 
