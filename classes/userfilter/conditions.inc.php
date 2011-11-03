@@ -838,7 +838,7 @@ class UFC_NLSubscribed extends UserFilterCondition
 {
     private $nlid;
     private $issue_id;
-    public function __construct($nlid, $issue_id)
+    public function __construct($nlid, $issue_id = null)
     {
         $this->nlid = $nlid;
         $this->issue_id = $issue_id;
@@ -847,7 +847,11 @@ class UFC_NLSubscribed extends UserFilterCondition
     public function buildCondition(PlFilter $uf)
     {
         $sub = $uf->addNewsLetterFilter($this->nlid);
-        return XDB::format($sub . '.nlid IS NOT NULL AND ( ' . $sub . '.last IS NULL OR ' . $sub . '.last < {?})', $this->issue_id);
+        $cond = $sub . '.nlid IS NOT NULL';
+        if (!is_null($this->issue_id)) {
+            $cond = XDB::format($cond . ' AND ( ' . $sub . '.last IS NULL OR ' . $sub . '.last < {?})', $this->issue_id);
+        }
+        return $cond;
     }
 }
 // }}}
