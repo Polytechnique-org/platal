@@ -917,7 +917,7 @@ class XnetGrpModule extends PLModule
             $user = User::getSilent($email);
 
             // Wrong email and no user: failure.
-            if (is_null($user) && !$is_valid_email) {
+            if (is_null($user) && (!$is_valid_email || !User::isForeignEmailAddress($email))) {
                 $page->trigError('«&nbsp;<strong>' . $email . '</strong>&nbsp;» n\'est pas une adresse email valide.');
                 return;
             }
