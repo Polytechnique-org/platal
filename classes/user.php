@@ -83,9 +83,9 @@ class User extends PlUser
         }
 
         // Checks whether $login is a valid hruid or not.
-        $res = XDB::query('SELECT  uid
+        $res = XDB::query("SELECT  uid
                              FROM  accounts
-                            WHERE  hruid = {?}', $login);
+                            WHERE  hruid LIKE CONCAT('%', {?}, '%')", $login);
         if ($res->numRows()) {
             return $res->fetchOneCell();
         }
