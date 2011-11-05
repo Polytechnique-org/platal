@@ -358,7 +358,7 @@ class ProfileModule extends PLModule
 
     function handler_education_js($page)
     {
-        pl_cached_content_headers('text/javascript', 'utf-8', 3600);
+        pl_cached_dynamic_content_headers('text/javascript', 'utf-8');
         $page->changeTpl('profile/education.js.tpl', NO_SKIN);
         require_once 'education.func.inc.php';
     }
