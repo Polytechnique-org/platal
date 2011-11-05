@@ -321,6 +321,16 @@ class Profile implements PlExportable
         }
     }
 
+    // Returns younger/older promotion year for a given education.
+    static public function extremePromotions($education)
+    {
+        return XDB::fetchOneRow("SELECT  MIN(pe.promo_year) AS min, MAX(pe.promo_year) AS max
+                                     FROM  profile_education             AS pe
+                               INNER JOIN  profile_education_degree_enum AS pede ON (pe.degreeid = pede.id)
+                                    WHERE  pede.degree = {?} AND FIND_IN_SET('primary', pe.flags)",
+                                  $education);
+    }
+
     /** Print a name with the given formatting:
      * %s = • for women
      * %f = firstname
