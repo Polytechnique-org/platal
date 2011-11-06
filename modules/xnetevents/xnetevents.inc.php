@@ -322,7 +322,6 @@ function make_event_date(&$e)
     $end       = strtotime($e['fin']);
     $first_day = @strtotime($e['first_day']);
     $last_day  = strtotime($e['last_day']);
-    unset($e['debut'], $e['fin'], $e['first_day'], $e['last_day']);
 
     $date = "";
     if ($start && $end != $start) {
