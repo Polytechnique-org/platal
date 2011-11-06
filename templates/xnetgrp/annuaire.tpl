@@ -68,6 +68,7 @@ Le groupe {$asso->nom} compte {$plset_total_count} membres&nbsp;:
       {icon name=page_excel title="Fichier Excel"}
       Obtenir au format Excel
     </a>
+    <small>(encodage&nbsp;: iso-8859-1, séparateur&nbsp;: point-virgule)</small>
   </li>
   <li>
     <a href="{$platal->ns}annuaire/vcard/photos/{$asso->diminutif}.vcf">

@@ -228,6 +228,7 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
   <a href="{$platal->ns}events/csv/{$evt.eid}/{$platal->argv[2]}/{$evt.intitule|escape:url}{if $evt.titre}.{$evt.titre|escape:url}{/if}.csv">
     {icon name=page_excel title="Télécharger au format Excel"} Télécharger le fichier Excel
   </a>
+  <small>(encodage&nbsp;: iso-8859-1, séparateur&nbsp;: point-virgule)</small>
 </p>
 
 <hr />

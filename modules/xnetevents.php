@@ -297,21 +297,54 @@ class XnetEventsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        pl_cached_content_headers('text/x-csv', 1);
+        pl_cached_content_headers('text/x-csv', 'iso-8859-1', 1);
         $page->changeTpl('xnetevents/csv.tpl', NO_SKIN);
 
         $admin = may_update();
-
         $tri = (Env::v('order') == 'alpha' ? UserFilter::sortByPromo() : UserFilter::sortByName());
+        $all = !Env::v('item_id', false);
 
-        $page->assign('participants',
-                      get_event_participants($evt, $item_id, $tri));
+        $participants = get_event_participants($evt, $item_id, $tri);
+        $title = 'Nom;Prénom;Promotion';
+        if ($all) {
+            foreach ($evt['moments'] as $moment) {
+                $title .= ';' . $moment['titre'];
+            }
+        }
+        if ($admin && $evt['money']) {
+            $title .= ';À payer;';
+            if ($evt['paiement_id']) {
+                $title .= 'Télépaiement;Liquide/Chèque;';
+            }
+            $title .= 'Payé';
+        } else {
+            $title .= ';Nombre';
+        }
+        echo utf8_decode($title) . "\n";
 
-        $page->assign('admin', $admin);
-        $page->assign('moments', $evt['moments']);
-        $page->assign('money', $evt['money']);
-        $page->assign('telepayment', $evt['paiement_id']);
-        $page->assign('tout', !Env::v('item_id', false));
+        if ($participants) {
+            foreach ($participants as $participant) {
+                $user = $participant['user'];
+                $line = $user->lastName() . ';' . $user->firstName() . ';' . $user->promo();
+                if ($all) {
+                    foreach ($evt['moments'] as $moment) {
+                        $line .= ';' . $participant[$moment['item_id']];
+                    }
+                }
+                if ($admin && $evt['money']) {
+                    $line .= ';' . $participant['montant'] . ';';
+                    if ($evt['paiement_id']) {
+                        $line .= $participant['telepayment'] . ';' . $participant['adminpaid'] . ';';
+                    }
+                    $line .= $participant['paid'];
+                } else {
+                    $line .= ';' . $participant['nb'];
+                }
+
+                echo utf8_decode($line) . "\n";
+            }
+        }
+        exit();
     }
 
     function handler_ical($page, $eid = null)

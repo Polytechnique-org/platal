@@ -545,17 +545,17 @@ class PaymentModule extends PLModule
         $users = User::getBulkUsersWithUIDs($res, 'uid', 'user');
         $sum = 0;
 
-        pl_cached_content_headers('text/x-csv', 1);
+        pl_cached_content_headers('text/x-csv', 'iso-8859-1', 1);
         $csv = fopen('php://output', 'w');
-        fputcsv($csv, array('Date', 'Nom', 'Prénom', 'Sexe', 'Promotion', 'Email', 'Commentaire', 'Montant'), ';');
+        fputcsv($csv, array('Date', 'Nom', utf8_decode('Prénom'), 'Sexe', 'Promotion', 'Email', 'Commentaire', 'Montant'), ';');
         foreach ($users as $item) {
             $user = $item['user'];
             $sum += $item['amount'];
-            fputcsv($csv, array(format_datetime($item['date'], '%d/%m/%y'), $user->lastName(), $user->firstName(),
+            fputcsv($csv, array(format_datetime($item['date'], '%d/%m/%y'), utf8_decode($user->lastName()), utf8_decode($user->firstName()),
                                 ($user->isFemale()) ? 'F' : 'M', $user->promo(), $user->ForlifeEmail(),
-                                $item['comment'], strtr($item['amount'],'.',',').' €' ), ';');
+                                utf8_decode($item['comment']), strtr($item['amount'], '.', ',') . ' EUR' ), ';');
         }
-        fputcsv($csv, array(date('d/m/y'), 'Total', '', '', '' , '', '', strtr($sum,'.',',').' €'), ';');
+        fputcsv($csv, array(date('d/m/y'), 'Total', '', '', '' , '', '', strtr($sum, '.', ',') . ' EUR'), ';');
 
         fclose($csv);
         exit;
