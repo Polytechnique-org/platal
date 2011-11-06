@@ -107,6 +107,7 @@
     {icon name="page_excel" title="Télécharger la liste des membres"}
     Télécharger la liste des membres au format Excel
   </a>
+  <small>(encodage&nbsp;: iso-8859-1, séparateur&nbsp;: point-virgule)</small>
   </td></tr>
   {/if}
   {include file='lists/display_list.tpl' list=$members delete=false no_sort_key='non-X' promo=$smarty.get.alpha}
