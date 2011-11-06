@@ -64,11 +64,7 @@ Le groupe {$asso->nom} compte {$plset_total_count} membres&nbsp;:
   </li>
   {/if}
   <li>
-    <a href="{$platal->ns}annuaire/csv/{$asso->diminutif}.csv">
-      {icon name=page_excel title="Fichier Excel"}
-      Obtenir au format Excel
-    </a>
-    <small>(encodage&nbsp;: iso-8859-1, séparateur&nbsp;: point-virgule)</small>
+    {include file="include/csv.tpl" url="`$platal->ns`annuaire/csv/`$asso->diminutif`.csv"}
   </li>
   <li>
     <a href="{$platal->ns}annuaire/vcard/photos/{$asso->diminutif}.vcf">

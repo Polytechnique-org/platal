@@ -81,8 +81,7 @@ il suffit de cliquer sur le titre de la colonne concernée.
 {if $is_admin && $trans[$p.id]}
 <p>
   Liste des personnes ayant payé (pour les administrateurs uniquement)&nbsp;:<br />
-  <a href="{$platal->ns}payment/csv/{$p.id}.csv">{icon name=page_excel title="Fichier Excel"} Obtenir au format Excel</a>
-  <small>(encodage&nbsp;: iso-8859-1, séparateur&nbsp;: point-virgule)</small>
+  {include file="include/csv.tpl" url="`$platal->ns`payment/csv/`$p.id`.csv"}
 </p>
 <table cellpadding="0" cellspacing="0" id="list_{$p.id}" class='bicol'>
   <tr>

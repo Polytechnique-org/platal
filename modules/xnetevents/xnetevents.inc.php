@@ -59,6 +59,9 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
         $evt['nb_tot'] = array_sum($res->fetchColumn());
         $evt['titre'] = '';
         $evt['item_id'] = 0;
+        $evt['csv_name'] = urlencode($evt['intitule']);
+    } else {
+        $evt['csv_name'] = urlencode($evt['intitule'] . '.' . $evt['titre']);
     }
 
     $evt['moments'] = XDB::fetchAllAssoc('SELECT  titre, details, montant, ei.item_id, nb,

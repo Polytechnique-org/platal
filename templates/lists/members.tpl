@@ -103,11 +103,7 @@
 <table class='bicol' cellpadding='0' cellspacing='0'>
   {if $details.own || hasPerms('admin,groupadmin')}
   <tr><td colspan="2">
-  <a href="{$platal->ns}lists/csv/{$platal->argv[1]}/{$platal->argv[1]}.csv">
-    {icon name="page_excel" title="Télécharger la liste des membres"}
-    Télécharger la liste des membres au format Excel
-  </a>
-  <small>(encodage&nbsp;: iso-8859-1, séparateur&nbsp;: point-virgule)</small>
+    {include file="include/csv.tpl" url="`$platal->ns`lists/csv/`$platal->argv[1]`/`$platal->argv[1]`.csv"}
   </td></tr>
   {/if}
   {include file='lists/display_list.tpl' list=$members delete=false no_sort_key='non-X' promo=$smarty.get.alpha}
