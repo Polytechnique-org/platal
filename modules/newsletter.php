@@ -505,7 +505,38 @@ class NewsletterModule extends PLModule
 
         $page->setTitle('Statistiques - Newsletter');
         $page->changeTpl('newsletter/statistics.tpl');
+
+        $data = array();
+        foreach (Profile::$cycles as $grade => $name) {
+            $data[$name] = array();
+            list($min, $max) = Profile::extremePromotions($grade);
+            $bound = (((int)($min / 10)) + 1) * 10;
+            while ($bound <= $max) {
+                $data[$name][$min . ' - ' . $bound] = array(
+                    'count'        => $nl->subscriberCount(null, null, $grade, $min, $bound),
+                    'lost'         => $nl->subscriberCount(true, null, $grade, $min, $bound),
+                    'count_female' => $nl->subscriberCount(null, User::GENDER_FEMALE, $grade, $min, $bound),
+                    'lost_female'  => $nl->subscriberCount(true, User::GENDER_FEMALE, $grade, $min, $bound)
+                );
+                $min = $bound + 1;
+                $bound += 10;
+            }
+            $bound -= 9;
+            if ($bound <= $max) {
+                $data[$name][$bound . ' - ' . $max] = array(
+                    'count'        => $nl->subscriberCount(null, null, $grade, $bound, $max),
+                    'lost'         => $nl->subscriberCount(true, null, $grade, $bound, $max),
+                    'count_female' => $nl->subscriberCount(null, User::GENDER_FEMALE, $grade, $bound, $max),
+                    'lost_female'  => $nl->subscriberCount(true, User::GENDER_FEMALE, $grade, $bound, $max)
+                );
+            }
+        }
         $page->assign_by_ref('nl', $nl);
+        $page->assign('count', $nl->subscriberCount());
+        $page->assign('lost', $nl->lostSubscriberCount());
+        $page->assign('count_female', $nl->subscriberCount(null, User::GENDER_FEMALE));
+        $page->assign('lost_female', $nl->lostSubscriberCount(User::GENDER_FEMALE));
+        $page->assign('data', $data);
     }
 }
 

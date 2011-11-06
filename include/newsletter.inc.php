@@ -398,18 +398,32 @@ class NewsLetter
     /** Get the count of subscribers to the NL.
      * @return Number of subscribers.
      */
-    public function subscriberCount()
+    public function subscriberCount($lost = null, $sex = null, $grade = null, $first_promo = null, $last_promo = null)
     {
-        $uf = new UserFilter(new UFC_NLSubscribed($this->id));
+        $cond = new PFC_And(new UFC_NLSubscribed($this->id));
+        if (!is_null($sex)) {
+            $cond->addChild(new UFC_Sex($sex));
+        }
+        if (!is_null($grade)) {
+            $cond->addChild(new UFC_Promo('>=', $grade, $first_promo));
+            $cond->addChild(new UFC_Promo('<=', $grade, $last_promo));
+        }
+        if (!($lost === null)) {
+            if ($lost === true) {
+                $cond->addChild(new PFC_Not(new UFC_HasEmailRedirect()));
+            } else {
+                $cond->addChild(new UFC_HasEmailRedirect());
+            }
+        }
+        $uf = new UserFilter($cond);
         return $uf->getTotalCount();
     }
 
     /** Get the count of subscribers with non valid redirection.
      */
-    public function lostSubscriberCount()
+    public function lostSubscriberCount($sex = null)
     {
-        $uf = new UserFilter(new PFC_And(new UFC_NLSubscribed($this->id), new PFC_Not(new UFC_HasEmailRedirect())));
-        return $uf->getTotalCount();
+        return $this->subscriberCount(true, $sex);
     }
 
     /** Get the number of subscribers to the NL whose last received mailing was $last.

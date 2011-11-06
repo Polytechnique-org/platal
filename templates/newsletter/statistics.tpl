@@ -22,8 +22,29 @@
 
 {include file="newsletter/header.tpl" current="stats"}
 
-<p>Il y a actuellement {$nl->subscriberCount()} inscrits aux envois, parmi lesquels {$nl->lostSubscriberCount()} n'ont aucune redirection active.</p>
+<p>
+  Il y a actuellement {$count} inscrits aux envois, parmi lesquels {$lost} n'ont aucune redirection active.
+  En particulier, il y a {$count_female} femmes, parmi lesquelles {$lost_female} n'ont aucune redirection active.
+</p>
 
-
+<table class="bicol">
+{foreach from=$data item=education key=cycle}
+  <tr>
+    <th colspan="3">Cycle {$cycle}</th>
+  </tr>
+  <tr>
+    <td class="titre">Décade</td>
+    <td class="titre">Total (dont perdus)</td>
+    <td class="titre">Femmes (dont perdues)</td>
+  </tr>
+  {foreach from=$education item=counts key=period}
+  <tr>
+    <td>{$period}</td>
+    <td>{$counts.count} ({$counts.lost})</td>
+    <td>{$counts.count_female} ({$counts.lost_female})</td>
+  </tr>
+  {/foreach}
+{/foreach}
+</table>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
