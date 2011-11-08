@@ -72,6 +72,8 @@
     <td class="titre">Trésorerie</td>
     <td>
       <a href="admin/payments">Paiements</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/reconcile">Virements</a>
     </td>
   </tr>
   <tr class="pair">
