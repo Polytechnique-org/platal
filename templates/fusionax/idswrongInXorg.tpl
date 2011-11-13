@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 <h2><a href="fusionax">Fusion des annuaires X.org - AX</a> / <a href="fusionax/ids">Identifiants</a> /  Présents dans Xorg avec un matricule_ax ne correspondant à rien
-dans la base de l'AX (mises à part les promo 1921 et 1923 qui ne figurent pas dans les données de l'AX)</h2>
+dans la base de l'AX (mises à part les promo 1921, 1922, 1923, 1924, 1925, 1927 qui ne figurent pas dans les données de l'AX)</h2>
 
 <p></p>
 

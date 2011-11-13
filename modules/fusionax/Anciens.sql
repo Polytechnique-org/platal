@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS fusionax_anciens (
   Nom_usuel VARCHAR(255) NOT NULL COMMENT 'Nom usuel (nom marital par exemple) sans la particule',
   partic_nom VARCHAR(5) NOT NULL COMMENT 'Particule du nom usuel',
   Nom_complet VARCHAR(255) NOT NULL COMMENT 'Nom patronymique complet (avec la particule)',
-  Civilité ENUM('M', 'MLLE', 'MME') NOT NULL DEFAULT 'M',
+  Civilite ENUM('M', 'MLLE', 'MME') NOT NULL DEFAULT 'M',
   Code_nationalite CHAR(4) NOT NULL COMMENT 'Nationalité (code)',
   corps_sortie VARCHAR(50) NOT NULL COMMENT 'Corps de sortie (ou D si aucun)',
   Date_deces DATE COMMENT 'Date de décès',

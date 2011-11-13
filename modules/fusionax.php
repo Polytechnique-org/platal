@@ -125,6 +125,9 @@ class FusionAxModule extends PLModule
                 $report[] = 'Fichier parsé.';
                 $report[] = 'Import dans la base en cours...';
                 $next = 'integrateSQL';
+                XDB::execute("UPDATE  profiles
+                                 SET  ax_id = NULL
+                               WHERE  ax_id = ''");
             }
         } elseif ($action == 'integrateSQL') {
             // intégration des données dans la base MySQL
@@ -260,7 +263,7 @@ class FusionAxModule extends PLModule
                                 WHERE  p.deathdate != a.Date_deces OR (p.deathdate IS NULL AND a.Date_deces != '0000-00-00')");
             XDB::execute('DROP VIEW IF EXISTS fusionax_promo');
             XDB::execute('CREATE VIEW  fusionax_promo AS
-                               SELECT  p.pid, p.ax_id, pd.private_name, pd.promo, pe.entry_year AS promo_etude_xorg,
+                               SELECT  p.pid, p.ax_id, pd.private_name, pd.promo, pe.entry_year AS promo_etude_xorg, f.groupe_promo,
                                        f.promotion_etude AS promo_etude_ax, pe.grad_year AS promo_sortie_xorg
                                  FROM  profiles          AS p
                            INNER JOIN  profile_display   AS pd ON (p.pid = pd.pid)
@@ -285,7 +288,7 @@ class FusionAxModule extends PLModule
     }
 
     /* Cherche les les anciens présents dans Xorg avec un matricule_ax ne correspondant à rien dans la base de l'AX
-     * (mises à part les promo 1921, 1923, 1924, 1925 qui ne figurent pas dans les données de l'AX)*/
+     * (mises à part les promo 1921, 1922, 1923, 1924, 1925, 1927 qui ne figurent pas dans les données de l'AX)*/
     private static function find_wrong_in_xorg($limit = 10)
     {
         return XDB::iterator('SELECT  u.promo, u.pid, u.private_name
@@ -293,7 +296,7 @@ class FusionAxModule extends PLModule
                                WHERE  NOT EXISTS (SELECT  *
                                                     FROM  fusionax_anciens AS f
                                                    WHERE  f.ax_id = u.ax_id)
-                                      AND u.ax_id IS NOT NULL AND promo NOT IN (\'X1921\', \'X1923\', \'X1924\', \'X1925\')');
+                                      AND u.ax_id IS NOT NULL AND promo NOT IN (\'X1921\', \'X1922\', \'X1923\', \'X1924\', \'X1925\', \'X1927\')');
     }
 
     /** Lier les identifiants d'un ancien dans les deux annuaires
@@ -494,36 +497,36 @@ class FusionAxModule extends PLModule
     function handler_promo($page, $action = '')
     {
         $page->changeTpl('fusionax/promo.tpl');
-        $res = XDB::iterator('SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
+        $res = XDB::iterator("SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
                                 FROM  fusionax_promo
                                WHERE  !(promo_etude_ax + 1 = promo_etude_xorg AND promo_etude_xorg + 3 = promo_sortie_xorg)
                                       AND !(promo_etude_ax + 1 = promo_etude_xorg AND promo_etude_xorg + 4 = promo_sortie_xorg)
-                                      AND !(promo_etude_ax = promo_etude_xorg + 1)
-                            ORDER BY  promo_etude_xorg');
+                                      AND !(promo_etude_ax = promo_etude_xorg + 1) AND groupe_promo = 'X'
+                            ORDER BY  promo_etude_xorg");
         $nbMissmatchingPromos = $res->total();
         $page->assign('nbMissmatchingPromos', $res->total());
         $page->assign('missmatchingPromos', $res);
 
-        $res = XDB::iterator('SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
+        $res = XDB::iterator("SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
                                 FROM  fusionax_promo
-                               WHERE  promo_etude_ax = promo_etude_xorg + 1
-                            ORDER BY  promo_etude_xorg');
+                               WHERE  promo_etude_ax = promo_etude_xorg + 1 AND groupe_promo = 'X'
+                            ORDER BY  promo_etude_xorg");
         $nbMissmatchingPromos += $res->total();
         $page->assign('nbMissmatchingPromos1', $res->total());
         $page->assign('missmatchingPromos1', $res);
 
-        $res = XDB::iterator('SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
+        $res = XDB::iterator("SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
                                 FROM  fusionax_promo
-                               WHERE  promo_etude_ax + 1 = promo_etude_xorg AND promo_etude_xorg + 3 = promo_sortie_xorg
-                            ORDER BY  promo_etude_xorg');
+                               WHERE  promo_etude_ax + 1 = promo_etude_xorg AND promo_etude_xorg + 3 = promo_sortie_xorg AND groupe_promo = 'X'
+                            ORDER BY  promo_etude_xorg");
         $nbMissmatchingPromos += $res->total();
         $page->assign('nbMissmatchingPromos2', $res->total());
         $page->assign('missmatchingPromos2', $res);
 
-        $res = XDB::iterator('SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
+        $res = XDB::iterator("SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
                                 FROM  fusionax_promo
-                               WHERE  promo_etude_ax + 1 = promo_etude_xorg AND promo_etude_xorg + 4 = promo_sortie_xorg
-                            ORDER BY  promo_etude_xorg');
+                               WHERE  promo_etude_ax + 1 = promo_etude_xorg AND promo_etude_xorg + 4 = promo_sortie_xorg AND groupe_promo = 'X'
+                            ORDER BY  promo_etude_xorg");
         $nbMissmatchingPromos += $res->total();
         $page->assign('nbMissmatchingPromos3', $res->total());
         $page->assign('missmatchingPromos3', $res);
