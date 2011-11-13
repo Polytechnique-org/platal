@@ -42,4 +42,12 @@ namefield3='etude_xorg' field4='promo_sortie_xorg' namefield4='sortie_xorg' fiel
 <p>Petites différences : (étrangers mal inclus) ({$nbMissmatchingPromos2} camarades)</p>
 {include file='fusionax/listFusion.tpl' fusionList=$missmatchingPromos2 field1='pid' namefield1='ID X.org' field3='promo_etude_xorg'
 namefield3='etude_xorg' field4='promo_sortie_xorg' namefield4='sortie_xorg' field2='promo_etude_ax' namefield2='etude_ax'}
+
+<p>Masters : ({$nbMissmatchingPromosM} personnes)</p>
+{include file='fusionax/listFusion.tpl' fusionList=$missmatchingPromosM field1='pid' namefield1='ID X.org' field3='promo_etude_xorg'
+namefield3='etude_xorg' field4='promo_sortie_xorg' namefield4='sortie_xorg' field2='promo_etude_ax' namefield2='etude_ax'}
+
+<p>Docteurs : ({$nbMissmatchingPromosD} personnes)</p>
+{include file='fusionax/listFusion.tpl' fusionList=$missmatchingPromosD field1='pid' namefield1='ID X.org' field3='promo_etude_xorg'
+namefield3='etude_xorg' field4='promo_sortie_xorg' namefield4='sortie_xorg' field2='promo_etude_ax' namefield2='etude_ax'}
 {/if}

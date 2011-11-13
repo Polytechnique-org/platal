@@ -262,15 +262,18 @@ class FusionAxModule extends PLModule
                            INNER JOIN  fusionax_anciens AS a ON (a.ax_id = p.ax_id)
                                 WHERE  p.deathdate != a.Date_deces OR (p.deathdate IS NULL AND a.Date_deces != '0000-00-00')");
             XDB::execute('DROP VIEW IF EXISTS fusionax_promo');
-            XDB::execute('CREATE VIEW  fusionax_promo AS
+            XDB::execute("CREATE VIEW  fusionax_promo AS
                                SELECT  p.pid, p.ax_id, pd.private_name, pd.promo, pe.entry_year AS promo_etude_xorg, f.groupe_promo,
                                        f.promotion_etude AS promo_etude_ax, pe.grad_year AS promo_sortie_xorg
                                  FROM  profiles          AS p
                            INNER JOIN  profile_display   AS pd ON (p.pid = pd.pid)
                            INNER JOIN  profile_education AS pe ON (p.pid = pe.pid)
                            INNER JOIN  fusionax_anciens  AS f  ON (p.ax_id = f.ax_id)
-                                WHERE  pd.promo != CONCAT(\'X\', f.promotion_etude)
-                                       AND !(f.promotion_etude = pe.entry_year + 1 AND pe.grad_year = pe.entry_year + 4)');
+                                WHERE  (f.groupe_promo = 'X' AND pd.promo != CONCAT('X', f.promotion_etude)
+                                       AND !(f.promotion_etude = pe.entry_year + 1 AND pe.grad_year = pe.entry_year + 4))
+                                       OR (f.groupe_promo = 'D' AND f.promotion_etude != pe.grad_year)
+                                       OR (f.groupe_promo = 'M' AND f.promotion_etude != pe.entry_year)
+                             GROUP BY  p.pid");
             $page->trigSuccess('Les VIEW ont bien été créées.');
         }
     }
@@ -498,7 +501,7 @@ class FusionAxModule extends PLModule
     {
         $page->changeTpl('fusionax/promo.tpl');
         $res = XDB::iterator("SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
-                                FROM  fusionax_promo
+                                FROM  usionax_promo
                                WHERE  !(promo_etude_ax + 1 = promo_etude_xorg AND promo_etude_xorg + 3 = promo_sortie_xorg)
                                       AND !(promo_etude_ax + 1 = promo_etude_xorg AND promo_etude_xorg + 4 = promo_sortie_xorg)
                                       AND !(promo_etude_ax = promo_etude_xorg + 1) AND groupe_promo = 'X'
@@ -531,6 +534,23 @@ class FusionAxModule extends PLModule
         $page->assign('nbMissmatchingPromos3', $res->total());
         $page->assign('missmatchingPromos3', $res);
 
+        $res = XDB::iterator("SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
+                                FROM  fusionax_promo
+                               WHERE  groupe_promo = 'M'
+                            ORDER BY  promo_etude_xorg");
+        $nbMissmatchingPromos += $res->total();
+        $page->assign('nbMissmatchingPromosM', $res->total());
+        $page->assign('missmatchingPromosM', $res);
+
+
+        $res = XDB::iterator("SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
+                                FROM  fusionax_promo
+                               WHERE  groupe_promo = 'D'
+                            ORDER BY  promo_etude_xorg");
+        $nbMissmatchingPromos += $res->total();
+        $page->assign('nbMissmatchingPromosD', $res->total());
+        $page->assign('missmatchingPromosD', $res);
+
         $page->assign('nbMissmatchingPromosTotal', $nbMissmatchingPromos);
     }
 
@@ -544,18 +564,20 @@ class FusionAxModule extends PLModule
         $page->assign('total', $res->fetchOneCell());
 
         $res = XDB::rawFetchOneCell("SELECT  COUNT(*)
-                                       FROM  fusionax_anciens AS f
-                                 INNER JOIN  profiles         AS p   ON (f.ax_id = p.ax_id)
-                                      WHERE  IF(f.partic_patro, CONCAT(f.partic_patro, CONCAT(' ', f.Nom_patronymique)), f.Nom_patronymique) NOT IN (p.lastname_initial, p.lastname_main, p.lastname_marital, p.lastname_ordinary)
-                                             OR IF(f.partic_nom, CONCAT(f.partic_nom, CONCAT(' ', f.Nom_usuel)), f.Nom_usuel) NOT IN (p.lastname_initial, p.lastname_main, p.lastname_marital, p.lastname_ordinary)
-                                             OR f.Nom_complet NOT IN (p.lastname_initial, p.lastname_main, p.lastname_marital, p.lastname_ordinary)");
-        $page->assign('lastnameIssues', $res->fetchOneCell());
+                                       FROM  fusionax_anciens     AS f
+                                 INNER JOIN  profiles             AS p   ON (f.ax_id = p.ax_id)
+                                 INNER JOIN  profile_public_names AS ppn ON (p.pid = ppn.pid)
+                                      WHERE  IF(f.partic_patro, CONCAT(f.partic_patro, CONCAT(' ', f.Nom_patronymique)), f.Nom_patronymique) NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary)
+                                             OR IF(f.partic_nom, CONCAT(f.partic_nom, CONCAT(' ', f.Nom_usuel)), f.Nom_usuel) NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary)
+                                             OR f.Nom_complet NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary)");
+        $page->assign('lastnameIssues', $res);
 
         $res = XDB::rawFetchOneCell('SELECT  COUNT(*)
-                                       FROM  fusionax_anciens AS f
-                                 INNER JOIN  profiles         AS p   ON (f.ax_id = p.ax_id)
-                                      WHERE  f.prenom NOT IN (p.firstname_initial, p.firstname_main, p.firstname_ordinary)');
-        $page->assign('firstnameIssues', $res->fetchOneCell());
+                                       FROM  fusionax_anciens     AS f
+                                 INNER JOIN  profiles             AS p   ON (f.ax_id = p.ax_id)
+                                 INNER JOIN  profile_public_names AS ppn ON (p.pid = ppn.pid)
+                                      WHERE  f.prenom NOT IN (ppn.firstname_initial, ppn.firstname_main, ppn.firstname_ordinary)');
+        $page->assign('firstnameIssues', $res);
 
     }
 
