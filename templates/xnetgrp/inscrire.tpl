@@ -78,8 +78,9 @@ formulaire ci-dessous. Vérifie et corrige au besoin les différents champs, pui
   </p>
   <p class="descr">
   Indique ci-après <strong>tes motivations</strong> qui seront communiquées aux animateurs du groupe&nbsp;:
-  </p> <textarea cols=80 rows=12 name="message">
-Chers Camarades,
+  </p>
+  <p>
+<textarea cols="80" rows="12" name="message">Chers Camarades,
 
 Je souhaite m'inscrire à {$asso->nom}.
 
@@ -90,8 +91,8 @@ Bien cordialement,
 
 --
 Ma fiche sur Polytechnique.org&nbsp;:
-https://www.polytechnique.org/profile/{$profile->hrpid}
-</textarea>
+https://www.polytechnique.org/profile/{$profile->hrpid}</textarea>
+  </p>
   <div class="center">
     <input type="submit" name="inscrire" value="M'inscrire !" />
   </div>
