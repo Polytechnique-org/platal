@@ -86,8 +86,7 @@ Je souhaite m'inscrire à {$asso->nom}.
 Merci d'avance d'avoir la gentillesse de valider mon inscription.
 
 Bien cordialement,
-{assign var="profile" value=$smarty.session.user->profile()}
-{$profile->fullname("promo")}
+{$smarty.session.user->fullname("promo")}
 
 --
 Ma fiche sur Polytechnique.org&nbsp;:
