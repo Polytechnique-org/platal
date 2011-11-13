@@ -22,7 +22,7 @@
 
 <h1>Demande d'inscription à {$asso->nom}</h1>
 
-{if $user && $is_admin && $show_form}
+{if t($user) && $is_admin && $show_form}
 
 <h2>
   Demande de la part de&nbsp;: <a href="profile/{$user->login()}" class="popup2">{$user->fullName()} ({$user->promo()})</a>
@@ -88,10 +88,11 @@ Merci d'avance d'avoir la gentillesse de valider mon inscription.
 
 Bien cordialement,
 {$smarty.session.user->fullname("promo")}
+{if $smarty.session.user->hasProfile()}
 
 --
 Ma fiche sur Polytechnique.org&nbsp;:
-https://www.polytechnique.org/profile/{$profile->hrpid}</textarea>
+https://www.polytechnique.org/profile/{$smarty.session.user->hruid}{/if}</textarea>
   </p>
   <div class="center">
     <input type="submit" name="inscrire" value="M'inscrire !" />
