@@ -952,6 +952,7 @@ class Profile implements PlExportable
             return array();
         }
     }
+
     public function getFullBinets()
     {
         if ($this->visibility->isVisible(Visibility::EXPORT_PRIVATE)) {
@@ -963,6 +964,7 @@ class Profile implements PlExportable
             return array();
         }
     }
+
     public function getBinetsNames()
     {
         if ($this->visibility->isVisible(Visibility::EXPORT_PRIVATE)) {
