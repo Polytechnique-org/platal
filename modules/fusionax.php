@@ -267,10 +267,12 @@ class FusionAxModule extends PLModule
                                        f.promotion_etude AS promo_etude_ax, pe.grad_year AS promo_sortie_xorg
                                  FROM  profiles          AS p
                            INNER JOIN  profile_display   AS pd ON (p.pid = pd.pid)
-                           INNER JOIN  profile_education AS pe ON (p.pid = pe.pid)
+                           INNER JOIN  profile_education AS pe ON (p.pid = pe.pid AND FIND_IN_SET('primary', pe.flags))
                            INNER JOIN  fusionax_anciens  AS f  ON (p.ax_id = f.ax_id)
                                 WHERE  (f.groupe_promo = 'X' AND pd.promo != CONCAT('X', f.promotion_etude)
-                                       AND !(f.promotion_etude = pe.entry_year + 1 AND pe.grad_year = pe.entry_year + 4))
+                                       AND !(f.promotion_etude = pe.entry_year + 1 AND pe.grad_year = pe.entry_year + 4)
+                                       AND !(f.promotion_etude = pe.entry_year + 2 AND pe.grad_year = pe.entry_year + 5)
+                                       AND f.promotion_etude != 0)
                                        OR (f.groupe_promo = 'D' AND f.promotion_etude != pe.grad_year)
                                        OR (f.groupe_promo = 'M' AND f.promotion_etude != pe.entry_year)
                              GROUP BY  p.pid");
