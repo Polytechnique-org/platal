@@ -124,10 +124,10 @@ class FusionAxModule extends PLModule
                 exec('mv -f ' . $spoolpath . 'Formations_MD_out.txt ' . $spoolpath . 'Formations_MD.txt');
                 $report[] = 'Fichier parsé.';
                 $report[] = 'Import dans la base en cours...';
-                $next = 'integrateSQL';
                 XDB::execute("UPDATE  profiles
                                  SET  ax_id = NULL
                                WHERE  ax_id = ''");
+                $next = 'integrateSQL';
             }
         } elseif ($action == 'integrateSQL') {
             // intégration des données dans la base MySQL
@@ -183,12 +183,16 @@ class FusionAxModule extends PLModule
             $entry_year = 1920;
             $grad_year = 1923;
             $promo = 'X1920';
-            $sex = PlUser::GENDER_MALE;
+            $hrpromo = '1920';
+            $sex = 'male';
             $xorgId = 19200000;
             $type = 'x';
 
-            while (list($firstname, $lastname, $ax_id) = $res->next()) {
-                $hrid = self::getHrid($firstname, $lastname, $promo);
+            while ($new = $res->next()) {
+                $firstname = $new['prenom'];
+                $lastname = $new['Nom_complet'];
+                $ax_id = $new['ax_id'];
+                $hrid = User::makeHrid($firstname, $lastname, $hrpromo);
                 $res1 = XDB::query('SELECT  COUNT(*)
                                       FROM  accounts
                                      WHERE  hruid = {?}', $hrid);
@@ -206,9 +210,9 @@ class FusionAxModule extends PLModule
                                    VALUES  ({?}, {?}, {?}, {?})',
                              $hrid, $xorgId, $ax_id, $sex);
                 $pid = XDB::insertId();
-                XDB::execute('INSERT INTO  profile_public_names (pid, lastname_initial, firstname_initial)
-                                   VALUES  ({?}, {?}, {?})',
-                             $pid, $lastname, $firstname);
+                XDB::execute('INSERT INTO  profile_public_names (pid, lastname_initial, firstname_initial, lastname_main, firstname_main)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?})',
+                             $pid, $lastname, $firstname, $lastname, $firstname);
                 XDB::execute('INSERT INTO  profile_display (pid, yourself, public_name, private_name,
                                                             directory_name, short_name, sort_name, promo)
                                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
@@ -217,14 +221,83 @@ class FusionAxModule extends PLModule
                                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?})',
                              $pid, $eduSchools[Profile::EDU_X], $degreeid, $entry_year, $grad_year, 'primary');
                 XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, full_name, directory_name, display_name, lastname, firstname, sex)
-                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                             $hrid, $type, 0, 'active', $fullName, $directoryName, $firstname, $lastname, $firstname, $sex);
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                             $hrid, $type, 0, 'pending', $fullName, $directoryName, $firstname, $lastname, $firstname, $sex);
                 $uid = XDB::insertId();
                 XDB::execute('INSERT INTO  account_profiles (uid, pid, perms)
                                    VALUES  ({?}, {?}, {?})',
                              $uid, $pid, 'owner');
             }
             $report[] = 'Promo 1920 ajoutée.';
+            $next = 'adds2011';
+        } elseif ($action == 'adds2011') {
+            // Adds promotion 2011 from AX db.
+            $report[] = 'Ajout des élèves manquant de la promotion 2011';
+            $res = XDB::iterator("SELECT  prenom, Nom_complet, ax_id, Civilite
+                                    FROM  fusionax_anciens
+                                   WHERE  promotion_etude = 2011 AND groupe_promo = 'X'
+                                          AND NOT EXISTS (SELECT  1
+                                                            FROM  profiles
+                                                           WHERE  profiles.ax_id = fusionax_anciens.ax_id)");
+
+            $eduSchools = DirEnum::getOptions(DirEnum::EDUSCHOOLS);
+            $eduSchools = array_flip($eduSchools);
+            $eduDegrees = DirEnum::getOptions(DirEnum::EDUDEGREES);
+            $eduDegrees = array_flip($eduDegrees);
+            $degreeid = $eduDegrees[Profile::DEGREE_X];
+            $entry_year = 2011;
+            $grad_year = 2014;
+            $promo = 'X2011';
+            $hrpromo = '2011';
+            $type = 'x';
+
+            while ($new = $res->next()) {
+                $firstname = $new['prenom'];
+                $lastname = $new['Nom_complet'];
+                $ax_id = $new['ax_id'];
+                $civilite = $new['Civilite'];
+                $hrid = User::makeHrid($firstname, $lastname, $hrpromo);
+                $res1 = XDB::query('SELECT  COUNT(*)
+                                      FROM  accounts
+                                     WHERE  hruid = {?}', $hrid);
+                $res2 = XDB::query('SELECT  COUNT(*)
+                                      FROM  profiles
+                                     WHERE  hrpid = {?}', $hrid);
+                if (is_null($hrid) || $res1->fetchOneCell() > 0 || $res2->fetchOneCell() > 0) {
+                    $report[] = $ax_id . ' non ajouté';
+                }
+                $fullName = $firstname . ' ' . $lastname;
+                $directoryName = $lastname . ' ' . $firstname;
+                if ($civilite == 'M') {
+                    $sex = 'male';
+                } else {
+                    $sex = 'female';
+                }
+
+                XDB::execute('INSERT INTO  profiles (hrpid, ax_id, sex, title)
+                                   VALUES  ({?}, {?}, {?}, {?})',
+                             $hrid, $ax_id, $sex, $civilite);
+                $pid = XDB::insertId();
+                XDB::execute('INSERT INTO  profile_public_names (pid, lastname_initial, firstname_initial, lastname_main, firstname_main)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?})',
+                             $pid, $lastname, $firstname, $lastname, $firstname);
+                XDB::execute('INSERT INTO  profile_display (pid, yourself, public_name, private_name,
+                                                            directory_name, short_name, sort_name, promo)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                             $pid, $firstname, $fullName, $fullName, $directoryName, $fullName, $directoryName, $promo);
+                XDB::execute('INSERT INTO  profile_education (pid, eduid, degreeid, entry_year, grad_year, flags)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?})',
+                             $pid, $eduSchools[Profile::EDU_X], $degreeid, $entry_year, $grad_year, 'primary');
+                XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, full_name, directory_name, display_name, lastname, firstname, sex)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                             $hrid, $type, 0, 'pending', $fullName, $directoryName, $firstname, $lastname, $firstname, $sex);
+                $uid = XDB::insertId();
+                XDB::execute('INSERT INTO  account_profiles (uid, pid, perms)
+                                   VALUES  ({?}, {?}, {?})',
+                             $uid, $pid, 'owner');
+            }
+            $report[] = 'Promo 2011 ajoutée.';
+
             $next = 'view';
         } elseif ($action == 'view') {
             XDB::execute('CREATE OR REPLACE ALGORITHM=MERGE VIEW  fusionax_xorg_anciens AS
