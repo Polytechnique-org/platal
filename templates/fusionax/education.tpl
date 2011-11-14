@@ -27,7 +27,7 @@
   notre base{if $missingEducationCount eq 0}.</p>{else}&nbsp;:
 </p>
 <ul>
-  {iterate from=$missingEducation item=education}<li>{$education.Intitule_diplome}</li>{/iterate}
+  {iterate from=$missingEducation item=education}<li>{$education.Intitule_formation}</li>{/iterate}
 </ul>{/if}
 
 <p>
@@ -35,7 +35,7 @@
   notre base{if $missingDegreeCount eq 0}.</p>{else}&nbsp;:
 </p>
 <ul>
-  {iterate from=$missingDegree item=degree}<li>{$degree.Intitule_formation}</li>{/iterate}
+  {iterate from=$missingDegree item=degree}<li>{$degree.Intitule_diplome}</li>{/iterate}
 </ul>{/if}
 
 <p>
