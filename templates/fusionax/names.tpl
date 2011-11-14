@@ -26,10 +26,10 @@
 
 <p>
   Il y a {$total} camarades dans l'intersection de nos bases.
-  <ul>
-    <li>{$lastnameIssues} des noms de l'AX ne sont pas dans les notres.</li>
-    <li>{$firstnameIssues} des prénoms de l'AX ne sont pas dans les notres.</li>
-  </ul>
 </p>
+<ul>
+  <li>{$lastnameIssues} des noms de l'AX ne sont pas dans les notres.</li>
+  <li>{$firstnameIssues} des prénoms de l'AX ne sont pas dans les notres.</li>
+</ul>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

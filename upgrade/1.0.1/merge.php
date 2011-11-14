@@ -153,7 +153,7 @@ XDB::rawExecute("INSERT IGNORE INTO  profile_corps_rank_enum (name, abbreviation
                                      ('Col.hon.Tra.', 'DEL3'), ('Colonel CR', 'DEL4'),
                                      ('Conseil d\'Etat', 'DEL5'), ('Commiss.Gén. Brigade aérienne', 'DEL6'),
                                      ('Off. Mar. dém.', 'DEL7'), ('Maître des Requêtes', 'DEL8'),
-                                     ('', 'DEL9'), ('autres', 'DEL10')");
+                                     ('', 'DEL9'), ('autres', 'DEL10'), ('Contrôl. d\'Etat hon.', 'DEL11')");
 XDB::rawExecute('UPDATE  profile_corps      AS pc
              INNER JOIN  fusionax_anciens   AS f ON (f.pid = pc.pid)
              INNER JOIN  profile_corps_enum AS c ON (f.corps_sortie = c.abbreviation)

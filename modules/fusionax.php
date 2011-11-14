@@ -501,7 +501,7 @@ class FusionAxModule extends PLModule
     {
         $page->changeTpl('fusionax/promo.tpl');
         $res = XDB::iterator("SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
-                                FROM  usionax_promo
+                                FROM  fusionax_promo
                                WHERE  !(promo_etude_ax + 1 = promo_etude_xorg AND promo_etude_xorg + 3 = promo_sortie_xorg)
                                       AND !(promo_etude_ax + 1 = promo_etude_xorg AND promo_etude_xorg + 4 = promo_sortie_xorg)
                                       AND !(promo_etude_ax = promo_etude_xorg + 1) AND groupe_promo = 'X'
