@@ -1,4 +1,3 @@
-<?php
 /***************************************************************************
  *  Copyright (C) 2003-2011 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
@@ -19,66 +18,66 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class Xorg extends Platal
-{
-    public function __construct()
-    {
-        parent::__construct(
-            'auth',
 
-            'admin',
-            'api',
-            'axletter',
-            'bandeau',
-            'carnet',
-            'deltaten',
-            'email',
-            'epletter',
-            'events',
-            'forums',
-            'fusionax',
-            'fxletter',
-            'gadgets',
-            'geoloc',
-            'googleapps',
-            'lists',
-            'marketing',
-            'newsletter',
-            'openid',
-            'payment',
-            'platal',
-            'poison',
-            'profile',
-            'register',
-            'reminder',
-            'search',
-            'sharingapi',
-            'stats',
-            'survey',
-            'urlshortener'
-        );
-    }
-
-    public function find_hook()
-    {
-        if ($this->path{0} >= 'A' && $this->path{0} <= 'Z') {
-            return self::wiki_hook();
-        }
-        return parent::find_hook();
-    }
-
-    public function force_login(PlPage $page)
-    {
-        header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
-        if (S::logged()) {
-            $page->changeTpl('core/password_prompt_logged.tpl');
-        } else {
-            $page->changeTpl('core/password_prompt.tpl');
-        }
-        $page->assign_by_ref('platal', $this);
-        $page->run();
-    }
+div.fx_mail {
+    margin : auto;
+    width : 72ex;
+    font-family : "Georgia", "Times New Roman", serif;
+    font-size : 10pt;
+    text-align : justify;
+    background-color : #fff;
+    color : #000;
 }
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
-?>
+/* Links */
+div.fx_mail a[href] {
+    background-color: transparent;
+    color : #444;
+    text-decoration : none;
+    background-image: none;
+}
+
+div.fx_mail a[href]:hover {
+    background-color: transparent;
+    color : #D44;
+    text-decoration : none;
+    background-image: none;
+}
+
+/* Title */
+div.fx_mail .title {
+    background-color: #FA2;
+    margin : 0 0 3ex;
+    padding : 4.5ex 1ex 1ex 15ex;
+    font-size : 130%;
+    font-weight : bold;
+    text-align : left;
+}
+
+/* Intro */
+div.fx_mail div.intro {
+    margin : 4ex 2ex 2ex 2ex;
+}
+
+div.fx_mail div.signature {
+    margin : 3ex 2ex 0 0;
+    font-size : 90%;
+    font-style: italic;
+    text-align : right;
+}
+
+/* Give */
+div.fx_mail div.give {
+    font-weight: bold;
+    text-align: center;
+    padding: 0.5ex 0 0.5ex 0;
+    border-top: solid 2ex #FA2;
+}
+
+/* Footer */
+div.fx_mail div.foot1, div.fx_mail div.foot2 {
+    background-color: #FA2;
+    text-align: center;
+    font-size: 90%;
+    padding: 0.5ex 0;
+}

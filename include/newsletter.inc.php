@@ -46,6 +46,7 @@ class NewsLetter
     const GROUP_XORG = 'Polytechnique.org';
     const GROUP_AX = 'AX';
     const GROUP_EP = 'Ecole';
+    const GROUP_FX = 'FX';
 
     // Searches on mutiple fields
     const SEARCH_ALL = 'all';
@@ -551,6 +552,8 @@ class NewsLetter
             return 'ax';
         case self::GROUP_EP:
             return 'epletter';
+        case self::GROUP_FX:
+            return 'fxletter';
         default:
             // Don't display groups NLs on X.org
             assert(!$enforce_xnet);
@@ -575,6 +578,8 @@ class NewsLetter
             return 'ax/admin';
         case self::GROUP_EP:
             return 'epletter/admin';
+        case self::GROUP_FX:
+            return 'fxletter/admin';
         default:
             // Don't display groups NLs on X.org
             assert(!$enforce_xnet);
@@ -599,6 +604,8 @@ class NewsLetter
             return 'ax/stat';
         case self::GROUP_EP:
             return 'epletter/stat';
+        case self::GROUP_FX:
+            return 'fxletter/stat';
         default:
             // Don't display groups NLs on X.org
             assert(!$enforce_xnet);
@@ -642,6 +649,7 @@ class NewsLetter
           case self::GROUP_XORG:
           case self::GROUP_AX:
           case self::GROUP_EP:
+          case self::GROUP_FX:
             return false;
           default:
             return true;
