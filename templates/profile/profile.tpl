@@ -50,9 +50,14 @@ $($.closeOnEsc);
       <h2>À l'X&hellip;</h2>
       {if $profile->section}<div><em class="intitule">Section&nbsp;: </em><span>{$profile->section}</span></div>{/if}
 
-      {assign var=binets value=$profile->getBinets()}
+      {assign var=binets value=$profile->getFullBinets()}
       {if $binets|@count}<div><em class="intitule">Binet{if count($binets) > 1}s{/if}&nbsp;: </em>
-      <span>{', '|implode:$profile->getBinetsNames()}</span></div>{/if}
+      <span> <br />
+      {foreach from=$binets item=binet name=binets}
+        {if !$smarty.foreach.binets.first}, {/if}
+        <span title="{$binet.text}">{if $binet.url}<a href="{$binet.url}">{/if}{$binet.text}{if $binet.url}</a>{/if}</span>
+      {/foreach}
+      </span></div>{/if}
 
       {if $owner && $view->isVisible(#Visibility::EXPORT_AX#)}
         {assign var=groups value=$owner->groups(true,true)}

@@ -952,6 +952,17 @@ class Profile implements PlExportable
             return array();
         }
     }
+    public function getFullBinets()
+    {
+        if ($this->visibility->isVisible(Visibility::EXPORT_PRIVATE)) {
+            return XDB::fetchAllAssoc('SELECT  binet_id, text, url
+                                         FROM  profile_binets AS pb
+                                    LEFT JOIN  profile_binet_enum AS pbe ON (pbe.id = pb.binet_id)
+                                        WHERE  pid = {?}', $this->id());
+        } else {
+            return array();
+        }
+    }
     public function getBinetsNames()
     {
         if ($this->visibility->isVisible(Visibility::EXPORT_PRIVATE)) {
