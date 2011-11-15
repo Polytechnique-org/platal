@@ -28,6 +28,7 @@
 {if $firstnameIssues|@count eq 0}
 <p>Aucun problème avec les prénoms.</p>
 {else}
+<p><a href="fusionax/names/first/true">Obtenir le csv des conflits.</a></p>
 <table class="bicol">
   <tr>
     <th>pid</th>
@@ -61,6 +62,7 @@
 {if $lastnameIssues|@count eq 0}
 <p>Aucun problème avec les noms.</p>
 {else}
+<p><a href="fusionax/names/last/true">Obtenir le csv des conflits.</a></p>
 <table class="bicol">
   <tr>
     <th>pid</th>

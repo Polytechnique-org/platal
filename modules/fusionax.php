@@ -629,7 +629,7 @@ class FusionAxModule extends PLModule
         $page->assign('nbMissmatchingPromosTotal', $nbMissmatchingPromos);
     }
 
-    function handler_names($page, $action = '')
+    function handler_names($page, $action = '', $csv = false)
     {
         $page->changeTpl('fusionax/names.tpl');
 
@@ -640,7 +640,20 @@ class FusionAxModule extends PLModule
                                       INNER JOIN  profiles             AS p   ON (f.ax_id = p.ax_id)
                                       INNER JOIN  profile_public_names AS ppn ON (p.pid = ppn.pid)
                                            WHERE  f.prenom NOT IN (ppn.firstname_initial, ppn.firstname_main, ppn.firstname_ordinary)');
-            $page->assign('firstnameIssues', $res);
+
+            if ($csv) {
+                pl_cached_content_headers('text/x-csv', 'utf-8', 1, 'firstnames.csv');
+
+                $csv = fopen('php://output', 'w');
+                fputcsv($csv,  array('pid', 'ax_id', 'hrpid', 'AX', 'initial', 'principal', 'ordinaire'), ';');
+                foreach ($res as $item) {
+                    fputcsv($csv, $item, ';');
+                }
+                fclose($csv);
+                exit();
+            } else {
+                $page->assign('firstnameIssues', $res);
+            }
         } elseif ($action == 'last') {
             $res = XDB::rawFetchAllAssoc("SELECT  p.pid, p.ax_id, p.hrpid,
                                                   f.Nom_patronymique, f.Nom_usuel, f.Nom_complet,
@@ -651,8 +664,20 @@ class FusionAxModule extends PLModule
                                            WHERE  IF(f.partic_patro, CONCAT(f.partic_patro, CONCAT(' ', f.Nom_patronymique)), f.Nom_patronymique) NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary)
                                                   AND IF(f.partic_nom, CONCAT(f.partic_nom, CONCAT(' ', f.Nom_usuel)), f.Nom_usuel) NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary)
                                                   AND f.Nom_complet NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary)");
-            $page->assign('lastnameIssues', $res);
 
+            if ($csv) {
+                pl_cached_content_headers('text/x-csv', 'utf-8', 1, 'lastnames.csv');
+
+                $csv = fopen('php://output', 'w');
+                fputcsv($csv,  array('pid', 'ax_id', 'hrpid', 'AX patro', 'AX usuel', 'AX complet', 'initial', 'principal', 'marital', 'ordinaire'), ';');
+                foreach ($res as $item) {
+                    fputcsv($csv, $item, ';');
+                }
+                fclose($csv);
+                exit();
+            } else {
+                $page->assign('lastnameIssues', $res);
+            }
         } else {
             $res = XDB::query('SELECT  COUNT(*)
                                  FROM  fusionax_anciens AS f
