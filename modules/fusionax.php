@@ -629,18 +629,40 @@ class FusionAxModule extends PLModule
         $page->assign('nbMissmatchingPromosTotal', $nbMissmatchingPromos);
     }
 
+    private function format($string)
+    {
+        return preg_replace('/(\s+|\-)/', '', $string);
+    }
+
+    private function retrieve_firstnames()
+    {
+        $res = XDB::rawFetchAllAssoc('SELECT  p.pid, p.ax_id, p.hrpid,
+                                              f.prenom, ppn.firstname_initial, ppn.firstname_main, ppn.firstname_ordinary
+                                        FROM  fusionax_anciens     AS f
+                                  INNER JOIN  profiles             AS p   ON (f.ax_id = p.ax_id)
+                                  INNER JOIN  profile_public_names AS ppn ON (p.pid = ppn.pid)
+                                       WHERE  f.prenom NOT IN (ppn.firstname_initial, ppn.firstname_main, ppn.firstname_ordinary)');
+
+        $issues = array();
+        foreach ($res as $item) {
+            if (!($item['firstname_ordinary'] != '' || $item['firstname_main'] != $item['firstname_initial'])) {
+                $ax = $this->format(mb_strtolower(replace_accent($item['prenom'])));
+                $xorg = $this->format(mb_strtolower(replace_accent($item['firstname_main'])));
+                if ($ax != $xorg) {
+                    $issues[] = $item;
+                }
+            }
+        }
+
+        return $issues;
+    }
+
     function handler_names($page, $action = '', $csv = false)
     {
         $page->changeTpl('fusionax/names.tpl');
 
         if ($action == 'first') {
-            $res = XDB::rawFetchAllAssoc('SELECT  p.pid, p.ax_id, p.hrpid,
-                                                  f.prenom, ppn.firstname_initial, ppn.firstname_main, ppn.firstname_ordinary
-                                            FROM  fusionax_anciens     AS f
-                                      INNER JOIN  profiles             AS p   ON (f.ax_id = p.ax_id)
-                                      INNER JOIN  profile_public_names AS ppn ON (p.pid = ppn.pid)
-                                           WHERE  f.prenom NOT IN (ppn.firstname_initial, ppn.firstname_main, ppn.firstname_ordinary)');
-
+            $res = $this->retrieve_firstnames();
             if ($csv) {
                 pl_cached_content_headers('text/x-csv', 'utf-8', 1, 'firstnames.csv');
 
@@ -660,7 +682,7 @@ class FusionAxModule extends PLModule
                                                   ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary
                                             FROM  fusionax_anciens     AS f
                                       INNER JOIN  profiles             AS p   ON (f.ax_id = p.ax_id)
-                                      INNER JOIN  profile_public_names AS ppn ON (p.pid = ppn.pid)
+                                      INNER JOIN  profile_public_names AS ppn ON (p.pid = ppn.pid AND ppn.fixed = 0)
                                            WHERE  IF(f.partic_patro, CONCAT(f.partic_patro, CONCAT(' ', f.Nom_patronymique)), f.Nom_patronymique) NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary)
                                                   OR IF(f.partic_nom, CONCAT(f.partic_nom, CONCAT(' ', f.Nom_usuel)), f.Nom_usuel) NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary)
                                                   OR f.Nom_complet NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary)");
@@ -687,7 +709,7 @@ class FusionAxModule extends PLModule
             $res = XDB::rawFetchOneCell("SELECT  COUNT(*)
                                            FROM  fusionax_anciens     AS f
                                      INNER JOIN  profiles             AS p   ON (f.ax_id = p.ax_id)
-                                     INNER JOIN  profile_public_names AS ppn ON (p.pid = ppn.pid)
+                                     INNER JOIN  profile_public_names AS ppn ON (p.pid = ppn.pid AND ppn.fixed = 0)
                                           WHERE  IF(f.partic_patro, CONCAT(f.partic_patro, CONCAT(' ', f.Nom_patronymique)), f.Nom_patronymique) NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary)
                                                  OR IF(f.partic_nom, CONCAT(f.partic_nom, CONCAT(' ', f.Nom_usuel)), f.Nom_usuel) NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary)
                                                  OR f.Nom_complet NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary)");
@@ -698,7 +720,7 @@ class FusionAxModule extends PLModule
                                      INNER JOIN  profiles             AS p   ON (f.ax_id = p.ax_id)
                                      INNER JOIN  profile_public_names AS ppn ON (p.pid = ppn.pid)
                                           WHERE  f.prenom NOT IN (ppn.firstname_initial, ppn.firstname_main, ppn.firstname_ordinary)');
-            $page->assign('firstnameIssues', $res);
+            $page->assign('firstnameIssues', count($this->retrieve_firstnames()));
         }
         $page->assign('action', $action);
     }
