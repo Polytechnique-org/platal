@@ -142,6 +142,9 @@ class PaymentModule extends PLModule
             $page->kill('La transaction selectionnée est périmée.');
         }
 
+        if (Env::has('montant')) {
+            $pay->amount_def = Env::v('montant');
+        }
         $val = (Post::v('amount') != 0) ? Post::v('amount') : $pay->amount_def;
 
         if (($error = $pay->check($val)) !== true) {
