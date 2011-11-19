@@ -1,6 +1,12 @@
 ================================================================================
 VERSION 1.1.5                                                         XX XX XXXX
 
+From 1.1.4 branch:
+
+    * XnetEvent:
+        - #1566: Corrects the total number in events                       -GLN
+        - #1567: Payment takes into account the amount when it is given    -GLN
+
 ================================================================================
 VERSION 1.1.4                                                         14 11 2011
 
