@@ -451,22 +451,25 @@ class AdminModule extends PLModule
             $to_update['weak_password'] = null;
         } else if (Post::has('update_account')) {
             if (!$user->hasProfile()) {
+                require_once 'name.func.inc.php';
                 $name_update = false;
-                if (Post::s('lastname') != $user->lastname) {
-                    $to_update['lastname'] = Post::s('lastname');
+                $lastname = capitalize_name(Post::t('lastname'));
+                $firstname = capitalize_name(Post::t('firstname'));
+                if ($lastname != $user->lastname) {
+                    $to_update['lastname'] = $lastname;
                     $name_update = true;
                 }
-                if (Post::s('type') != 'virtual' && Post::s('firstname') != $user->firstname) {
-                    $to_update['firstname'] = Post::s('firstname');
+                if (Post::s('type') != 'virtual' && $firstname != $user->firstname) {
+                    $to_update['firstname'] = $firstname;
                     $name_update = true;
                 }
                 if ($name_update) {
                     if (Post::s('type') != 'virtual') {
-                        $to_update['full_name'] = Post::s('firstname') . ' ' . Post::s('lastname');
-                        $to_update['directory_name'] = mb_strtoupper(Post::s('lastname')) . ' ' . Post::s('firstname');
+                        $to_update['full_name'] = $firstname . ' ' . $lastname;
+                        $to_update['directory_name'] = $lastname . ' ' . $firstname;
                     } else {
-                        $to_update['full_name'] = Post::s('lastname');
-                        $to_update['directory_name'] = mb_strtoupper(Post::s('lastname'));
+                        $to_update['full_name'] = $lastname;
+                        $to_update['directory_name'] = $lastname;
                     }
                 }
                 if (Post::s('display_name') != $user->displayName()) {
@@ -812,6 +815,7 @@ class AdminModule extends PLModule
 
     function handler_add_accounts($page, $action = null, $promo = null)
     {
+        require_once 'name.func.inc.php';
         $page->changeTpl('admin/add_accounts.tpl');
 
         if (Env::has('add_type') && Env::has('people')) {
@@ -859,9 +863,11 @@ class AdminModule extends PLModule
                 foreach ($lines as $line) {
                     if ($infos = self::formatNewUser($page, $line, $separator, $hrpromo, 6)) {
                         $sex = self::formatSex($page, $infos[3], $line);
+                        $lastname = capitalize_name($infos[0]);
+                        $firstname = capitalize_name($infos[1]);
                         if (!is_null($sex)) {
-                            $fullName = $infos[1] . ' ' . $infos[0];
-                            $directoryName = $infos[0] . ' ' . $infos[1];
+                            $fullName = $firstname . ' ' . $lastname;
+                            $directoryName = $lastname . ' ' . $firstname;
                             $birthDate = self::formatBirthDate($infos[2]);
                             if ($type == 'x') {
                                 $xorgId = Profile::getXorgId($infos[4]);
@@ -882,11 +888,11 @@ class AdminModule extends PLModule
                             $pid = XDB::insertId();
                             XDB::execute('INSERT INTO  profile_public_names (pid, lastname_initial, lastname_main, firstname_initial, firstname_main)
                                                VALUES  ({?}, {?}, {?}, {?}, {?})',
-                                         $pid, $infos[0], $infos[0], $infos[1], $infos[1]);
+                                         $pid, $lastname, $lastname, $firstname, $firstname);
                             XDB::execute('INSERT INTO  profile_display (pid, yourself, public_name, private_name,
                                                                         directory_name, short_name, sort_name, promo)
                                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                                         $pid, $infos[1], $fullName, $fullName, $directoryName, $fullName, $directoryName, $promo);
+                                         $pid, $firstname, $fullName, $fullName, $directoryName, $fullName, $directoryName, $promo);
                             XDB::execute('INSERT INTO  profile_education (id, pid, eduid, degreeid, entry_year, grad_year, promo_year, flags)
                                                VALUES  (100, {?}, {?}, {?}, {?}, {?}, {?}, \'primary\')',
                                          $pid, $eduSchools[Profile::EDU_X], $degreeid, $entry_year, $grad_year, $promotion);
@@ -894,7 +900,7 @@ class AdminModule extends PLModule
                                                                  display_name, lastname, firstname, sex, best_domain)
                                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
                                          $infos['hrid'], $type, 0, 'pending', $fullName, $directoryName,
-                                         $infos[1], $infos[0], $infos[1], $sex, $best_domain);
+                                         $firstname, $lastname, $firstname, $sex, $best_domain);
                             $uid = XDB::insertId();
                             XDB::execute('INSERT INTO  account_profiles (uid, pid, perms)
                                                VALUES  ({?}, {?}, {?})',
@@ -911,14 +917,16 @@ class AdminModule extends PLModule
                     if ($infos = self::formatNewUser($page, $line, $separator, $type, 4)) {
                         $sex = self::formatSex($page, $infos[3], $line);
                         if (!is_null($sex)) {
-                            $fullName = $infos[1] . ' ' . $infos[0];
-                            $directoryName = $infos[0] . ' ' . $infos[1];
+                            $lastname = capitalize_name($infos[0]);
+                            $firstname = capitalize_name($infos[1]);
+                            $fullName = $firstname . ' ' . $lastname;
+                            $directoryName = $lastname . ' ' . $firstname;
                             XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, email, full_name, directory_name,
                                                                  display_name, lastname, firstname, sex)
                                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
                                          $infos['hrid'], $type, 0, 'pending', $infos[2], $fullName, $directoryName,
-                                         $infos[1], $infos[0], $infos[1], $sex);
-                            $newAccounts[$infos['hrid']] = $infos[1] . ' ' . $infos[0];
+                                         $firstname, $lastname, $firstname, $sex);
+                            $newAccounts[$infos['hrid']] = $fullName;
                         }
                     }
                 }

@@ -63,6 +63,7 @@ class ProfileSettingSearchNames implements ProfileSetting
 
     public function value(ProfilePage $page, $field, $value, &$success)
     {
+        require_once 'name.func.inc.php';
         $success = true;
 
         if (is_null($value)) {
@@ -94,7 +95,7 @@ class ProfileSettingSearchNames implements ProfileSetting
                                                          $page->pid());
         } else {
             foreach ($value['public_names'] as $key => $name) {
-                $value['public_names'][$key] = trim($name);
+                $value['public_names'][$key] = capitalize_name(trim($name));
             }
             if (isset($value['private_names'])) {
                 foreach ($value['private_names'] as $key => $name) {
@@ -110,7 +111,6 @@ class ProfileSettingSearchNames implements ProfileSetting
             }
         }
 
-        require_once 'name.func.inc.php';
         $public_name = build_first_name($value['public_names']) . ' ' . build_full_last_name($value['public_names'], $page->profile->isFemale());
         if (isset($value['private_names'])) {
             $private_name_end = build_private_name($value['private_names']);

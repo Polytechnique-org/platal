@@ -946,16 +946,17 @@ class XnetGrpModule extends PLModule
 
                 // If the user has no account yet, creates new account: build names from email address.
                 if (empty($user)) {
+                    require_once 'name.func.inc.php';
                     $parts = explode('.', $mbox);
                     if (count($parts) == 1) {
-                        $lastname = $display_name = $full_name = $directory_name = ucfirst($mbox);
+                        $lastname = $display_name = $full_name = $directory_name = capitalize_name($mbox);
                         $firstname = '';
                     } else {
-                        $firstname = ucfirst($parts[0]);
-                        $lastname = ucwords(implode(' ', array_slice($parts, 1)));
+                        $firstname = capitalize_name($parts[0]);
+                        $lastname = capitalize_name(implode(' ', array_slice($parts, 1)));
                         $display_name = $firstname;
-                        $full_name = "$firstname $lastname";
-                        $directory_name = strtoupper($lastname) . " " . $firstname;
+                        $full_name = $firstname . ' ' . $lastname;
+                        $directory_name = $lastname . ' ' . $firstname;
                     }
                     XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, directory_name, firstname, lastname, email, type, state)
                                        VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, \'xnet\', \'disabled\')',
@@ -1247,15 +1248,15 @@ class XnetGrpModule extends PLModule
 
             // Update user info
             if ($user->type == 'virtual' || ($user->type == 'xnet' && !$user->perms)) {
-                $lastname = Post::s('lastname');
+                $lastname = capitalize_name(Post::t('lastname'));
                 if (Post::s('type') != 'virtual') {
-                    $firstname = Post::s('firstname');
+                    $firstname = capitalize_name(Post::t('firstname'));
                     $full_name = $firstname . ' ' . $lastname;
-                    $directory_name = mb_strtoupper($lastname) . ' ' . $firstname;
+                    $directory_name = $lastname . ' ' . $firstname;
                 } else {
                     $firstname = '';
                     $full_name = $lastname;
-                    $directory_name = mb_strtoupper($lastname);
+                    $directory_name = $lastname;
                 }
                 XDB::query('UPDATE  accounts
                                SET  full_name = {?}, directory_name = {?}, display_name = {?},

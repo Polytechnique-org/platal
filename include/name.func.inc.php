@@ -19,6 +19,16 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+// Some particles should not be capitalized (cf "ORTHOTYPO", by Jean-Pierre
+// Lacroux).
+// Note that some of them are allowed to use capital letters in some cases,
+// for instance "De" in American English.
+static $particles = array('d', 'de', 'an', 'auf', 'von', 'von dem',
+                          'von der', 'zu', 'of', 'del', 'de las',
+                          'de les', 'de los', 'las', 'los', 'y', 'a',
+                          'da', 'das', 'do', 'dos', 'af', 'av');
+
+
 function build_javascript_names($data, $isFemale)
 {
     $names = array();
@@ -199,6 +209,52 @@ function update_public_names($pid, array $public_names)
                    WHERE  pid = {?}',
                  $public_names['particles'], $public_names['lastname_main'], $public_names['lastname_marital'], $public_names['lastname_ordinary'],
                  $public_names['firstname_main'], $public_names['firstname_ordinary'], $public_names['pseudonym'], $pid);
+}
+
+// Returns the @p name with all letters in lower case, but the first one.
+function mb_ucfirst($name)
+{
+    return mb_strtoupper(mb_substr($name, 0, 1)) . mb_substr($name, 1);
+}
+
+// Capitalizes the @p name using French typographic rules. Returns
+// false when capitalization rule is not known for the name format.
+function capitalize_name($name)
+{
+    // Some suffixes should not be captitalized either, eg 's' in Bennett's.
+    static $suffixes = array('h', 's', 't');
+
+    // Extracts the first token of the name.
+    if (!preg_match('/^(\pL+)(([\' -])(.*))?$/ui', $name, $m)) {
+        return false;
+    }
+
+    $token = mb_strtolower($m[1]);
+    $separator = (isset($m[3]) ? $m[3] : false);
+    $tail = (isset($m[4]) ? $m[4] : false);
+
+    // Special case for "Malloc'h".
+    if ($separator == "'" && in_array(strtolower($tail[0]), $suffixes) &&
+        (strlen($tail) == 1 || $tail[1] == ' ')) {
+        $token .= "'" . strtolower($tail[0]);
+        $separator = (strlen($tail) == 1 ? false : $tail[1]);
+        $tail = (strlen($tail) > 2 ? substr($tail, 2) : false);
+    }
+
+    // Capitalizes the first token.
+    if (!in_array($token, $particles)) {
+        $token = mb_ucfirst($token);
+    }
+
+    // Capitalizes the tail of the name.
+    if ($tail) {
+        if (($tail = capitalize_name($tail))) {
+            return $token . $separator . $tail;
+        }
+        return false;
+    }
+
+    return $token . $separator;
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

@@ -250,9 +250,14 @@ class XnetModule extends PLModule
                 }
             }
 
+            require_once 'emails.inc.php';
+            require_once 'name.func.inc.php';
+
             // Update user info
-            $full_name = Post::t('firstname') . ' ' . Post::t('lastname');
-            $directory_name = mb_strtoupper(Post::t('lastname')) . ' ' . Post::t('firstname');
+            $lastname = capitalize_name(Post::t('lastname'));
+            $firstname = capitalize_name(Post::t('firstname'));
+            $full_name = $firstname . ' ' . $lastname;
+            $directory_name = $lastname . ' ' . $firstname;
             XDB::query('UPDATE  accounts
                            SET  full_name = {?}, directory_name = {?}, display_name = {?},
                                 firstname = {?}, lastname = {?}, sex = {?}
@@ -262,7 +267,6 @@ class XnetModule extends PLModule
                        (Post::t('sex') == 'male') ? 'male' : 'female', $user->id());
 
             // Updates email.
-            require_once 'emails.inc.php';
             $new_email = strtolower(Post::t('email'));
             if (require_email_update($user, $new_email)) {
                     XDB::query('UPDATE  accounts
