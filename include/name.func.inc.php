@@ -67,10 +67,10 @@ function build_display_names(array $public_names, array $private_names, $isFemal
     $firstname = build_first_name($public_names);
 
     $display_names = array();
-    $display_names['public_name']    = $firstname . ' ' . $full_last_name;
+    $display_names['public_name']    = build_full_name($firstname, $full_last_name);
     $display_names['private_name']   = $display_names['public_name'] . $private_last_name_end;
-    $display_names['directory_name'] = $full_last_name . ' ' . $firstname;
-    $display_names['short_name']     = $firstname . ' ' . $short_last_name;
+    $display_names['directory_name'] = build_directory_name($firstname, $full_last_name);
+    $display_names['short_name']     = build_full_name($firstname, $short_last_name);
     $display_names['sort_name']      = $short_last_name . ' ' . $firstname;
 
     return $display_names;
@@ -125,6 +125,22 @@ function build_private_name(array $private_names)
     }
 
     return ' (' . implode(', ', $names_array) . ')';
+}
+
+function build_directory_name($firstname, $lastname)
+{
+    if ($firstname == '') {
+        return mb_strtoupper($lastname);
+    }
+    return mb_strtoupper($lastname) . ' ' . $firstname;
+}
+
+function build_full_name($firstname, $lastname)
+{
+    if ($firstname == '') {
+        return $lastname;
+    }
+    return $firstname . ' ' . $lastname;
 }
 
 /** Splits a name into tokens, as used in search_name.

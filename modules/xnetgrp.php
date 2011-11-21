@@ -514,17 +514,17 @@ class XnetGrpModule extends PLModule
                     continue;
                 }
 
+                require_once 'name.func.inc.php';
                 $parts = explode('.', $local_part);
                 if (count($parts) == 1) {
-                    $lastname = $display_name = $full_name = $directory_name = ucfirst($local_part);
+                    $lastname = $display_name = capitalize_name($mbox);
                     $firstname = '';
                 } else {
-                    $firstname = ucfirst($parts[0]);
-                    $lastname = ucwords(implode(' ', array_slice($parts, 1)));
-                    $display_name = $firstname;
-                    $full_name = $firstname . ' ' . $lastname;
-                    $directory_name = strtoupper($lastname) . ' ' . $firstname;
+                    $display_name = $firstname = capitalize_name($parts[0]);
+                    $lastname = capitalize_name(implode(' ', array_slice($parts, 1)));
                 }
+                $full_name = build_full_name($firstname, $lastname);
+                $directory_name = build_directory_name($firstname, $lastname);
                 XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, directory_name, firstname, lastname, email, type, state)
                                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, \'xnet\', \'disabled\')',
                              $hruid, $display_name, $full_name, $directory_name, $firstname, $lastname, $email);
@@ -949,15 +949,14 @@ class XnetGrpModule extends PLModule
                     require_once 'name.func.inc.php';
                     $parts = explode('.', $mbox);
                     if (count($parts) == 1) {
-                        $lastname = $display_name = $full_name = $directory_name = capitalize_name($mbox);
+                        $lastname = $display_name = capitalize_name($mbox);
                         $firstname = '';
                     } else {
-                        $firstname = capitalize_name($parts[0]);
+                        $display_name = $firstname = capitalize_name($parts[0]);
                         $lastname = capitalize_name(implode(' ', array_slice($parts, 1)));
-                        $display_name = $firstname;
-                        $full_name = $firstname . ' ' . $lastname;
-                        $directory_name = $lastname . ' ' . $firstname;
                     }
+                    $full_name = build_full_name($firstname, $lastname);
+                    $directory_name = build_directory_name($firstname, $lastname);
                     XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, directory_name, firstname, lastname, email, type, state)
                                        VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, \'xnet\', \'disabled\')',
                                  $hruid, $display_name, $full_name, $directory_name, $firstname, $lastname, $email);
@@ -1235,8 +1234,9 @@ class XnetGrpModule extends PLModule
         $mmlist = new MMList(S::user(), $globals->asso('mail_domain'));
 
         if (Post::has('change')) {
-            require_once 'emails.inc.php';
             S::assert_xsrf_token();
+            require_once 'emails.inc.php';
+            require_once 'name.func.inc.php';
 
             // Convert user status to X
             if (!Post::blank('login_X')) {
@@ -1251,13 +1251,11 @@ class XnetGrpModule extends PLModule
                 $lastname = capitalize_name(Post::t('lastname'));
                 if (Post::s('type') != 'virtual') {
                     $firstname = capitalize_name(Post::t('firstname'));
-                    $full_name = $firstname . ' ' . $lastname;
-                    $directory_name = $lastname . ' ' . $firstname;
                 } else {
                     $firstname = '';
-                    $full_name = $lastname;
-                    $directory_name = $lastname;
                 }
+                $full_name = build_full_name($firstname, $lastname);
+                $directory_name = build_directory_name($firstname, $lastname);
                 XDB::query('UPDATE  accounts
                                SET  full_name = {?}, directory_name = {?}, display_name = {?},
                                     firstname = {?}, lastname = {?}, sex = {?}, type = {?}

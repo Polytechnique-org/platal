@@ -464,13 +464,11 @@ class AdminModule extends PLModule
                     $name_update = true;
                 }
                 if ($name_update) {
-                    if (Post::s('type') != 'virtual') {
-                        $to_update['full_name'] = $firstname . ' ' . $lastname;
-                        $to_update['directory_name'] = $lastname . ' ' . $firstname;
-                    } else {
-                        $to_update['full_name'] = $lastname;
-                        $to_update['directory_name'] = $lastname;
+                    if (Post::s('type') == 'virtual') {
+                        $firstname = '';
                     }
+                    $to_update['full_name'] = build_full_name($firstname, $lastname);
+                    $to_update['directory_name'] = build_directory_name($firstname, $lastname);
                 }
                 if (Post::s('display_name') != $user->displayName()) {
                     $to_update['display_name'] = Post::s('display_name');
@@ -866,8 +864,8 @@ class AdminModule extends PLModule
                         $lastname = capitalize_name($infos[0]);
                         $firstname = capitalize_name($infos[1]);
                         if (!is_null($sex)) {
-                            $fullName = $firstname . ' ' . $lastname;
-                            $directoryName = $lastname . ' ' . $firstname;
+                            $fullName = build_full_name($firstname, $lastname);
+                            $directoryName = build_directory_name($firstname, $lastname);
                             $birthDate = self::formatBirthDate($infos[2]);
                             if ($type == 'x') {
                                 $xorgId = Profile::getXorgId($infos[4]);
@@ -919,8 +917,8 @@ class AdminModule extends PLModule
                         if (!is_null($sex)) {
                             $lastname = capitalize_name($infos[0]);
                             $firstname = capitalize_name($infos[1]);
-                            $fullName = $firstname . ' ' . $lastname;
-                            $directoryName = $lastname . ' ' . $firstname;
+                            $fullName = build_full_name($firstname, $lastname);
+                            $directoryName = build_directory_name($firstname, $lastname);
                             XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, email, full_name, directory_name,
                                                                  display_name, lastname, firstname, sex)
                                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',

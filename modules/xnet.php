@@ -256,8 +256,8 @@ class XnetModule extends PLModule
             // Update user info
             $lastname = capitalize_name(Post::t('lastname'));
             $firstname = capitalize_name(Post::t('firstname'));
-            $full_name = $firstname . ' ' . $lastname;
-            $directory_name = $lastname . ' ' . $firstname;
+            $full_name = build_full_name($firstname, $lastname);
+            $directory_name = build_directory_name($firstname, $lastname);
             XDB::query('UPDATE  accounts
                            SET  full_name = {?}, directory_name = {?}, display_name = {?},
                                 firstname = {?}, lastname = {?}, sex = {?}
