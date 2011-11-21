@@ -71,7 +71,7 @@ function build_display_names(array $public_names, array $private_names, $isFemal
     $display_names['private_name']   = $display_names['public_name'] . $private_last_name_end;
     $display_names['directory_name'] = build_directory_name($firstname, $full_last_name);
     $display_names['short_name']     = build_full_name($firstname, $short_last_name);
-    $display_names['sort_name']      = $short_last_name . ' ' . $firstname;
+    $display_names['sort_name']      = build_sort_name($firstname, $short_last_name);
 
     return $display_names;
 }
@@ -141,6 +141,22 @@ function build_full_name($firstname, $lastname)
         return $lastname;
     }
     return $firstname . ' ' . $lastname;
+}
+
+// Returns the name on which the sort is performed, according to French
+// typographic rules.
+function build_sort_name($firstname, $lastname)
+{
+    // Remove uncapitalized particles.
+    $particles = "/^(d'|(" . implode($particles, '|') . ') )/';
+    $name = preg_replace($particles, '', $lastname);
+    // Mac must also be uniformized.
+    $lastname = preg_replace("/^(Mac|Mc)(| )/", 'Mac', $name);
+
+    if ($firstname == '') {
+        return $lastname;
+    }
+    return $lastname . ' ' . $firstname;
 }
 
 /** Splits a name into tokens, as used in search_name.
