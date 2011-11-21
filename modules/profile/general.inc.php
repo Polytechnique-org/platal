@@ -70,19 +70,11 @@ class ProfileSettingSearchNames implements ProfileSetting
             $request = NamesReq::getPublicNames($page->pid());
 
             if (!$request) {
-                $value['public_names'] = XDB::fetchOneAssoc('SELECT  particles, lastname_main, lastname_marital, lastname_ordinary,
+                $value['public_names'] = XDB::fetchOneAssoc('SELECT  lastname_main, lastname_marital, lastname_ordinary,
                                                                      firstname_main, firstname_ordinary, pseudonym
                                                                FROM  profile_public_names
                                                               WHERE  pid = {?}',
                                                             $page->pid());
-
-                $flags = new PlFlagSet($value['public_names']['particles']);
-                unset($value['public_names']['particles']);
-                static $suffixes = array('main', 'marital', 'ordinary');
-
-                foreach ($suffixes as $suffix) {
-                    $value['public_names']['particle_' . $suffix] = $flags->hasFlag($suffix);
-                }
             } else {
                 $value['public_names'] = $request;
                 Platal::page()->assign('validation', true);

@@ -30,13 +30,9 @@
   </td>
   <td>
     <input type="text" name="search_names[public_names][{$type}]" value="{$names.$type}"
-      title="Coche la case en bout de ligne si ton nom commence par une particule."
       {if t($names.$error)} class="error"{/if} size="25" onkeyup="updateNameDisplay({$isFemale});"/>
   </td>
-  <td>
-    <input type="checkbox"{if t($names.$particle) neq ''} checked="checked"{/if}
-      title="Coche cette case si ton nom commence par une particule." />
-  </td>
+  <td></td>
 </tr>
 {/foreach}
 

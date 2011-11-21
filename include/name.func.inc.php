@@ -195,19 +195,11 @@ function update_display_names(Profile $profile, array $public_names, array $priv
 
 function update_public_names($pid, array $public_names)
 {
-    $public_names['particles'] = new PlFlagSet();
-    static $suffixes = array('main', 'marital', 'ordinary');
-    foreach ($suffixes as $suffix) {
-        if (isset($public_names['particle_' . $suffix]) && ($public_names['particle_' . $suffix] == 1 || $public_names['particle_' . $suffix] == 'on')) {
-            $public_names['particles']->addFlag($suffix, 1);
-        }
-    }
-
     XDB::execute('UPDATE  profile_public_names
-                     SET  particles = {?}, lastname_main = {?}, lastname_marital = {?}, lastname_ordinary = {?},
+                     SET  lastname_main = {?}, lastname_marital = {?}, lastname_ordinary = {?},
                           firstname_main = {?}, firstname_ordinary = {?}, pseudonym = {?}
                    WHERE  pid = {?}',
-                 $public_names['particles'], $public_names['lastname_main'], $public_names['lastname_marital'], $public_names['lastname_ordinary'],
+                 $public_names['lastname_main'], $public_names['lastname_marital'], $public_names['lastname_ordinary'],
                  $public_names['firstname_main'], $public_names['firstname_ordinary'], $public_names['pseudonym'], $pid);
 }
 
