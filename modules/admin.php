@@ -853,6 +853,7 @@ class AdminModule extends PLModule
                   default:
                     $page->killError("La formation n'est pas reconnue : " . Env::t('edu_type') . '.');
                 }
+                $best_domain = User::$sub_mail_domains[$type] . Platal::globals()->mail->domain;
 
                 XDB::startTransaction();
                 foreach ($lines as $line) {
@@ -890,10 +891,10 @@ class AdminModule extends PLModule
                                                VALUES  (100, {?}, {?}, {?}, {?}, {?}, {?}, \'primary\')',
                                          $pid, $eduSchools[Profile::EDU_X], $degreeid, $entry_year, $grad_year, $promotion);
                             XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, full_name, directory_name,
-                                                                 display_name, lastname, firstname, sex)
-                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                                                                 display_name, lastname, firstname, sex, best_domain)
+                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
                                          $infos['hrid'], $type, 0, 'pending', $fullName, $directoryName,
-                                         $infos[1], $infos[0], $infos[1], $sex);
+                                         $infos[1], $infos[0], $infos[1], $sex, $best_domain);
                             $uid = XDB::insertId();
                             XDB::execute('INSERT INTO  account_profiles (uid, pid, perms)
                                                VALUES  ({?}, {?}, {?})',
