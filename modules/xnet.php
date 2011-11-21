@@ -258,11 +258,12 @@ class XnetModule extends PLModule
             $firstname = capitalize_name(Post::t('firstname'));
             $full_name = build_full_name($firstname, $lastname);
             $directory_name = build_directory_name($firstname, $lastname);
+            $sort_name = build_sort_name($firstname, $lastname);
             XDB::query('UPDATE  accounts
-                           SET  full_name = {?}, directory_name = {?}, display_name = {?},
+                           SET  full_name = {?}, directory_name = {?}, sort_name = {?}, display_name = {?},
                                 firstname = {?}, lastname = {?}, sex = {?}
                          WHERE  uid = {?}',
-                       $full_name, $directory_name, Post::t('display_name'),
+                       $full_name, $directory_name, $sort_name, Post::t('display_name'),
                        Post::t('firstname'), Post::t('lastname'),
                        (Post::t('sex') == 'male') ? 'male' : 'female', $user->id());
 

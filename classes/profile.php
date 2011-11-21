@@ -1227,18 +1227,19 @@ class Profile implements PlExportable
      */
     public static function getAccountEquivalentName($name)
     {
-        switch ($name)
-        {
-        case self::DN_DIRECTORY:
-        case self::DN_SORT:
+        switch ($name) {
+          case self::DN_DIRECTORY:
             return 'directory_name';
-        case self::DN_FULL:
-        case self::DN_PUBLIC:
+          case self::DN_SORT:
+            return 'sort_name';
+          case self::DN_FULL:
+          case self::DN_PUBLIC:
+          case self::DN_PRIVATE:
+          case self::DN_SHORT:
             return 'full_name';
-        case self::DN_PRIVATE:
-        case self::DN_SHORT:
-        case self::DN_YOURSELF:
-        default:
+          case self::DN_YOURSELF:
+            return 'display_name';
+          default:
             return 'display_name';
         }
     }

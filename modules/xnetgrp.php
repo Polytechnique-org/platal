@@ -525,9 +525,11 @@ class XnetGrpModule extends PLModule
                 }
                 $full_name = build_full_name($firstname, $lastname);
                 $directory_name = build_directory_name($firstname, $lastname);
-                XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, directory_name, firstname, lastname, email, type, state)
-                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, \'xnet\', \'disabled\')',
-                             $hruid, $display_name, $full_name, $directory_name, $firstname, $lastname, $email);
+                $sort_name = build_sort_name($firstname, $lastname);
+                XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, directory_name, sort_name,
+                                                     firstname, lastname, email, type, state)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, \'xnet\', \'disabled\')',
+                             $hruid, $display_name, $full_name, $directory_name, $sort_name, $firstname, $lastname, $email);
                 $uid = XDB::insertId();
                 XDB::execute('INSERT INTO  group_members (asso_id, uid)
                                    VALUES  ({?}, {?})',
@@ -957,9 +959,11 @@ class XnetGrpModule extends PLModule
                     }
                     $full_name = build_full_name($firstname, $lastname);
                     $directory_name = build_directory_name($firstname, $lastname);
-                    XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, directory_name, firstname, lastname, email, type, state)
-                                       VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, \'xnet\', \'disabled\')',
-                                 $hruid, $display_name, $full_name, $directory_name, $firstname, $lastname, $email);
+                    $sort_name = build_sort_name($firstname, $lastname);
+                    XDB::execute('INSERT INTO  accounts (hruid, display_name, full_name, directory_name, sort_name,
+                                                         firstname, lastname, email, type, state)
+                                       VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, \'xnet\', \'disabled\')',
+                                 $hruid, $display_name, $full_name, $directory_name, $sort_name, $firstname, $lastname, $email);
                     $user = User::getSilent($hruid);
                 }
 
@@ -1256,11 +1260,12 @@ class XnetGrpModule extends PLModule
                 }
                 $full_name = build_full_name($firstname, $lastname);
                 $directory_name = build_directory_name($firstname, $lastname);
+                $sort_name = build_sort_name($firstname, $lastname);
                 XDB::query('UPDATE  accounts
-                               SET  full_name = {?}, directory_name = {?}, display_name = {?},
+                               SET  full_name = {?}, directory_name = {?}, sort_name = {?}, display_name = {?},
                                     firstname = {?}, lastname = {?}, sex = {?}, type = {?}
                              WHERE  uid = {?}',
-                           $full_name, $directory_name, Post::t('display_name'), $firstname, $lastname,
+                           $full_name, $directory_name, $sort_name, Post::t('display_name'), $firstname, $lastname,
                            (Post::t('sex') == 'male') ? 'male' : 'female',
                            (Post::t('type') == 'xnet') ? 'xnet' : 'virtual', $user->id());
             }

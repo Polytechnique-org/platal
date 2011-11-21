@@ -469,6 +469,7 @@ class AdminModule extends PLModule
                     }
                     $to_update['full_name'] = build_full_name($firstname, $lastname);
                     $to_update['directory_name'] = build_directory_name($firstname, $lastname);
+                    $to_update['sort_name'] = build_sort_name($firstname, $lastname);
                 }
                 if (Post::s('display_name') != $user->displayName()) {
                     $to_update['display_name'] = Post::s('display_name');
@@ -866,6 +867,7 @@ class AdminModule extends PLModule
                         if (!is_null($sex)) {
                             $fullName = build_full_name($firstname, $lastname);
                             $directoryName = build_directory_name($firstname, $lastname);
+                            $sortName = build_sort_name($firstname, $lastname);
                             $birthDate = self::formatBirthDate($infos[2]);
                             if ($type == 'x') {
                                 $xorgId = Profile::getXorgId($infos[4]);
@@ -890,14 +892,14 @@ class AdminModule extends PLModule
                             XDB::execute('INSERT INTO  profile_display (pid, yourself, public_name, private_name,
                                                                         directory_name, short_name, sort_name, promo)
                                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                                         $pid, $firstname, $fullName, $fullName, $directoryName, $fullName, $directoryName, $promo);
+                                         $pid, $firstname, $fullName, $fullName, $directoryName, $fullName, $sortName, $promo);
                             XDB::execute('INSERT INTO  profile_education (id, pid, eduid, degreeid, entry_year, grad_year, promo_year, flags)
                                                VALUES  (100, {?}, {?}, {?}, {?}, {?}, {?}, \'primary\')',
                                          $pid, $eduSchools[Profile::EDU_X], $degreeid, $entry_year, $grad_year, $promotion);
                             XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, full_name, directory_name,
-                                                                 display_name, lastname, firstname, sex, best_domain)
-                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                                         $infos['hrid'], $type, 0, 'pending', $fullName, $directoryName,
+                                                                 display_name, sort_name, lastname, firstname, sex, best_domain)
+                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                                         $infos['hrid'], $type, 0, 'pending', $fullName, $directoryName, $sortName,
                                          $firstname, $lastname, $firstname, $sex, $best_domain);
                             $uid = XDB::insertId();
                             XDB::execute('INSERT INTO  account_profiles (uid, pid, perms)
@@ -919,11 +921,12 @@ class AdminModule extends PLModule
                             $firstname = capitalize_name($infos[1]);
                             $fullName = build_full_name($firstname, $lastname);
                             $directoryName = build_directory_name($firstname, $lastname);
+                            $sortName = build_sort_name($firstname, $lastname);
                             XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, email, full_name, directory_name,
-                                                                 display_name, lastname, firstname, sex)
-                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                                                                 sort_name, display_name, lastname, firstname, sex)
+                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
                                          $infos['hrid'], $type, 0, 'pending', $infos[2], $fullName, $directoryName,
-                                         $firstname, $lastname, $firstname, $sex);
+                                         $sortName ,$firstname, $lastname, $firstname, $sex);
                             $newAccounts[$infos['hrid']] = $fullName;
                         }
                     }

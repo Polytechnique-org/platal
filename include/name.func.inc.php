@@ -194,7 +194,7 @@ function update_account_from_profile($uid)
               INNER JOIN  profile_display      AS pd  ON (pd.pid = ap.pid)
                      SET  a.lastname = IF(ppn.lastname_ordinary = '', ppn.lastname_main, ppn.lastname_ordinary),
                           a.firstname = IF(ppn.firstname_ordinary = '', ppn.firstname_main, ppn.firstname_ordinary),
-                          a.full_name = pd.short_name, a.directory_name = pd.directory_name
+                          a.full_name = pd.short_name, a.directory_name = pd.directory_name, a.sort_name = pd.sort_name
                    WHERE  a.uid = {?}",
                  $uid);
 }
