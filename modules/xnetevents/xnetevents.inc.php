@@ -79,7 +79,7 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
         if ($m['montant']) {
             $evt['money'] = true;
         }
-        $evt['paid']  = $m['paid'];
+        $evt['paid'] += $m['paid'];
         $evt['notify_payment'] = $evt['notify_payment'] || $m['notify_payment'];
     }
 

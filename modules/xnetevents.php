@@ -594,7 +594,9 @@ class XnetEventsModule extends PLModule
                 $amount = strtr(Env::v('montant'), ',', '.');
                 XDB::execute("UPDATE group_event_participants
                                  SET paid = paid + {?}
-                               WHERE uid = {?} AND eid = {?} AND item_id = 1",
+                               WHERE uid = {?} AND eid = {?} AND nb > 0
+                            ORDER BY item_id ASC
+                               LIMIT 1",
                              $amount, $member->uid, $evt['eid']);
                 subscribe_lists_event($member->uid, $evt['short_name'], 1, $amount);
             }
