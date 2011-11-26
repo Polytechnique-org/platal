@@ -1,6 +1,11 @@
 ================================================================================
 VERSION 1.1.5                                                         XX XX XXXX
 
+Bug/Wish:
+
+    * Search:
+        - #1574: Correctly displays State corps                            -GLN
+
 From 1.1.4 branch:
 
     * XnetEvent:

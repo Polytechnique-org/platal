@@ -158,8 +158,8 @@ class SearchModule extends PLModule
         $networks[0] = '-';
         ksort($networks);
         $page->assign('networking_types', $networks);
-        $origin_corps_list = DirEnum::getOptions(DirEnum::CURRENTCORPS);
-        $current_corps_list = DirEnum::getOptions(DirEnum::ORIGINCORPS);
+        $origin_corps_list = DirEnum::getOptions(DirEnum::ORIGINCORPS);
+        $current_corps_list = DirEnum::getOptions(DirEnum::CURRENTCORPS);
         $corps_rank_list = DirEnum::getOptions(DirEnum::CORPSRANKS);
         $origin_corps_list[0] = '-';
         $current_corps_list[0] = '-';
