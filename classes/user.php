@@ -85,8 +85,8 @@ class User extends PlUser
         // Checks whether $login is a valid hruid or not.
         $res = XDB::query('SELECT  uid
                              FROM  accounts
-                            WHERE  hruid' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $login));
-        if ($res->numRows() == 1) {
+                             WHERE  hruid = {?}', $login);
+        if ($res->numRows()) {
             return $res->fetchOneCell();
         }
 
