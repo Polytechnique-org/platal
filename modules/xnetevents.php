@@ -603,7 +603,7 @@ class XnetEventsModule extends PLModule
 
             // change the number of personns coming with a participant
             if (Env::v('adm') == 'nbs' && $member) {
-                $res = XDB::query("SELECT paid
+                $res = XDB::query("SELECT SUM(paid)
                                      FROM group_event_participants
                                     WHERE uid = {?} AND eid = {?}",
                                   $member->uid, $evt['eid']);
@@ -625,7 +625,7 @@ class XnetEventsModule extends PLModule
                                  GROUP BY  uid',
                                   $member->uid, $evt['eid']);
                 $u = $res->fetchOneAssoc();
-                if ($u['cnt'] == 1 && $paid == 0 && Post::v('cancel')) {
+                if ($paid == 0 && Post::v('cancel')) {
                     XDB::execute("DELETE FROM group_event_participants
                                         WHERE uid = {?} AND eid = {?}",
                                     $member->uid, $evt['eid']);

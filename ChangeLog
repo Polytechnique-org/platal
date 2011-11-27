@@ -8,6 +8,7 @@ Bug/Wish:
 
     * XnetEvent:
         - #1577: Fixes alternative payements given by admins               -GLN
+        - #1578: Fixes deletion of people inscriptions                     -GLN
 
 From 1.1.4 branch:
 
