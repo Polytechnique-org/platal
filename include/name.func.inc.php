@@ -19,14 +19,17 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// Some particles should not be capitalized (cf "ORTHOTYPO", by Jean-Pierre
-// Lacroux).
-// Note that some of them are allowed to use capital letters in some cases,
-// for instance "De" in American English.
-static $particles = array('d', 'de', 'an', 'auf', 'von', 'von dem',
-                          'von der', 'zu', 'of', 'del', 'de las',
-                          'de les', 'de los', 'las', 'los', 'y', 'a',
-                          'da', 'das', 'do', 'dos', 'af', 'av');
+class Particles
+{
+    // Some particles should not be capitalized (cf "ORTHOTYPO", by Jean-Pierre
+    // Lacroux).
+    // Note that some of them are allowed to use capital letters in some cases,
+    // for instance "De" in American English.
+    public static $particles = array('d', 'de', 'an', 'auf', 'von', 'von dem',
+                                     'von der', 'zu', 'of', 'del', 'de las',
+                                     'de les', 'de los', 'las', 'los', 'y', 'a',
+                                     'da', 'das', 'do', 'dos', 'af', 'av');
+}
 
 
 function build_javascript_names($data, $isFemale)
@@ -148,10 +151,10 @@ function build_full_name($firstname, $lastname)
 function build_sort_name($firstname, $lastname)
 {
     // Remove uncapitalized particles.
-    $particles = "/^(d'|(" . implode($particles, '|') . ') )/';
+    $particles = "/^(d'|(" . implode(Particles::$particles, '|') . ') )/';
     $name = preg_replace($particles, '', $lastname);
     // Mac must also be uniformized.
-    $lastname = preg_replace("/^(Mac|Mc)(| )/", 'Mac', $name);
+    $lastname = preg_replace("/^(Mac|Mc)( |)/", 'Mac', $name);
 
     if ($firstname == '') {
         return $lastname;
@@ -266,7 +269,7 @@ function capitalize_name($name)
     }
 
     // Capitalizes the first token.
-    if (!in_array($token, $particles)) {
+    if (!in_array($token, Particles::$particles)) {
         $token = mb_ucfirst($token);
     }
 
