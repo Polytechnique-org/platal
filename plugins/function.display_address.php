@@ -69,6 +69,11 @@ function smarty_function_display_address($param, $smarty)
     $map = "<a href=\"http://maps.google.fr/?q="
         .   urlencode(implode(", ", $lines) . " ($idt)")
         . "\"><img src=\"images/icons/map.gif\" alt=\"Google Maps\" title=\"Carte\"/></a>";
+    if ($adr->flags->hasflag('mail')) {
+        $mail = '&nbsp;<img src="images/icons/email_open.gif" alt="Adresse courier" title="On peut lui envoyer du courier à cette adresse." />';
+    } else {
+        $mail = '';
+    }
     $comment = "";
     if ($adr->comment != "")
     {
@@ -89,9 +94,9 @@ function smarty_function_display_address($param, $smarty)
     if ($param['titre'])
     {
         if ($param['titre_div'])
-            $txthtml .= "<div class='titre'>".pl_entity_decode($param['titre'])."&nbsp;".$map.$comment."</div>\n";
+            $txthtml .= '<div class="titre">' . pl_entity_decode($param['titre']) . '&nbsp;' . $map . $mail . $comment . "</div>\n";
         else
-            $txthtml .= "<em>".pl_entity_decode($param['titre'])."&nbsp;</em>".$map.$comment."<br />\n";
+            $txthtml .= '<em>' . pl_entity_decode($param['titre']) . '&nbsp;</em>' . $map . $mail . $comment . "<br />\n";
     }
     foreach ($lines as $line)
     {
