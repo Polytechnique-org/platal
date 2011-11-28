@@ -237,18 +237,20 @@ class XnetEventsModule extends PLModule
         }
 
         // update actual inscriptions
-        $updated = false;
-        $total   = 0;
-        $paid    = $evt['paid'] ? $evt['paid'] : 0;
-        $telepaid= $evt['telepaid'] ? $evt['telepaid'] : 0;
+        $updated       = false;
+        $total         = 0;
+        $paid          = $evt['paid'] ? $evt['paid'] : 0;
+        $telepaid      = $evt['telepaid'] ? $evt['telepaid'] : 0;
+        $paid_inserted = false;
         foreach ($subs as $j => $nb) {
             if ($nb >= 0) {
                 XDB::execute('INSERT INTO  group_event_participants (eid, uid, item_id, nb, flags, paid)
                                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?})
                   ON DUPLICATE KEY UPDATE  nb = VALUES(nb), flags = VALUES(flags), paid = VALUES(paid)',
                              $eid, S::v('uid'), $j, $nb, (Env::has('notify_payment') ? 'notify_payment' : ''),
-                             ($j == 1 ? $paid - $telepaid : 0));
+                             ((!$paid_inserted) ? $paid - $telepaid : 0));
                 $updated = $eid;
+                $paid_inserted = true;
             } else {
                 XDB::execute(
                     "DELETE FROM  group_event_participants
@@ -608,15 +610,22 @@ class XnetEventsModule extends PLModule
                                     WHERE uid = {?} AND eid = {?}",
                                   $member->uid, $evt['eid']);
 
-                $paid = intval($res->fetchOneCell());
+                $paid = $res->fetchOneCell();
                 $nbs  = Post::v('nb', array());
 
+                $paid_inserted = false;
                 foreach ($nbs as $id => $nb) {
                     $nb = max(intval($nb), 0);
+                    if (!$paid_inserted && $nb > 0) {
+                        $item_paid = $paid;
+                        $paid_inserted = true;
+                    } else {
+                        $item_paid = 0;
+                    }
                     XDB::execute('INSERT INTO  group_event_participants (eid, uid, item_id, nb, flags, paid)
                                        VALUES  ({?}, {?}, {?}, {?}, {?}, {?})
                       ON DUPLICATE KEY UPDATE  nb = VALUES(nb), flags = VALUES(flags), paid = VALUES(paid)',
-                                 $evt['eid'], $member->uid, $id, $nb, '', ($id == 1 ? $paid : 0));
+                                 $evt['eid'], $member->uid, $id, $nb, '', $item_paid);
                 }
 
                 $res = XDB::query('SELECT  COUNT(uid) AS cnt, SUM(nb) AS nb
