@@ -103,6 +103,8 @@
       <a href="admin/homonyms">Homonymes</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/deaths">Décès</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/name">Noms</a>
     </td>
   </tr>
   <tr class="pair">

@@ -83,6 +83,12 @@
       </div>
     </td>
   </tr>
+  <tr class="names_advanced_private" {if !$errors.search_names}style="display: none"{/if}>
+    <td class="center" colspan="2">
+      <small>Si la casse de ton nom est erronée et que tu n'arrives pas à la corriger,
+      <a href="mailto:support@{#globals.mail.domain#}">contacte-nous</a>.</small>
+    </td>
+  </tr>
 </table>
 
 <table class="bicol" style="margin-bottom: 1em"

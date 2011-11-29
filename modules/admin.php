@@ -55,6 +55,7 @@ class AdminModule extends PLModule
             'admin/jobs'                   => $this->make_hook('jobs',                   AUTH_PASSWD, 'admin,edit_directory'),
             'admin/profile'                => $this->make_hook('profile',                AUTH_PASSWD, 'admin,edit_directory'),
             'admin/phd'                    => $this->make_hook('phd',                    AUTH_PASSWD, 'admin'),
+            'admin/name'                   => $this->make_hook('admin_name',             AUTH_PASSWD, 'admin'),
             'admin/add_secondary_edu'      => $this->make_hook('add_secondary_edu',      AUTH_PASSWD, 'admin')
         );
     }
@@ -2011,6 +2012,107 @@ class AdminModule extends PLModule
             XDB::commit();
         }
 
+    }
+
+    function handler_admin_name($page, $hruid = null)
+    {
+        $page->changeTpl('admin/admin_name.tpl');
+
+        if (Post::has('id')) {
+            $user = User::get(Post::t('id'));
+            if (is_null($user)) {
+                $page->trigError("L'identifiant donné ne correspond à personne ou est ambigu.");
+                exit();
+            }
+            pl_redirect('admin/name/' . $user->hruid);
+        }
+
+        $user = User::getSilent($hruid);
+        if (!is_null($user)) {
+            require_once 'name.func.inc.php';
+
+            if ($user->hasProfile()) {
+                $name_types = array(
+                    'lastname_main'      => 'Nom patronymique',
+                    'lastname_marital'   => 'Nom marital',
+                    'lastname_ordinary'  => 'Nom usuel',
+                    'firstname_main'     => 'Prénom',
+                    'firstname_ordinary' => 'Prénom usuel',
+                    'pseudonym'          => 'Pseudonyme'
+                );
+                $names = XDB::fetchOneAssoc('SELECT  lastname_main, lastname_marital, lastname_ordinary,
+                                                     firstname_main, firstname_ordinary, pseudonym
+                                               FROM  profile_public_names
+                                              WHERE  pid = {?}',
+                                            $user->profile()->id());
+            } else {
+                $name_types = array(
+                    'lastname'  => 'Nom',
+                    'firstname' => 'Prénom'
+                );
+                $names = XDB::fetchOneAssoc('SELECT  lastname, firstname
+                                               FROM  accounts
+                                              WHERE  uid = {?}',
+                                            $user->id());
+            }
+
+            if (Post::has('correct')) {
+                $new_names = array();
+                $update = true;
+                foreach ($name_types as $key => $fullname) {
+                    $new_names[$key] = Post::t($key);
+                    if (mb_strtolower($new_names[$key]) != mb_strtolower($names[$key])) {
+                        $update = false;
+                    }
+                }
+
+                if ($update) {
+                    if ($user->hasProfile()) {
+                        update_public_names($user->profile()->id(), $new_names);
+                        update_display_names($user->profile(), $new_names);
+                    } else {
+                        $new_names['full_name'] = build_full_name($new_names['firstname'], $new_names['lastname']);
+                        $new_names['directory_name'] = build_directory_name($new_names['firstname'], $new_names['lastname']);
+                        $new_names['sort_name'] = build_sort_name($new_names['firstname'], $new_names['lastname']);
+                        XDB::execute('UPDATE  accounts
+                                         SET  lastname = {?}, firstname = {?}, full_name = {?},
+                                              directory_name = {?}, sort_name = {?}
+                                       WHERE  uid = {?}',
+                                     $new_names['lastname'], $new_names['firstname'], $new_names['full_name'],
+                                     $new_names['directory_name'], $new_names['sort_name'], $user->id());
+                    }
+                    $page->trigSuccess('Mise à jour réussie.');
+                } else {
+                    $page->trigError('Seuls des changements de casse sont autorisés ici.');
+                }
+            }
+
+            if ($user->hasProfile()) {
+                $names = XDB::fetchOneAssoc('SELECT  lastname_main, lastname_marital, lastname_ordinary,
+                                                     firstname_main, firstname_ordinary, pseudonym
+                                               FROM  profile_public_names
+                                              WHERE  pid = {?}',
+                                            $user->profile()->id());
+            } else {
+                $names = XDB::fetchOneAssoc('SELECT  lastname, firstname
+                                               FROM  accounts
+                                              WHERE  uid = {?}',
+                                            $user->id());
+            }
+
+            foreach ($names as $key => $name) {
+                $names[$key] = array(
+                    'value'    => $name,
+                    'standard' => capitalize_name($name)
+                );
+                $names[$key]['different'] = ($names[$key]['value'] != $names[$key]['standard']);
+            }
+
+            $page->assign('uid', $user->id());
+            $page->assign('hruid', $user->hruid);
+            $page->assign('names', $names);
+            $page->assign('name_types', $name_types);
+        }
     }
 }
 
