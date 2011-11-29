@@ -1273,9 +1273,12 @@ class XnetGrpModule extends PLModule
                                SET  email = {?}
                              WHERE  uid = {?}',
                            $new_email, $user->id());
-                $listClient = new MMList(S::user());
-                $listClient->change_user_email($user->forlifeEmail(), $new_email);
-                update_alias_user($user->forlifeEmail(), $new_email);
+                if ($user->forlifeEmail()) {
+                    $listClient = new MMList(S::user());
+                    $listClient->change_user_email($user->forlifeEmail(), $new_email);
+                    update_alias_user($user->forlifeEmail(), $new_email);
+                }
+                $user = User::getWithUID($user->id());
             }
             if (XDB::affectedRows()) {
                 $page->trigSuccess('Données de l\'utilisateur mises à jour.');
