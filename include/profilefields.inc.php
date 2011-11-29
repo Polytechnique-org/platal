@@ -875,7 +875,7 @@ class CompanyList
 
     static public function get($id)
     {
-        if (!array_key_exists($id, self::$companies)) {
+        if (!is_null($id) && !array_key_exists($id, self::$companies)) {
             self::preload();
         }
         if (isset(self::$companies[$id])) {
