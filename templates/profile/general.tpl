@@ -60,7 +60,7 @@
     <td></td>
   </tr>
   {/if}
-  <tr class="names_advanced" {if !$errors.search_names}style="display: none"{/if}>
+  <tr class="names_advanced_public" {if !$errors.search_names}style="display: none"{/if}>
     <td colspan="3">
       <span class="titre">Gestion des noms, prénoms, surnoms...</span>
       <span class="smaller">Ils déterminent la façon dont
