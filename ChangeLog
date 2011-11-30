@@ -6,6 +6,9 @@ Bug/Wish:
     * Search:
         - #1574: Correctly displays State corps                            -GLN
 
+    * Validations:
+        - #1571: Fixes the opening of the comments panel                   -GLN
+
     * XnetEvent:
         - #1577: Fixes alternative payements given by admins               -GLN
         - #1578: Fixes deletion of people inscriptions                     -GLN

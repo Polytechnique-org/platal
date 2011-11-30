@@ -390,7 +390,7 @@ abstract class Validate
 
     public function id()
     {
-        return $this->user->id() . '_' . $this->type . '_' . $this->stamp;
+        return str_replace(" ", "_", $this->user->id() . '_' . $this->type . '_' . $this->stamp);
     }
 
     // }}}
