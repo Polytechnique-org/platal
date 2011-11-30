@@ -856,7 +856,10 @@ class AdminModule extends PLModule
                   default:
                     $page->killError("La formation n'est pas reconnue : " . Env::t('edu_type') . '.');
                 }
-                $best_domain = User::$sub_mail_domains[$type] . Platal::globals()->mail->domain;
+                $best_domain = XDB::fetchOneCell('SELECT  id
+                                                    FROM  email_virtual_domains
+                                                   WHERE  name = {?}',
+                                                 User::$sub_mail_domains[$type] . Platal::globals()->mail->domain);
 
                 XDB::startTransaction();
                 foreach ($lines as $line) {
