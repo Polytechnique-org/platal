@@ -22,7 +22,7 @@
 
 <tr class="pair">
   <td class="titre">Groupe demandeur&nbsp;:</td>
-  <td>{$valid->group}</td>
+  <td><a href="http://polytechnique.net/{$valid->dim}">{$valid->group}</a></td>
 </tr>
 <tr class="pair">
   <td class="titre">Adresses emails&nbsp;:</td>

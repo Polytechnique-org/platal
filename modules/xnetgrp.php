@@ -615,8 +615,7 @@ class XnetGrpModule extends PLModule
             $uids_to_enable = array_intersect(array_keys(Post::v('enable_accounts')), $uids);
 
             $user = S::user();
-            $group = Platal::globals()->asso('nom');
-            $request = new BulkAccountsReq($user, $uids_to_enable, $group);
+            $request = new BulkAccountsReq($user, $uids_to_enable, $globals->asso('nom'), $globals->asso('diminutif'));
             $request->submit();
             $page->trigSuccess('Un email va bientôt être envoyé aux personnes sélectionnées pour l\'activation de leur compte.');
 
@@ -1028,11 +1027,13 @@ class XnetGrpModule extends PLModule
 
         if (Post::has('suggest')) {
             if (Post::t('suggest') == 'yes') {
+                global $globals;
+
                 $user = S::user();
-                $request = new AccountReq($user, $hruid, $email, Platal::globals()->asso('nom'));
+                $request = new AccountReq($user, $hruid, $email, $globals->asso('nom'), $globals->asso('diminutif'));
                 $request->submit();
                 $page->trigSuccessRedirect('Un email va bien être envoyé à ' . $email . ' pour l\'activation de son compte.',
-                                           Platal::globals()->asso('diminutif') . '/member/' . $hruid);
+                                           $globals->asso('diminutif') . '/member/' . $hruid);
             } else {
                 pl_redirect('member/' . $hruid);
             }
@@ -1287,7 +1288,7 @@ class XnetGrpModule extends PLModule
 
             if (($user->type == 'xnet' && !$user->perms)) {
                 if (Post::b('suggest')) {
-                    $request = new AccountReq(S::user(), $user->hruid, Post::t('email'), $globals->asso('nom'));
+                    $request = new AccountReq(S::user(), $user->hruid, Post::t('email'), $globals->asso('nom'), $globals->asso('diminutif'));
                     $request->submit();
                     $page->trigSuccess('Le compte va bientôt être activé.');
                 }

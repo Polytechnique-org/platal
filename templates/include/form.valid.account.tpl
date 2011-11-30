@@ -22,11 +22,15 @@
 
 <tr class="pair">
   <td class="titre">Groupe demandeur&nbsp;:</td>
-  <td>{$valid->group}</td>
+  <td><a href="http://polytechnique.net/{$valid->dim}">{$valid->group}</a></td>
 </tr>
 <tr class="pair">
   <td class="titre">Tous les groupes&nbsp;:</td>
-  <td>{$valid->groups}</td>
+  <td>
+  {foreach from=$valid->groups item=group}
+    <a href="http://polytechnique.net/{$group.diminutif}">{$group.nom}</a>
+  {/foreach}
+  </td>
 </tr>
 <tr class="pair">
   <td class="titre">Adresse email&nbsp;:</td>

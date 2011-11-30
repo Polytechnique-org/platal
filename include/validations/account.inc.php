@@ -28,6 +28,7 @@ class AccountReq extends Validate
     public $hruid;
     public $email;
     public $group;
+    public $dim;
     public $groups;
 
     public $rules = "Accepter si l'adresse email parait correcte, et pas absurde
@@ -37,22 +38,23 @@ class AccountReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct(User $user, $hruid, $email, $group)
+    public function __construct(User $user, $hruid, $email, $group, $dim)
     {
         parent::__construct($user, false, 'account');
         $this->hruid = $hruid;
         $this->email = $email;
         $this->group = $group;
+        $this->dim   = $dim;
         $this->uid = XDB::fetchOneCell('SELECT  uid
                                           FROM  accounts
                                          WHERE  hruid = {?}',
                                        $hruid);
-        $this->groups = implode(',', XDB::fetchColumn('SELECT  g.nom
-                                                         FROM  groups AS g
-                                                   INNER JOIN  group_members AS m ON (g.id = m.asso_id)
-                                                        WHERE  m.uid = {?}
-                                                     ORDER BY  g.nom',
-                                                      $this->uid));
+        $this->groups = XDB::fetchAllAssoc('SELECT  g.nom, g.diminutif
+                                              FROM  groups AS g
+                                        INNER JOIN  group_members AS m ON (g.id = m.asso_id)
+                                             WHERE  m.uid = {?}
+                                          ORDER BY  g.nom',
+                                           $this->uid);
     }
 
     // }}}

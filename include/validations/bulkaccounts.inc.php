@@ -27,16 +27,18 @@ class BulkAccountsReq extends Validate
     private $limit = 50;
     public $users;
     public $group;
+    public $dim;
 
     public $rules = "Accepter si les adresses email paraissent correctes, et pas
         absurdes et si le demandeur est de confiance.";
     // }}}
     // {{{ constructor
 
-    public function __construct(User $user, array $uids, $group)
+    public function __construct(User $user, array $uids, $group, $dim)
     {
         parent::__construct($user, false, 'bulkaccounts');
         $this->group = $group;
+        $this->dim   = $dim;
         $this->users = XDB::fetchAllAssoc('SELECT  uid, hruid, email
                                              FROM  accounts
                                             WHERE  uid IN {?}',
