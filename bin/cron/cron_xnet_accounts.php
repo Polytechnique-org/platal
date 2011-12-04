@@ -41,6 +41,7 @@ foreach ($users as $user) {
     $mailer->assign('group', $user['group_name']);
     $mailer->assign('sender_name', $user['sender_name']);
     $mailer->assign('again', false);
+    $mailer->assign('baseurl', Platal::globals()->baseurl);
     $mailer->send();
 
     XDB::execute('UPDATE  accounts

@@ -1273,14 +1273,18 @@ class XnetGrpModule extends PLModule
 
             // Updates email.
             $new_email = strtolower(Post::t('email'));
-            if (!$user->perms && require_email_update($user, $new_email)) {
+            if (($user->type == 'virtual' || ($user->type == 'xnet' && !$user->perms))
+                && require_email_update($user, $new_email)) {
                 XDB::query('UPDATE  accounts
                                SET  email = {?}
                              WHERE  uid = {?}',
                            $new_email, $user->id());
-                $listClient = new MMList(S::user());
-                $listClient->change_user_email($user->forlifeEmail(), $new_email);
-                update_alias_user($user->forlifeEmail(), $new_email);
+                if ($user->forlifeEmail()) {
+                    $listClient = new MMList(S::user());
+                    $listClient->change_user_email($user->forlifeEmail(), $new_email);
+                    update_alias_user($user->forlifeEmail(), $new_email);
+                }
+                $user = User::getWithUID($user->id());
             }
             if (XDB::affectedRows()) {
                 $page->trigSuccess('Données de l\'utilisateur mises à jour.');
@@ -1306,6 +1310,7 @@ class XnetGrpModule extends PLModule
                     $mailer->assign('group', $data['group_name']);
                     $mailer->assign('sender_name', $data['sender_name']);
                     $mailer->assign('again', true);
+                    $mailer->assign('baseurl', Platal::globals()->xnet->xorg_baseurl);
                     $mailer->send();
                     $page->trigSuccess('Relance effectuée avec succès.');
                 }
