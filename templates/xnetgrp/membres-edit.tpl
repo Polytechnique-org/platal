@@ -49,7 +49,9 @@
 
 <h2>
   Édition du profil de {profile user=$user groupperms=false sex=false promo=true}
+  {if $user->bestEmail()}
   <a href="mailto:{$user->bestEmail()}">{icon name=email title="mail"}</a>
+  {/if}
 </h2>
 
 <form method="post" action="{$platal->ns}member/{$platal->argv[1]}">
@@ -213,6 +215,7 @@
     {/if}
   </table>
 
+  {if $user->bestEmail()}
   <h2>Abonnement aux listes</h2>
 
   <table cellpadding="0" cellspacing="0" class='large'>
@@ -261,6 +264,9 @@
     <tr><td colspan='2'>Pas d'alias pour ce groupe</td></tr>
     {/foreach}
   </table>
+  {else}
+  <p>Cette personne n'a pas d'email renseigné sur le site et ne peut donc pas être inscrite aux listes de diffusions et aux alias du groupe.</p>
+  {/if}
 
   <div class="center">
     <br />
