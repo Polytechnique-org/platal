@@ -27,16 +27,7 @@
       var state = (box.value != 'virtual') ? '' : 'none';
       document.getElementById('prenom').style.display = state;
       document.getElementById('sexe').style.display = state;
-      document.getElementById('make_X').style.display = state;
       document.getElementById('password').style.display = state;
-  }
-
-  function showXInput(box)
-  {
-     if (box.checked) {
-       document.getElementById('make_X_cb').style.display = 'none';
-       document.getElementById('make_X_login').style.display = '';
-     }
   }
 {/literal}
 </script>
@@ -194,18 +185,7 @@
     </tr>
     {/if}
     {if $user->type eq 'xnet'}
-    <tr id="make_X">
-      <td colspan="2">
-        <span id="make_X_cb">
-          <input type="checkbox" name="is_x" id="is_x" onclick="showXInput(this);" onchange="showXInput(this);" />
-          <label for="is_x">coche cette case s'il s'agit d'un X ou un master ou doctorant de l'X</label>
-        </span>
-        <span id="make_X_login" style="display: none">
-          <span class="titre">Identifiant (prenom.nom.promo)&nbsp;:</span>
-          <input type="text" name="login_X" value="" />
-        </span>
-      </td>
-    </tr>
+    {include file="xnetgrp/members_new_form.tpl" registered=true}
     {/if}
     {if $user->type eq 'xnet' && $suggest}
     <tr>

@@ -51,6 +51,7 @@ class XnetGrpModule extends PLModule
             '%grp/member/new/ajax' => $this->make_hook('admin_member_new_ajax', AUTH_PASSWD, 'groups', NO_AUTH),
             '%grp/member/del'      => $this->make_hook('admin_member_del',      AUTH_PASSWD, 'groupadmin'),
             '%grp/member/suggest'  => $this->make_hook('admin_member_suggest',  AUTH_PASSWD, 'groupadmin'),
+            '%grp/member/reg'      => $this->make_hook('admin_member_reg',      AUTH_PASSWD, 'groupadmin'),
 
             '%grp/rss'             => $this->make_token_hook('rss',             AUTH_PUBLIC),
             '%grp/announce/new'    => $this->make_hook('edit_announce',         AUTH_PASSWD, 'groupadmin'),
@@ -881,6 +882,7 @@ class XnetGrpModule extends PLModule
         global $globals;
 
         $page->changeTpl('xnetgrp/membres-add.tpl');
+        $page->addJsLink('xnet_members.js');
 
         if (is_null($email)) {
             return;
@@ -909,16 +911,20 @@ class XnetGrpModule extends PLModule
                 XDB::query('UPDATE  accounts
                                SET  email = {?}
                              WHERE  uid = {?} AND email IS NULL',
-                           Post::t('email'), $user->id());
+                           $email, $user->id());
                 // Add email for marketing if required.
-                if (Env::v('market')) {
+                if (Env::v('marketing')) {
                     $market = Marketing::get($user->uid, $email);
                     if (!$market) {
                         $market = new Marketing($user->uid, $email, 'group', $globals->asso('nom'),
-                                                Env::v('market_from'), S::v('uid'));
+                                                Env::v('marketing_from'), S::v('uid'));
                         $market->add();
                     }
                 }
+            } elseif (Env::v('broken')) {
+                // Add email for broken if required.
+                $valid = new BrokenReq(S::user(), $user, $email, 'Groupe : ' . $globals->asso('nom'));
+                $valid->submit();
             }
         } else {
             $user = User::getSilent($email);
@@ -1042,20 +1048,34 @@ class XnetGrpModule extends PLModule
         $page->assign('hruid', $hruid);
     }
 
+    function handler_admin_member_reg($page, $uid)
+    {
+        pl_content_headers('text/plain');
+
+        $user = User::getSilentWithUID($uid);
+        if ($user && $user->state != 'pending' && $user->hasProfile()) {
+            echo true;
+        }
+        echo false;
+        exit();
+    }
+
     function handler_admin_member_new_ajax($page)
     {
         pl_content_headers("text/html");
         $page->changeTpl('xnetgrp/membres-new-search.tpl', NO_SKIN);
         $users = array();
+        $same_email = false;
         if (Env::has('login')) {
             $user = User::getSilent(Env::t('login'));
             if ($user && $user->state != 'pending') {
-                $users = array($user);
+                $users = array($user->id() => $user);
+                $same_email = true;
             }
         }
         if (empty($users)) {
             list($lastname, $firstname) = str_replace(array('-', ' ', "'"), '%', array(Env::t('nom'), Env::t('prenom')));
-            $cond = new PFC_And(new PFC_Not(new UFC_Registered()));
+            $cond = new PFC_And();
             if (!empty($lastname)) {
                 $cond->addChild(new UFC_NameTokens($lastname, array(), false, false, Profile::LASTNAME));
             }
@@ -1072,7 +1092,9 @@ class XnetGrpModule extends PLModule
                 $users = array();
             }
         }
+
         $page->assign('users', $users);
+        $page->assign('same_email', $same_email);
     }
 
     function unsubscribe(PlUser $user, $remember = false)
@@ -1195,7 +1217,7 @@ class XnetGrpModule extends PLModule
         }
     }
 
-    private function changeLogin(PlPage $page, PlUser $user, $login)
+    private function changeLogin(PlPage $page, PlUser $user, $login, $req_broken = false, $req_marketing = false, $marketing_from = 'user')
     {
         // Search the user's uid.
         $xuser = User::getSilent($login);
@@ -1213,6 +1235,19 @@ class XnetGrpModule extends PLModule
 
         if (!$xuser) {
             return false;
+        }
+
+        // Market or suggest new redirection if required.
+        $email = $user->bestEmail();
+        if ($req_broken) {
+            $valid = new BrokenReq(S::user(), $xuser, $email, 'Groupe : ' . Platal::globals()->asso('nom'));
+            $valid->submit();
+        } elseif ($req_marketing) {
+            $market = Marketing::get($xuser->uid, $email);
+            if (!$market) {
+                $market = new Marketing($xuser->uid, $email, 'group', Platal::globals()->asso('nom'), $marketing_from, S::i('uid'));
+                $market->add();
+            }
         }
 
         if ($user->mergeIn($xuser)) {
@@ -1235,6 +1270,7 @@ class XnetGrpModule extends PLModule
         }
 
         $page->changeTpl('xnetgrp/membres-edit.tpl');
+        $page->addJsLink('xnet_members.js');
 
         $mmlist = new MMList(S::user(), $globals->asso('mail_domain'));
 
@@ -1244,8 +1280,8 @@ class XnetGrpModule extends PLModule
             require_once 'name.func.inc.php';
 
             // Convert user status to X
-            if (!Post::blank('login_X')) {
-                $forlife = $this->changeLogin($page, $user, Post::t('login_X'));
+            if (!Post::blank('x')) {
+                $forlife = $this->changeLogin($page, $user, Post::i('userid'), Post::b('broken'), Post::b('marketing'), Post::v('marketing_from'));
                 if ($forlife) {
                     pl_redirect('member/' . $forlife);
                 }

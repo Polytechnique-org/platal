@@ -20,39 +20,28 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso->nom}&nbsp;: Ajout d'un membre</h1>
-
-<form method="post" action="{$platal->ns}member/new/">
-  {xsrf_token_field}
-  <ul class='descr'>
-    <li>
-      Pour ajouter un X dans ton groupe, il suffit d'entrer ici une de ses
-      adresses email @polytechnique.org. S'il n'est pas inscrit à Polytechnique.org
-      coche la case qui se trouve sous le formulaire et indique ses noms, prénoms et
-      promotions.
-    </li>
-    <li>
-      Pour ajouter un extérieur dans ton groupe, il suffit d'entrer ici son
-      adresse email, tu seras ensuite redirigé vers une page te permettant
-      d'éditer son profil (nom, prenom&hellip;).
-    </li>
-  </ul>
-  <table class="tinybicol">
-    <tr>
-      <td class="center" colspan="2">
-        <input type="text" id="email" name="email" size="40" value="{if t($platal->argv[1])}{$platal->argv[1]}{/if}" />
-        <input type="hidden" name="force_continue" value="{if t($force_continue)}1{else}0{/if}" />
-        <input type='submit' value='Ajouter'
-          onclick='this.form.action += this.form.email.value' />
-      </td>
-    </tr>
-    {include file="xnetgrp/members_new_form.tpl" registered=false}
-  </table>
-</form>
-{literal}
-<script type="text/javascript">
-  $("#email").focus();
-</script>
-{/literal}
+<tr>
+  <td colspan="2">
+    <input type="checkbox" id="x" name="x" onchange="xStateChange(this, '{$platal->ns}');" />
+    <label for="x">Coche cette case s'il s'agit d'un X ou un master ou doctorant de l'X non inscrit à Polytechnique.org.</label>
+  </td>
+</tr>
+<tr class="details" style="display: none">
+  <td class="titre">Nom&nbsp;:</td>
+  <td><input type="text" id="nom" name="nom" size="20" value="" onkeyup="searchX('{$platal->ns}');" /></td>
+</tr>
+<tr class="details" style="display: none">
+  <td class="titre">Prénom&nbsp;:</td>
+  <td><input type="text" id="prenom" name="prenom" size="20" value="" onkeyup="searchX('{$platal->ns}');" /></td>
+</tr>
+<tr class="details" style="display: none">
+  <td class="titre">Promotion&nbsp;:</td>
+  <td><input type="text" id="promo" name="promo" size="4" value="" onkeyup="searchX('{$platal->ns}');" /> <small>(X2004)</small></td>
+</tr>
+<tr class="details pair" style="display: none">
+  <td colspan="2" id="search_result">
+    {include file="xnetgrp/membres-new-search.tpl"}
+  </td>
+</tr>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

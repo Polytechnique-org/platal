@@ -20,27 +20,37 @@
 {*                                                                        *}
 {**************************************************************************}
 
-  {if t($too_many)}
-  Les critères de recherche ne sont pas assez précis.
-  {elseif !t($users) || $users|@count eq 0}
-  Aucun camarade non-inscrit ne correspond aux informations fournies.
-  {else}
-  Camarades correspondants&nbsp;:
-  <select name="userid" onchange="document.getElementById('marketing').style.display = (this.value == 0 ? 'none' : '')">
-    <option value="0">&nbsp;</option>
-    {foreach item=user from=$users}
-    <option value="{$user->id()}" {if $users|@count == 1}selected="selected"{/if}>{profile user=$user link=false promo=true}</option>
-    {/foreach}
+{if t($too_many)}
+Les critères de recherche ne sont pas assez précis.
+{elseif !t($users) || $users|@count eq 0}
+Aucun camarade non-inscrit ne correspond aux informations fournies.
+{else}
+Camarades correspondants&nbsp;:
+<select name="userid" onchange="updateSuggestions('{$platal->ns}', this.value)">
+  <option value="0" {if $users|@count neq 1}selected="selected"{/if}>&nbsp;</option>
+  {foreach item=user from=$users}
+  <option value="{$user->id()}" {if $users|@count == 1}selected="selected"{/if}>{profile user=$user link=false promo=true}</option>
+  {/foreach}
+</select>
+{if !$same_email}
+<span id="marketing" style="display: none"><br />
+  <label>
+    <input type="checkbox" name="marketing" onchange="$('#marketing_from').toggle()" />
+    Lui envoyer un marketing
+  </label>
+  <select name="marketing_from" id="marketing_from">
+    <option value="user" selected="selected">de ta part.</option>
+    <option value="staff">de la part de Polytechnique.org.</option>
   </select>
-  <span id="marketing" {if $users|@count != 1}style="display: none"{/if}><br />
-    <label><input type="checkbox" name="market" checked="checked"
-        onchange="document.getElementById('from').style.display = (this.checked ? '' : 'none')"/>
-    Lui envoyer un marketing</label>
-    <select name="market_from" id="from">
-      <option value="user" selected="selected">de ta part.</option>
-      <option value="staff">de la part de Polytechnique.org.</option>
-    </select>
-  </span>
-  {/if}
+</span>
+<span id="broken" style="display: none"><br />
+  Ce camarade est inscrit, mais l'email fourni ne fait pas partie de ses adresses de redirection.<br />
+  <label>
+    <input type="checkbox" name="broken" />
+    Lui suggérer d'ajouter cette adresse email à ses redirections.
+  </label>
+</span>
+{/if}
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
