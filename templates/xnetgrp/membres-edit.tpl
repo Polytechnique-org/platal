@@ -54,6 +54,24 @@
   {/if}
 </h2>
 
+{if $user->type eq 'x' || $user->type eq 'master' || $user->type eq 'phd'}
+{if $user->state eq 'pending'}
+<p>
+  {"Ce"|sex:"Cette":$user} camarade n'est pas {"inscrit"|sex:"inscrite":$user}.
+  <a href="{$globals->xnet->xorg_baseurl}marketing/public/{$user->login()}" class='popup'>Si tu connais son adresse email,
+    <strong>n'hésite pas à nous la transmettre !</strong>
+  </a>
+</p>
+{elseif $user->state neq 'disabled' && $user->lost}
+<p>
+  {"Ce"|sex:"Cette":$user} camarade n'a plus d'adresse de redirection valide.
+  <a href="{$globals->xnet->xorg_baseurl}marketing/broken/{$user->login()}">
+    Si tu en connais une, <strong>n'hésite pas à nous la transmettre</strong>.
+  </a>
+</p>
+{/if}
+{/if}
+
 <form method="post" action="{$platal->ns}member/{$platal->argv[1]}">
   {xsrf_token_field}
   <table cellpadding="0" cellspacing="0" class='tinybicol'>
