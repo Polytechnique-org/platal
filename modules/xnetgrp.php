@@ -1305,6 +1305,7 @@ class XnetGrpModule extends PLModule
                     $mailer->assign('group', $data['group_name']);
                     $mailer->assign('sender_name', $data['sender_name']);
                     $mailer->assign('again', true);
+                    $mailer->assign('baseurl', Platal::globals()->xnet->xorg_baseurl);
                     $mailer->send();
                     $page->trigSuccess('Relance effectuée avec succès.');
                 }

@@ -37,7 +37,7 @@ mot de passe : celui que vous choisirez
 
 Vous pouvez, dès à présent et pendant une période d'un mois, activer votre compte en cliquant sur le lien suivant :
 
-{$globals->baseurl}/register/ext/{$hash}
+{$baseurl}register/ext/{$hash}
 
 Si le lien ne fonctionne pas, copiez intégralement ce lien dans la barre d'adresse de votre navigateur.
 
