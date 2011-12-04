@@ -1268,7 +1268,8 @@ class XnetGrpModule extends PLModule
 
             // Updates email.
             $new_email = strtolower(Post::t('email'));
-            if (!$user->perms && require_email_update($user, $new_email)) {
+            if (($user->type == 'virtual' || ($user->type == 'xnet' && !$user->perms))
+                && require_email_update($user, $new_email)) {
                 XDB::query('UPDATE  accounts
                                SET  email = {?}
                              WHERE  uid = {?}',
