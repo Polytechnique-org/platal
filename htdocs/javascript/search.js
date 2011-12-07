@@ -124,7 +124,10 @@ function display_list(field_name)
 // }}}
 // {{{ Regexps to wipe out from search queries
 
-var default_form_values = [ /&woman=0(&|$)/, /&subscriber=0(&|$)/, /&alive=0(&|$)/, /&egal[12]=[^&]*&promo[12]=(&|$)/g, /&networking_type=0(&|$)/, /&[^&=]+=(&|$)/g ];
+var default_form_values = [ /&woman=0(&|$)/, /&subscriber=0(&|$)/, /&alive=0(&|$)/, /&egal2=[^&]*&promo2=(&|$)/,
+                            /&egal1=[^&]*&promo1=&edu_type=(?:Ing[^n]+nieur|Master|Doctorat)(&|$)/, /&networking_type=0(&|$)/,
+                            /&origin_corps=0(&|$)/, /&current_corps=0(&|$)/,
+                            /corps_rank=0(&|$)/, /&has_email_redirect=0(&|$)/, /&[^&=]+=(&|$)/g ];
 
 /** Uses javascript to clean form from all empty fields */
 function cleanForm(f, targeturl)
@@ -140,7 +143,8 @@ function cleanForm(f, targeturl)
             } while (old_query != query);
         }
     }
-    query = query.replace(/^&*(.*)&*$/, '$1');
+    query = query.replace(/^(.*)&+$/, '$1');
+    query = query.replace(/^&+(.*)$/, '$1');
     if (query == 'rechercher=Chercher') {
         alert("Aucun critère n'a été spécifié.");
         return false;
