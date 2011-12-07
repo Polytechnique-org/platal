@@ -1,19 +1,23 @@
 #!/usr/bin/php5
 <?php
-include 'connect.db.inc.php';
-include '../../include/name.func.inc.php';
+require_once 'connect.db.inc.php';
+require_once '../../include/name.func.inc.php';
 
 // Returns the lower-cased name; if proper capitalization rule was not known,
 // warns the user, and returns the initial name.
 function capitalize_name_checked($name)
 {
+    if ($name == '') {
+        return '';
+    }
+
     $capitalized = capitalize_name($name);
     if (!$capitalized) {
-        echo "WARNING: Unable to capitalize '$name'.\n";
+        echo " - WARNING: Unable to capitalize '$name'.\n";
         return $name;
     }
     if (mb_strtolower($name, 'UTF-8') != mb_strtolower($capitalized, 'UTF-8')) {
-        echo "WARNING: Capitalization of '$name' is unexpected: '$capitalized'\n";
+        echo " - WARNING: Capitalization of '$name' is unexpected: '$capitalized'\n";
         return $name;
     }
 
@@ -37,16 +41,15 @@ function needs_conversion($name)
 
 // Retrieves all the names to convert.
 $conversions = 0;
-$names = XDB::iterRow('SELECT  pid, lastname_initial, lastname_main, lastname_marital, lastname_ordinary,
-                               firstname_initial, firstname_main, firstname_ordinary, pseudonym
-                         FROM  profile_public_names');
+$names = XDB::iterator('SELECT  pid, lastname_initial, lastname_main, lastname_marital, lastname_ordinary,
+                                firstname_initial, firstname_main, firstname_ordinary, pseudonym
+                          FROM  profile_public_names');
 $name_list = array('lastname_initial', 'lastname_main', 'lastname_marital', 'lastname_ordinary',
                    'firstname_initial', 'firstname_main', 'firstname_ordinary', 'pseudonym');
+$total = $names->total();
 while ($item = $names->next()) {
     foreach ($name_list as $type) {
-        if ($item[$type] != '') {
-            $item[$type] = capitalize_name_checked($item[$type]);
-        }
+        $item[$type] = capitalize_name_checked($item[$type]);
     }
 
     XDB::execute('UPDATE  profile_public_names
@@ -56,22 +59,25 @@ while ($item = $names->next()) {
                  $item['lastname_initial'], $item['lastname_main'], $item['lastname_marital'], $item['lastname_ordinary'],
                  $item['firstname_initial'], $item['firstname_main'], $item['firstname_ordinary'], $item['pseudonym'],
                  $item['pid']);
-    $profile = Profile::get($pid);
+    $profile = Profile::get($item['pid']);
     update_display_names($profile, $item);
 
+    printf("\r%u / %u",  $conversions, $total);
     $conversions++;
     unset($item, $profile);
 }
 
-echo "$conversions names from profiles properly recapitalized.\n";
+printf("\r%u / %u",  $conversions, $total);
+echo "\n$conversions names from profiles properly recapitalized.\n";
 
 $conversions = 0;
-$names = XDB::iterRow('SELECT  uid, firstname, lastname
-                         FROM  accounts
-                        WHERE  NOT EXISTS (SELECT  1
+$names = XDB::iterator('SELECT  uid, firstname, lastname
+                          FROM  accounts
+                         WHERE  NOT EXISTS (SELECT  1
                                              FROM  account_profiles
                                             WHERE  account_profiles.uid = accounts.uid)');
 
+$total = $names->total();
 while ($item = $names->next()) {
     $lastname = capitalize_name_checked($item['lastname']);
     $firstname = capitalize_name_checked($item['firstname']);
@@ -83,13 +89,15 @@ while ($item = $names->next()) {
     XDB::execute('UPDATE  accounts
                      SET  firstname = {?}, lastname = {?}, full_name = {?}, directory_name = {?}, sort_name = {?}
                    WHERE  uid = {?}',
-                 $firstname, $lastname, $full_name, $directory_name, $sort_name);
+                 $firstname, $lastname, $full_name, $directory_name, $sort_name, $item['uid']);
 
+    printf("\r%u / %u",  $conversions, $total);
     $conversions++;
     unset($item);
 }
+printf("\r%u / %u",  $conversions, $total);
 
-echo "$conversions names from accounts properly recapitalized.\n";
+echo "\n$conversions names from accounts properly recapitalized.\n";
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
