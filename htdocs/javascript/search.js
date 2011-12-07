@@ -145,6 +145,9 @@ function cleanForm(f, targeturl)
     }
     query = query.replace(/^(.*)&+$/, '$1');
     query = query.replace(/^&+(.*)$/, '$1');
+
+    // Removes "(n camarades)" if any of them are remaining.
+    query = query.replace(/\+\(\d+\+camarade(?:s)?\)/, '');
     if (query == 'rechercher=Chercher') {
         alert("Aucun critère n'a été spécifié.");
         return false;

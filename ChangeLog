@@ -4,6 +4,7 @@ VERSION 1.1.5                                                         XX XX XXXX
 Bug/Wish:
 
     * Search:
+        - #1572: Removes remaining results count from queries              -JAC
         - #1574: Correctly displays State corps                            -GLN
 
     * Validations:
