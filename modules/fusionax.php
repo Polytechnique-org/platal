@@ -682,7 +682,7 @@ class FusionAxModule extends PLModule
                                                   ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary
                                             FROM  fusionax_anciens     AS f
                                       INNER JOIN  profiles             AS p   ON (f.ax_id = p.ax_id)
-                                      INNER JOIN  profile_public_names AS ppn ON (p.pid = ppn.pid AND ppn.fixed = 0)
+                                      INNER JOIN  profile_public_names AS ppn ON (p.pid = ppn.pid)
                                            WHERE  IF(f.partic_patro, CONCAT(f.partic_patro, CONCAT(' ', f.Nom_patronymique)), f.Nom_patronymique) NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary)
                                                   OR IF(f.partic_nom, CONCAT(f.partic_nom, CONCAT(' ', f.Nom_usuel)), f.Nom_usuel) NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary)
                                                   OR f.Nom_complet NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary)");
@@ -709,7 +709,7 @@ class FusionAxModule extends PLModule
             $res = XDB::rawFetchOneCell("SELECT  COUNT(*)
                                            FROM  fusionax_anciens     AS f
                                      INNER JOIN  profiles             AS p   ON (f.ax_id = p.ax_id)
-                                     INNER JOIN  profile_public_names AS ppn ON (p.pid = ppn.pid AND ppn.fixed = 0)
+                                     INNER JOIN  profile_public_names AS ppn ON (p.pid = ppn.pid)
                                           WHERE  IF(f.partic_patro, CONCAT(f.partic_patro, CONCAT(' ', f.Nom_patronymique)), f.Nom_patronymique) NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary)
                                                  OR IF(f.partic_nom, CONCAT(f.partic_nom, CONCAT(' ', f.Nom_usuel)), f.Nom_usuel) NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary)
                                                  OR f.Nom_complet NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary)");
