@@ -5,6 +5,7 @@
 require_once 'connect.db.inc.php';
 require_once '../../classes/phone.php';
 require_once '../../classes/address.php';
+require_once '../../classes/visibility.php';
 
 $globals->debug = 0; // Do not store backtraces.
 
@@ -131,8 +132,7 @@ foreach ($pids as $pid) {
         for ($j = $i + 1; $j < $count; ++$j) {
             if (check($rawAddresses[$i], $rawAddresses[$j])) {
                 $duplicates[$j] = true;
-                $minPub = new ProfileVisibility($addresses[$j]->pub);
-                if ($minPub->isVisible($addresses[$i]->pub)) {
+                if (Visibility::isLessRestrictive($addresses[$i]->pub, $addresses[$j]->pub)) {
                     $addresses[$i]->pub = $addresses[$j]->pub;
                 }
                 if ($addresses[$j]->hasFlag('mail') && !$addresses[$i]->hasFlag('mail')) {
@@ -141,8 +141,10 @@ foreach ($pids as $pid) {
             }
         }
     }
-    foreach ($duplicates as $key => $bool) {
-        unset($addresses[$key]);
+    if (count($duplicates)) {
+        foreach ($duplicates as $key => $bool) {
+            unset($addresses[$key]);
+        }
     }
     if (count($addresses) != $count) {
         $deleted += ($count - count($addresses));
@@ -217,18 +219,18 @@ foreach ($pids as $pid) {
     }
     for ($i = 0; $i < $count; ++$i) {
         for ($j = $i + 1; $j < $count; ++$j) {
-            if ($phones[$i]->search() == $phones[$j]->search()) {
+            if ($phones[$i]->search == $phones[$j]->search) {
                 $duplicates[$j] = true;
-                $minPub = new ProfileVisibility($phones[$j]->pub);
-                if ($minPub->isVisible($phones[$i]->pub)) {
+                if (Visibility::isLessRestrictive($phones[$i]->pub, $phones[$j]->pub)) {
                     $phones[$i]->pub = $phones[$j]->pub;
                 }
-
             }
         }
     }
-    foreach ($duplicates as $key => $bool) {
-        unset($phones[$key]);
+    if (count($duplicates)) {
+        foreach ($duplicates as $key => $bool) {
+            unset($phones[$key]);
+        }
     }
     if (count($phones) != $count) {
         $deleted += ($count - count($phones));

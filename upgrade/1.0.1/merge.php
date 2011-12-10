@@ -130,17 +130,17 @@ XDB::rawExecute("INSERT IGNORE INTO  profile_merge_issues (pid, issues, entry_ye
 XDB::rawExecute('ALTER TABLE geoloc_countries ADD INDEX (licensePlate)');
 XDB::rawExecute('UPDATE  profiles         AS p
              INNER JOIN  fusionax_anciens AS f ON (p.pid = f.pid)
-             INNER JOIN  geoloc_countries AS g ON (g.licensePlate = f.Code_nationalite AND g.nationalityFR IS NOT NULL)
+             INNER JOIN  geoloc_countries AS g ON (g.licensePlate = f.Code_nationalite AND g.nationality IS NOT NULL)
                     SET  p.nationality1 = g.iso_3166_1_a2
                   WHERE  p.nationality1 IS NULL');
 XDB::rawExecute('UPDATE  profiles         AS p
              INNER JOIN  fusionax_anciens AS f ON (p.pid = f.pid)
-             INNER JOIN  geoloc_countries AS g ON (g.licensePlate = f.Code_nationalite AND g.nationalityFR IS NOT NULL)
+             INNER JOIN  geoloc_countries AS g ON (g.licensePlate = f.Code_nationalite AND g.nationality IS NOT NULL)
                     SET  p.nationality2 = g.iso_3166_1_a2
                   WHERE  p.nationality1 != g.iso_3166_1_a2 AND p.nationality2 IS NULL');
 XDB::rawExecute('UPDATE  profiles         AS p
              INNER JOIN  fusionax_anciens AS f ON (p.pid = f.pid)
-             INNER JOIN  geoloc_countries AS g ON (g.licensePlate = f.Code_nationalite AND g.nationalityFR IS NOT NULL)
+             INNER JOIN  geoloc_countries AS g ON (g.licensePlate = f.Code_nationalite AND g.nationality IS NOT NULL)
                     SET  p.nationality3 = g.iso_3166_1_a2
                   WHERE  p.nationality1 != g.iso_3166_1_a2 AND p.nationality2 != g.iso_3166_1_a2 AND p.nationality3 IS NULL');
 XDB::rawExecute('ALTER TABLE geoloc_countries DROP INDEX licensePlate');
@@ -196,12 +196,12 @@ XDB::rawExecute("UPDATE  profiles         AS p
                   WHERE  f.Mel_publiable = 1 AND f.Mel_usage != '' AND p.email_directory IS NULL");
 XDB::rawExecute("INSERT IGNORE INTO  register_marketing (uid, email, type)
                              SELECT  ap.uid, f.Mel_usage, 'ax'
-                               FROM  fusionax_anciens AS f
-                         INNER JOIN  account_profiles AS ap ON (ap.pid = f.pid AND FIND_IN_SET('owner', perms))
-                          LEFT JOIN  emails           AS e  ON (e.uid = ap.uid AND e.flags = 'active')
+                               FROM  fusionax_anciens       AS f
+                         INNER JOIN  account_profiles       AS ap ON (ap.pid = f.pid AND FIND_IN_SET('owner', perms))
+                          LEFT JOIN  email_redirect_account AS e  ON (e.uid = ap.uid AND e.flags = 'active')
                               WHERE  f.Mel_usage != '' AND f.Mel_usage NOT LIKE '%@polytechnique.edu'
                                      AND f.Mel_usage NOT LIKE '%@polytechnique.org' AND f.Mel_usage NOT LIKE '%@m4x.org'
-                                     AND f.Mel_usage NOT LIKE '%@melix.%' AND e.email IS NULL");
+                                     AND f.Mel_usage NOT LIKE '%@melix.%' AND e.redirect IS NULL");
 
 // Retrieves different deathdates.
 XDB::rawExecute("UPDATE  profile_merge_issues AS pm
