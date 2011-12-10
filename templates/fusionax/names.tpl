@@ -58,9 +58,16 @@
 {/foreach}
 </table>
 {/if}
-{elseif $action eq "last"}
+{elseif $action eq "last" || $action eq "last1" || $action eq "last2" || $action eq "last3"}
+<h3>{$issuesTypes.$action}&nbsp;: {$total}</h3>
+<ul>
+  <li><a href="fusionax/names/last">{$issuesTypes.last}.</a></li>
+  <li><a href="fusionax/names/last1">{$issuesTypes.last1}.</a></li>
+  <li><a href="fusionax/names/last2">{$issuesTypes.last2}.</a></li>
+  <li><a href="fusionax/names/last3">{$issuesTypes.last3}.</a></li>
+</ul>
 {if $lastnameIssues|@count eq 0}
-<p>Aucun problème avec les noms.</p>
+<p>Aucun problème de ce type avec les noms.</p>
 {else}
 <p><a href="fusionax/names/last/true">Obtenir le csv des conflits.</a></p>
 <table class="bicol">

@@ -676,29 +676,77 @@ class FusionAxModule extends PLModule
             } else {
                 $page->assign('firstnameIssues', $res);
             }
-        } elseif ($action == 'last') {
-            $res = XDB::rawFetchAllAssoc("SELECT  p.pid, p.ax_id, p.hrpid,
+        } elseif ($action == 'last' || $action == 'last3' || $action == 'last2' || $action == 'last1') {
+            $ax_patro = "(IF(f.partic_patro, CONCAT(f.partic_patro, CONCAT(' ', f.Nom_patronymique)), f.Nom_patronymique) NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary))";
+            $ax_ordinary = "(IF(f.partic_nom, CONCAT(f.partic_nom, CONCAT(' ', f.Nom_usuel)), f.Nom_usuel) NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary))";
+            $ax_full = "(f.Nom_complet NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary))";
+
+            switch ($action) {
+              case 'last':
+                $where = $ax_patro . ' OR ' . $ax_ordinary . ' OR ' . $ax_full;
+                break;
+              case 'last3':
+                $where = $ax_patro . ' AND ' . $ax_ordinary . ' AND ' . $ax_full;
+                break;
+              case 'last2':
+                $where = '(' . $ax_patro . ' AND ' . $ax_ordinary . ' AND NOT ' . $ax_full . ') OR ('
+                       . $ax_patro . ' AND NOT ' . $ax_ordinary . ' AND ' . $ax_full . ') OR ('
+                       . 'NOT ' . $ax_patro . ' AND ' . $ax_ordinary . ' AND ' . $ax_full . ')';
+                break;
+              case 'last1':
+                $where = '(' . $ax_patro . ' AND NOT ' . $ax_ordinary . ' AND NOT ' . $ax_full . ') OR ('
+                       . 'NOT ' . $ax_patro . ' AND NOT ' . $ax_ordinary . ' AND ' . $ax_full . ') OR ('
+                       . 'NOT ' . $ax_patro . ' AND ' . $ax_ordinary . ' AND NOT ' . $ax_full . ')';
+                break;
+            }
+
+            $res = XDB::rawFetchAllAssoc('SELECT  p.pid, p.ax_id, p.hrpid,
                                                   f.Nom_patronymique, f.Nom_usuel, f.Nom_complet,
                                                   ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary
                                             FROM  fusionax_anciens     AS f
                                       INNER JOIN  profiles             AS p   ON (f.ax_id = p.ax_id)
                                       INNER JOIN  profile_public_names AS ppn ON (p.pid = ppn.pid)
-                                           WHERE  IF(f.partic_patro, CONCAT(f.partic_patro, CONCAT(' ', f.Nom_patronymique)), f.Nom_patronymique) NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary)
-                                                  OR IF(f.partic_nom, CONCAT(f.partic_nom, CONCAT(' ', f.Nom_usuel)), f.Nom_usuel) NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary)
-                                                  OR f.Nom_complet NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary)");
+                                           WHERE  ' . $where);
 
             if ($csv) {
+                function format($string)
+                {
+                    $string = preg_replace('/\-/', ' ', $string);
+                    return preg_replace('/\s+/', ' ', $string);
+                }
+
+
                 pl_cached_content_headers('text/x-csv', 'utf-8', 1, 'lastnames.csv');
 
                 $csv = fopen('php://output', 'w');
                 fputcsv($csv,  array('pid', 'ax_id', 'hrpid', 'AX patro', 'AX usuel', 'AX complet', 'initial', 'principal', 'marital', 'ordinaire'), ';');
                 foreach ($res as $item) {
-                    fputcsv($csv, $item, ';');
+                    $ax = array(
+                        'Nom_patronymique' => format(mb_strtolower(replace_accent($item['Nom_patronymique']))),
+                        'Nom_usuel'        => format(mb_strtolower(replace_accent($item['Nom_usuel']))),
+                        'Nom_complet'      => format(mb_strtolower(replace_accent($item['Nom_complet'])))
+                    );
+                    $xorg = array(
+                        'lastname_initial'  => format(mb_strtolower(replace_accent($item['lastname_initial']))),
+                        'lastname_main'     => format(mb_strtolower(replace_accent($item['lastname_main']))),
+                        'lastname_ordinary' => format(mb_strtolower(replace_accent($item['lastname_ordinary'])))
+                    );
+
+                    if (!in_array($ax['Nom_patronymique'], $xorg) || !in_array($ax['Nom_usuel'], $xorg) || !in_array($ax['Nom_complet'], $xorg)) {
+                        fputcsv($csv, $item, ';');
+                    }
                 }
                 fclose($csv);
                 exit();
             } else {
                 $page->assign('lastnameIssues', $res);
+                $page->assign('total', count($res));
+                $page->assign('issuesTypes', array(
+                        'last'  => "1, 2 ou 3 noms de l'AX manquant",
+                        'last1' => "1 nom de l'AX manquant",
+                        'last2' => "2 noms de l'AX manquant",
+                        'last3' => "3 noms de l'AX manquant"
+                ));
             }
         } else {
             $res = XDB::query('SELECT  COUNT(*)
