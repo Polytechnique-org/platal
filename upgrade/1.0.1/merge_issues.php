@@ -118,7 +118,7 @@ $rawAddresses = array();
 $duplicates = array();
 foreach ($pids as $pid) {
     $count = 0;
-    $it = Address::iterate(array($pid), array(Address::LINK_PROFILE), array(0));
+    $it = Address::iterate(array($pid), array(Address::LINK_PROFILE), array(0), Visibility::get(Visibility::VIEW_PRIVATE));
     while ($item = $it->next()) {
         $addresses[$count] = $item;
         $rawAddress = preg_replace('/[^a-z0-9]/', ' ', mb_strtolower(replace_accent($item->text)));
@@ -212,7 +212,7 @@ $phones = array();
 $duplicates = array();
 foreach ($pids as $pid) {
     $count = 0;
-    $it = Phone::iterate(array($pid), array(Phone::LINK_PROFILE), array(0));
+    $it = Phone::iterate(array($pid), array(Phone::LINK_PROFILE), array(0), Visibility::get(Visibility::VIEW_PRIVATE));
     while ($item = $it->next()) {
         $phones[] = $item;
         ++$count;
