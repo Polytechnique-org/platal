@@ -423,7 +423,7 @@ class Address
     {
         // First we define numbers and separators.
         $numberReq = '(\d{1,4})\s*(BIS|TER|QUATER|[A-Z])?';
-        $separatorReq = '\s*(?:\\|-|&|A|ET)?\s*';
+        $separatorReq = '\s*(?:\\\\|\/|-|&|A|ET)?\s*';
 
         // Then we retrieve the number(s) and the rest of the line.
         // $matches contains:
