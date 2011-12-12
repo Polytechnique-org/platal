@@ -438,7 +438,8 @@ class AddressesView implements PlView
                                           FROM  profile_addresses                 AS pa
                                          WHERE  pa.pub IN ('public', 'ax') AND FIND_IN_SET('mail', pa.flags) AND pa.pid IN {?}
                                       ORDER BY  pa.pid, NOT FIND_IN_SET('current', pa.flags),
-                                                FIND_IN_SET('secondary', pa.flags), pa.type = 'job') AS pa
+                                                FIND_IN_SET('secondary', pa.flags), pa.type = 'job'
+                                         LIMIT  1) AS pa
                            INNER JOIN  profiles                          AS p    ON (pa.pid = p.pid)
                            INNER JOIN  profile_display                   AS pd   ON (pd.pid = pa.pid)
                            INNER JOIN  profile_public_names              AS pn   ON (pn.pid = pa.pid)
