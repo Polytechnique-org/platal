@@ -385,6 +385,10 @@ class RegisterModule extends PLModule
         }
         XDB::commit();
 
+        // Try to start a session (so the user don't have to log in); we will use
+        // the password available in Post:: to authenticate the user.
+        Platal::session()->start(AUTH_PASSWD);
+
         // Add the registration email address as first and only redirection.
         require_once 'emails.inc.php';
         $user = User::getSilentWithUID($uid);
@@ -399,10 +403,6 @@ class RegisterModule extends PLModule
             $listClient->change_user_email($old_account_email, $user->forlifeEmail());
             update_alias_user($old_account_email, $user->forlifeEmail());
         }
-
-        // Try to start a session (so the user don't have to log in); we will use
-        // the password available in Post:: to authenticate the user.
-        Platal::session()->start(AUTH_PASSWD);
 
         // Subscribe the user to the services she did request at registration time.
         require_once 'newsletter.inc.php';
