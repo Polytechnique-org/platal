@@ -307,7 +307,7 @@ class RegisterModule extends PLModule
         $res = XDB::query("SELECT  r.uid, p.pid, r.forlife, r.bestalias, r.mailorg2,
                                    r.password, r.email, r.services, r.naissance,
                                    ppn.lastname_initial, ppn.firstname_initial, pe.promo_year,
-                                   pd.promo, p.sex, p.birthdate_ref, a.type, a.email AS old_account_email
+                                   pd.promo, p.sex, p.birthdate_ref, a.type
                              FROM  register_pending AS r
                        INNER JOIN  accounts         AS a   ON (r.uid = a.uid)
                        INNER JOIN  account_profiles AS ap  ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
@@ -333,7 +333,7 @@ class RegisterModule extends PLModule
         }
 
         list($uid, $pid, $forlife, $bestalias, $emailXorg2, $password, $email, $services,
-             $birthdate, $lastname, $firstname, $yearpromo, $promo, $sex, $birthdate_ref, $type, $old_account_email) = $res->fetchOneRow();
+             $birthdate, $lastname, $firstname, $yearpromo, $promo, $sex, $birthdate_ref, $type) = $res->fetchOneRow();
         $isX = ($type == 'x');
         $mail_domain = User::$sub_mail_domains[$type] . $globals->mail->domain;
 
@@ -385,24 +385,16 @@ class RegisterModule extends PLModule
         }
         XDB::commit();
 
+        // Try to start a session (so the user don't have to log in); we will use
+        // the password available in Post:: to authenticate the user.
+        Platal::session()->start(AUTH_PASSWD);
+
         // Add the registration email address as first and only redirection.
         require_once 'emails.inc.php';
         $user = User::getSilentWithUID($uid);
         $redirect = new Redirect($user);
         $redirect->add_email($email);
         fix_bestalias($user);
-
-        // If the user was registered to some aliases and MLs, we must change
-        // the subscription to her forlife email.
-        if ($old_account_email) {
-            $listClient = new MMList($user);
-            $listClient->change_user_email($old_account_email, $user->forlifeEmail());
-            update_alias_user($old_account_email, $user->forlifeEmail());
-        }
-
-        // Try to start a session (so the user don't have to log in); we will use
-        // the password available in Post:: to authenticate the user.
-        Platal::session()->start(AUTH_PASSWD);
 
         // Subscribe the user to the services she did request at registration time.
         require_once 'newsletter.inc.php';
