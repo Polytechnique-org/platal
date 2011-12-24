@@ -433,24 +433,23 @@ class AddressesView implements PlView
             $res = XDB::query("SELECT  pd.promo, p.title,
                                        IF (pn.firstname_ordinary = '', UPPER(pn.firstname_main), UPPER(pn.firstname_ordinary)) AS firstname,
                                        IF (pn.lastname_ordinary = '', UPPER(pn.lastname_main), UPPER(pn.lastname_ordinary)) AS lastname,
-                                       UPPER(pje.name), pa.postalText, GROUP_CONCAT(pace.long_name) AS postal_code, p.email_directory
-                                 FROM  (SELECT  pa.pid, pa.postalText, pa.jobid, pa.groupid, pa.type, pa.id
+                                       UPPER(pje.name), pa.postalText, pa.long_name AS postal_code, p.email_directory
+                                 FROM  (SELECT  pa.pid, pa.postalText, pa.jobid, pa.groupid, pa.type, pa.id, pace.long_name
                                           FROM  profile_addresses                 AS pa
+                                     LEFT JOIN  profile_addresses_components      AS pac  ON (pa.pid = pac.pid
+                                                                                              AND pa.jobid = pac.jobid
+                                                                                              AND pa.groupid = pac.groupid
+                                                                                              AND pa.type = pac.type
+                                                                                              AND pa.id = pac.id)
+                                     LEFT JOIN  profile_addresses_components_enum AS pace ON (pac.component_id = pace.id
+                                                                                              AND FIND_IN_SET('postal_code', pace.types))
                                          WHERE  pa.pub IN ('public', 'ax') AND FIND_IN_SET('mail', pa.flags) AND pa.pid IN {?}
                                       ORDER BY  pa.pid, NOT FIND_IN_SET('current', pa.flags),
-                                                FIND_IN_SET('secondary', pa.flags), pa.type = 'job'
-                                         LIMIT  1) AS pa
+                                                FIND_IN_SET('secondary', pa.flags), pa.type = 'job',
+                                                pace.long_name IS NULL) AS pa
                            INNER JOIN  profiles                          AS p    ON (pa.pid = p.pid)
                            INNER JOIN  profile_display                   AS pd   ON (pd.pid = pa.pid)
                            INNER JOIN  profile_public_names              AS pn   ON (pn.pid = pa.pid)
-                            LEFT JOIN  profile_addresses_components      AS pac  ON (pa.pid = pac.pid
-                                                                                     AND pa.jobid = pac.jobid
-                                                                                     AND pa.groupid = pac.groupid
-                                                                                     AND pa.type = pac.type
-                                                                                     AND pa.id = pac.id)
-                            LEFT JOIN  profile_addresses_components_enum AS pace ON (pac.component_id = pace.id
-                                                                                     AND FIND_IN_SET('postal_code', pace.types))
-
                             LEFT JOIN  profile_job                       AS pj   ON (pj.pid = pa.pid
                                                                                      AND pj.id = IF(pa.type = 'job', pa.id, NULL))
                             LEFT JOIN  profile_job_enum                  AS pje  ON (pj.jobid = pje.id)
