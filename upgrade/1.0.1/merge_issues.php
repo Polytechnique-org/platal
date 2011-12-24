@@ -102,7 +102,7 @@ function check($address1, $address2)
         || $address1['long'] == $address2['short'] || $address1['long'] == $address2['long'];
 }
 
-print "Deletes duplicated addresses. (1/3)\n";
+print "Deletes duplicated addresses. (1/4)\n";
 $pids = XDB::rawFetchColumn("SELECT  DISTINCT(pid)
                                FROM  profile_addresses AS a1
                               WHERE  type = 'home' AND EXISTS (SELECT  *
@@ -173,7 +173,40 @@ foreach ($pids as $pid) {
 printf("\r%u / %u",  $done, $total);
 print "\n$deleted addresses deleted.\n\n";
 
-print "Formats non formated phones. (2/3)\n";
+print "Formats erroneous addresses phones. (3/4)\n";
+$it = Address::iterate(array(), array(), array(), Visibility::get(Visibility::VIEW_PRIVATE));
+$total = $it->total();
+$i = 0;
+$skipped = 0;
+$fixed = 0;
+printf("\r%u / %u",  $i, $total);
+while ($address = $it->next()) {
+    $fix = preg_replace('/\s+r(\.|)\s+/i', ' rue ', $address->text);
+    if ($fix != $address->text) {
+        $address->changed = 0;
+        $address->text = $fix;
+        $address->format();
+        if ($address->delete()) {
+            $address->save(false);
+            ++$fixed;
+        } else {
+            ++$skipped;
+        }
+    }
+
+    ++$i;
+    printf("\r%u / %u",  $i, $total);
+}
+printf("\r%u / %u",  $i, $total);
+if ($skipped != 0) {
+    printf("\n%u addresses skipped.\n", $skipped);
+}
+if ($fixed != 0) {
+    printf("\n%u addresses fixed.\n", $fixed);
+}
+print "\nAddress formating done.\n\n";
+
+print "Formats non formated phones. (3/4)\n";
 $it = XDB::rawIterator("SELECT  search_tel AS search, display_tel AS display, comment, link_id,
                                 tel_type AS type, link_type, tel_id AS id, pid, pub
                           FROM  profile_phones
@@ -197,7 +230,7 @@ while ($item = $it->next()) {
 printf("\r%u / %u",  $i, $total);
 print "\nFormating done.\n\n";
 
-print "Deletes duplicated phones. (3/3)\n";
+print "Deletes duplicated phones. (4/4)\n";
 $pids = XDB::rawFetchColumn("SELECT  DISTINCT(pid)
                                FROM  profile_phones AS p1
                               WHERE  link_type = 'user' AND EXISTS (SELECT  *
