@@ -86,7 +86,7 @@ EOF;
     exit;
 }
 
-print "Formats addresses addresses.\n";
+print "Formats addresses.\n";
 
 if ($range != 'a') {
     $where = $targets[$target] . $ranges[$range];
