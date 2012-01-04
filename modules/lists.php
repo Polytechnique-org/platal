@@ -61,6 +61,19 @@ class ListsModule extends PLModule
         return $globals->mail->domain;
     }
 
+    function verify_list_owner($page, $liste)
+    {
+        if (list(, , $owners) = $this->client->get_members($liste)) {
+            if (!(in_array(S::user()->forlifeEmail(), $owners) || S::admin())) {
+                $page->kill("La liste n'existe pas ou tu n'as pas le droit de l'administrer.");
+            }
+        } else {
+            $page->kill("La liste n'existe pas ou tu n'as pas le droit de l'administrer.<br />"
+                      . " Si tu penses qu'il s'agit d'une erreur, "
+                      . "<a href='mailto:support@polytechnique.org'>contact le support</a>.");
+        }
+    }
+
     function get_pending_ops($domain, $list)
     {
         list($subs,$mails) = $this->client->get_pending_ops($list);
@@ -483,6 +496,7 @@ class ListsModule extends PLModule
         }
 
         $domain = $this->prepare_client($page);
+        $this->verify_list_owner($page, $liste);
 
         $page->changeTpl('lists/moderate.tpl');
 
@@ -602,6 +616,7 @@ class ListsModule extends PLModule
         }
 
         $domain = $this->prepare_client($page);
+        $this->verify_list_owner($page, $liste);
 
         $page->changeTpl('lists/admin.tpl');
 
@@ -730,7 +745,6 @@ class ListsModule extends PLModule
             $page->assign_by_ref('members', $membres);
             $page->assign_by_ref('owners',  $moderos);
             $page->assign('np_m', count($mem));
-
         } else {
             $page->kill("La liste n'existe pas ou tu n'as pas le droit de l'administrer.<br />"
                       . " Si tu penses qu'il s'agit d'une erreur, "
@@ -745,6 +759,7 @@ class ListsModule extends PLModule
         }
 
         $this->prepare_client($page);
+        $this->verify_list_owner($page, $liste);
 
         $page->changeTpl('lists/options.tpl');
 
@@ -813,6 +828,7 @@ class ListsModule extends PLModule
         }
 
         $domain = $this->prepare_client($page);
+        $this->verify_list_owner($page, $liste);
         $page->changeTpl('lists/delete.tpl');
         if (Post::v('valid') == 'OUI') {
             S::assert_xsrf_token();
@@ -847,6 +863,7 @@ class ListsModule extends PLModule
         }
 
         $this->prepare_client($page);
+        $this->verify_list_owner($page, $liste);
 
         $page->changeTpl('lists/soptions.tpl');
 
@@ -876,6 +893,7 @@ class ListsModule extends PLModule
         }
 
         $this->prepare_client($page);
+        $this->verify_list_owner($page, $liste);
 
         $page->changeTpl('lists/check.tpl');
 
