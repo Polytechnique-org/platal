@@ -421,6 +421,11 @@ class NewsletterModule extends PLModule
         if (!$issue) {
             $page->kill("La lettre {$nid} n'existe pas.");
         }
+
+        if ($issue->isEmpty()) {
+            $page->trigErrorRedirect("La lettre étant vide, il n'est pas possible de l'envoyer.", $nl->adminPrefix());
+        }
+
         if (!$issue->scheduleMailing()) {
             $page->trigErrorRedirect("Une erreur est survenue lors de la validation de l'envoi.", $nl->adminPrefix());
         }
