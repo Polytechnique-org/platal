@@ -298,6 +298,7 @@ class Address
     // Geocoding fields.
     public $text = '';
     public $postalText = '';
+    public $postal_code_fr = null;
     public $types = '';
     public $formatted_address = '';
     public $components = array();
@@ -492,6 +493,7 @@ class Address
             --$count;
         }
 
+        $postal_code = null;
         // All the lines must have less than 38 characters but street and
         // locality lines whose limit is 32 characters.
         foreach ($arrayText as $lineNumber => $line) {
@@ -499,7 +501,8 @@ class Address
                 $formattedLine = $this->getStreetNumberFR($line) . ' ';
                 $limit = 32;
             } elseif ($this->isLocalityFR($line)) {
-                $formattedLine = $this->getPostalCodeFR($line) . ' ';
+                $postal_code = $this->getPostalCodeFR($line);
+                $formattedLine = $postal_code . ' ';
                 $limit = 32;
             } else {
                 $formattedLine = '';
@@ -536,6 +539,7 @@ class Address
             $arrayText[$lineNumber] = trim($formattedLine);
         }
 
+        $this->postal_code_fr = $postal_code;
         return implode("\n", $arrayText);
     }
 
@@ -693,12 +697,12 @@ class Address
             XDB::execute('INSERT IGNORE INTO  profile_addresses (pid, jobid, groupid, type, id, flags, text, postalText, pub, comment,
                                                                  types, formatted_address, location_type, partial_match, latitude, longitude,
                                                                  southwest_latitude, southwest_longitude, northeast_latitude, northeast_longitude,
-                                                                 geocoding_date, geocoding_calls)
+                                                                 geocoding_date, geocoding_calls, postal_code_fr)
                                       VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
-                                               {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, NOW(), {?})',
+                                               {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, NOW(), {?}, {?})',
                          $this->pid, $this->jobid, $this->groupid, $this->type, $this->id, $this->flags, $this->text, $this->postalText, $this->pub, $this->comment,
                          $this->types, $this->formatted_address, $this->location_type, $this->partial_match, $this->latitude, $this->longitude,
-                         $this->southwest_latitude, $this->southwest_longitude, $this->northeast_latitude, $this->northeast_longitude, $this->geocoding_calls);
+                         $this->southwest_latitude, $this->southwest_longitude, $this->northeast_latitude, $this->northeast_longitude, $this->geocoding_calls, $this->postal_code_fr);
 
             if ($this->componentsIds) {
                 foreach (explode(',', $this->componentsIds) as $component_id) {
