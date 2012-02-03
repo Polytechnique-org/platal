@@ -26,7 +26,9 @@
 
 {if $homonyms_to_fix|@count}
 <p>
-  Liste des homonymies à corriger, celles en rouge devraient déjà être traitées.
+  Liste des homonymies à corriger, celles en rouge devraient déjà être traitées.<br />
+
+  Dans un premier temps, envoyer un mail. Ensuite (typiquement une semaine plus tard), cliquer sur "corriger".
 </p>
 
 <table class="bicol">
