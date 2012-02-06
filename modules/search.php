@@ -424,6 +424,12 @@ class SearchModule extends PLModule
         require_once 'ufbuilder.inc.php';
         $ufb = new UFB_MentorSearch();
         if (!$ufb->isEmpty()) {
+
+            // Search query is logged
+            if (S::logged() && !Env::has('page')) {
+                S::logger()->log('search_referent', 'adv=' . var_export($_GET, true));
+            }
+
             require_once 'userset.inc.php';
             $ufc = $ufb->getUFC();
             $set = new ProfileSet($ufc);

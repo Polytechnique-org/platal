@@ -516,6 +516,11 @@ class ProfileModule extends PLModule
             return PL_NOT_FOUND;
         }
 
+        // Referent view are logged.
+        if (S::logged()) {
+            S::logger()->log('view_referent', $pf->hrid());
+        }
+
         $page->assign_by_ref('profile', $pf);
 
         // Retrieves referents' countries.
