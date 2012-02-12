@@ -22,12 +22,12 @@
 /* sort en affichant une erreur */
 function cb_erreur($text) {
     global $globals;
-    echo "Error.\n";
+    echo "Error: ".$text."\n";
     $mymail = new PlMailer();
     $mymail->addTo($globals->money->email);
     $mymail->setFrom("webmaster@" . $globals->mail->domain);
     $mymail->setSubject("erreur lors d'un télépaiement (CyberPaiement)");
-    $mymail->setTxtBody("\n\n".var_export($_REQUEST,true));
+    $mymail->setTxtBody("\n\n".$text."\n\n".var_export($_REQUEST,true));
     $mymail->send();
     echo "Notification sent.\n";
     exit;
@@ -45,7 +45,7 @@ function paypal_erreur($text, $send=true)
     $mymail->addTo($globals->money->email);
     $mymail->setFrom("webmaster@" . $globals->mail->domain);
     $mymail->setSubject("erreur lors d'un télépaiement (PayPal)");
-    $mymail->setTxtBody("\n\n".var_export($_REQUEST,true));
+    $mymail->setTxtBody("\n\n".$text."\n\n".var_export($_REQUEST,true));
     $mymail->send();
 
     Platal::page()->trigError($text);
