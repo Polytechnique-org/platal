@@ -70,7 +70,7 @@ class GoogleAppsModule extends PLModule
                 S::assert_xsrf_token();
                 if (Post::v('pwsync') == 'sync') {
                     $account->set_password_sync(true);
-                    $account->set_password(S::v('password'));
+                    $account->set_password($user->password());
                 } else {
                     $account->set_password_sync(false);
                 }
