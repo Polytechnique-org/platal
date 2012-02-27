@@ -27,7 +27,10 @@ function cb_erreur($text) {
     $mymail->addTo($globals->money->email);
     $mymail->setFrom("webmaster@" . $globals->mail->domain);
     $mymail->setSubject("erreur lors d'un télépaiement (CyberPaiement)");
-    $mymail->setTxtBody("\n\n".$text."\n\n".var_export($_REQUEST,true));
+    $mymail->setTxtBody("raison de l'erreur : ".$text."\n".
+                        "paiement : $conf_title \n\n".
+                        "dump de REQUEST :\n".
+                        var_export($_REQUEST,true));
     $mymail->send();
     echo "Notification sent.\n";
     exit;
@@ -45,7 +48,10 @@ function paypal_erreur($text, $send=true)
     $mymail->addTo($globals->money->email);
     $mymail->setFrom("webmaster@" . $globals->mail->domain);
     $mymail->setSubject("erreur lors d'un télépaiement (PayPal)");
-    $mymail->setTxtBody("\n\n".$text."\n\n".var_export($_REQUEST,true));
+    $mymail->setTxtBody("raison de l'erreur : ".$text."\n".
+                        "paiement : $conf_title \n\n".
+                        "dump de REQUEST :\n".
+                        var_export($_REQUEST,true));
     $mymail->send();
 
     Platal::page()->trigError($text);
