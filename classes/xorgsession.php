@@ -183,6 +183,13 @@ class XorgSession extends PlSession
                 $this->setAccessCookie(false, S::i('auth_by_cookie') != $user->id());
             } else {
                 $this->killAccessCookie();
+
+                // If login for an external website and not activating cookie,
+                // mark that we want to disconnect once external auth checks
+                // have been performed.
+                if (Post::b('external_auth')) {
+                    S::set('external_auth_exit', true);
+                }
             }
         }
 

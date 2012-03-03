@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if t($referer) || $platal->pl_self() neq 'login'}
+{if t($external_auth) || $platal->pl_self() neq 'login'}
 <h1>
   Accès restreint
 </h1>
@@ -31,7 +31,7 @@
   {else}
     la page que vous avez demandée
   {/if}
-  (<strong>{if t($referer)}{$smarty.server.HTTP_REFERER|truncate:120:"...":false}{else}{$globals->baseurl}/{$platal->pl_self()}{/if}</strong>)
+  (<strong>{if t($external_auth)}{$smarty.server.HTTP_REFERER|truncate:120:"...":false}{else}{$globals->baseurl}/{$platal->pl_self()}{/if}</strong>)
   nécessite une authentification.
 </p>
 {else}
@@ -153,6 +153,9 @@
     <input type="hidden" name="xorpass"   value="" />
     <input type="hidden" name="username"  value="" />
     <input type="hidden" name="remember"  value="" />
+    {if t($external_auth)}
+      <input type="hidden" name="external_auth" value="1" />
+    {/if}
   </div>
 </form>
 

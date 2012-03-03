@@ -119,7 +119,7 @@ class AuthModule extends PLModule
     function handler_groupex($page, $charset = 'utf8')
     {
         if (!S::logged()) {
-            $page->assign('referer', true);
+            $page->assign('external_auth', true);
             $page->setTitle('Authentification');
             $page->setDefaultSkin('group_login');
 
@@ -223,6 +223,15 @@ class AuthModule extends PLModule
                         $page->kill("Le site demandé est réservé aux polytechniciens.");
                     }
 
+                    // If we logged in specifically for this 'external_auth' request
+                    // and didn't want to "keep access to services", we kill the session
+                    // just before returning.
+                    // See classes/xorgsession.php:startSessionAs
+                    if (S::b('external_auth_exit')) {
+                        S::logger()->log('decconnexion', @$_SERVER['HTTP_REFERER']);
+                        Platal::session()->killAccessCookie();
+                        Platal::session()->destroy();
+                    }
                     http_redirect($returl);
                 } else if (S::admin()) {
                     $page->kill("La requête d'authentification a échoué (url de retour invalide).");
