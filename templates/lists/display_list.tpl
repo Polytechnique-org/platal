@@ -31,14 +31,12 @@
   </td>
   <td>
     {if t($user.hasProfile)}
-    {if t($user.lost)}{assign var=lostUsers value=true}{/if}
-    {profile user=$user.uid promo=$promo}
+      {if t($user.lost)}{assign var=lostUsers value=true}{/if}
+      {profile user=$user.uid promo=$promo}
     {elseif t($user.uid)}
-    {if t($user.name)}{$user.name}{else}{$user.email}{/if}{if t($promo)} (extérieur){/if}
-    {elseif t($user.name)}
-    {$user.name}
+      <a href="mailto:{$user.email}">{if t($user.name)}{$user.name}{else}{$user.email}{/if}{if t($promo)} (extérieur){/if}</a>
     {else}
-    {$user.email}
+      <a href="mailto:{$user.email}">{if t($user.name)}{$user.name}{else}{$user.email}{/if}</a>
     {/if}
   </td>
   {if t($delete)}
