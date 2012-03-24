@@ -27,7 +27,7 @@
 {/if}
 
 <script type="text/javascript">//<![CDATA[
-  {literal}$(function() { load_advanced_search({{/literal}{foreach from=$smarty.request key=key item=item}"{$key}":"{$item}",{/foreach}{literal}}); });{/literal}
+  {literal}$(function() { load_advanced_search({{/literal}{foreach from=$smarty.request key=key item=item name="load"}"{$key}":"{$item}"{if not $smarty.foreach.load.last},{/if}{/foreach}{literal}}); });{/literal}
 //]]></script>
 
 <p class="center">[<a href="search">Revenir à la recherche simple</a>]</p>

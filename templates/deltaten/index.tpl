@@ -30,7 +30,7 @@
 <a id="deltaten"></a>
 
 <script type="text/javascript">//<![CDATA[
-  {literal}$(function() { load_advanced_search({{/literal}{foreach from=$smarty.request key=key item=item}"{$key}":"{$item}",{/foreach}{literal}}); });{/literal}
+  {literal}$(function() { load_advanced_search({{/literal}{foreach from=$smarty.request key=key item=item name="load"}"{$key}":"{$item}"{if not $smarty.foreach.load.last},{/if}{/foreach}{literal}}); });{/literal}
 //]]></script>
 
 <form id="recherche" action="deltaten/search" method="get" onsubmit="return cleanForm(this, 'deltaten/search')">
