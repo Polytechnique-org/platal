@@ -42,11 +42,11 @@ class MiniWiki
 
         // * unordered list
         MiniWiki::Markup("/(^|\n)\*(([^\n]*(\n|$))(\*[^\n]*(\n|$))*)/se",
-                         "'</p><ul><li>'.str_replace(\"\\n*\",'</li><li>','$2').'</li></ul><p>'",
+                         "'</p>\n<ul><li>'.str_replace(\"\\n*\",'</li><li>','$2').'</li></ul>\n<p>'",
                          "'$1 -' . str_replace(\"\\n*\", \"\\n -\", '$2')",
                          "* element1\n* element2\n* element3");
-        // # unordered list
-        MiniWiki::Markup("/(^|\n)#(([^\n]*(\n|$))(#[^\n]*(\n|$))*)/se", "'<ol><li>'.str_replace(\"\\n#\",'</li><li>','$2').'</li></ol>'", "'$0'", "# element1\n# element2\n# element3");
+        // # ordered list
+        MiniWiki::Markup("/(^|\n)#(([^\n]*(\n|$))(#[^\n]*(\n|$))*)/se", "'</p>\n<ol><li>'.str_replace(\"\\n#\",'</li><li>','$2').'</li></ol>\n<p>'", "'$0'", "# element1\n# element2\n# element3");
 
         // bold, italic and others
         // ''' bold '''
