@@ -34,7 +34,7 @@
 </tr>
 <tr class="pair">
   <td class="titre">Adresse email&nbsp;:</td>
-  <td>{$valid->email}</td>
+  <td><a href="http://polytechnique.net/{$valid->dim}/member/{$valid->hruid}">{$valid->email}</a></td>
 </tr>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

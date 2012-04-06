@@ -15,6 +15,9 @@ Bug/Wish:
         - #1578: Fixes deletion of people inscriptions                     -GLN
         - #1348: Keeps the amount paid when updating participation         -GLN
 
+    * XnetGrp:
+        - #1609: Adds link to account on Xnet account validation           -JAC
+
 From 1.1.4 branch:
 
     * XnetEvent:

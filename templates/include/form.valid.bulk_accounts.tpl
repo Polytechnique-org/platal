@@ -29,7 +29,7 @@
   <td>
   |
   {foreach from=$valid->users item=user}
-  &nbsp;{$user.email}&nbsp;|
+  &nbsp;<a href="http://polytechnique.net/{$valid->dim}/member/{$user.hruid}">{$user.email}</a>&nbsp;|
   {/foreach}
   </td>
 </tr>
