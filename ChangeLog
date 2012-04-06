@@ -18,6 +18,9 @@ Bug/Wish:
     * XnetGrp:
         - #1609: Adds link to account on Xnet account validation           -JAC
 
+    * XnetNl:
+        - #1606: Fixes Xnet NL deletion                                    -JAC
+
 From 1.1.4 branch:
 
     * XnetEvent:
