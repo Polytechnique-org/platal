@@ -35,6 +35,7 @@ class CoreModule extends PLModule
             'assert_errors' => $this->make_hook('siteerror',     AUTH_COOKIE, 'admin'),
             'site_errors'   => $this->make_hook('siteerror',     AUTH_COOKIE, 'admin'),
             'site_errors/rss' => $this->make_token_hook('siteerror_rss', AUTH_COOKIE, 'admin'),
+            'site_errors/register' => $this->make_hook('register_error', AUTH_PUBLIC),
 
             'embedded'      => $this->make_hook('embedded',      AUTH_PUBLIC),
 
@@ -219,6 +220,14 @@ class CoreModule extends PLModule
             $page->trigSuccess("Erreurs effacées.");
         }
         $page->assign('errors', PlErrorReport::iterate());
+    }
+
+    function handler_register_error($page)
+    {
+        if (S::has_xsrf_token() && Post::has('error') && Post::has('url')) {
+            PlErrorReport::report("Client error on " . Post::s('url') . ":\n\n" . Post::s('error'));
+        }
+        exit;
     }
 
     function handler_siteerror_rss(PlPage $page, PlUser $user)

@@ -383,5 +383,28 @@ function previewWiki(idFrom, idTo, withTitle, idShow)
 }
 
 // }}}
+// {{{ register error report
+
+$(function() {
+    $(window).error(function(error) {
+        if ($.xsrf_token) {
+            $.ajax({
+                url: $.plURL('site_errors/register'),
+                type: 'POST',
+                data: {
+                    url: "" + window.location,
+                    token: $.xsrf_token,
+                    error: JSON.stringify({
+                        message: error.originalEvent.message,
+                        file:    error.originalEvent.filename,
+                        line:    error.originalEvent.lineno
+                    })
+                }
+            });
+        }
+    });
+});
+
+// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
