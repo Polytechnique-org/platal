@@ -656,17 +656,36 @@ class ListsModule extends PLModule
         if (Env::has('add_member')) {
             S::assert_xsrf_token();
 
-            $members = User::getBulkForlifeEmails(Env::v('add_member'),
+            $logins = preg_split("/[; ,\r\n\|]+/", Env::v('add_member'));
+            $members = User::getBulkForlifeEmails($logins,
                                                   true,
                                                   array('ListsModule', 'no_login_callback'));
+            $unfound = array_diff_key($logins, $members);
+
             // Make sure we send a list (array_values) of unique (array_unique)
             // emails.
             $members = array_values(array_unique($members));
 
             $arr = $this->client->mass_subscribe($liste, $members);
+
+            $successes = array();
             if (is_array($arr)) {
                 foreach($arr as $addr) {
+                    $successes[] = $addr[1];
                     $page->trigSuccess("{$addr[0]} inscrit.");
+                }
+            }
+
+            $already = array_diff($members, $successes);
+            if (is_array($already)) {
+                foreach ($already as $item) {
+                    $page->trigWarning($item . ' est déjà inscrit.');
+                }
+            }
+
+            if (is_array($unfound)) {
+                foreach ($unfound as $item) {
+                    $page->trigError($item . " ne correspond pas à un compte existant et n'est pas une adresse email.");
                 }
             }
         }
