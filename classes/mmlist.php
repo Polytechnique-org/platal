@@ -53,8 +53,8 @@ class MMList extends XmlrpcClient
         }
         $changed_lists = 0;
         foreach ($all_lists as $list) {
-            if ($list->sub) {
-                $this->replace_email($list->list, $old_email, $new_email);
+            if ($list['sub']) {
+                $this->replace_email($list['list'], $old_email, $new_email);
                 $changed_lists++;
             }
         }
