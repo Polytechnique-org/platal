@@ -289,7 +289,7 @@ $(function() {
     <tr>
       <td><input type="radio" name="owner" value="{$profile.pid}" {if $profile.owner}checked="checked"{/if}
                  onclick="this.form.submit()" /></td>
-      <td>{$profile.hrpid} (pid {$profile.pid})</td>
+      <td>{$profile.hrpid} (pid {$profile.pid}, ax_id {$profile.ax_id})</td>
       <td class="right">
         <a href="profile/edit/{$profile.hrpid}">{icon name=user_edit}</a>
         <a href="profile/{$profile.hrpid}" class="popup2">{icon name=user_suit}</a>

@@ -737,7 +737,7 @@ class AdminModule extends PLModule
         $page->assign('aliases', $aliases);
         $page->assign('account_types', XDB::iterator('SELECT * FROM account_types ORDER BY type'));
         $page->assign('skins', XDB::iterator('SELECT id, name FROM skins ORDER BY name'));
-        $page->assign('profiles', XDB::iterator('SELECT  p.pid, p.hrpid, FIND_IN_SET(\'owner\', ap.perms) AS owner
+        $page->assign('profiles', XDB::iterator('SELECT  p.pid, p.hrpid, FIND_IN_SET(\'owner\', ap.perms) AS owner, p.ax_id
                                                    FROM  account_profiles AS ap
                                              INNER JOIN  profiles AS p ON (ap.pid = p.pid)
                                                   WHERE  ap.uid = {?}', $user->id()));
