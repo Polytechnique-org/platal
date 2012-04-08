@@ -653,10 +653,22 @@ class ListsModule extends PLModule
             }
         }
 
-        if (Env::has('add_member')) {
+        if (Env::has('add_member') ||
+            isset($_FILES['add_member_file']) && $_FILES['add_member_file']['tmp_name']) {
             S::assert_xsrf_token();
 
-            $logins = preg_split("/[; ,\r\n\|]+/", Env::v('add_member'));
+            if (isset($_FILES['add_member_file']) && $_FILES['add_member_file']['tmp_name']) {
+                $upload =& PlUpload::get($_FILES['add_member_file'], S::user()->login(), 'list.addmember', true);
+                if (!$upload) {
+                    $page->trigError("Une erreur s'est produite lors du téléchargement du fichier.");
+                } else {
+                    $logins = $upload->getContents();
+                }
+            } else {
+                $logins = Env::v('add_member');
+            }
+
+            $logins = preg_split("/[; ,\r\n\|]+/", $logins);
             $members = User::getBulkForlifeEmails($logins,
                                                   true,
                                                   array('ListsModule', 'no_login_callback'));
@@ -685,29 +697,8 @@ class ListsModule extends PLModule
 
             if (is_array($unfound)) {
                 foreach ($unfound as $item) {
-                    $page->trigError($item . " ne correspond pas à un compte existant et n'est pas une adresse email.");
-                }
-            }
-        }
-
-        if (isset($_FILES['add_member_file']) && $_FILES['add_member_file']['tmp_name']) {
-            S::assert_xsrf_token();
-
-            $upload =& PlUpload::get($_FILES['add_member_file'], S::user()->login(), 'list.addmember', true);
-            if (!$upload) {
-                $page->trigError('Une erreur s\'est produite lors du téléchargement du fichier');
-            } else {
-                $members = User::getBulkForlifeEmails($upload->getContents(),
-                                                      true,
-                                                      array('ListsModule', 'no_login_callback'));
-                // Make sure we send a list (array_values) of unique (array_unique)
-                // emails.
-                $members = array_values(array_unique($members));
-
-                $arr = $this->client->mass_subscribe($liste, $members);
-                if (is_array($arr)) {
-                    foreach($arr as $addr) {
-                        $page->trigSuccess("{$addr[0]} inscrit.");
+                    if (trim($item) != '') {
+                        $page->trigError($item . " ne correspond pas à un compte existant et n'est pas une adresse email.");
                     }
                 }
             }
