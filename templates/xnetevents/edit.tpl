@@ -197,8 +197,7 @@ Ton inscription à [METS LE NOM DE L'ÉVÉNEMENT ICI] a bien été enregistrée 
 À très bientôt,
 
 -- 
-{assign var="profile" value=$smarty.session.user->profile()}
-{$profile->fullName("promo")}{/if}</textarea><br />
+{$smarty.session.user->fullName("promo")}{/if}</textarea><br />
         {assign var='asso_url' value=$globals->baseurl|cat:'/'|cat:$platal->ns}
         Page internet de l'événement&nbsp;: <input size="40" name="site" value="{$payment_site|default:$asso->site|default:$asso_url}" /><br />
         Rendre public le télépaiement&nbsp;:

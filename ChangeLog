@@ -17,6 +17,7 @@ Bug/Wish:
         - #1577: Fixes alternative payements given by admins               -GLN
         - #1578: Fixes deletion of people inscriptions                     -GLN
         - #1348: Keeps the amount paid when updating participation         -GLN
+        - #1603: Fixes Xnet events edition for users without profile       -JAC
 
     * XnetGrp:
         - #1609: Adds link to account on Xnet account validation           -JAC
