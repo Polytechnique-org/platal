@@ -118,11 +118,11 @@ class AuthModule extends PLModule
      */
     function handler_groupex($page, $charset = 'utf8')
     {
-        $gpex_url = urldecode(Get::s('url'));
+        $ext_url = urldecode(Get::s('url'));
 
         if (!S::logged()) {
             $page->assign('external_auth', true);
-            $page->assign('gpex_url', $gpex_url);
+            $page->assign('ext_url', $ext_url);
             $page->setTitle('Authentification');
             $page->setDefaultSkin('group_login');
 
@@ -145,16 +145,16 @@ class AuthModule extends PLModule
 
         $gpex_pass = Get::s('pass');
         if (Get::has('session')) {
-            if (strpos($gpex_url, '?') === false) {
-                $gpex_url .= "?PHPSESSID=" . Get::s('session');
+            if (strpos($ext_url, '?') === false) {
+                $ext_url .= "?PHPSESSID=" . Get::s('session');
             } else {
-                $gpex_url .= "&PHPSESSID=" . Get::s('session');
+                $ext_url .= "&PHPSESSID=" . Get::s('session');
             }
         }
 
         // Normalize the return URL.
-        if (!preg_match("/^(http|https):\/\/.*/",$gpex_url)) {
-            $gpex_url = "http://$gpex_url";
+        if (!preg_match("/^(http|https):\/\/.*/",$ext_url)) {
+            $ext_url = "http://$ext_url";
         }
         $gpex_challenge = Get::s('challenge');
 
@@ -187,8 +187,8 @@ class AuthModule extends PLModule
                 // We check that the return url matches a per-key regexp to prevent
                 // replay attacks (more exactly to force replay attacks to redirect
                 // the user to the real GroupeX website, which defeats the attack).
-                if (empty($returnurls) || @preg_match($returnurls, $gpex_url)) {
-                    $returl = $gpex_url . gpex_make_params($gpex_challenge, $privkey, $datafields, $charset);
+                if (empty($returnurls) || @preg_match($returnurls, $ext_url)) {
+                    $returl = $ext_url . gpex_make_params($gpex_challenge, $privkey, $datafields, $charset);
                     XDB::execute('UPDATE  group_auth
                                      SET  last_used = DATE(NOW())
                                    WHERE  name = {?}',
