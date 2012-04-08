@@ -118,8 +118,11 @@ class AuthModule extends PLModule
      */
     function handler_groupex($page, $charset = 'utf8')
     {
+        $gpex_url = urldecode(Get::s('url'));
+
         if (!S::logged()) {
             $page->assign('external_auth', true);
+            $page->assign('gpex_url', $gpex_url);
             $page->setTitle('Authentification');
             $page->setDefaultSkin('group_login');
 
@@ -141,7 +144,6 @@ class AuthModule extends PLModule
         $this->load('auth.inc.php');
 
         $gpex_pass = Get::s('pass');
-        $gpex_url  = urldecode(Get::s('url'));
         if (Get::has('session')) {
             if (strpos($gpex_url, '?') === false) {
                 $gpex_url .= "?PHPSESSID=" . Get::s('session');

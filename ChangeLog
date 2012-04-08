@@ -6,6 +6,9 @@ Bug/Wish:
     * Admin:
         - #1604: Displays AX id on admin page                              -JAC
 
+    * Auth:
+        - #1608: Displays proper url in auth-group-x login                 -JAC
+
     * Search:
         - #1572: Removes remaining results count from queries              -JAC
         - #1574: Correctly displays State corps                            -GLN

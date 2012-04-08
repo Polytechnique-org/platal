@@ -31,7 +31,7 @@
   {else}
     la page que vous avez demandée
   {/if}
-  (<strong>{if t($external_auth)}{$smarty.server.HTTP_REFERER|truncate:120:"...":false}{else}{$globals->baseurl}/{$platal->pl_self()}{/if}</strong>)
+  (<strong>{if t($external_auth)}{$gpex_url|truncate:120:"...":false}{else}{$globals->baseurl}/{$platal->pl_self()}{/if}</strong>)
   nécessite une authentification.
 </p>
 {else}
