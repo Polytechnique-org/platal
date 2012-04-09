@@ -27,6 +27,7 @@ Bug/Wish:
         - #1603: Fixes Xnet events edition for users without profile       -JAC
 
     * XnetGrp:
+        - #1596, #1598: Lists non-X accounts awaiting validation           -JAC
         - #1609: Adds link to account on Xnet account validation           -JAC
 
     * XnetNl:

@@ -46,6 +46,12 @@ Le groupe {$asso->nom} compte {$plset_total_count} membres&nbsp;:
       Lister les membres du groupe sans compte actif
     </a>
   </li>
+  <li>
+    <a href="{$platal->ns}directory/awact">
+      {icon name=group_gear title="Lister les membres du groupe ayant un compte en attente d'activation"}
+      Lister les membres du groupe ayant un compte en attente d'activation
+    </a>
+  </li>
   {if $asso->has_ml}
   <li>
     <a href="{$platal->ns}admin/annuaire">

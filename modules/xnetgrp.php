@@ -38,6 +38,7 @@ class XnetGrpModule extends PLModule
             '%grp/annuaire/csv'    => $this->make_hook('csv',                   AUTH_PASSWD, 'groupmember:groupannu'),
             '%grp/directory/sync'  => $this->make_hook('directory_sync',        AUTH_PASSWD, 'groupadmin'),
             '%grp/directory/unact' => $this->make_hook('non_active',            AUTH_PASSWD, 'groupadmin'),
+            '%grp/directory/awact' => $this->make_hook('awaiting_active',       AUTH_PASSWD, 'groupadmin'),
             '%grp/trombi'          => $this->make_hook('trombi',                AUTH_PASSWD, 'groupannu'),
             '%grp/geoloc'          => $this->make_hook('geoloc',                AUTH_PASSWD, 'groupannu'),
             '%grp/subscribe'       => $this->make_hook('subscribe',             AUTH_PASSWD, 'groups'),
@@ -629,6 +630,60 @@ class XnetGrpModule extends PLModule
 
         $users = User::getBulkUsersWithUIDs($uids);
         $page->assign('users', $users);
+    }
+
+    private function again($uid)
+    {
+        $data = XDB::fetchOneAssoc('SELECT  hash, group_name, sender_name, email
+                                      FROM  register_pending_xnet
+                                     WHERE  uid = {?}',
+                                   $uid);
+
+        $mailer = new PlMailer('xnet/account.mail.tpl');
+        $mailer->addCc('validation+xnet_account@polytechnique.org');
+        $mailer->setTo($data['email']);
+        $mailer->assign('hash', $data['hash']);
+        $mailer->assign('email', $data['email']);
+        $mailer->assign('group', $data['group_name']);
+        $mailer->assign('sender_name', $data['sender_name']);
+        $mailer->assign('again', true);
+        $mailer->assign('baseurl', Platal::globals()->xnet->xorg_baseurl);
+        $mailer->send();
+    }
+
+    function handler_awaiting_active($page)
+    {
+        global $globals;
+        $page->changeTpl('xnetgrp/awaiting_active.tpl');
+
+        XDB::execute('DELETE FROM  register_pending_xnet
+                            WHERE  DATE_SUB(NOW(), INTERVAL 1 MONTH) > date');
+
+        $uids = XDB::fetchColumn('SELECT  g.uid
+                                    FROM  group_members         AS g
+                              INNER JOIN  accounts              AS a ON (a.uid = g.uid)
+                              INNER JOIN  register_pending_xnet AS p ON (p.uid = g.uid)
+                                   WHERE  a.uid = g.uid AND g.asso_id = {?} AND a.type = \'xnet\' AND a.state = \'pending\'',
+                                 $globals->asso('id'));
+
+        if (Post::has('again')) {
+            S::assert_xsrf_token();
+
+            $uids_to_again = array_intersect(array_keys(Post::v('again')), $uids);
+            foreach ($uids_to_again as $uid) {
+                $this->again($uid);
+            }
+            $page->trigSuccess('Relances effectuées avec succès.');
+        }
+
+        $registration_date = XDB::fetchAllAssoc('uid', 'SELECT  uid, date
+                                                          FROM  register_pending_xnet
+                                                         WHERE  uid IN {?}', $uids);
+
+        $users = User::getBulkUsersWithUIDs($uids);
+        $page->assign('users', $users);
+        $page->assign('registration_date', $registration_date);
+
     }
 
     private function removeSubscriptionRequest($uid)
@@ -1333,21 +1388,7 @@ class XnetGrpModule extends PLModule
                     $page->trigSuccess('Le compte va bientôt être activé.');
                 }
                 if (Post::b('again')) {
-                    $data = XDB::fetchOneAssoc('SELECT  hash, group_name, sender_name, email
-                                                  FROM  register_pending_xnet
-                                                 WHERE  uid = {?}',
-                                               $user->id());
-
-                    $mailer = new PlMailer('xnet/account.mail.tpl');
-                    $mailer->addCc('validation+xnet_account@polytechnique.org');
-                    $mailer->setTo($data['email']);
-                    $mailer->assign('hash', $data['hash']);
-                    $mailer->assign('email', $data['email']);
-                    $mailer->assign('group', $data['group_name']);
-                    $mailer->assign('sender_name', $data['sender_name']);
-                    $mailer->assign('again', true);
-                    $mailer->assign('baseurl', Platal::globals()->xnet->xorg_baseurl);
-                    $mailer->send();
+                    $this->again($user->id());
                     $page->trigSuccess('Relance effectuée avec succès.');
                 }
             }
