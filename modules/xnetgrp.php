@@ -638,6 +638,10 @@ class XnetGrpModule extends PLModule
                                       FROM  register_pending_xnet
                                      WHERE  uid = {?}',
                                    $uid);
+        XDB::execute('UPDATE  register_pending_xnet
+                         SET  last_date = NOW()
+                       WHERE  uid = {?}',
+                     $uid);
 
         $mailer = new PlMailer('xnet/account.mail.tpl');
         $mailer->addCc('validation+xnet_account@polytechnique.org');
@@ -679,10 +683,14 @@ class XnetGrpModule extends PLModule
         $registration_date = XDB::fetchAllAssoc('uid', 'SELECT  uid, date
                                                           FROM  register_pending_xnet
                                                          WHERE  uid IN {?}', $uids);
+        $last_date = XDB::fetchAllAssoc('uid', 'SELECT  uid, last_date
+                                                  FROM  register_pending_xnet
+                                                 WHERE  uid IN {?}', $uids);
 
         $users = User::getBulkUsersWithUIDs($uids);
         $page->assign('users', $users);
         $page->assign('registration_date', $registration_date);
+        $page->assign('last_date', $last_date);
 
     }
 
