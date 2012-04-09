@@ -541,7 +541,7 @@ class Email
     // Activates the email address as a redirection.
     public function activate()
     {
-        if ($this->inactive) {
+        if (!$this->active) {
             if (in_array($this->type, self::get_allowed_storages($this->user))) {
                 self::activate_storage($this->user, $this->type, $this->action);
             } else {
@@ -551,6 +551,8 @@ class Email
                              $this->user->id(), $this->email);
             }
             S::logger()->log('email_on', $this->email . ($this->user->id() != S::v('uid') ? "(admin on {$this->user->login()})" : ''));
+            $this->disabled = false;
+            $this->broken   = false;
             $this->inactive = false;
             $this->active   = true;
         }

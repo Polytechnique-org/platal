@@ -10,6 +10,7 @@ Bug/Wish:
         - #1608: Displays proper url in auth-group-x login                 -JAC
 
     * Email:
+        - #1597: Fixes reactivation of broken and suspended emails         -JAC
         - #1601: Displays errors and warnings when adding people to ML     -JAC
 
     * Search:
