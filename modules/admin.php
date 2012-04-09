@@ -713,7 +713,7 @@ class AdminModule extends PLModule
         // Displays last login and last host information.
         $res = XDB::query("SELECT  start, host
                              FROM  log_sessions
-                            WHERE  uid = {?} AND suid = 0
+                            WHERE  uid = {?} AND suid IS NULL
                          ORDER BY  start DESC
                             LIMIT  1", $user->id());
         list($lastlogin,$host) = $res->fetchOneRow();
