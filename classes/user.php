@@ -170,7 +170,7 @@ class User extends PlUser
                                       FIND_IN_SET(\'watch\', a.flags) AS watch, a.comment,
                                       a.weak_password IS NOT NULL AS weak_access, g.g_account_name IS NOT NULL AS googleapps,
                                       a.token IS NOT NULL AS token_access, a.token, a.last_version,
-                                      UNIX_TIMESTAMP(s.start) AS lastlogin, s.host, UNIX_TIMESTAMP(fp.last_seen) AS banana_last
+                                      s.start AS lastlogin, s.host, fp.last_seen AS banana_last
                                       ' . $fields . '
                                 FROM  accounts               AS a
                           INNER JOIN  account_types          AS at ON (at.type = a.type)
