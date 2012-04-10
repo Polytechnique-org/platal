@@ -33,6 +33,9 @@ Bug/Wish:
         - #1596, #1598: Lists non-X accounts awaiting validation           -JAC
         - #1609: Adds link to account on Xnet account validation           -JAC
 
+    * XnetList:
+        - #1518: Allows group animators to edit group's lists' members     -JAC
+
     * XnetNl:
         - #1606: Fixes Xnet NL deletion                                    -JAC
 

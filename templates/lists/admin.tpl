@@ -23,7 +23,7 @@
 
 {if !$details.own}
 <p class='erreur'>
-Tu n'es pas administrateur de la liste, mais du site.
+Tu n'es pas administrateur de la liste, mais {if $group_admin}du groupe{else}du site{/if}.
 </p>
 {/if}
 

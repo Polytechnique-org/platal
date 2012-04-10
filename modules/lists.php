@@ -616,7 +616,17 @@ class ListsModule extends PLModule
         }
 
         $domain = $this->prepare_client($page);
-        $this->verify_list_owner($page, $liste);
+        $force_rights = false;
+        if ($GLOBALS['IS_XNET_SITE']) {
+            $perms = S::v('perms');
+            if (is_object($perms) && $perms->hasFlag('groupadmin')) {
+                $force_rights = true;
+            }
+        }
+        $page->assign('group_admin', $force_rights);
+        if (!$force_rights) {
+            $this->verify_list_owner($page, $liste);
+        }
 
         $page->changeTpl('lists/admin.tpl');
 
