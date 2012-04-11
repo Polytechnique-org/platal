@@ -114,7 +114,7 @@ class XnetEventsModule extends PLModule
         }
 
         $page->assign('archive', $archive);
-        $evenements = XDB::iterator('SELECT  e.*, LEFT(10, e.debut) AS first_day, LEFT(10, e.fin) AS last_day,
+        $evenements = XDB::iterator('SELECT  e.*, LEFT(e.debut, 10) AS first_day, LEFT(e.fin, 10) AS last_day,
                                              IF(e.deadline_inscription,
                                                      e.deadline_inscription >= LEFT(NOW(), 10),
                                                      1) AS inscr_open,

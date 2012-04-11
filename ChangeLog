@@ -24,9 +24,10 @@ Bug/Wish:
         - #1571: Fixes the opening of the comments panel                   -GLN
 
     * XnetEvent:
+        - #1348: Keeps the amount paid when updating participation         -GLN
         - #1577: Fixes alternative payements given by admins               -GLN
         - #1578: Fixes deletion of people inscriptions                     -GLN
-        - #1348: Keeps the amount paid when updating participation         -GLN
+        - #1583: Fixes date display in events longer than a single day     -JAC
         - #1603: Fixes Xnet events edition for users without profile       -JAC
 
     * XnetGrp:

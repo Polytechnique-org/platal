@@ -31,7 +31,7 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
                                        IF(e.deadline_inscription,
                                           e.deadline_inscription >= LEFT(NOW(), 10),
                                           1) AS inscr_open,
-                                       LEFT(10, e.debut) AS start_day, LEFT(10, e.fin) AS last_day,
+                                       LEFT(e.debut, 10) AS first_day, LEFT(e.fin, 10) AS last_day,
                                        LEFT(NOW(), 10) AS now,
                                        ei.titre, e.subscription_notification
                                  FROM  group_events             AS e
@@ -323,8 +323,8 @@ function make_event_date(&$e)
 {
     $start     = strtotime($e['debut']);
     $end       = strtotime($e['fin']);
-    $first_day = @strtotime($e['first_day']);
-    $last_day  = strtotime($e['last_day']);
+    $first_day = $e['first_day'];
+    $last_day  = $e['last_day'];
 
     $date = "";
     if ($start && $end != $start) {
