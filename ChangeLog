@@ -4,6 +4,7 @@ VERSION 1.1.5                                                         XX XX XXXX
 Bug/Wish:
 
     * Admin:
+        - #1568: Adds log search on actions                                -JAC
         - #1604: Displays AX id on admin page                              -JAC
 
     * Auth:

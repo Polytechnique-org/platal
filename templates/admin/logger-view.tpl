@@ -93,6 +93,14 @@
   </td>
 </tr>
 <tr>
+  <td><strong>Action</strong></td>
+  <td>
+    <select name="action" onchange="this.form.submit()">
+      {html_options options=$actions selected=$action}
+    </select>
+  </td>
+</tr>
+<tr>
   <td><strong>Utilisateur</strong></td>
   <td>
     <input type="text" name="loguser" value="{$loguser}" />

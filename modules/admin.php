@@ -236,6 +236,15 @@ class AdminModule extends PLModule
         return $years;
     }
 
+    private function _getActions()
+    {
+        $actions = XDB::fetchAllAssoc('id', 'SELECT  id, description
+                                               FROM  log_actions');
+        $actions[0] = '----';
+        ksort($actions);
+
+        return $actions;
+    }
 
     /** Make a where clause to get a user's sessions.
      * Prepare the where clause request that will retrieve the sessions.
@@ -243,18 +252,20 @@ class AdminModule extends PLModule
      * @param $year INTEGER Only get log entries made during the given year.
      * @param $month INTEGER Only get log entries made during the given month.
      * @param $day INTEGER Only get log entries made during the given day.
+     * @param $action INTEGER Only get log entries corresponding to this action.
      * @param $uid INTEGER Only get log entries referring to the given user ID.
      *
      * @return STRING the WHERE clause of a query, including the 'WHERE' keyword
      * @private
      */
-    function _makeWhere($year, $month, $day, $uid)
+    private function _makeWhere($year, $month, $day, $action, $uid)
     {
         // start constructing the "where" clause
         $where = array();
 
-        if ($uid)
-            array_push($where, "s.uid='$uid'");
+        if ($uid) {
+            $where[] = XDB::format('ls.uid = {?}', $uid);
+        }
 
         // we were given at least a year
         if ($year) {
@@ -268,12 +279,16 @@ class AdminModule extends PLModule
                 $dmin = mktime(0, 0, 0, 1, 1, $year);
                 $dmax = mktime(0, 0, 0, 1, 1, $year+1);
             }
-            $where[] = "start >= " . date("Ymd000000", $dmin);
-            $where[] = "start < " . date("Ymd000000", $dmax);
+            $where[] = "ls.start >= " . date("Ymd000000", $dmin);
+            $where[] = "ls.start < " . date("Ymd000000", $dmax);
+        }
+
+        if ($action != 0) {
+            $where[] = XDB::format('la.id = {?}', $action);
         }
 
         if (!empty($where)) {
-            return ' WHERE ' . implode($where, " AND ");
+            return 'WHERE ' . implode($where, ' AND ');
         } else {
             return '';
         }
@@ -321,6 +336,7 @@ class AdminModule extends PLModule
                 $month = Env::i('month', intval(date('m')));
                 $day   = Env::i('day', intval(date('d')));
             }
+            $action = Post::i('action');
 
             if (!$year)
                 $month = 0;
@@ -340,19 +356,30 @@ class AdminModule extends PLModule
             $page->assign('days', $this->_getDays($year, $month));
             $page->assign('day', $day);
 
+            // Retrieve available actions
+            $page->assign('actions', $this->_getActions());
+            $page->assign('action', $action);
+
             $page->assign('loguser', $loguser);
             // smarty assignments
 
             if ($loguid || $year) {
 
                 // get the requested sessions
-                $where  = $this->_makeWhere($year, $month, $day, $loguid);
-                $select = "SELECT  s.id, s.start, s.uid,
-                                   a.hruid as username
-                             FROM  log_sessions AS s
-                       INNER JOIN  accounts   AS a  ON (a.uid = s.uid)
-                    $where
-                    ORDER BY start DESC";
+                $where  = $this->_makeWhere($year, $month, $day, $action, $loguid);
+                if ($action != 0) {
+                    $join = 'INNER JOIN  log_events   AS le ON (ls.id = le.session)
+                             INNER JOIN  log_actions  AS la ON (le.action = la.id)';
+                } else {
+                    $join = '';
+                }
+                $select = 'SELECT  ls.id, ls.start, ls.uid, a.hruid as username
+                             FROM  log_sessions AS ls
+                       INNER JOIN  accounts     AS a  ON (a.uid = ls.uid)
+                       ' . $join . '
+                       ' . $where . '
+                         GROUP BY  ls.id
+                         ORDER BY  ls.start DESC';
                 $res = XDB::iterator($select);
 
                 $sessions = array();
@@ -363,11 +390,11 @@ class AdminModule extends PLModule
                 array_reverse($sessions);
 
                 // attach events
-                $sql = "SELECT  s.id, a.text
-                          FROM  log_sessions AS s
-                    LEFT  JOIN  log_events   AS e ON(e.session=s.id)
-                    INNER JOIN  log_actions  AS a ON(a.id=e.action)
-                        $where";
+                $sql = 'SELECT  ls.id, la.text
+                          FROM  log_sessions AS ls
+                     LEFT JOIN  log_events   AS le ON (le.session = ls.id)
+                    INNER JOIN  log_actions  AS la ON (la.id = le.action)
+                    ' . $where;
 
                 $res = XDB::iterator($sql);
                 while ($event = $res->next()) {
