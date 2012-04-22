@@ -23,7 +23,7 @@
 <h1>{$asso->nom}&nbsp;: Annuaire du groupe </h1>
 
 <p class="descr">
-Le groupe {$asso->nom} compte {$plset_total_count} membres&nbsp;:
+Le groupe {$asso->nom} compte {if t($full_count)}{$full_count}{elseif $plset_total_count}{$plset_total_count}{else}{$plset_count}{/if} membres{if !t($full_count)}.{else}, dont {if $plset_total_count}{$plset_total_count}{else}{$plset_count}{/if} dans le {$plset_mods.$plset_mod|lower}.{/if}
 </p>
 
 <ul class="descr">

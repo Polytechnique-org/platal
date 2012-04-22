@@ -327,8 +327,13 @@ class ListMemberView extends MixedView
 
 class TrombiView extends MixedView
 {
+    private $full_count;
+
     public function __construct(PlSet $set, array $params)
     {
+        $set->getIds();
+        $this->full_count = $set->count();
+
         $this->entriesPerPage = 24;
         $this->defaultkey = 'name';
         if (@$params['with_score']) {
@@ -359,6 +364,7 @@ class TrombiView extends MixedView
             global $globals;
             $page->assign('mainsiteurl', 'https://' . $globals->core->secure_domain . '/');
         }
+        $page->assign('full_count', $this->full_count);
         return parent::apply($page);
     }
 }
