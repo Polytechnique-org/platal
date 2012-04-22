@@ -55,7 +55,7 @@ il suffit de cliquer sur le titre de la colonne concernée.
   {if t($ev.eid)}
   Ce paiement est associé à l'événement <a href="{$platal->ns}events">{$ev.title}</a>.<br />
     {if $ev.ins}
-    Tu es inscrit à cet événements.
+    Tu es inscrit à cet événement.
       {if $ev.topay > $ev.paid}
       <a href="{$platal->ns}payment/{$p.id}?montant={math equation="a-b" a=$ev.topay b=$ev.paid}">
         Tu dois encore payer {math equation="a-b" a=$ev.topay b=$ev.paid}&euro;.
