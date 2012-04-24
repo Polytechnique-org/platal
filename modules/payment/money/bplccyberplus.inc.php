@@ -80,7 +80,7 @@ class BPLCCyberPlus
             'vads_url_return' => $pay->url ? $pay->url : $globals->baseurl . '/' . $platal->ns);
         $this->infos['client'] = Array(
             'vads_cust_email' => $user->bestEmail(),
-            'vads_cust_id' => S::v('uid'),
+            'vads_cust_id' => $user->id(),
             'vads_cust_name' => substr(self::replaceNonAlpha(replace_accent($user->shortName())), 0, 127));
         $this->infos['commande'] = Array(
             'vads_amount' => $this->val,

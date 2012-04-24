@@ -45,7 +45,7 @@ class PayPal
         $this->urlform = 'https://' . $globals->money->paypal_site . '/cgi-bin/webscr';
 
         $roboturl = str_replace("https://","http://",$globals->baseurl)
-                  . '/' . $platal->ns . "payment/paypal_return/" . S::v('uid')
+                  . '/' . $platal->ns . "payment/paypal_return/" . $user->id()
                   . "?comment=" . urlencode(Env::v('comment')) . '&display=' . Post::i('display');
 
         $this->infos = array(
