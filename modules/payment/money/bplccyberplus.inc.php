@@ -68,9 +68,9 @@ class BPLCCyberPlus
         // Transaction's reference computation.
         $prefix = ($pay->flags->hasflag('unique')) ? str_pad("",15,"0") : rand_url_id();
         $fullref = substr("$prefix-{$pay->id}",-12); // FIXME : check for duplicates
-        $ts = time();
-        $trans_date = date("YmdHis", $ts);
-        $trans_id = date("His", $ts); // FIXME : check for duplicates
+        $ts = new DateTime('now', new DateTimeZone('UTC'));
+        $trans_date = $ts->format("YmdHis");
+        $trans_id = $ts->format("His"); // FIXME : check for duplicates
 
         // Form's content.
         $this->urlform = "https://systempay.cyberpluspaiement.com/vads-payment/";
