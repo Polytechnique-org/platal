@@ -14,6 +14,9 @@ Bug/Wish:
         - #1597: Fixes reactivation of broken and suspended emails         -JAC
         - #1601: Displays errors and warnings when adding people to ML     -JAC
 
+    * Payments:
+        - #1615: Increases payment name length limit                       -JAC
+
     * Profile:
         - #1589: Fixes clicks on main jobTree titles                       -JAC
 
