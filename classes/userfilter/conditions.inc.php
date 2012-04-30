@@ -1028,14 +1028,16 @@ abstract class UFC_Address extends UserFilterCondition
 
     /** Flags for addresses
      */
+    const FLAG_NONE    = 0x0000;
     const FLAG_CURRENT = 0x0001;
     const FLAG_TEMP    = 0x0002;
     const FLAG_SECOND  = 0x0004;
     const FLAG_MAIL    = 0x0008;
     const FLAG_CEDEX   = 0x0010;
+    const FLAG_AX_MAIL = 0x0020;
 
     // Binary OR of those flags
-    const FLAG_ANY     = 0x001F;
+    const FLAG_ANY     = 0x003F;
 
     /** Text of these flags
      */
@@ -1045,6 +1047,7 @@ abstract class UFC_Address extends UserFilterCondition
         self::FLAG_SECOND  => 'secondary',
         self::FLAG_MAIL    => 'mail',
         self::FLAG_CEDEX   => 'cedex',
+        self::FLAG_AX_MAIL => 'ax_mail',
     );
 
     protected $flags;
@@ -1104,6 +1107,7 @@ class UFC_AddressComponent extends UFC_Address
             Platal::page()->killError('Invalid address field type: ' . $this->fieldtype);
         }
 
+        $flags = 0x20;
         parent::__construct($type, $flags);
         if (!is_array($val)) {
             $val = array($val);
