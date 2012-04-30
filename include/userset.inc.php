@@ -440,18 +440,14 @@ class AddressesView implements PlView
                                        IF (pn.firstname_ordinary = '', UPPER(pn.firstname_main), UPPER(pn.firstname_ordinary)) AS firstname,
                                        IF (pn.lastname_ordinary = '', UPPER(pn.lastname_main), UPPER(pn.lastname_ordinary)) AS lastname,
                                        UPPER(pje.name), pa.postalText, pa.postal_code_fr AS postal_code, p.email_directory
-                                 FROM  (SELECT  pid, postalText, jobid, groupid, type, id, postal_code_fr
-                                          FROM  profile_addresses
-                                         WHERE  pub IN ('public', 'ax') AND FIND_IN_SET('mail', flags) AND pid IN {?}
-                                      ORDER BY  pid, NOT FIND_IN_SET('current', flags),
-                                                FIND_IN_SET('secondary', flags), type = 'job') AS pa
-                           INNER JOIN  profiles                          AS p    ON (pa.pid = p.pid)
-                           INNER JOIN  profile_display                   AS pd   ON (pd.pid = pa.pid)
-                           INNER JOIN  profile_public_names              AS pn   ON (pn.pid = pa.pid)
-                            LEFT JOIN  profile_job                       AS pj   ON (pj.pid = pa.pid
-                                                                                     AND pj.id = IF(pa.type = 'job', pa.id, NULL))
-                            LEFT JOIN  profile_job_enum                  AS pje  ON (pj.jobid = pje.id)
-                             GROUP BY  pa.pid", $pids);
+                                 FROM  profile_addresses    AS pa
+                           INNER JOIN  profiles             AS p    ON (pa.pid = p.pid)
+                           INNER JOIN  profile_display      AS pd   ON (pd.pid = pa.pid)
+                           INNER JOIN  profile_public_names AS pn   ON (pn.pid = pa.pid)
+                            LEFT JOIN  profile_job          AS pj   ON (pj.pid = pa.pid
+                                                                        AND pj.id = IF(pa.type = 'job', pa.id, NULL))
+                            LEFT JOIN  profile_job_enum     AS pje  ON (pj.jobid = pje.id)
+                                WHERE  pa.pid IN {?} AND FIND_IN_SET('ax_mail', pa.flags)", $pids);
             foreach ($res->fetchAllAssoc() as $item) {
                 fputcsv($csv, array_map('utf8_decode', $item), ';');
             }
