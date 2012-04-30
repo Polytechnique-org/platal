@@ -726,6 +726,32 @@ class Address
                 $req = new AddressReq(S::user(), $this->toFormArray(), $this->pid, $this->jobid, $this->groupid, $this->type, $this->id);
                 $req->submit();
             }
+
+            if ($this->pid != 0) {
+                $this->updateAxMail();
+            }
+        }
+    }
+
+    private function updateAxMail()
+    {
+        XDB::execute("UPDATE  profile_addresses
+                         SET  flags = REPLACE(flags, 'ax_mail', '')
+                       WHERE  pid = {?}",
+                     $this->pid);
+
+        $ax_mail = XDB::fetchOneAssoc("SELECT  pid, jobid, groupid, type, id
+                                         FROM  profile_addresses
+                                        WHERE  pub IN ('public', 'ax') AND FIND_IN_SET('mail', flags) AND pid = {?}
+                                     ORDER BY  NOT FIND_IN_SET('current', flags),
+                                               FIND_IN_SET('secondary', flags), type = 'job'",
+                                      $this->pid);
+
+        if ($ax_mail) {
+            XDB::execute("UPDATE  profile_addresses
+                             SET  flags = CONCAT(flags, ',ax_mail')
+                           WHERE  pid = {?} AND jobid = {?} AND groupid = {?} AND type = {?} AND id = {?}",
+                         $ax_mail['pid'], $ax_mail['jobid'], $ax_mail['groupid'], $ax_mail['type'], $ax_mail['id']);
         }
     }
 
