@@ -51,7 +51,7 @@
   {if $isMe}
   <tr>
     <td>
-      <span class="titre">Comment t'appeller</span><br />
+      <span class="titre">Comment t'appeler</span><br />
       <span class="smaller">sur le site, dans la lettre mensuelle...</span>
     </td>
     <td>
