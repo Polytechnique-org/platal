@@ -225,7 +225,15 @@ class CoreModule extends PLModule
     function handler_register_error($page)
     {
         if (S::has_xsrf_token() && Post::has('error') && Post::has('url')) {
-            PlErrorReport::report("Client error on " . Post::s('url') . ":\n\n" . Post::s('error'));
+            $error = Post::s('error');
+            if (strlen($error) > 20000) {
+                exit;
+            }
+            $json = @json_decode($error, true, 3);
+            if (!is_array($json) || count($json) === 0) {
+                exit;
+            }
+            PlErrorReport::report("Client error on " . Post::s('url') . ":\n\n" . $error);
         }
         exit;
     }
