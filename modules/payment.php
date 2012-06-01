@@ -20,17 +20,19 @@
  ***************************************************************************/
 
 /* sort en affichant une erreur */
-function cb_erreur($text) {
+function cb_erreur($text, $conf_title="") {
     global $globals;
     echo "Error: ".$text."\n";
     $mymail = new PlMailer();
     $mymail->addTo($globals->money->email);
     $mymail->setFrom("webmaster@" . $globals->mail->domain);
     $mymail->setSubject("erreur lors d'un télépaiement (CyberPaiement)");
-    $mymail->setTxtBody("raison de l'erreur : ".$text."\n".
-                        "paiement : $conf_title \n\n".
-                        "dump de REQUEST :\n".
-                        var_export($_REQUEST,true));
+    $content = "raison de l'erreur : ".$text."\n");
+    if ($conf_title != "") {
+        $content = $content."paiement : ".$conf_title."\n";
+    }
+    $content = $content."dump de REQUEST :\n".var_export($_REQUEST,true));
+    $mymail->setTxtBody($content);
     $mymail->send();
     echo "Notification sent.\n";
     exit;
@@ -270,7 +272,7 @@ class PaymentModule extends PLModule
 
         /* on extrait le code de retour */
         if (Env::v('vads_result') != '00') {
-            cb_erreur('erreur lors du paiement : ?? (' . Env::v('vads_result') . ')');
+            cb_erreur('erreur lors du paiement : ?? (' . Env::v('vads_result') . ')', $conf_title);
         }
 
         /* on fait l'insertion en base de donnees */
