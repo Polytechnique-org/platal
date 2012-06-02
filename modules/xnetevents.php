@@ -124,7 +124,7 @@ class XnetEventsModule extends PLModule
                                   LEFT JOIN  group_event_participants AS ep ON (ep.eid = e.eid AND ep.uid = {?})
                                       WHERE  asso_id = {?} AND  archive = {?}
                                    GROUP BY  e.eid
-                                   ORDER BY  inscr_open DESC, debut',
+                                   ORDER BY  inscr_open DESC, debut DESC',
                                      S::i('uid'), $globals->asso('id'), $archive ? 1 : 0);
 
         $evts = array();
