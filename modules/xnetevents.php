@@ -611,6 +611,12 @@ class XnetEventsModule extends PLModule
                                   $member->uid, $evt['eid']);
 
                 $paid = $res->fetchOneCell();
+
+                // Ensure we have an integer
+                if ($paid == null) {
+                    $paid = 0;
+                }
+
                 $nbs  = Post::v('nb', array());
 
                 $paid_inserted = false;
