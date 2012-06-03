@@ -253,7 +253,7 @@ function capitalize_name($name)
 
     // Extracts the first token of the name.
     if (!preg_match('/^(\pL+)(([\' -])(.*))?$/ui', $name, $m)) {
-        return false;
+        return '';
     }
 
     $token = mb_strtolower($m[1]);
@@ -278,7 +278,7 @@ function capitalize_name($name)
         if (($tail = capitalize_name($tail))) {
             return $token . $separator . $tail;
         }
-        return false;
+        return '';
     }
 
     return $token . $separator;
