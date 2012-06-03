@@ -99,11 +99,11 @@ function updateNameDisplay(isFemale)
     var searchnames = '';
 
     for (var i = 0; i < 4; ++i) {
-        searchnames += $('.names_advanced').find('[name*=' + lastnames[i] + ']').val() + ';';
+        searchnames += $('.names_advanced_public').find('[name*=' + lastnames[i] + ']').val() + ';';
     }
     searchnames += '-;'
     for (var i = 0; i < 2; ++i) {
-        searchnames += $('.names_advanced').find('[name*=' + firstnames[i] + ']').val() + ';';
+        searchnames += $('.names_advanced_public').find('[name*=' + firstnames[i] + ']').val() + ';';
     }
     searchnames += '-';
 
