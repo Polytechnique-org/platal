@@ -171,6 +171,13 @@ class Profile implements PlExportable
         $this->visibility = $visibility;
     }
 
+    private function __destruct()
+    {
+        // Need to delete objects allocated by the profile
+        // http://www.php.net/manual/en/function.unset.php#98692
+        unset($this->owner);
+    }
+
     public function id()
     {
         return $this->pid;
