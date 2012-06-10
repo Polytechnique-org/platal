@@ -27,11 +27,11 @@ function cb_erreur($text, $conf_title="") {
     $mymail->addTo($globals->money->email);
     $mymail->setFrom("webmaster@" . $globals->mail->domain);
     $mymail->setSubject("erreur lors d'un télépaiement (CyberPaiement)");
-    $content = "raison de l'erreur : ".$text."\n");
+    $content = "raison de l'erreur : " . $text . "\n";
     if ($conf_title != "") {
         $content = $content."paiement : ".$conf_title."\n";
     }
-    $content = $content."dump de REQUEST :\n".var_export($_REQUEST,true));
+    $content = $content . "dump de REQUEST :\n" . var_export($_REQUEST, true);
     $mymail->setTxtBody($content);
     $mymail->send();
     echo "Notification sent.\n";
