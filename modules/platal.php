@@ -370,9 +370,14 @@ class PlatalModule extends PLModule
         $mymail->setFrom('"Gestion des mots de passe" <support+password@' . $globals->mail->domain . '>');
         if (is_null($to)) {
             $mymail->addTo($user);
-            $mymail->addTo($inactives_to);
+            $log_to = $user->bestEmail();
+            if (!is_null($inactives_to)) {
+                $log_to = $inactives_to . ', ' . $log_to;
+                $mymail->addTo($inactives_to);
+            }
         } else {
             $mymail->addTo($to);
+            $log_to = $to;
         }
         $mymail->setSubject("Ton certificat d'authentification");
         $mymail->setTxtBody("Visite la page suivante qui expire dans six heures :
@@ -388,7 +393,7 @@ Email envoyé à ".Env::v('login') . (is_null($to) ? '' : '
 Adresse de secours : ' . $to));
         $mymail->send();
 
-        S::logger($user->id())->log('recovery', is_null($to) ? $inactives_to . ', ' . $user->bestEmail() : $to);
+        S::logger($user->id())->log('recovery', $log_to);
     }
 
     function handler_recovery_ext($page)
