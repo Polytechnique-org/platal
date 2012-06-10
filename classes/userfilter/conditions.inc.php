@@ -1107,7 +1107,7 @@ class UFC_AddressComponent extends UFC_Address
             Platal::page()->killError('Invalid address field type: ' . $this->fieldtype);
         }
 
-        $flags = 0x20;
+        $flags = self::FLAG_ANY;
         parent::__construct($type, $flags);
         if (!is_array($val)) {
             $val = array($val);
