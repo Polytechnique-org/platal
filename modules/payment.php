@@ -590,7 +590,7 @@ class PaymentModule extends PLModule
 
         // adds a column with the start date of the linked event if there is one
         $table_editor->add_option_table('group_events', 'group_events.paiement_id = t.id');
-        $table_editor->add_option_field('group_events.debut', 'related_event', 'évènement', 'timestamp');
+        $table_editor->add_option_field('group_events.archive', 'related_event', 'évènement archivé ?', 'tinyint');
 
         $table_editor->apply($page, $action, $id);
     }
