@@ -6,6 +6,9 @@ From 1.1.5 branch:
     * Search:
         - #1622: Fixes address search                                      -JAC
 
+    * XnetEvent:
+        - #1621: Properly computes event participants for the whole event  -JAC
+
 ================================================================================
 VERSION 1.1.5                                                         31 05 2012
 
