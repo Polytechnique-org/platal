@@ -27,6 +27,13 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
     if (is_null($asso_id)) {
         $asso_id = $globals->asso('id');
     }
+    if (!$item_id) {
+        $where = '';
+        $group_by = 'e.eid';
+    } else {
+        $where = XDB::format(' AND ei.item_id = {?}', $item_id);
+        $group_by = 'ei.item_id';
+    }
     $evt = XDB::fetchOneAssoc('SELECT  SUM(nb) AS nb_tot, COUNT(DISTINCT ep.uid) AS nb, e.*, SUM(IF(nb > 0, 1, 0)) AS user_count,
                                        IF(e.deadline_inscription,
                                           e.deadline_inscription >= LEFT(NOW(), 10),
@@ -37,9 +44,9 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
                                  FROM  group_events             AS e
                            INNER JOIN  group_event_items        AS ei ON (e.eid = ei.eid)
                             LEFT JOIN  group_event_participants AS ep ON(e.eid = ep.eid AND ei.item_id = ep.item_id)
-                                WHERE  (e.eid = {?} OR e.short_name = {?}) AND ei.item_id = {?} AND e.asso_id = {?}
-                             GROUP BY  ei.item_id',
-                           $eid, $eid, $item_id ? $item_id : 1, $asso_id);
+                                WHERE  (e.eid = {?} OR e.short_name = {?}) AND e.asso_id = {?}' . $where . '
+                             GROUP BY  ' . $group_by,
+                              $eid, $eid, $asso_id);
 
     if (!$evt) {
         return null;
