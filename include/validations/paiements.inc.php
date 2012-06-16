@@ -135,7 +135,7 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
     {
         $this->titre       = Env::v('pay_titre');
         $this->site        = Env::v('pay_site');
-        $this->montant     = Env::i('pay_montant');
+        $this->montant     = Env::t('pay_montant');
         $this->montant_min = Env::i('pay_montant_min');
         $this->montant_max = Env::i('pay_montant_max');
         $this->msg_reponse = Env::v('pay_msg_reponse');
