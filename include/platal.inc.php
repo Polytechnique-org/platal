@@ -285,5 +285,13 @@ function pl_cached_dynamic_content_headers($content_type, $encoding = null)
     pl_cached_content_headers($content_type, $encoding, $globals->dynamic_cache_duration);
 }
 
+function pl_var_dump()
+{
+    echo '<pre>';
+    $array = func_get_args();
+    call_user_func_array('var_dump', $array);
+    echo '</pre>';
+}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
