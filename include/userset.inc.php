@@ -427,6 +427,36 @@ class AddressesView implements PlView
         $this->set =& $set;
     }
 
+    /* Convert a single address field into 3 lines.
+     */
+    public static function split_address($address)
+    {
+        $lines = preg_split("/(\r|\n)+/", $address, -1, PREG_SPLIT_NO_EMPTY);
+        $nb_lines = count($lines);
+        switch ($nb_lines) {
+        case 0:
+            // No data => nothing
+            return array("", "", "");
+        case 1:
+            // Single line => Assume it's city+zipcode
+            $line = $lines[0];
+            return array("", "", $line);
+        case 2:
+            // Two lines => Assume it's street \n city
+            $line1 = $lines[0];
+            $line3 = $lines[1];
+            return array($line1, "", $line3);
+        case 3:
+            return $lines;
+        default:
+            // More than 3 lines => Keep 2 last intact, merge other lines.
+            $line3 = array_pop($lines);
+            $line2 = array_pop($lines);
+            $line1 = implode(" ", $lines);
+            return array($line1, $line2, $line3);
+        }
+    }
+
     public function apply(PlPage $page)
     {
         $pids = $this->set->getIds(new PlLimit());
@@ -434,7 +464,10 @@ class AddressesView implements PlView
         pl_cached_content_headers('text/x-csv', 'iso-8859-1', 1, 'adresses.csv');
 
         $csv = fopen('php://output', 'w');
-        fputcsv($csv,  array('PROMOTION', 'CIVILITE', 'NOM', 'PRENOM', 'SOCIETE', 'ADRESSE', 'CP', 'EMAIL'), ';');
+        fputcsv($csv,
+            array('PROMOTION', 'CIVILITE', 'NOM', 'PRENOM', 'SOCIETE', 'ADRESSE', 'ADRESSE1', 'ADRESSE2', 'ADRESSE3', 'CP', 'EMAIL'),
+            ';');
+
         if (!empty($pids)) {
             $res = XDB::query("SELECT  pd.promo, p.title,
                                        IF (pn.firstname_ordinary = '', UPPER(pn.firstname_main), UPPER(pn.firstname_ordinary)) AS firstname,
@@ -448,8 +481,12 @@ class AddressesView implements PlView
                                                                         AND pj.id = IF(pa.type = 'job', pa.id, NULL))
                             LEFT JOIN  profile_job_enum     AS pje  ON (pj.jobid = pje.id)
                                 WHERE  pa.pid IN {?} AND FIND_IN_SET('ax_mail', pa.flags)", $pids);
-            foreach ($res->fetchAllAssoc() as $item) {
-                fputcsv($csv, array_map('utf8_decode', $item), ';');
+            foreach ($res->fetchAllRow() as $item) {
+                list($promo, $title, $lastname, $firstname, $company, $full_address, $zipcode, $email) = array_map('utf8_decode', $item);
+                $lines = self::split_address($full_address);
+                fputcsv($csv,
+                    array($promo, $title, $lastname, $firstname, $company, $full_address, $lines[0], $lines[1], $lines[2], $zipcode, $email),
+                    ';');
             }
         }
         fclose($csv);
