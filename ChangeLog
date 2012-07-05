@@ -1,6 +1,9 @@
 ================================================================================
 VERSION 1.1.6                                                         XX XX XXXX
 
+    * XnetGrp:
+        - #1627: Fixes accounts awaiting validation page                   -JAC
+
 From 1.1.5 branch:
 
     * Search:
