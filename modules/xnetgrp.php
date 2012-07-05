@@ -680,17 +680,19 @@ class XnetGrpModule extends PLModule
             $page->trigSuccess('Relances effectuées avec succès.');
         }
 
-        $registration_date = XDB::fetchAllAssoc('uid', 'SELECT  uid, date
-                                                          FROM  register_pending_xnet
-                                                         WHERE  uid IN {?}', $uids);
-        $last_date = XDB::fetchAllAssoc('uid', 'SELECT  uid, last_date
-                                                  FROM  register_pending_xnet
-                                                 WHERE  uid IN {?}', $uids);
+        if ($uids) {
+            $registration_date = XDB::fetchAllAssoc('uid', 'SELECT  uid, date
+                                                              FROM  register_pending_xnet
+                                                             WHERE  uid IN {?}', $uids);
+            $last_date = XDB::fetchAllAssoc('uid', 'SELECT  uid, last_date
+                                                      FROM  register_pending_xnet
+                                                     WHERE  uid IN {?}', $uids);
 
-        $users = User::getBulkUsersWithUIDs($uids);
-        $page->assign('users', $users);
-        $page->assign('registration_date', $registration_date);
-        $page->assign('last_date', $last_date);
+            $users = User::getBulkUsersWithUIDs($uids);
+            $page->assign('users', $users);
+            $page->assign('registration_date', $registration_date);
+            $page->assign('last_date', $last_date);
+        }
 
     }
 

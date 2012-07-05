@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $users|@count}
+{if t($users) && $users|@count}
 <form action="{$platal->ns}directory/awact" method="post">
   {xsrf_token_field}
   <table cellspacing="2" cellpadding="0" class="tiny">
