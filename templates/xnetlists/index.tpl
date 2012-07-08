@@ -100,7 +100,8 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscrip
     <td>
       {if $l.own}
       {icon name=wrench title="Modérateur"}
-      {elseif $l.priv}
+      {/if}
+      {if $l.priv}
       {icon name=weather_cloudy title="Liste privée"}
       {/if}
       <a href='{$platal->ns}lists/members/{$l.list}'>{$l.list}</a>
