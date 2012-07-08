@@ -61,6 +61,20 @@ class ListsModule extends PLModule
         return $globals->mail->domain;
     }
 
+    function is_group_admin($page)
+    {
+        $force_rights = false;
+        if ($GLOBALS['IS_XNET_SITE']) {
+            $perms = S::v('perms');
+            if (is_object($perms) && $perms->hasFlag('groupadmin')) {
+                $force_rights = true;
+            }
+        }
+        $page->assign('group_admin', $force_rights);
+
+        return $force_rights;
+    }
+
     function verify_list_owner($page, $liste)
     {
         if (list(, , $owners) = $this->client->get_members($liste)) {
@@ -319,6 +333,7 @@ class ListsModule extends PLModule
         }
 
         $this->prepare_client($page);
+        $this->is_group_admin($page);
 
         $page->changeTpl('lists/members.tpl');
 
@@ -357,6 +372,7 @@ class ListsModule extends PLModule
             return PL_NOT_FOUND;
         }
         $this->prepare_client($page);
+        $this->is_group_admin($page);
         $members = $this->client->get_members($liste);
         $list = list_fetch_basic_info(list_extract_members($members[1]));
         pl_cached_content_headers('text/x-csv', 'iso-8859-1', 1);
@@ -373,6 +389,7 @@ class ListsModule extends PLModule
         }
 
         $this->prepare_client($page);
+        $this->is_group_admin($page);
 
         if (Get::has('del')) {
             S::assert_xsrf_token();
@@ -429,6 +446,7 @@ class ListsModule extends PLModule
         }
 
         $domain = $this->prepare_client($page);
+        $this->is_group_admin($page);
 
         $page->changeTpl('lists/archives.tpl');
 
@@ -496,7 +514,9 @@ class ListsModule extends PLModule
         }
 
         $domain = $this->prepare_client($page);
-        $this->verify_list_owner($page, $liste);
+        if (!$this->is_group_admin($page)) {
+            $this->verify_list_owner($page, $liste);
+        }
 
         $page->changeTpl('lists/moderate.tpl');
 
@@ -616,15 +636,8 @@ class ListsModule extends PLModule
         }
 
         $domain = $this->prepare_client($page);
-        $force_rights = false;
-        if ($GLOBALS['IS_XNET_SITE']) {
-            $perms = S::v('perms');
-            if (is_object($perms) && $perms->hasFlag('groupadmin')) {
-                $force_rights = true;
-            }
-        }
-        $page->assign('group_admin', $force_rights);
-        if (!$force_rights) {
+        $this->is_group_admin($page);
+        if (!$this->is_group_admin($page)) {
             $this->verify_list_owner($page, $liste);
         }
 
@@ -779,7 +792,9 @@ class ListsModule extends PLModule
         }
 
         $this->prepare_client($page);
-        $this->verify_list_owner($page, $liste);
+        if (!$this->is_group_admin($page)) {
+            $this->verify_list_owner($page, $liste);
+        }
 
         $page->changeTpl('lists/options.tpl');
 
@@ -848,7 +863,10 @@ class ListsModule extends PLModule
         }
 
         $domain = $this->prepare_client($page);
-        $this->verify_list_owner($page, $liste);
+        if (!$this->is_group_admin($page)) {
+            $this->verify_list_owner($page, $liste);
+        }
+
         $page->changeTpl('lists/delete.tpl');
         if (Post::v('valid') == 'OUI') {
             S::assert_xsrf_token();
@@ -883,7 +901,9 @@ class ListsModule extends PLModule
         }
 
         $this->prepare_client($page);
-        $this->verify_list_owner($page, $liste);
+        if (!$this->is_group_admin($page)) {
+            $this->verify_list_owner($page, $liste);
+        }
 
         $page->changeTpl('lists/soptions.tpl');
 
@@ -913,7 +933,9 @@ class ListsModule extends PLModule
         }
 
         $this->prepare_client($page);
-        $this->verify_list_owner($page, $liste);
+        if (!$this->is_group_admin($page)) {
+            $this->verify_list_owner($page, $liste);
+        }
 
         $page->changeTpl('lists/check.tpl');
 

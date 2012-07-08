@@ -46,7 +46,7 @@
       {/if}
     </td>
   </tr>
-  {if $details.own || hasPerms('admin,groupadmin')}
+  {if $details.own || hasPerms('admin') || $group_admin}
   <tr>
     <td><strong>Administrer la liste&nbsp;:</strong></td>
     <td>
@@ -73,8 +73,7 @@
     </td>
   </tr>
   {/if}
-  {if hasPerms('admin,groupadmin')}
-
+  {if hasPerms('admin') || $group_admin}
   <tr>
     <td><strong>Administrer (avancé)&nbsp;:</strong></td>
     <td>
