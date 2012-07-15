@@ -36,6 +36,17 @@
 
 {$issue->head($user, 'text')}
 
+{foreach from=$issue->arts key=cid item=arts}
+--------------------------------------------------------------------
+*{$issue->category($cid)}*
+--------------------------------------------------------------------
+
+{foreach from=$arts item=art}
+{$art->toText($hash, $user->login())}
+
+{/foreach}
+{/foreach}
+
 {$issue->signature('text')}
 
 --------------------------------------------------------------------
@@ -79,10 +90,18 @@ ne plus recevoir : &lt;https://www.polytechnique.org/fxletter/out/{if $hash}{$ha
     <div class='fx_mail'>
       <div class="title">{$issue->title()}</div>
       <div class="intro">{$issue->head($user, 'html')|smarty:nodefaults}</div>
+      {foreach from=$issue->arts key=cid item=arts name=cats}
+      <h1 class="category"><a id="cat{$cid}"></a>
+        {$issue->category($cid)}
+      </h1>
+      {foreach from=$arts item=art}
+        {$art->toHtml($hash, $user->login())|smarty:nodefaults}
+      {/foreach}
+      {/foreach}
       <div class="signature">{$issue->signature('html')|smarty:nodefaults}</div>
       <div class="give"><a href="http://fondationx.fr/fond/paiement.php">Faire un don</a></div>
       <div class="foot1">
-        Cette lettre est envoyée par la FX grâce aux outils de Polytechnique.org.
+        Cette lettre est envoyée par la Fondation grâce aux outils de Polytechnique.org.
       </div>
       <div class="foot2">
         [<a href="https://www.polytechnique.org/fxletter">archives</a>&nbsp;|

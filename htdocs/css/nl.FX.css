@@ -66,6 +66,39 @@ div.fx_mail div.signature {
     text-align : right;
 }
 
+/* Category */
+div.fx_mail h1.category {
+    margin: 3ex 0 2ex;
+    padding : 1.5ex 2ex 0.5ex 1ex;
+    font-size : 120%;
+    font-weight : bold;
+    text-align : right;
+}
+
+/* Article title */
+div.fx_mail h2.xorg_nl {
+    margin : 2ex 0 0;
+    padding : 0.4ex 2ex;
+    font-size : 100%;
+    font-weight : bold;
+    font-style : italic;
+    border-width : thin 0;
+    border-style : solid;
+}
+
+/* Article text */
+div.fx_mail div.art {
+    margin: 2ex 3ex;
+}
+
+/* Article details */
+div.fx_mail div.app {
+    margin : 2ex 6ex 0 3ex;
+    font-size : 95%;
+    text-align : left;
+    color: #333;
+}
+
 /* Give */
 div.fx_mail div.give {
     font-weight: bold;
