@@ -134,6 +134,8 @@ class AuthModule extends PLModule
             } else {
                 $page->assign('group', null);
             }
+            // Add a P3P header for compatibility with IE in iFrames (http://www.w3.org/TR/P3P11/#compact_policies)
+            header('P3P: CP="CAO COR CURa ADMa DEVa OUR IND PHY ONL COM NAV DEM CNT STA PRE"');
             return PL_DO_AUTH;
         }
 
