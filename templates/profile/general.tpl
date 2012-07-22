@@ -66,8 +66,6 @@
       <span class="smaller">Ils déterminent la façon dont
       {if $isMe}ton{else}son{/if} nom apparaît sur les annuaires
       en ligne et papier et ta fiche apparaitra quand on cherche un de ces noms.</span><br/>
-      <div class="small center">Si un de tes noms commence par une particule,
-      coche la case en bout de ligne.</div>
     </td>
   </tr>
   {include file="profile/general.public_names.tpl" names=$search_names.public_names}
