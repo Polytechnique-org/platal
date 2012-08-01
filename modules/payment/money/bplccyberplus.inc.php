@@ -66,7 +66,7 @@ class BPLCCyberPlus
         $log = S::v('log');
 
         // Transaction's reference computation.
-        $prefix = ($pay->flags->hasflag('unique')) ? str_pad("",15,"0") : rand_url_id();
+        $prefix = rand_url_id();
         $fullref = substr("$prefix-{$pay->id}",-12); // FIXME : check for duplicates
         $ts = time();
         $trans_date = gmdate("YmdHis", $ts);

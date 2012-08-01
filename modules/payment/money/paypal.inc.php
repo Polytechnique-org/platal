@@ -91,7 +91,7 @@ class PayPal
         }
 
         // We build the transaction's reference
-        $prefix = ($pay->flags->hasflag('unique')) ? str_pad("", 15, "0") : rand_url_id();
+        $prefix = rand_url_id();
         $fullref = substr("$prefix-xorg-{$pay->id}", -15);
 
         $this->infos['commande'] = array(
