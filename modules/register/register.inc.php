@@ -158,34 +158,48 @@ function createAliases($subState)
     $emailXorg  = PlUser::makeUserName($subState->t('firstname'), $subState->t('lastname'));
     $suffix = (User::$sub_mail_domains[$type] ? substr(User::$sub_mail_domains[$type], 0, 1) : '') . substr($subState->v('yearpromo'), -2);
     $emailXorg2 = $emailXorg . '.' . $suffix;
+    // Search for homonyms:
+    //  * first case: only one homonym already registered.
     $res = XDB::query('SELECT  uid, expire
                          FROM  email_source_account
                         WHERE  email = {?} AND type != \'alias_aux\'',
                       $emailXorg);
-    if ($res->numRows()) {
-        list($h_id, $expire) = $res->fetchOneRow();
-        if (empty($expire)) {
-            XDB::execute('UPDATE  email_source_account
-                             SET  expire = ADDDATE(NOW(), INTERVAL 1 MONTH)
-                           WHERE  email = {?} AND type != \'alias_aux\'',
+    //  * second case: at least two homonyms registerd.
+    $result = XDB::query("SELECT  hrmid
+                            FROM  email_source_other
+                           WHERE  type = 'homonym' AND email = {?}",
                          $emailXorg);
-            $hrmid = User::makeHomonymHrmid($emailXorg);
-            XDB::execute('INSERT IGNORE INTO  homonyms_list (hrmid, uid)
-                                      VALUES  ({?}, {?}), ({?}, {?})',
-                         $hrmid, $h_id, $hrmid, $subState->i('uid'));
-            $als = XDB::fetchColumn('SELECT  email
-                                       FROM  email_source_account
-                                      WHERE  uid = {?} AND type != \'alias_aux\' AND expire IS NULL',
-                                    $h_id);
+    if ($res->numRows() || $result->numRows()) {
+        if ($res->numRows()) {
+            list($h_id, $expire) = $res->fetchOneRow();
+            if (empty($expire)) {
+                XDB::execute('UPDATE  email_source_account
+                                 SET  expire = ADDDATE(NOW(), INTERVAL 1 MONTH)
+                               WHERE  email = {?} AND type != \'alias_aux\'',
+                             $emailXorg);
+                $hrmid = User::makeHomonymHrmid($emailXorg);
+                XDB::execute('INSERT IGNORE INTO  homonyms_list (hrmid, uid)
+                                          VALUES  ({?}, {?}), ({?}, {?})',
+                             $hrmid, $h_id, $hrmid, $subState->i('uid'));
+                $als = XDB::fetchColumn('SELECT  email
+                                           FROM  email_source_account
+                                          WHERE  uid = {?} AND type != \'alias_aux\' AND expire IS NULL',
+                                        $h_id);
 
-            $homonym = User::getSilentWithUID($h_id);
-            $mailer = new PlMailer('register/lostalias.mail.tpl');
-            $mailer->addTo($homonym);
-            $mailer->setSubject("Perte de ton alias $emailXorg dans un mois !");
-            $mailer->assign('emailXorg', $emailXorg);
-            $mailer->assign('als', join(', ', $als));
-            $mailer->SetTxtBody(wordwrap($msg,72));
-            $mailer->send();
+                $homonym = User::getSilentWithUID($h_id);
+                $mailer = new PlMailer('register/lostalias.mail.tpl');
+                $mailer->addTo($homonym);
+                $mailer->setSubject("Perte de ton alias $emailXorg dans un mois !");
+                $mailer->assign('emailXorg', $emailXorg);
+                $mailer->assign('als', join(', ', $als));
+                $mailer->SetTxtBody(wordwrap($msg,72));
+                $mailer->send();
+            }
+        } else {
+            $hrmid = $result->fetchOneCell();
+            XDB::execute('INSERT IGNORE INTO  homonyms_list (hrmid, uid)
+                                      VALUES  ({?}, {?})',
+                         $hrmid, $subState->i('uid'));
         }
 
         $subState->set('forlife', $forlife);
