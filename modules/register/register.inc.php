@@ -200,6 +200,7 @@ function createAliases($subState)
             XDB::execute('INSERT IGNORE INTO  homonyms_list (hrmid, uid)
                                       VALUES  ({?}, {?})',
                          $hrmid, $subState->i('uid'));
+            // TODO: insert into source_other if new domain
         }
 
         $subState->set('forlife', $forlife);

@@ -94,6 +94,7 @@ function fix_homonym(PlUser $user, $email)
                  $email);
 
     $hrmid = User::makeHomonymHrmid($email);
+    // TODO: insert twice into source_other if different domains
     XDB::execute('INSERT INTO  email_source_other (hrmid, email, domain, type, expire)
                        SELECT  {?}, {?}, id, \'homonym\', NOW()
                          FROM  email_virtual_domains
