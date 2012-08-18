@@ -474,7 +474,7 @@ class PlMemcacheCache implements PlCacheBackend
         return $this->context->get($key) !== false;
     }
 
-    public function get($key, $type, $callbac, $cbargs, $expire)
+    public function get($key, $type, $callback, $cbargs, $expire)
     {
         $value = $this->context->get($key);
         if ($value === false) {
