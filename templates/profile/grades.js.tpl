@@ -28,8 +28,8 @@ multiple  = new Array();
     names[{$m.id}] = "{$m.text|regex_replace:"/\r?\n/":"\\n"}";
     {if t($grades[$m.id]) && $grades[$m.id]|@count}
       subgrades[{$m.id}] = new Array({$grades[$m.id]|@count});
-      {foreach from=$grades[$m.id] item=g}
-        subgrades[{$m.id}][{$g.gid-1}] = [{$g.gid},"{$g.text|regex_replace:"/\r?\n/":"\\n"}"];
+      {foreach from=$grades[$m.id] item=g name=subgrade}
+        subgrades[{$m.id}][{$smarty.foreach.subgrade.index}] = [{$g.gid},"{$g.text|regex_replace:"/\r?\n/":"\\n"}"];
       {/foreach}
     {/if}
     {if $m.type != 'ordre'}
