@@ -35,7 +35,7 @@ class CoreModule extends PLModule
             'assert_errors' => $this->make_hook('siteerror',     AUTH_COOKIE, 'admin'),
             'site_errors'   => $this->make_hook('siteerror',     AUTH_COOKIE, 'admin'),
             'site_errors/rss' => $this->make_token_hook('siteerror_rss', AUTH_COOKIE, 'admin'),
-            'site_errors/register' => $this->make_hook('register_error', AUTH_PUBLIC),
+            //'site_errors/register' => $this->make_hook('register_error', AUTH_PUBLIC),
 
             'embedded'      => $this->make_hook('embedded',      AUTH_PUBLIC),
 
