@@ -164,10 +164,10 @@ et cliquer sur les icones {icon name=add} pour les ajouter à cette liste.
     {else}
     Tu surveilles {if $nonins|@count eq 1}le non-inscrit{else}les non-inscrits{/if}&nbsp;:
     <ul>
-    {foreach from=$nonins item=p}
+    {foreach from=$nonins item=u}
     <li>
-      {profile user=$p promo=true sex=true}
-      <a href="carnet/notifs/del_nonins/{$p->login()}?token={xsrf_token}">{icon name='cross' title='retirer'}</a>
+      {profile user=$u promo=true sex=true}
+      <a href="carnet/notifs/del_nonins/{$u->login()}?token={xsrf_token}">{icon name='cross' title='retirer'}</a>
     </li>
     {/foreach}
   </ul>
