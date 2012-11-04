@@ -68,11 +68,25 @@ class MailingList
         return new MailingList('promo', "$promo.$mail_domain", $user, $pass);
     }
 
+    const KIND_BOUNCE = 'bounces';
+    const KIND_OWNER = 'owner';
+    public function getAddress($kind)
+    {
+        return $this->mbox . '-' . $kind . '@' . $this->domain;
+    }
+
     /** Subscribe the current user to the list
      */
     public function subscribe()
     {
         return $this->mmclient->subscribe($this->mbox);
+    }
+
+    /** Subscribe a batch of users to the list
+     */
+    public function subscribeBulk($members)
+    {
+        return $this->mmclient->mass_subscribe($this->mbox, $members);
     }
 
     /** Unsubscribe the current user from the list
@@ -82,6 +96,13 @@ class MailingList
         return $this->mmclient->unsubscribe($this->mbox);
     }
 
+    /** Unsubscribe a batch of users from the list
+     */
+    public function unsubscribeBulk($members)
+    {
+        return $this->mmclient->mass_unsubscribe($this->mbox, $members);
+    }
+
     /** Retrieve owners for the list.
      *
      * TODO: document the return type
@@ -89,6 +110,20 @@ class MailingList
     public function getOwners()
     {
         return $this->mmclient->get_owners($this->mbox);
+    }
+
+    /** Add an owner to the list
+     */
+    public function addOwner($email)
+    {
+        return $this->mmclient->add_owner($this->mbox, $email);
+    }
+
+    /** Remove an owner from the list
+     */
+    public function removeOwner($email)
+    {
+        return $this->mmclient->del_owner($this->mbox, $email);
     }
 
     /** Retrieve members of the list.
@@ -109,6 +144,33 @@ class MailingList
         return $this->mmclient->get_members_limit($this->mbox, $page, $number_per_page);
     }
 
+    /** Fetch pending list operations.
+     *
+     * TODO: document the return type
+     */
+    public function getPendingOps()
+    {
+        return $this->mmclient->get_pending_ops($this->mbox);
+    }
+
+    const REQ_REJECT = 2;
+    const REQ_SUBSCRIBE = 4;
+
+    /** Handle a mailing list request
+     */
+    public function handleRequest($kind, $value, $comment='')
+    {
+        return $this->mmclient->handle_request($this->mbox, $value, $kind,
+           utf8_decode($comment));
+    }
+
+    /** Retrieve the current status of a pending subscription request
+     */
+    public function getPendingSubscription($email)
+    {
+        return $this->mmclient->get_pending_sub($this->mbox, $email);
+    }
+
     /** Create a list
      */
     public function create($description, $advertise,
@@ -117,6 +179,87 @@ class MailingList
         return $this->mmclient->create_list($this->mbox, utf8_decode($description),
             $advertise, $moderation_level, $subscription_level,
             $owners, $members);
+    }
+
+    /** Delete a list
+     */
+    public function delete($remove_archives=false)
+    {
+        return $this->mmclient->delete_list($this->mbox, $remove_archives);
+    }
+
+    /** Set antispam level.
+     */
+    public function setBogoLevel($level)
+    {
+        return $this->mmclient->set_bogo_level($this->mbox);
+    }
+
+    /** Get antispam level.
+     *
+     * @return int
+     */
+    public function getBogoLevel()
+    {
+        $bogo = $this->mmclient->get_bogo_level($this->mbox);
+        return $bogo;
+    }
+
+    /** Set public options.
+     *
+     * @param $options array
+     */
+    public function setOwnerOptions($options)
+    {
+        return $this->mmclient->set_owner_options($this->mbox, $options);
+    }
+
+    /** Retrieve owner options
+     *
+     * @return array
+     */
+    public function getOwnerOptions()
+    {
+        return $this->mmclient->get_owner_options($this->mbox);
+    }
+
+    /** Set admin options.
+     *
+     * @param $options array
+     */
+    public function setAdminOptions($options)
+    {
+        return $this->mmclient->set_admin_options($this->mbox, $options);
+    }
+
+    /** Retrieve admin options
+     *
+     * @return array
+     */
+    public function getAdminOptions()
+    {
+        return $this->mmclient->get_admin_options($this->mbox);
+    }
+
+    /** Check options, optionnally fixing them.
+     */
+    public function checkOptions($fix=false)
+    {
+        return $this->mmclient->check_options($this->mbox, $fix);
+    }
+
+    /** Add an email to the list of whitelisted senders
+     */
+    public function whitelistAdd($email)
+    {
+        return $this->mmclient->add_to_wl($this->mbox, $email);
+    }
+
+    /** Remove an email from the list of whitelisted senders
+     */
+    public function whitelistRemove($email)
+    {
+        return $this->mmclient->del_from_wl($this->mbox, $email);
     }
 }
 
