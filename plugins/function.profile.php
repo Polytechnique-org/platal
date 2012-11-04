@@ -29,6 +29,8 @@ function smarty_function_profile($params, $smarty)
     $with_groupperms = $params->b('groupperms', true);
     $raw = $params->b('raw', false);
     $user = $params->v('user');
+    $profile = $params->v('profile');
+
     if (is_int($user) || ctype_digit($user)) {
         $user = User::getWithUID($user);
     }
@@ -52,7 +54,10 @@ function smarty_function_profile($params, $smarty)
         $name = '&bull;' . $name;
     }
     if ($with_link) {
-        $profile = ($user instanceof Profile) ? $user : $user->profile();
+        if (is_null($profile)) {
+            $profile = $user->profile();
+        }
+
         if ($profile) {
             $name = '<a href="profile/' . $profile->hrid() . '" class="popup2">' . $name . '</a>';
         }
