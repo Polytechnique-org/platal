@@ -21,8 +21,6 @@
 
 class ListsModule extends PLModule
 {
-    protected $client;
-
     function handlers()
     {
         return array(
@@ -48,34 +46,39 @@ class ListsModule extends PLModule
         );
     }
 
-    function prepare_client($page, $user = null)
+    protected function prepare_client($user = null)
     {
-        global $globals;
-
-        $this->load('lists.inc.php');
         if (is_null($user)) {
             $user = S::user();
         }
 
-        $this->client = new MMList($user);
-        return $globals->mail->domain;
+        $domain = $this->get_lists_domain();
+
+        return new MMList($user, $domain);
     }
 
-    function get_domain()
+    protected function get_lists_domain()
     {
         global $globals;
         return $globals->mail->domain;
     }
 
-    function prepare_list($list, $user=null)
+    /** Prepare a MailingList from its mailbox
+     */
+    protected function prepare_list($mbox, $user=null)
     {
+        // Required: modules/xnetlists.php uses it too.
+        Platal::load('lists', 'lists.inc.php');
+
         if (is_null($user)) {
             $user = S::user();
         }
-        $this->mlist = new MailingList($list, $this->get_domain(), $user);
+        return new MailingList($mbox, $this->get_lists_domain(), $user);
     }
 
-    function is_group_admin($page)
+    /** Ensure the current user is an administrator of the group.
+     */
+    protected function is_group_admin($page)
     {
         $force_rights = false;
         if ($GLOBALS['IS_XNET_SITE']) {
@@ -89,9 +92,11 @@ class ListsModule extends PLModule
         return $force_rights;
     }
 
-    function verify_list_owner($page, $liste)
+    /** Ensure the current user owns the given MailingList.
+     */
+    protected function verify_list_owner($page, $mlist)
     {
-        if (list(, , $owners) = $this->client->get_members($liste)) {
+        if (list(, , $owners) = $mlist->getMembers()) {
             if (!(in_array(S::user()->forlifeEmail(), $owners) || S::admin())) {
                 $page->kill("La liste n'existe pas ou tu n'as pas le droit de l'administrer.");
             }
@@ -102,15 +107,17 @@ class ListsModule extends PLModule
         }
     }
 
-    function get_pending_ops($domain, $list)
+    /** Fetch pending operations on a MailingList instance.
+     */
+    protected function get_pending_ops($mlist)
     {
-        list($subs,$mails) = $this->client->get_pending_ops($list);
+        list($subs, $mails) = $mlist->getPendingOps();
         $res = XDB::query("SELECT  mid
                              FROM  email_list_moderate
                             WHERE  ml = {?} AND domain = {?}",
-                          $list, $domain);
+                          $mlist->mbox, $mlist->domain);
         $mids = $res->fetchColumn();
-        foreach ($mails as $key=>$mail) {
+        foreach ($mails as $key => $mail) {
             if (in_array($mail['id'], $mids)) {
                 unset($mails[$key]);
             }
@@ -120,6 +127,7 @@ class ListsModule extends PLModule
 
     function handler_lists($page)
     {
+
         function filter_owner($list)
         {
             return $list['own'];
@@ -130,20 +138,20 @@ class ListsModule extends PLModule
             return $list['sub'];
         }
 
-        $domain = $this->prepare_client($page);
-
         $page->changeTpl('lists/index.tpl');
         $page->setTitle('Listes de diffusion');
 
 
         if (Get::has('del')) {
             S::assert_xsrf_token();
-            $this->client->unsubscribe(Get::v('del'));
+            $mlist = $this->prepare_list(Get::v('del'));
+            $mlist->unsubscribe();
             pl_redirect('lists');
         }
         if (Get::has('add')) {
             S::assert_xsrf_token();
-            $this->client->subscribe(Get::v('add'));
+            $mlist = $this->prepare_list(Get::v('add'));
+            $mlist->subscribe();
             pl_redirect('lists');
         }
         if (Post::has('promo_add')) {
@@ -158,13 +166,15 @@ class ListsModule extends PLModule
             }
         }
 
-        if (!is_null($listes = $this->client->get_lists())) {
+        $client = $this->prepare_client();
+        if (!is_null($listes = $client->get_lists())) {
             $owner  = array_filter($listes, 'filter_owner');
             $listes = array_diff_key($listes, $owner);
             $member = array_filter($listes, 'filter_member');
             $listes = array_diff_key($listes, $member);
             foreach ($owner as $key => $liste) {
-                list($subs, $mails) = $this->get_pending_ops($domain, $liste['list']);
+                $mlist = $this->prepare_list($liste['list']);
+                list($subs, $mails) = $this->get_pending_ops($mlist);
                 $owner[$key]['subscriptions'] = $subs;
                 $owner[$key]['mails'] = $mails;
             }
@@ -178,27 +188,26 @@ class ListsModule extends PLModule
     function handler_ajax($page, $list = null)
     {
         pl_content_headers("text/html");
-        $domain = $this->prepare_client($page);
-        $this->prepare_list($list);
         $page->changeTpl('lists/liste.inc.tpl', NO_SKIN);
         S::assert_xsrf_token();
 
+        $mlist = $this->prepare_list($list);
         if (Get::has('unsubscribe')) {
-            $this->mlist->unsubscribe();
+            $mlist->unsubscribe();
         }
         if (Get::has('subscribe')) {
-            $this->mlist->subscribe();
+            $mlist->subscribe();
         }
-        if (Get::has('sadd')) { /* 4 = SUBSCRIBE */
-            $this->client->handle_request($list, Get::v('sadd'), 4, '');
+        if (Get::has('sadd')) {
+            $mlist->handleRequest(MailingList::REQ_SUBSCRIBE, Get::v('sadd'));
         }
         if (Get::has('mid')) {
-            $this->moderate_mail($domain, $list, Get::i('mid'));
+            $this->moderate_mail($mlist, Get::i('mid'));
         }
 
-        list($liste, $members, $owners) = $this->mlist->getMembers();
+        list($liste, $members, $owners) = $mlist->getMembers();
         if ($liste['own']) {
-            list($subs,$mails) = $this->get_pending_ops($domain, $list);
+            list($subs, $mails) = $this->get_pending_ops($mlist);
             $liste['subscriptions'] = $subs;
             $liste['mails'] = $mails;
         }
@@ -348,25 +357,24 @@ class ListsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $this->prepare_list($liste);
-        $this->prepare_client($page);
+        $mlist = $this->prepare_list($liste);
         $this->is_group_admin($page);
 
         $page->changeTpl('lists/members.tpl');
 
         if (Get::has('del')) {
             S::assert_xsrf_token();
-            $this->mlist->unsubscribe()
-            pl_redirect('lists/members/'.$liste);
+            $mlist->unsubscribe();
+            pl_redirect('lists/members/' . $liste);
         }
 
         if (Get::has('add')) {
             S::assert_xsrf_token();
-            $this->mlist->subscribe();
-            pl_redirect('lists/members/'.$liste);
+            $mlist->subscribe();
+            pl_redirect('lists/members/' . $liste);
         }
 
-        $members = $this->mlist->getMembers();
+        $members = $mlist->getMembers();
 
         $tri_promo = !Env::b('alpha');
 
@@ -388,10 +396,10 @@ class ListsModule extends PLModule
         if (is_null($liste)) {
             return PL_NOT_FOUND;
         }
-        $this->prepare_client($page);
-        $this->prepare_list($liste);
         $this->is_group_admin($page);
-        $members = $this->mlist->getMembers();
+
+        $mlist = $this->prepare_list($liste);
+        $members = $mlist->getMembers();
         $list = list_fetch_basic_info(list_extract_members($members[1]));
         pl_cached_content_headers('text/x-csv', 'iso-8859-1', 1);
 
@@ -406,27 +414,27 @@ class ListsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $this->prepare_client($page);
-        $this->prepare_list($liste);
         $this->is_group_admin($page);
+
+        $mlist = $this->prepare_list($liste);
 
         if (Get::has('del')) {
             S::assert_xsrf_token();
-            $this->mlist->unsubscribe();
+            $mlist->unsubscribe();
             pl_redirect('lists/annu/'.$liste);
         }
         if (Get::has('add')) {
             S::assert_xsrf_token();
-            $this->mlist->subscribe();
+            $mlist->subscribe();
             pl_redirect('lists/annu/'.$liste);
         }
 
-        $owners = $this->mlist->getOwners();
+        $owners = $mlist->getOwners();
         if (!is_array($owners)) {
             $page->kill("La liste n'existe pas ou tu n'as pas le droit d'en voir les détails.");
         }
 
-        list(,$members) = $this->mlist->getMembers();
+        list(,$members) = $mlist->getMembers();
 
         if ($action == 'moderators') {
             $users = $owners;
@@ -464,18 +472,18 @@ class ListsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $domain = $this->prepare_client($page);
-        $this->prepare_list($liste);
         $this->is_group_admin($page);
+
+        $mlist = $this->prepare_list($liste);
 
         $page->changeTpl('lists/archives.tpl');
 
-        if (list($det) = $this->mlist->getMembers()) {
+        if (list($det) = $mlist->getMembers()) {
             if (substr($liste,0,5) != 'promo' && ($det['ins'] || $det['priv'])
                     && !$det['own'] && ($det['sub'] < 2)) {
                 $page->kill("La liste n'existe pas ou tu n'as pas le droit de la consulter.");
             }
-            $get = Array('listname' => $liste, 'domain' => $mlist->domain);
+            $get = Array('listname' => $mlist->mbox, 'domain' => $mlist->domain);
             if (Post::has('updateall')) {
                 $get['updateall'] = Post::v('updateall');
             }
@@ -497,22 +505,28 @@ class ListsModule extends PLModule
             return PL_FORBIDDEN;
         }
 
-        $domain = $this->prepare_client($page, $user);
-        $this->prepare_list($liste);
+        $mlist = $this->prepare_list($liste);
 
-        if (list($det) = $this->mlist->getMembers()) {
+        if (list($det) = $mlist->getMembers()) {
             if (substr($liste,0,5) != 'promo' && ($det['ins'] || $det['priv'])
                     && !$det['own'] && ($det['sub'] < 2)) {
                 exit;
             }
             require_once('banana/ml.inc.php');
-            $banana = new MLBanana($user, Array('listname' => $liste, 'domain' => $this->mlist->domain, 'action' => 'rss2'));
+            $banana = new MLBanana($user, Array(
+                'listname' => $mlist->mbox,
+                'domain' => $mlist->domain,
+                'action' => 'rss2'));
             $banana->run();
         }
         exit;
     }
 
-    function moderate_mail($domain, $liste, $mid)
+    /** Register a moderation decision.
+     * @param $mlist MailingList: the mailing list being moderated
+     * @param $mid int: the message being moderated
+     */
+    protected function moderate_mail($mlist, $mid)
     {
         if (Env::has('mok')) {
             $action = 'accept';
@@ -526,7 +540,7 @@ class ListsModule extends PLModule
         Get::kill('mid');
         return XDB::execute("INSERT IGNORE INTO  email_list_moderate
                                          VALUES  ({?}, {?}, {?}, {?}, {?}, NOW(), {?}, NULL)",
-                            $liste, $domain, $mid, S::i('uid'), $action, Post::v('reason'));
+                            $mlist->mbox, $mlist->domain, $mid, S::i('uid'), $action, Post::v('reason'));
     }
 
     function handler_moderate($page, $liste = null)
@@ -535,9 +549,9 @@ class ListsModule extends PLModule
              return PL_NOT_FOUND;
         }
 
-        $domain = $this->prepare_client($page);
+        $mlist = $this->prepare_list($liste);
         if (!$this->is_group_admin($page)) {
-            $this->verify_list_owner($page, $liste);
+            $this->verify_list_owner($page, $mlist);
         }
 
         $page->changeTpl('lists/moderate.tpl');
@@ -547,23 +561,27 @@ class ListsModule extends PLModule
         if (Env::has('sadd') || Env::has('sdel')) {
             S::assert_xsrf_token();
 
-            if (Env::has('sadd')) { /* 4 = SUBSCRIBE */
-                $sub = $this->client->get_pending_sub($liste, Env::v('sadd'));
-                $this->client->handle_request($liste,Env::v('sadd'),4,'');
+            if (Env::has('sadd')) {
+                // Ensure the moderated request is still active
+                $sub = $mlist->getPendingSub(Env::v('sadd'));
+
+                $mlist->handleRequest(MailingList::REQ_SUBSCRIBE, Env::v('sadd'));
                 $info = "validée";
             }
-            if (Post::has('sdel')) { /* 2 = REJECT */
-                $sub = $this->client->get_pending_sub($liste, Env::v('sdel'));
-                $this->client->handle_request($liste, Post::v('sdel'), 2, utf8_decode(Post::v('reason')));
+            if (Post::has('sdel')) {
+                // Ensure the moderated request is still active
+                $sub = $mlist->getPendingSub(Env::v('sdel'));
+
+                $mlist->handleRequest(MailingList::REQ_REJECT, Post::v('sdel'), Post::v('reason'));
                 $info = "refusée";
             }
             if ($sub) {
                 $mailer = new PlMailer();
-                $mailer->setFrom("$liste-bounces@{$domain}");
-                $mailer->addTo("$liste-owner@{$domain}");
-                $mailer->addHeader('Reply-To', "$liste-owner@{$domain}");
+                $mailer->setFrom($mlist->getAddress(MailingList::KIND_BOUNCE));
+                $mailer->addTo($mlist->getAddress(MailingList::KIND_OWNER));
+                $mailer->addHeader('Reply-To', $mlist->getAddress(MailingList::KIND_OWNER));
                 $mailer->setSubject("L'inscription de {$sub['name']} a été $info");
-                $text = "L'inscription de {$sub['name']} à la liste $liste@{$domain} a été $info par " . S::user()->fullName(true) . ".\n";
+                $text = "L'inscription de {$sub['name']} à la liste " . $mlist->address ." a été $info par " . S::user()->fullName(true) . ".\n";
                 if (trim(Post::v('reason'))) {
                     $text .= "\nLa raison invoquée est :\n" . Post::v('reason');
                 }
@@ -580,20 +598,24 @@ class ListsModule extends PLModule
 
             $mails = array_keys(Post::v('select_mails'));
             foreach($mails as $mail) {
-                $this->moderate_mail($domain, $liste, $mail);
+                $this->moderate_mail($mlist, $mail);
             }
         } elseif (Env::has('mid')) {
             if (Get::has('mid') && !Env::has('mok') && !Env::has('mdel')) {
                 require_once 'banana/moderate.inc.php';
 
                 $page->changeTpl('lists/moderate_mail.tpl');
-                $params = array('listname' => $liste, 'domain' => $domain,
-                                'artid' => Get::i('mid'), 'part' => Get::v('part'), 'action' => Get::v('action'));
-                $params['client'] = $this->client;
+                $params = array(
+                    'listname' => $mlist->mbox,
+                    'domain' => $mlist->domain,
+                    'artid' => Get::i('mid'),
+                    'part' => Get::v('part'),
+                    'action' => Get::v('action'));
+                $params['client'] = $this->prepare_client();
                 run_banana($page, 'ModerationBanana', $params);
 
                 $msg = file_get_contents('/etc/mailman/fr/refuse.txt');
-                $msg = str_replace("%(adminaddr)s", "$liste-owner@{$domain}", $msg);
+                $msg = str_replace("%(adminaddr)s", $mlist->getAddress(MailingList::KIND_OWNER), $msg);
                 $msg = str_replace("%(request)s",   "<< SUJET DU MAIL >>",    $msg);
                 $msg = str_replace("%(reason)s",    "<< TON EXPLICATION >>",  $msg);
                 $msg = str_replace("%(listname)s",  $liste, $msg);
@@ -601,9 +623,9 @@ class ListsModule extends PLModule
                 return;
             }
 
-            $this->moderate_mail($domain, $liste, Env::i('mid'));
+            $this->moderate_mail($mlist, Env::i('mid'));
         } elseif (Env::has('sid')) {
-            if (list($subs,$mails) = $this->get_pending_ops($domain, $liste)) {
+            if (list($subs,$mails) = $this->get_pending_ops($mlist)) {
                 foreach($subs as $user) {
                     if ($user['id'] == Env::v('sid')) {
                         $page->changeTpl('lists/moderate_sub.tpl');
@@ -615,7 +637,7 @@ class ListsModule extends PLModule
 
         }
 
-        if (list($subs,$mails) = $this->get_pending_ops($domain, $liste)) {
+        if (list($subs,$mails) = $this->get_pending_ops($mlist)) {
             foreach ($mails as $key=>$mail) {
                 $mails[$key]['stamp'] = strftime("%Y%m%d%H%M%S", $mail['stamp']);
                 if ($mail['fromx']) {
@@ -657,10 +679,10 @@ class ListsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $domain = $this->prepare_client($page);
+        $mlist = $this->prepare_list($liste);
         $this->is_group_admin($page);
         if (!$this->is_group_admin($page)) {
-            $this->verify_list_owner($page, $liste);
+            $this->verify_list_owner($page, $mlist);
         }
 
         $page->changeTpl('lists/admin.tpl');
@@ -684,7 +706,7 @@ class ListsModule extends PLModule
                         $from = ($action == 'marketu') ? 'user' : 'staff';
                         $market = Marketing::get($uids[$key], $mail);
                         if (!$market) {
-                            $market = new Marketing($uids[$key], $mail, 'list', "$liste@$domain", $from, S::v('uid'));
+                            $market = new Marketing($uids[$key], $mail, 'list', $mlist->address, $from, S::v('uid'));
                             $market->add();
                             break;
                         }
@@ -693,7 +715,7 @@ class ListsModule extends PLModule
                   default:
                     XDB::execute('INSERT IGNORE INTO  register_subs (uid, type, sub, domain)
                                               VALUES  ({?}, \'list\', {?}, {?})',
-                                  $uids[$key], $liste, $domain);
+                                  $uids[$key], $mlist->mbox, $mlist->domain);
                 }
             }
         }
@@ -723,7 +745,7 @@ class ListsModule extends PLModule
             // emails.
             $members = array_values(array_unique($members));
 
-            $arr = $this->client->mass_subscribe($liste, $members);
+            $arr = $mlist->subscribeBulk($members);
 
             $successes = array();
             if (is_array($arr)) {
@@ -754,10 +776,10 @@ class ListsModule extends PLModule
 
             if (strpos(Env::v('del_member'), '@') === false) {
                 if ($del_member = User::getSilent(Env::t('del_member'))) {
-                    $this->client->mass_unsubscribe($liste, array($del_member->forlifeEmail()));
+                    $mlist->unsubscribeBulk(array($del_member->forlifeEmail()));
                 }
             } else {
-                $this->client->mass_unsubscribe($liste, array(Env::v('del_member')));
+                $mlist->unsubscribeBulk(array(Env::v('del_member')));
             }
             pl_redirect('lists/admin/'.$liste);
         }
@@ -767,8 +789,8 @@ class ListsModule extends PLModule
 
             $owners = User::getBulkForlifeEmails(Env::v('add_owner'), false, array('ListsModule', 'no_login_callback'));
             if ($owners) {
-                foreach ($owners as $login) {
-                    if ($this->client->add_owner($liste, $login)) {
+                foreach ($owners as $forlife_email) {
+                    if ($mlist->addOwner($forlife_email)) {
                         $page->trigSuccess($login ." ajouté aux modérateurs.");
                     }
                 }
@@ -780,15 +802,15 @@ class ListsModule extends PLModule
 
             if (strpos(Env::v('del_owner'), '@') === false) {
                 if ($del_owner = User::getSilent(Env::t('del_owner'))) {
-                    $this->client->mass_unsubscribe($liste, array($del_owner->forlifeEmail()));
+                    $mlist->unsubscribeBulk(array($del_owner->forlifeEmail()));
                 }
             } else {
-                $this->client->del_owner($liste, Env::v('del_owner'));
+                $mlist->removeOwner(Env::v('del_owner'));
             }
             pl_redirect('lists/admin/'.$liste);
         }
 
-        if (list($det,$mem,$own) = $this->client->get_members($liste)) {
+        if (list($det,$mem,$own) = $mlist->getMembers()) {
             global $list_unregistered;
             if ($list_unregistered) {
                 $page->assign_by_ref('unregistered', $list_unregistered);
@@ -813,9 +835,9 @@ class ListsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $this->prepare_client($page);
+        $mlist = $this->prepare_list($liste);
         if (!$this->is_group_admin($page)) {
-            $this->verify_list_owner($page, $liste);
+            $this->verify_list_owner($page, $mlist);
         }
 
         $page->changeTpl('lists/options.tpl');
@@ -833,7 +855,7 @@ class ListsModule extends PLModule
             if ($spamlevel > 3 || $spamlevel < 0 || $unsurelevel < 0 || $unsurelevel > 1) {
                 $page->trigError("Réglage de l'antispam non valide");
             } else {
-                $this->client->set_bogo_level($liste, ($spamlevel << 1) + $unsurelevel);
+                $mlist->setBogoLevel(($spamlevel << 1) + $unsurelevel);
             }
             switch($values['moderate']) {
                 case '0':
@@ -856,20 +878,20 @@ class ListsModule extends PLModule
             if (isset($values['subject_prefix'])) {
                 $values['subject_prefix'] = trim($values['subject_prefix']).' ';
             }
-            $this->client->set_owner_options($liste, $values);
+            $mlist->setOwnerOptions($values);
         } elseif (isvalid_email(Post::v('atn_add'))) {
             S::assert_xsrf_token();
-            $this->client->add_to_wl($liste, Post::v('atn_add'));
+            $mlist->whitelistAdd(Post::v('atn_add'));
         } elseif (Get::has('atn_del')) {
             S::assert_xsrf_token();
-            $this->client->del_from_wl($liste, Get::v('atn_del'));
+            $mlist->whitelistRemove(Post::v('atn_del'));
             pl_redirect('lists/options/'.$liste);
         }
 
-        if (list($details,$options) = $this->client->get_owner_options($liste)) {
+        if (list($details, $options) = $mlist->getOwnerOptions()) {
             $page->assign_by_ref('details', $details);
             $page->assign_by_ref('options', $options);
-            $bogo_level = intval($this->client->get_bogo_level($liste));
+            $bogo_level = intval($mlist->getBogoLevel());
             $page->assign('unsure_level', $bogo_level & 1);
             $page->assign('bogo_level', $bogo_level >> 1);
         } else {
@@ -884,19 +906,19 @@ class ListsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $domain = $this->prepare_client($page);
+        $mlist = $this->prepare_list($liste);
         if (!$this->is_group_admin($page)) {
-            $this->verify_list_owner($page, $liste);
+            $this->verify_list_owner($page, $mlist);
         }
 
         $page->changeTpl('lists/delete.tpl');
         if (Post::v('valid') == 'OUI') {
             S::assert_xsrf_token();
 
-            if ($this->client->delete_list($liste, Post::b('del_archive'))) {
+            if ($mlist->delete(Post::b('del_archive'))) {
                 require_once 'emails.inc.php';
 
-                delete_list($liste, $domain);
+                delete_list($mlist->mbox, $mlist->domain);
                 $page->assign('deleted', true);
                 $page->trigSuccess('La liste a été détruite&nbsp;!');
             } else {
@@ -904,13 +926,13 @@ class ListsModule extends PLModule
                          . 'Contact les administrateurs du site pour régler le problème : '
                          . '<a href="mailto:support@polytechnique.org">support@polytechnique.org</a>.');
             }
-        } elseif (list($details,$options) = $this->client->get_owner_options($liste)) {
+        } elseif (list($details, $options) = $mlist->getOwnerOptions()) {
             if (!$details['own']) {
                 $page->trigWarning('Tu n\'es pas administrateur de la liste, mais du site.');
             }
             $page->assign_by_ref('details', $details);
             $page->assign_by_ref('options', $options);
-            $page->assign('bogo_level', $this->client->get_bogo_level($liste));
+            $page->assign('bogo_level', $mlist->getBogoLevel());
         } else {
             $page->kill("La liste n'existe pas ou tu n'as pas le droit de l'administrer.");
         }
@@ -922,9 +944,9 @@ class ListsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $this->prepare_client($page);
+        $mlist = $this->prepare_list($liste);
         if (!$this->is_group_admin($page)) {
-            $this->verify_list_owner($page, $liste);
+            $this->verify_list_owner($page, $mlist);
         }
 
         $page->changeTpl('lists/soptions.tpl');
@@ -937,10 +959,10 @@ class ListsModule extends PLModule
             unset($values['submit']);
             $values['advertised'] = empty($values['advertised']) ? false : true;
             $values['archive'] = empty($values['archive']) ? false : true;
-            $this->client->set_admin_options($liste, $values);
+            $mlist->setAdminOptions($values);
         }
 
-        if (list($details,$options) = $this->client->get_admin_options($liste)) {
+        if (list($details, $options) = $mlist->getAdminOptions()) {
             $page->assign_by_ref('details', $details);
             $page->assign_by_ref('options', $options);
         } else {
@@ -954,19 +976,19 @@ class ListsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $this->prepare_client($page);
+        $mlist = $this->prepare_list($liste);
         if (!$this->is_group_admin($page)) {
-            $this->verify_list_owner($page, $liste);
+            $this->verify_list_owner($page, $mlist);
         }
 
         $page->changeTpl('lists/check.tpl');
 
         if (Post::has('correct')) {
             S::assert_xsrf_token();
-            $this->client->check_options($liste, true);
+            $mlist->checkOptions(true);
         }
 
-        if (list($details,$options) = $this->client->check_options($liste)) {
+        if (list($details, $options) = $mlist->checkOptions()) {
             $page->assign_by_ref('details', $details);
             $page->assign_by_ref('options', $options);
         } else {
@@ -979,8 +1001,8 @@ class ListsModule extends PLModule
         $page->changeTpl('lists/admin_all.tpl');
         $page->setTitle('Administration - Mailing lists');
 
-        $this->prepare_client($page);
-        $listes = $this->client->get_all_lists();
+        $client = $this->prepare_client();
+        $listes = $client->get_all_lists();
         $page->assign_by_ref('listes', $listes);
     }
 

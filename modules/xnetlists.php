@@ -23,8 +23,6 @@ Platal::load('lists');
 
 class XnetListsModule extends ListsModule
 {
-    var $client;
-
     function handlers()
     {
         return array(
@@ -54,41 +52,31 @@ class XnetListsModule extends ListsModule
         );
     }
 
-    function prepare_client($page, $user = null)
+    protected function get_lists_domain()
     {
         global $globals;
-        Platal::load('lists', 'lists.inc.php');
-
-        if (is_null($user)) {
-            $user =& S::user();
-        }
-        $this->client = new MMList($user, $globals->asso('mail_domain'));
-
-        $page->assign('asso', $globals->asso());
-        $page->setType($globals->asso('cat'));
-
         return $globals->asso('mail_domain');
     }
 
     function handler_lists($page, $order_by = null, $order = null)
     {
-        global $globals;
         require_once 'emails.inc.php';
 
-        if (!$globals->asso('mail_domain')) {
+        if (!$this->get_lists_domain()) {
             return PL_NOT_FOUND;
         }
-        $this->prepare_client($page);
         $page->changeTpl('xnetlists/index.tpl');
 
         if (Get::has('del')) {
             S::assert_xsrf_token();
-            $this->client->unsubscribe(Get::v('del'));
+            $mlist = $this->prepare_list(Get::v('del'));
+            $mlist->unsubscribe();
             pl_redirect('lists');
         }
         if (Get::has('add')) {
             S::assert_xsrf_token();
-            $this->client->subscribe(Get::v('add'));
+            $mlist = $this->prepare_list(Get::v('add'));
+            $mlist->subscribe();
             pl_redirect('lists');
         }
 
@@ -97,11 +85,12 @@ class XnetListsModule extends ListsModule
 
             $alias = Post::t('del_alias');
             list($local_part, ) = explode('@', $alias);
-            delete_list_alias($local_part, $globals->asso('mail_domain'));
+            delete_list_alias($local_part, $this->get_lists_domain());
             $page->trigSuccess($alias . ' supprimé&nbsp;!');
         }
 
-        $listes = $this->client->get_lists();
+        $client = $this->prepare_client();
+        $listes = $client->get_lists();
         // Default ordering is by ascending names.
         if (is_null($order_by) || is_null($order)
             || !in_array($order_by, array('list', 'desc', 'nbsub'))
@@ -135,12 +124,13 @@ class XnetListsModule extends ListsModule
         $page->assign('listes', $listes);
         $page->assign('order_by', $order_by);
         $page->assign('order', $order);
-        $page->assign('aliases', iterate_list_alias($globals->asso('mail_domain')));
+        $page->assign('aliases', iterate_list_alias($this->get_lists_domain()));
         $page->assign('may_update', may_update());
         if (S::suid()) {
             $page->trigWarning("Attention&nbsp;: l'affichage des listes de diffusion ne tient pas compte de l'option « Voir le site comme&hellip; ».");
         }
 
+        global $globals;
         if (count($listes) > 0 && !$globals->asso('has_ml')) {
             XDB::execute("UPDATE  groups
                              SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'has_ml')
@@ -151,12 +141,9 @@ class XnetListsModule extends ListsModule
 
     function handler_create($page)
     {
-        global $globals;
-
-        if (!$globals->asso('mail_domain')) {
+        if (!$this->get_lists_domain()) {
             return PL_NOT_FOUND;
         }
-        $this->prepare_client($page);
         $page->changeTpl('xnetlists/create.tpl');
 
         if (!Post::has('submit')) {
@@ -177,7 +164,7 @@ class XnetListsModule extends ListsModule
         }
 
         require_once 'emails.inc.php';
-        if (list_exist($list, $globals->asso('mail_domain'))) {
+        if (list_exist($list, $this->get_lists_domain())) {
             $page->trigError('Cet alias est déjà pris.');
             return;
         }
@@ -186,17 +173,19 @@ class XnetListsModule extends ListsModule
             return;
         }
 
-        $success = $this->client->create_list($list, utf8_decode(Post::t('desc')), Post::t('advertise'),
-                                              Post::t('modlevel'), Post::t('inslevel'),
-                                              array(S::user()->forlifeEmail()), array(S::user()->forlifeEmail()));
+        $mlist = $this->prepare_list($list);
+        $success = $mlist->create(Post::t('desc'),
+            Post::t('advertise'), Post::t('modlevel'), Post::t('inslevel'),
+            array(S::user()->forlifeEmail()), array(S::user()->forlifeEmail()));
 
         if (!$success) {
             $page->kill("Un problème est survenu, contacter "
                         ."<a href='mailto:support@m4x.org'>support@m4x.org</a>");
             return;
         }
-        create_list($list, $globals->asso('mail_domain'));
+        create_list($mlist->mbox, $mlist->domain);
 
+        global $globals;
         XDB::execute("UPDATE  groups
                          SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'has_ml')
                        WHERE  id = {?}",
@@ -207,23 +196,27 @@ class XnetListsModule extends ListsModule
 
     function handler_sync($page, $liste = null)
     {
-        global $globals;
-
-        if (!$globals->asso('mail_domain')) {
+        if (!$this->get_lists_domain()) {
             return PL_NOT_FOUND;
         }
-        $this->prepare_client($page);
+        if (!$liste) {
+            return PL_NOT_FOUND;
+        }
+
         $page->changeTpl('xnetlists/sync.tpl');
+
+        $mlist = $this->prepare_list($liste);
 
         if (Env::has('add')) {
             S::assert_xsrf_token();
-            $this->client->mass_subscribe($liste, array_keys(Env::v('add')));
+            $mlist->subscribeBulk(array_keys(Env::v('add')));
         }
 
-        list(,$members) = $this->client->get_members($liste);
+        list(,$members) = $mlist->getMembers();
         $mails = array_map(create_function('$arr', 'return $arr[1];'), $members);
         $subscribers = array_unique($mails);
 
+        global $globals;
         $ann = XDB::fetchColumn('SELECT  uid
                                    FROM  group_members
                                   WHERE  asso_id = {?}', $globals->asso('id'));
@@ -241,16 +234,15 @@ class XnetListsModule extends ListsModule
 
     function handler_aadmin($page, $lfull = null)
     {
-        global $globals;
-
-        if (!$globals->asso('mail_domain') || is_null($lfull)) {
+        if (!$this->get_lists_domain() || is_null($lfull)) {
             return PL_NOT_FOUND;
         }
         $page->changeTpl('xnetlists/alias-admin.tpl');
 
         require_once 'emails.inc.php';
         list($local_part, $domain) = explode('@', $lfull);
-        if ($globals->asso('mail_domain') != $domain || !preg_match("/^[a-zA-Z0-9\-\.]*$/", $local_part)) {
+        if ($this->get_lists_domain() != $domain || !preg_match("/^[a-zA-Z0-9\-\.]*$/", $local_part)) {
+            global $globals;
             $page->trigErrorRedirect('Le nom de l\'alias est erroné.', $globals->asso('diminutif') . '/lists');
         }
 
@@ -280,9 +272,7 @@ class XnetListsModule extends ListsModule
 
     function handler_acreate($page)
     {
-        global $globals;
-
-        if (!$globals->asso('mail_domain')) {
+        if (!$this->get_lists_domain()) {
             return PL_NOT_FOUND;
         }
         $page->changeTpl('xnetlists/alias-create.tpl');
@@ -305,13 +295,14 @@ class XnetListsModule extends ListsModule
         }
 
         require_once 'emails.inc.php';
-        if (list_exist($list, $globals->asso('mail_domain'))) {
+        $lists_domain = $this->get_lists_domain();
+        if (list_exist($list, $lists_domain)) {
             $page->trigError('Cet alias est déjà pris.');
             return;
         }
 
-        add_to_list_alias(S::i('uid'), $list, $globals->asso('mail_domain'));
-        pl_redirect('alias/admin/' . $list . '@' . $globals->asso('mail_domain'));
+        add_to_list_alias(S::i('uid'), $list, $lists_domain);
+        pl_redirect('alias/admin/' . $list . '@' . $lists_domain);
     }
 
     function handler_profile($page, $user = null)
