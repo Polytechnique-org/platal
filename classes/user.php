@@ -369,6 +369,12 @@ class User extends PlUser
         return $this->_profile;
     }
 
+    public function setPrefetchedProfile(Profile $profile)
+    {
+        $this->_profile_fetched = true;
+        $this->_profile = $profile;
+    }
+
     /** Return true if the user has an associated profile.
      */
     public function hasProfile()
