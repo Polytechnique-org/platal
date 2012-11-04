@@ -27,7 +27,7 @@ if (!$owner_user) {
 }
 
 // Creates the list.
-$req = new ListeReq($owner_user, false, "promo$promo", $globals->mail->domain, "Liste de la promotion $promo",
+$req = new ListeReq($owner_user, false, "promo", $promo . '.' . $globals->mail->domain, "Liste de la promotion $promo",
                     1 /*private*/, 2 /*moderate*/, 0 /*free subscription*/,
                     array($owner), array());
 $req->submit();
