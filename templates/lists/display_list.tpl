@@ -21,8 +21,12 @@
 {**************************************************************************}
 
 {assign var=lostUsers value=false}
-{foreach from=$list item=users key=sort_key}
-{foreach from=$users item=user name=all}
+{foreach from=$list item=members key=sort_key}
+{foreach from=$members item=member name=all}
+  {assign var=user value=$member.user}
+  {assign var=profile value=$member.profile}
+  {assign var=email value=$member.email}
+
 <tr>
   <td class='titre' style="width: 20%">
     {if $smarty.foreach.all.first}
@@ -30,23 +34,23 @@
     {/if}
   </td>
   <td>
-    {if t($user.hasProfile)}
-      {if t($user.lost)}{assign var=lostUsers value=true}{/if}
-      {profile user=$user.uid promo=$promo}
-    {elseif t($user.uid)}
-      <a href="mailto:{$user.email}">{if t($user.name)}{$user.name}{else}{$user.email}{/if}{if t($promo)} (extérieur){/if}</a>
-    {else}
-      <a href="mailto:{$user.email}">{if t($user.name)}{$user.name}{else}{$user.email}{/if}</a>
+    {if t($profile)}
+      {if $user->lost}{assign var=lostUsers value=true}{/if}
+      {profile user=$user profile=$profile promo=$promo}
+    {elseif t($user)}
+      <a href="mailto:{$email}">{if $user->directoryName}{$user->directoryName}{else}{$email}{/if}{if not t($promo)} (extérieur){/if}</a>
+    {else}{* Email without account or email *}
+      <a href="mailto:{$email}">{$email}</a>
     {/if}
   </td>
   {if t($delete)}
   <td class="center">
-    {if t($user.uid)}
-    <a href="{$platal->ns}member/{$user.uid}">{icon name=user_edit title='Éditer'}</a>&nbsp;
+    {if t($member.user)}
+    <a href="{$platal->ns}member/{$member.user->uid}">{icon name=user_edit title='Éditer'}</a>&nbsp;
     {else}
     {icon name=null}&nbsp;
     {/if}
-    <a href='{$platal->pl_self(1)}?{$delete}={$user.email}&amp;token={xsrf_token}'>{icon name=cross title='Retirer'}</a>
+    <a href='{$platal->pl_self(1)}?{$delete}={$member.email}&amp;token={xsrf_token}'>{icon name=cross title='Retirer'}</a>
   </td>
   {/if}
 </tr>

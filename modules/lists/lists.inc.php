@@ -21,36 +21,73 @@
 
 // {{{ function list_sort_owners
 
-function list_sort_owners($members, $tri_promo = true)
+function list_sort_owners($emails, $tri_promo = true)
 {
     global $globals;
 
     // $membres' structure is the following: $sortKey => $key => $listMember
     $membres = array();
+    $seen = array();
 
-    foreach($members as $member) {
-        $user = User::getSilent($member);
-        if (!$user) {
-            $membres[0][$member] = array('name' => null, 'email' => $member, 'category' => null, 'uid' => null, 'lost' => null, 'hasProfile' => null);
-        } else {
-            $hasProfile = $user->hasProfile();
-            $uid = $user->id();
-            $name = $user->directoryName();
-            $category = $user->category();
-            $key = $tri_promo ? ($category ? $category : 'AAAAA') : strtoupper($name{0});
-            if (!$category) {
-                $category = 'extérieurs';
-            }
-            $membres[$key][$name] = array('name' => $name, 'email' => $member, 'category' => $category,
-                                          'uid' => $uid, 'lost' => $user->lost, 'hasProfile' => $hasProfile);
+    $members = array();
+
+    $uf = new UserFilter(new UFC_Email($emails));
+    $it = $uf->iterUsers();
+    while ($u = $it->next()) {
+        $members[$u->uid] = array(
+            'user' => $u,
+            'profile' => null,
+            'email' => $u->forlifeEmail());
+        $seen[] = $u->forlifeEmail();
+    }
+
+    $pf = new ProfileFilter(new UFC_Email($emails));
+    $it = $pf->iterProfiles();
+    while ($p = $it->next()) {
+        $members[$p->owner_id]['user']->setPrefetchedProfile($p);
+        $members[$p->owner_id]['profile'] = $p;
+    }
+
+    foreach ($emails as $email) {
+        if (!in_array($email, $seen)) {
+            $seen[] = $email;
+            $members[$email] = array('user' => null, 'profile' => null,
+                'email' => $email);
         }
     }
 
-    uksort($membres, 'strcasecmp');
-    foreach($membres as &$membre)  {
-        uksort($membre, 'strcasecmp');
+    // $members is now an array of uid => {'user': User or null, 'email': $email}
+
+    // $sorted_members is an array of $sortKey1 => $sortKey2 => {User, email}
+    $sorted_members = array();
+
+    foreach($members as $member) {
+        if (is_null($member['user'])) {
+            $category = 'AAAAA';
+            $name = $member['email'];
+        } else {
+            $category = $member['user']->category();
+            $name = $member['user']->directoryName();
+        }
+        if (empty($category)) {
+            $category = "AAAAA";
+        }
+
+        $main_sort_key = $tri_promo ? $category : strtoupper($name{0});
+        $alt_sort_key = $name;
+
+        if (!array_key_exists($main_sort_key, $sorted_members)) {
+            $sorted_members[$main_sort_key] = array();
+        }
+
+        $sorted_members[$main_sort_key][$alt_sort_key] = $member;
     }
-    return $membres;
+
+    uksort($sorted_members, 'strcasecmp');
+    foreach($sorted_members as &$subsorted_members)  {
+        uksort($subsorted_members, 'strcasecmp');
+    }
+    return $sorted_members;
 }
 
 // }}}
