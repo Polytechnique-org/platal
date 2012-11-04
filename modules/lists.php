@@ -137,7 +137,8 @@ class ListsModule extends PLModule
 
             $promo = Post::i('promo_add');
             if ($promo >= 1900 and $promo < 2100) {
-                $this->client->subscribe("promo$promo");
+                $mlist = MailingList::promo($promo, S::user());
+                $mlist->subscribe();
             } else {
                 $page->trigError("promo incorrecte, il faut une promo sur 4 chiffres.");
             }

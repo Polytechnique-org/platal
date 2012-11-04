@@ -27,7 +27,6 @@ class ReminderMl extends Reminder
           case 'suscribe':
             S::assert_xsrf_token();
             $subs = array_keys(Post::v('sub_ml'));
-            $current_domain = null;
 
             $res = XDB::iterRow("SELECT  sub, domain
                                    FROM  register_subs
@@ -36,11 +35,8 @@ class ReminderMl extends Reminder
                                 S::i('uid'));
             while (list($sub, $domain) = $res->next()) {
                 if (array_shift($subs) == "$sub@$domain") {
-                    if ($domain != $current_domain) {
-                        $current_domain = $domain;
-                    }
-                    $client = new MMList(S::user(), $domain);
-                    $client->subscribe($sub);
+                    $mlist = new MailingList($sub, $domain, S::user());
+                    $mlist->subscribe();
                 }
             }
 
@@ -67,14 +63,10 @@ class ReminderMl extends Reminder
                               WHERE  uid = {?} AND type = 'list'
                            ORDER BY  domain",
                             S::i('uid'));
-        $current_domain = null;
         $lists = array();
         while (list($sub, $domain) = $res->next()) {
-            if ($current_domain != $domain) {
-                $current_domain = $domain;
-                $client = new MMList(S::user(), $domain);
-            }
-            list($details, ) = $client->get_members($sub);
+            $mlist = new MailingList($sub, $domain, S::user());
+            list($details, ) = $mlist->getMembers();
             $lists["$sub@$domain"] = $details;
         }
         $page->assign_by_ref('lists', $lists);

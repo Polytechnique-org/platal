@@ -426,8 +426,8 @@ class RegisterModule extends PLModule
                                                       VALUES  ({?}, {?})',
                                          $uid, $asso_id);
                             try {
-                                $mmlist = new MMList($user);
-                                $mmlist->subscribe("promo" . $yearpromo);
+                                $mlist = MailingList::promo($yearpromo, $user);
+                                $mlist->subscribe();
                             } catch (Exception $e) {
                                 PlErrorReport::report($e);
                                 $page->trigError("L'inscription à la liste promo" . $yearpromo . " a échouée.");

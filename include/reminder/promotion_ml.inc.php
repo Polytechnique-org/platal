@@ -31,8 +31,8 @@ class ReminderPromotionMl extends Reminder
                                         FROM  groups
                                        WHERE  diminutif = {?}',
                          $user->id(), $user->profile()->yearPromo());
-            $mmlist = new MMList($user);
-            $mmlist->subscribe('promo' . $user->profile()->yearPromo());
+            $mlist = MailingList::promo($user->profile()->yearPromo(), $user);
+            $mlist->subscribe():
 
             $this->UpdateOnYes();
             break;
@@ -80,10 +80,9 @@ class ReminderPromotionMl extends Reminder
             Reminder::MarkCandidateAsAccepted($user->id(), $candidate);
         }
         if ($mlCount == 0) {
-            $mmlist = new MMList($user);
+            $mlist = MailingList::promo($user->profile()->yearPromo(), $user);
             try {
-                $mmlist->get_members_limit('promo' + $user->profile()->yearPromo(),
-                                           0, 0);
+                $mlist->getMembersLimit(0, 0);
             } catch (Exception $e) {
                 return false;
             }
