@@ -65,15 +65,12 @@ class ListsModule extends PLModule
 
     /** Prepare a MailingList from its mailbox
      */
-    protected function prepare_list($mbox, $user=null)
+    protected function prepare_list($mbox)
     {
         // Required: modules/xnetlists.php uses it too.
         Platal::load('lists', 'lists.inc.php');
 
-        if (is_null($user)) {
-            $user = S::user();
-        }
-        return new MailingList($mbox, $this->get_lists_domain(), $user);
+        return new MailingList($mbox, $this->get_lists_domain());
     }
 
     /** Ensure the current user is an administrator of the group.
@@ -159,7 +156,7 @@ class ListsModule extends PLModule
 
             $promo = Post::i('promo_add');
             if ($promo >= 1900 and $promo < 2100) {
-                $mlist = MailingList::promo($promo, S::user());
+                $mlist = MailingList::promo($promo);
                 $mlist->subscribe();
             } else {
                 $page->trigError("promo incorrecte, il faut une promo sur 4 chiffres.");

@@ -28,24 +28,21 @@ class MailingList
     public $domain;         // domain for the list
     protected $mmclient;    // The XML-RPC client for Mailman requests
 
-    public function __construct($mbox, $domain, $user, $pass='')
+    public function __construct($mbox, $domain, $user=null)
     {
         $this->mbox = $mbox;
         $this->domain = $domain;
         $this->address = "$mbox@$domain";
 
-        if ($user instanceof PlUser) {
-            $this->mmclient = new MMList($user, $this->domain);
-        } else {
-            $this->mmclient = new MMList($user, $pass, $this->domain);
+        if (is_null($user)) {
+            $user = S::user();
         }
+        $this->mmclient = new MMList($user, $this->domain);
     }
 
     /** Instantiate a MailingList from its address.
-     *
-     * $user and $pass are connection parameters for MailMan.
      */
-    public static function fromAddress($address, $user, $pass='')
+    public static function fromAddress($address, $user=null)
     {
         if (strstr($address, '@') !== false) {
             list($mbox, $domain) = explode('@', $address);
@@ -54,18 +51,16 @@ class MailingList
             $mbox = $address;
             $domain = $globals->mail->domain;
         }
-        return new MailingList($mbox, $domain, $user, $pass);
+        return new MailingList($mbox, $domain, $user);
     }
 
     /** Retrieve the MailingList associated with a given promo.
-     *
-     * $user and $pass are connection parameters for MailMan.
      */
-    public static function promo($promo, $user, $pass='')
+    public static function promo($promo, $user=null)
     {
         global $globals;
         $mail_domain = $globals->mail->domain;
-        return new MailingList('promo', "$promo.$mail_domain", $user, $pass);
+        return new MailingList('promo', "$promo.$mail_domain", $user);
     }
 
     const KIND_BOUNCE = 'bounces';

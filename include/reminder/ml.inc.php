@@ -35,7 +35,7 @@ class ReminderMl extends Reminder
                                 S::i('uid'));
             while (list($sub, $domain) = $res->next()) {
                 if (array_shift($subs) == "$sub@$domain") {
-                    $mlist = new MailingList($sub, $domain, S::user());
+                    $mlist = new MailingList($sub, $domain);
                     $mlist->subscribe();
                 }
             }
@@ -65,7 +65,7 @@ class ReminderMl extends Reminder
                             S::i('uid'));
         $lists = array();
         while (list($sub, $domain) = $res->next()) {
-            $mlist = new MailingList($sub, $domain, S::user());
+            $mlist = new MailingList($sub, $domain);
             list($details, ) = $mlist->getMembers();
             $lists["$sub@$domain"] = $details;
         }
