@@ -587,10 +587,13 @@ class PaymentModule extends PLModule
         $table_editor->describe('amount_max', 'montant maximum', false, true);
         $table_editor->describe('mail', 'email contact', true);
         $table_editor->describe('confirmation', 'message confirmation', false, true);
-
+        $table_editor->describe('rib_id', 'RIB', false, true);
         // adds a column with the start date of the linked event if there is one
         $table_editor->add_option_table('group_events', 'group_events.paiement_id = t.id');
         $table_editor->add_option_field('group_events.archive', 'related_event', 'évènement archivé ?', 'tinyint');
+        // adds a column with the linked rib if there is one
+        $table_editor->add_option_table('payment_bankaccounts', 'payment_bankaccounts.id = t.rib_id');
+        $table_editor->add_option_field('payment_bankaccounts.owner', 'linked_rib_owner', 'rib associé', 'varchar');
 
         $table_editor->apply($page, $action, $id);
     }
@@ -693,8 +696,9 @@ class PaymentModule extends PLModule
                                   $recongp['id']);
                 $recongp['recons'] = $res->fetchAllAssoc();
 
-                $res = XDB::query('SELECT  id, payment_id, amount, account_id, message, date
-                                     FROM  payment_transfers
+                $res = XDB::query('SELECT  t.id, t.payment_id, t.amount, b.owner, t.message, t.date
+                                     FROM  payment_transfers    AS t
+                                LEFT JOIN  payment_bankaccounts AS b ON (t.account_id=b.id)
                                     WHERE  recongroup_id = {?}',
                                   $recongp['id']);
                 $recongp['transfers'] = $res->fetchAllAssoc();
@@ -897,7 +901,7 @@ class PaymentModule extends PLModule
 
             // create transfers
             XDB::execute('INSERT INTO  payment_transfers
-                               SELECT  NULL, {?}, t.ref, SUM(t.amount+t.commission), NULL, p.text, NULL
+                               SELECT  NULL, {?}, t.ref, SUM(t.amount+t.commission), p.rib_id, p.text, NULL
                                  FROM  payment_transactions AS t
                             LEFT JOIN  payments             AS p ON (t.ref = p.id)
                             LEFT JOIN  groups               AS g ON (p.asso_id = g.id)

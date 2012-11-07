@@ -94,7 +94,7 @@
 						<td>{$transfer.id}</td>
 						<td>{if $transfer.date}{$transfer.date}{else}à virer{/if}</td>
 						<td><small>{$transfer.message}</small></td>
-						<td>{$transfer.account}</td>
+						<td>{$transfer.owner}</td>
 						<td class="right">{$transfer.amount}</td>
 						<td class="right">
 						  {if !$transfer.date}<a href="admin/reconcile/transfers/confirm/{$transfer.id}?token={xsrf_token}">{icon name=tick title='Confirmer la réalisation'}</a>{/if}

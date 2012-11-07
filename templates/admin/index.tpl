@@ -73,11 +73,11 @@
     <td>
       <a href="admin/payments">Paiements</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/payments/methods">Méthodes de paiement</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/reconcile">Virements</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/reconcile/bankaccounts">RIBs</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/payments/methods">Méthodes de paiement</a>
     </td>
   </tr>
   <tr class="pair">
