@@ -77,6 +77,18 @@ class MailingList
         return $this->mmclient->subscribe($this->mbox);
     }
 
+    public static function subscribeTo($mbox, $domain, $user=null)
+    {
+        $mlist = new MailingList($mbox, $domain, $user);
+        return $mlist->subscribe();
+    }
+
+    public static function subscribePromo($promo, $user=null)
+    {
+        $mlist = MailingList::promo($promo, $user);
+        return $mlist->subscribe();
+    }
+
     /** Subscribe a batch of users to the list
      */
     public function subscribeBulk($members)

@@ -31,8 +31,7 @@ class ReminderPromotionMl extends Reminder
                                         FROM  groups
                                        WHERE  diminutif = {?}',
                          $user->id(), $user->profile()->yearPromo());
-            $mlist = MailingList::promo($user->profile()->yearPromo());
-            $mlist->subscribe():
+            MailingList::subscribePromo($user->profile()->yearPromo());
 
             $this->UpdateOnYes();
             break;
