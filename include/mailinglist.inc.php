@@ -177,10 +177,12 @@ class MailingList
 
     /** Create a list
      */
-    public function create($description, $advertise,
-        $moderation_level, $subscription_level, $owners, $members)
+    public static function create($mbox, $domain, $user, $description,
+        $advertise, $moderation_level, $subscription_level,
+        $owners, $members)
     {
-        return $this->mmclient->create_list($this->mbox, utf8_decode($description),
+        $mlist = new MailingList($mbox, $domain, $user);
+        return $mlist->mmclient->create_list($mlist->mbox, utf8_decode($description),
             $advertise, $moderation_level, $subscription_level,
             $owners, $members);
     }
