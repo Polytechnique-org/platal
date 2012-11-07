@@ -144,10 +144,11 @@ class ListeReq extends Validate
             $owners = array_values(array_unique($owners));
             $members = array_values(array_unique($members));
 
-            $list = new MailingList($this->liste, $this->domain);
-            $success = $list->create($this->desc, $this->advertise,
-                                     $this->modlevel, $this->inslevel,
-                                     $owners, $members);
+            $success = MailingList::create($this->liste, $this->domain, null,
+                $this->desc, $this->advertise,
+                $this->modlevel, $this->inslevel,
+                $owners, $members);
+
             if ($success) {
                 create_list($this->liste, $this->domain);
             }
