@@ -42,37 +42,35 @@ while ($sent_mails < $globals->lists->max_mail_per_min
     if (XDB::affectedRows() == 0) {
         break;
     }
-    $query = XDB::query('SELECT  a.full_name, a.uid, a.password,
-                                 ml.ml, ml.domain, ml.mid, ml.action, ml.message
-                           FROM  accounts            AS a
-                     INNER JOIN  email_list_moderate AS ml ON (a.uid = ml.uid)
-                          WHERE  ml.handler = {?}', $handler);
-    list($fullname, $uid, $password, $list, $domain, $mid, $action, $reason) = $query->fetchOneRow();
-
-    // build the client
-    $client = new MMList($uid, $password, $domain);
+    $query = XDB::query('SELECT  uid, ml, domain, mid, action, message
+                           FROM  email_list_moderate
+                          WHERE  handler = {?}', $handler);
+    list($uid, $list, $domain, $mid, $action, $reason) = $query->fetchOneRow();
+    $user = User::get($uid);
+    $fullname = $user->fullName();
+    $mlist = new MailingList($list, $domain, $user);
 
     // send the mail
-    $mail = $client->get_pending_mail($list, $mid);
-    list($det,$mem,$own) = $client->get_members($list);
+    $mail = $mlist->getPendingMail($mid);
+    list($det,$mem,$own) = $mlist->getMembers();
     $count = 0;
     switch ($action) {
       case 'accept':
-        $action = 1;    /** 1 = ACCEPT **/
+        $action = MailingList::REQ_ACCEPT;
         $subject = "Message accepté";
         $append  = "a été accepté par $fullname.\n";
         $type = 'nonspam';
         $count += count($mem) + count($own);
         break;
       case 'refuse':
-        $action = 2;    /** 2 = REJECT **/
+        $action = MailingList::REQ_REJECT;
         $subject = "Message refusé";
         $append  = "a été refusé par $fullname avec la raison :\n\n" . $reason;
         $type = 'nonspam';
         $count += count($own) + 1;
         break;
       case 'delete':
-        $action = 3;    /** 3 = DISCARD **/
+        $action = MailingList::REQ_DISCARD;
         $subject = "Message supprimé";
         $append  = "a été supprimé par $fullname.\n\n"
                  . "Rappel : il ne faut utiliser cette opération "
@@ -83,7 +81,7 @@ while ($sent_mails < $globals->lists->max_mail_per_min
     }
 
     // if the mail was classified as Unsure, feed bogo
-    $raw_mail = html_entity_decode($client->get_pending_mail($list, $mid, 1));
+    $raw_mail = html_entity_decode($mlist->getPendingMail($mid, 1));
     // search for the X-Spam-Flag header
     $end_of_headers = strpos($raw_mail, "\r\n\r\n");
     if ($end_of_headers === false) {   // sometimes headers are separated by \n
@@ -103,7 +101,7 @@ while ($sent_mails < $globals->lists->max_mail_per_min
     }
 
     // send feedback to the mailing list owners
-    if ($client->handle_request($list, $mid, $action, utf8_decode($reason))) {
+    if ($mlist->handleRequest($action, $mid, $reason)) {
         $sent_mails += $count;
         $texte = "Le message suivant :\n\n"
                . "    Auteur: {$mail['sender']}\n"

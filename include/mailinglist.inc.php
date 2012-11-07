@@ -148,7 +148,9 @@ class MailingList
         return $this->mmclient->get_pending_ops($this->mbox);
     }
 
+    const REQ_ACCEPT = 1;
     const REQ_REJECT = 2;
+    const REQ_DISCARD = 3;
     const REQ_SUBSCRIBE = 4;
 
     /** Handle a mailing list request
@@ -164,6 +166,13 @@ class MailingList
     public function getPendingSubscription($email)
     {
         return $this->mmclient->get_pending_sub($this->mbox, $email);
+    }
+
+    /** Retrieve pending mails
+     */
+    public function getPendingMail($mid)
+    {
+        return $this->mmclient->get_pending_mail($this->mbox, $mid);
     }
 
     /** Create a list
