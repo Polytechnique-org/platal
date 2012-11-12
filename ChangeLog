@@ -1,6 +1,21 @@
 ================================================================================
 VERSION 1.1.6                                                         XX XX XXXX
 
+    * AX:
+        - Pre-split addresses for AX CSV export                            -XEL
+
+    * Lists:
+        - Rewrite MailingList backend                                      -XEL
+        - Update promo ML subscription pages                               -XEL
+        - Enhance list members view performance                            -XEL
+
+    * Payments:
+        - Add a reference to RIBs in the payment table                     -KTY
+        - Allow many payments for a single event                           -KTY
+
+    * XnetEvent:
+        - Order events in decreasing order                                 -XEL
+
     * XnetGrp:
         - #1627: Fixes accounts awaiting validation page                   -JAC
 
@@ -1916,6 +1931,7 @@ ACRONYMS:
     * JAC: Stéphane Jacob       (jacou)     <stephane.jacob@m4x.org>
     * JM : Jean-Marc Bécu                   <jean-marc.becu@m4x.org>
     * JS : Jean Sébastien Bedo              <jean-sebastien.bedo@m4x.org>
+    * KTY: Anne Limoges         (Kithyane)  <anne.limoges@m4x.org>
     * MC : Pierre Habouzit      (MadCoder)  <pierre.habouzit@m4x.org>
     * mYk: Aymeric Augustin     (mYk)       <aymeric.augustin@m4x.org>
     * OG : Olivier Guillaumin               <olivier.guillaumin@m4x.org>
