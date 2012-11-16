@@ -43,9 +43,11 @@ function list_sort_owners($emails, $tri_promo = true)
 
     $pf = new ProfileFilter(new UFC_Email($emails));
     $it = $pf->iterProfiles();
-    while ($p = $it->next()) {
-        $members[$p->owner_id]['user']->setPrefetchedProfile($p);
-        $members[$p->owner_id]['profile'] = $p;
+    if ($it) {
+        while ($p = $it->next()) {
+            $members[$p->owner_id]['user']->setPrefetchedProfile($p);
+            $members[$p->owner_id]['profile'] = $p;
+        }
     }
 
     foreach ($emails as $email) {
