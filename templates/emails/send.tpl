@@ -67,7 +67,7 @@
     }
     $.xpost("emails/send",
            { save: true,
-             token: '{xsrf_token}',
+             token: {/literal}'{xsrf_token}'{literal},
              from: form.from.value,
              to_contacts: toc,
              cc_contacts: ccc,

@@ -174,7 +174,8 @@ class XnetListsModule extends ListsModule
         }
 
         $mlist = $this->prepare_list($list);
-        $success = $mlist->create(Post::t('desc'),
+        $success = MailingList::create($mlist->mbox, $mlist->domain, S::user(),
+            Post::t('desc'),
             Post::t('advertise'), Post::t('modlevel'), Post::t('inslevel'),
             array(S::user()->forlifeEmail()), array(S::user()->forlifeEmail()));
 
