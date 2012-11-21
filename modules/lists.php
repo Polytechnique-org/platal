@@ -560,14 +560,14 @@ class ListsModule extends PLModule
 
             if (Env::has('sadd')) {
                 // Ensure the moderated request is still active
-                $sub = $mlist->getPendingSub(Env::v('sadd'));
+                $sub = $mlist->getPendingSubscription(Env::v('sadd'));
 
                 $mlist->handleRequest(MailingList::REQ_SUBSCRIBE, Env::v('sadd'));
                 $info = "validée";
             }
             if (Post::has('sdel')) {
                 // Ensure the moderated request is still active
-                $sub = $mlist->getPendingSub(Env::v('sdel'));
+                $sub = $mlist->getPendingSubscription(Env::v('sdel'));
 
                 $mlist->handleRequest(MailingList::REQ_REJECT, Post::v('sdel'), Post::v('reason'));
                 $info = "refusée";
