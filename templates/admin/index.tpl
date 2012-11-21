@@ -75,7 +75,7 @@
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/reconcile">Virements</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/reconcile/bankaccounts">RIBs</a>
+      <a href="admin/payments/bankaccounts">RIBs</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/payments/methods">Méthodes de paiement</a>
     </td>

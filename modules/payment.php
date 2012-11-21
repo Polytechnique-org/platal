@@ -127,7 +127,7 @@ class PaymentModule extends PLModule
             'admin/reconcile'              => $this->make_hook('adm_reconcile',    AUTH_PASSWD, 'admin'),
             'admin/reconcile/importlogs'   => $this->make_hook('adm_importlogs',   AUTH_PASSWD, 'admin'),
             'admin/reconcile/transfers'    => $this->make_hook('adm_transfers',    AUTH_PASSWD, 'admin'),
-            'admin/reconcile/bankaccounts' => $this->make_hook('adm_bankaccounts', AUTH_PASSWD, 'admin'),
+            'admin/payments/bankaccounts' => $this->make_hook('adm_bankaccounts', AUTH_PASSWD, 'admin'),
         );
     }
 
@@ -618,7 +618,7 @@ class PaymentModule extends PLModule
         $page->assign('title', "Liste des RIBs");
 
         $table_editor = new PLTableEditor('admin/payments/bankaccounts', 'payment_bankaccounts', 'id');
-        $table_editor->describe('asso_id', 'ID du groupe', false, false);
+        $table_editor->describe('asso_id', 'ID du groupe', false, true);
         $table_editor->describe('owner', 'titulaire', true);
         $table_editor->add_option_table('groups', 'groups.id = t.asso_id');
         $table_editor->add_option_field('groups.diminutif', 'group_name', 'groupe', 'varchar','account');
