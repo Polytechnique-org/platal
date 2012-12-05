@@ -199,11 +199,11 @@ class Survey
         $nbf = count($line);
         $users = array();
         if ($this->isMode(self::MODE_XIDENT)) { // if the mode is non anonymous
-            $users = User::getBulkUsersWithUIDs(XDB::fetchAllAssoc('vid', 'SELECT  v.id AS vid, v.uid
-                                                                             FROM  survey_votes AS v
-                                                                            WHERE  v.survey_id = {?}
-                                                                         ORDER BY  vid ASC',
-                                                                    $this->id));
+            $users = XDB::fetchAllAssoc('vid', 'SELECT  v.id AS vid, v.uid
+                                                  FROM  survey_votes AS v
+                                                 WHERE  v.survey_id = {?}
+                                            ORDER BY  vid ASC',
+                                                $this->id);
         }
         $sql = 'SELECT v.id AS vid, a.question_id AS qid, a.answer AS answer
                   FROM survey_votes AS v
@@ -221,9 +221,10 @@ class Survey
                 $line[0] = $vid_; // the first field is a 'clean' vote id (not the one stored in database)
                 if ($this->isMode(self::MODE_XIDENT)) { // if the mode is non anonymous
                     if (array_key_exists($vid, $users)) { // and if the user data can be found
-                        $line[1] = $users[$vid]->lastName(); // adds the user data (in the first fields of the line)
-                        $line[2] = $users[$vid]->firstName();;
-                        $line[3] = $users[$vid]->promo();
+                        $user=PlUser::getWithUID($users[$vid]);
+                        $line[1] = $user->lastName(); // adds the user data (in the first fields of the line)
+                        $line[2] = $user->firstName();
+                        $line[3] = $user->promo();
                     }
                 }
                 $vid_++;
