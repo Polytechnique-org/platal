@@ -49,7 +49,7 @@ class BPLCCyberPlus
     function BPLCCyberPlus($val)
     {
         // Improvement: number of digits after the coma might depend from the currency.
-        $this->val = 100 * strtr(sprintf("%.02f", (float)$val), '.', ',');
+        $this->val = 100 * strtr($val, ',', '.');
     }
 
     // }}}
