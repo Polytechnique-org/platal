@@ -64,17 +64,17 @@
       <td>
         {if $event.inscr_open}
           <label><input type="radio" name="moment[{$m.item_id}]" value="0"
-          {if !$m.nb}checked="checked"{/if}/>non</label>
+          {if !$m.nb}checked="checked"{/if}/>Je ne m'inscris pas</label><br />
           {if $event.noinvite}
               <label><input type="radio" name="moment[{$m.item_id}]" value="1"
-              {if $m.nb eq 1}checked="checked"{/if}/>oui</label>
+              {if $m.nb eq 1}checked="checked"{/if}/>Je m'inscris</label>
           {else}
               <label><input type="radio" name="moment[{$m.item_id}]" value="1"
-              {if $m.nb eq 1}checked="checked"{/if}/>seul</label><br />
+              {if $m.nb eq 1}checked="checked"{/if}/>Je m'inscris seul</label><br />
               <label><input type="radio" name="moment[{$m.item_id}]" value="2" id="avec"
-              {if $m.nb > 1}checked="checked"{/if}/>avec</label>
+              {if $m.nb > 1}checked="checked"{/if}/>Je m'inscris moi et</label>
                 <input size="2" name="personnes[{$m.item_id}]"
-                  value="{if $m.nb > 1}{math equation='x - 1' x=$m.nb}{else}1{/if}"/><label for="avec"> personnes</label>
+                  value="{if $m.nb > 1}{math equation='x - 1' x=$m.nb}{else}1{/if}"/><label for="avec"> invités</label>
           {/if}
         {else}
           {if !$m.nb}
@@ -82,7 +82,7 @@
           {elseif $m.nb eq 1}
             Je viendrai{if !$event.noinvite} seul{/if}.
           {else}
-            Je viendrai avec {$m.nb} personne{if $m.nb > 2}s{/if}.
+            Je viendrai moi et {$m.nb} invité{if $m.nb > 2}s{/if}.
           {/if}
         {/if}
       </td>
