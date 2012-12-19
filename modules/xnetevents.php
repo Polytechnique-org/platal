@@ -222,7 +222,7 @@ class XnetEventsModule extends PLModule
                     $page->trigError("Tu dois choisir un nombre d'invités correct&nbsp;!");
                     return;
                 }
-                $subs[$j] = 1 + $pers[$j];
+                $subs[$j] = $pers[$j];
             }
         }
 
@@ -308,6 +308,9 @@ class XnetEventsModule extends PLModule
 
         $participants = get_event_participants($evt, $item_id, $tri);
         $title = 'Nom;Prénom;Promotion';
+        if ($admin) {
+            $title .=';Société;Poste';
+        }
         if ($all) {
             foreach ($evt['moments'] as $moment) {
                 $title .= ';' . $moment['titre'];
@@ -321,13 +324,18 @@ class XnetEventsModule extends PLModule
             $title .= 'Payé';
         } else {
             $title .= ';Nombre';
-        }
+        } 
         echo utf8_decode($title) . "\n";
 
         if ($participants) {
             foreach ($participants as $participant) {
                 $user = $participant['user'];
                 $line = $user->lastName() . ';' . $user->firstName() . ';' . $user->promo();
+                if ($admin && $user->hasProfile()) {
+                    $line .= ';' . $user->profile()->getMainJob()->company->name . ';' . $user->profile()->getMainJob()->description;
+                } else  {
+                    $line .= ';;';
+                }
                 if ($all) {
                     foreach ($evt['moments'] as $moment) {
                         $line .= ';' . $participant[$moment['item_id']];
@@ -495,7 +503,7 @@ class XnetEventsModule extends PLModule
             // request for a new payment
             if (Post::v('paiement_id') == -1 && $money_defaut >= 0) {
                 $p = new PayReq(S::user(),
-                                Post::v('intitule')." - ".$globals->asso('nom'),
+                                $globals->asso('nom')." - ".Post::v('intitule'),
                                 Post::v('site'), $money_defaut,
                                 Post::v('confirmation'), 0, 999,
                                 $globals->asso('id'), $eid, Post::v('payment_public') == 'yes');

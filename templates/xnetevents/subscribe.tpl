@@ -69,20 +69,16 @@
               <label><input type="radio" name="moment[{$m.item_id}]" value="1"
               {if $m.nb eq 1}checked="checked"{/if}/>Je m'inscris</label>
           {else}
-              <label><input type="radio" name="moment[{$m.item_id}]" value="1"
-              {if $m.nb eq 1}checked="checked"{/if}/>Je m'inscris seul</label><br />
               <label><input type="radio" name="moment[{$m.item_id}]" value="2" id="avec"
-              {if $m.nb > 1}checked="checked"{/if}/>Je m'inscris moi et</label>
-                <input size="2" name="personnes[{$m.item_id}]"
-                  value="{if $m.nb > 1}{math equation='x - 1' x=$m.nb}{else}1{/if}"/><label for="avec"> invités</label>
+              {if $m.nb > 0}checked="checked"{/if}/>J'inscris</label>
+                  <input size="2" name="personnes[{$m.item_id}]"
+                  value="{if $m.nb > 1}{$m.nb}{else}1{/if}"/><label for="avec"> personnes</label>
           {/if}
         {else}
           {if !$m.nb}
             Je ne viendrai pas.
-          {elseif $m.nb eq 1}
-            Je viendrai{if !$event.noinvite} seul{/if}.
           {else}
-            Je viendrai moi et {$m.nb} invité{if $m.nb > 2}s{/if}.
+            J'ai inscrit {$m.nb} personne{if $m.nb > 1}s{/if}.
           {/if}
         {/if}
       </td>

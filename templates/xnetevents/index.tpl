@@ -132,10 +132,8 @@
         {foreach from=$e.moments item=m}
         {if !$m.nb}
         Tu ne viendras pas
-        {elseif $m.nb eq 1}
-        Tu viendras seul
         {else}
-        Tu viendras avec {$m.nb-1} personne{if $m.nb > 2}s{/if}
+        Tu as inscrit {$m.nb} personne{if $m.nb > 1}s{/if}
         {/if} à <em>{$m.titre}</em>.<br />
         {/foreach}
       {/if}

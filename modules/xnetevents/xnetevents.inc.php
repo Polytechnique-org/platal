@@ -140,7 +140,7 @@ function get_event_participants(&$evt, $item_id, array $tri = array(), $limit = 
     $evt['topay']     = 0;
     $evt['paid']      = 0;
     foreach ($tab as $uid=>&$u) {
-        $u['adminpaid'] = $u['paid'];
+        $u['adminpaid'] = (float)$u['paid'];
         $u['montant'] = 0;
         if ($money && $pay_id) {
             $montant = XDB::fetchOneCell('SELECT  SUM(amount)
