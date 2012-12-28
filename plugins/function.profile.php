@@ -62,7 +62,9 @@ function smarty_function_profile($params, $smarty)
             $name = '<a href="profile/' . $profile->hrid() . '" class="popup2">' . $name . '</a>';
         }
     }
-    if ($user->lost) {
+    if ($profile && $profile->isDead()) {
+        $name .= ' &dagger;';
+    } else if ($user->lost) {
         $name .= ' <a href="https://www.polytechnique.org/marketing/broken/' . $user->hruid . '"><img src="images/icons/error.gif" alt="Patte cassée" /></a>';
     }
     if ($with_groupperms && $user instanceof User && $user->group_perms == 'admin' && !empty($name)) {
