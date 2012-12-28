@@ -112,7 +112,7 @@ class XnetPage extends PlPage
                 }
             }
             $sub['événement'] = "$dim/events";
-            if ($perms->hasFlag('groupmember')) {
+            if ($perms->hasFlag('groupadmin')) {
                 $sub['télépaiement'] = "$dim/payment";
             }
 
