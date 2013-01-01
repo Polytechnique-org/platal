@@ -100,10 +100,10 @@ class XnetPage extends PlPage
                 $sub['annuaire du groupe'] = "$dim/annuaire";
                 $sub['trombinoscope'] = "$dim/trombi";
             }
+            if ($globals->asso('forum')) {
+                $sub['forum'] = "$dim/forum";
+            }
             if ($perms->hasFlag('groupmember')) {
-                if ($globals->asso('forum')) {
-                    $sub['forum'] = "$dim/forum";
-                }
                 if ($globals->asso('mail_domain')) {
                     $sub['listes de diffusion'] = "$dim/lists";
                 }
