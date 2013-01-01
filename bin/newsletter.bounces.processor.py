@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.5
 # -*- coding: utf-8 -*-
 #***************************************************************************
-#*  Copyright (C) 2003-2011 Polytechnique.org                              *
+#*  Copyright (C) 2003-2013 Polytechnique.org                              *
 #*  http://opensource.polytechnique.org/                                   *
 #*                                                                         *
 #*  This program is free software; you can redistribute it and/or modify   *
