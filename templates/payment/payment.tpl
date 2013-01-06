@@ -51,7 +51,7 @@
 {if $meth->id == 1}
   <tr>
     <td><span class="erreur">Remarque pour les utilisateurs de Paypal</span></td>
-    <td><span class="erreur">Merci de cliquer sur "revenir au site marchant" à la fin de la transaction, sinon celle-ci n'apparaitra pas sur polytechnique.net.</span></td>
+    <td><span class="erreur">Merci de cliquer sur "revenir au site marchand" à la fin de la transaction, sinon celle-ci n'apparaitra pas sur polytechnique.net.</span></td>
   </tr>
 {/if}
   <tr>
