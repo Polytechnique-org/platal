@@ -81,13 +81,17 @@ class PayPal
                              GROUP BY  pa.pid, pa.jobid, pa.groupid, pa.id, pa.type
                                 LIMIT  1",
                               $user->profile()->id());
-            $this->infos['client'] = array_map('replace_accent', array_merge($info_client, $res->fetchOneAssoc()));
-            list($this->infos['client']['address1'], $this->infos['client']['address2']) =
-                explode("\n", Geocoder::getFirstLines($this->infos['client']['text'],
+            if(is_array($res)) {
+                $this->infos['client'] = array_map('replace_accent', array_merge($info_client, $res->fetchOneAssoc()));
+                list($this->infos['client']['address1'], $this->infos['client']['address2']) =
+                    explode("\n", Geocoder::getFirstLines($this->infos['client']['text'],
                                                       $this->infos['client']['zip'], 2));
-            unset($this->infos['client']['text']);
+                unset($this->infos['client']['text']);
+            } else {
+                $this->infos['client'] = array_map('replace_accent', $info_client);
+            }
         } else {
-            $this->infos['client'] = replace_accent($info_client);
+            $this->infos['client'] = array_map('replace_accent', $info_client);
         }
 
         // We build the transaction's reference
