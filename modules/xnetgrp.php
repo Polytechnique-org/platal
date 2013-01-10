@@ -31,7 +31,7 @@ class XnetGrpModule extends PLModule
             '%grp/site'            => $this->make_hook('site',                  AUTH_PUBLIC),
             '%grp/edit'            => $this->make_hook('edit',                  AUTH_PASSWD, 'groupadmin'),
             '%grp/mail'            => $this->make_hook('mail',                  AUTH_PASSWD, 'groupadmin'),
-            '%grp/forum'           => $this->make_hook('forum',                 AUTH_PASSWD, 'groupmember'),
+            '%grp/forum'           => $this->make_hook('forum',                 AUTH_PASSWD, 'groupannu'),
             '%grp/former_users'    => $this->make_hook('former_users',          AUTH_PASSWD, 'admin'),
             '%grp/annuaire'        => $this->make_hook('annuaire',              AUTH_PASSWD, 'groupannu'),
             '%grp/annuaire/vcard'  => $this->make_hook('vcard',                 AUTH_PASSWD, 'groupmember:groupannu'),
