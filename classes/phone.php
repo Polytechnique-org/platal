@@ -329,15 +329,17 @@ class Phone
     static private function formArrayWalk(array $data, $function, &$success = true, $requiresEmptyPhone = false, $maxPublicity = null)
     {
         $phones = array();
-        foreach ($data as $item) {
-            $phone = new Phone($item);
-            $success = (!$phone->error && ($phone->format() || $phone->isEmpty()) && $success);
-            if (!$phone->isEmpty()) {
-                // Restrict phone visibility to $maxPublicity
-                if (!is_null($maxPublicity) && Visibility::isLessRestrictive($maxPublicity, $phone->pub)) {
-                    $phone->pub = $maxPublicity;
+        if (!is_null($data)) {
+            foreach ($data as $item) {
+                $phone = new Phone($item);
+                $success = (!$phone->error && ($phone->format() || $phone->isEmpty()) && $success);
+                if (!$phone->isEmpty()) {
+                    // Restrict phone visibility to $maxPublicity
+                    if (!is_null($maxPublicity) && Visibility::isLessRestrictive($maxPublicity, $phone->pub)) {
+                        $phone->pub = $maxPublicity;
+                    }
+                    $phones[] = call_user_func(array($phone, $function));
                 }
-                $phones[] = call_user_func(array($phone, $function));
             }
         }
         if (count($phones) == 0 && $requiresEmptyPhone) {

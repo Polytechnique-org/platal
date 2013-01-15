@@ -36,5 +36,5 @@
 <label><input type="radio" name="pay_public" value="no" {if !t($valid->public)}checked="checked"{/if} />Non</label>
 &nbsp;-&nbsp;
 <label>Oui<input type="radio" name="pay_public" value="yes" {if t($valid->public)}checked="checked"{/if} /></label><br />
-
+<strong>Rib_id&nbsp;:</strong> <input type="text" name="pay_rib_id" size="5" value="{$valid->rib_id}" /> <br />
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

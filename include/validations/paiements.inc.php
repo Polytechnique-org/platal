@@ -38,6 +38,8 @@ class PayReq extends Validate
     public $evt;
     public $evt_intitule;
     public $public;
+    public $rib_id;
+    public $rib_nom;
 
     public $rules = "Vérifier que les balises &lt;salutation&gt;, &lt;prenom&gt;, &lt;nom&gt;,  &lt;montant&gt; et &lt;comment&gt; n'ont pas été modifiées.
 Vérifier que le demandeur n'a pas laissé les crochets [].
@@ -68,6 +70,11 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
         if ($_asso_id && $_evt) {
             $res = XDB::query("SELECT intitule FROM group_events WHERE asso_id = {?} AND eid = {?}", $_asso_id, $_evt);
             $this->evt_intitule = $res->fetchOneCell();
+        }
+        // for future use, when anims can choose there bankaccounts
+        if ($this->rib_id) {
+            $res = XDB::query("SELECT owner FROM payment_bankaccounts WHERE id = {?}", $this->rib_id);
+            $this->rib_nom = $res->fetchOneCell();
         }
     }
 
@@ -140,6 +147,13 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
         $this->montant_max = Env::i('pay_montant_max');
         $this->msg_reponse = Env::v('pay_msg_reponse');
         $this->public      = (Env::v('pay_public') == 'yes');
+        $this->rib_id      = Env::v('pay_rib_id');
+        if ($this->rib_id) {
+            $res = XDB::query("SELECT owner FROM payment_bankaccounts WHERE id = {?}", $this->rib_id);
+            $this->rib_nom = $res->fetchOneCell();
+        } else {
+            $this->rib_nom = null;
+        }
         return true;
     }
 
@@ -170,11 +184,11 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
     {
         $res = XDB::query("SELECT MAX(id) FROM payments");
         $id = $res->fetchOneCell()+1;
-        $ret = XDB::execute('INSERT INTO  payments (id, text, url, amount_def, amount_min, amount_max, mail, confirmation, asso_id, flags)
-                                  VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+        $ret = XDB::execute('INSERT INTO  payments (id, text, url, amount_def, amount_min, amount_max, mail, confirmation, asso_id, flags, rib_id)
+                                  VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
                             $id, $this->titre, $this->site, $this->montant, $this->montant_min,
                             $this->montant_max, $this->user->bestEmail(), $this->msg_reponse, $this->asso_id,
-                            ($this->public ? 'public' : ''));
+                            ($this->public ? 'public' : ''), $this->rib_id);
         if ($this->asso_id && $this->evt) {
             XDB::execute("UPDATE  group_events
                              SET  paiement_id = {?}
