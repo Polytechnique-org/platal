@@ -673,6 +673,7 @@ class PaymentModule extends PLModule
 
             $recongps = array();
 
+            // récupère les réconciliations non groupées
             $res = XDB::query("SELECT  r.id, short_name AS method, period_start, period_end, status,
                                        payment_count, sum_amounts, sum_commissions
                                  FROM  payment_reconcilations AS r
@@ -682,10 +683,12 @@ class PaymentModule extends PLModule
             foreach ($res->fetchAllAssoc() as $recon)
                 $recongps[] = array('recons' => array($recon), 'transfers' => array());
 
+            // ne récupère que les 18 derniers groupements
             $res = XDB::query("SELECT  recongroup_id AS id
                                  FROM  payment_reconcilations
                              GROUP BY  recongroup_id
-                             ORDER BY  MAX(period_end) DESC, MIN(period_start) DESC");
+                             ORDER BY  MAX(period_end) DESC, MIN(period_start) DESC
+                                LIMIT  18");
             foreach ($res->fetchAllAssoc() as $recongp) {
                 $res = XDB::query("SELECT  r.id, short_name AS method, period_start, period_end, status,
                                            payment_count, sum_amounts, sum_commissions
