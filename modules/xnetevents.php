@@ -79,6 +79,17 @@ class XnetEventsModule extends PLModule
                 }
             }
 
+            // archive le paiement associé si il existe
+            $pay_id = XDB::fetchOneCell("SELECT paiement_id
+                                           FROM group_events
+                                          WHERE eid = {?} AND asso_id = {?}",
+                                        $eid, $globals->asso('id')); 
+            if (!$pay_id=='') {
+                XDB::execute("UPDATE payments
+                                 SET flags = 'old'
+                               WHERE id = {?}",
+                             $pay_id);
+            }
             // deletes the event items
             XDB::execute('DELETE FROM  group_event_items
                                 WHERE  eid = {?}', $eid);
@@ -100,13 +111,32 @@ class XnetEventsModule extends PLModule
         }
 
         if ($action == 'archive') {
+            $pay_id = XDB::fetchOneCell("SELECT paiement_id 
+                                           FROM group_events
+                                          WHERE eid = {?} AND asso_id = {?}",
+                                        $eid, $globals->asso('id'));
+            if (!$pay_id=='') {
+                XDB::execute("UPDATE payments
+                                 SET flags = 'old'
+                               WHERE id = {?}",
+                               $pay_id);
+            }
             XDB::execute("UPDATE group_events
                              SET archive = 1
                            WHERE eid = {?} AND asso_id = {?}",
-                         $eid, $globals->asso('id'));
+                           $eid, $globals->asso('id'));
         }
 
         if ($action == 'unarchive') {
+            $pay_id = XDB::fetchOneCell("SELECT paiement_id FROM group_events
+                                     WHERE eid = {?} AND asso_id = {?}",
+                                   $eid, $globals->asso('id'));
+            if (!$pay_id=='') {
+                XDB::execute("UPDATE payments
+                                 SET flags = ''
+                               WHERE id = {?}",
+                               $pay_id);
+            }
             XDB::execute("UPDATE group_events
                              SET archive = 0
                            WHERE eid = {?} AND asso_id = {?}",
