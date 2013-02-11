@@ -1,6 +1,24 @@
 ================================================================================
 VERSION 1.1.7                                                         XX XX XXXX
 
+    * Payments:
+        - Automatically closes the payment where the event is archived     -KIT
+        - Fixes non-integer payments with BPLC                             -KIT
+        - Fixes bug with paypal payments for user without postal address   -KIT
+    * Survey:
+        - #1648: Fixes name display in csv for non-anonymous surveys       -KIT
+    * XnetEvent:
+        - Rewording XnetEvent subscription page                            -KIT
+        - #381: Adds job infos in csv for event participants               -KIT
+    * XnetGrp:
+        - Adds dagger symbol for dead group members                        -KIT
+        - Allows the forum page to be seen by every connected user         -KIT
+
+From 1.1.6 branch:
+    * Lists:
+        - Fixes ML creation on Xnet                                        -XEL
+        - Fixes ML display                                                 -XEL
+
 ================================================================================
 VERSION 1.1.6                                                         15 11 2012
 
