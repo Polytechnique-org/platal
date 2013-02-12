@@ -144,18 +144,46 @@ class XnetEventsModule extends PLModule
         }
 
         $page->assign('archive', $archive);
-        $evenements = XDB::iterator('SELECT  e.*, LEFT(e.debut, 10) AS first_day, LEFT(e.fin, 10) AS last_day,
-                                             IF(e.deadline_inscription,
-                                                     e.deadline_inscription >= LEFT(NOW(), 10),
-                                                     1) AS inscr_open,
-                                             e.deadline_inscription,
-                                             MAX(ep.nb) IS NOT NULL AS inscrit, MAX(ep.paid) AS paid
-                                       FROM  group_events              AS e
-                                  LEFT JOIN  group_event_participants AS ep ON (ep.eid = e.eid AND ep.uid = {?})
-                                      WHERE  asso_id = {?} AND  archive = {?}
-                                   GROUP BY  e.eid
-                                   ORDER BY  inscr_open DESC, debut DESC',
-                                     S::i('uid'), $globals->asso('id'), $archive ? 1 : 0);
+
+        if (Post::has('order')) {
+            $order = Post::v('order');
+            XDB::execute("UPDATE groups
+                             SET event_order = {?}
+                           WHERE id = {?}",
+                          $order, $globals->asso('id'));
+        } else {
+            $order = XDB::fetchOneCell("SELECT event_order FROM groups
+                                         WHERE id = {?}",
+                                        $globals->asso('id'));
+        }
+        if ($order == 'desc') {
+            $evenements = XDB::iterator('SELECT  e.*, LEFT(e.debut, 10) AS first_day, LEFT(e.fin, 10) AS last_day,
+                                                 IF(e.deadline_inscription,
+                                                         e.deadline_inscription >= LEFT(NOW(), 10),
+                                                         1) AS inscr_open,
+                                                 e.deadline_inscription,
+                                                 MAX(ep.nb) IS NOT NULL AS inscrit, MAX(ep.paid) AS paid
+                                           FROM  group_events              AS e
+                                      LEFT JOIN  group_event_participants AS ep ON (ep.eid = e.eid AND ep.uid = {?})
+                                          WHERE  asso_id = {?} AND  archive = {?}
+                                       GROUP BY  e.eid
+                                       ORDER BY  inscr_open DESC, debut DESC',
+                                         S::i('uid'), $globals->asso('id'), $archive ? 1 : 0);
+        } else {
+            $evenements = XDB::iterator('SELECT  e.*, LEFT(e.debut, 10) AS first_day, LEFT(e.fin, 10) AS last_day,
+                                                 IF(e.deadline_inscription,
+                                                         e.deadline_inscription >= LEFT(NOW(), 10),
+                                                         1) AS inscr_open,
+                                                 e.deadline_inscription,
+                                                 MAX(ep.nb) IS NOT NULL AS inscrit, MAX(ep.paid) AS paid
+                                           FROM  group_events              AS e
+                                      LEFT JOIN  group_event_participants AS ep ON (ep.eid = e.eid AND ep.uid = {?})
+                                          WHERE  asso_id = {?} AND  archive = {?}
+                                       GROUP BY  e.eid
+                                       ORDER BY  inscr_open DESC, debut ASC',
+                                         S::i('uid'), $globals->asso('id'), $archive ? 1 : 0);
+        }
+        $page->assign('order', $order);
 
         $evts = array();
         $undisplayed_events = 0;

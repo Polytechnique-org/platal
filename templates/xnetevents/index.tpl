@@ -20,6 +20,24 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{if $is_admin}
+<table class='warnings'>
+  <tr>
+    <td class='center'>Choisis l'ordre d'affichage des événements pour ton groupe :</td>
+    <td class='center'>
+      <form method="post" action="{$platal->ns}events">
+        <select name="order" onchange="this.form.submit()">
+          <option value="desc"{if $order eq 'desc'}selected="selected"{/if}>Anti-chronologique</option>
+          <option value="asc"{if $order eq 'asc'}selected="selected"{/if}>Chronologique</option>
+        </select>
+      </form>
+    </td>
+  </tr>
+  <tr><td colspan=2 class='center'>Attention, ton choix s'appliquera à tous les utilisateurs !</td></tr>
+</table>
+<br />
+{/if}
+
 {if !$is_admin}
 <h1>{$asso->nom}&nbsp;: Événements</h1>
 {else}
