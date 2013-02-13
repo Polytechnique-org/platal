@@ -579,7 +579,6 @@ class PaymentModule extends PLModule
         $page->setTitle('Administration - Paiements');
         $page->assign('title', 'Gestion des télépaiements');
         $table_editor = new PLTableEditor('admin/payments','payments','id');
-        //$table_editor->add_join_table('payment_transactions','ref',true); => on ne supprime jamais une transaction
         $table_editor->add_sort_field('flags');
         $table_editor->add_sort_field('id', true, true);
         $table_editor->on_delete("UPDATE payments SET flags = 'old' WHERE id = {?}", "Le paiement a été archivé");
@@ -597,6 +596,8 @@ class PaymentModule extends PLModule
         // adds a column with the linked rib if there is one
         $table_editor->add_option_table('payment_bankaccounts', 'payment_bankaccounts.id = t.rib_id');
         $table_editor->add_option_field('payment_bankaccounts.owner', 'linked_rib_owner', 'rib associé', 'varchar');
+        // adds a link to the table of all the transactions
+        $table_editor->addLink('id', "admin/payments/transactions/");
 
         $table_editor->apply($page, $action, $id);
     }
@@ -609,10 +610,17 @@ class PaymentModule extends PLModule
         if ($payment_id == null)
             $page->trigError("Aucun ID de paiement fourni.");
 
-        $table_editor = new PLTableEditor("admin/transactions/{$payment_id}",'payment_transactions','id');
+        $table_editor = new PLTableEditor("admin/payments/transactions/{$payment_id}",'payment_transactions','id', true);
         $table_editor->set_where_clause(XDB::format('ref = {?}', $payment_id));
-        $table_editor->apply($page, 'list', $id); // only the 'list' action is allowed
-        $page->assign('readonly', 'readonly');     // don't show modification features
+        $table_editor->add_sort_field('id', true);
+        $table_editor->describe('ts_initiated', 'ts_initiated', true, false);
+        $table_editor->describe('commission', 'commission', true, false);
+        $table_editor->describe('pkey', 'pkey', true, false);
+        $table_editor->describe('comment', 'comment', true, false);
+        $table_editor->describe('recon_id', 'recon_id', true, false);
+        $table_editor->describe('display', 'display', true, false);
+        $table_editor->apply($page, $action, $id);
+        $page->assign('addonly', 'addonly');     // don't show modification features, only add feature
     }
 
     function handler_adm_bankaccounts($page, $action = "list", $id = null) {
