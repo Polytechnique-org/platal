@@ -69,6 +69,8 @@
       <input type="checkbox" disabled="disabled"{if $myrow.$myfield} checked="checked"{/if}/>
     {elseif $myval.Type eq 'ip_address'}
       {$myrow.$myfield|uint_to_ip}
+    {elseif $myval.url}
+      <a href="{$platal->ns}{$myval.url}{$myrow.$myfield}">{$myrow.$myfield}</a>
     {else}
       {$myrow.$myfield}
     {/if}
@@ -76,10 +78,10 @@
 {/if}{/foreach}
   {if !$hideactions}
   <td class="action">
-    {if !$readonly and !$deleteonly}
+    {if !$readonly and !$deleteonly and !addonly}
     <a href="{$t->pl}/edit/{$idval}">{icon name=page_edit title='éditer'}</a>
     {/if}
-    {if !$readonly}
+    {if !$readonly and !$addonly}
     <a href="{$t->pl}/delete/{$idval}{if t($idval2)}/{$idval2}{/if}?token={xsrf_token}">{icon name=delete title='supprimer'}</a>
     {/if}
   </td>

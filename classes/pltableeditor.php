@@ -234,6 +234,11 @@ class PLTableEditor
         }
     }
 
+    // add a link on a field, the field value will be added at the end of the url
+    public function addLink($field, $url) {
+        $this->vars[$field]['url'] = $url;
+    }
+
     // force the value of a field in select and add
     public function force_field_value($field, $value)
     {
