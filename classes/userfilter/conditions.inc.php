@@ -1101,20 +1101,18 @@ class UFC_AddressComponent extends UFC_Address
     private $fieldtype;
     private $exact;
 
-    public function __construct($val, $fieldtype, $exact = true, $type = null, $flags = self::FLAG_ANY)
+    public function __construct($val, $fieldtype, $type = null, $flags = self::FLAG_ANY)
     {
         if (!in_array($fieldtype, self::$components)) {
             Platal::page()->killError('Invalid address field type: ' . $this->fieldtype);
         }
 
-        $flags = self::FLAG_ANY;
         parent::__construct($type, $flags);
         if (!is_array($val)) {
             $val = array($val);
         }
         $this->val       = $val;
         $this->fieldtype = $fieldtype;
-        $this->exact     = $exact;
     }
 
     public function buildCondition(PlFilter $uf)
