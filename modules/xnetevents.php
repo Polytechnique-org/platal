@@ -274,7 +274,7 @@ class XnetEventsModule extends PLModule
         foreach ($moments as $j => $v) {
             $subs[$j] = intval($v);
 
-            // retreive ohter field when more than one person
+            // retrieve other field when more than one person
             if ($subs[$j] == 2) {
                 if (!isset($pers[$j]) || !is_numeric($pers[$j]) || $pers[$j] < 0) {
                     $page->trigError("Tu dois choisir un nombre d'invités correct&nbsp;!");
@@ -319,7 +319,12 @@ class XnetEventsModule extends PLModule
             $total += $nb;
         }
         if ($updated !== false) {
-            $page->trigSuccess('Ton inscription à l\'événement a été mise à jour avec succès.');
+            $evt = get_event_detail($eid);
+            if ($evt['topay'] > 0) {
+                $page->trigSuccess('Ton inscription à l\'événement a été mise à jour avec succès, tu peux payer ta participation en cliquant ci-dessous');
+            } else {
+                $page->trigSuccess('Ton inscription à l\'événement a été mise à jour avec succès.');
+            }
             subscribe_lists_event(S::i('uid'), $evt['short_name'], ($total > 0 ? 1 : 0), 0);
 
             if ($evt['subscription_notification'] != 'nobody') {
