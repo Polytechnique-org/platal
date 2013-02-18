@@ -1,4 +1,11 @@
 ================================================================================
+VERSION 1.1.9                                                         18 02 2013
+
+New:
+
+    * Add links to other items in PlTableEditor                             -KIT
+
+================================================================================
 VERSION 1.1.8                                                         15 11 2012
 
 New:
@@ -126,6 +133,7 @@ ACRONYMS:
     * FRU: Florent Bruneau      (Fruneau)   <florent.bruneau@m4x.org>
     * JAC: Stéphane Jacob       (jacou)     <stephane.jacob@m4x.org>
     * JS : Jean Sébastien Bedo              <jean-sebastien.bedo@m4x.org>
+    * KIT: Anne Limoges         (Kithyane)  <anne.limoges@m4x.org>
     * MC : Pierre Habouzit      (MadCoder)  <pierre.habouzit@m4x.org>
     * mYk: Aymeric Augustin     (mYk)       <aymeric.augustin@m4x.org>
     * OG : Olivier Guillaumin               <olivier.guillaumin@m4x.org>
