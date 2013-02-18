@@ -13,6 +13,7 @@ VERSION 1.1.7                                                         XX XX XXXX
         - #1648: Fixes name display in csv for non-anonymous surveys       -KIT
 
     * XnetEvent:
+        - Allows groupadmin to choose events display order                 -KIT
         - Rewording XnetEvent subscription page                            -KIT
         - #381: Adds job infos in csv for event participants               -KIT
 
