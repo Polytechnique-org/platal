@@ -44,7 +44,7 @@ il suffit de cliquer sur le titre de la colonne concernée.
 {foreach from=$titles item=p}
 
 <fieldset>
-<legend id="legend_{$p.id}"><a href="{$platal->ns}payment/{$p.id}">{icon name=money title="Télépaiement"}{$p.text}</a></legend>
+<legend id="legend_{$p.id}">{icon name=money title="Télépaiement"}{$p.text}</legend>
 
 {if $event[$p.id]}
 {assign var='ev' value=$event[$p.id]}

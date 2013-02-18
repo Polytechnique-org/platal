@@ -428,22 +428,25 @@ class PaymentModule extends PLModule
         global $globals;
 
         $perms = S::v('perms');
-        if (!(S::identified() && $perms->hasFlag('groupmember'))) {
-            if (is_null($pid)) {
+        if (is_null($pid)) {
+            if (!(S::identified() && $perms->hasFlag('groupadmin'))) {
                 return PL_FORBIDDEN;
             }
-            $res = XDB::query("SELECT  1
-                                 FROM  group_events AS e
-                           INNER JOIN  group_event_participants AS ep ON (ep.eid = e.eid AND ep.uid = {?})
-                                WHERE  e.paiement_id = {?} AND e.asso_id = {?}",
-                              S::i('uid'), $pid, $globals->asso('id'));
-            $public = XDB::query("SELECT  1
-                                    FROM  payments     AS p
-                              INNER JOIN  group_events AS g ON (g.paiement_id = p.id)
-                                   WHERE  g.asso_id = {?} AND p.id = {?} AND FIND_IN_SET('public', p.flags)",
-                                 $globals->asso('id'), $pid);
-            if ($res->numRows() == 0 && $public->numRows() == 0) {
-                return PL_FORBIDDEN;
+        } else {
+            if (!(S::identified() && $perms->hasFlag('groupmember'))) {
+                $res = XDB::query("SELECT  1
+                                     FROM  group_events AS e
+                               INNER JOIN  group_event_participants AS ep ON (ep.eid = e.eid AND ep.uid = {?})
+                                    WHERE  e.paiement_id = {?} AND e.asso_id = {?}",
+                                  S::i('uid'), $pid, $globals->asso('id'));
+                $public = XDB::query("SELECT  1
+                                        FROM  payments     AS p
+                                  INNER JOIN  group_events AS g ON (g.paiement_id = p.id)
+                                       WHERE  g.asso_id = {?} AND p.id = {?} AND FIND_IN_SET('public', p.flags)",
+                                     $globals->asso('id'), $pid);
+                if ($res->numRows() == 0 && $public->numRows() == 0) {
+                    return PL_FORBIDDEN;
+                }
             }
         }
 
