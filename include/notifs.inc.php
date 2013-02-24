@@ -198,6 +198,7 @@ class WatchBirthday extends WatchOperation
 
     protected function buildCondition(Watch $watch)
     {
+        $not_dead = new PFC_Not(new UFC_Dead());
         $select_date = new PFC_OR(new UFC_Birthday('=', time()),
                                   new PFC_And(new UFC_Birthday('<=', time() + self::WATCH_LIMIT),
                                               new UFC_Birthday('>', $watch->date() + self::WATCH_LIMIT)));
@@ -210,7 +211,7 @@ class WatchBirthday extends WatchOperation
                                            new UFC_Promo('<=', $profile->mainGrade(), $profile->yearpromo() + 1)),
                                $watch->groupCondition());
         }
-        return new PFC_And($select_date, $cond);
+        return new PFC_And($not_dead, $select_date, $cond);
     }
 
     public function getOrder()
