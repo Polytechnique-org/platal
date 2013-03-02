@@ -59,11 +59,13 @@
     var form = document.forms.form_mail;
     var toc = "";
     var ccc = "";
-    for (var i = 0 ; i < form['to_contacts[]'].length ; ++i) {
-      toc += form['to_contacts[]'].options[i].value + ";";
-    }
-    for (var i = 0 ; i < form['cc_contacts[]'].length ; ++i) {
-      ccc += form['cc_contacts[]'].options[i].value + ";";
+    if (form['to_contacts[]'] != undefined) {
+      for (var i = 0 ; i < form['to_contacts[]'].length ; ++i) {
+        toc += form['to_contacts[]'].options[i].value + ";";
+      }
+      for (var i = 0 ; i < form['cc_contacts[]'].length ; ++i) {
+        ccc += form['cc_contacts[]'].options[i].value + ";";
+      }
     }
     $.xpost("emails/send",
            { save: true,
