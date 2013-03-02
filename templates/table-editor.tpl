@@ -78,7 +78,7 @@
 {/if}{/foreach}
   {if !$hideactions}
   <td class="action">
-    {if !$readonly and !$deleteonly and !addonly}
+    {if !$readonly and !$deleteonly and !$addonly}
     <a href="{$t->pl}/edit/{$idval}">{icon name=page_edit title='éditer'}</a>
     {/if}
     {if !$readonly and !$addonly}
