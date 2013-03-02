@@ -615,10 +615,10 @@ class PaymentModule extends PLModule
         $table_editor->add_sort_field('id', true);
         $table_editor->describe('ts_initiated', 'ts_initiated', true, false);
         $table_editor->describe('commission', 'commission', true, false);
-        $table_editor->describe('pkey', 'pkey', true, false);
-        $table_editor->describe('comment', 'comment', true, false);
+        $table_editor->describe('pkey', 'pkey', true, true);
+        $table_editor->describe('comment', 'comment', true, true);
         $table_editor->describe('recon_id', 'recon_id', true, false);
-        $table_editor->describe('display', 'display', true, false);
+        $table_editor->describe('display', 'display', true, true);
         $table_editor->apply($page, $action, $id);
         $page->assign('addonly', 'addonly');     // don't show modification features, only add feature
     }
