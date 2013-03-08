@@ -32,9 +32,9 @@ mais elle accepte de plus la syntaxe suivante pour les <strong>promotions</stron
 </p>
 <ul>
   <li><code>1990</code>&nbsp;: signifie appartient à la promotion 1990&nbsp;;</li>
-  <li><code>1990-2000</code>&nbsp;: signifie sur la promotion 1990 à 2000&nbsp;;</li>
-  <li><code>&lt;1990</code>&nbsp;: signifie promotions inférieures ou égales à 1990&nbsp;;</li>
-  <li><code>&gt;1990</code>&nbsp;: signifie promotions supérieures ou égales à 1990.</li>
+  <li><code>1990-2000</code>&nbsp;: signifie sur les promotions 1990 à 2000&nbsp;;</li>
+  <li><code>&lt;1990</code>&nbsp;: signifie promotions antérieures ou égales à 1990&nbsp;;</li>
+  <li><code>&gt;1990</code>&nbsp;: signifie promotions postérieures ou égales à 1990.</li>
 </ul>
 <p>
 Ainsi, rechercher tous les "Dupont" sur les promotions 1980 à 1990 et sur la promotion 2000 se fait avec la recherche&nbsp;:
