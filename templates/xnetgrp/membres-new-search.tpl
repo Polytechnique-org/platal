@@ -27,7 +27,7 @@ Aucun camarade non-inscrit ne correspond aux informations fournies.
 {else}
 Camarades correspondants&nbsp;:
 <select name="userid" onchange="updateSuggestions('{$platal->ns}', this.value)">
-  <option value="0" {if $users|@count neq 1}selected="selected"{/if}>&nbsp;</option>
+  <option value="0" {if $users|@count neq 1}selected="selected"{/if}>Sélectionne le camarade correspondant</option>
   {foreach item=user from=$users}
   <option value="{$user->id()}" {if $users|@count == 1}selected="selected"{/if}>{profile user=$user link=false promo=true}</option>
   {/foreach}
