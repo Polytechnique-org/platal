@@ -27,9 +27,12 @@
   <ul class='descr'>
     <li>
       Pour ajouter un X dans ton groupe, il suffit d'entrer ici une de ses
-      adresses email @polytechnique.org. S'il n'est pas inscrit à Polytechnique.org
-      coche la case qui se trouve sous le formulaire et indique ses noms, prénoms et
-      promotions.
+      adresses email @polytechnique.org.
+    </li>
+    <li>
+      S'il s'agit d'un X qui n'est pas inscrit à Polytechnique.org, il faut
+      indiquer l'adresse email puis cocher la case qui se trouve sous le
+      formulaire et indiquer ses nom, prénom et/ou promotion pour le retrouver.
     </li>
     <li>
       Pour ajouter un extérieur dans ton groupe, il suffit d'entrer ici son
