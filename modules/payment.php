@@ -127,7 +127,7 @@ class PaymentModule extends PLModule
             'admin/reconcile'              => $this->make_hook('adm_reconcile',    AUTH_PASSWD, 'admin'),
             'admin/reconcile/importlogs'   => $this->make_hook('adm_importlogs',   AUTH_PASSWD, 'admin'),
             'admin/reconcile/transfers'    => $this->make_hook('adm_transfers',    AUTH_PASSWD, 'admin'),
-            'admin/payments/bankaccounts' => $this->make_hook('adm_bankaccounts', AUTH_PASSWD, 'admin'),
+            'admin/payments/bankaccounts'  => $this->make_hook('adm_bankaccounts', AUTH_PASSWD, 'admin'),
         );
     }
 
@@ -632,14 +632,15 @@ class PaymentModule extends PLModule
         $table_editor->describe('asso_id', 'ID du groupe', false, true);
         $table_editor->describe('owner', 'titulaire', true);
         $table_editor->add_option_table('groups', 'groups.id = t.asso_id');
-        $table_editor->add_option_field('groups.diminutif', 'group_name', 'groupe', 'varchar','account');
+        $table_editor->add_option_field('groups.diminutif', 'group_name', 'groupe', 'varchar','iban');
 
-        // check RIB key
+        /* check RIB key     FIXME: the column format (and name) changed
         if ($action == 'update' && Post::has('account') && !check_rib(Post::v('account'))) {
             $page->trigError("Le RIB n'est pas valide");
             $table_editor->apply($page, 'edit', $id);
             return;
         }
+        */
 
         $table_editor->apply($page, $action, $id);
     }
@@ -710,12 +711,26 @@ class PaymentModule extends PLModule
                                   $recongp['id']);
                 $recongp['recons'] = $res->fetchAllAssoc();
 
-                $res = XDB::query('SELECT  t.id, t.payment_id, t.amount, b.owner, t.message, t.date
+                $res = XDB::query('SELECT  t.id, t.payment_id, t.amount, t.message, t.date
                                      FROM  payment_transfers    AS t
-                                LEFT JOIN  payment_bankaccounts AS b ON (t.account_id=b.id)
                                     WHERE  recongroup_id = {?}',
                                   $recongp['id']);
-                $recongp['transfers'] = $res->fetchAllAssoc();
+                $transfers = $res->fetchAllAssoc();
+                foreach ($transfers as $id => $t) {
+                    if ($t['date'] == NULL)  { // si le virement n'est pas fait, on va récupérer le rib associé au paiment
+                        $ownertmp = XDB::fetchOneCell('SELECT  b.owner
+                                                         FROM  payment_bankaccounts AS b
+                                                    LEFT JOIN  payments             AS p ON (p.rib_id = b.id)
+                                                        WHERE  p.id = {?}', $t['payment_id']);
+                    } else { // sinon on prend celui associé au virement
+                        $ownertmp = XDB::fetchOneCell('SELECT  b.owner
+                                                         FROM  payment_bankaccounts AS b
+                                                    LEFT JOIN  payment_transfers    AS t ON (t.account_id = b.id)
+                                                        WHERE  t.id = {?}', $t['id']);
+                    }
+                    $transfers[$id]['owner'] = $ownertmp;
+                }
+                $recongp['transfers'] = $transfers;
 
                 $recongps[] = $recongp;
             }
@@ -915,7 +930,7 @@ class PaymentModule extends PLModule
 
             // create transfers
             XDB::execute('INSERT INTO  payment_transfers
-                               SELECT  NULL, {?}, t.ref, SUM(t.amount+t.commission), p.rib_id, p.text, NULL
+                               SELECT  NULL, {?}, t.ref, SUM(t.amount+t.commission), NULL, p.text, NULL
                                  FROM  payment_transactions AS t
                             LEFT JOIN  payments             AS p ON (t.ref = p.id)
                             LEFT JOIN  groups               AS g ON (p.asso_id = g.id)
@@ -942,9 +957,13 @@ class PaymentModule extends PLModule
 
         } elseif ($action == "confirm") {
             S::assert_xsrf_token();
+            $account_id = XDB::fetchOneCell('SELECT  rib_id
+                                               FROM  payments          AS p 
+                                          LEFT JOIN  payment_transfers AS t ON (t.payment_id = p.id)
+                                              WHERE  t.id = {?}', $id);
             XDB::execute('UPDATE  payment_transfers
-                             SET  date = NOW()
-                           WHERE  id = {?}', $id);
+                             SET  date = NOW(), account_id = {?}
+                           WHERE  id = {?}', $account_id, $id);
 
             $page->trigSuccess('Virement ' . $id . ' confirmé.');
             $this->handler_adm_reconcile($page);
