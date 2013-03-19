@@ -352,7 +352,7 @@ class Survey
         if (!S::user()->checkPerms(PERMS_USER)) {
             $where .=  XDB::format(' AND mode = {?}', self::MODE_ALL);
         }
-        $sql = 'SELECT id, title, end, mode
+        $sql = 'SELECT id, title, uid, end, mode
                   FROM surveys
                  WHERE '.$where.'
               ORDER BY end DESC;';
