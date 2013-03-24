@@ -210,7 +210,7 @@ class MailingList
      */
     public function setBogoLevel($level)
     {
-        return $this->mmclient->set_bogo_level($this->mbox);
+        return $this->mmclient->set_bogo_level($this->mbox, $level);
     }
 
     /** Get antispam level.
