@@ -46,5 +46,6 @@
     <link rel="bookmark" href="http://www.polytechnique.fr/eleves/" title="| Site d'élèves" />
 
     {include core=plpage.header.tpl}
+    {include file=platal/raven.tpl}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

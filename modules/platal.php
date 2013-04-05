@@ -613,9 +613,13 @@ Adresse de secours : ' . $to));
         $wiz->apply($page, 'review', $action, $mode);
     }
 
-    function handler_test_error($page)
+    function handler_test_error($page, $mode = null)
     {
-        throw new Exception("Blih");
+        if ($mode == 'js') {
+            $page->changeTpl('platal/error.tpl');
+        } else {
+            throw new Exception("Blih");
+        }
     }
 }
 
