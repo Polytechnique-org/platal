@@ -33,6 +33,11 @@ $(function() {
 </script>
 
 <h1>Erreurs d'exécution</h1>
+  <form action="site_errors" method="post">
+    <div>
+      <input type="submit" name="clear" value="Effacer les erreurs" />
+    </div>
+  </form>
   {iterate from=$errors item=error}
   <fieldset>
     <legend>{$error->date}</legend>
@@ -50,11 +55,5 @@ $(function() {
     {/foreach}
   </fieldset>
   {/iterate}
-<form action="site_errors" method="post">
-  <div>
-    <input type="submit" name="clear" value="Effacer les erreurs" />
-  </div>
-</form>
-
 
 {* vim:set et sws=2 sts=2 sw=2 enc=utf-8: *}
