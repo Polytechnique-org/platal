@@ -487,6 +487,11 @@ abstract class Platal
      */
     abstract public function force_login(PlPage $page);
 
+    protected function report_error($error)
+    {
+        PlErrorReport::report($error);
+    }
+
     public function run()
     {
         $page =& self::page();
@@ -516,7 +521,7 @@ abstract class Platal
             }
         } catch (Exception $e) {
             header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
-            PlErrorReport::report($e);
+            $this->report_error($e);
             if (self::globals()->debug) {
                 $page->kill(pl_entities($e->getMessage())
                             . '<pre>' . pl_entities("" . $e) . '</pre>');
