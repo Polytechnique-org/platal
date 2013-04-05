@@ -78,6 +78,31 @@ class Xorg extends Platal
         $page->assign_by_ref('platal', $this);
         $page->run();
     }
+
+    public function setup_raven()
+    {
+        $sentry_dsn = self::globals()->core->sentry_dsn;
+
+        if (strlen($sentry_dsn) == 0) {
+            return null;
+        }
+
+        require_once('raven/lib/Raven/Autoloader.php');
+
+        Raven_Autoloader::register();
+
+        return new Raven_Client($sentry_dsn);
+    }
+
+    protected function report_error($error)
+    {
+        parent::report_error($error);
+
+        $raven = $this->setup_raven();
+        if ($raven != null) {
+            $raven->captureException($error);
+        }
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

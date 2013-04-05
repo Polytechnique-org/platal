@@ -19,20 +19,20 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function __autoload($cls)
+function xorg_autoload($cls)
 {
     if (!pl_autoload($cls)) {
         $cls = strtolower($cls);
         if (substr($cls, 0, 4) == 'ufc_' || substr($cls, 0, 4) == 'ufo_' || $cls == 'profilefilter' || $cls == 'userfiltercondition' || $cls == 'userfilterorder') {
-            __autoload('userfilter');
+            xorg_autoload('userfilter');
             return;
         } else if (substr($cls, 0, 4) == 'pfc_'
                 || substr($cls, 0, 4) == 'pfo_'
                 || substr($cls, 0, 8) == 'plfilter') {
-            __autoload('plfilter');
+            xorg_autoload('plfilter');
             return;
         } else if (substr($cls, 0, 3) == 'de_') {
-            __autoload('direnum');
+            xorg_autoload('direnum');
             return;
         } else if ($cls == 'validate' || substr($cls, -3, 3) == 'req'
                    || substr($cls, -8, 8) == 'validate' || substr($cls, 0, 8) == 'validate') {
@@ -42,11 +42,20 @@ function __autoload($cls)
             require_once 'banana/hooks.inc.php';
             Banana::load(substr($cls, 6));
             return;
+        } else if (substr($cls, 0, 5) == 'raven') {
+            // Handled by Raven autoloader.
+            return;
         }
         include "$cls.inc.php";
     }
 }
 
+function __autoload($cls)
+{
+    return xorg_autoload($cls);
+}
+
+spl_autoload_register('xorg_autoload');
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

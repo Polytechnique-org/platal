@@ -59,6 +59,8 @@ class PlatalModule extends PLModule
             'exit'              => $this->make_hook('exit',         AUTH_PUBLIC),
             'review'            => $this->make_hook('review',       AUTH_PUBLIC),
             'deconnexion.php'   => $this->make_hook('exit',         AUTH_PUBLIC),
+
+            'error'             => $this->make_hook('test_error',   AUTH_COOKIE),
         );
     }
 
@@ -609,6 +611,11 @@ Adresse de secours : ' . $to));
             $wiz->addPage('ReviewPage', $list[0], $list[1]);
         }
         $wiz->apply($page, 'review', $action, $mode);
+    }
+
+    function handler_test_error($page)
+    {
+        throw new Exception("Blih");
     }
 }
 
