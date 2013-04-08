@@ -92,9 +92,6 @@ class NLReq extends Validate
 
     protected function _mail_ps($isok)
     {
-        if ($isok) {
-            return '';
-        }
         return "\nPS : pour rappel, en voici le contenu :"
             . "\n--------------------------------------------------------------------------\n"
             . $this->art->title()

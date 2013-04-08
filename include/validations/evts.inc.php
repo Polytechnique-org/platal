@@ -131,6 +131,19 @@ class EvtReq extends Validate
     }
 
     // }}}
+    // {{{ function _mail_ps
+
+    protected function _mail_ps($isok)
+    {
+        $maildate = make_datetime($this->expiration)->format('d / m / Y');
+        return "\nPS : pour rappel, en voici le contenu :"
+            . "\n--------------------------------------------------------------------------\n"
+            . $this->titre
+            . "\n--------------------------------------------------------------------------\n"
+            . $this->texte . "\n\nPour les promotions de " . $this->pmin . " à " . $this->pmax . ", avec expiration le " . $maildate . ".\n";
+    }
+
+    // }}}
     // {{{ function commit()
 
     public function commit()
