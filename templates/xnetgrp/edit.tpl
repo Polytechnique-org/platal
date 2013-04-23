@@ -83,6 +83,12 @@
         <small>(ex: 01/01/1970)</small>
       </td>
     </tr>
+    <tr>
+      <td class="titre center" colspan="2">
+        <label><input type="checkbox" value="1" name="disable_mails" {if $disable_mails}checked="checked"{/if} />
+        désactiver l'envoi de mails</label>
+      </td>
+    </tr>
   </table>
   <p></p>
   {/if}

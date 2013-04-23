@@ -245,6 +245,7 @@ class XnetGrpModule extends PLModule
                     $page->assign('pub', Post::v('pub'));
                     $page->assign('notif_unsub', Post::i('notif_unsub'));
                     $page->assign('descr', Post::t('descr'));
+                    $page->assign('disable_mails', Post::b('disable_mails'));
                     $page->assign('error', $error);
                     return;
                 }
@@ -261,7 +262,7 @@ class XnetGrpModule extends PLModule
                              descr={?}, site={?}, mail={?}, resp={?},
                              forum={?}, mail_domain={?}, ax={?}, axDate = {?}, pub={?},
                              sub_url={?}, inscriptible={?}, unsub_url={?},
-                             flags = {?}, welcome_msg = {?}
+                             flags = {?}, welcome_msg = {?}, disable_mails = {?}
                       WHERE  id={?}",
                       Post::v('nom'), Post::v('diminutif'),
                       Post::v('cat'), (Post::i('dom') == 0) ? null : Post::i('dom'),
@@ -271,6 +272,7 @@ class XnetGrpModule extends PLModule
                       Post::has('ax'), $axDate, Post::v('pub'),
                       Post::v('sub_url'), Post::v('inscriptible'),
                       Post::v('unsub_url'), $flags, Post::t('welcome_msg'),
+                      Post::b('disable_mails'),
                       $globals->asso('id'));
                 if (Post::v('mail_domain')) {
                     XDB::execute('INSERT IGNORE INTO  email_virtual_domains (name)
@@ -347,11 +349,15 @@ class XnetGrpModule extends PLModule
         $page->assign('pub', $globals->asso('pub'));
         $page->assign('notif_unsub', $globals->asso('notif_unsub'));
         $page->assign('notify_all', $globals->asso('notify_all'));
+        $page->assign('disable_mails', $globals->asso('disable_mails'));
     }
 
     function handler_mail($page)
     {
         global $globals;
+        if ($globals->asso('disable_mails')) {
+            return PL_FORBIDDEN;
+        }
 
         $page->changeTpl('xnetgrp/mail.tpl');
         $mmlist = new MMList(S::user(), $globals->asso('mail_domain'));

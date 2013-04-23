@@ -3,6 +3,7 @@ VERSION 1.1.8                                                         XX XX XXXX
 
     * XnetGrp:
         - Add footer linking to the group for group-related emails         -XEL
+        - Allow disabling the "send mails" on a per-group basis            -XEL
 
 ================================================================================
 VERSION 1.1.7                                                         18 02 2013

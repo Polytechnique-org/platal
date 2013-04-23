@@ -124,7 +124,9 @@ class XnetPage extends PlPage
             $sub['modifier l\'accueil'] = "$dim/edit";
             $sub['gérer les annonces'] = "$dim/admin/announces";
             if ($globals->asso('mail_domain')) {
-                $sub['envoyer un mail']     = "$dim/mail";
+                if (!$globals->asso('disable_mails')) {
+                    $sub['envoyer un mail']     = "$dim/mail";
+                }
                 $sub['créer une liste']     = "$dim/lists/create";
                 $sub['créer un alias']      = "$dim/alias/create";
             }
