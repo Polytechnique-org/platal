@@ -68,8 +68,28 @@ function _send_xnet_mail($user, $body, $wiki, $mailer, $replyto = null)
         $firstname = $user;
     }
 
+    global $globals;
+    $grp_name = $globals->asso('nom');
+    $grp_short = $globals->asso('diminutif');
+
     $text = str_ireplace(array('<cher>', '<nom>', '<prenom>'),
                          array($dear, $lastname, $firstname), $body);
+    if ($wiki) {
+        $text .= (
+            "\n" .
+            "---- \n" .
+            "Message envoyé pour le groupe [[http://www.polytechnique.net/${grp_short}|${grp_name}]] via les outils de Polytechnique.org \\\\\n" .
+            "[[http://www.polytechnique.net/${grp_short}/annuaire|Annuaire]] | [[http://www.polytechnique.net/${grp_short}/unsubscribe|Se désinscrire]]"
+        );
+    } else {
+        $text .= (
+            "\n" .
+            "---- \n" .
+            "Message envoyé pour le groupe ${grp_name} via les outils de Polytechnique.org\n" .
+            "Annuaire : http://www.polytechnique.net/${grp_short}/annuaire | Désinscription : http://www.polytechnique.net/${grp_short}/unsubscribe"
+        );
+    }
+
     $mailer->setTo($user);
     if ($replyto) {
         $mailer->addHeader('Reply-To', $replyto);
