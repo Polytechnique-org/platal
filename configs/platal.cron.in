@@ -4,10 +4,10 @@ WD=/home/web/prod/platal/bin/cron
 
 # db
 0  5 * * *	web	cd $WD; ./clean.php
-0 21 * * 1-6	web	cd $WD; ./checkdb.php    | mail -e -s "Verifications sur la BDD de plat/al @VERSION@"         br@staff.m4x.org
-0 21 * * 0	web	cd $WD; ./checkdb.php -v | mail -e -s "Verifications verbeuses sur la BDD de plat/al @VERSION@" br@staff.m4x.org
-0 20 2-31 * *   web     cd $WD; ./emails.check.php | mail -e -s "Qualite de l'annuaire"                   br@staff.m4x.org
-0 20 1 * *      web     cd $WD; ./emails.check.php  -v | mail -e -s "Qualite de l'annuaire : verbeux"                   br@staff.m4x.org
+0 21 * * 1-6	web	cd $WD; ./checkdb.php    | mail -e -s "Verifications sur la BDD de plat/al @VERSION@"         hotliners@staff.m4x.org
+0 21 * * 0	web	cd $WD; ./checkdb.php -v | mail -e -s "Verifications verbeuses sur la BDD de plat/al @VERSION@" hotliners@staff.m4x.org
+0 20 2-31 * *   web     cd $WD; ./emails.check.php | mail -e -s "Qualite de l'annuaire"                   hotliners@staff.m4x.org
+0 20 1 * *      web     cd $WD; ./emails.check.php  -v | mail -e -s "Qualite de l'annuaire : verbeux"                   hotliners@staff.m4x.org
 0 22 * * *      web     cd $WD; ./phones.check.php > /dev/null
 
 # inscription report
@@ -27,7 +27,7 @@ WD=/home/web/prod/platal/bin/cron
 */5 * * * *     www-data     cd $WD; ./banana.feedgen.php > /dev/null
 
 # Send group Newsletters
-15 * * * *      web     cd $WD; ./newsletters.send.php | mail -e -s "Envoi des NLs des groupes" br@staff.m4x.org
+15 * * * *      web     cd $WD; ./newsletters.send.php | mail -e -s "Envoi des NLs des groupes" hotliners@staff.m4x.org
 
 # homonymes
 0 0 * * 1	web	cd $WD; ./homonyms.php
@@ -39,7 +39,7 @@ WD=/home/web/prod/platal/bin/cron
 */5 * * * *	web	cd $WD; ./google_apps.php
 
 # Clean-up of our logging tables
-45 0 1 * *	web	cd $WD; ./compliance.php | mail -e -s "Logging compliance" br@staff.m4x.org
+45 0 1 * *	web	cd $WD; ./compliance.php | mail -e -s "Logging compliance" hotliners@staff.m4x.org
 
 # xnet accounts creation
 0 * * * *	web	cd $WD; ./cron_xnet_accounts.php
