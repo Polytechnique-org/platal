@@ -338,7 +338,7 @@ class PaymentModule extends PLModule
         /* raison */
         $reason = ($status == 'Pending') ? Env::s('pending_reason') : Env::s('reason_code');
         /* reference complete de la commande */
-        $fullref = Env::s('cm');
+        $fullref = str_replace('%2d','-',Env::s('cm');
         /* montant de la transaction */
         $montant = Env::s('amt');
         /* devise */
