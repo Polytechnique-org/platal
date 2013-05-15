@@ -72,13 +72,15 @@ function discardExpiredSessions($userPerms, $retentionPeriod, $minimalBacklog) {
  * Checks for sessions without a valid associated user id.
  */
 function checkOrphanedSessions() {
+    $begin = time();
     $res = XDB::query(
         "SELECT  COUNT(*)
            FROM  log_sessions     AS s
       LEFT JOIN  #x5dat#.accounts AS a ON (a.uid = s.uid)
           WHERE  a.uid IS NULL");
     if (($count = $res->fetchOneCell())) {
-        echo "Orphaned sessions: found $count orphaned sessions. Please fix that.\n";
+        $duration = time() - $begin;
+        echo "Orphaned sessions: found $count orphaned sessions in $duration seconds. Please fix that.\n";
     }
 }
 
@@ -86,13 +88,15 @@ function checkOrphanedSessions() {
  * Purges session events without a valid session.
  */
 function purgeOrphanedEvents() {
+    $begin = time();
     XDB::execute(
         "DELETE  e
            FROM  log_events AS e
       LEFT JOIN  log_sessions AS s ON (s.id = e.session)
           WHERE  s.id IS NULL");
     $affectedRows = XDB::affectedRows();
-    echo "Orphaned events: removed $affectedRows events.\n";
+    $duration = time() - $begin;
+    echo "Orphaned events: removed $affectedRows events in $duration seconds.\n";
 }
 
 // Remove expired sessions.
