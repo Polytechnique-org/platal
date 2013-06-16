@@ -754,6 +754,9 @@ class XnetEventsModule extends PLModule
                                            GROUP BY  p.uid', $evt['eid']);
 
         $ofs = Env::i('offset');
+        $part = get_event_participants($evt, $item_id, UserFilter::sortByName(),
+                                       NB_PER_PAGE, $ofs * NB_PER_PAGE);
+
         $nbp = ceil($evt['user_count'] / NB_PER_PAGE);
         if ($nbp > 1) {
             $links = array();
@@ -770,9 +773,7 @@ class XnetEventsModule extends PLModule
         }
 
         $page->assign('absents', $absents);
-        $page->assign('participants',
-                      get_event_participants($evt, $item_id, UserFilter::sortByName(),
-                                             NB_PER_PAGE, $ofs * NB_PER_PAGE));
+        $page->assign('participants', $part);
     }
 }
 

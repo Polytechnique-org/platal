@@ -55,15 +55,13 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
         return false;
     }
 
-    // smart calculation of the total number
     if (!$item_id) {
-        $res = XDB::query('SELECT  MAX(nb)
-                             FROM  group_events              AS e
-                       INNER JOIN  group_event_items        AS ei ON (e.eid = ei.eid)
-                        LEFT JOIN  group_event_participants AS ep ON (e.eid = ep.eid AND ei.item_id = ep.item_id)
-                            WHERE  e.eid = {?}
-                         GROUP BY  ep.uid', $evt['eid']);
-        $evt['nb_tot'] = array_sum($res->fetchColumn());
+        /* Don't try to be to smart here, in case we're getting the global summary, we cannot have
+         * a general formula to estimate the total number of comers since 'moments' may (or may not be)
+         * disjuncted. As a consequence, we can only provides the number of user having fullfiled the
+         * registration procedure.
+         */
+        $evt['user_count'] = $evt['nb_tot'] = $evt['nb'];
         $evt['titre'] = '';
         $evt['item_id'] = 0;
         $evt['csv_name'] = urlencode($evt['intitule']);
@@ -157,7 +155,7 @@ function get_event_participants(&$evt, $item_id, array $tri = array(), $limit = 
                             $eid, $uid);
         while ($i = $res_->next()) {
             $u[$i['item_id']] = $i['nb'];
-            $u['montant'] += $i['montant']*$i['nb'];
+            $u['montant'] += $i['montant'] * $i['nb'];
         }
         $evt['telepaid']  += $u['telepayment'];
         $evt['adminpaid'] += $u['adminpaid'];
