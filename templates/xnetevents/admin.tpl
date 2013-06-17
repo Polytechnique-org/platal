@@ -22,11 +22,18 @@
 
 <h1>{$asso->nom}&nbsp;: <a href='{$platal->ns}events'>Événements</a> </h1>
 
+{if $tout}
 <p>
   {$evt.nb_tot} personne{if $evt.nb_tot > 1}s ont réalisé leur {else} a réalisé son {/if}
   inscription à l'événement {$evt.intitule} {if $evt.titre}- {$evt.titre} {/if}
   qui aura lieu {$evt.date}.
 </p>
+{else}
+<p>
+  {$evt.nb_tot} personne{if $evt.nb_tot > 1}s participeront {else} participera {/if}
+  à {$evt.intitule} - {$evt.titre}
+</p>
+{/if}
 
 {if $evt.short_name && $participants|@count && $is_admin}
 <p class="center">
