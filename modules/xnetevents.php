@@ -581,10 +581,10 @@ class XnetEventsModule extends PLModule
                 }
             }
 
-            // events with no sub-event: add a sub-event with no name
+            // events with no sub-event: add a sub-event with default name
             if ($nb_moments == 0) {
                 XDB::execute("INSERT INTO group_event_items
-                                   VALUES ({?}, {?}, '', '', 0)", $eid, 1);
+                                   VALUES ({?}, {?}, 'Événement', '', 0)", $eid, 1);
             }
 
             if (!$error) {
