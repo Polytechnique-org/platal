@@ -63,7 +63,7 @@
   liste.
   </li>
   <li>
-  <strong>{icon name=magnifier}refuser&nbsp;:</strong> pour refuser un email, suivre le lien {icon name=magnifier} et
+  <strong>{icon name=cross}refuser&nbsp;:</strong> pour refuser un email, suivre le lien {icon name=cross} et
   remplir le formulaire en bas de page.
   </li>
   <li>
@@ -129,7 +129,7 @@ function toggleAll() {
       <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mok=1&amp;token={xsrf_token}'>{icon name=tick title="Accepter le message"}</a>
     </td>
     <td class='action'>
-      <a href='{$platal->pl_self(1)}?mid={$m.id}'>{icon name=magnifier title="Voir le message"}</a><br/>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}'>{icon name=cross title="Voir le message"}</a><br/>
       <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mdel=1&amp;token={xsrf_token}'>{icon name=delete title="Spam !"}</a>
     </td>
   </tr>
