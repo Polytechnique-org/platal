@@ -22,19 +22,6 @@
 
 <h1>{$asso->nom}&nbsp;: <a href='{$platal->ns}events'>Événements</a> </h1>
 
-{if $tout}
-<p>
-  {$evt.nb_tot} personne{if $evt.nb_tot > 1}s ont réalisé leur {else} a réalisé son {/if}
-  inscription à l'événement {$evt.intitule} {if $evt.titre}- {$evt.titre} {/if}
-  qui aura lieu {$evt.date}.
-</p>
-{else}
-<p>
-  {$evt.nb_tot} personne{if $evt.nb_tot > 1}s participeront {else} participera {/if}
-  à {$evt.intitule} - {$evt.titre}
-</p>
-{/if}
-
 {if $evt.short_name && $participants|@count && $is_admin}
 <p class="center">
   [<a href="mailto:?bcc={$evt.short_name}-participants@{#globals.xnet.evts_domain#}">envoyer un email à ceux qui viennent</a>]
@@ -47,7 +34,6 @@
 </p>
 {/if}
 
-{if count($moments) > 1}
 <p class="center">
 [<a href="{$platal->ns}events/admin/{$evt.short_name|default:$evt.eid}"{if
 !$platal->argv[2]}class="erreur"{/if}>Vue générale</a>]
@@ -55,7 +41,6 @@
 [<a href="{$platal->ns}events/admin/{$evt.short_name|default:$evt.eid}/{$m.item_id}" {if $platal->argv[2] eq $m.item_id}class="erreur"{/if}>{$m.titre}</a>]
 {/foreach}
 </p>
-{/if}
 
 <p class="center">
 [<a href="{$platal->pl_self()}" {if !$smarty.request.initiale}class="erreur"{/if}>tout</a>]
@@ -74,6 +59,19 @@ function remplitAuto(mail) {
 }
 </script>
 {/literal}
+
+{if $tout}
+<p>
+  {$evt.nb_tot} personne{if $evt.nb_tot > 1}s ont réalisé leur {else} a réalisé son {/if}
+  inscription à l'événement {$evt.intitule} {if $evt.titre}- {$evt.titre} {/if}
+  qui aura lieu {$evt.date}.
+</p>
+{else}
+<p>
+  {$evt.nb_tot} personne{if $evt.nb_tot > 1}s participeront {else} participera {/if}
+  à {$evt.intitule} - {$evt.titre}
+</p>
+{/if}
 
 {if $oublis}
 <p class="erreur">
