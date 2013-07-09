@@ -65,7 +65,7 @@ class GeolocModule extends PLModule
                                          FROM  profile_addresses AS pa
                                    INNER JOIN  profiles          AS p  ON (pa.pid = p.pid)
                                    INNER JOIN  profile_display   AS pd ON (pd.pid = pa.pid)
-                                        WHERE  pa.type = \'home\' AND pa.latitude IS NOT NULL AND pa.longitude IS NOT NULL' . $where . ' AND p.deathdate IS NOT NULL
+                                        WHERE  pa.type = \'home\' AND p.deathdate IS NULL AND pa.latitude IS NOT NULL AND pa.longitude IS NOT NULL' . $where . '
                                      GROUP BY  pa.latitude, pa.longitude');
         $page->jsonAssign('data', $data);
     }
