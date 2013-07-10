@@ -661,6 +661,9 @@ class EmailModule extends PLModule
 
             if ($uid) {
                 $dest = User::getWithUID($uid);
+                $active = XDB::fetchOneCell('SELECT flags
+                                               FROM email_redirect_account
+                                              WHERE redirect = {?} AND uid = {?}', $email, $uid) == 'active';
 
                 $mail = new PlMailer('emails/broken-web.mail.tpl');
                 $mail->assign('email', $email);

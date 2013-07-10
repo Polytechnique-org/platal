@@ -32,7 +32,7 @@ Tu as entré une adresse sur un de nos domaines ({#globals.mail.domain#}, {#glob
 En effet, il faut nous donner l'adresse qui se cache derrière l'adresse polytechnicienne de ton
 correspondant si tu veux que nous puissions te répondre.
 </p>
-{elseif t($user) && $user.nb_mails}
+{elseif t($user) && $user.nb_mails && $active}
 <h2>Patte cassée</h2>
   <p>
     Ton correspondant a à l'heure actuelle <span class="erreur">{$user.nb_mails} adresse(s) email(s) de redirection active(s)
