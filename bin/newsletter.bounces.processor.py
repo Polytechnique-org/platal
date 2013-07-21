@@ -300,13 +300,14 @@ class OutOfOfficeFilter(MboxFilter):
         subject_re = [
             r'^Absen(t|ce)',
             r'^(AUTO: )?Out of (the )?office',
+            r'^Auto( ?): ',
             r'^Automatic reply: ',
             r'automatique d\'absence',
             r'AutoReply',
             r'(est|is) absent',
             r'I am out of town',
             r'I am currently away',
-            r'is out of (the )?office',
+            r'(am|is) out of (the )?office',
             r'Notification d\'absence',
             r'R.{1,2}ponse automatique( :)?',  # There may be encoding error of e acute
         ]
@@ -317,6 +318,21 @@ class OutOfOfficeFilter(MboxFilter):
         if subject is not None and any(regex.search(subject) for regex in self.subject_regexes):
             self.mbox.add(message)
             return True
+
+        # Some systems reply with "Re: ". Be smart here!
+        if subject is not None and subject.startswith('Re: '):
+            # Delivered-To: Autoresponder
+            if 'Autoresponder' in message.get_all('Delivered-To'):
+                self.mbox.add(message)
+                return True
+            #  Parse content if it is simple enough
+            if message.get_content_type() == 'text/plain':
+                firstline = message.get_payload().splitlines()[0].lower()
+                if (' absent du bureau ' in firstline
+                    or ' away from my office ' in firstline):
+                    self.mbox.add(message)
+                    return True
+
         return False
 
     def finalize(self):
