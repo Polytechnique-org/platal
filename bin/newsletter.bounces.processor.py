@@ -172,6 +172,74 @@ def findAddressInBounce(bounce):
         return None
     return email
 
+
+def findAddressInPlainBounce(bounce):
+    """Finds the faulty email address in a non-RFC-1894 bounced email
+    """
+    if 'MAILER-DAEMON@' not in bounce['From'].upper():
+        print('! Not a valid plain bounce (expected from MAILER-DAEMON, found %s).' % bounce['From'])
+        return None
+    if bounce.get_content_type() != 'text/plain':
+        print('! Not a valid plain bounce (expected text/plain, found %s).' % bounce.get_content_type())
+        return None
+    subject = findSubject(bounce).lower()
+    if (subject != 'failure notice'
+        and subject != 'undeliverable message'
+        and not subject.startswith('mail delivery failed')
+        and subject != 'delivery status notification (failure)'):
+
+        print('! Not a valid plain bounce (unknown subject: %s).' % subject)
+        return None
+
+    # Read the 15 first lines of content and find some relevant keywords to validate the bounce
+    lines = bounce.get_payload().splitlines()[:15]
+
+    # Match:
+    #   A message that you sent could not be delivered to one or more of its recipients.
+    #   I'm afraid I wasn't able to deliver your message to the following addresses.
+    #   The following message to <email@example.com> was undeliverable.
+    non_delivery_hints = [
+        "Delivery to the following recipient failed permanently",
+        "I wasn't able to deliver your message",
+        "> was undeliverable.",
+        "could not be delivered to",
+        "we were unable to deliver your message",
+    ]
+    if not any(any(hint in line for hint in non_delivery_hints) for line in lines):
+        print('! Unknown mailer-daemon message, unable to find an hint for non-delivery in message:')
+        print('\n'.join(lines))
+        return None
+
+    # Match:
+    #   This is a permanent error; I've given up. Sorry it didn't work out.
+    #   5.1.0 - Unknown address error 550-'email@example.com... No such user'
+    permanent_error_hints = [
+        "Delivery to the following recipient failed permanently",
+        "This is a permanent error",
+        "Unknown address error",
+        "550 Requested action not taken",
+    ]
+    if not any(any(hint in line for hint in permanent_error_hints) for line in lines):
+        print('! Unknown mailer-daemon message, unable to find an hint for permanent error in message:')
+        print('\n'.join(lines))
+        return None
+
+    # Retrieve the first occurence of <email@example.com>
+    for line in lines:
+        match = re.match(r'.*?<([0-9a-zA-Z_.-]+@[0-9a-zA-Z_.-]+)>', line)
+        if match is None:
+            match = re.match(r'^\s*([0-9a-zA-Z_.-]+@[0-9a-zA-Z_.-]+)\s*$', line)
+        if match is not None:
+            email = match.group(1)
+            if email.endswith('@polytechnique.org'):
+                # First valid mail is something like <info_newsletter@polytechnique.org>, so we missed the real one
+                break
+            return email
+
+    print('! Unknown mailer-daemon message, unable to find email address:')
+    print('\n'.join(lines))
+    return None
+
 #----------------------------------------------------------------------------#
 
 class DirectBouncesFilter(MboxFilter):
@@ -355,15 +423,29 @@ class DeliveryStatusNotificationFilter(MboxFilter):
         self.mbox_temp.clear()
 
     def process(self, message):
-        if message.get_content_type() == 'multipart/report':
-            email = findAddressInBounce(message)
+        # Don't modify message variable for "self.mbox.add(message)"
+        report_message = message
+        # Find real report inside attachment
+        if message.get_content_type() == 'multipart/mixed':
+            report_message = message.get_payload(0)
+
+        # Process report if its type is correct
+        if report_message.get_content_type() == 'multipart/report':
+            email = findAddressInBounce(report_message)
             if email is not None:
                 self.emails.append(email)
                 self.mbox.add(message)
-                return True
             else:
                 print("! => Moved to temporary DSN mailbox")
                 self.mbox_temp.add(message)
+            return True
+
+        # Detect ill-formatted reports, sent as plain text email
+        if 'MAILER-DAEMON@' in message['From'].upper():
+            email = findAddressInPlainBounce(message)
+            if email is not None:
+                self.emails.append(email)
+                self.mbox.add(message)
                 return True
         return False
 
