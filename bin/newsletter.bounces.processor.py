@@ -142,7 +142,7 @@ def findAddressInBounce(bounce):
         return None
     status = bounce.get_payload(1)
     if status.get_content_type() != 'message/delivery-status':
-        print('! Not a valid bounce (expected message/delivery-status, found %s).' % bounce.get_content_type())
+        print('! Not a valid bounce (expected message/delivery-status, found %s).' % status.get_content_type())
         return None
     # The per-message-fields don't matter here, get only the per-recipient-fields
     num_payloads = len(status.get_payload())
@@ -151,7 +151,7 @@ def findAddressInBounce(bounce):
         return None
     content = status.get_payload(1)
     if content.get_content_type() != 'text/plain':
-        print('! Not a valid bounce (expected text/plain, found %s).' % bounce.get_content_type)
+        print('! Not a valid bounce (expected text/plain, found %s).' % content.get_content_type())
         return None
     # Extract the faulty email address
     recipient_match = _recipient_re.search(content['Final-Recipient'])
@@ -160,7 +160,7 @@ def findAddressInBounce(bounce):
         return None
     email = recipient_match.group(1)
     # Check the action field
-    if content['Action'] != 'failed':
+    if content['Action'].lower() != 'failed':
         print('! Not a failed action (%s).' % content['Action'])
         return None
     # Mail forwarding loops, DNS errors and connection timeouts cause X-Postfix errors
