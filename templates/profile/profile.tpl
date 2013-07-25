@@ -147,7 +147,7 @@ $($.closeOnEsc);
         Cette personne n'est pas inscrite à Polytechnique.org,<br />
         <a href="marketing/public/{$owner->login()}" class="popup">clique ici si tu connais son adresse email&nbsp;!</a>
         {else}
-        {if $virtualalias && $view->isVisible(#Visibility::EXPORT_PRIVATE#)}
+        {if $virtualalias && $view->isVisible(#Visibility::EXPORT_PRIVATE#) && $virtualalias neq $owner->bestEmail()}
         <a href="mailto:{$virtualalias}">{$virtualalias}</a><br />
         {/if}
         <a href="mailto:{$owner->bestEmail()}">{$owner->bestEmail()}</a>
