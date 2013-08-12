@@ -65,7 +65,7 @@ $($.closeOnEsc);
         <span><br/>
         {foreach from=$groups item=group name=groups}
           {if !$smarty.foreach.groups.first}, {/if}
-          <span title="{$group.nom}"><a href="{if $group.site}{$group.site}{else}http://www.polytechnique.net/{$group.nom}{/if}">{$group.nom}</a></span>
+          <span title="{$group.nom}"><a href="{if $group.site}{$group.site}{else}http://www.polytechnique.net/{$group.diminutif}{/if}">{$group.nom}</a></span>
         {/foreach}
         </span></div>{/if}
       {/if}
