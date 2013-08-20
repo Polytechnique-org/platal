@@ -123,6 +123,8 @@ def findSubject(message):
 
 
 _recipient_re = re.compile(r'^rfc822; ?(.+)$', re.I | re.U)
+# Some MTA set the Final-Recipient with "LOCAL;" instead of "rfc822;"
+_recipient_re2 = re.compile(r'^local; ?(.+)$', re.I | re.U)
 
 
 def findAddressInBounce(bounce):
@@ -156,8 +158,11 @@ def findAddressInBounce(bounce):
     # Extract the faulty email address
     recipient_match = _recipient_re.search(content['Final-Recipient'])
     if recipient_match is None:
-        print('! Missing final recipient.')
-        return None
+        # Be nice, test another regexp
+        recipient_match = _recipient_re2.search(content['Final-Recipient'])
+        if recipient_match is None:
+            print('! Missing final recipient.')
+            return None
     email = recipient_match.group(1)
     # Check the action field
     if content['Action'].lower() != 'failed':
