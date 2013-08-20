@@ -163,14 +163,34 @@ def findAddressInBounce(bounce):
     if content['Action'].lower() != 'failed':
         print('! Not a failed action (%s).' % content['Action'])
         return None
+
+    status = content['Status']
+    diag_code = content['Diagnostic-Code']
+
+    # Permanent failure state
+    if int(status[:1]) == 5:
+         return email
+
     # Mail forwarding loops, DNS errors and connection timeouts cause X-Postfix errors
-    # Otherwise, the first sub-field should indicate a permanent failure
-    postfix_error = content['Diagnostic-Code'] is not None \
-                and content['Diagnostic-Code'].startswith('X-Postfix')
-    if not postfix_error and int(content['Status'][:1]) != 5:
-        print('! Not a permanent failure status (%s).' % content['Status'])
-        return None
-    return email
+    if diag_code is not None and diag_code.startswith('X-Postfix'):
+        return email
+
+    failure_hints = [
+        "insufficient system storage",
+        "mailbox full",
+        "user unknown",
+        ]
+    if 'quota' in status.lower():
+        return email
+    if diag_code is not None:
+        ldiag_code = diag_code.lower()
+        if any(hint in ldiag_code for hint in failure_hints):
+            return email
+
+    print('! Not a permanent failure status (%s).' % status)
+    if diag_code is not None:
+        print('! Diagnostic code was: %s' % diag_code)
+    return None
 
 
 def findAddressInPlainBounce(bounce):
