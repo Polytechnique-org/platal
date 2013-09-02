@@ -460,12 +460,25 @@ class XnetGrpModule extends PLModule
             $filename = $globals->asso('diminutif') . '.csv';
         }
         $users = $globals->asso()->getMembersFilter(null, new UFO_Name())->getUsers();
+        $admin = may_update();
         pl_cached_content_headers('text/x-csv', 'iso-8859-1', 1);
 
-        echo utf8_decode("Nom;Prénom;Sexe;Promotion;Commentaire\n");
+        echo utf8_decode("Nom;Prénom;Sexe;Promotion;Commentaire");
+        if ($admin) {
+            echo utf8_decode(";Société;Poste\n");
+        } else {
+            echo utf8_decode("\n");
+        }
         foreach ($users as $user) {
             $line = $user->lastName() . ';' . $user->firstName() . ';' . ($user->isFemale() ? 'F' : 'M')
-                  . ';' . $user->promo() . ';' . strtr($user->group_comm, ';', ',');
+                . ';' . $user->promo() . ';' . strtr($user->group_comm, ';', ',');
+            if ($admin) {
+                if ($user->hasProfile()) {
+                    $line .= ';' . $user->profile()->getMainJob()->company->name . ';' . $user->profile()->getMainJob()->description;
+                } else {
+                    $line .= ';;';
+                }
+            }
             echo utf8_decode($line) . "\n";
         }
         exit();
