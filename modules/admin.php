@@ -601,7 +601,10 @@ class AdminModule extends PLModule
             if (Post::i('del_profile', 0) != 0) {
                 XDB::execute('DELETE FROM  account_profiles
                                     WHERE  uid = {?} AND pid = {?}',
-                             $user->id(), Post::i('del_profile'));
+                                    $user->id(), Post::i('del_profile'));
+                XDB::execute('DELETE FROM  profiles
+                                    WHERE  pid = {?}',
+                                    Post::i('del_profile'));
             } else if (!Post::blank('new_profile')) {
                 $profile = Profile::get(Post::t('new_profile'));
                 if (!$profile) {
