@@ -1005,7 +1005,7 @@ class PaymentLogsImporter extends CSVImporter {
 
     static public function compute_systempay_commission($line, $key, $relation) {
         static $EEE_countries = array(
-            'France', 'Allemagne', 'Autriche', 'Belgique', 'Bulgarie', 'Chypre', 'Suisse',
+            'France', 'Allemagne', 'Autriche', 'Belgique', 'Bulgarie', 'Chypre', 'Croatie',
             'Danemark', 'Espagne', 'Estonie', 'Finlande', 'Grèce', 'Hongrie', 'Irlande', 'Islande', 'Italie',
             'Lettonie', 'Liechtenstein', 'Lituanie', 'Luxembourg', 'Malte', 'Norvège', 'Pays-Bas', 'Pologne',
             'Portugal', 'Roumanie', 'Royaume-Uni', 'Slovaquie', 'Slovénie', 'Suède', 'République Tchèque'
@@ -1018,7 +1018,7 @@ class PaymentLogsImporter extends CSVImporter {
         if (in_array($line['pays carte'], $EEE_countries)) {
             return -0.20 - round($amount * 0.005, 2);
         } else {
-            return -0.20 - round($amount * 0.005, 2) - 0.76;
+            return -0.20 - round($amount * 0.005, 2) - 0.75;
         }
     }
 
