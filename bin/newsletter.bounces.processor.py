@@ -143,6 +143,15 @@ def findAddressInBounce(bounce):
         print('! Not a valid bounce (expected at least 2 parts, found %d).' % num_payloads)
         return None
     status = bounce.get_payload(1)
+
+    # If the second part is of type "message/rfc822" it is the undelivered message.
+    # Let's try to understand the text part
+    if status.get_content_type() == 'message/rfc822':
+        text_bounce = bounce.get_payload(0)
+        if text_bounce.get_content_type() == 'text/plain':
+            return findAddressInPlainBounce(text_bounce, bounce)
+        # If it's not a text message, let's continue to the next error message
+
     if status.get_content_type() != 'message/delivery-status':
         print('! Not a valid bounce (expected message/delivery-status, found %s).' % status.get_content_type())
         return None
@@ -198,16 +207,18 @@ def findAddressInBounce(bounce):
     return None
 
 
-def findAddressInPlainBounce(bounce):
+def findAddressInPlainBounce(bounce, real_bounce=None):
     """Finds the faulty email address in a non-RFC-1894 bounced email
     """
-    if 'MAILER-DAEMON@' not in bounce['From'].upper():
+    # real_bounce is the full email and bounce only the text/plain part, if email have several MIME parts
+    real_bounce = real_bounce or bounce
+    if 'MAILER-DAEMON@' not in real_bounce['From'].upper():
         print('! Not a valid plain bounce (expected from MAILER-DAEMON, found %s).' % bounce['From'])
         return None
     if bounce.get_content_type() != 'text/plain':
         print('! Not a valid plain bounce (expected text/plain, found %s).' % bounce.get_content_type())
         return None
-    subject = findSubject(bounce).lower()
+    subject = findSubject(real_bounce).lower()
     known_subjects = [
         "delivery status notification (failure)",
         "failure notice",
