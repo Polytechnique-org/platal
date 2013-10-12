@@ -208,11 +208,14 @@ def findAddressInPlainBounce(bounce):
         print('! Not a valid plain bounce (expected text/plain, found %s).' % bounce.get_content_type())
         return None
     subject = findSubject(bounce).lower()
-    if (subject != 'failure notice'
-        and subject != 'undeliverable message'
-        and not subject.startswith('mail delivery failed')
-        and subject != 'delivery status notification (failure)'):
-
+    known_subjects = [
+        "delivery status notification (failure)",
+        "failure notice",
+        "returned mail: see transcript for details",
+        "undeliverable message",
+        "undelivered mail returned to sender",
+        ]
+    if subject not in known_subjects and not subject.startswith('mail delivery failed'):
         print('! Not a valid plain bounce (unknown subject: %s).' % subject)
         return None
 
@@ -232,6 +235,7 @@ def findAddressInPlainBounce(bounce):
     #   The following message to <email@example.com> was undeliverable.
     non_delivery_hints = [
         "Delivery to the following recipient failed permanently",
+        "I'm sorry to have to inform you that your message could not",
         "I wasn't able to deliver your message",
         "> was undeliverable.",
         "could not be delivered to",
@@ -247,6 +251,7 @@ def findAddressInPlainBounce(bounce):
     #   5.1.0 - Unknown address error 550-'email@example.com... No such user'
     permanent_error_hints = [
         "Delivery to the following recipient failed permanently",
+        "I'm sorry to have to inform you that your message could not",
         "This is a permanent error",
         "Unknown address error",
         "550 Requested action not taken",
