@@ -219,6 +219,13 @@ def findAddressInPlainBounce(bounce):
     # Read the 15 first lines of content and find some relevant keywords to validate the bounce
     lines = bounce.get_payload().splitlines()[:15]
 
+    # ALTOSPAM is a service which requires to click on a link when sending an email
+    # Don't consider the "554 5.0.0 Service unavailable" returned by ALTOSPAM as a failure
+    # but put this message in the dsn-temp mailbox so that it can be processed by hand.
+    if any("ALTOSPAM which is used by the person" in line for line in lines):
+        print('! ALTOSPAM has been detected. Moving this message to the dsn-temp mbox')
+        return None
+
     # Match:
     #   A message that you sent could not be delivered to one or more of its recipients.
     #   I'm afraid I wasn't able to deliver your message to the following addresses.
