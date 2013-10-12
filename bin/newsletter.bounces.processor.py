@@ -394,6 +394,7 @@ class OutOfOfficeFilter(MboxFilter):
             r'^Absen(t|ce)',
             r'^(AUTO: )?Out of (the )?office',
             r'^Auto( ?): ',
+            r'^AutoRe( ?):',
             r'^Automatic reply: ',
             r'automatique d\'absence',
             r'AutoReply',
