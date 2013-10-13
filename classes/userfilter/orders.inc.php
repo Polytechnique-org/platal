@@ -76,7 +76,7 @@ class UFO_Promo extends PlFilterGroupableOrder
     protected function getSortTokens(PlFilter $uf)
     {
         if (UserFilter::isGrade($this->grade)) {
-            $sub = $uf->addEducationFilter($this->grade);
+            $sub = $uf->addEducationFilter(true, $this->grade);
             return 'pe' . $sub . '.' . UserFilter::promoYear($this->grade);
         } else {
             $sub = $uf->addDisplayFilter();
