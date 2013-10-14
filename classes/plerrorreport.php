@@ -37,7 +37,7 @@ class PlErrorReport
         return array($this->date, $this->error, serialize($this->state));
     }
 
-    public function fromCSV(array $entry)
+    public static function fromCSV(array $entry)
     {
         return new PlErrorReport($entry[0], $entry[1], unserialize($entry[2]));
     }
