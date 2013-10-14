@@ -479,7 +479,7 @@ class PlMemcacheCache implements PlCacheBackend
         $value = $this->context->get($key);
         if ($value === false) {
             if (is_null($callback)) {
-                throw new PlNotFoundInCacheException($key);
+                throw new PlNotFoundInCacheException($key, $type);
             }
             $value = call_user_func_array($callback, $cbargs);
             $this->set($key, $type, $value, $expire);
