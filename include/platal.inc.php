@@ -54,9 +54,11 @@ function pl_autoload($cls, array $pathes = array())
     } else if (starts_with($cls, 'pldbtable')) {
         $cls = 'pldbtableentry';
     }
-    $basepath = dirname(dirname(dirname(__FILE__)));
+    $corebasepath = dirname(dirname(__FILE__));
+    $basepath = dirname($corebasepath);
+    $corebasename = basename($corebasepath);
 
-    array_unshift($pathes, 'core/classes', 'classes');
+    array_unshift($pathes, $corebasename . '/classes', 'classes');
     foreach ($pathes as $path) {
         if (file_exists("$basepath/$path/$cls.php")) {
             if (include_once "$basepath/$path/$cls.php") {

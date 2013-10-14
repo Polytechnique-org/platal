@@ -122,7 +122,7 @@ abstract class PLModule
     {
         global $globals;
         if ($modname == 'core') {
-            $mod_path = $globals->spoolroot  . '/core/modules/' . $modname;
+            $mod_path = $globals->coreroot  . '/modules/' . $modname;
         } else {
             $mod_path = $globals->spoolroot . '/modules/' . $modname;
         }

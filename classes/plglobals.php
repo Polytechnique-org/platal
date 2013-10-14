@@ -103,6 +103,7 @@ class PlGlobals
     public $baseurl_http;
 
     /** paths */
+    public $coreroot;
     public $spoolroot;
 
     /** Localization configuration.
@@ -127,7 +128,8 @@ class PlGlobals
      */
     public function __construct(array $files)
     {
-        $this->spoolroot = dirname(dirname(dirname(__FILE__)));
+        $this->coreroot = dirname(dirname(__FILE__));
+        $this->spoolroot = dirname($this->coreroot);
 
         $this->readConfig($files);
         if (isset($_SERVER) && isset($_SERVER['SERVER_NAME'])) {

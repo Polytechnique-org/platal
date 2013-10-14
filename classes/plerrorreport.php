@@ -128,7 +128,7 @@ class PlErrorReportFeed extends PlFeed
                             $globals->baseurl . '/site_errors',
                             'Erreurs d\'exécution',
                             $globals->baseurl . '/images/logo.png',
-                            $globals->spoolroot . '/core/templates/site_errors.feed.tpl');
+                            $globals->coreroot . '/templates/site_errors.feed.tpl');
     }
 
     protected function fetch(PlUser $user)

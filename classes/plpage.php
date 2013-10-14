@@ -45,7 +45,7 @@ abstract class PlPage extends Smarty
         $this->template_dir  = $globals->spoolroot . '/templates/';
         $this->compile_dir   = $globals->spoolroot . '/spool/templates_c/';
         array_unshift($this->plugins_dir,
-                      $globals->spoolroot . '/core/plugins/',
+                      $globals->coreroot . '/plugins/',
                       $globals->spoolroot . '/plugins/');
         $this->config_dir    = $globals->spoolroot . '/configs/';
 
@@ -79,7 +79,7 @@ abstract class PlPage extends Smarty
     public static function getCoreTpl($tpl)
     {
         global $globals;
-        return $globals->spoolroot . '/core/templates/' . $tpl;
+        return $globals->coreroot . '/templates/' . $tpl;
     }
 
     // }}}
@@ -516,7 +516,7 @@ function core_include($source, $smarty)
 {
     global $globals;
     return preg_replace('/\{include( [^}]*)? core=([^} ]+)(.*?)\}/ui',
-                        '{include\1 file="' . $globals->spoolroot . '/core/templates/\2"\3}',
+                        '{include\1 file="' . $globals->coreroot . '/templates/\2"\3}',
                         $source);
 }
 
