@@ -731,6 +731,34 @@ class Profile implements PlExportable
         return $this->corps;
     }
 
+    /**
+     * Retrieve the name of the corps which has been done.
+     *
+     * Note: this function first tries getCorps(), and if this field is blank
+     * tries to find an education which degree is "Corps".
+     *
+     * Returns an empty string if nothing has been found.
+     */
+    public function getCorpsName()
+    {
+        $corps = $this->getCorps();
+        if ($corps && $corps->current) {
+            $corpsList = DirEnum::getOptions(DirEnum::CURRENTCORPS);
+            return $corpsList[$corps->current];
+        }
+
+        foreach ($this->getExtraEducations() as $edu) {
+            if (!strcasecmp($edu->degree, 'Corps')) {
+                if ($edu->school_short) {
+                    return $edu->school_short;
+                } elseif ($edu->school) {
+                    return $edu->school;
+                }
+            }
+        }
+        return '';
+    }
+
     /** Networking
      */
     private $networks = null;

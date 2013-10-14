@@ -891,8 +891,7 @@ class EmailModule extends PLModule
                 $corpsList = DirEnum::getOptions(DirEnum::CURRENTCORPS);
                 foreach ($broken_user_list as $uid => $mails) {
                     $profile = Profile::get($uid);
-                    $corps = $profile->getCorps();
-                    $current_corps = ($corps && $corps->current) ? $corpsList[$corps->current] : '';
+                    $current_corps = $profile->getCorpsName();
                     $jobs = $profile->getJobs();
                     $companies = array();
                     foreach ($jobs as $job) {
