@@ -1,3 +1,24 @@
+
+================================================================================
+VERSION 1.1.9                                                        15 10 2013
+
+    * NL:
+        - Improves NL broken bounces processor                             -IOS
+        - Change AX letter css                                             -KRL 
+
+    * Payments:
+        - Fix payment commission for foreign countries                     -KIT
+
+    * Profile:
+        - Fix profile deletion                                             -KIT
+        - Show link to XnetGroups site on profile                          -FUL
+        - Remove dead people from the map                                  -FUL
+
+    * XnetGrp:
+        - Add job infos in XnetGroup export                                -KIT
+        - Fix user count in XnetEvents                                 -FRU/KIT
+
+
 ================================================================================
 VERSION 1.1.8                                                         15 05 2013
 
@@ -1963,10 +1984,12 @@ ACRONYMS:
     * FUL: Thomas Minvielle     (Fulanor)   <thomas.minvielle@m4x.org>
     * GLN: Brice Gelineau       (brice)     <brice.gelineau@m4x.org>
     * GUI: Guillaume Bandet     (GUI)       <guillaume.bandet@m4x.org>
+    * IOS: Nicolas Iooss        (Ioonag)    <nicolas.iooss@m4x.org>
     * JAC: Stéphane Jacob       (jacou)     <stephane.jacob@m4x.org>
     * JM : Jean-Marc Bécu                   <jean-marc.becu@m4x.org>
     * JS : Jean Sébastien Bedo              <jean-sebastien.bedo@m4x.org>
     * KIT: Anne Limoges         (Kithyane)  <anne.limoges@m4x.org>
+    * KRL: Pierre-Étienne Marx  (Karlos)    <pierre-etienne.marx@m4x.org>
     * MC : Pierre Habouzit      (MadCoder)  <pierre.habouzit@m4x.org>
     * mYk: Aymeric Augustin     (mYk)       <aymeric.augustin@m4x.org>
     * OG : Olivier Guillaumin               <olivier.guillaumin@m4x.org>
