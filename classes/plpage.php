@@ -89,7 +89,6 @@ abstract class PlPage extends Smarty
      */
     public function coreTpl($tpl, $type = SKINNED)
     {
-        global $globals;
         $this->changeTpl(self::getCoreTpl($tpl), $type);
     }
 
