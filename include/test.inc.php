@@ -19,16 +19,21 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+// Include test.inc.php from a parent project, if it exists
 $testinclude = dirname(__FILE__) . '/../../include/test.inc.php';
 if (file_exists($testinclude)) {
     require_once $testinclude;
 } else {
     require_once dirname(__FILE__) . '/platal.inc.php';
-    require_once 'PHPUnit/Framework.php';
 
-    function __autoload($class)
-    {
-        pl_autoload($class);
+    if (function_exists('spl_autoload_register')) {
+        spl_autoload_register('pl_autoload');
+    } else {
+        // Use non-SPL autoloading as a fallback for PHP < 5.1.2
+        function __autoload($class)
+        {
+            pl_autoload($class);
+        }
     }
 }
 

@@ -20,7 +20,6 @@
  ***************************************************************************/
 
 require_once dirname(__FILE__) . '/../include/test.inc.php';
-require_once 'PHPUnit/Framework.php';
 
 class PlTestSuite
 {

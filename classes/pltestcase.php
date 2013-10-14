@@ -19,8 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once 'PHPUnit/Framework.php';
-
 abstract class PlTestCase extends PHPUnit_Framework_TestCase
 {
 }

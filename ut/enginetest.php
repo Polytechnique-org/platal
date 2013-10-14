@@ -20,7 +20,48 @@
  ***************************************************************************/
 
 require_once dirname(__FILE__) . '/../include/test.inc.php';
-__autoload('platal');
+
+class TestPlatal extends Platal
+{
+    public function force_login(PlPage $page) {
+        throw new Exception('Force login called in a test');
+    }
+}
+class TestSession extends PlSession
+{
+    protected function doAuth($level) {
+        throw new Exception('Not implemented test method');
+    }
+
+    protected function makePerms($perms, $is_admin) {
+        throw new Exception('Not implemented test method');
+    }
+
+    protected function startSessionAs($user, $level) {
+        throw new Exception('Not implemented test method');
+    }
+
+    public function loggedLevel() {
+        return AUTH_MDP;
+    }
+
+    public function startAvailableAuth() {
+        return true;
+    }
+
+    public function sureLevel() {
+        return AUTH_MDP;
+    }
+
+    public function tokenAuth($login, $token) {
+        throw new Exception('Not implemented test method');
+    }
+}
+define('PL_GLOBALS_CLASS', 'PlGlobals');
+define('PL_SESSION_CLASS', 'TestSession');
+define('PL_PAGE_CLASS', 'PlPage');
+define('PL_LOGGER_CLASS', 'PlLogger');
+new TestPlatal();
 
 class TestPage extends PlPage
 {
@@ -120,11 +161,13 @@ class EngineTest extends PlTestCase
     public function testDispatch($res, $expmatched, $path)
     {
         $tree = new PlHookTree();
-        $tree->addChild(array('test'), new PlStdHook(array('EngineTest', 'blihCallback')));
-        $tree->addChild(array('test1'), new PlStdHook(array('EngineTest', 'blahCallback')));
-        $tree->addChild(array('tes'), new PlStdHook(array('EngineTest', 'blahCallback')));
-        $tree->addChild(array('test', 'coucou'), new PlStdHook(array('EngineTest', 'fooCallback')));
-        $tree->addChild(array('test', 'hook'), new PlStdHook(array('EngineTest', 'barCallback')));
+        $tree->addChildren(array(
+            'test' => new PlStdHook(array('EngineTest', 'blihCallback')),
+            'test1' => new PlStdHook(array('EngineTest', 'blahCallback')),
+            'tes' => new PlStdHook(array('EngineTest', 'blahCallback')),
+            'test/coucou' => new PlStdHook(array('EngineTest', 'fooCallback')),
+            'test/hook' => new PlStdHook(array('EngineTest', 'barCallback'))
+        ));
 
         $page = new TestPage();
         $p = explode('/', $path);
