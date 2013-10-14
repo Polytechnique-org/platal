@@ -213,8 +213,10 @@ class CoreModule extends PLModule
     {
         global $globals;
         $page->coreTpl('site_errors.tpl');
-        $page->setRssLink('Polytechnique.org :: Erreurs',
-                          'site_errors/rss/' . S::v('hruid') . '/' . S::user()->token . '/rss.xml');
+        if (!empty(S::user()->token)) {
+            $page->setRssLink('Polytechnique.org :: Erreurs',
+                              'site_errors/rss/' . S::v('hruid') . '/' . S::user()->token . '/rss.xml');
+        }
         if (Post::has('clear')) {
             PlErrorReport::clear();
             $page->trigSuccess("Erreurs effacées.");
