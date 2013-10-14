@@ -108,8 +108,8 @@ class PlGlobals
 
     /** Localization configuration.
      */
-    public $locale;
-    public $timezone;
+    public $locale = 'fr_FR.UTF-8';
+    public $timezone = 'Europe/Paris';
 
     /** Cookie configuration.
      */
@@ -123,15 +123,17 @@ class PlGlobals
     public $static_cache_duration = 604800;
     public $dynamic_cache_duration = 3600;
 
-    /** You must give a list of file to load.
+    /** You should give a list of file to load if you don't want the default configuration.
      * The filenames given are relatives to the config path of your plat/al installation.
      */
-    public function __construct(array $files)
+    public function __construct(array $files = null)
     {
         $this->coreroot = dirname(dirname(__FILE__));
         $this->spoolroot = dirname($this->coreroot);
 
-        $this->readConfig($files);
+        if (!is_null($files)) {
+            $this->readConfig($files);
+        }
         if (isset($_SERVER) && isset($_SERVER['SERVER_NAME'])) {
             $base = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
             $this->baseurl      = @trim($base    .$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']), '/');
