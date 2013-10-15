@@ -31,7 +31,7 @@ class CSVImporter
     private $do_sql;
 
     private $index;
-    private $data = array();
+    protected $data = array();
 
     private $user_functions = array();
     private $field_desc = array();
@@ -79,7 +79,7 @@ class CSVImporter
         return $value;
     }
 
-    private function makeAssoc($line, $relation)
+    protected function makeAssoc($line, $relation)
     {
         $ops = array();
         foreach ($relation as $key=>$ref) {

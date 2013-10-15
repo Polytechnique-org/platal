@@ -109,7 +109,9 @@ class XmlrpcClient
         }
         if (is_null($answer)) {
             Platal::page()->trigError("L'accès aux listes de diffusion n'est pas disponible actuellement.");
-            $this->bt->update(0, "Connection failed");
+            if ($this->bt) {
+                $this->bt->update(0, "Connection failed");
+            }
             return null;
         }
         Platal::assert(starts_with($answer, 'HTTP/1.0 200 OK'), "HTTP Error:\n" . $answer,
