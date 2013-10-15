@@ -77,7 +77,7 @@ class OrangeReq extends ProfileValidate
                    . "Si tu le souhaites, tu peux maintenant modifier l'affichage de ta promotion sur le site sur la page suivante : "
                    . "https://www.polytechnique.org/profile/edit";
         } else {
-            return "  La demande de changement de promotion tu avais faite a été refusée.";
+            return "  La demande de changement de promotion que tu avais faite a été refusée.";
         }
     }
 
