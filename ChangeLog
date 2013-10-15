@@ -1,10 +1,9 @@
-
 ================================================================================
 VERSION 1.1.9                                                        15 10 2013
 
     * NL:
         - Improves NL broken bounces processor                             -IOS
-        - Change AX letter css                                             -KRL 
+        - Change AX letter css                                             -KRL
 
     * Payments:
         - Fix payment commission for foreign countries                     -KIT
