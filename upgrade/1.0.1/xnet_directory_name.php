@@ -29,7 +29,7 @@ while (list($uid, $hruid, $full, $display, $nb_assos, $asso, $comm) = $users->ne
         $full_name = $full;
     }
     $matches = array();
-    if (preg_match('/^([\pL.-]+) +(.*)/u', $full_name, &$matches)) {
+    if (preg_match('/^([\pL.-]+) +(.*)/u', $full_name, $matches)) {
         $dir_name = mb_strtoupper(trim($matches[2])) . " " . ucwords(trim($matches[1]));
         if ($comment != "") {
             if ($nb_assos > 1) {
