@@ -31,7 +31,7 @@ function xorg_autoload($cls)
                 || substr($cls, 0, 8) == 'plfilter') {
             xorg_autoload('plfilter');
             return;
-        } else if (substr($cls, 0, 3) == 'de_') {
+        } else if ($cls == 'direnumeration' || substr($cls, 0, 3) == 'de_') {
             xorg_autoload('direnum');
             return;
         } else if ($cls == 'validate' || substr($cls, -3, 3) == 'req'
