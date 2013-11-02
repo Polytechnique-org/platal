@@ -163,7 +163,7 @@ Bienvenue {$smarty.session.user->displayName()}{if t($birthday)}
       <td class="half">
         <div>
           {if $ev.img}
-          <div style="float: {$position}; padding-{if $position eq right}left{else}right{/if}: 0.5em">
+          <div style="float: {$position}; padding-{if $position eq 'right'}left{else}right{/if}: 0.5em">
             <img src="events/photo/{$ev.id}" alt="{$ev.title}" />
           </div>
           {/if}

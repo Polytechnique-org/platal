@@ -25,10 +25,10 @@
 <table id="content" cellspacing="0" cellpadding="4">
   <tr>
     <td style="vertical-align: top">
-      <div class="cat {if $cat eq groupesx}sel{/if}"><a href="groups/groupesx">Groupes X</a></div>
-      <div class="cat {if $cat eq binets}sel{/if}"><a href="groups/binets">Binets</a></div>
-      <div class="cat {if $cat eq institutions}sel{/if}"><a href="groups/institutions">Institutions</a></div>
-      <div class="cat {if $cat eq promotions}sel{/if}"><a href="groups/promotions">Promotions</a></div>
+      <div class="cat {if $cat eq 'groupesx'}sel{/if}"><a href="groups/groupesx">Groupes X</a></div>
+      <div class="cat {if $cat eq 'binets'}sel{/if}"><a href="groups/binets">Binets</a></div>
+      <div class="cat {if $cat eq 'institutions'}sel{/if}"><a href="groups/institutions">Institutions</a></div>
+      <div class="cat {if $cat eq 'promotions'}sel{/if}"><a href="groups/promotions">Promotions</a></div>
     </td>
 
     {if $doms}
@@ -48,7 +48,7 @@
         {if $doms || $i is even}
         <tr>
         {/if}
-          <td class="oval{if $doms}2{/if} {if $cat eq promotions}{if $g.diminutif is odd}jone{else}rouje{/if}{/if}">
+          <td class="oval{if $doms}2{/if} {if $cat eq 'promotions'}{if $g.diminutif is odd}jone{else}rouje{/if}{/if}">
             <a href="{$g.diminutif}/" {if $g.site}class="has_site"{/if}>{$g.nom}</a>
           </td>
         {if !$doms && $i is even && $smarty.foreach.all.last}<td></td>{/if}

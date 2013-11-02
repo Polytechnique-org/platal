@@ -66,7 +66,7 @@ Sa dernière relance date du {$relance|date_format}.
       <td>{$a.email}</td>
       <td>
         {if $a.alias neq ''}<a href="profile/{$a.alias}" class="popup2">{$a.alias}</a>
-        {if $a.type eq user}(*){/if}{else}Email connu de l'AX{/if}
+        {if $a.type eq 'user'}(*){/if}{else}Email connu de l'AX{/if}
       </td>
       <td>{$a.date|date_format|default:'-'}</td>
       <td>{$a.last|date_format|default:'-'}</td>
