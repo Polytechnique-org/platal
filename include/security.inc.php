@@ -105,7 +105,12 @@ function send_warning_mail($title, $body = '')
     $mailer->setFrom("webmaster@" . $globals->mail->domain);
     $mailer->addTo($globals->core->admin_email);
     $mailer->setSubject("[Plat/al Security Alert] $title");
-    $mailer->setTxtBody($body . "Identifiants de session :\n" . var_export($_SESSION, true) . "\n\n"
+    // Note: we can't do $session = var_export($_SESSION, true) as var_export
+    // doesn't handle circular dependency correctly.
+    ob_start();
+    var_dump($_SESSION);
+    $session = ob_get_clean();
+    $mailer->setTxtBody($body . "Identifiants de session :\n" . $session . "\n\n"
         ."Identifiants de connexion :\n" . var_export($_SERVER, true));
     $mailer->send();
 }
