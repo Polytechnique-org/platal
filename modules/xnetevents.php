@@ -204,9 +204,10 @@ class XnetEventsModule extends PLModule
                                                 S::i('uid'), $e['eid']);
 
             $e['topay'] = 0;
-            $e['paid']  = $e['moments'][0]['paid'];
+            $e['paid']  = 0;
             foreach ($e['moments'] as $m) {
                 $e['topay'] += $m['nb'] * $m['montant'];
+                $e['paid'] += $m['paid'];
             }
 
             $montant = XDB::fetchOneCell(
