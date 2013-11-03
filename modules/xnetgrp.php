@@ -1079,6 +1079,20 @@ class XnetGrpModule extends PLModule
 
             Group::subscribe($globals->asso('id'), $user->id());
             $this->removeSubscriptionRequest($user->id());
+            
+            // Check if the group has more than 1000 members, if so, disable the "send mail" function.
+            $full_count = XDB::fetchOneCell('SELECT COUNT(*)
+                                               FROM group_members
+                                              WHERE asso_id = {?}',
+                                $globals->asso('id'));
+            if ($full_count > 999) {
+                XDB::execute(
+                    "UPDATE groups
+                    SET disable_mails = 1
+                    WHERE id = {?}",
+                    $globals->asso('id')); 
+            }
+            
             if ($suggest_account_activation) {
                 pl_redirect('member/suggest/' . $user->login() . '/' . $email . '/' . $globals->asso('nom'));
             } else {
