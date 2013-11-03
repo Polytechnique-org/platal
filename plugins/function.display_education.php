@@ -32,7 +32,7 @@ function display_education($name, $url, $degree, $gradYear, $field, $program, $f
         }
     }
     if ($url != '') {
-        $txt .= '<a href="' . $url . '" onclick="return popup(this)">' . $name . '</a>';
+        $txt .= '<a href="' . $url . '" target="_blank">' . $name . '</a>';
     } else {
         $txt .= $name;
     }
