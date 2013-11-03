@@ -251,7 +251,7 @@ class PaymentModule extends PLModule
         }
 
         /* on extrait la reference de la commande */
-        if (!ereg('-([0-9]+)$', Env::v('vads_order_id'), $matches)) {
+        if (!preg_match('/-([0-9]+)$/', Env::v('vads_order_id'), $matches)) {
             cb_erreur("référence de commande invalide");
         }
 
@@ -362,7 +362,7 @@ class PaymentModule extends PLModule
         }
 
         /* on extrait la reference de la commande */
-        if (!ereg('-xorg-([0-9]+)$', $fullref, $matches)) {
+        if (!preg_match('/-xorg-([0-9]+)$/', $fullref, $matches)) {
             paypal_erreur("référence de commande invalide");
         }
 
@@ -1027,7 +1027,7 @@ class PaymentLogsImporter extends CSVImporter {
             return null;
         }
         $reference = self::getValue($line, 'reference', $relation['reference']);
-        if (ereg('-([0-9]+)$', $reference, $matches)) {
+        if (preg_match('/-([0-9]+)$/', $reference, $matches)) {
             return $matches[1];
         } else {
             return null;
