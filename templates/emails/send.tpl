@@ -288,6 +288,19 @@
     </tr>
     {/if}
   </table>
+  {if $contacts|@count eq 0}
+    {* Current Javascript code needs some elements to exist. *}
+    {* TODO: rewrite the code to accept non-existent elements without raising exceptions *}
+    <select id="to_contacts" name="to_contacts[]" multiple="multiple" style="display: none;">
+      <option value="">&nbsp;</option>
+    </select>
+    <select id="cc_contacts" name="cc_contacts[]" multiple="multiple" style="display: none;">
+      <option value="">&nbsp;</option>
+    </select>
+    <select id="contacts" name="all_contacts[]" multiple="multiple" style="display: none;">
+      <option value="">&nbsp;</option>
+    </select>
+  {/if}
   <fieldset>
     <legend>Sujet&nbsp;:&nbsp;<input type='text' name='sujet' size='60' value="{$smarty.request.sujet}" /></legend>
     <div class="center">
