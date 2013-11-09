@@ -301,8 +301,9 @@ def findAddressInPlainBounce(bounce, real_bounce=None):
     """
     # real_bounce is the full email and bounce only the text/plain part, if email have several MIME parts
     real_bounce = real_bounce or bounce
-    if 'MAILER-DAEMON@' not in real_bounce['From'].upper():
-        print('! Not a valid plain bounce (expected from MAILER-DAEMON, found %s).' % bounce['From'])
+    lower_from = real_bounce['From'].lower()
+    if 'mailer-daemon@' not in lower_from and 'postmaster' not in lower_from:
+        print('! Not a valid plain bounce (expected from MAILER-DAEMON or postmaster, found %s).' % bounce['From'])
         return None
     if bounce.get_content_type() != 'text/plain':
         print('! Not a valid plain bounce (expected text/plain, found %s).' % bounce.get_content_type())
@@ -311,6 +312,7 @@ def findAddressInPlainBounce(bounce, real_bounce=None):
     known_subjects = [
         "delivery status notification (failure)",
         "failure notice",
+        "mail delivery failure",
         "returned mail: see transcript for details",
         "undeliverable message",
         "undelivered mail returned to sender",
@@ -334,11 +336,12 @@ def findAddressInPlainBounce(bounce, real_bounce=None):
     #   I'm afraid I wasn't able to deliver your message to the following addresses.
     #   The following message to <email@example.com> was undeliverable.
     non_delivery_hints = [
+        "could not be delivered to",
         "Delivery to the following recipient failed permanently",
         "I'm sorry to have to inform you that your message could not",
         "I wasn't able to deliver your message",
+        "try to send your message again at a later time",
         "> was undeliverable.",
-        "could not be delivered to",
         "we were unable to deliver your message",
     ]
     if not any(any(hint in line for hint in non_delivery_hints) for line in lines):
@@ -351,6 +354,7 @@ def findAddressInPlainBounce(bounce, real_bounce=None):
     #   5.1.0 - Unknown address error 550-'email@example.com... No such user'
     permanent_error_hints = [
         "Delivery to the following recipient failed permanently",
+        "failed due to an unavailable mailbox",
         "I'm sorry to have to inform you that your message could not",
         "This is a permanent error",
         "Unknown address error",
@@ -366,7 +370,7 @@ def findAddressInPlainBounce(bounce, real_bounce=None):
     for line in lines:
         match = re.match(r'.*?<([0-9a-zA-Z_.-]+@[0-9a-zA-Z_.-]+)>', line)
         if match is None:
-            match = re.match(r'^\s*([0-9a-zA-Z_.-]+@[0-9a-zA-Z_.-]+)\s*$', line)
+            match = re.match(r'^\s*"?([0-9a-zA-Z_.-]+@[0-9a-zA-Z_.-]+)"?\s*$', line)
         if match is not None:
             email = match.group(1)
             if email.endswith('@polytechnique.org'):
@@ -596,7 +600,10 @@ class DeliveryStatusNotificationFilter(MboxFilter):
             return True
 
         # Detect ill-formatted reports, sent as plain text email
-        if 'MAILER-DAEMON@' in message['From'].upper() and report_message.get_content_type() == 'text/plain':
+        if report_message.get_content_type() == 'text/plain' and (
+            'MAILER-DAEMON@' in message['From'].upper() or
+            'mail delivery failure' == message['Subject'].lower()
+            ):
             email = findAddressInPlainBounce(report_message)
             if email is not None:
                 self.emails.append(email)
