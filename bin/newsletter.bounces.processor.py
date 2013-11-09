@@ -183,7 +183,7 @@ def findAddressInBounce(bounce):
 
     # Permanent failure state
     if int(status[:1]) == 5:
-         return email
+        return email
 
     # Mail forwarding loops, DNS errors and connection timeouts cause X-Postfix errors
     if diag_code is not None and diag_code.startswith('X-Postfix'):
@@ -196,6 +196,94 @@ def findAddressInBounce(bounce):
         "user unknown",
         ]
     if 'quota' in status.lower():
+        return email
+    if diag_code is not None:
+        ldiag_code = diag_code.lower()
+        if any(hint in ldiag_code for hint in failure_hints):
+            return email
+
+    print('! Not a permanent failure status (%s).' % status)
+    if diag_code is not None:
+        print('! Diagnostic code was: %s' % diag_code)
+    return None
+
+
+def findAddressInWeirdDeliveryStatus(message):
+    """Finds the faulty email address in the delivery-status part of an email
+
+    Unlikely to findAddressInBounce, the status does NOT follow RFC 1894, so
+    try to learn to get data nevertheless...
+    Returns None or the email address.
+    """
+    if message.get_content_type() != 'message/delivery-status':
+        print('! Not a valid weird bounce (expected message/delivery-status, found %s).' % message.get_content_type())
+        return None
+    # The per-message-fields don't matter here, get only the per-recipient-fields
+    num_payloads = len(message.get_payload())
+    if num_payloads < 2:
+        print('! Not a valid weird bounce (expected at least 2 parts, found %d).' % num_payloads)
+        return None
+    content = message.get_payload(1)
+    # The content may be missing, but interesting headers still present in the first payload...
+    if not content:
+        content = message.get_payload(0)
+        if 'Action' not in content:
+            print('! Not a valid weird bounce (unable to find content).')
+            return None
+    elif content.get_content_type() != 'text/plain':
+        print('! Not a valid weird bounce (expected text/plain, found %s).' % content.get_content_type())
+        return None
+
+    # Extract the faulty email address
+    if 'Final-Recipient' in content:
+        recipient_match = _recipient_re.search(content['Final-Recipient'])
+        if recipient_match is None:
+            # Be nice, test another regexp
+            recipient_match = _recipient_re2.search(content['Final-Recipient'])
+            if recipient_match is None:
+                print('! Unknown final recipient in weird bounce.')
+                return None
+        email = recipient_match.group(1)
+    elif 'Original-Recipient' in content:
+        recipient = content['Original-Recipient']
+        recipient_match = _recipient_re.search(recipient)
+        if recipient_match is None:
+            # Be nice, test another regexp
+            recipient_match = _recipient_re2.search(recipient)
+            if recipient_match is None:
+                recipient_match = re.match(r'<([^>]+@[^@>]+)>', recipient)
+                if recipient_match is None:
+                    print('! Unknown original recipient in weird bounce.')
+                    return None
+        email = recipient_match.group(1)
+    else:
+        print('! Missing recipient in weird bounce.')
+        return None
+
+    # Check the action field
+    if content['Action'].lower() != 'failed':
+        print('! Not a failed action (%s).' % content['Action'])
+        return None
+
+    status = content['Status']
+    diag_code = content['Diagnostic-Code']
+
+    # Permanent failure state
+    if status and int(status[:1]) == 5:
+        return email
+
+    # Mail forwarding loops, DNS errors and connection timeouts cause X-Postfix errors
+    if diag_code is not None and diag_code.startswith('X-Postfix'):
+        return email
+
+    failure_hints = [
+        "insufficient system storage",
+        "mailbox full",
+        "requested action aborted: local error in processing",
+        "sender address rejected",
+        "user unknown",
+        ]
+    if status and 'quota' in status.lower():
         return email
     if diag_code is not None:
         ldiag_code = diag_code.lower()
@@ -481,6 +569,19 @@ class DeliveryStatusNotificationFilter(MboxFilter):
         report_message = message
         # Find real report inside attachment
         if message.get_content_type() == 'multipart/mixed':
+            # Some MTA confuse multipart/mixed with multipart/report
+            # Let's try to find a report!
+            if len(message.get_payload()) >= 2:
+                try_status = message.get_payload(1)
+                if try_status.get_content_type() == 'message/delivery-status':
+                    # The world would be a nice place if delivery-status were
+                    # formatted as expected...
+                    email = findAddressInWeirdDeliveryStatus(try_status)
+                    if email is not None:
+                        self.emails.append(email)
+                        self.mbox.add(message)
+                        return True
+                try_status = None
             report_message = message.get_payload(0)
 
         # Process report if its type is correct
