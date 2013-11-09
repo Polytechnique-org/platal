@@ -308,7 +308,7 @@ class DirectBouncesFilter(MboxFilter):
             self.seen += 1
             # Special case: ignore mailman notifications for the mailing-list
             # on which the NL is forwarded
-            if message['From'] == 'newsletter-externes-bounces@polytechnique.org':
+            if message['From'] == 'newsletter-externes-owner@polytechnique.org':
                 print('! Dropping a notification from mailman for newsletter-externes@polytechnique.org, this should be OK.')
                 self.seen -= 1
                 return True
