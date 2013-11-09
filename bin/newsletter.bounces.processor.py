@@ -192,6 +192,7 @@ def findAddressInBounce(bounce):
     failure_hints = [
         "insufficient system storage",
         "mailbox full",
+        "requested action aborted: local error in processing",
         "user unknown",
         ]
     if 'quota' in status.lower():
@@ -265,6 +266,7 @@ def findAddressInPlainBounce(bounce, real_bounce=None):
         "I'm sorry to have to inform you that your message could not",
         "This is a permanent error",
         "Unknown address error",
+        "unreachable for too long",
         "550 Requested action not taken",
     ]
     if not any(any(hint in line for hint in permanent_error_hints) for line in lines):
@@ -422,11 +424,14 @@ class OutOfOfficeFilter(MboxFilter):
             r'automatique d\'absence',
             r'AutoReply',
             r'(est|is) absent',
+            r'^En dehors du bureau',
             r'I am out of town',
             r'I am currently away',
             r'(am|is) out of (the )?office',
             r'Notification d\'absence',
+            r'^Out of email reach',
             r'R.{1,2}ponse automatique( :)?',  # There may be encoding error of e acute
+            r'^Respuesta de Estoy ausente:',
         ]
         self.subject_regexes = [re.compile(sre, re.I | re.U) for sre in subject_re]
 
