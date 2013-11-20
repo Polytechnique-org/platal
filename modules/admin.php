@@ -931,7 +931,7 @@ class AdminModule extends PLModule
                                                VALUES  (100, {?}, {?}, {?}, {?}, {?}, {?}, \'primary\')',
                                          $pid, $eduSchools[Profile::EDU_X], $degreeid, $entry_year, $grad_year, $promotion);
                             XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, full_name, directory_name,
-                                                                 display_name, sort_name, lastname, firstname, sex, best_domain)
+                                                                 sort_name, display_name, lastname, firstname, sex, best_domain)
                                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
                                          $infos['hrid'], $type, 0, 'pending', $fullName, $directoryName, $sortName,
                                          $firstname, $lastname, $firstname, $sex, $best_domain);
