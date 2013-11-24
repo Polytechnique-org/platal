@@ -847,30 +847,40 @@ class EmailModule extends PLModule
 
                 $broken_user_list = array();
                 $broken_user_email_count = array();
+                $broken_user_profiles = array();
                 $broken_list = explode("\n", $list);
                 sort($broken_list);
 
                 foreach ($broken_list as $email) {
+                    $userobj = null;
                     if ($user = mark_broken_email($email, true)) {
-                        if ($user['nb_mails'] > 0 && $user['notify']) {
-                            $mail = new PlMailer('emails/broken.mail.tpl');
-                            $dest = User::getSilentWithUID($user['uid']);
-                            $mail->setTo($dest);
-                            $mail->assign('user', $user);
-                            $mail->assign('email', $email);
-                            $mail->send();
-                        } else {
-                            $profile = Profile::get($user['alias']);
-                            WatchProfileUpdate::register($profile, 'broken');
-                        }
-
-                        if (!isset($broken_user_list[$user['uid']])) {
-                            $broken_user_list[$user['uid']] = array($email);
-                        } else {
-                            $broken_user_list[$user['uid']][] = $email;
-                        }
-                        $broken_user_email_count[$user['uid']] = $user['nb_mails'];
+                        $userobj = User::getSilentWithUID($user['uid']);
                     }
+                    if (is_null($userobj)) {
+                        continue;
+                    }
+                    $profile = $userobj->profile();
+                    if (is_null($profile)) {
+                        continue;
+                    }
+                    if ($user['nb_mails'] > 0 && $user['notify']) {
+                        $mail = new PlMailer('emails/broken.mail.tpl');
+                        $mail->setTo($userobj);
+                        $mail->assign('user', $user);
+                        $mail->assign('email', $email);
+                        $mail->send();
+                    } else {
+                        WatchProfileUpdate::register($profile, 'broken');
+                    }
+
+                    $pid = $profile->id();
+                    if (!isset($broken_user_list[$pid])) {
+                        $broken_user_list[$pid] = array($email);
+                    } else {
+                        $broken_user_list[$pid][] = $email;
+                    }
+                    $broken_user_email_count[$pid] = $user['nb_mails'];
+                    $broken_user_profiles[$pid] = $profile;
                 }
 
                 XDB::execute('UPDATE  email_redirect_account
@@ -889,8 +899,8 @@ class EmailModule extends PLModule
                 $csv = fopen('php://output', 'w');
                 fputcsv($csv, array('nom', 'promo', 'bounces', 'nbmails', 'url', 'corps', 'job', 'networking'), ';');
                 $corpsList = DirEnum::getOptions(DirEnum::CURRENTCORPS);
-                foreach ($broken_user_list as $uid => $mails) {
-                    $profile = Profile::get($uid);
+                foreach ($broken_user_list as $pid => $mails) {
+                    $profile = $broken_user_profiles[$pid];
                     $current_corps = $profile->getCorpsName();
                     $jobs = $profile->getJobs();
                     $companies = array();
@@ -903,7 +913,7 @@ class EmailModule extends PLModule
                         $networking_list[] = $networking['address'];
                     }
                     fputcsv($csv, array($profile->fullName(), $profile->promo(),
-                                        join(',', $mails), $broken_user_email_count[$uid],
+                                        join(',', $mails), $broken_user_email_count[$pid],
                                         'https://www.polytechnique.org/marketing/broken/' . $profile->hrid(),
                                         $current_corps, implode(',', $companies), implode(',', $networking_list)), ';');
                 }
