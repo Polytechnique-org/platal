@@ -831,9 +831,13 @@ class XnetGrpModule extends PLModule
                          S::i('uid'), $globals->asso('id'));
             $admins = $globals->asso()->iterToNotify();
             $admin = $admins->next();
-            $to = $admin->bestEmail();
-            while ($admin = $admins->next()) {
-                $to .= ', ' . $admin->bestEmail();
+            if (!is_null($admin)) {
+                $to = $admin->bestEmail();
+                while ($admin = $admins->next()) {
+                    $to .= ', ' . $admin->bestEmail();
+                }
+            } else {
+                $to = '';
             }
 
             $append = "\n"
