@@ -213,9 +213,8 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
                     $mailer->assign('asso', $nom);
                     $mailer->assign('diminutif', $diminutif);
                     $mailer->assign('evt', $evt);
-                    $mailer->assign('payment', $id);
+                    $mailer->assign('eid', $this->evt);
                     $mailer->assign('prenom', $u['user']->firstName());
-                    $mailer->assign('topay', $topay);
                     $mailer->send();
                 }
             }
