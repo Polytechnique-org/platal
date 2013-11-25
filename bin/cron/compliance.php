@@ -31,6 +31,7 @@ require './connect.db.inc.php';
  *      no matter what.
  */
 function discardExpiredSessions($userPerms, $retentionPeriod, $minimalBacklog) {
+    $begin = time();
     switch ($userPerms) {
       case 'user':
         $state   = 'active';
@@ -48,24 +49,45 @@ function discardExpiredSessions($userPerms, $retentionPeriod, $minimalBacklog) {
         return;
     }
 
-    XDB::execute(
-        "DELETE  s
-           FROM  log_sessions AS s
-           JOIN  (SELECT  a.uid,
-                          (SELECT  us.start
-                             FROM  log_sessions AS us
-                            WHERE  us.uid = a.uid AND (us.suid IS NULL OR us.suid = 0)
-                         ORDER BY  us.start DESC
-                            LIMIT  {?}, 1) AS no_discard_limit
-                    FROM  #x5dat#.accounts AS a
-                   WHERE  a.state = {?} AND a.is_admin = {?}
-                ORDER BY  a.uid ASC) AS ut ON (ut.uid = s.uid)
-          WHERE  s.start < DATE_SUB(NOW(), INTERVAL {?} MONTH)
-                 AND s.start < ut.no_discard_limit",
-        $minimalBacklog - 1, $state, $isAdmin, $retentionPeriod);
+    list($low, $high) = XDB::fetchOneRow(
+        "SELECT  MIN(uid), MAX(uid)
+           FROM  #x5dat#.accounts
+           WHERE  state = {?} AND is_admin = {?}",
+        $state, $isAdmin);
 
-    $affectedRows = XDB::affectedRows();
-    echo "Users with permission '$userPerms': removed $affectedRows sessions.\n";
+    $batchSize = 500;
+    $nbBatches = 0;
+    $affectedRows = 0;
+
+    // Run in batches.
+    for ($lowUID = $low; $lowUID <= $high; $lowUID += $batchSize) {
+
+        // Slight optimization for last loop: adjust to exactly what's necessary.
+        $highUID = min($high + 1, $lowUID + $batchSize);
+
+        XDB::execute(
+            "DELETE  s
+               FROM  log_sessions AS s
+               JOIN  (SELECT  a.uid,
+                              (SELECT  us.start
+                                 FROM  log_sessions AS us
+                                WHERE  us.uid = a.uid AND (us.suid IS NULL OR us.suid = 0)
+                             ORDER BY  us.start DESC
+                                LIMIT  {?}, 1) AS no_discard_limit
+                        FROM  #x5dat#.accounts AS a
+                       WHERE  a.state = {?} AND a.is_admin = {?}
+                              AND a.uid >= {?} AND a.uid < {?}
+                    ORDER BY  a.uid ASC) AS ut ON (ut.uid = s.uid)
+              WHERE  s.start < DATE_SUB(NOW(), INTERVAL {?} MONTH)
+                     AND s.start < ut.no_discard_limit",
+            $minimalBacklog - 1, $state, $isAdmin, $lowUID, $highUID, $retentionPeriod);
+
+        $nbBatches += 1;
+        $affectedRows += XDB::affectedRows();
+    }
+
+    $duration = time() - $begin;
+    echo "Users with permission '$userPerms': removed $affectedRows sessions in $duration seconds ($nbBatches batches).\n";
 }
 
 /**
