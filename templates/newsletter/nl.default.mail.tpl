@@ -56,6 +56,8 @@
 {/foreach}
 {/foreach}
 
+{$issue->signature('text')}
+
 --------------------------------------------------------------------
 Cette lettre est envoyée aux membres du groupe {$nl->group} par
 l'intermédiaire de Polytechnique.org.
@@ -111,6 +113,7 @@ ne plus recevoir : &lt;http://www.polytechnique.org/{$nl->prefix()}/out/nohash/{
         <div class="top_lnk"><a href="{$prefix}#top_lnk">Revenir au sommaire</a></div>
       {/foreach}
       {/foreach}
+      <div class="signature">{$issue->signature('html')|smarty:nodefaults}</div>
       <div class="foot1">
         Cette lettre est envoyée à tous les membres du groupe {$nl->group}
         par l'intermédiaire de Polytechnique.org.
