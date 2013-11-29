@@ -20,42 +20,16 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso->nom}&nbsp;: Ajout d'un membre</h1>
+{config_load file="mails.conf" section="xnet_forced_subscription"}
+{if $mail_part eq 'head'}
+{from full=#from#}
+{to addr="$to"}
+{subject text="Inscription au groupe $group"}
+{elseif $mail_part eq 'wiki'}
+Bonjour,
 
-<form method="post" action="{$platal->ns}member/new/">
-  {xsrf_token_field}
-  <ul class='descr'>
-    <li>
-      Pour ajouter un X dans ton groupe, il suffit d'entrer ici une de ses
-      adresses email @polytechnique.org. Celui-ci sera prévenu de son inscription.
-    </li>
-    <li>
-      S'il s'agit d'un X qui n'est pas inscrit à Polytechnique.org, il faut
-      indiquer l'adresse email puis cocher la case qui se trouve sous le
-      formulaire et indiquer ses nom, prénom et/ou promotion pour le retrouver.
-    </li>
-    <li>
-      Pour ajouter un extérieur dans ton groupe, il suffit d'entrer ici son
-      adresse email, tu seras ensuite redirigé vers une page te permettant
-      d'éditer son profil (nom, prenom&hellip;).
-    </li>
-  </ul>
-  <table class="tinybicol">
-    <tr>
-      <td class="center" colspan="2">
-        <input type="text" id="email" name="email" size="40" value="{if t($platal->argv[1])}{$platal->argv[1]}{/if}" />
-        <input type="hidden" name="force_continue" value="{if t($force_continue)}1{else}0{/if}" />
-        <input type='submit' value='Ajouter'
-          onclick='this.form.action += this.form.email.value' />
-      </td>
-    </tr>
-    {include file="xnetgrp/members_new_form.tpl" registered=false}
-  </table>
-</form>
-{literal}
-<script type="text/javascript">
-  $("#email").focus();
-</script>
-{/literal}
+Tu viens d'être inscrit au groupe {$group} sur Polytechnique.net par l'animateur de celui-ci, {$anim}. Si tu es opposé à cette inscription, tu peux l'annuler en cliquant [[http://www.polytechnique.net/{$diminutif}/unsubscribe|sur ce lien]].
+{/if}
+{include file="include/signature.mail.tpl"}
 
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2: *}
