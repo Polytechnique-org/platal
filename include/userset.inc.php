@@ -383,12 +383,12 @@ class MapView implements PlView
         Platal::load('geoloc');
 
         if (Get::b('ajax')) {
-            $pids = $this->set->getIds(new PlLimit());
+            $uids = $this->set->getIds(new PlLimit());
+            $pids = Profile::getPIDsFromUIDs($uids);
             GeolocModule::assign_json_to_map($page, $pids);
             $page->runJSON();
             exit;
         } else {
-            $this->set->getIds(new PlLimit());
             GeolocModule::prepare_map($page);
             return 'geoloc/index.tpl';
         }
@@ -459,7 +459,12 @@ class AddressesView implements PlView
 
     public function apply(PlPage $page)
     {
-        $pids = $this->set->getIds(new PlLimit());
+        if ($this->set instanceof UserSet) {
+            $uids = $this->set->getIds(new PlLimit());
+            $pids = Profile::getPIDsFromUIDs($uids);
+        } else {
+            $pids = $this->set->getIds(new PlLimit());
+        }
         $visibility = Visibility::defaultForRead(Visibility::VIEW_AX);
         pl_cached_content_headers('text/x-csv', 'iso-8859-1', 1, 'adresses.csv');
 
