@@ -36,8 +36,8 @@ Le groupe {$asso->nom} compte {if t($full_count)}{$full_count}{elseif $plset_tot
   </li>
   <li>
     <a href="{$platal->ns}directory/sync">
-      {icon name=arrow_refresh title="Synchroniser avec les listes"}
-      Synchroniser avec les listes
+      {icon name=arrow_refresh title="Importer dans l'annuaire à partir de toutes les listes"}
+      Importer dans l'annuaire à partir de toutes les listes
     </a>
   </li>
   <li>
