@@ -27,7 +27,7 @@
 {elseif $mail_part eq 'wiki'}
 Chers organisateurs,
 
-{$name} a mis a jour son inscription à cet événement. En voici le détail :
+{$name} a mis à jour son inscription à cet événement. En voici le détail :
 {foreach from=$subs item=count key=i}
 {assign var=j value=$i-1}
 * {$moments.$j.titre} : {$count} personne{if $count > 1}s{/if}
