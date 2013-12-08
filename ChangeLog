@@ -1,8 +1,15 @@
 ================================================================================
 VERSION 1.1.10                                                       XX XX XXXX
 
+    * Maps:
+        - Fix global map for users where uid ≠ pid                         -XEL
+
     * Misc:
         - Improve performance of end-of-month sessions cleanup             -XEL
+
+    * XnetGrp:
+        - Notify force-subscribed new members of groups                    -KIT
+        - Disable "group-level email" for groups with 1000+ members        -FUL
 
 ================================================================================
 VERSION 1.1.9                                                        15 10 2013
@@ -2007,4 +2014,4 @@ ACRONYMS:
     * VZA: Vincent Zanotti      (vinZ2)     <vincent.zanotti@m4x.org>
 
 ================================================================================
-vim:et:ts=4:sw=4:tw=80:enc=utf-8:
+vim:et:ts=4:sw=4:tw=80:
