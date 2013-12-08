@@ -28,7 +28,15 @@
 {elseif $mail_part eq 'wiki'}
 Bonjour,
 
-Tu viens d'être inscrit au groupe {$group} sur Polytechnique.net par l'animateur de celui-ci, {$anim}. Si tu es opposé à cette inscription, tu peux l'annuler en cliquant [[http://www.polytechnique.net/{$diminutif}/unsubscribe|sur ce lien]].
+Tu viens d'être inscrit au groupe {$group} sur Polytechnique.net par l'animateur de celui-ci, {$anim}.
+
+Pour plus de détails sur l'activité du groupe, n'hésite pas à consulter :
+* [[http://www.polytechnique.net/{$diminutif}|la présentation]]
+* [[http://www.polytechnique.net/{$diminutif}/annuaire|l'annuaire]]
+* [[http://www.polytechnique.net/{$diminutif}/events|les prochains événements]]
+
+
+Si tu ne souhaites pas rejoindre ce groupe, tu peux t'en désinscrire sur [[http://www.polytechnique.net/{$diminutif}/unsubscribe|cette page]].
 {/if}
 {include file="include/signature.mail.tpl"}
 
