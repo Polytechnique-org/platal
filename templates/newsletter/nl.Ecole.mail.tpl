@@ -76,7 +76,7 @@ ne plus recevoir : &lt;https://www.polytechnique.org/epletter/out/{if $hash}{$ha
       <div class="intro">{$issue->head($user, 'html')|smarty:nodefaults}</div>
       <div class="signature">{$issue->signature('html')|smarty:nodefaults}</div>
       <div class="foot1">
-        Cette lettre est envoyée par l'AX grâce aux outils de Polytechnique.org.
+        Cette lettre est envoyée par l'École polytechnique grâce aux outils de Polytechnique.org.
       </div>
       <div class="foot2">
         [<a href="https://www.polytechnique.org/epletter">archives</a>&nbsp;|

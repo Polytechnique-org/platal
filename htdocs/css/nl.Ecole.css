@@ -20,7 +20,7 @@
 
 
 
-div.ax_mail {
+div.x_mail {
     margin : auto;
     width : 72ex;
     font-family : "Georgia", serif;
@@ -30,17 +30,17 @@ div.ax_mail {
     color : #4a4a49;
 }
 
-div.ax_mail a[href] {
+div.x_mail a[href] {
     background-color : #fff;
     color : #546a77;
 }
 
-div.ax_mail a[href]:hover {
+div.x_mail a[href]:hover {
     background-color : #fff;
     color : #546a77;
 }
 
-div.ax_mail div.title {
+div.x_mail div.title {
     margin : 0ex;
     padding : 110px 1ex 1ex 1ex;
     font-size : 120%;
@@ -53,16 +53,16 @@ div.ax_mail div.title {
     background-image: url(https://www.polytechnique.org/images/x_mail_header.jpg);
 }
 
-div.ax_mail div.intro {
+div.x_mail div.intro {
     margin : 4ex 2ex 2ex 2ex;
 }
 
-div.ax_mail div.body {
+div.x_mail div.body {
     margin : 0;
     padding : 0 20px;
 }
 
-div.ax_mail div.body h1 {
+div.x_mail div.body h1 {
     margin : 4ex -20px 2ex -20px;
     padding : 0.4ex 20px;
     font-size : 100%;
@@ -75,7 +75,7 @@ div.ax_mail div.body h1 {
 font-family: "Century Gothic", sans-serif;
 }
 
-div.ax_mail div.body h2 {
+div.x_mail div.body h2 {
     margin : 2ex -20px 2ex -20px;
     padding : 0.4ex 40px;
     font-size : 100%;
@@ -88,7 +88,7 @@ div.ax_mail div.body h2 {
 font-family: "Century Gothic", sans-serif;
 }
 
-div.ax_mail div.signature {
+div.x_mail div.signature {
     margin : 2ex 2ex 0 0ex;
     font-size : 90%;
     font-style: italic;
@@ -96,7 +96,7 @@ div.ax_mail div.signature {
 
 }
 
-div.ax_mail div.foot1 {
+div.x_mail div.foot1 {
     margin : 2ex 0 0;
     padding : 0.5ex 2ex;
     font-size : 90%;
@@ -108,7 +108,7 @@ div.ax_mail div.foot1 {
     text-align : center;
 }
 
-div.ax_mail div.foot2 {
+div.x_mail div.foot2 {
     padding : 1ex 0;
     font-size : 90%;
     background-color : #fff;
