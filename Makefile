@@ -170,6 +170,7 @@ $(MEDAL_THUMBNAILS): $(subst /medals/thumb/,/medals/,$(@F))
 ## jquery
 ##
 JQUERY_VERSION=1.5.1
+JQUERY_COLOR_VERSION=2.1.2
 JQUERY_PLUGINS=color form
 JQUERY_PLUGINS_PATHES=$(addprefix htdocs/javascript/jquery.,$(addsuffix .js,$(JQUERY_PLUGINS)))
 
@@ -191,7 +192,7 @@ htdocs/javascript/jquery.xorg.js: htdocs/javascript/jquery.js $(JQUERY_PLUGINS_P
 htdocs/javascript/jquery.ui.xorg.js: $(JQUERY_UI_PATHES) htdocs/javascript/jquery.ui.datepicker-fr.js
 	cat $^ > $@
 
-htdocs/javascript/jquery-$(JQUERY_VERSION).min.js: DOWNLOAD_SRC = http://jquery.com/src/$(@F)
+htdocs/javascript/jquery-$(JQUERY_VERSION).min.js: DOWNLOAD_SRC = http://code.jquery.com/$(@F)
 htdocs/javascript/jquery-$(JQUERY_VERSION).min.js:
 	@-rm htdocs/javascript/jquery-*.min.js
 	@$(download)
@@ -199,9 +200,17 @@ htdocs/javascript/jquery-$(JQUERY_VERSION).min.js:
 htdocs/javascript/jquery.js: htdocs/javascript/jquery-$(JQUERY_VERSION).min.js
 	ln -snf $(<F) $@
 
-$(JQUERY_PLUGINS_PATHES): DOWNLOAD_SRC = http://plugins.jquery.com/files/$(@F)_0.txt
-$(JQUERY_PLUGINS_PATHES):
-	@-rm htdocs/javascript/jquery.ui*.$*.js
+htdocs/javascript/jquery.color-$(JQUERY_COLOR_VERSION).min.js: DOWNLOAD_SRC = http://code.jquery.com/color/$(@F)
+htdocs/javascript/jquery.color-$(JQUERY_COLOR_VERSION).min.js:
+	@-rm htdocs/javascript/jquery.color-*.min.js
+	@$(download)
+
+htdocs/javascript/jquery.color.js: htdocs/javascript/jquery.color-$(JQUERY_COLOR_VERSION).min.js
+	ln -snf $(<F) $@
+
+htdocs/javascript/jquery.form.js: DOWNLOAD_SRC = http://malsup.github.com/min/jquery.form.min.js
+htdocs/javascript/jquery.form.js:
+	@-rm htdocs/javascript/jquery.form*.js
 	@$(download)
 
 htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js: DOWNLOAD_SRC = http://jquery-ui.googlecode.com/svn/tags/$(JQUERY_UI_VERSION)/ui/minified/jquery.ui.$*.min.js
