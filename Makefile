@@ -287,8 +287,10 @@ restart-listrpc: stop-listrpc start-listrpc
 
 ################################################################################
 
-.PHONY: build dist clean core http* check test
-.PHONY: wiki build-wiki
+.PHONY: all build dist clean core http* q check test
+.PHONY: wiki build-wiki get-wiki
+.PHONY: openid
 .PHONY: banana banana-sub htdocs/images/banana htdocs/css/banana.css
+.PHONY: medals jquery maps raven
 .PHONY: start-listrpc start-listrpc-fg stop-listrpc restart-listrpc
 .PHONY: up update doc
