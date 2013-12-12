@@ -26,6 +26,7 @@ class XorgPage extends PlPage
 
     public function __construct()
     {
+        global $globals;
         parent::__construct();
 
         // Set the default page
@@ -37,6 +38,9 @@ class XorgPage extends PlPage
         $this->addJsLink('overlib.js');
         $this->addJsLink('core.js');
         $this->addJsLink('xorg.js');
+        if ($globals->core->sentry_js_dsn) {
+            $this->addJsLink('raven.min.js');
+        }
         $this->setTitle('le site des élèves et anciens élèves de l\'École polytechnique');
         if (S::logged() && S::user()->checkPerms('admin')) {
             $types = array(S::user()->type);

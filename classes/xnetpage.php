@@ -27,6 +27,7 @@ class XnetPage extends PlPage
 
     public function __construct()
     {
+        global $globals;
         parent::__construct();
 
         $this->register_function('list_all_my_groups', 'list_all_my_groups');
@@ -48,6 +49,9 @@ class XnetPage extends PlPage
         $this->addJsLink('overlib.js');
         $this->addJsLink('core.js');
         $this->addJsLink('xorg.js');
+        if ($globals->core->sentry_js_dsn) {
+            $this->addJsLink('raven.min.js');
+        }
         $this->setTitle('Les associations polytechniciennes');
     }
 

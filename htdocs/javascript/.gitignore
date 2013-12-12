@@ -9,3 +9,6 @@
 
 # Google Maps auxiliary scripts
 /markerclusterer.js
+
+# Raven-js
+/raven*.js

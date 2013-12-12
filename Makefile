@@ -25,7 +25,7 @@ endef
 
 all: build
 
-build: core conf static banana wiki openid medals jquery maps
+build: core conf static banana wiki openid medals jquery maps raven
 
 check:
 	@!(find . -name '*.php' -exec php -l {} ";" | grep -v 'No syntax errors detected')
@@ -254,6 +254,19 @@ maps: htdocs/javascript/markerclusterer.js
 ## Try and use taged version asap (from http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclusterer/…).
 htdocs/javascript/markerclusterer.js:
 	wget "http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_compiled.js?r=308" -O htdocs/javascript/markerclusterer.js
+
+##
+## Raven-js
+##
+RAVEN_VERSION=1.1.2
+raven: htdocs/javascript/raven.min.js
+
+# Documentation: http://raven-js.readthedocs.org/en/latest/install/index.html
+htdocs/javascript/raven.min.js: DOWNLOAD_SRC = http://cdn.ravenjs.com/1.1.2/raven.min.js
+htdocs/javascript/raven.min.js:
+	@-rm htdocs/javascript/raven*.js:
+	$(download)
+
 
 ##
 ## lists rpc

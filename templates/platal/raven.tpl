@@ -21,8 +21,7 @@
 {**************************************************************************}
 
 {if $globals->core->sentry_js_dsn}
-    {* Minified raven *}
-    <script type="text/javascript" src="//d3nslu0hdya83q.cloudfront.net/dist/1.0/raven.min.js"></script>
+    {* Raven.js is included with PlPage::addJsLink('raven.min.js') *}
     <script type="text/javascript">
     {literal}
         var options = {};
