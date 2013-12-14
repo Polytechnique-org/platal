@@ -53,7 +53,7 @@ $(function() {
     <td style="width: 5em">
       <strong>ACTION:</strong>
     </td>
-    <td colspan="{$cols-1}" style="align: left">
+    <td colspan="{$cols-1}" style="text-align: left">
       <pre style="padding: 0; margin: 0;">{$query.action}</pre>
     </td>
   </tr>
