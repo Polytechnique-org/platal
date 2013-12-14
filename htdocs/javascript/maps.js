@@ -77,7 +77,7 @@ function ColoredIcon(color)
 {
     this.set('starcolor', null);
     this.set('color', color);
-    this.set('icon', 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=|' + color);
+    this.set('icon', 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=|' + color);
 }
 
 ColoredIcon.prototype = new google.maps.MVCObject();

@@ -251,9 +251,12 @@ $(JSTREE_PATH):
 ##
 maps: htdocs/javascript/markerclusterer.js
 
-## Try and use taged version asap (from http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclusterer/…).
+## Try and use taged version asap (from http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclusterer/...).
+## Force to use https to retrieve images
 htdocs/javascript/markerclusterer.js:
-	wget "http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_compiled.js?r=308" -O htdocs/javascript/markerclusterer.js
+	wget 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_compiled.js?r=308' -O $@.tmp -q || ($(RM) $@.tmp; false)
+	sed 's,http\(://google-maps-utility-library-v3.googlecode.com\),https\1,g' < $@.tmp > $@
+	$(RM) $@.tmp
 
 ##
 ## Raven-js
