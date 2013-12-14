@@ -12,3 +12,4 @@
 
 # Raven-js
 /raven*.js
+/raven.min.map

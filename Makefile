@@ -259,12 +259,12 @@ htdocs/javascript/markerclusterer.js:
 ## Raven-js
 ##
 RAVEN_VERSION=1.1.2
-raven: htdocs/javascript/raven.min.js
+raven: $(addprefix htdocs/javascript/raven.,min.js min.map js)
 
 # Documentation: http://raven-js.readthedocs.org/en/latest/install/index.html
-htdocs/javascript/raven.min.js: DOWNLOAD_SRC = http://cdn.ravenjs.com/1.1.2/raven.min.js
-htdocs/javascript/raven.min.js:
-	@-rm htdocs/javascript/raven*.js:
+htdocs/javascript/raven.%: DOWNLOAD_SRC = http://cdn.ravenjs.com/$(RAVEN_VERSION)/$(@F)
+htdocs/javascript/raven.%:
+	@-rm $@
 	$(download)
 
 
