@@ -147,7 +147,7 @@ function addSearchEngine()
 
             return this.overlib({
                 text: text,
-                caption: this.attr('title') || goodies.default_title,
+                caption: this.attr('title') || goodies[type].default_title,
                 close_text: 'Fermer',
                 delay: 800,
                 sticky: true,
