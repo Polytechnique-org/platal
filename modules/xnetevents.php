@@ -371,7 +371,7 @@ class XnetEventsModule extends PLModule
         $all = !Env::v('item_id', false);
 
         $participants = get_event_participants($evt, $item_id, $tri);
-        $title = 'Nom;Prénom;Promotion';
+        $title = 'Nom;Prénom;Promotion;Email';
         if ($admin) {
             $title .=';Société;Poste';
         }
@@ -394,7 +394,7 @@ class XnetEventsModule extends PLModule
         if ($participants) {
             foreach ($participants as $participant) {
                 $user = $participant['user'];
-                $line = $user->lastName() . ';' . $user->firstName() . ';' . $user->promo();
+                $line = $user->lastName() . ';' . $user->firstName() . ';' . $user->promo() . ';' . $user->bestEmail();
                 if ($admin && $user->hasProfile()) {
                     $line .= ';' . $user->profile()->getMainJob()->company->name . ';' . $user->profile()->getMainJob()->description;
                 } else  {
