@@ -50,11 +50,6 @@
 {$issue->signature('text')}
 
 --------------------------------------------------------------------
-{if $is_mail}
-Pour faire un don : <http://fondationx.fr/fond/paiement.php>
-{else}
-Pour faire un don : &lt;http://fondationx.fr/fond/paiement.php&gt;
-{/if}
 Cette lettre est envoyée par la FX grâce aux outils de Polytechnique.org.
 
 {if $is_mail}
@@ -99,7 +94,6 @@ ne plus recevoir : &lt;https://www.polytechnique.org/fxletter/out/{if $hash}{$ha
       {/foreach}
       {/foreach}
       <div class="signature">{$issue->signature('html')|smarty:nodefaults}</div>
-      <div class="give"><a href="http://fondationx.fr/fond/paiement.php">Faire un don</a></div>
       <div class="foot1">
         Cette lettre est envoyée par la Fondation grâce aux outils de Polytechnique.org.
       </div>
