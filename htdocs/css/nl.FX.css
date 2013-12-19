@@ -19,98 +19,100 @@
  ***************************************************************************/
 
 
+
 div.fx_mail {
     margin : auto;
     width : 72ex;
-    font-family : "Georgia", "Times New Roman", serif;
+    font-family : "Georgia", serif;
     font-size : 10pt;
     text-align : justify;
     background-color : #fff;
-    color : #000;
+    color : #4a4a49;
 }
 
-/* Links */
 div.fx_mail a[href] {
-    background-color: transparent;
-    color : #444;
-    text-decoration : none;
-    background-image: none;
+    background-color : #fff;
+    color : #546a77;
 }
 
 div.fx_mail a[href]:hover {
-    background-color: transparent;
-    color : #D44;
-    text-decoration : none;
-    background-image: none;
+    background-color : #fff;
+    color : #546a77;
 }
 
-/* Title */
-div.fx_mail .title {
-    background-color: #FA2;
-    margin : 0 0 3ex;
-    padding : 4.5ex 1ex 1ex 15ex;
-    font-size : 130%;
+div.fx_mail div.title {
+    margin : 0ex;
+    padding : 120px 1ex 1ex 1ex;
+    font-size : 120%;
     font-weight : bold;
     text-align : left;
+    color : #0a293b;
+    font-family: "Century Gothic", sans-serif;
+    background-repeat : no-repeat;
+    background-position : 0ex 0ex;
+    background-image: url(https://www.polytechnique.org/images/fx_mail_header.jpg);
 }
 
-/* Intro */
 div.fx_mail div.intro {
     margin : 4ex 2ex 2ex 2ex;
 }
 
+div.fx_mail div.body {
+    margin : 0;
+    padding : 0 20px;
+}
+
+div.fx_mail div.body h1 {
+    margin : 4ex -20px 2ex -20px;
+    padding : 0.4ex 20px;
+    font-size : 100%;
+    font-weight : bold;
+    background-color : #fff;
+    color : #0a293b;
+    border-width : thin 0;
+    border-style : solid;
+    border-color : #a40000;
+font-family: "Century Gothic", sans-serif;
+}
+
+div.fx_mail div.body h2 {
+    margin : 2ex -20px 2ex -20px;
+    padding : 0.4ex 40px;
+    font-size : 100%;
+    font-weight : normal;
+    background-color : #fff;
+    color : #0a293b;
+    border-width : 0 0 thin 0;
+    border-style : dotted;
+    border-color : #a40000;
+font-family: "Century Gothic", sans-serif;
+}
+
 div.fx_mail div.signature {
-    margin : 3ex 2ex 0 0;
+    margin : 2ex 2ex 0 0ex;
     font-size : 90%;
     font-style: italic;
     text-align : right;
+
 }
 
-/* Category */
-div.fx_mail h1.category {
-    margin: 3ex 0 2ex;
-    padding : 1.5ex 2ex 0.5ex 1ex;
-    font-size : 120%;
-    font-weight : bold;
-    text-align : right;
-}
-
-/* Article title */
-div.fx_mail h2.xorg_nl {
+div.fx_mail div.foot1 {
     margin : 2ex 0 0;
-    padding : 0.4ex 2ex;
-    font-size : 100%;
-    font-weight : bold;
-    font-style : italic;
+    padding : 0.5ex 2ex;
+    font-size : 90%;
+    background-color : #fff;
+    color : #4a4a49;
     border-width : thin 0;
     border-style : solid;
+    border-color : #ddd;
+    text-align : center;
 }
 
-/* Article text */
-div.fx_mail div.art {
-    margin: 2ex 3ex;
+div.fx_mail div.foot2 {
+    padding : 1ex 0;
+    font-size : 90%;
+    background-color : #fff;
+    color : #4a4a49;
+    text-align : center;
 }
 
-/* Article details */
-div.fx_mail div.app {
-    margin : 2ex 6ex 0 3ex;
-    font-size : 95%;
-    text-align : left;
-    color: #333;
-}
-
-/* Give */
-div.fx_mail div.give {
-    font-weight: bold;
-    text-align: center;
-    padding: 0.5ex 0 0.5ex 0;
-    border-top: solid 2ex #FA2;
-}
-
-/* Footer */
-div.fx_mail div.foot1, div.fx_mail div.foot2 {
-    background-color: #FA2;
-    text-align: center;
-    font-size: 90%;
-    padding: 0.5ex 0;
-}
