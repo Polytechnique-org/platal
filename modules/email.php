@@ -791,7 +791,8 @@ class EmailModule extends PLModule
                                                                               AND er.type != \'imap\' AND er.type != \'homonym\')
                                   LEFT JOIN  account_profiles       AS ap ON (ap.uid = a.uid AND FIND_IN_SET(\'owner\', ap.perms))
                                   LEFT JOIN  profile_display        AS pd ON (ap.pid = pd.pid)
-                                      WHERE  a.state = \'active\' AND er.redirect IS NULL AND FIND_IN_SET(\'mail\', at.perms)
+                                  LEFT JOIN  profiles               AS p ON (ap.pid = p.pid)
+                                      WHERE  a.state = \'active\' AND er.redirect IS NULL AND FIND_IN_SET(\'mail\', at.perms) AND p.deathdate IS NULL
                                    GROUP BY  a.uid
                                    ORDER BY  pd.promo, a.hruid'));
     }
