@@ -91,7 +91,14 @@
       </td>
       <td>
         <input type="hidden" name="pwhash" />
-        <input type="password" size="10" maxlength="256" name="password1" /><br/>
+        <input type="password" size="10" maxlength="256" name="password1" />
+      </td>
+    </tr>
+    <tr class="impair">
+      <td class="titre">
+        Confirmation du mot de passe
+      </td>
+      <td>
         <input type="password" size="10" maxlength="256" name="password2" /> (retape ton mot de passe)<br />
         {checkpasswd prompt="password1" text="Terminer la pré-inscription"}
       </td>
