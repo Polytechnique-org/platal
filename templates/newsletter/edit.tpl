@@ -145,7 +145,7 @@
       </td>
       <td>
         {if $issue->isEditable()}
-        Le {valid_date name="send_before_date" value=$issue->getSendBeforeDate() from=1 to=15} vers {html_select_time prefix="send_before_time_" time=$issue->getSendBeforeTime() display_hours=true display_minutes=false display_seconds=false display_meridian=false use_24_hours=true} heures
+        Le {valid_date name="send_before_date" value=$issue->getSendBeforeDate() from=0 to=15} vers {html_select_time prefix="send_before_time_" time=$issue->getSendBeforeTime() display_hours=true display_minutes=false display_seconds=false display_meridian=false use_24_hours=true} heures
         {else}
         Le {$issue->send_before|date_format:"%d/%m/%Y vers %Hh"}
         {/if}
