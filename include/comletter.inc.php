@@ -23,6 +23,10 @@
 
 class ComLArticle
 {
+    // Maximum number of lines per article, as wanted by the NL master
+    const MAX_LINES_PER_ARTICLE = 4;
+    const MAX_CHARACTERS_PER_LINE = 68;
+
     // {{{ properties
 
     public $aid;
@@ -104,6 +108,35 @@ class ComLArticle
         return $art;
     }
 
+    // }}}
+    // {{{ function check()
+
+    public function check()
+    {
+        $rest = $this->remain();
+
+        return $rest['remaining_lines'] >= 0;
+    }
+
+    // }}}
+    // {{{ function remain()
+
+    public function remain()
+    {
+        $text  = MiniWiki::WikiToText($this->body);
+        $array = explode("\n", wordwrap($text, self::MAX_CHARACTERS_PER_LINE));
+        $lines_count = 0;
+        foreach ($array as $line) {
+            if (trim($line) != '') {
+                ++$lines_count;
+            }
+        }
+
+        return array(
+            'remaining_lines'                    => self::MAX_LINES_PER_ARTICLE - $lines_count,
+            'remaining_characters_for_last_line' => self::MAX_CHARACTERS_PER_LINE - strlen($array[count($array) - 1])
+       );
+    }
     // }}}
 }
 

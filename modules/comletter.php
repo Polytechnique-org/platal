@@ -32,6 +32,7 @@ class ComLetterModule extends NewsletterModule
         return array(
             'comletter'                   => $this->make_hook('nl',              AUTH_COOKIE, 'user'),
             'comletter/submit'            => $this->make_hook('coml_submit',     AUTH_PASSWD, 'user'),
+            'comletter/remaining'         => $this->make_hook('coml_remaining',  AUTH_PASSWD, 'user'),
             'comletter/out'               => $this->make_hook('out',             AUTH_PUBLIC),
             'comletter/show'              => $this->make_hook('nl_show',         AUTH_COOKIE, 'user'),
             'comletter/search'            => $this->make_hook('nl_search',       AUTH_COOKIE, 'user'),
@@ -76,6 +77,19 @@ class ComLetterModule extends NewsletterModule
             $page->assign('submited', true);
         }
         $page->addCssLink($nl->cssFile());
+    }
+
+    function handler_coml_remaining($page)
+    {
+        pl_content_headers('text/html');
+        $page->changeTpl('newsletter/remaining.tpl', NO_SKIN);
+
+        $article = new ComLArticle('', Post::t('body'), '');
+        $rest = $article->remain();
+
+        $page->assign('too_long', $rest['remaining_lines'] < 0);
+        $page->assign('last_line', ($rest['remaining_lines'] == 0));
+        $page->assign('remaining', ($rest['remaining_lines'] == 0) ? $rest['remaining_characters_for_last_line'] : $rest['remaining_lines']);
     }
 
     function handler_out($page, $hash = null, $issue_id = null)

@@ -36,6 +36,14 @@ Nous te recontacterons éventuellement si nous avons des renseignements à te de
 
 
 {if t($art)}
+
+{if !$art->check()}
+<p class='erreur'>
+L'article que tu as proposé est trop long&nbsp;!<br />
+Il te faut te limiter à 4 lignes de 68 caractères.
+</p>
+{/if}
+
 <form action="comletter/submit" method='post'>
   <table class='bicol'>
     <tr><th>Version texte</th></tr>
@@ -50,6 +58,7 @@ Nous te recontacterons éventuellement si nous avons des renseignements à te de
         </div>
       </td>
     </tr>
+    {if $art->check()}
     <tr>
       <th>Soumettre</th>
     </tr>
@@ -67,6 +76,7 @@ Nous te recontacterons éventuellement si nous avons des renseignements à te de
         <input type='submit' name='valid' value='Soumettre' />
       </td>
     </tr>
+    {/if}
   </table>
 </form>
 
@@ -93,7 +103,9 @@ Tu peux <a href='comletter/submit#conseils'>lire les conseils de rédaction</a> 
     <tr class="pair">
       <td class='titre'>Contenu</td>
       <td>
-        <textarea cols="68" rows="8" name="body" >{if t($art)}{$art->body()}{/if}</textarea>
+        <textarea onchange="{literal}$.post('comletter/remaining/', {'body': this.value}, function(data) {$('#remaining').html(data)}){/literal}"
+                  onkeyup="{literal}$.post('comletter/remaining/', {'body': this.value}, function(data) {$('#remaining').html(data)}){/literal}"
+                  cols="68" rows="4" name="body" >{if t($art)}{$art->body()}{/if}</textarea>
       </td>
     </tr>
     <tr class="pair">
