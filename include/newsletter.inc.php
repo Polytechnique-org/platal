@@ -44,6 +44,7 @@ class NewsLetter
 
     // Diminutif of X.net groups with a specific NL view
     const GROUP_XORG = 'Polytechnique.org';
+    const GROUP_COMMUNITY = 'Annonces';
     const GROUP_AX = 'AX';
     const GROUP_EP = 'Ecole';
     const GROUP_FX = 'FX';
@@ -548,6 +549,8 @@ class NewsLetter
         switch ($this->group) {
         case self::GROUP_XORG:
             return 'nl';
+        case self::GROUP_COMMUNITY:
+            return 'comletter';
         case self::GROUP_AX:
             return 'ax';
         case self::GROUP_EP:
@@ -574,6 +577,8 @@ class NewsLetter
         switch ($this->group) {
         case self::GROUP_XORG:
             return 'admin/newsletter';
+        case self::GROUP_COMMUNITY:
+            return 'comletter/admin';
         case self::GROUP_AX:
             return 'ax/admin';
         case self::GROUP_EP:
@@ -600,6 +605,8 @@ class NewsLetter
         switch ($this->group) {
         case self::GROUP_XORG:
             return 'stat/newsletter';
+        case self::GROUP_COMMUNITY:
+            return 'comletter/stat';
         case self::GROUP_AX:
             return 'ax/stat';
         case self::GROUP_EP:
@@ -647,6 +654,7 @@ class NewsLetter
     {
         switch ($this->group) {
           case self::GROUP_XORG:
+          case self::GROUP_COMMUNITY:
           case self::GROUP_AX:
           case self::GROUP_EP:
           case self::GROUP_FX:

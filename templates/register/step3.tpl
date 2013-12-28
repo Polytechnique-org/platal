@@ -116,11 +116,11 @@
         <dl>
           <dt><label><input type="checkbox" checked="checked" name="nl" /> lettre mensuelle</label></dt>
           <dd>
-            de recevoir chaque mois la lettre mensuelle de Polytechnique.org contenant les activités et nouvelles de la communauté des X.
+            de recevoir chaque mois la lettre mensuelle de Polytechnique.org contenant les activités de la communauté des X.
           </dd>
           <dt><label><input type="checkbox" checked="checked" name="com_letters" /> lettres de la communauté</label></dt>
           <dd>
-            de recevoir les informations importantes de l'École, de l'AX et de la FX.
+            de recevoir les informations importantes de l'École, de l'AX, de la FX et de la communauté.
           </dd>
           {if $smarty.session.subState.edu_type eq #Profile::DEGREE_X#}
           <dt><label><input type="checkbox" checked="checked" name="ml_promo" /> ta promotion</label></dt>

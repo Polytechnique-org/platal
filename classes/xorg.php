@@ -31,6 +31,7 @@ class Xorg extends Platal
             'axletter',
             'bandeau',
             'carnet',
+            'comletter',
             'deltaten',
             'email',
             'epletter',
