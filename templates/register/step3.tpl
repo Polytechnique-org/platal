@@ -111,9 +111,9 @@
           <dd>
             de recevoir chaque mois la lettre mensuelle de Polytechnique.org contenant les activités et nouvelles de la communauté des X.
           </dd>
-          <dt><label><input type="checkbox" checked="checked" name="ax_letter" /> envois de l'AX</label></dt>
+          <dt><label><input type="checkbox" checked="checked" name="com_letters" /> lettres de la communauté</label></dt>
           <dd>
-            de recevoir les informations importantes de l'AX.
+            de recevoir les informations importantes de l'École, de l'AX et de la FX.
           </dd>
           {if $smarty.session.subState.edu_type eq #Profile::DEGREE_X#}
           <dt><label><input type="checkbox" checked="checked" name="ml_promo" /> ta promotion</label></dt>

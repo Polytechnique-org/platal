@@ -193,7 +193,7 @@ class RegisterModule extends PLModule
 
                     // Register the optional services requested by the user.
                     $services = array();
-                    foreach (array('ax_letter', 'imap', 'ml_promo', 'nl') as $service) {
+                    foreach (array('com_letters', 'imap', 'ml_promo', 'nl') as $service) {
                         if (Post::b($service)) {
                             $services[] = $service;
                         }
@@ -408,8 +408,13 @@ class RegisterModule extends PLModule
         require_once 'newsletter.inc.php';
         foreach (explode(',', $services) as $service) {
             switch ($service) {
-                case 'ax_letter':
+                case 'ax_letter': /* This option is deprecated by 'com_letters' */
                     NewsLetter::forGroup(NewsLetter::GROUP_AX)->subscribe($user);
+                    break;
+                case 'com_letters':
+                    NewsLetter::forGroup(NewsLetter::GROUP_AX)->subscribe($user);
+                    NewsLetter::forGroup(NewsLetter::GROUP_EP)->subscribe($user);
+                    NewsLetter::forGroup(NewsLetter::GROUP_FX)->subscribe($user);
                     break;
                 case 'nl':
                     NewsLetter::forGroup(NewsLetter::GROUP_XORG)->subscribe($user);
