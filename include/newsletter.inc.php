@@ -503,8 +503,11 @@ class NewsLetter
      */
     public function maySubmit($user = null)
     {
-        // Submission of new articles is only enabled for the X.org NL (and forbidden when viewing issues on X.net)
-        return ($this->group == self::GROUP_XORG && !isset($GLOBALS['IS_XNET_SITE']));
+        // Submission of new articles is only enabled for the X.org NL and the
+        // community letter (and forbidden when viewing issues on X.net)
+        return (
+            ($this->group == self::GROUP_XORG || $this->group == self::GROUP_COMMUNITY)
+            && !isset($GLOBALS['IS_XNET_SITE']));
     }
 
     // }}}

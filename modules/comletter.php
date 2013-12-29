@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 Platal::load('newsletter');
+require_once 'comletter.inc.php';
 
 /**
  * Newsletter for community
@@ -30,6 +31,7 @@ class ComLetterModule extends NewsletterModule
     {
         return array(
             'comletter'                   => $this->make_hook('nl',              AUTH_COOKIE, 'user'),
+            'comletter/submit'            => $this->make_hook('coml_submit',     AUTH_PASSWD, 'user'),
             'comletter/out'               => $this->make_hook('out',             AUTH_PUBLIC),
             'comletter/show'              => $this->make_hook('nl_show',         AUTH_COOKIE, 'user'),
             'comletter/search'            => $this->make_hook('nl_search',       AUTH_COOKIE, 'user'),
@@ -47,6 +49,33 @@ class ComLetterModule extends NewsletterModule
     {
         require_once 'newsletter.inc.php';
         return NewsLetter::forGroup(NewsLetter::GROUP_COMMUNITY);
+    }
+
+    function handler_coml_submit($page)
+    {
+        $page->changeTpl('comletter/submit.tpl');
+
+        $nl = $this->getNl();
+        if (!$nl) {
+            return PL_NOT_FOUND;
+        }
+
+        $wp = new PlWikiPage('Xorg.LettreCommunaute');
+        $wp->buildCache();
+
+        if (Post::has('see') || (Post::has('valid') && (!trim(Post::v('title')) || !trim(Post::v('body'))))) {
+            if (!Post::has('see')) {
+                $page->trigError("L'article doit avoir un titre et un contenu");
+            }
+            $art = new ComLArticle(Post::v('title'), Post::v('body'), Post::v('append'));
+            $page->assign('art', $art);
+        } elseif (Post::has('valid')) {
+            $art = new ComLReq(S::user(), Post::v('title'),
+                               Post::v('body'), Post::v('append'));
+            $art->submit();
+            $page->assign('submited', true);
+        }
+        $page->addCssLink($nl->cssFile());
     }
 
     function handler_out($page, $hash = null, $issue_id = null)
