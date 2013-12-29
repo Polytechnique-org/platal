@@ -440,6 +440,8 @@ abstract class Validate
         }
         if (!empty($where)) {
             $where = 'WHERE ' . implode('AND', $where);
+        } else {
+            $where = '';
         }
         $it = XDB::iterRow('SELECT  data, DATE_FORMAT(stamp, "%Y%m%d%H%i%s")
                               FROM  requests
