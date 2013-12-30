@@ -1,6 +1,22 @@
 ================================================================================
 VERSION 1.1.11                                                       XX XX XXXX
 
+    * Letters:
+        - Add EP and AX newsletters                                        -XEL
+        - Add Community Letter                                             -IOS
+        - No longer wait the next day to sent a newsletter                 -IOS
+
+    * XnetGrp:
+        - Add email field in the CSV export of event participants          -IOS
+
+    * Javascript:
+        - Fix broken JS URLs downloaded by the Makefile                    -IOS
+        - Fix several JS errors                                            -IOS
+        - Use HTTPS to retrieve Google Maps elements                       -IOS
+
+    * Usability:
+        - Add label for password confirmation field in registration form   -IOS
+
 ================================================================================
 VERSION 1.1.10                                                       08 12 2013
 
