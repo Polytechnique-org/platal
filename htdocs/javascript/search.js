@@ -86,8 +86,6 @@ function load_advanced_search(request)
         });
     });
 
-    $('#only_referent').change(function() { changeOnlyReferent(); });
-
     $('.delete_address_component').click(function() {
         var field_name = $(this).attr('href');
         var hide = false;
