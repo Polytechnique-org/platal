@@ -44,6 +44,22 @@ correspondant si tu veux que nous puissions te répondre.
     Si tu veux que nous lui envoyions un email automatique de ta part pour le prévenir,
     <a href="emails/broken/warn/{$email}?token={xsrf_token}">clique sur ce lien</a>.
   </p>
+{elseif t($user) && $user.nb_mails && !$active}
+<h2>Patte cassée</h2>
+  <p>
+    L'adresse email que tu as entrée a <span class="erreur">déjà été signalée comme cassée</span>. Ton correspondant a
+    cependant actuellement <span class="erreur">{$user.nb_mails} adresse(s) email(s) de redirection active(s)</span>.
+    Cela ne veut pas forcément dire qu'il les avait déjà activées lorsque tu as envoyé ton email, mais c'est fort probable.
+  </p>
+  <p>
+    Nous pensons qu'il serait une bonne idée de le prévenir que cette adresse email ne fonctionne plus.
+    Si tu veux que nous lui envoyions un email automatique de ta part pour le prévenir,
+    <a href="emails/broken/warn/{$email}?token={xsrf_token}">clique sur ce lien</a>.
+  </p>
+  <p>
+    Par ailleurs, si tu connais une autre adresse email où le contacter, nous pouvons l'inviter à mettre à jour sa redirection
+    Polytechnique.org. Pour ceci il suffit que tu remplisses <a href="marketing/broken/{$user.hruid}">ce formulaire</a>.
+  </p>
 {elseif $user}
 <h2>Patte cassée</h2>
   <p>
