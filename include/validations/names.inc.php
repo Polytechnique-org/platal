@@ -59,6 +59,13 @@ class NamesReq extends ProfileValidate
                                              FROM  email_source_account
                                             WHERE  email = {?} AND type != \'alias_aux\'',
                                           $this->new_alias);
+                if (!$used) {
+                    // Check against homonyms
+                    $used = XDB::fetchOneCell('SELECT  COUNT(email)
+                                                 FROM  email_source_other
+                                                WHERE  email = {?}',
+                                              $this->new_alias);
+                }
                 if ($used) {
                     $this->new_alias = null;
                 }
