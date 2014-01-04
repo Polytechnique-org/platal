@@ -55,7 +55,7 @@ function discardExpiredSessions($userPerms, $retentionPeriod, $minimalBacklog) {
            WHERE  state = {?} AND is_admin = {?}",
         $state, $isAdmin);
 
-    $batchSize = 500;
+    $batchSize = 100;
     $nbBatches = 0;
     $affectedRows = 0;
 
