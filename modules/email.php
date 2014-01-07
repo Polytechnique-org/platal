@@ -98,9 +98,23 @@ class EmailModule extends PLModule
                               INNER JOIN  email_virtual_domains AS m ON (s.domain = m.id)
                               INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
                                    WHERE  s.uid = {?}
-                                ORDER BY  !alias, s.email",
+                                ORDER BY  !alias, s.email, d.name",
                                  $user->id());
-        $page->assign('aliases', $aliases);
+        $aliases_forlife = array();
+        $aliases_hundred = array();
+        $aliases_other = array();
+        while ($a = $aliases->next()) {
+            if ($a['forlife']) {
+                $aliases_forlife[] = $a;
+            } elseif ($a['hundred_year']) {
+                $aliases_hundred[] = $a;
+            } else {
+                $aliases_other[] = $a;
+            }
+        }
+        $page->assign('aliases_forlife', $aliases_forlife);
+        $page->assign('aliases_hundred', $aliases_hundred);
+        $page->assign('aliases_other', $aliases_other);
 
         $alias = XDB::fetchOneCell('SELECT  COUNT(email)
                                       FROM  email_source_account

@@ -38,21 +38,54 @@
 {/literal}
 
 <fieldset>
-  <legend>{icon name="email"} Mes adresses polytechniciennes à vie</legend>
+  <legend>{icon name="email"} Mes adresses polytechniciennes</legend>
 
   <div>
-    Tes adresses polytechniciennes sont&nbsp;:<br />
-    <div>
-      {iterate from=$aliases item=a}
-      <label>
-        <input type='radio' {if $a.bestalias}checked="checked"{/if} name='best' value='{$a.email}' />
-        <strong>{$a.email}</strong>
-      </label>&nbsp;{if $a.forlife}(**){/if}{if $a.hundred_year}(*){/if}
-      {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
-      {if $a.alias}<a href="emails/alias">(changer ou supprimer mon alias melix)</a>{/if}
-      <br />
-      {/iterate}
-    </div>
+    Tes adresses polytechniciennes sont&nbsp;:
+    <dl>
+    {if $aliases_forlife|@count}
+      <dt>Adresses garanties à vie</dt>
+      <dd>
+        {foreach from=$aliases_forlife item=a}
+        <label>
+          <input type='radio' {if $a.bestalias}checked="checked"{/if} name='best' value='{$a.email}' />
+          <strong>{$a.email}</strong>
+        </label>
+        {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
+        <br />
+        {/foreach}
+      </dd>
+    {/if}
+    <br/>
+    {if $aliases_hundred|@count}
+      <dt>Adresses garanties 100 ans (*)</dt>
+      <dd>
+        {foreach from=$aliases_hundred item=a}
+        <label>
+          <input type='radio' {if $a.bestalias}checked="checked"{/if} name='best' value='{$a.email}' />
+          <strong>{$a.email}</strong>
+        </label>
+        {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
+        <br />
+        {/foreach}
+      </dd>
+    {/if}
+    <br/>
+    {if $aliases_other|@count}
+      <dt>Autres adresses (**)</dt>
+      <dd>
+        {foreach from=$aliases_other item=a}
+        <label>
+          <input type='radio' {if $a.bestalias}checked="checked"{/if} name='best' value='{$a.email}' />
+          <strong>{$a.email}</strong>
+        </label>
+        {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
+        {if $a.alias}<a href="emails/alias">(changer ou supprimer mon alias melix)</a>{/if}
+        <br />
+        {/foreach}
+      </dd>
+    {/if}
+    </dl>
     <p class="smaller">
     L'adresse cochée est celle que tu utilises le plus (et qui sera donc affichée sur ta carte de visite, ta fiche&hellip;).
     <br />Coche une autre case pour en changer&nbsp;!
@@ -74,12 +107,10 @@
 
 <p class="smaller">
 {assign var="profile" value=$smarty.session.user->profile()}
-(*) ces adresses email te sont réservées pour une période 100 ans après ton entrée à l'X (dans ton cas, jusqu'en {$profile->yearpromo()+100}).
+(*) Ces adresses email te sont réservées pour une période de 100 ans après ton entrée à l'X (dans ton cas, jusqu'en {$profile->yearpromo()+100}).
 </p>
 <p class="smaller">
-(**) ces adresses email te sont réservées à vie.
-</p>
-<p class="smaller">
+{if $aliases_other|@count}(**) {/if}
 {if $homonyme}
 Tu as un homonyme donc tu ne peux pas profiter de l'alias {$homonyme}@{$main_email_domain}. Si quelqu'un essaie
 d'envoyer un email à cette adresse par mégarde il recevra une réponse d'un robot lui expliquant l'ambiguité et lui
