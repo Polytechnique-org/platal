@@ -165,10 +165,18 @@ def findAddressInBounce(bounce):
         print('! Not a valid bounce (expected text/plain, found %s).' % content.get_content_type())
         return None
     # Extract the faulty email address
-    recipient_match = _recipient_re.search(content['Final-Recipient'])
+    # Some MTA don't set Final-Recipient but use Remote-Recipient instead
+    if 'Final-Recipient' in content:
+        final_recipient = content['Final-Recipient']
+    elif 'Remote-Recipient' in content:
+        final_recipient = content['Remote-Recipient']
+    else:
+        print('! Not a valid bounce (no Final-Recipient).')
+        return None
+    recipient_match = _recipient_re.search(final_recipient)
     if recipient_match is None:
         # Be nice, test another regexp
-        recipient_match = _recipient_re2.search(content['Final-Recipient'])
+        recipient_match = _recipient_re2.search(final_recipient)
         if recipient_match is None:
             print('! Missing final recipient.')
             return None
