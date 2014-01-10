@@ -40,7 +40,7 @@ Nous te recontacterons éventuellement si nous avons des renseignements à te de
 {if !$art->check()}
 <p class='erreur'>
 L'article que tu as proposé est trop long&nbsp;!<br />
-Il te faut te limiter à 4 lignes de 68 caractères.
+Il te faut te limiter à 8 lignes de 68 caractères.
 </p>
 {/if}
 
@@ -105,7 +105,7 @@ Tu peux <a href='comletter/submit#conseils'>lire les conseils de rédaction</a> 
       <td>
         <textarea onchange="{literal}$.post('comletter/remaining/', {'body': this.value}, function(data) {$('#remaining').html(data)}){/literal}"
                   onkeyup="{literal}$.post('comletter/remaining/', {'body': this.value}, function(data) {$('#remaining').html(data)}){/literal}"
-                  cols="68" rows="4" name="body" >{if t($art)}{$art->body()}{/if}</textarea>
+                  cols="68" rows="8" name="body" >{if t($art)}{$art->body()}{/if}</textarea>
       </td>
     </tr>
     <tr class="pair">
