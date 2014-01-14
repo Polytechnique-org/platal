@@ -166,8 +166,9 @@ class Group
     static public function unsubscribe($group_id, $uid, $remember)
     {
         XDB::execute('INSERT INTO  group_former_members (asso_id, uid, remember, unsubsciption_date)
-                           VALUES  ({?}, {?}, {?}, NOW())',
-                     $group_id, $uid, $remember);
+                           VALUES  ({?}, {?}, {?}, NOW())
+          ON DUPLICATE KEY UPDATE  remember = {?}, unsubsciption_date = NOW()',
+                     $group_id, $uid, $remember, $remember);
         XDB::execute('DELETE FROM  group_members
                             WHERE  uid = {?} AND asso_id = {?}',
                      $uid, $group_id);

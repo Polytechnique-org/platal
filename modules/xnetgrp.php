@@ -514,10 +514,8 @@ class XnetGrpModule extends PLModule
 
             $data = array();
             foreach ($new_users as $uid) {
-                $data[] = XDB::format('({?}, {?})', $globals->asso('id'), $uid);
+                Group::subscribe($globals->asso('id'), $uid);
             }
-            XDB::rawExecute('INSERT INTO  group_members (asso_id, uid)
-                                  VALUES  ' . implode(',', $data));
         }
 
         if (Env::has('add_nonusers')) {
@@ -552,9 +550,7 @@ class XnetGrpModule extends PLModule
                                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, \'xnet\', \'disabled\')',
                              $hruid, $display_name, $full_name, $directory_name, $sort_name, $firstname, $lastname, $email);
                 $uid = XDB::insertId();
-                XDB::execute('INSERT INTO  group_members (asso_id, uid)
-                                   VALUES  ({?}, {?})',
-                             $globals->asso('id'), $uid);
+                Group::subscribe($globals->asso('id'), $uid);
             }
         }
 
