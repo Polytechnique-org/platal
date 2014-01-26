@@ -182,7 +182,7 @@ def findAddressInBounce(bounce):
             return None
     email = recipient_match.group(1)
     # Check the action field
-    if content['Action'].lower() != 'failed':
+    if content['Action'].lower().strip() != 'failed':
         print('! Not a failed action (%s).' % content['Action'])
         return None
 
