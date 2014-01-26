@@ -609,8 +609,8 @@ class DeliveryStatusNotificationFilter(MboxFilter):
 
         # Detect ill-formatted reports, sent as plain text email
         if report_message.get_content_type() == 'text/plain' and (
-            'MAILER-DAEMON@' in message['From'].upper() or
-            'mail delivery failure' == message['Subject'].lower()
+            'MAILER-DAEMON@' in message.get('From', '').upper() or
+            'mail delivery failure' == message.get('Subject', '').lower()
             ):
             email = findAddressInPlainBounce(report_message)
             if email is not None:
