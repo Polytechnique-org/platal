@@ -60,8 +60,6 @@ Le groupe {$asso->nom} compte {if t($full_count)}{$full_count}{elseif $plset_tot
     </a>
   </li>
   {/if}
-  {/if}
-  {if hasPerm('admin')}
   <li>
     <a href="{$platal->ns}former_users">
       {icon name=status_offline title="Anciens membres du groupe"}
