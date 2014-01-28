@@ -68,7 +68,6 @@ Le groupe {$asso->nom} compte {if t($full_count)}{$full_count}{elseif $plset_tot
       Anciens membres du groupe
     </a>
   </li>
-  {/if}
   <li>
     {include file="include/csv.tpl" url="`$platal->ns`annuaire/csv/`$asso->diminutif`.csv"}
   </li>
@@ -79,6 +78,7 @@ Le groupe {$asso->nom} compte {if t($full_count)}{$full_count}{elseif $plset_tot
     </a>
     (<a href="{$platal->ns}annuaire/vcard/{$asso->diminutif}.vcf">sans les photos</a>)
   </li>
+  {/if}
 </ul>
 
 <p class="center">
