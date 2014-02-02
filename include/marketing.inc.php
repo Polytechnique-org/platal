@@ -67,8 +67,8 @@ class Marketing
             'sexe'           => $user->isFemale(),
             'mail'           => $email,
             'to'             => '"' . $user->fullName() . '" <' . $email . '>',
-            'forlife_email'  => $user->forlifeEmail(),
-            'forlife_email2' => $user->forlifeEmailAlternate()
+            'forlife_email'  => $user->hruid . "@" . $user->mainEmailDomain(),
+            'forlife_email2' => $user->hruid . "@" . $user->alternateEmailDomain()
         );
     }
 

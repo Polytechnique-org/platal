@@ -328,8 +328,8 @@ class MarketingModule extends PLModule
             $market = new AnnuaireMarketing(null, true);
             $text = $market->getText(array(
                 'sexe'           => $user->isFemale(),
-                'forlife_email'  => $user->forlifeEmail(),
-                'forlife_email2' => $user->forlifeEmailAlternate()
+                'forlife_email'  => $user->hruid . "@" . $user->mainEmailDomain(),
+                'forlife_email2' => $user->hruid . "@" . $user->alternateEmailDomain()
             ));
             $text = str_replace('%%hash%%', '', $text);
             $text = str_replace('%%personal_notes%%', '<em id="personal_notes_display"></em>', $text);
