@@ -1168,7 +1168,9 @@ class AdminModule extends PLModule
 
         $r = XDB::iterator('SHOW COLUMNS FROM requests_answers');
         while (($a = $r->next()) && $a['Field'] != 'category');
-        $page->assign('categories', $categories = explode(',', str_replace("'", '', substr($a['Type'], 5, -1))));
+        $categories = explode(',', str_replace("'", '', substr($a['Type'], 5, -1)));
+        sort($categories);
+        $page->assign('categories', $categories);
 
         $hidden = array();
         $res = XDB::query('SELECT  hidden_requests

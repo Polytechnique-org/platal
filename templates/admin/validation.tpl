@@ -189,7 +189,7 @@ function toggleField(name, id, obj) {
 {/if}
 
 <p>
-  Afficher seulement les validation suivantes&nbsp;:
+  Afficher seulement les validations suivantes&nbsp;:
 </p>
 
 <form action="admin/validate" method="post">
