@@ -24,10 +24,10 @@
   {xsrf_token_field}
   <div>
     {icon name=information title="Voir ma fiche"} Tu peux consulter
-    {if $isMe}ta{else}cette{/if} fiche telle que la
-    voient <a class="popup2" href="profile/{$profile->hrpid}?view=public">n'importe quel internaute</a>,
-    <a class="popup2" href="profile/{$profile->hrpid}?view=ax">l'AX</a>{if $viewPrivate}ou
-    <a class="popup2" href="profile/{$profile->hrpid}">les X</a>{/if}.
+    {if $isMe}ta{else}cette{/if} fiche telle qu'elle apparaît
+    <a class="popup2" href="profile/{$profile->hrpid}?view=public">pour n'importe quel internaute</a>,
+    <a class="popup2" href="profile/{$profile->hrpid}?view=ax">dans l'annuaire papier</a>{if $viewPrivate} ou
+    <a class="popup2" href="profile/{$profile->hrpid}">pour les X</a>{/if}.
   </div>
   <div class="flags">
   {include file="include/flags.radio.tpl" disabled=true withtext=true val="novalue" name="profile_ex_pub"}

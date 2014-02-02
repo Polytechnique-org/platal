@@ -135,10 +135,10 @@ class ProfileModule extends PLModule
             if (!$user->hasProfile()) {
                 return PL_NOT_FOUND;
             } else {
-                $profile = $user->profile();
+                $profile = $user->profile(false,0,Visibility::get(Visibility::VIEW_ADMIN));
             }
         } else {
-            $profile = Profile::get($hrpid);
+            $profile = Profile::get($hrpid,0,Visibility::get(Visibility::VIEW_ADMIN));
         }
 
         if (!$profile) {

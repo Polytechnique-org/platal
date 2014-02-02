@@ -20,20 +20,24 @@
 {*                                                                        *}
 {**************************************************************************}
 {if t($withtext)}
-<a href="Xorg/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ?</a>
+<a href="Xorg/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ?</a><br />
 {/if}
 {if !t($val)}{assign var=val value='ax'}{/if}
 {if t($disabled)}<input type="hidden" name="{$name}" value="private" />{/if}
 <label><input type="radio" name="{$name}" value="public"{if $val eq 'public'} checked="checked"{/if}
        {if t($disabled)}disabled="disabled"{/if}{if t($mainField)} onchange="updatePublicity('{$mainField}','{$mainId}','{$subField}','{$subId}')"{/if} />
 {icon name="flag_green" title="site public"}
-{if t($withtext)}<span class="texte">site public</span>{/if}</label>
+{if t($withtext)}<span class="texte">annuaire papier</span>{/if}</label>
 <label><input type="radio" name="{$name}" value="ax"{if $val eq 'ax'} checked="checked"{/if}
        {if t($disabled)}disabled="disabled"{/if}{if t($mainField)} onchange="updatePublicity('{$mainField}','{$mainId}','{$subField}','{$subId}')"{/if} />
-{icon name="flag_orange" title="transmis à l'AX"}
-{if t($withtext)}<span class="texte">transmis à l'AX</span>{/if}</label>
+{icon name="flag_orange" title="visible dans l'annuaire papier"}
+{if t($withtext)}<span class="texte">visible dans l'annuaire papier</span>{/if}</label>
 <label><input type="radio" name="{$name}" value="private"{if $val eq 'private'} checked="checked"{/if}
        {if t($disabled)}disabled="disabled"{/if}{if t($mainField)} onchange="updatePublicity('{$mainField}','{$mainId}','{$subField}','{$subId}')"{/if} />
-{icon name="flag_red" title="privé"}
-{if t($withtext)}<span class="texte">privé</span>{/if}</label>
+{icon name="flag_red" title="authentifié"}
+{if t($withtext)}<span class="texte">diplômés de l'X</span>{/if}</label>
+<label><input type="radio" name="{$name}" value="hidden"{if $val eq 'hidden'} checked="checked"{/if}
+       {if t($disabled)}disabled="disabled"{/if}{if t($mainField)} onchange="updatePublicity('{$mainField}','{$mainId}','{$subField}','{$subId}')"{/if} />
+{icon name="flag_black" title="administrateurs"}
+{if t($withtext)}<span class="texte">administrateurs</span>{/if}</label>
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
