@@ -27,7 +27,7 @@
 <label><input type="radio" name="{$name}" value="public"{if $val eq 'public'} checked="checked"{/if}
        {if t($disabled)}disabled="disabled"{/if}{if t($mainField)} onchange="updatePublicity('{$mainField}','{$mainId}','{$subField}','{$subId}')"{/if} />
 {icon name="flag_green" title="site public"}
-{if t($withtext)}<span class="texte">annuaire papier</span>{/if}</label>
+{if t($withtext)}<span class="texte">site public</span>{/if}</label>
 <label><input type="radio" name="{$name}" value="ax"{if $val eq 'ax'} checked="checked"{/if}
        {if t($disabled)}disabled="disabled"{/if}{if t($mainField)} onchange="updatePublicity('{$mainField}','{$mainId}','{$subField}','{$subId}')"{/if} />
 {icon name="flag_orange" title="visible dans l'annuaire papier"}
