@@ -28,5 +28,5 @@ function smarty_modifier_date_format($string, $format = '%x', $default_date=null
     return format_datetime($d, $format);
 }
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
 ?>

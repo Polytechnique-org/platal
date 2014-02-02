@@ -54,6 +54,6 @@ function smarty_compiler_checkpasswd($tag_attrs, $compiler)
               </div><?php';
 }
 
-/* vim: set expandtab enc=utf-8: */
+/* vim:set expandtab fenc=utf-8: */
 
 ?>

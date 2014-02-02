@@ -24,5 +24,5 @@ function smarty_modifier_uint_to_ip($string)
     return uint_to_ip($string);
 }
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
 ?>

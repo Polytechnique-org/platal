@@ -44,6 +44,6 @@ function smarty_compiler_icon($tag_attrs, $compiler)
     return "?><img src=\"$name\" $alt /><?php";
 }
 
-/* vim: set expandtab enc=utf-8: */
+/* vim:set expandtab fenc=utf-8: */
 
 ?>

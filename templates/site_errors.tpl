@@ -56,4 +56,4 @@ $(function() {
   </fieldset>
   {/iterate}
 
-{* vim:set et sws=2 sts=2 sw=2 enc=utf-8: *}
+{* vim:set et sws=2 sts=2 sw=2 fenc=utf-8: *}

@@ -24,5 +24,5 @@ function smarty_modifier_htmlentities($string, $format = ENT_COMPAT)
     return pl_entities($string, $format);
 }
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
 ?>

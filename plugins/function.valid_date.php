@@ -54,5 +54,5 @@ function smarty_function_valid_date($params, $smarty)
     return $text . "</optgroup></select>";
 }
 
-/* vim: set expandtab enc=utf-8: */
+/* vim:set expandtab fenc=utf-8: */
 ?>

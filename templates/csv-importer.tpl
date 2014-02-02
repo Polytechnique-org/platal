@@ -240,4 +240,4 @@ val3_1{$smarty.session.csv_separator|default:";"}val3_2{$smarty.session.csv_sepa
   {/if}
 </form>
 
-{* vim:set et sws=2 sts=2 sw=2 enc=utf-8: *}
+{* vim:set et sws=2 sts=2 sw=2 fenc=utf-8: *}

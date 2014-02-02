@@ -50,5 +50,5 @@ function smarty_block_tidy($params, $content, $smarty)
     return tidy_repair_string($content, $tidy_config, 'utf8');
 }
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
 ?>

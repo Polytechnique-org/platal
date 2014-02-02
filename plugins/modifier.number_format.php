@@ -24,5 +24,5 @@ function smarty_modifier_number_format($string, $decimal = 0)
     return number_format($string, $decimal, ',', '.');
 }
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
 ?>

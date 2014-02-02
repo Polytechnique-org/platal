@@ -31,5 +31,5 @@ function smarty_compiler_javascript($tag_attrs, $compiler)
     return '?><script type="text/javascript" src="' . $name . "\"></script>\n<?php";
 }
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
 ?>
