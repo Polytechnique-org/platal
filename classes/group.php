@@ -190,5 +190,5 @@ class Group
     }
 }
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
 ?>

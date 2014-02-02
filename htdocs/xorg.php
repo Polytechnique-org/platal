@@ -22,5 +22,5 @@
 require_once dirname(__FILE__).'/../include/xorg.inc.php';
 require_once pl_core_include('run.inc.php');
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
 ?>

@@ -33,4 +33,4 @@ réception de ton paiement.</p>
 <p>{$texte|nl2br}</p>
 {/if}
 <p>[<a href="https://www.polytechnique.org/payment">retour aux Télépaiements</a>]</p>
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

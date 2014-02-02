@@ -58,4 +58,4 @@
   <a href="http://www.manageurs.com/{if t($login)}anciens_accueil.php?asso=X.org{/if}">Manageurs</a>
 </div>
 
-{* vim:set et sw=2 sts=2 sws=2 enc=utf8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf8: *}

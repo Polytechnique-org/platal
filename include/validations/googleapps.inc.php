@@ -76,5 +76,5 @@ class GoogleAppsUnsuspendReq extends Validate
     }
 }
 
-/* vim: set expandtab shiftwidth=4 tabstop=4 softtabstop=4 foldmethod=marker enc=utf-8: */
+/* vim:set expandtab shiftwidth=4 tabstop=4 softtabstop=4 foldmethod=marker fenc=utf-8: */
 ?>

@@ -30,4 +30,4 @@
   <td>{$valid->newGradYear} au lieu de {$valid->oldGradYear}</td>
 </tr>
 
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

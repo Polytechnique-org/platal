@@ -102,5 +102,5 @@ nombre d'<a href="marketing/relance">inscriptions en cours</a> (2ème phase non 
   </tr>
 </table>
 
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}
 

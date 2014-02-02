@@ -27,4 +27,4 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
       <base href="{$globals->baseurl}/" />
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

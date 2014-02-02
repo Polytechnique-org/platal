@@ -44,4 +44,4 @@ Si le lien ne fonctionne pas, copiez intégralement ce lien dans la barre d'adre
 Une fois votre compte activé, nous espérons que vous profiterez pleinement des services en ligne de Polytechnique.net. Pour cela, il vous suffira d'aller sur http://www.polytechnique.net/ et de vous connecter en tant qu' « Extérieur ».
 {include file="include/signature.mail.tpl"}
 {/if}
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

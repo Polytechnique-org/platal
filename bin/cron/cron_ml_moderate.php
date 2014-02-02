@@ -124,5 +124,5 @@ while ($sent_mails < $globals->lists->max_mail_per_min
     sleep(60 * $count / $globals->lists->max_mail_per_min);
 }
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
 ?>

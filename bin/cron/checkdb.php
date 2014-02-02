@@ -247,5 +247,5 @@ infoCountEmpty('profile_phones', 'display_tel');
 // XXX: counts the number of remaining issues due to the merge (to be removed once all merge related issues have been fixed)
 infoCountEmpty('profile_merge_issues', 'issues', true);
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
 ?>

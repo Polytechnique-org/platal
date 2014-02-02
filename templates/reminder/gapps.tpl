@@ -39,4 +39,4 @@
   <a class="popup2" style="text-decoration: none" href="Xorg/GoogleApps">{icon name=information} En savoir plus</a>
 </div>
 
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

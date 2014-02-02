@@ -44,4 +44,4 @@
   <textarea name="survey{$survey.id}[{$squestion.id}]" rows="5" cols="60" {if !$survey_votemode}disabled="disabled"{/if}></textarea>
 {/if}
 
-{* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 ts=8 fenc=utf-8: *}

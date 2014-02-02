@@ -17,5 +17,5 @@ Banana::$spool_root = $globals->spoolroot . '/spool/banana/';
 Banana::$nntp_host =  ForumsBanana::buildURL();
 Banana::refreshAllFeeds(array('NNTP', 'MLArchive'));
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
 ?>

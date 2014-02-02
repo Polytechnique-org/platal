@@ -41,4 +41,4 @@
 <strong>Fax&nbsp;:</strong>
 <input type="text" name="fax" size="25" maxlength="200" value="{$valid->fax}" /><br />
 
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

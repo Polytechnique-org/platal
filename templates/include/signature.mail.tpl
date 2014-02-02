@@ -37,4 +37,4 @@ l'équipe de Polytechnique.org<br />
 Le portail des élèves & anciens élèves de l'École polytechnique
 {elseif $mail_part eq "escaped_html"}Cordialement,<br />-- <br />l&#39;équipe de Polytechnique.org<br />Le portail des élèves & anciens élèves de l&#39;École polytechnique{/if}
 
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

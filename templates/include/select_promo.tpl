@@ -35,4 +35,4 @@
   <option value="{#UserFilter::GRADE_PHD#}" {if $promo_data.$edu_type eq #UserFilter::GRADE_PHD#}selected="selected"{/if}>Docteur</option>
 </select>
 
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

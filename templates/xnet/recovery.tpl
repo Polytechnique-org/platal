@@ -74,4 +74,4 @@ Si vous n'accéder pas à cet email dans les 6 heures, sollicitez un nouveau cer
 </form>
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

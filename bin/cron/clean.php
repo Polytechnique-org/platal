@@ -66,5 +66,5 @@ query('DELETE FROM  search_autocomplete
 query('DELETE FROM  profile_merge_issues
              WHERE  issues IS NULL OR issues = \'\'');
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
 ?>

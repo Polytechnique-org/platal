@@ -27,4 +27,4 @@ utiliser le bouton <em>Éditer</em> pour visualiser sur la carte la nouvelle pos
 
 {include file="geoloc/form.address.tpl" prefname="valid" prefid=0 address=$valid->address validation=1}
 
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

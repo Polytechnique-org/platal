@@ -40,4 +40,4 @@
        {if t($disabled)}disabled="disabled"{/if}{if t($mainField)} onchange="updatePublicity('{$mainField}','{$mainId}','{$subField}','{$subId}')"{/if} />
 {icon name="flag_black" title="administrateurs"}
 {if t($withtext)}<span class="texte">administrateurs</span>{/if}</label>
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

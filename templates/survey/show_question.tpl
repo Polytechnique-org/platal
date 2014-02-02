@@ -27,4 +27,4 @@
 {assign var='squestion_type' value=$squestion.type}
 {include file="survey/show_$squestion_type.tpl"}
 
-{* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 ts=8 fenc=utf-8: *}

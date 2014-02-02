@@ -87,5 +87,5 @@ print "New users:\n" . implode("\n", $new) . "\n\n";
 print "Ambiguous users:\n" . implode("\n", $ambiguous) . "\n\n";
 print "Users to remove (louk out for ambiguous users before!):\n" . implode("\n", $to_remove) . "\n";
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
 ?>

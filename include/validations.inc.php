@@ -673,5 +673,5 @@ foreach (glob(dirname(__FILE__) . '/validations/*.inc.php') as $file) {
     require_once $file;
 }
 
-/* vim: set expandtab shiftwidth=4 tabstop=4 softtabstop=4 foldmethod=marker enc=utf-8: */
+/* vim:set expandtab shiftwidth=4 tabstop=4 softtabstop=4 foldmethod=marker fenc=utf-8: */
 ?>

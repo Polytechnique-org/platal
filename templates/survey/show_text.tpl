@@ -44,4 +44,4 @@
   <input type="text" name="survey{$survey.id}[{$squestion.id}]" value="" size="50" maxlength="200" {if !$survey_votemode}disabled="disabled"{/if}/>
 {/if}
 
-{* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 ts=8 fenc=utf-8: *}

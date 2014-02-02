@@ -31,5 +31,5 @@ $req = new ListeReq($owner_user, false, "promo", $promo . '.' . $globals->mail->
                     1 /*private*/, 2 /*moderate*/, 0 /*free subscription*/,
                     array($owner), array());
 $req->submit();
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
 ?>

@@ -99,4 +99,4 @@ notre base de données.
 <p>Notre base de données ne contient que les polytechniciens depuis la promotion 1921. Pour effectuer des recherches dans les
 promotions précédentes, il faut utiliser l'<a href="http://bibli.polytechnique.fr/F/?func=file&amp;file_name=find-b&amp;local_base=BCXC2">annuaire en ligne de la bibliothèque de l'École</a>.</p>
 
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

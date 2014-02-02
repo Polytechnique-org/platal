@@ -74,5 +74,5 @@ function smarty_function_display_education($params, $smarty)
                              $edu->field, $edu->program, $params->b('full'));
 }
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
 ?>

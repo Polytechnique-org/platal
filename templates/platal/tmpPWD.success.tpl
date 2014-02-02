@@ -31,4 +31,4 @@
   pas crypté), de changer ton mot de passe. C'est pourquoi, dans ton intérêt, il est
   préférable que tu ne perdes pas ton mot de passe&nbsp;!!!
 </p>
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

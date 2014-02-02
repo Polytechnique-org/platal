@@ -40,4 +40,4 @@ Commence dès aujourd'hui à communiquer à tes correspondants la nouvelle adres
 En nous excusant pour le désagrément occasionné,
 {include file="include/signature.mail.tpl"}
 {/if}
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

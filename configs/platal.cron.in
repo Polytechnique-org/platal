@@ -44,4 +44,4 @@ WD=/home/web/prod/platal/bin/cron
 # xnet accounts creation
 0 * * * *	web	cd $WD; ./cron_xnet_accounts.php
 
-# vim:set noet syntax=crontab ts=8 sw=8 sts=8 enc=utf-8:
+# vim:set noet syntax=crontab ts=8 sw=8 sts=8 fenc=utf-8:

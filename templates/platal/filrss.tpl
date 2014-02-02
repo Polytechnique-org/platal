@@ -67,4 +67,4 @@ Attention&nbsp;: désactiver, puis réactiver le fil RSS en change l'adresse.
 </p>
 <p>[<a href="{$goback}">retour à la page dont tu venais</a>]</p>
 {/if}
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

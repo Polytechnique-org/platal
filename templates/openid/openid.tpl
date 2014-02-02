@@ -28,4 +28,4 @@ Polytechnique.org.<p>
 
 <p><a href="Xorg/OpenId">En savoir plus sur OpenId</a></p>
 
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

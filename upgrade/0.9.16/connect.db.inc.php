@@ -24,5 +24,5 @@ ini_set('include_path', dirname(__FILE__).'/../../include:' . dirname(__FILE__).
 require_once 'xorg.inc.php';
 require_once 'xdb.php';
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
 ?>

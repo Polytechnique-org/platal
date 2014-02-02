@@ -24,4 +24,4 @@ educationDegree     = new Array({education_degree});
 educationDegreeAll  = new Array({education_degree_all});
 educationDegreeName = new Array({education_degree_name});
 
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

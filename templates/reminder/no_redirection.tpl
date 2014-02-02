@@ -24,4 +24,4 @@ Tu n'as plus de redirection valide ce qui rend ton adresse Polytechnique.org
 inutilisable. Rends-toi au plus vite sur <a href="emails/redirect">la page de
 gestion des emails</a> pour corriger ce problème.
 
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

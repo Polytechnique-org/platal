@@ -44,4 +44,4 @@ Si en cliquant dessus tu n'y arrives pas, copie intégralement ce lien dans la b
 Nous espérons que tu profiteras pleinement des services en ligne de Polytechnique.org ; s'ils te convainquent, n'oublie pas d'en parler aux camarades autour de toi !
 {include file="include/signature.mail.tpl"}
 {/if}
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

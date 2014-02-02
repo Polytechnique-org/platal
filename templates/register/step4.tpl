@@ -41,4 +41,4 @@ En particulier, vérifie si l'email n'a pas été rejeté par ton filtre anti-sp
 d'expéditeur est <code>register@polytechnique.org</code>.
 </p>
 
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

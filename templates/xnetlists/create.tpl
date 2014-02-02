@@ -111,4 +111,4 @@ Si tu as besoin de cette fonctionnalité, il faut alors <strong>impérativement<
   <p class="center"><input name='submit' type='submit' value="Créer !" /></p>
 </form>
 
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

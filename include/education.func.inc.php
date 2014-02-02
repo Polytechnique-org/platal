@@ -113,5 +113,5 @@ function education_degree_name()
 }
 Platal::page()->register_function('education_degree_name', 'education_degree_name');
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
 ?>
