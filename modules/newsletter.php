@@ -225,7 +225,6 @@ class NewsletterModule extends PLModule
             'id'         => 'Id',
             'group_name' => 'Groupe',
             'name'       => 'Titre',
-            'custom_css' => 'CSS spécifique',
             'criteria'   => 'Critères actifs'
         );
         static $next_orders = array(

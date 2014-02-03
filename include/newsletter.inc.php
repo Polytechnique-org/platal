@@ -37,8 +37,6 @@ class NewsLetter
     public $cats;  // List of all categories for this NL
     public $criteria;  // PlFlagSet of allowed filters for recipient selection
 
-    protected $custom_css = false;
-
     // Base name to use instead of the group short name for NLs without a custom CSS
     const FORMAT_DEFAULT_GROUP = 'default';
 
@@ -60,7 +58,7 @@ class NewsLetter
     {
         // Load NL data
         $res = XDB::query('SELECT  nls.group_id, g.diminutif AS group_name,
-                                   nls.name AS nl_name, nls.custom_css, nls.criteria
+                                   nls.name AS nl_name, nls.criteria
                              FROM  newsletters AS nls
                         LEFT JOIN  groups AS g ON (nls.group_id = g.id)
                             WHERE  nls.id = {?}',
@@ -74,7 +72,6 @@ class NewsLetter
         $this->group_id = $data['group_id'];
         $this->group = $data['group_name'];
         $this->name = $data['nl_name'];
-        $this->custom_css = $data['custom_css'];
         $this->criteria = new PlFlagSet($data['criteria']);
 
         // Load the categories
@@ -109,7 +106,7 @@ class NewsLetter
      */
     public static function getAll($sort = 'id', $order = 'ASC')
     {
-        $res = XDB::fetchAllAssoc('SELECT  n.id, g.nom AS group_name, n.name, n.custom_css, n.criteria, g.diminutif AS group_link
+        $res = XDB::fetchAllAssoc('SELECT  n.id, g.nom AS group_name, n.name, n.criteria, g.diminutif AS group_link
                                      FROM  newsletters AS n
                                INNER JOIN  groups      AS g ON (n.group_id = g.id)
                                  ORDER BY  ' . $sort . ' ' . $order);
@@ -517,7 +514,7 @@ class NewsLetter
      */
     public function cssFile()
     {
-        if ($this->custom_css) {
+        if ($this->hasCustomCss()) {
             $base = $this->group;
         } else {
             $base = self::FORMAT_DEFAULT_GROUP;
@@ -529,7 +526,7 @@ class NewsLetter
      */
     public function tplFile()
     {
-        if ($this->custom_css) {
+        if ($this->hasCustomCss()) {
             $base = $this->group;
         } else {
             $base = self::FORMAT_DEFAULT_GROUP;
@@ -650,7 +647,16 @@ class NewsLetter
 
     public function hasCustomCss()
     {
-        return $this->custom_css;
+        switch ($this->group) {
+          case self::GROUP_XORG:
+          case self::GROUP_COMMUNITY:
+          case self::GROUP_AX:
+          case self::GROUP_EP:
+          case self::GROUP_FX:
+            return true;
+          default:
+            return false;
+        }
     }
 
     public function canSyncWithGroup()

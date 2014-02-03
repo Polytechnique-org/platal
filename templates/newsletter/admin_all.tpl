@@ -44,7 +44,6 @@
     <td class="titre">{$nl.id}</td>
     <td>{$nl.group_name}</td>
     <td><a href="http://www.polytechnique.net/{$nl.group_link}/admin/nl">{$nl.name}</a></td>
-    <td>{if $nl.custom_css}Oui{else}Non{/if}</td>
     <td>{$nl.criteria}</td>
   </tr>
   {/foreach}
