@@ -415,7 +415,7 @@ class DirectBouncesFilter(MboxFilter):
             # Additionnal checks, just to be sure
             elif message['From'] != 'MAILER-DAEMON@polytechnique.org (Mail Delivery System)' \
             or message['Subject'] != 'Undelivered Mail Returned to Sender':
-                print('! Not an usual direct bounce (From="%s", Subject="%s").' % (message['From'], message['Subject']))
+                print('! Not an usual direct bounce (From=%r, Subject=%r).' % (message['From'], message['Subject']))
             else:
                 email = findAddressInBounce(message)
                 if email is not None:
