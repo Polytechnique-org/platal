@@ -498,8 +498,8 @@ class XnetGrpModule extends PLModule
             $users = array_keys(Env::v('add_users'));
             $former_users = XDB::fetchColumn('SELECT  uid
                                                 FROM  group_former_members
-                                               WHERE  remember = TRUE AND uid IN {?}',
-                                             $users);
+                                               WHERE  remember = TRUE AND asso_id = {?} AND uid IN {?}',
+                                             $globals->asso('id'), $users);
             $new_users = array_diff($users, $former_users);
 
             foreach ($former_users as $uid) {
