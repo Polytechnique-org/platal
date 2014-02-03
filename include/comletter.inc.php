@@ -24,7 +24,7 @@
 class ComLArticle
 {
     // Maximum number of lines per article, as wanted by the NL master
-    const MAX_LINES_PER_ARTICLE = 4;
+    const MAX_LINES_PER_ARTICLE = 8;
     const MAX_CHARACTERS_PER_LINE = 68;
 
     // {{{ properties
