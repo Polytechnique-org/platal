@@ -41,7 +41,7 @@ class EmailModule extends PLModule
             'admin/emails/duplicated' => $this->make_hook('duplicated',  AUTH_PASSWD, 'admin'),
             'admin/emails/watch'      => $this->make_hook('duplicated',  AUTH_PASSWD, 'admin'),
             'admin/emails/lost'       => $this->make_hook('lost',        AUTH_PASSWD, 'admin'),
-            'admin/emails/broken'     => $this->make_hook('broken_addr', AUTH_PASSWD, 'admin'),
+            'admin/emails/broken'     => $this->make_hook('broken_addr', AUTH_PASSWD, 'admin,edit_directory'),
         );
     }
 

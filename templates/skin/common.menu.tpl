@@ -154,6 +154,7 @@
 <div class="menu_title">Administration</div>
 <div class="menu_item"><a href="admin/profile">Modifications</a></div>
 <div class="menu_item"><a href="admin/jobs">Entreprises</a></div>
+<div class="menu_item"><a href="admin/emails/broken">Pattes cassées</a></div>
 <div class="menu_item"><a href="admin/validate">Validations</a></div>
 {/if}
 
