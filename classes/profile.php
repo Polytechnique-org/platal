@@ -134,6 +134,7 @@ class Profile implements PlExportable
         'yourself'        => 'Nom affiché',
         'freetext'        => 'Commentaire',
         'freetext_pub'    => 'Affichage du commentaire',
+        'axfreetext'      => 'Commentaire AX',
         'photo'           => 'Photographie',
         'photo_pub'       => 'Affichage de la photographie',
         'addresses'       => 'Adresses',
@@ -499,7 +500,7 @@ class Profile implements PlExportable
         }
 
         XDB::execute("UPDATE  profiles
-                         SET  cv = NULL, freetext = NULL, freetext_pub = 'private',
+                         SET  cv = NULL, freetext = NULL, freetext_pub = 'private', axfreetext = NULL,
                               medals_pub = 'private', alias_pub = 'hidden',
                               email_directory = NULL
                        WHERE  pid = {?}",

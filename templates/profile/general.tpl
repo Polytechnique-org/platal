@@ -423,6 +423,20 @@
     </td>
   </tr>
   {/if}
+  {if !t($isMe)}
+  <tr class="pair">
+    <td>
+      <div>
+        <span class="titre">Commentaire AX</span>
+      </div>
+    </td>
+    <td>
+     <div id="axft_preview" style="display: none"></div>
+     <textarea name="axfreetext" {if $errors.axfreetext}class="error"{/if}
+     id="axfreetext" rows="8" cols="50" >{$axfreetext}</textarea>
+    </td>
+  </tr>
+  {/if}
 </table>
 
 {* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}
