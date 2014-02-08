@@ -1,0 +1,1 @@
+ALTER TABLE profiles ADD axfreetext MEDIUMTEXT NULL DEFAULT NULL AFTER freetext_pub;
