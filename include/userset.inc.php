@@ -470,11 +470,11 @@ class AddressesView implements PlView
 
         $csv = fopen('php://output', 'w');
         fputcsv($csv,
-            array('PROMOTION', 'CIVILITE', 'NOM', 'PRENOM', 'SOCIETE', 'ADRESSE', 'ADRESSE1', 'ADRESSE2', 'ADRESSE3', 'CP', 'EMAIL'),
+            array('AX_ID', 'PROMOTION', 'CIVILITE', 'NOM', 'PRENOM', 'SOCIETE', 'ADRESSE', 'ADRESSE1', 'ADRESSE2', 'ADRESSE3', 'CP', 'EMAIL'),
             ';');
 
         if (!empty($pids)) {
-            $res = XDB::query("SELECT  pd.promo, p.title,
+            $res = XDB::query("SELECT  p.ax_id, pd.promo, p.title,
                                        IF (pn.firstname_ordinary = '', UPPER(pn.firstname_main), UPPER(pn.firstname_ordinary)) AS firstname,
                                        IF (pn.lastname_ordinary = '', UPPER(pn.lastname_main), UPPER(pn.lastname_ordinary)) AS lastname,
                                        UPPER(pje.name), pa.postalText, pa.postal_code_fr AS postal_code, p.email_directory
@@ -487,10 +487,10 @@ class AddressesView implements PlView
                             LEFT JOIN  profile_job_enum     AS pje  ON (pj.jobid = pje.id)
                                 WHERE  pa.pid IN {?} AND FIND_IN_SET('ax_mail', pa.flags)", $pids);
             foreach ($res->fetchAllRow() as $item) {
-                list($promo, $title, $lastname, $firstname, $company, $full_address, $zipcode, $email) = array_map('utf8_decode', $item);
+                list($axid, $promo, $title, $lastname, $firstname, $company, $full_address, $zipcode, $email) = array_map('utf8_decode', $item);
                 $lines = self::split_address($full_address);
                 fputcsv($csv,
-                    array($promo, $title, $lastname, $firstname, $company, $full_address, $lines[0], $lines[1], $lines[2], $zipcode, $email),
+                    array($axid, $promo, $title, $lastname, $firstname, $company, $full_address, $lines[0], $lines[1], $lines[2], $zipcode, $email),
                     ';');
             }
         }
