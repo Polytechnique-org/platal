@@ -1231,6 +1231,12 @@ class NLIssue
      */
     public function sendTo($user, $hash = null)
     {
+        // Don't send email to users without an address
+        // Note: this would never happen when using sendToAll
+        if (!$user->bestEmail()) {
+            return;
+        }
+
         $this->fetchArticles();
 
         if (is_null($hash)) {

@@ -725,7 +725,7 @@ class XnetGrpModule extends PLModule
         $this->removeSubscriptionRequest($user->id());
         Group::subscribe($globals->asso('id'), $user->id());
 
-        if (XDB::affectedRows() == 1) {
+        if (XDB::affectedRows() == 1 && $user->forlifeEmail()) {
             $mailer = new PlMailer();
             $mailer->addTo($user->forlifeEmail());
             $mailer->setFrom('"' . S::user()->fullName() . '" <' . S::user()->forlifeEmail() . '>');
@@ -788,12 +788,14 @@ class XnetGrpModule extends PLModule
                 S::assert_xsrf_token();
 
                 $this->removeSubscriptionRequest($user->id());
-                $mailer = new PlMailer();
-                $mailer->addTo($user->forlifeEmail());
-                $mailer->setFrom('"' . S::user()->fullName() . '" <' . S::user()->forlifeEmail() . '>');
-                $mailer->setSubject('['.$globals->asso('nom').'] Demande d\'inscription annulée');
-                $mailer->setTxtBody(Env::v('motif'));
-                $mailer->send();
+                if ($user->forlifeEmail()) {
+                    $mailer = new PlMailer();
+                    $mailer->addTo($user->forlifeEmail());
+                    $mailer->setFrom('"' . S::user()->fullName() . '" <' . S::user()->forlifeEmail() . '>');
+                    $mailer->setSubject('['.$globals->asso('nom').'] Demande d\'inscription annulée');
+                    $mailer->setTxtBody(Env::v('motif'));
+                    $mailer->send();
+                }
                 $page->killSuccess("La demande de {$user->fullName()} a bien été refusée.");
             } else {
                 $page->assign('show_form', true);
@@ -1079,7 +1081,7 @@ class XnetGrpModule extends PLModule
 
             Group::subscribe($globals->asso('id'), $user->id());
             $this->removeSubscriptionRequest($user->id());
-            if ($user->isActive()) {
+            if ($user->isActive() && $user->bestEmail()) {
                 $mailer = new PlMailer('xnetgrp/forced-subscription.mail.tpl');
                 $mailer->addTo($user->bestEmail());
                 $mailer->assign('group', $globals->asso('nom'));

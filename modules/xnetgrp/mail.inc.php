@@ -123,6 +123,9 @@ function send_xnet_mails($from, $sujet, $body, $wiki, $tos, $replyto = null, $up
         } else {
             $email = $user;
         }
+        if (!$email) {
+            continue;
+        }
 
         if (!isset($sent[$email])) {
             _send_xnet_mail($user, $body, $wiki, $mailer, $replyto);
