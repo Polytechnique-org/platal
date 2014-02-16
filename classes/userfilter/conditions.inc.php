@@ -71,7 +71,7 @@ abstract class UserFilterCondition implements PlFilterCondition
     public static function xdbWildcardFromComparison($comparison)
     {
         if (!self::isStringComparison($comparison)) {
-            throw new Exception("Unknown string coparison: $comparison");
+            throw new Exception("Unknown string comparison: $comparison");
         }
         switch ($comparison) {
           case self::OP_EQUALS:
