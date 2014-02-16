@@ -1013,6 +1013,22 @@ class Profile implements PlExportable
         }
     }
 
+    /* Hobbies
+     */
+    public function getHobbies() {
+        if ($this->visibility->isVisible(Visibility::EXPORT_PRIVATE)) {
+            return XDB::fetchAllAssoc('type', 'SELECT  type, GROUP_CONCAT(text)
+                                         FROM  profile_hobby
+                                        WHERE  pid = {?}
+                                     GROUP BY  type', $this->id());
+        } else {
+            return XDB::fetchAllAssoc('type', 'SELECT  type, GROUP_CONCAT(text)
+                                         FROM  profile_hobby
+                                        WHERE  pub = \'public\' AND pid = {?}
+                                      GROUP BY type', $this->id());
+        }
+    }
+
     /* Medals
      */
     private $medals = null;

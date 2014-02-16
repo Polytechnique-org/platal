@@ -86,6 +86,14 @@ $($.closeOnEsc);
       {/foreach}
     {/if}
 
+    {assign var=hobbies value=$profile->getHobbies()}
+    {if count($hobbies) > 0}
+      <h2>Hobbies...</h2>
+      {foreach from=$hobbies key=type item=text}
+        <div><em class="intitule">{$type} : </em>{$text}</div>
+      {/foreach}
+    {/if}
+
     {if $profile->freetext}
       <h2>Commentaires&nbsp;:</h2>
       <span>{$profile->freetext|miniwiki|smarty:nodefaults}</span>
