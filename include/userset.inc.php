@@ -470,14 +470,15 @@ class AddressesView implements PlView
 
         $csv = fopen('php://output', 'w');
         fputcsv($csv,
-            array('AX_ID', 'PROMOTION', 'CIVILITE', 'NOM', 'PRENOM', 'SOCIETE', 'ADRESSE', 'ADRESSE1', 'ADRESSE2', 'ADRESSE3', 'CP', 'EMAIL'),
+            array('AX_ID', 'PROMOTION', 'CIVILITE', 'NOM', 'PRENOM', 'SOCIETE', 'ADRESSE', 'ADRESSE1', 'ADRESSE2', 'ADRESSE3', 'CP', 'EMAIL', 'NHABITE_PLUS_A_LADRESSE'),
             ';');
 
         if (!empty($pids)) {
             $res = XDB::query("SELECT  p.ax_id, pd.promo, p.title,
                                        IF (pn.firstname_ordinary = '', UPPER(pn.firstname_main), UPPER(pn.firstname_ordinary)) AS firstname,
                                        IF (pn.lastname_ordinary = '', UPPER(pn.lastname_main), UPPER(pn.lastname_ordinary)) AS lastname,
-                                       UPPER(pje.name), pa.postalText, pa.postal_code_fr AS postal_code, p.email_directory
+                                       UPPER(pje.name), pa.postalText, pa.postal_code_fr AS postal_code, p.email_directory,
+                                       IF (FIND_IN_SET('deliveryIssue', pa.flags), 'oui', '') AS delivery_issue
                                  FROM  profile_addresses    AS pa
                            INNER JOIN  profiles             AS p    ON (pa.pid = p.pid)
                            INNER JOIN  profile_display      AS pd   ON (pd.pid = pa.pid)
@@ -487,11 +488,12 @@ class AddressesView implements PlView
                             LEFT JOIN  profile_job_enum     AS pje  ON (pj.jobid = pje.id)
                                 WHERE  pa.pid IN {?} AND FIND_IN_SET('ax_mail', pa.flags)", $pids);
             foreach ($res->fetchAllRow() as $item) {
-                list($axid, $promo, $title, $lastname, $firstname, $company, $full_address, $zipcode, $email) = array_map('utf8_decode', $item);
+                list($axid, $promo, $title, $lastname, $firstname, $company, $full_address, $zipcode, $email, $delivery_issue) = array_map('utf8_decode', $item);
                 $lines = self::split_address($full_address);
-                fputcsv($csv,
-                    array($axid, $promo, $title, $lastname, $firstname, $company, $full_address, $lines[0], $lines[1], $lines[2], $zipcode, $email),
-                    ';');
+                fputcsv($csv, array(
+                    $axid, $promo, $title, $lastname, $firstname, $company,
+                    $full_address, $lines[0], $lines[1], $lines[2], $zipcode,
+                    $email, $delivery_issue), ';');
             }
         }
         fclose($csv);
