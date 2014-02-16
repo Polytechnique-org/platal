@@ -743,7 +743,8 @@ class Address
         $ax_mail = XDB::fetchOneAssoc("SELECT  pid, jobid, groupid, type, id
                                          FROM  profile_addresses
                                         WHERE  pub IN ('public', 'ax') AND FIND_IN_SET('mail', flags) AND pid = {?}
-                                     ORDER BY  NOT FIND_IN_SET('current', flags),
+                                     ORDER BY  FIND_IN_SET('deliveryIssue', flags),
+                                               NOT FIND_IN_SET('current', flags),
                                                FIND_IN_SET('secondary', flags), type = 'job'",
                                       $this->pid);
 
