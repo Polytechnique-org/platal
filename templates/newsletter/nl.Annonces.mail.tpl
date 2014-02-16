@@ -59,8 +59,8 @@
 {$issue->signature('text')}
 
 --------------------------------------------------------------------
-Cette lettre est envoyée à tous les Polytechniciens sur Internet par
-l'intermédiaire de Polytechnique.org.
+Cette lettre est envoyée par le groupe Annonces et Débats grâce aux 
+outils de Polytechnique.org.
 
 {if $is_mail}
 archives         : <https://www.polytechnique.org/comletter>
@@ -117,7 +117,7 @@ ne plus recevoir : &lt;https://www.polytechnique.org/comletter/out/{if $hash}{$h
       {/foreach}
       <div class="signature">{$issue->signature('html')|smarty:nodefaults}</div>
       <div class="foot1">
-        Cette lettre est envoyée à tous les Polytechniciens sur Internet par l'intermédiaire de Polytechnique.org.
+        Cette lettre est envoyée par le groupe Annonces et Débats grâce aux outils de Polytechnique.org.
       </div>
       <div class="foot2">
         [<a href="https://www.polytechnique.org/comletter">archives</a>&nbsp;|
