@@ -771,12 +771,8 @@ class ListsModule extends PLModule
         if (Env::has('del_member')) {
             S::assert_xsrf_token();
 
-            if (strpos(Env::v('del_member'), '@') === false) {
-                if ($del_member = User::getSilent(Env::t('del_member'))) {
-                    $mlist->unsubscribeBulk(array($del_member->forlifeEmail()));
-                }
-            } else {
-                $mlist->unsubscribeBulk(array(Env::v('del_member')));
+            if ($del_member = User::getSilent(Env::t('del_member'))) {
+                $mlist->unsubscribeBulk(array($del_member->forlifeEmail()));
             }
             pl_redirect('lists/admin/'.$liste);
         }
@@ -797,12 +793,8 @@ class ListsModule extends PLModule
         if (Env::has('del_owner')) {
             S::assert_xsrf_token();
 
-            if (strpos(Env::v('del_owner'), '@') === false) {
-                if ($del_owner = User::getSilent(Env::t('del_owner'))) {
-                    $mlist->unsubscribeBulk(array($del_owner->forlifeEmail()));
-                }
-            } else {
-                $mlist->removeOwner(Env::v('del_owner'));
+            if ($del_owner = User::getSilent(Env::t('del_owner'))) {
+                $mlist->unsubscribeBulk(array($del_owner->forlifeEmail()));
             }
             pl_redirect('lists/admin/'.$liste);
         }
