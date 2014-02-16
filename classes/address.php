@@ -916,12 +916,12 @@ class Address
     }
 }
 
-/** Iterator over a set of Phones
+/** Iterator over a set of Addresses
  *
  * @param $pid, $type, $jobid, $pub
  *
- * The iterator contains the phones that correspond to the value stored in the
- * parameters' arrays.
+ * The iterator contains the addresses that correspond to the value stored in
+ * the parameters' arrays.
  */
 class AddressIterator implements PlIterator
 {
