@@ -58,11 +58,12 @@ var subgrades;
 var names;
 var multiples;
 
-// Publicity follows the following ordering: private < ax < public.
+// Publicity follows the following ordering: hidden < private < ax < public.
 var publicity = [];
-publicity['private'] = 0;
-publicity['ax']      = 1;
-publicity['public']  = 2;
+publicity['hidden']  = 0;
+publicity['private'] = 1;
+publicity['ax']      = 2;
+publicity['public']  = 3;
 
 // Names {{{1
 
