@@ -728,7 +728,7 @@ class Address
             }
 
             if ($this->pid != 0) {
-                $this->updateBestMail();
+                self::updateBestMail($this->pid);
             }
         }
     }
@@ -736,13 +736,19 @@ class Address
     /**
      * Upate the denormalized flag which is used to mark the best mail to use
      * when sending postal mail
+     *
+     * Call with $fake to true to only get which address would be selected,
+     * without updating anything in the database.
+     * Returns an array describing the selected profile address
      */
-    private function updateBestMail()
+    static public function updateBestMail($pid, $fake=false)
     {
-        XDB::execute("UPDATE  profile_addresses
-                         SET  flags = REPLACE(flags, 'dn_best_mail', '')
-                       WHERE  pid = {?}",
-                     $this->pid);
+        if (!$fake) {
+            XDB::execute("UPDATE  profile_addresses
+                             SET  flags = REPLACE(flags, 'dn_best_mail', '')
+                           WHERE  pid = {?}",
+                         $pid);
+        }
 
         /* Following order is selected to find the best mail:
          *  * Use addresses without the deliveryIssue flag if possible.
@@ -752,21 +758,22 @@ class Address
          *  * If there are still several addresses in the selection, try not
          *    to select the ones with "job" type.
          */
-        $best_mail = XDB::fetchOneAssoc("SELECT  pid, jobid, groupid, type, id
+        $best_mail = XDB::fetchOneAssoc("SELECT  pid, jobid, groupid, type, id, flags
                                          FROM  profile_addresses
                                         WHERE  FIND_IN_SET('mail', flags) AND pid = {?}
                                      ORDER BY  FIND_IN_SET('deliveryIssue', flags),
                                                NOT FIND_IN_SET('current', flags),
                                                FIND_IN_SET('secondary', flags), type = 'job'
                                         LIMIT  1",
-                                      $this->pid);
+                                      $pid);
 
-        if ($best_mail) {
+        if (!$fake && $best_mail) {
             XDB::execute("UPDATE  profile_addresses
                              SET  flags = CONCAT(flags, ',dn_best_mail')
                            WHERE  pid = {?} AND jobid = {?} AND groupid = {?} AND type = {?} AND id = {?}",
                          $best_mail['pid'], $best_mail['jobid'], $best_mail['groupid'], $best_mail['type'], $best_mail['id']);
         }
+        return $best_mail;
     }
 
     public function updateGeocoding($text)
