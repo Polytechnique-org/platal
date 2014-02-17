@@ -1071,13 +1071,13 @@ class UFBF_Dead extends UFBF_Enum
 class UFBF_AddressMixed extends UFBF_Mixed
 {
     protected $onlycurrentfield;
-    protected $onlyaxmailfield;
+    protected $onlybestmailfield;
 
-    public function __construct($envfieldtext, $envfieldindex, $formtext = '', $addressfield, $onlycurrentfield = 'only_current', $onlyaxmailfield = 'only_ax_mail')
+    public function __construct($envfieldtext, $envfieldindex, $formtext = '', $addressfield, $onlycurrentfield = 'only_current', $onlybestmailfield = 'only_best_mail')
     {
         parent::__construct($envfieldtext, $envfieldindex, $formtext);
         $this->onlycurrentfield = $onlycurrentfield;
-        $this->onlyaxmailfield = $onlyaxmailfield;
+        $this->onlybestmailfield = $onlybestmailfield;
         $this->direnum = constant('DirEnum::' . $addressfield);
     }
 
@@ -1087,8 +1087,8 @@ class UFBF_AddressMixed extends UFBF_Mixed
         if ($ufb->isOn($this->onlycurrentfield)) {
             $flags |= UFC_Address::FLAG_CURRENT;
         }
-        if ($ufb->isOn($this->onlyaxmailfield)) {
-            $flags |= UFC_Address::FLAG_AX_MAIL;
+        if ($ufb->isOn($this->onlybestmailfield)) {
+            $flags |= UFC_Address::FLAG_BEST_MAIL;
         }
         if ($flags == UFC_Address::FLAG_NONE) {
             $flags = UFC_Address::FLAG_ANY;
@@ -1099,7 +1099,7 @@ class UFBF_AddressMixed extends UFBF_Mixed
 
     public function getEnvFieldNames()
     {
-        return array($this->envfield, $this->envfieldindex, $this->onlycurrentfield, $this->onlyaxmailfield);
+        return array($this->envfield, $this->envfieldindex, $this->onlycurrentfield, $this->onlybestmailfield);
     }
 }
 // }}}
@@ -1109,13 +1109,13 @@ class UFBF_AddressIndex extends UFBF_Index
 {
     protected $direnum;
     protected $onlycurrentfield;
-    protected $onlyaxmailfield;
+    protected $onlybestmailfield;
 
-    public function __construct($envfield, $formtext = '', $addressfield, $onlycurrentfield = 'only_current', $onlyaxmailfield = 'only_ax_mail')
+    public function __construct($envfield, $formtext = '', $addressfield, $onlycurrentfield = 'only_current', $onlybestmailfield = 'only_best_mail')
     {
         parent::__construct($envfield, $formtext);
         $this->onlycurrentfield = $onlycurrentfield;
-        $this->onlyaxmailfield = $onlyaxmailfield;
+        $this->onlybestmailfield = $onlybestmailfield;
         $this->direnum = constant('DirEnum::' . $addressfield);
     }
 
@@ -1126,8 +1126,8 @@ class UFBF_AddressIndex extends UFBF_Index
         if ($ufb->isOn($this->onlycurrentfield)) {
             $flags |= UFC_Address::FLAG_CURRENT;
         }
-        if ($ufb->isOn($this->onlyaxmailfield)) {
-            $flags |= UFC_Address::FLAG_AX_MAIL;
+        if ($ufb->isOn($this->onlybestmailfield)) {
+            $flags |= UFC_Address::FLAG_BEST_MAIL;
         }
         if ($flags == UFC_Address::FLAG_NONE) {
             $flags = UFC_Address::FLAG_ANY;
@@ -1138,7 +1138,7 @@ class UFBF_AddressIndex extends UFBF_Index
 
     public function getEnvFieldNames()
     {
-        return array($this->envfield, $this->onlycurrentfield, $this->onlyaxmailfield);
+        return array($this->envfield, $this->onlycurrentfield, $this->onlybestmailfield);
     }
 }
 // }}}

@@ -168,9 +168,9 @@
     {if hasPerm('admin,edit_directory')}
     <tr>
       <td colspan="2">
-        <label for="only_ax_mail">
-          <input name="only_ax_mail" id="only_ax_mail" type="checkbox"{if $smarty.request.only_ax_mail} checked="checked"{/if}/>
-          Chercher uniquement parmi les adresses postales de l'AX.
+        <label for="only_best_mail">
+          <input name="only_best_mail" id="only_best_mail" type="checkbox"{if $smarty.request.only_best_mail} checked="checked"{/if}/>
+          Chercher uniquement parmi les adresses postales utilisées lors de l'envoi de courrier.
         </label>
       </td>
     </tr>

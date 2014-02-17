@@ -1028,26 +1028,27 @@ abstract class UFC_Address extends UserFilterCondition
 
     /** Flags for addresses
      */
-    const FLAG_NONE    = 0x0000;
-    const FLAG_CURRENT = 0x0001;
-    const FLAG_TEMP    = 0x0002;
-    const FLAG_SECOND  = 0x0004;
-    const FLAG_MAIL    = 0x0008;
-    const FLAG_CEDEX   = 0x0010;
-    const FLAG_AX_MAIL = 0x0020;
+    const FLAG_NONE      = 0x0000;
+    const FLAG_CURRENT   = 0x0001;
+    const FLAG_TEMP      = 0x0002;
+    const FLAG_SECOND    = 0x0004;
+    const FLAG_MAIL      = 0x0008;
+    const FLAG_CEDEX     = 0x0010;
+    const FLAG_BEST_MAIL = 0x0020;
 
     // Binary OR of those flags
     const FLAG_ANY     = 0x003F;
 
     /** Text of these flags
+     *  "Best mail" is a denormalized flag, hence the dn_ prefix
      */
     protected static $flagtexts = array(
-        self::FLAG_CURRENT => 'current',
-        self::FLAG_TEMP    => 'temporary',
-        self::FLAG_SECOND  => 'secondary',
-        self::FLAG_MAIL    => 'mail',
-        self::FLAG_CEDEX   => 'cedex',
-        self::FLAG_AX_MAIL => 'ax_mail',
+        self::FLAG_CURRENT   => 'current',
+        self::FLAG_TEMP      => 'temporary',
+        self::FLAG_SECOND    => 'secondary',
+        self::FLAG_MAIL      => 'mail',
+        self::FLAG_CEDEX     => 'cedex',
+        self::FLAG_BEST_MAIL => 'dn_best_mail',
     );
 
     protected $flags;
