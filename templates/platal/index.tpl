@@ -80,7 +80,7 @@
     <a href="http://www.polytechnique.edu">polytechnique.edu</a>, le portail
     des X sur le web est <a href="http://www.polytechnique.org/">polytechnique.org</a>,
     et le site de l'amicale des Anciens Eleves (AX) est
-    <a href="http://www.polytechniciens.com/">polytechniciens.com</a>.</li>
+    <a href="http://www.ax.polytechnique.edu/">ax.polytechnique.edu</a>.</li>
 </ul>
 
 <p>

@@ -294,7 +294,7 @@ class ProfileModule extends PLModule
         if (!$user->ax_id) {
             $page->kill("Le matricule AX de {$user->hrid()} est inconnu");
         }
-        http_redirect("http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&ancc_id=" . $user->ax_id);
+        http_redirect("http://kx.polytechniciens.com/?page=AX_FICHE_ANCIEN&ancc_id=" . $user->ax_id);
     }
 
     function handler_p_edit($page, $hrpid = null, $opened_tab = null, $mode = null, $success = null)
