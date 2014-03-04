@@ -40,8 +40,6 @@ class XnetEventsModule extends PLModule
         global $globals;
 
         $page->changeTpl('xnetevents/index.tpl');
-        $this->load('xnetevents.inc.php');
-        
         $action = null;
         $archive = ($archive == 'archive' && may_update());
 
@@ -153,49 +151,77 @@ class XnetEventsModule extends PLModule
                              SET event_order = {?}
                            WHERE id = {?}",
                           $order, $globals->asso('id'));
+        } else {
+            $order = XDB::fetchOneCell("SELECT event_order FROM groups
+                                         WHERE id = {?}",
+                                        $globals->asso('id'));
         }
-        $order = get_event_order($globals->asso('id'));
-        $evts = get_events($globals->asso('id'), $order);
+        if ($order == 'desc') {
+            $evenements = XDB::iterator('SELECT  e.*, LEFT(e.debut, 10) AS first_day, LEFT(e.fin, 10) AS last_day,
+                                                 IF(e.deadline_inscription,
+                                                         e.deadline_inscription >= LEFT(NOW(), 10),
+                                                         1) AS inscr_open,
+                                                 e.deadline_inscription,
+                                                 MAX(ep.nb) IS NOT NULL AS inscrit, MAX(ep.paid) AS paid
+                                           FROM  group_events              AS e
+                                      LEFT JOIN  group_event_participants AS ep ON (ep.eid = e.eid AND ep.uid = {?})
+                                          WHERE  asso_id = {?} AND  archive = {?}
+                                       GROUP BY  e.eid
+                                       ORDER BY  inscr_open DESC, debut DESC',
+                                         S::i('uid'), $globals->asso('id'), $archive ? 1 : 0);
+        } else {
+            $evenements = XDB::iterator('SELECT  e.*, LEFT(e.debut, 10) AS first_day, LEFT(e.fin, 10) AS last_day,
+                                                 IF(e.deadline_inscription,
+                                                         e.deadline_inscription >= LEFT(NOW(), 10),
+                                                         1) AS inscr_open,
+                                                 e.deadline_inscription,
+                                                 MAX(ep.nb) IS NOT NULL AS inscrit, MAX(ep.paid) AS paid
+                                           FROM  group_events              AS e
+                                      LEFT JOIN  group_event_participants AS ep ON (ep.eid = e.eid AND ep.uid = {?})
+                                          WHERE  asso_id = {?} AND  archive = {?}
+                                       GROUP BY  e.eid
+                                       ORDER BY  inscr_open DESC, debut ASC',
+                                         S::i('uid'), $globals->asso('id'), $archive ? 1 : 0);
+        }
         $page->assign('order', $order);
 
+        $evts = array();
         $undisplayed_events = 0;
-        foreach ($evts as $eid => &$e) {
+        $this->load('xnetevents.inc.php');
+
+        while ($e = $evenements->next()) {
             if (!is_member() && !may_update() && !$e['accept_nonmembre']) {
                 $undisplayed_events ++;
                 continue;
             }
 
             $e['show_participants'] = ($e['show_participants'] && (is_member() || may_update()));
-            $e['items'] = get_event_items($eid);
+            $e['moments'] = XDB::fetchAllAssoc('SELECT  titre, details, montant, ei.item_id, nb, ep.paid
+                                                  FROM  group_event_items AS ei
+                                             LEFT JOIN  group_event_participants AS ep
+                                                           ON (ep.eid = ei.eid AND ep.item_id = ei.item_id AND ep.uid = {?})
+                                                 WHERE ei.eid = {?}',
+                                                S::i('uid'), $e['eid']);
+
             $e['topay'] = 0;
             $e['paid']  = 0;
-            $sub = get_event_subscription($eid, S::i('uid'));
-            if (empty($sub)) {
-                $e['inscrit'] = false;
-            } else {
-                $e['inscrit'] = true;
-                foreach ($e['items'] as $item_id => $m) {
-                    if (isset($sub[$item_id])) {
-                        $e['topay'] += $sub[$item_id]['nb'] * $m['montant'];
-                        $e['paid'] += $sub[$item_id]['paid'];
-                    }
-                }
+            foreach ($e['moments'] as $m) {
+                $e['topay'] += $m['nb'] * $m['montant'];
+                $e['paid'] += $m['paid'];
             }
-            $e['sub'] = $sub;
- 
-            $telepaid = get_event_telepaid($eid, S::i('uid'));
-            $e['paid'] += $telepaid;
- 
-            $e['date'] = make_event_date($e['debut'], $e['fin']);
-            if ($e['deadline_inscription'] == null || strtotime($e['deadline_inscription']) >= time()) {
-                $e['inscr_open'] = true;
-            } else {
-                $e['inscr_open'] = false;
-            }
+
+            $montant = XDB::fetchOneCell(
+                "SELECT SUM(amount) as sum_amount
+                   FROM payment_transactions AS t
+                 WHERE ref = {?} AND uid = {?}", $e['paiement_id'], S::v('uid'));
+            $e['paid'] += $montant;
+
+            make_event_date($e);
 
             if (Env::has('updated') && $e['eid'] == Env::i('updated')) {
                 $page->assign('updated', $e);
             }
+            $evts[] = $e;
         }
 
         $page->assign('evenements', $evts);
@@ -207,17 +233,12 @@ class XnetEventsModule extends PLModule
         $this->load('xnetevents.inc.php');
         $page->changeTpl('xnetevents/subscribe.tpl');
 
-        $evt = get_event($eid);
+        $evt = get_event_detail($eid);
         if (is_null($evt)) {
             return PL_NOT_FOUND;
         }
-
-        global $globals;
-
-        if (!$evt['inscr_open']) {
-            $page->kill('Les inscriptions pour cet événement sont closes');
-        }
-        if (!$evt['accept_nonmembre'] && !is_member() && !may_update()) {
+        if ($evt === false) {
+            global $globals, $platal;
             $url = $globals->asso('sub_url');
             if (empty($url)) {
                 $url = $platal->ns . 'subscribe';
@@ -226,29 +247,20 @@ class XnetEventsModule extends PLModule
                         '. Pour devenir membre, rends-toi sur la page de <a href="' . $url . '">demande d\'inscripton</a>.');
         }
 
+        if (!$evt['inscr_open']) {
+            $page->kill('Les inscriptions pour cet événement sont closes');
+        }
+        if (!$evt['accept_nonmembre'] && !is_member() && !may_update()) {
+            $page->kill('Cet événement est fermé aux non-membres du groupe');
+        }
+
+        global $globals;
         $res = XDB::query("SELECT  stamp
                              FROM  requests
                             WHERE  type = 'paiements' AND data LIKE {?}",
-                           PayReq::same_event($eid, $globals->asso('id')));
+                           PayReq::same_event($evt['eid'], $globals->asso('id')));
         $page->assign('validation', $res->numRows());
-
-        $page->assign('eid', $eid);
         $page->assign('event', $evt);
-        
-        $items = get_event_items($eid);
-        $subs = get_event_subscription($eid, S::v('uid'));
-        var_dump($subs);
-        // count what the user must pay
-        $topay = 0;
-        foreach ($items as $item_id => $item) {
-            if (array_key_exists($item_id, $subs)) {
-                $topay += $item['montant']*$subs[$item_id]['nb'];
-            }
-        }
-        $page->assign('moments', $items);
-        $page->assign('subs', $subs);
-        $page->assign('topay', $topay);
-        $page->assign('telepaid', get_event_telepaid($eid, S::v('uid')));
 
         if (!Post::has('submit')) {
             return;
@@ -284,8 +296,12 @@ class XnetEventsModule extends PLModule
         }
 
         // update actual inscriptions
-        $updated = subscribe(S::v('uid'), $eid, $subs);
-   /*     foreach ($subs as $j => $nb) {
+        $updated       = false;
+        $total         = 0;
+        $paid          = $evt['paid'] ? $evt['paid'] : 0;
+        $telepaid      = $evt['telepaid'] ? $evt['telepaid'] : 0;
+        $paid_inserted = false;
+        foreach ($subs as $j => $nb) {
             if ($nb >= 0) {
                 XDB::execute('INSERT INTO  group_event_participants (eid, uid, item_id, nb, flags, paid)
                                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?})
@@ -302,15 +318,15 @@ class XnetEventsModule extends PLModule
                 $updated = $eid;
             }
             $total += $nb;
-   }
-    */
-        if ($updated) {
+        }
+        if ($updated !== false) {
             $evt = get_event_detail($eid);
             if ($evt['topay'] > 0) {
                 $page->trigSuccess('Ton inscription à l\'événement a été mise à jour avec succès, tu peux payer ta participation en cliquant ci-dessous');
             } else {
                 $page->trigSuccess('Ton inscription à l\'événement a été mise à jour avec succès.');
             }
+            subscribe_lists_event(S::i('uid'), $evt['short_name'], ($total > 0 ? 1 : 0), 0);
 
             if ($evt['subscription_notification'] != 'nobody') {
                 $mailer = new PlMailer('xnetevents/subscription-notif.mail.tpl');
