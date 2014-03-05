@@ -619,6 +619,26 @@ class NewsLetter
         }
     }
 
+    /** Get a full URL to a newsletter
+     */
+    public function fullUrl()
+    {
+        switch ($this->group) {
+        case self::GROUP_XORG:
+            return 'https://www.polytechnique.org/nl';
+        case self::GROUP_COMMUNITY:
+            return 'https://www.polytechnique.org/comletter';
+        case self::GROUP_AX:
+            return 'https://www.polytechnique.org/ax';
+        case self::GROUP_EP:
+            return 'https://www.polytechnique.org/epletter';
+        case self::GROUP_FX:
+            return 'https://www.polytechnique.org/fxletter';
+        default:
+            return 'http://www.polytechnique.net/' . $this->group . '/nl';
+        }
+    }
+
     /** Get links for nl pages.
      */
     public function adminLinks()
@@ -1231,6 +1251,8 @@ class NLIssue
      */
     public function sendTo($user, $hash = null)
     {
+        global $globals;
+
         // Don't send email to users without an address
         // Note: this would never happen when using sendToAll
         if (!$user->bestEmail()) {
@@ -1264,6 +1286,21 @@ class NLIssue
         if (!empty($this->reply_to)) {
             $mailer->addHeader('Reply-To', $this->reply_to);
         }
+
+        // Add mailing list headers
+        // Note: "Precedence: bulk" is known to cause issues on some clients
+        $mailer->addHeader('Precedence', 'list');
+        // RFC 2919 header
+        $mailer->addHeader('List-Id', $this->nl->group .
+            ' <' . $this->nl->group . '.newsletter.' . $globals->mail->domain . '>');
+        // RFC 2369 headers
+        $listurl = $this->nl->fullUrl();
+        $mailer->addHeader('List-Unsubscribe', '<' . $listurl . '/out/nohash/' . $this->id . '>');
+        $mailer->addHeader('List-Subscribe', '<' . $listurl. '/in/nohash/' . $this->id . '>');
+        $mailer->addHeader('List-Archive', '<' . $listurl . '>');
+        $mailer->addHeader('List-Help', '<' . $listurl . '>');
+        $mailer->addHeader('List-Owner', '<mailto:support@' . $globals->mail->domain . '>');
+
         $mailer->sendTo($user);
     }
 
