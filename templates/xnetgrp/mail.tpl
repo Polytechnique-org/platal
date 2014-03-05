@@ -151,6 +151,25 @@ Le bureau du groupe {$asso->nom}.
       </td>
     </tr>
     <tr>
+      <td colspan="2">
+        <p style="font-size: larger;">
+          <b>Attention</b>&nbsp;: si après avoir cliqué sur le bouton "Envoyer le message"
+          la page met un temps long à répondre, ceci peut être lié au fait que le serveur
+          est en train d'envoyer beaucoup de mails et cet outil n'est certainement pas
+          adapté pour cette situation.
+        </p>
+        <p>
+          Au lieu d'utiliser cet outil, il est possible d'utiliser la
+          <a href="{$platal->ns}nl">newsletter</a> du groupe pour écrire au groupe.
+        </p>
+        <p>
+          Pour connaître quelles solutions Polytechnique.org propose pour effectuer
+          un envoi massif de mails ciblés, merci de contacter
+          <a href="mailto:contact@polytechnique.org">contact@polytechnique.org</a>.
+        </p>
+      </td>
+    </tr>
+    <tr>
       <td colspan="2" align="center">
         <input type="submit" name="preview" id="preview_bt" value="Aperçu" onclick="previewWiki('mail_text', 'mail_preview', true, 'preview'); return false;" />
         <input type="submit" name="send" id="submit_bt" value="Envoyer le message" />
