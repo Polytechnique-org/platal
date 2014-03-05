@@ -301,7 +301,7 @@ class ProfileModule extends PLModule
     {
         global $globals;
 
-        if (in_array($hrpid, array('general', 'adresses', 'emploi', 'poly', 'deco', 'mentor', 'deltaten'))) {
+        if (in_array($hrpid, array('general', 'adresses', 'emploi', 'poly', 'deco', 'mentor', 'manageurs', 'deltaten'))) {
             $aux = $opened_tab;
             $opened_tab = $hrpid;
             $hrpid = $aux;
@@ -336,6 +336,9 @@ class ProfileModule extends PLModule
         $wiz->addPage('ProfilePageDecos', 'Décorations - Medailles', 'deco');
         if ($viewPrivate) {
             $wiz->addPage('ProfilePageMentor', 'Mentoring', 'mentor');
+        }
+        if ($viewPrivate) {
+            $wiz->addPage('ProfilePageManageurs', 'Manageurs.com', 'manageurs');
         }
         if ($viewPrivate && $profile->isDeltatenEnabled(Profile::DELTATEN_OLD)) {
             $wiz->addPage('ProfilePageDeltaten', 'Opération N N-10', 'deltaten');
