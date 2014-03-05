@@ -37,6 +37,9 @@ masculin ou féminin, par son prénom, ou son nom.
         form.sujet.focus();
         return false;
     }
+    var bouton = document.getElementById('submit_bt');
+    bouton.disabled = "disabled";
+    bouton.value="Envoi...";
   }
 
   function updateWikiView(box) {
@@ -150,7 +153,7 @@ Le bureau du groupe {$asso->nom}.
     <tr>
       <td colspan="2" align="center">
         <input type="submit" name="preview" id="preview_bt" value="Aperçu" onclick="previewWiki('mail_text', 'mail_preview', true, 'preview'); return false;" />
-        <input type="submit" name="send" value="Envoyer le message" />
+        <input type="submit" name="send" id="submit_bt" value="Envoyer le message" />
       </td>
     </tr>
   </table>
