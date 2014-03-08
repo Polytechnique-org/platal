@@ -1546,6 +1546,10 @@ class AdminModule extends PLModule
         $table_editor->describe('type', 'Catégorie', true);
         $table_editor->describe('perms', 'Permissions associées', true);
         $table_editor->apply($page, $action, $id);
+
+        $page->trigWarning(
+            'Le niveau de visibilité "ax", utilisé par la permission "directory_ax", ' .
+            'correspond à la visibilité dans l\'annuaire papier.');
     }
 
     function handler_wiki($page, $action = 'list', $wikipage = null, $wikipage2 = null)
