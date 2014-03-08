@@ -1222,6 +1222,11 @@ class XnetGrpModule extends PLModule
             $mailer->send();
         }
 
+        $nl = Newsletter::forGroup($globals->asso('shortname'));
+        if (!is_null($nl)) {
+            $nl->unsubscribe(null, S::i('uid'));
+        }
+
         $domain = $globals->asso('mail_domain');
         if (!$domain) {
             return true;
