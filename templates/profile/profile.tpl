@@ -105,7 +105,9 @@ $($.closeOnEsc);
     <div class="civilite">
       {if $profile->isFemale()}&bull;{/if}
       {if $view->isVisible(#Visibility::EXPORT_PRIVATE#)}{$profile->private_name}{else}{$profile->public_name}{/if}
-      {if hasPerm('admin') || $smarty.session.user->canEdit($profile)} {$profile->ax_id}{/if}
+      {if ( hasPerm('admin') || $smarty.session.user->canEdit($profile)) && $view->isVisible(#Visibility::EXPORT_PRIVATE#)}
+        <span title="Identifiant AX, uniquement visible par les administrateurs du site" style="font-weight:normal;font-style:italic;"> ({$profile->ax_id})</span>
+      {/if}
 
       {if $logged}
         &nbsp;{if !$profile->isDead()}<a href="vcard/{$owner->login()}.vcf">{*
