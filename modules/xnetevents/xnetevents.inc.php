@@ -43,7 +43,7 @@ function get_events($asso_id, $order)
     if ($order != 'asc' && $order != 'desc') {
         $order = 'desc';
     }
-    $evts = XDB::fetchAllAssoc('eid', "SELECT ge.eid, ge.uid, ge.intitule, ge.debut, ge.fin, ge.show_participants, ge.deadline_inscription, ge.accept_nonmembre
+    $evts = XDB::fetchAllAssoc('eid', "SELECT ge.eid, ge.uid, ge.intitule, ge.debut, ge.fin, ge.show_participants, ge.deadline_inscription, ge.accept_nonmembre, ge.paiement_id
                                          FROM group_events as ge
                                         WHERE asso_id = {?}
                                      ORDER BY ge.debut $order",
@@ -58,7 +58,7 @@ function get_events($asso_id, $order)
  */
 function get_event($eid)
 {
-    $evt = XDB::fetchOneAssoc('SELECT ge.uid, ge.intitule, ge.descriptif, ge.debut, ge.fin, ge.deadline_inscription, ge.accept_nonmembre
+    $evt = XDB::fetchOneAssoc('SELECT ge.uid, ge.intitule, ge.descriptif, ge.debut, ge.fin, ge.deadline_inscription, ge.accept_nonmembre, ge.paiement_id
                                          FROM group_events as ge
                                         WHERE eid = {?}',
                                         $eid);
@@ -273,6 +273,90 @@ function get_event_participants(&$evt, $item_id, array $tri = array(), $limit = 
 }
 // }}}
 
+//  {{{ function subscribe()
+/** set or update the user's subscription
+ *
+ * @param $uid: user's id
+ * @param $eid: event's id
+ * @param $subs: user's new subscription
+ *
+ */
+function subscribe($uid, $eid, $subs = array())
+{
+    global $globals;
+    // get items
+    $items = get_event_items($eid);
+    // get previous subscription
+    $old_subs = get_event_subscription($eid, $uid);
+    $participate = false;
+    $updated = false;
+    // TODO : change the way to deal with manual payment
+    $paid = 0;
+    foreach ($old_subs as $item_id => $s) {
+        $paid += $s['paid'];
+    }
+    $paid_updated = false;
+    // for each item of the event
+    foreach ($items as $item_id => $details) {
+        // check if there is an old subscription
+        if (array_key_exists($item_id, $old_subs)) {
+            echo 'prev exists  ';
+            // compares new and old subscription
+            if ($old_subs[$item_id]['nb'] != $subs[$item_id]) {
+                echo 'different  ';
+                if ($subs[$item_id] != 0) {
+                    echo "je m'inscris  ";
+                    XDB::execute('INSERT INTO group_event_participants (eid, uid, item_id, nb, flags, paid)
+                                       VALUES ({?}, {?}, {?}, {?}, {?}, {?})
+                      ON DUPLICATE KEY UPDATE nb = VALUES(nb), flags = VALUES(flags), paid = VALUES(paid)',
+                                             $eid, $uid, $item_id, $subs[$item_id],(Env::has('notify_payment') ? 'notify_payment' : 0), (!$paid_updated ? $paid : 0));
+                    $participate = true;
+                    $paid_updated = true;
+                } else { // we do not store non-subscription to event items
+                    echo "je me desinscris  ";
+                    XDB::execute('DELETE FROM group_event_participants
+                                        WHERE eid = {?} AND uid = {?} AND item_id = {?}',
+                                              $eid, $uid, $item_id);
+                }
+                $updated = true;
+            }
+        } else { // if no old subscription
+            echo 'no prev  ';
+            if ($subs[$item_id] != 0) {
+                echo 'subscribe  ';
+                XDB::execute('INSERT INTO group_event_participants (eid, uid, item_id, nb, flags, paid)
+                                   VALUES ({?}, {?}, {?}, {?}, {?}, {?})',
+                                          $eid, $uid, $item_id, $subs[$item_id], '', 0);
+                $participate = true;
+                $updated = true;
+            }
+        }
+    }
+    // item 0 stores whether the user participates globally or not, if he has to be notified when payment is created and his manual payment
+    /*
+    if (array_key_exists(0, $old_subs)) {
+        XDB::execute('UPDATE group_event_participants
+                         SET nb = {?}
+                       WHERE eid = {?}, uid = {?}, item_id = 0',
+                             ($participate ? 1 : 0), $eid, $uid);
+    } else {
+        XDB::execute('INSERT INTO group_event_participants (eid, uid, item_id, nb, flags, paid)
+                           VALUES ({?}, {?}, {?}, {?}, {?}, {?})',
+                                  $eid, $uid, 0, ($participate ? 1 : 0), (Env::has('notify_payment') ? 'notify_payment' : ''), 0);
+    }
+    */
+    // if subscription is updated, we have to update the event aliases
+    if ($updated) {
+        echo "inscription mise a jour  ";
+        $short_name = get_event_detail($eid)['short_name'];
+        subscribe_lists_event($uid, $short_name, ($participate ? 1 : -1), 0);
+    }
+    return $updated;
+}
+//  }}}
+
+// TODO : correct this function to be compatible with subscribe() (use $eid, remove useless argument)
+// TODO : correct other calls
 //  {{{ function subscribe_lists_event()
 /** Subscribes user to various event related mailing lists.
  *

@@ -27,9 +27,8 @@
 </p>
 
 <p class='descr'>
-  {assign var=profile value=$event.organizer->profile()}
   Cet événement a lieu <strong>{$event.date}</strong> et a été proposé par
-  <a href='https://www.polytechnique.org/profile/{$profile->hrpid}' class='popup2'>
+  <a href='https://www.polytechnique.org/profile/{$event.organizer->hrpid}' class='popup2'>
     {$event.organizer->fullName('promo')}
   </a>.
 </p>
@@ -38,20 +37,20 @@
   {$event.descriptif|nl2br}
 </p>
 
-{if $admin || $event.show_participants}
+{if $is_admin || $event.show_participants}
 <p class='descr'>
   Tu peux
-  <a href="{$platal->ns}events/admin/{$event.eid}">
+  <a href="{$platal->ns}events/admin/{$eid}">
     consulter la liste des participants
     {icon name=group title="Liste des participants"}</a>
   déjà inscrits.
 </p>
 {/if}
 
-<form action="{$platal->ns}events/sub/{$event.eid}" method="post">
+<form action="{$platal->ns}events/sub/{$eid}" method="post">
   {xsrf_token_field}
   <table class="tiny" cellspacing="0" cellpadding="0">
-    {foreach from=$event.moments item=m}
+    {foreach from=$moments key=item_id item=m}
     <tr><th>{$m.titre} ({$m.montant} &euro;)</th></tr>
     {if $m.details}
     <tr>
@@ -63,22 +62,23 @@
     <tr>
       <td>
         {if $event.inscr_open}
-          <label><input type="radio" name="moment[{$m.item_id}]" value="0"
-          {if !$m.nb}checked="checked"{/if}/>Je ne m'inscris pas</label><br />
-          {if $event.noinvite}
-              <label><input type="radio" name="moment[{$m.item_id}]" value="1"
-              {if $m.nb eq 1}checked="checked"{/if}/>Je m'inscris</label>
+          {assign var=nb value=$subs.$item_id.nb}
+          <label><input type="radio" name="moment[{$item_id}]" value="0"
+          {if !$nb}checked="checked"{/if}/>Je ne m'inscris pas</label><br />
+          {if $event.accept_nonmembre}
+              <label><input type="radio" name="moment[{$item_id}]" value="1"
+              {if $nb eq 1}checked="checked"{/if}/>Je m'inscris</label>
           {else}
-              <label><input type="radio" name="moment[{$m.item_id}]" value="2" id="avec"
-              {if $m.nb > 0}checked="checked"{/if}/>J'inscris</label>
-                  <input size="2" name="personnes[{$m.item_id}]"
-                  value="{if $m.nb > 1}{$m.nb}{else}1{/if}"/><label for="avec"> personnes</label>
+              <label><input type="radio" name="moment[{$item_id}]" value="2" id="avec"
+              {if $nb > 0}checked="checked"{/if}/>J'inscris</label>
+                  <input size="2" name="personnes[{$item_id}]"
+                  value="{if $nb > 1}{$nb}{else}1{/if}"/><label for="avec"> personnes</label>
           {/if}
         {else}
-          {if !$m.nb}
+          {if !$nb}
             Je ne viendrai pas.
           {else}
-            J'ai inscrit {$m.nb} personne{if $m.nb > 1}s{/if}.
+            J'ai inscrit {$nb} personne{if $nb > 1}s{/if}.
           {/if}
         {/if}
       </td>
@@ -88,22 +88,22 @@
     <tr><th>À payer</th></tr>
     <tr>
       <td>
-        {if $event.topay}
-        <div class="error">
-          {if $event.paid eq 0}
-          Tu dois payer {$event.topay|replace:'.':','}&nbsp;&euro;.
-          {elseif $event.paid < $event.topay}
-          Tu dois encore payer {math equation="a-b" a=$event.topay b=$event.paid|replace:'.':','}&nbsp;&euro;
-          (tu as déjà payé {$event.paid|replace:'.':','}&nbsp;&euro;).
+        {if $topay}
+          <div class="error">
+          {if $paid eq 0}
+          Tu dois payer {$topay|replace:'.':','}&nbsp;&euro;.
+          {elseif $paid < $topay}
+          Tu dois encore payer {math equation="a-b" a=$topay b=$paid|replace:'.':','}&nbsp;&euro;
+          (tu as déjà payé {$paid|replace:'.':','}&nbsp;&euro;).
           {else}
-          Tu as déjà payé {$event.paid|replace:'.':','}&nbsp;&euro; pour ton inscription.
+          Tu as déjà payé {$paid|replace:'.':','}&nbsp;&euro; pour ton inscription.
           {/if}
         </div>
         <div>
-          {if $event.paiement_id &&  $event.paid < $event.topay}
-          <a href="{$platal->ns}payment/{$event.paiement_id}?montant={math equation="a-b" a=$event.topay b=$event.paid}">
+          {if $event.paiement_id &&  $paid < $topay}
+          <a href="{$platal->ns}payment/{$event.paiement_id}?montant={math equation="a-b" a=$topay b=$paid}">
           {icon name=money} Payer en ligne</a>
-          {elseif $validation && $event.paid < $event.topay}
+          {elseif $validation && $paid < $topay}
           <br />Le télépaiement pour cet événement est en instance de validation&nbsp;:<br />
           <input type="checkbox" name="notify_payment" {if $event.notify_payment}checked="checked"{/if} id="notify" />
           <label for="notify">être prévenu lorsque le télépaiment pour cet événement sera disponible.</label>
@@ -111,8 +111,8 @@
         </div>
         {else}
         Rien à payer
-        {if $event.paid > 0}
-        (tu as déjà payé {$event.paid|replace:'.':','}&nbsp;&euro;).
+        {if $paid > 0}
+        (tu as déjà payé {$paid|replace:'.':','}&nbsp;&euro;).
         {/if}.
         {/if}
       </td>
