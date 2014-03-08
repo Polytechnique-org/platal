@@ -155,7 +155,7 @@ class XnetEventsModule extends PLModule
                           $order, $globals->asso('id'));
         }
         $order = get_event_order($globals->asso('id'));
-        $evts = get_events($globals->asso('id'), $order);
+        $evts = get_events($globals->asso('id'), $order, $archive);
         $page->assign('order', $order);
 
         $undisplayed_events = 0;
