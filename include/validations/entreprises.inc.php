@@ -31,6 +31,7 @@ class EntrReq extends ProfileValidate
     public $url = null;
     public $email = null;
     public $holdingid = null;
+    public $SIREN = null;
     public $NAF_code = null;
     public $AX_code = null;
 
@@ -103,7 +104,7 @@ class EntrReq extends ProfileValidate
 
     protected function handle_editor()
     {
-        foreach (array('name', 'acronym', 'url', 'email', 'NAF_code', 'tel', 'fax', 'address') as $field) {
+        foreach (array('name', 'acronym', 'url', 'email', 'SIREN', 'NAF_code', 'tel', 'fax', 'address') as $field) {
             $this->$field = (Env::t($field) == '' ? null : Env::t($field));
         }
         foreach (array('AX_code', 'holdingid') as $field) {
@@ -143,10 +144,10 @@ class EntrReq extends ProfileValidate
                             WHERE  name = {?}',
                           $this->name);
         if ($res->numRows() != 1) {
-            XDB::execute('INSERT INTO  profile_job_enum (name, acronym, url, email, holdingid, NAF_code, AX_code)
-                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
+            XDB::execute('INSERT INTO  profile_job_enum (name, acronym, url, email, holdingid, SIREN_code, NAF_code, AX_code)
+                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
                          $this->name, $this->acronym, $this->url, $this->email,
-                         $this->holdingid, $this->NAF_code, $this->AX_code);
+                         $this->holdingid, $this->SIREN, $this->NAF_code, $this->AX_code);
 
             $jobid = XDB::insertId();
             $phone = new Phone(array('link_type' => 'hq', 'link_id' => $jobid, 'id' => 0,

@@ -63,6 +63,10 @@
   <td>{$valid->holdingid}</td>
 </tr>
 <tr class="pair">
+  <td class="titre">Code SIREN&nbsp;:</td>
+  <td>{$valid->SIREN}</td>
+</tr>
+<tr class="pair">
   <td class="titre">Code NAF&nbsp;:</td>
   <td>{$valid->NAF_code}</td>
 </tr>

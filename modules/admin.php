@@ -1808,9 +1808,10 @@ class AdminModule extends PLModule
             } else {
                 XDB::execute('UPDATE  profile_job_enum
                                  SET  name = {?}, acronym = {?}, url = {?}, email = {?},
-                                      NAF_code = {?}, AX_code = {?}, holdingid = {?}
+                                      SIREN_code = {?}, NAF_code = {?}, AX_code = {?}, holdingid = {?}
                                WHERE  id = {?}',
                              Env::t('name'), Env::t('acronym'), Env::t('url'), Env::t('email'),
+                             (Env::t('SIREN') == 0 ? null : Env::t('SIREN')),
                              (Env::t('NAF_code') == 0 ? null : Env::t('NAF_code')),
                              (Env::i('AX_code') == 0 ? null : Env::t('AX_code')),
                              (Env::i('holdingId') == 0 ? null : Env::t('holdingId')), $id);
@@ -1829,7 +1830,7 @@ class AdminModule extends PLModule
         }
 
         if (!Env::has('change') && $id != -1) {
-            $res = XDB::query("SELECT  e.id, e.name, e.acronym, e.url, e.email, e.NAF_code, e.AX_code,
+            $res = XDB::query("SELECT  e.id, e.name, e.acronym, e.url, e.email, e.SIREN_code AS SIREN, e.NAF_code, e.AX_code,
                                        h.id AS holdingId, h.name AS holdingName, h.acronym AS holdingAcronym,
                                        t.display_tel AS tel, f.display_tel AS fax, a.text AS address
                                  FROM  profile_job_enum  AS e
