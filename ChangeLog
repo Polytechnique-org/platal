@@ -7,12 +7,15 @@ VERSION 1.1.12                                                       XX XX XXXX
 
     * Profile:
         - Activating 'hidden' visibility flag.                             -LEV
-        - Add hobby visibility on profile.                                 -LEV
-        - Improve AX access to profile data.                               -FUL
+        - #1697: Add hobby visibility on profile.                          -LEV
+        - Small fixes for AX.                                              -FUL
 
     * Usability:
         - Make /emails page clearer                                        -IOS
         - Sort validations categories.                                     -IOS
+
+    * XnetEvent:
+        - Prevent notifications if no changes were done.                   -KIT
 
     * XnetGrp:
         - Fix bugs with former members which were still members.           -KIT
