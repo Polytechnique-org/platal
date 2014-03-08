@@ -37,17 +37,18 @@ function get_event_order($asso_id)
 /* get the events of the given group ordered by the standard order for the group
  * @param $asso_id: group's id
  * @param $order: order to paste the events (asc or desc)
+ * @param $archive: whether to get the archived events (1) or the actuals (0)
  */
-function get_events($asso_id, $order)
+function get_events($asso_id, $order, $archive)
 {
     if ($order != 'asc' && $order != 'desc') {
         $order = 'desc';
     }
     $evts = XDB::fetchAllAssoc('eid', "SELECT ge.eid, ge.uid, ge.intitule, ge.debut, ge.fin, ge.show_participants, ge.deadline_inscription, ge.accept_nonmembre, ge.paiement_id
                                          FROM group_events as ge
-                                        WHERE asso_id = {?}
+                                        WHERE asso_id = {?} and archive = {?}
                                      ORDER BY ge.debut $order",
-                                              $asso_id);
+                                              $asso_id, $archive);
     return $evts;
 }
 // }}}
