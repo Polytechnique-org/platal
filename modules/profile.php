@@ -224,6 +224,8 @@ class ProfileModule extends PLModule
         }
 
         // Determines the access level at which the profile will be displayed.
+        // Note: VIEW_HIDDEN can NOT be selected. The admins who want to read
+        // information need to use the "edit profile" pages instead.
         if (Env::v('view') == 'public') {
             $view = Visibility::VIEW_PUBLIC;
         } else if (Env::v('view') == 'ax') {
