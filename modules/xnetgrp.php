@@ -920,7 +920,11 @@ class XnetGrpModule extends PLModule
                 break;
             }
         }
-        http_redirect($_SERVER['HTTP_REFERER']);
+        if (!empty($_SERVER['HTTP_REFERER'])) {
+            http_redirect($_SERVER['HTTP_REFERER']);
+        } else {
+            pl_redirect('');
+        }
     }
 
     function handler_admin_annuaire($page)
