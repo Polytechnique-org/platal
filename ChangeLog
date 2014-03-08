@@ -1,8 +1,21 @@
 ================================================================================
 VERSION 1.1.12                                                       XX XX XXXX
 
+    * NL:
+        - Improve Community Letter CSS & template.                         -KIT
+        - Improve mail headers.                                            -IOS
+
+    * Profile:
+        - Activating 'hidden' visibility flag.                             -LEV
+        - Add hobby visibility on profile.                                 -LEV
+        - Improve AX access to profile data.                               -FUL
+
     * Usability:
         - Make /emails page clearer                                        -IOS
+        - Sort validations categories.                                     -IOS
+
+    * XnetGrp:
+        - Fix bugs with former members which were still members.           -KIT
 
 ================================================================================
 VERSION 1.1.11                                                       31 12 2013
