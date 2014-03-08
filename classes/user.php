@@ -24,6 +24,7 @@ class User extends PlUser
     const PERM_API_USER_READONLY = 'api_user_readonly';
     const PERM_DIRECTORY_AX      = 'directory_ax';
     const PERM_DIRECTORY_PRIVATE = 'directory_private';
+    const PERM_DIRECTORY_HIDDEN  = 'directory_hidden';
     const PERM_EDIT_DIRECTORY    = 'edit_directory';
     const PERM_FORUMS            = 'forums';
     const PERM_GROUPS            = 'groups';
@@ -230,14 +231,14 @@ class User extends PlUser
      *
      * Rules are:
      *  - Everyone can view 'public'
-     *  - directory_ax gives access to 'AX' level
+     *  - directory_ax gives access to 'AX' level, ie. the printed directory
      *  - directory_private gives access to 'private' level
-     *  - admin gives access to 'hidden' level
+     *  - admin and directory_hidden gives access to 'hidden' level
      */
     public function readVisibility()
     {
         $level = Visibility::VIEW_NONE;
-        if ($this->is_admin) {
+        if ($this->is_admin || $this->checkPerms('directory_hidden')) {
             $level = Visibility::VIEW_ADMIN;
         } elseif ($this->checkPerms('directory_private')) {
             $level = Visibility::VIEW_PRIVATE;
