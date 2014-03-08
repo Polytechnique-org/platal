@@ -47,7 +47,7 @@
   {if $archive}Archives {else}[<a href="{$platal->ns}events/archive">Archives</a>] {/if}
 </h1>
 
-{if $updated}
+{if t($updated) && $updated}
 <p class='error'>
   La modification de l'inscription a été prise en compte&nbsp;!
   {if $updated.topay > $updated.paid}
@@ -70,15 +70,14 @@
 {/if}
 {/if}
 
-{foreach from=$evenements item=e}
-
+{foreach from=$evenements key=eid item=e}
 <table class="bicol" cellspacing="0" cellpadding="0">
   <colgroup>
     <col width='25%' />
   </colgroup>
   <tr>
     <th colspan="2"{if !$e.inscr_open} class="grayed"{/if}>
-      <a href="{$platal->ns}events/ical/{$e.short_name|default:$e.eid}/{$e.short_name|default:$e.eid}.ics" style="display: block; float: left;">
+      <a href="{$platal->ns}events/ical/{$eid}/{$eid}.ics" style="display: block; float: left;">
         {icon name=calendar_view_day title="Événement iCal"}
       </a>
       {$e.intitule}
@@ -87,11 +86,11 @@
       {/if}
       {if $is_admin}
       <br />
-      [<a href="{$platal->ns}events/edit/{$e.short_name|default:$e.eid}">
+      [<a href="{$platal->ns}events/edit/{$eid}">
         modifier
         {icon name=date_edit title="Édition de l'événement"}</a>]
       &nbsp;
-      [<a href="javascript:$.dynPost('{$platal->pl_self()}?token={xsrf_token}',{if !$archive}'archive'{else}'unarchive'{/if},{$e.eid})">
+      [<a href="javascript:$.dynPost('{$platal->pl_self()}?token={xsrf_token}',{if !$archive}'archive'{else}'unarchive'{/if},{$eid})">
         {if !$archive}
           archiver
           {icon name=package_add title="Archivage"}</a>]
@@ -100,7 +99,7 @@
           {icon name=package_delete title="Désarchivage"}</a>]
         {/if}
       &nbsp;
-      [<a href="javascript:$.dynPost('{$platal->ns}events?token={xsrf_token}','del',{$e.eid})"
+      [<a href="javascript:$.dynPost('{$platal->ns}events?token={xsrf_token}','del',{$eid})"
         onclick="return confirm('Supprimer l\'événement effacera la liste des inscrits et des paiements.\n Es-tu sûr de vouloir supprimer l\'événement&nbsp;?')">
         supprimer
       {icon name=delete title='Suppression'}</a>]
@@ -123,7 +122,7 @@
     <td class="titre">Informations&nbsp;:</td>
     <td class='actions'>
       {if $is_admin || $e.show_participants}
-      <a href="{$platal->ns}events/admin/{$e.short_name|default:$e.eid}">
+      <a href="{$platal->ns}events/admin/{$eid}">
         consulter la liste des participants
         {icon name=group title="Liste des participants"}
       </a><br />
@@ -140,18 +139,18 @@
     <td class="titre">
       État inscription&nbsp;:
       {if $e.inscr_open}
-        <input type="hidden" name="evt_{counter}" value="{$e.eid}" />
+        <input type="hidden" name="evt_{counter}" value="{$eid}" />
       {/if}
     </td>
     <td>
       {if !$e.inscrit}
       <span class='error'>Non inscrit</span><br />
       {else}
-        {foreach from=$e.moments item=m}
-        {if !$m.nb}
+        {foreach from=$e.items key=item_id item=m}
+        {if !t($e.sub.$item_id) || !$e.sub.$item_id.nb}
         Tu ne viendras pas
         {else}
-        Tu as inscrit {$m.nb} personne{if $m.nb > 1}s{/if}
+        Tu as inscrit {$e.sub.$item_id.nb} personne{if $e.sub.$item_id.nb > 1}s{/if}
         {/if} à <em>{$m.titre}</em>.<br />
         {/foreach}
       {/if}
@@ -166,7 +165,7 @@
         {else}
         Tu as déjà payé les {$e.paid|replace:'.':','}&nbsp;&euro; de ton inscription.
         {/if}
-        {if $e.paiement_id &&  $e.paid < $e.topay}
+        {if t($e.paiement_id) &&  $e.paid < $e.topay}
         [<a href="{$platal->ns}payment/{$e.paiement_id}?montant={math equation="a-b" a=$e.topay b=$e.paid}">
         Payer en ligne</a>]
         {/if}
@@ -179,7 +178,7 @@
   <tr>
     <td colspan='2' class='center'>
       <strong>
-      <a href='{$platal->ns}events/sub/{$e.short_name|default:$e.eid}'>
+      <a href='{$platal->ns}events/sub/{$eid}'>
         Gérer mon inscription et voir les détails de l'événement.
       </a>
       </strong>
