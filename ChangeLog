@@ -1,4 +1,12 @@
 ================================================================================
+VERSION 1.1.12                                                        08 03 2014
+
+Bugs:
+
+    * Fix ViM mode lines.                                                   -FUL
+    * Fix CSS error in backtrace.                                           -IOS
+
+================================================================================
 VERSION 1.1.11                                                        08 12 2013
 
 Bugs:
@@ -145,6 +153,8 @@ ACRONYMS:
     * CAT: Florian El Ahdab     (LeChat)    <florian.el-ahdab@m4x.org>
     * FAL: Raphaël Marichez     (Falco)     <raphael.marichez@m4x.org>
     * FRU: Florent Bruneau      (Fruneau)   <florent.bruneau@m4x.org>
+    * FUL: Thomas Minvielle     (Fulanor)   <thomas.minvielle@m4x.org>
+    * IOS: Nicolas Iooss        (Ioonag)    <nicolas.iooss@m4x.org>
     * JAC: Stéphane Jacob       (jacou)     <stephane.jacob@m4x.org>
     * JS : Jean Sébastien Bedo              <jean-sebastien.bedo@m4x.org>
     * KIT: Anne Limoges         (Kithyane)  <anne.limoges@m4x.org>
