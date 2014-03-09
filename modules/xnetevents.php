@@ -207,17 +207,12 @@ class XnetEventsModule extends PLModule
         $this->load('xnetevents.inc.php');
         $page->changeTpl('xnetevents/subscribe.tpl');
 
-        $evt = get_event($eid);
+        $evt = get_event_detail($eid);
         if (is_null($evt)) {
             return PL_NOT_FOUND;
         }
-
-        global $globals;
-
-        if (!$evt['inscr_open']) {
-            $page->kill('Les inscriptions pour cet événement sont closes');
-        }
-        if (!$evt['accept_nonmembre'] && !is_member() && !may_update()) {
+        if ($evt === false) {
+            global $globals, $platal;
             $url = $globals->asso('sub_url');
             if (empty($url)) {
                 $url = $platal->ns . 'subscribe';
@@ -226,100 +221,107 @@ class XnetEventsModule extends PLModule
                         '. Pour devenir membre, rends-toi sur la page de <a href="' . $url . '">demande d\'inscripton</a>.');
         }
 
+        if (!$evt['inscr_open']) {
+            $page->kill('Les inscriptions pour cet événement sont closes');
+        }
+        if (!$evt['accept_nonmembre'] && !is_member() && !may_update()) {
+            $page->kill('Cet événement est fermé aux non-membres du groupe');
+        }
+
+        global $globals;
         $res = XDB::query("SELECT  stamp
                              FROM  requests
                             WHERE  type = 'paiements' AND data LIKE {?}",
-                           PayReq::same_event($eid, $globals->asso('id')));
+                           PayReq::same_event($evt['eid'], $globals->asso('id')));
         $page->assign('validation', $res->numRows());
-
-        $page->assign('eid', $eid);
         $page->assign('event', $evt);
 
-        $items = get_event_items($eid);
-        $subs = get_event_subscription($eid, S::v('uid'));
-
-        if (Post::has('submit')) {
+        if (!Post::has('submit')) {
+            return;
+        } else {
             S::assert_xsrf_token();
-            $moments = Post::v('moment',    array());
-            $pers    = Post::v('personnes', array());
-            $old_subs = $subs;
-            $subs    = array();
+        }
 
-            foreach ($moments as $j => $v) {
-                $subs[$j] = intval($v);
+        $moments = Post::v('moment',    array());
+        $pers    = Post::v('personnes', array());
+        $subs    = array();
 
-                // retrieve other field when more than one person
-                if ($subs[$j] == 2) {
-                    if (!isset($pers[$j]) || !is_numeric($pers[$j]) || $pers[$j] < 0) {
-                        $page->trigError("Tu dois choisir un nombre d'invités correct&nbsp;!");
-                        return;
-                    }
-                    $subs[$j] = $pers[$j];
+        foreach ($moments as $j => $v) {
+            $subs[$j] = intval($v);
+
+            // retrieve other field when more than one person
+            if ($subs[$j] == 2) {
+                if (!isset($pers[$j]) || !is_numeric($pers[$j]) || $pers[$j] < 0) {
+                    $page->trigError("Tu dois choisir un nombre d'invités correct&nbsp;!");
+                    return;
                 }
+                $subs[$j] = $pers[$j];
             }
+        }
 
-            // count what the user must pay, and what he manually paid
-            $manual_paid = 0;
-            foreach ($items as $item_id => $item) {
-                if (array_key_exists($item_id, $old_subs)) {
-                    $manual_paid += $old_subs[$item_id]['paid'];
-                }
-            }
-            // impossible to unsubscribe if you already paid sthing
-            if (!array_sum($subs) && $manual_paid != 0) {
-                $page->trigError("Impossible de te désinscrire complètement " .
-                                "parce que tu as fait un paiement par " .
-                                "chèque ou par liquide. Contacte un " .
-                                "administrateur du groupe si tu es sûr de " .
-                                "ne pas venir.");
-                $updated = false;
+        // impossible to unsubscribe if you already paid sthing
+        if (!array_sum($subs) && $evt['paid'] != 0) {
+            $page->trigError("Impossible de te désinscrire complètement " .
+                            "parce que tu as fait un paiement par " .
+                            "chèque ou par liquide. Contacte un " .
+                            "administrateur du groupe si tu es sûr de " .
+                            "ne pas venir.");
+            return;
+        }
+
+        // update actual inscriptions
+        $updated       = false;
+        $total         = 0;
+        $paid          = $evt['paid'] ? $evt['paid'] : 0;
+        $telepaid      = $evt['telepaid'] ? $evt['telepaid'] : 0;
+        $paid_inserted = false;
+        foreach ($subs as $j => $nb) {
+            if ($nb >= 0) {
+                XDB::execute('INSERT INTO  group_event_participants (eid, uid, item_id, nb, flags, paid)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?})
+                  ON DUPLICATE KEY UPDATE  nb = VALUES(nb), flags = VALUES(flags), paid = VALUES(paid)',
+                             $eid, S::v('uid'), $j, $nb, (Env::has('notify_payment') ? 'notify_payment' : ''),
+                             ((!$paid_inserted) ? $paid - $telepaid : 0));
+                $updated = $eid;
+                $paid_inserted = true;
             } else {
-                // update actual inscriptions
-                $updated = subscribe(S::v('uid'), $eid, $subs);
+                XDB::execute(
+                    "DELETE FROM  group_event_participants
+                           WHERE  eid = {?} AND uid = {?} AND item_id = {?}",
+                    $eid, S::v("uid"), $j);
+                $updated = $eid;
             }
-            if ($updated) {
-                $evt = get_event_detail($eid);
-                if ($evt['topay'] > 0) {
-                    $page->trigSuccess('Ton inscription à l\'événement a été mise à jour avec succès, tu peux payer ta participation en cliquant ci-dessous');
-                } else {
-                    $page->trigSuccess('Ton inscription à l\'événement a été mise à jour avec succès.');
-                }
+            $total += $nb;
+        }
+        if ($updated !== false) {
+            $evt = get_event_detail($eid);
+            if ($evt['topay'] > 0) {
+                $page->trigSuccess('Ton inscription à l\'événement a été mise à jour avec succès, tu peux payer ta participation en cliquant ci-dessous');
+            } else {
+                $page->trigSuccess('Ton inscription à l\'événement a été mise à jour avec succès.');
+            }
+            subscribe_lists_event(S::i('uid'), $evt['short_name'], ($total > 0 ? 1 : 0), 0);
 
-                if ($evt['subscription_notification'] != 'nobody') {
-                    $mailer = new PlMailer('xnetevents/subscription-notif.mail.tpl');
-                    if ($evt['subscription_notification'] != 'creator') {
-                        $admins = $globals->asso()->iterAdmins();
-                        while ($admin = $admins->next()) {
-                            $mailer->addTo($admin);
-                        }
+            if ($evt['subscription_notification'] != 'nobody') {
+                $mailer = new PlMailer('xnetevents/subscription-notif.mail.tpl');
+                if ($evt['subscription_notification'] != 'creator') {
+                    $admins = $globals->asso()->iterAdmins();
+                    while ($admin = $admins->next()) {
+                        $mailer->addTo($admin);
                     }
-                    if ($evt['subscription_notification'] != 'animator') {
-                        $mailer->addTo($evt['organizer']);
-                    }
-                    $mailer->assign('group', $globals->asso('nom'));
-                    $mailer->assign('event', $evt['intitule']);
-                    $mailer->assign('subs', $subs);
-                    $mailer->assign('moments', $evt['moments']);
-                    $mailer->assign('name', S::user()->fullName('promo'));
-                    $mailer->send();
                 }
+                if ($evt['subscription_notification'] != 'animator') {
+                    $mailer->addTo($evt['organizer']);
+                }
+                $mailer->assign('group', $globals->asso('nom'));
+                $mailer->assign('event', $evt['intitule']);
+                $mailer->assign('subs', $subs);
+                $mailer->assign('moments', $evt['moments']);
+                $mailer->assign('name', S::user()->fullName('promo'));
+                $mailer->send();
             }
         }
-        $subs = get_event_subscription($eid, S::v('uid'));
-        // count what the user must pay
-        $topay = 0;
-        $manually_paid = 0;
-        foreach ($items as $item_id => $item) {
-            if (array_key_exists($item_id, $subs)) {
-                $topay += $item['montant']*$subs[$item_id]['nb'];
-                $manually_paid += $subs[$item_id]['paid'];
-            }
-        }
-        $paid = $manually_paid + get_event_telepaid($eid, S::v('uid'));
-        $page->assign('moments', $items);
-        $page->assign('subs', $subs);
-        $page->assign('topay', $topay);
-        $page->assign('paid', $paid);
+        $page->assign('event', get_event_detail($eid));
     }
 
     function handler_csv($page, $eid = null, $item_id = null)
