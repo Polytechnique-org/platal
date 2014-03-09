@@ -19,113 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ function get_event_order()
-/* get the order to paste the events
- * @param $asso_id: group's id
- */
-function get_event_order($asso_id)
-{
-    $order = XDB::fetchOneCell('SELECT g.event_order
-                                  FROM groups as g
-                                 WHERE id = {?}',
-                                       $asso_id);
-    return $order;
-}
-// }}}
-
-// {{{ function get_events()
-/* get the events of the given group ordered by the standard order for the group
- * @param $asso_id: group's id
- * @param $order: order to paste the events (asc or desc)
- */
-function get_events($asso_id, $order)
-{
-    if ($order != 'asc' && $order != 'desc') {
-        $order = 'desc';
-    }
-    $evts = XDB::fetchAllAssoc('eid', "SELECT ge.eid, ge.uid, ge.intitule, ge.debut, ge.fin, ge.show_participants, ge.deadline_inscription, ge.accept_nonmembre
-                                         FROM group_events as ge
-                                        WHERE asso_id = {?}
-                                     ORDER BY ge.debut $order",
-                                              $asso_id);
-    return $evts;
-}
-// }}}
-
-// {{{ function get_event() (detail, for subs page only for now)
-/* get event details
- * @param $eid: event's id
- */
-function get_event($eid)
-{
-    $evt = XDB::fetchOneAssoc('SELECT ge.uid, ge.intitule, ge.descriptif, ge.debut, ge.fin, ge.deadline_inscription, ge.accept_nonmembre
-                                         FROM group_events as ge
-                                        WHERE eid = {?}',
-                                        $eid);
-    if (!is_null($evt['deadline_inscription']) && strtotime($evt['deadline_inscription']) < time()) {
-        $evt['inscr_open'] = false;
-    } else {
-        $evt['inscr_open'] = true;
-    }
-    $evt['organizer'] = User::getSilent($evt['uid'])->profile();
-    $evt['date'] = make_event_date($evt['debut'], $evt['fin']);
-
-    return $evt;
-}
-// }}}
-
-// {{{ function get_event_items()
-/** get items of the given event
- *
- * @param $eid : event's id
- *
- */
-function get_event_items($eid)
-{
-    $evt = XDB::fetchAllAssoc('item_id', 'SELECT gei.item_id, gei.titre, gei.details, gei.montant
-        FROM group_event_items as gei
-        WHERE eid = {?}',
-        $eid);
-    return $evt;
-}
-// }}}
-
-// {{{ function get_event_subscription()
-/* get all participations if uid is not specified, only the user's participation if uid specified
- * @param $eid: event's id
- * @param $uid: user's id
- */
-function get_event_subscription($eid, $uid = null)
-{
-    if (!is_null($uid)) {
-        $where = ' and gep.uid = '.$uid;
-    }
-    else {
-        $where = '';
-    }
-   $sub =  XDB::fetchAllAssoc('item_id','SELECT gep.item_id, gep.nb, gep.paid FROM group_event_participants as gep
-                                          WHERE gep.eid = {?}'.$where,
-                                                $eid);
-   return $sub;
-}
-// }}}
-
-// {{{ function get_event_telepaid()
-/* get the total payments made by a user for an event
- * @param $eid: event's id
- * @param $uid: user's id
- */
-function get_event_telepaid($eid, $uid)
-{
-   $telepaid = XDB::fetchOneCell('SELECT SUM(pt.amount)
-                                    FROM payment_transactions AS pt
-                               LEFT JOIN group_events as ge ON (ge.paiement_id = pt.ref)
-                                   WHERE ge.eid = {?} AND pt.uid = {?}', 
-                                         $eid, $uid);
-    return $telepaid;
-}
-// }}}
-
 // {{{ function get_event_detail()
 
 function get_event_detail($eid, $item_id = false, $asso_id = null)
@@ -203,7 +96,7 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
     $evt['paid'] += $montant;
     $evt['organizer'] = User::getSilent($evt['uid']);
 
-    $evt['date'] = make_event_date($evt['debut'], $evt['fin']);
+    make_event_date($evt);
 
     $evt['show_participants'] = ($evt['show_participants'] && $GLOBALS['IS_XNET_SITE'] && (is_member() || may_update()));
 
@@ -431,14 +324,13 @@ function event_change_shortname($page, $eid, $old, $new)
 // }}}
 
 //  {{{ function make_event_date()
-function make_event_date($debut, $fin)
+function make_event_date(&$e)
 {
-    $start     = strtotime($debut);
-    $end       = strtotime($fin);
-//    $first_day = $e['first_day'];
-//    $last_day  = $e['last_day'];
-    $first_day = strftime("%d %B %Y", $start);
-    $last_day = strftime("%d %B %Y", $end);
+    $start     = strtotime($e['debut']);
+    $end       = strtotime($e['fin']);
+    $first_day = $e['first_day'];
+    $last_day  = $e['last_day'];
+
     $date = "";
     if ($start && $end != $start) {
         if ($first_day == $last_day) {
@@ -451,7 +343,7 @@ function make_event_date($debut, $fin)
     } else {
         $date .= "le " . strftime("%d %B %Y à %H:%M", $start);
     }
-    return $date;
+    $e['date'] = $date;
 }
 // }}}
 
