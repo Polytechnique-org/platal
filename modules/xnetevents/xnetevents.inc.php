@@ -301,10 +301,8 @@ function subscribe($uid, $eid, $subs = array())
     foreach ($items as $item_id => $details) {
         // check if there is an old subscription
         if (array_key_exists($item_id, $old_subs)) {
-            echo 'prev exists  ';
             // compares new and old subscription
             if ($old_subs[$item_id]['nb'] != $subs[$item_id]) {
-                echo 'different  ';
                 if ($subs[$item_id] != 0) {
                     echo "je m'inscris  ";
                     XDB::execute('INSERT INTO group_event_participants (eid, uid, item_id, nb, flags, paid)
@@ -314,7 +312,6 @@ function subscribe($uid, $eid, $subs = array())
                     $participate = true;
                     $paid_updated = true;
                 } else { // we do not store non-subscription to event items
-                    echo "je me desinscris  ";
                     XDB::execute('DELETE FROM group_event_participants
                                         WHERE eid = {?} AND uid = {?} AND item_id = {?}',
                                               $eid, $uid, $item_id);
@@ -322,9 +319,7 @@ function subscribe($uid, $eid, $subs = array())
                 $updated = true;
             }
         } else { // if no old subscription
-            echo 'no prev  ';
             if ($subs[$item_id] != 0) {
-                echo 'subscribe  ';
                 XDB::execute('INSERT INTO group_event_participants (eid, uid, item_id, nb, flags, paid)
                                    VALUES ({?}, {?}, {?}, {?}, {?}, {?})',
                                           $eid, $uid, $item_id, $subs[$item_id], '', 0);
@@ -348,7 +343,6 @@ function subscribe($uid, $eid, $subs = array())
     */
     // if subscription is updated, we have to update the event aliases
     if ($updated) {
-        echo "inscription mise a jour  ";
         $short_name = get_event_detail($eid)['short_name'];
         subscribe_lists_event($uid, $short_name, ($participate ? 1 : -1), 0);
     }
