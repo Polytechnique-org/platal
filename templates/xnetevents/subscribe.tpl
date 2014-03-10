@@ -27,8 +27,9 @@
 </p>
 
 <p class='descr'>
+  {assign var=profile value=$event.organizer->profile()}
   Cet événement a lieu <strong>{$event.date}</strong> et a été proposé par
-  <a href='https://www.polytechnique.org/profile/{$event.organizer->hrpid}' class='popup2'>
+  <a href='https://www.polytechnique.org/profile/{$profile->hrpid}' class='popup2'>
     {$event.organizer->fullName('promo')}
   </a>.
 </p>
