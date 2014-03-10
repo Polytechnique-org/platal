@@ -68,7 +68,7 @@ function get_event($eid)
     } else {
         $evt['inscr_open'] = true;
     }
-    $evt['organizer'] = User::getSilent($evt['uid'])->profile();
+    $evt['organizer'] = User::getSilent($evt['uid']);
     $evt['date'] = make_event_date($evt['debut'], $evt['fin']);
 
     return $evt;
