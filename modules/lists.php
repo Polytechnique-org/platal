@@ -794,7 +794,7 @@ class ListsModule extends PLModule
             S::assert_xsrf_token();
 
             if ($del_owner = User::getSilent(Env::t('del_owner'))) {
-                $mlist->unsubscribeBulk(array($del_owner->forlifeEmail()));
+                $mlist->removeOwner($del_owner->forlifeEmail());
             }
             pl_redirect('lists/admin/'.$liste);
         }
