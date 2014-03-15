@@ -94,7 +94,7 @@
     <td>
       <div>
         <label>
-          <input type="radio" name="manageurs_visibility" value="0"
+          <input type="radio" name="manageurs_visibility" value="1"
             {if $manageurs_visibility="visible"}checked="checked"{/if} />
           Toutes les entreprises peuvent voir mon profil et me contacter.
         </label>
@@ -108,7 +108,7 @@
         <br />
         -->
         <label>
-          <input type="radio" name="manageurs_visibility" value="2"
+          <input type="radio" name="manageurs_visibility" value="0"
             {if $manageurs_visibility="blocked"}checked="checked"{/if} />
           Les entreprises ne peuvent pas voir mon profil.
         </label>
@@ -180,13 +180,13 @@
     <td>
       <div> 
         <label>
-          <input type="radio" name="manageurs_network" value="0"
+          <input type="radio" name="manageurs_network" value="1"
             {if $manageurs_network}checked="checked"{/if} />
           partage de mon profil et accès aux profils partagés.
         </label>
         <br />
         <label>
-          <input type="radio" name="manageurs_network" value="1"
+          <input type="radio" name="manageurs_network" value="0"
             {if !$manageurs_network}checked="checked"{/if} />
           pas de partage de mon profil et pas d'accès aux profils partagés.
         </label>

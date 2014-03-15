@@ -35,45 +35,159 @@ class ProfileSettingManageurs implements ProfileSetting
     }
 }
 
-class ProfileSettingManageursNetwork implements ProfileSetting
+class ProfileSettingManageursPush implements ProfileSetting
 {
     public function value(ProfilePage $page, $field, $value, &$success)
     {
         $success = true;
         if (is_null($value)) {
-            $value = array();
-            $res = XDB::iterRow("SELECT  m.country, gc.country
-                                   FROM  profile_mentor_country AS m
-                             INNER JOIN  geoloc_countries       AS gc ON (m.country = gc.iso_3166_1_a2)
-                                  WHERE  m.pid = {?}",
-                                $page->pid());
-            while (list($id, $name) = $res->next()) {
-                $value[$id] = $name;
-            }
-        } else if (!is_array($value)) {
-            $value = array();
-        } else if (count($value) > 10) {
-            Platal::page()->trigError("Le nombre de secteurs d'expertise est limité à 10");
-            $success = false;
+            $value = XDB::fetchOneCell("SELECT m.push
+                                          FROM profile_manageurs AS m
+                                         WHERE m.pid = {?}",
+                                       $page->pid());
         }
-        ksort($value);
+        else {
+            switch ($value) {
+            case 'unique':
+                break;
+            case 'weekly':
+                break;
+            case 'never':
+                break;
+            case 0:
+                $value = 'unique';
+                break;
+            case 1:
+                $value = 'weekly';
+                break;
+            default:
+                $value = 'never';
+            }
+        }
         return $value;
     }
 
     public function save(ProfilePage $page, $field, $value)
     {
-        XDB::execute("DELETE FROM  profile_mentor_country
-                            WHERE  pid = {?}",
-                     $page->pid());
-        foreach ($value as $id=>&$name) {
-            XDB::execute("INSERT INTO  profile_mentor_country (pid, country)
-                               VALUES  ({?}, {?})",
-                         $page->pid(), $id);
+        XDB::execute("UPDATE profile_manageurs AS m
+                         SET m.push = {?}
+                       WHERE m.pid = {?}",
+                     $value, $page->pid());
+    }
+
+    public function getText($value) {
+        return $value;
+    }
+}
+
+class ProfileSettingManageursCommunication implements ProfileSetting
+{
+    private $communication_field;
+
+    public function __construct($communication_field)
+    {
+        $this->communication_field = $communication_field;
+    }
+
+    public function value(ProfilePage $page, $field, $value, &$success)
+    {
+        $success = true;
+        if (is_null($value)) {
+            $value = XDB::fetchOneCell("SELECT FIND_IN_SET({?}, m.communication)
+                                          FROM profile_manageurs AS m
+                                         WHERE m.pid = {?}",
+                                       $this->communication_field, $page->pid());
+        }
+
+        $value = (bool) $value;
+        return $value;
+    }
+
+    public function save(ProfilePage $page, $field, $value)
+    {
+      $modified = false;  
+      $res = XDB::fetchOneCell("SELECT m.communication
+                                  FROM profile_manageurs AS m
+                                 WHERE m.pid = {?}",
+                                $page->pid());
+      $res = explode(',', $res);
+      $index = array_search($this->communication_field, $res);
+      if ($index === false) {
+        if ($value) {
+            $res[] = $this->communication_field;
+            $modified = true;
+        }
+      }
+      else if (!$value) {
+          unset($res[$index]);
+          $modified = true;
+      }
+
+      if ($modified) {
+          $res = implode(',', $res);
+          XDB::execute("UPDATE profile_manageurs AS m
+                           SET m.communication = {?}
+                         WHERE m.pid = {?}",
+                       $res, $page->pid());
+      }
+    }
+
+    public function getText($value) {
+        if ($value) {
+            return "inscrit";
+        }
+        else {
+            return "non inscrit";
+        }
+    }
+}
+
+class ProfileSettingManageursBool implements ProfileSetting
+{
+    private $dbfield;
+
+    public function __construct($dbfield)
+    {
+        $this->dbfield = $dbfield;
+    }
+    public function value(ProfilePage $page, $field, $value, &$success)
+    {
+        $success = true;
+        if (is_null($value)) {
+            $value = XDB::fetchOneCell("SELECT m." . $this->dbfield .
+                                        " FROM profile_manageurs AS m
+                                         WHERE m.pid = {?}",
+                                       $page->pid());
+            $value = $value == 1;
+        }
+
+        $value = (bool) $value;
+        return $value;
+    }
+
+    public function save(ProfilePage $page, $field, $value)
+    {
+        if ($value) {
+          XDB::execute("UPDATE profile_manageurs AS m
+                           SET m." . $this->dbfield . " = 1
+                         WHERE m.pid = {?}",
+                       $page->pid());
+        }
+        else {
+          XDB::execute("UPDATE profile_manageurs AS m
+                           SET m." . $this->dbfield . " = 0
+                         WHERE m.pid = {?}",
+                       $page->pid());
         }
     }
 
     public function getText($value) {
-        return implode(', ', $value);
+        if ($value) {
+            return "yes";
+        }
+        else {
+            return "no";
+        }
     }
 }
 
@@ -89,33 +203,22 @@ class ProfilePageManageurs extends ProfilePage
         $this->settings['manageurs_project'] = null;
         $this->settings['manageurs_visibility'] = null;
         $this->settings['manageurs_email'] = null;
-        $this->settings['manageurs_push'] = null;
-        $this->settings['manageurs_anonymity'] = null;
-        $this->settings['manageurs_novelty'] = null;
-        $this->settings['manageurs_nl'] = null;
-        $this->settings['manageurs_survey'] = null;
-        $this->settings['manageurs_network'] = null;
+        $this->settings['manageurs_push'] = new ProfileSettingManageursPush();
+        $this->settings['manageurs_anonymity'] = new ProfileSettingManageursBool('anonymity');
+        $this->settings['manageurs_novelty'] = new ProfileSettingManageursCommunication('novelty');
+        $this->settings['manageurs_nl'] = new ProfileSettingManageursCommunication('nl');
+        $this->settings['manageurs_survey'] = new ProfileSettingManageursCommunication('survey');
+        $this->settings['manageurs_network'] = new ProfileSettingManageursBool('network');
     }
 
     protected function _fetchData()
     {
         $res = XDB::query("SELECT  title AS manageurs_title, entry_year AS manageurs_entry_year, project AS manageurs_project,
-                                   anonymity AS manageurs_anonymity, visibility AS manageurs_visibility, email AS manageurs_email,
-                                   communication AS manageurs_communication, push AS manageurs_push, network AS manageurs_network
+                                   visibility AS manageurs_visibility, email AS manageurs_email
                              FROM  profile_manageurs
                             WHERE  pid = {?}",
                           $this->pid());
         $this->values = $res->fetchOneAssoc();
-
-        $this->values['manageurs_anonymity'] = $this->values['manageurs_anonymity'] == 1; 
-
-        $communication = explode(',', $this->values['manageurs_communication']);
-
-        $this->values['manageurs_novelty'] = in_array('novelties', $communication);
-        $this->values['manageurs_nl'] = in_array('nl',$communication);
-        $this->values['manageurs_survey'] = in_array('survey',$communication);
-
-        $this->values['manageurs_network'] = $this->values['manageurs_network'] == 1;
     }
 
     protected function _saveData()
@@ -153,46 +256,6 @@ class ProfilePageManageurs extends ProfilePage
                            SET email = {?}
                          WHERE pid = {?}',
                         $this->values['manageurs_email'], $this->pid());
-        }
-
-        if ($this->changed['manageurs_push']) {
-          XDB::execute('UPDATE profile_manageurs
-                           SET push = {?}
-                         WHERE pid = {?}',
-                        $this->values['manageurs_push'], $this->pid());
-        }
-
-        if ($this->changed['manageurs_anonymity']) {
-          XDB::execute('UPDATE profile_manageurs
-                           SET anonymity = {?}
-                         WHERE pid = {?}',
-                        $this->values['manageurs_anonymity'], $this->pid());
-        }
-
-        if ($this->changed['manageurs_novelty'] || $this->changed['manageurs_nl'] || $this->changed['manageurs_survey']) {
-            $communication = array();
-            if ($this->values['manageurs_novelty']) {
-                $communication[] = 'novelties';
-            }
-            if ($this->values['manageurs_nl']) {
-                $communication[] = 'nl';
-            }
-            if ($this->values['manageurs_survey']) {
-                $communication[] = 'survey';
-            }
-            $communicationStr = implode(',', $communication);
-            
-          XDB::execute('UPDATE profile_manageurs
-                           SET communication = {?}
-                         WHERE pid = {?}',
-                        $communicationStr, $this->pid());
-        }
-
-        if ($this->changed['manageurs_network']) {
-          XDB::execute('UPDATE profile_manageurs
-                           SET network = {?}
-                         WHERE pid = {?}',
-                        $this->values['manageurs_network'], $this->pid());
         }
     }
 
