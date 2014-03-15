@@ -156,19 +156,19 @@
         <label>
           <input type="radio" name="manageurs_push" value="0"
             {if $manageurs_push="unique"}checked="checked"{/if} />
-          je reçois immédiatement un email par offre.
+          recevoir un email par offre.
         </label>
         <br />
         <label>
           <input type="radio" name="manageurs_push" value="1"
             {if $manageurs_push="weekly"}checked="checked"{/if} />
-          je reçois une compilation des offres 1 fois par semaine.
+          recevoir une compilation des offres 1 fois par semaine.
         </label>
         <br />
         <label>
           <input type="radio" name="manageurs_push" value="2"
             {if $manageurs_push="never"}checked="checked"{/if} />
-          je ne reçois jamais d'email.
+          ne jamais recevoir d'email.
         </label>
       </div>
     </td>
@@ -182,13 +182,13 @@
         <label>
           <input type="radio" name="manageurs_network" value="0"
             {if $manageurs_network}checked="checked"{/if} />
-          je souhaite partager mon profil et avoir accès aux profils partagés.
+          partage de mon profil et accès aux profils partagés.
         </label>
         <br />
         <label>
           <input type="radio" name="manageurs_network" value="1"
             {if !$manageurs_network}checked="checked"{/if} />
-          je ne souhaite pas partager mon profil et je n'ai pas accès aux profils partagés.
+          pas de partage de mon profil et pas d'accès aux profils partagés.
         </label>
       </div>
     </td>
