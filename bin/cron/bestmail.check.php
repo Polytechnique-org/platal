@@ -83,7 +83,5 @@ while ($row = $pids->next()) {
     echo "\n";
 }
 
-print "Done.\n";
-
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
 ?>
