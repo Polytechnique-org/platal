@@ -57,8 +57,15 @@ function get_events($asso_id, $order, $archive)
 /* get event details
  * @param $eid: event's id
  */
-function get_event($eid)
+function get_event(&$eid)
 {
+    if (!is_numeric($eid)) {
+        $id = XDB::fetchOneCell("SELECT eid
+                                   FROM group_events
+                                  WHERE short_name = {?}",
+                                        $eid);
+        $eid = $id;
+    }
     $evt = XDB::fetchOneAssoc('SELECT ge.uid, ge.intitule, ge.descriptif, ge.debut, ge.fin, ge.deadline_inscription, ge.accept_nonmembre, ge.paiement_id
                                          FROM group_events as ge
                                         WHERE eid = {?}',
