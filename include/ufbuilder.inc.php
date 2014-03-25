@@ -856,6 +856,11 @@ class UFBF_SchoolIds extends UFB_Field
         return true;
     }
 
+    public function getEnvFieldNames()
+    {
+        return array($this->envfield, $this->reversed_envfield);
+    }
+
     protected function buildUFC(UserFilterBuilder $ufb)
     {
         $ufc = new UFC_SchoolId($this->type, $this->val);
