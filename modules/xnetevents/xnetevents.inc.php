@@ -66,7 +66,7 @@ function get_event(&$eid)
                                         $eid);
         $eid = $id;
     }
-    $evt = XDB::fetchOneAssoc('SELECT ge.uid, ge.intitule, ge.descriptif, ge.debut, ge.fin, ge.deadline_inscription, ge.accept_nonmembre, ge.paiement_id
+    $evt = XDB::fetchOneAssoc('SELECT ge.uid, ge.intitule, ge.descriptif, ge.debut, ge.fin, ge.deadline_inscription, ge.accept_nonmembre, ge.noinvite, ge.paiement_id
                                          FROM group_events as ge
                                         WHERE eid = {?}',
                                         $eid);
@@ -311,7 +311,6 @@ function subscribe($uid, $eid, $subs = array())
             // compares new and old subscription
             if ($old_subs[$item_id]['nb'] != $subs[$item_id]) {
                 if ($subs[$item_id] != 0) {
-                    echo "je m'inscris  ";
                     XDB::execute('INSERT INTO group_event_participants (eid, uid, item_id, nb, flags, paid)
                                        VALUES ({?}, {?}, {?}, {?}, {?}, {?})
                       ON DUPLICATE KEY UPDATE nb = VALUES(nb), flags = VALUES(flags), paid = VALUES(paid)',

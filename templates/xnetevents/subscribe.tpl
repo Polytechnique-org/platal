@@ -66,7 +66,7 @@
           {assign var=nb value=$subs.$item_id.nb}
           <label><input type="radio" name="moment[{$item_id}]" value="0"
           {if !$nb}checked="checked"{/if}/>Je ne m'inscris pas</label><br />
-          {if $event.accept_nonmembre}
+          {if $event.noinvite}
               <label><input type="radio" name="moment[{$item_id}]" value="1"
               {if $nb eq 1}checked="checked"{/if}/>Je m'inscris</label>
           {else}
