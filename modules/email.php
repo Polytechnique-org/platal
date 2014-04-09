@@ -867,6 +867,7 @@ class EmailModule extends PLModule
                 sort($broken_list);
 
                 foreach ($broken_list as $email) {
+                    $email = trim($email);
                     $userobj = null;
                     if ($user = mark_broken_email($email, true)) {
                         $userobj = User::getSilentWithUID($user['uid']);
