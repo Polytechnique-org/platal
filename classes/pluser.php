@@ -82,6 +82,7 @@ abstract class PlUser implements PlUserInterface
     // <display name> !"), while full name is the official full name.
     protected $display_name = null;
     protected $full_name = null;
+    protected $sort_name = null;
 
     // Other important parameters used when sending emails.
     protected $gender = null;  // Acceptable values are GENDER_MALE and GENDER_FEMALE
