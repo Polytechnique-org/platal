@@ -918,7 +918,7 @@ class EmailModule extends PLModule
 
                 // Output the list of users with recently broken addresses,
                 // along with the count of valid redirections.
-                pl_cached_content_headers('text/x-csv', 1);
+                pl_cached_content_headers('text/x-csv', null, 1, 'broken.csv');
 
                 $csv = fopen('php://output', 'w');
                 fputcsv($csv, array('nom', 'promo', 'bounces', 'nbmails', 'url', 'corps', 'job', 'networking'), ';');
