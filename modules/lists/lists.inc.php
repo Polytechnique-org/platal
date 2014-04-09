@@ -69,7 +69,7 @@ function list_sort_owners($emails, $tri_promo = true)
             $name = $member['email'];
         } else {
             $category = $member['user']->category();
-            $name = $member['user']->directoryName();
+            $name = $member['user']->sortName();
         }
         if (empty($category)) {
             $category = "AAAAA";

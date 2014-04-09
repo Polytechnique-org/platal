@@ -372,6 +372,11 @@ class Profile implements PlExportable
         return $this->short_name;
     }
 
+    public function sortName()
+    {
+        return $this->sort_name;
+    }
+
     public function firstName()
     {
         return $this->firstname_ordinary;
@@ -1137,7 +1142,7 @@ class Profile implements PlExportable
                                      IF (ppn.firstname_ordinary = \'\', ppn.firstname_main, ppn.firstname_ordinary) AS firstname_ordinary,
                                      IF (ppn.lastname_ordinary = \'\', ppn.lastname_main, ppn.lastname_ordinary) AS lastname_ordinary,
                                      pd.yourself, pd.promo, pd.short_name, pd.public_name AS full_name,
-                                     pd.directory_name, pd.public_name, pd.private_name,
+                                     pd.directory_name, pd.public_name, pd.private_name, pd.sort_name,
                                      IF (pp.pub >= {?}, pp.display_tel, NULL) AS mobile,
                                      (ph.pub >= {?} AND ph.attach IS NOT NULL) AS has_photo, ph.pub as photo_pub,
                                      ph.x AS photo_width, ph.y AS photo_height,
