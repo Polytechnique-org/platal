@@ -711,7 +711,7 @@ class XnetEventsModule extends PLModule
                             XDB::fetchAllAssoc('SELECT  t.uid, t.amount
                                                   FROM  payment_transactions AS t
                                              LEFT JOIN  group_event_participants AS ep ON(ep.uid = t.uid AND ep.eid = {?})
-                                                 WHERE  t.ref = {?} AND ep.uid IS NULL',
+                                                 WHERE  t.status = "confirmed" AND t.ref = {?} AND ep.uid IS NULL',
                                                $evt['eid'], $evt['paiement_id']),
                             'uid', 'user');
             $page->assign('oublis', count($infos));

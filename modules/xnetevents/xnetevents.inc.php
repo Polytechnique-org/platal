@@ -128,7 +128,7 @@ function get_event_telepaid($eid, $uid)
    $telepaid = XDB::fetchOneCell('SELECT SUM(pt.amount)
                                     FROM payment_transactions AS pt
                                LEFT JOIN group_events as ge ON (ge.paiement_id = pt.ref)
-                                   WHERE ge.eid = {?} AND pt.uid = {?}', 
+                                   WHERE pt.status = "confirmed" AND ge.eid = {?} AND pt.uid = {?}',
                                          $eid, $uid);
     return $telepaid;
 }
@@ -205,7 +205,7 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
 
     $montant = XDB::fetchOneCell('SELECT  SUM(amount) AS sum_amount
                                     FROM  payment_transactions AS t
-                                   WHERE  ref = {?} AND uid = {?}',
+                                   WHERE  status = "confirmed" AND ref = {?} AND uid = {?}',
                                    $evt['paiement_id'], S::v('uid'));
     $evt['telepaid'] = $montant;
     $evt['paid'] += $montant;
@@ -258,7 +258,7 @@ function get_event_participants(&$evt, $item_id, array $tri = array(), $limit = 
         if ($money && $pay_id) {
             $montant = XDB::fetchOneCell('SELECT  SUM(amount)
                                             FROM  payment_transactions AS t
-                                           WHERE  ref = {?} AND uid = {?}',
+                                           WHERE  status = "confirmed" AND ref = {?} AND uid = {?}',
                                          $pay_id, $uid);
             $u['paid'] += $montant;
         }
