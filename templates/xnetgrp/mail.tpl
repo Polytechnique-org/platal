@@ -82,11 +82,7 @@ masculin ou féminin, par son prénom, ou son nom.
       </td>
       <td>
         <label><input type="checkbox" name="membres[X]" value="1"  {if $smarty.request.membres.X}checked="checked"{/if} />
-        <em>écrire à tous les X de l'annuaire du groupe</em></label><br />
-        <label><input type="checkbox" name="membres[ext]" value="1"  {if $smarty.request.membres.ext}checked="checked"{/if} />
-        <em>écrire à tous les extérieurs de l'annuaire du groupe</em></label><br />
-        <label><input type="checkbox" name="membres[groupe]" value="1"  {if $smarty.request.membres.groupe}checked="checked"{/if} />
-        <em>écrire à toutes les personnes morales de l'annuaire du groupe</em></label>
+        <em>écrire à tous les membres du groupe</em></label><br />
         <a href="{$platal->ns}annuaire" class='popup'>(voir annuaire)</a><br />
       </td>
     </tr>
