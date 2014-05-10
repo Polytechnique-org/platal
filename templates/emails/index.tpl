@@ -75,13 +75,15 @@
       <dt>Autres adresses (**)</dt>
       <dd>
         {foreach from=$aliases_other item=a}
+        {if strpos($a.email, '@melix.org') === false}
         <label>
           <input type='radio' {if $a.bestalias}checked="checked"{/if} name='best' value='{$a.email}' />
           <strong>{$a.email}</strong>
         </label>
         {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
-        {if $a.alias}<a href="emails/alias">(changer ou supprimer mon alias melix)</a>{/if}
+        {if $a.alias} et <strong>@melix.org</strong> <a href="emails/alias">(changer ou supprimer mon alias melix)</a>{/if}
         <br />
+        {/if}
         {/foreach}
       </dd>
     {/if}
