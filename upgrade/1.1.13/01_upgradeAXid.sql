@@ -18,6 +18,7 @@ UPDATE profiles SET ax_id = '2009D506' WHERE pid = 46425;
 UPDATE profiles SET ax_id = '2009D050' WHERE pid = 46836;
 UPDATE profiles SET ax_id = '2009D202' WHERE pid = 46837;
 UPDATE profiles SET ax_id = '2009D378' WHERE pid = 46838;
+UPDATE profiles SET ax_id = '2009D500' WHERE pid = 45980;
 UPDATE profiles SET ax_id = '2009D504' WHERE pid = 46034;
 UPDATE profiles SET ax_id = '2009D503' WHERE pid = 46303;
 UPDATE profiles SET ax_id = '2010D009' WHERE pid = 46311;
