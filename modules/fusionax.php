@@ -89,6 +89,7 @@ class FusionAxModule extends PLModule
     /** Import de l'annuaire de l'AX depuis l'export situé dans le home de jacou */
     function handler_import($page, $action = 'index', $file = '')
     {
+        global $globals;
         if ($action == 'index') {
             $page->changeTpl('fusionax/import.tpl');
             return;
@@ -143,6 +144,11 @@ class FusionAxModule extends PLModule
             if ($file != '') {
                 // récupère le contenu du fichier sql
                 $queries = explode(';', file_get_contents($modulepath . $filesSQL[$file]));
+                $db = mysqli_init();
+                $db->options(MYSQLI_OPT_LOCAL_INFILE, true);
+                $db->real_connect($globals->dbhost, $globals->dbuser, $globals->dbpwd, $globals->dbdb);
+                $db->autocommit(true);
+                $db->set_charset($globals->dbcharset);
                 foreach ($queries as $q) {
                     if (trim($q)) {
                         // coupe le fichier en requêtes individuelles
@@ -153,9 +159,13 @@ class FusionAxModule extends PLModule
                             $report[] = addslashes($l);
                         }
                         // exécute la requête
-                        XDB::execute(str_replace('{?}', $spoolpath, $q));
+                        $res = $db->query(str_replace('{?}', $spoolpath, $q));
+                        if ($res === false) {
+                            throw new XDBException($q, $db->error);
+                        }
                     }
                 }
+                $db->close();
                 // trouve le prochain fichier à exécuter
                 $nextfile = $file + 1;
             } else {
