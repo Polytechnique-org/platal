@@ -70,7 +70,7 @@ function get_event(&$eid)
                                          FROM group_events as ge
                                         WHERE eid = {?}',
                                         $eid);
-    if (!is_null($evt['deadline_inscription']) && strtotime($evt['deadline_inscription']) < time()) {
+    if (!is_null($evt['deadline_inscription']) && strtotime($evt['deadline_inscription']) <= time()) {
         $evt['inscr_open'] = false;
     } else {
         $evt['inscr_open'] = true;
