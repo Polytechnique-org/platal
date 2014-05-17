@@ -27,7 +27,7 @@ class EPLetterModule extends NewsletterModule
     {
         return array(
             'epletter'                   => $this->make_hook('nl',              AUTH_COOKIE, 'user'),
-            'epletter/out'               => $this->make_hook('out',             AUTH_PUBLIC),
+            'epletter/out'               => $this->make_hook('out',             AUTH_COOKIE, 'user'),
             'epletter/show'              => $this->make_hook('nl_show',         AUTH_COOKIE, 'user'),
             'epletter/search'            => $this->make_hook('nl_search',       AUTH_COOKIE, 'user'),
             'epletter/admin'             => $this->make_hook('admin_nl',        AUTH_PASSWD, 'user'),
@@ -48,6 +48,7 @@ class EPLetterModule extends NewsletterModule
 
     function handler_out($page, $hash = null, $issue_id = null)
     {
+        $hash = ($hash == 'nohash') ? null : $hash;
         if (!$hash) {
             if (!S::logged()) {
                 return PL_DO_AUTH;
