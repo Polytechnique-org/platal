@@ -37,7 +37,7 @@
       <span class="titre">Intitulé du profil&nbsp;:</span>
     </td>
     <td>
-      <input type="text" name="manageurs_title" value="{$manageurs_title}" size="49" />
+      <input type="text" name="manageurs_title" value="{$manageurs_title}" size="49" maxlength="250" />
     </td>
   </tr>
   <tr>
@@ -94,22 +94,22 @@
     <td>
       <div>
         <label>
-          <input type="radio" name="manageurs_visibility" value="1"
-            {if $manageurs_visibility="visible"}checked="checked"{/if} />
+          <input type="radio" name="manageurs_visibility" value="visible"
+            {if $manageurs_visibility == "visible"}checked="checked"{/if} />
           Toutes les entreprises peuvent voir mon profil et me contacter.
         </label>
         <br />
         <!-- TODO: implement a list of firms that are blacklisted
         <label>
-          <input type="radio" name="manageurs_visibility" value="1"
-            {if $manageurs_visibility="visible_exceptions"}checked="checked"{/if} />
+          <input type="radio" name="manageurs_visibility" value="visible_exceptions"
+            {if $manageurs_visibility == "visible_exceptions"}checked="checked"{/if} />
           Les entreprises peuvent voir mon profil à l'exception de :
         </label>
         <br />
         -->
         <label>
-          <input type="radio" name="manageurs_visibility" value="0"
-            {if $manageurs_visibility="blocked"}checked="checked"{/if} />
+          <input type="radio" name="manageurs_visibility" value="blocked"
+            {if $manageurs_visibility == "blocked"}checked="checked"{/if} />
           Les entreprises ne peuvent pas voir mon profil.
         </label>
       </div>
@@ -121,7 +121,7 @@
       <small>Les offres d'entreprises, les messages de diplômés et la communication Manageurs seront envoyés à cette adresse.</small>
     </td>
     <td>
-      <input type="text" name="manageurs_email" value="{$manageurs_email}" size="40" />
+      <input type="text" name="manageurs_email" value="{$manageurs_email}" size="40" maxlength="250" />
     </td>
   </tr>
   <tr>
@@ -154,20 +154,20 @@
     <td>
       <div>
         <label>
-          <input type="radio" name="manageurs_push" value="0"
-            {if $manageurs_push="unique"}checked="checked"{/if} />
+          <input type="radio" name="manageurs_push" value="unique"
+            {if $manageurs_push == "unique"}checked="checked"{/if} />
           recevoir un email par offre.
         </label>
         <br />
         <label>
-          <input type="radio" name="manageurs_push" value="1"
-            {if $manageurs_push="weekly"}checked="checked"{/if} />
+          <input type="radio" name="manageurs_push" value="weekly"
+            {if $manageurs_push == "weekly"}checked="checked"{/if} />
           recevoir une compilation des offres 1 fois par semaine.
         </label>
         <br />
         <label>
-          <input type="radio" name="manageurs_push" value="2"
-            {if $manageurs_push="never"}checked="checked"{/if} />
+          <input type="radio" name="manageurs_push" value="never"
+            {if $manageurs_push == "never"}checked="checked"{/if} />
           ne jamais recevoir d'email.
         </label>
       </div>
