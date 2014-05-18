@@ -53,7 +53,7 @@ $(function() {
     <dt>Format des emails envoyés par le site</dt>
     <dd>
       Lorsque le site t'envoie des emails (lettre mensuelle, carnet, ...) ceux-ci peuvent
-      être soit sous forme de texte brut, soit formattés à l'aide de html.<br />
+      être soit sous forme de texte brut, soit formatés à l'aide de html.<br />
       texte brut <input type="radio" name="email_format" value="text" {if $smarty.session.user->email_format neq 'html'}checked="checked"{/if} />
       <input type="radio" name="email_format" value="html" {if $smarty.session.user->email_format eq 'html'}checked="checked"{/if} /> HTML
     </dd>

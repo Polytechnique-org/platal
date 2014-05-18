@@ -315,7 +315,7 @@ class Survey
     // {{{ function checkSyntax() : checks syntax of the questions (currently the root only) before storing the survey in database
     private static $errorMessages = array(
         "datepassed"  => "la date de fin de sondage est déjà dépassée : vous devez préciser une date future",
-        "promoformat" => "les restrictions à certaines promotions sont mal formattées"
+        "promoformat" => "les restrictions à certaines promotions sont mal formatées"
     );
 
     public function checkSyntax()

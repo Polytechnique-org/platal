@@ -24,7 +24,7 @@
   {if t($too_long)}
   L'article est trop long.
   {else}
-  Il reste encore {$remaining} {if t($last_line)}caractères{else}lignes{/if}, une fois l'article formatté.
+  Il reste encore {$remaining} {if t($last_line)}caractères{else}lignes{/if}, une fois l'article formaté.
   {/if}
 </small>
 
