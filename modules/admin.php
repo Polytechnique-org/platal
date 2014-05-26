@@ -971,12 +971,37 @@ class AdminModule extends PLModule
             } else if (Env::t('add_type') == 'ax_id') {
                 $type = 'x';
                 foreach ($lines as $line) {
-                    if ($infos = self::formatNewUser($page, $line, $separator, $promotion, 3)) {
-                        XDB::execute('UPDATE  profiles
-                                         SET  ax_id = {?}
-                                       WHERE  hrpid = {?}',
-                                     $infos[2], $infos['hrid']);
+                    $infos = explode($separator, $line);
+                    if (sizeof($infos) > 3 || sizeof($infos) < 2) {
+                        $page->trigError("La ligne $line n'a pas été ajoutée : mauvais nombre de champs.");
+                        continue;
                     }
+                    $infos = array_map('trim', $infos);
+                    if (sizeof($infos) == 3) {
+                        // Get human readable ID with first name and last name
+                        $hrid = User::makeHrid($infos[1], $infos[0], $promotion);
+                        $user = User::getSilent($hrid);
+                    } else {
+                        // The first column is the hrid, possibly without the promotion
+                        $user = User::getSilent($infos[0] . '.' . $promotion);
+                        if (is_null($user)) {
+                            $user = User::getSilent($infos[0]);
+                        }
+                    }
+                    if (is_null($user)) {
+                        $page->trigError("La ligne $line n'a pas été ajoutée : aucun compte trouvé.");
+                        continue;
+                    }
+                    $profile = $user->profile();
+                    if ($profile->ax_id) {
+                        $page->trigError("Le profil " . $profile->hrpid . " a déjà l'ID AX " . $profile->ax_id);
+                        continue;
+                    }
+                    XDB::execute('UPDATE  profiles
+                                     SET  ax_id = {?}
+                                   WHERE  pid = {?}',
+                                 $infos[2], $profile->id());
+
                 }
             }
 
