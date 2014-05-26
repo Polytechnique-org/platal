@@ -525,10 +525,10 @@ function core_include($source, $smarty)
 function if_rewrites($source, $smarty)
 {
     $perms = 'isset($smarty.session.user|smarty:nodefaults) && $smarty.session.user';
-    return preg_replace(array('/\{(else)?if([^}]*) (\!?)hasPerms?\(([^)]+)\)([^}]*)\}/',
-                              '/\{(else)?if([^}]*) (\!?)t\(([^)]+)\)([^}]*)\}/'),
-                        array('{\1if\2 \3(' . $perms . '->checkPerms(\4))\5}',
-                              '{\1if\2 \3(isset(\4|smarty:nodefaults) && (\4|smarty:nodefaults))\5}'),
+    return preg_replace(array('/\{(else)?if([^}]*)([ \(]\!?)hasPerms?\(([^)]+)\)([^}]*)\}/',
+                              '/\{(else)?if([^}]*)([ \(]\!?)t\(([^)]+)\)([^}]*)\}/'),
+                        array('{\1if\2\3(' . $perms . '->checkPerms(\4))\5}',
+                              '{\1if\2\3(isset(\4|smarty:nodefaults) && (\4|smarty:nodefaults))\5}'),
                         $source);
 }
 
