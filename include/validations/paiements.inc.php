@@ -41,9 +41,7 @@ class PayReq extends Validate
     public $rib_id;
     public $rib_nom;
 
-    public $rules = "Vérifier que les balises &lt;salutation&gt;, &lt;prenom&gt;, &lt;nom&gt;,  &lt;montant&gt; et &lt;comment&gt; n'ont pas été modifiées.
-Vérifier que le demandeur n'a pas laissé les crochets [].
-Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, laisser la validation à un trésorier";
+    public $rules = "Vérifier la présence d'un montant, de la balise &lt;montant&gt;, et associer le RIB du groupe. Si le groupe n'a pas de RIB &quot;used&quot; ou en a plusieurs, laisser au trésorier.";
     // }}}
     // {{{ constructor
 
