@@ -88,7 +88,7 @@
 </tr>
 <tr class="pair">
   <td colspan="2" class="center">
-    <small>Bien remplir tous les champs, en particulier les <a href="http://societe.com/">codes NAF</a> et AX !</small>
+    <small>Remplir tous les champs possibles, en particulier le <a href="http://societe.com/">code NAF</a> et l'adresse du siège social si possible.</small>
   </td>
 </tr>
 
