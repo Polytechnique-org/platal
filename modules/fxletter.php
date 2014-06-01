@@ -27,7 +27,7 @@ class FXLetterModule extends NewsletterModule
     {
         return array(
             'fxletter'                   => $this->make_hook('nl',              AUTH_COOKIE, 'user'),
-            'fxletter/out'               => $this->make_hook('out',             AUTH_PUBLIC),
+            'fxletter/out'               => $this->make_hook('out',             AUTH_COOKIE, 'user'),
             'fxletter/show'              => $this->make_hook('nl_show',         AUTH_COOKIE, 'user'),
             'fxletter/search'            => $this->make_hook('nl_search',       AUTH_COOKIE, 'user'),
             'fxletter/admin'             => $this->make_hook('admin_nl',        AUTH_PASSWD, 'user'),
@@ -48,6 +48,7 @@ class FXLetterModule extends NewsletterModule
 
     function handler_out($page, $hash = null, $issue_id = null)
     {
+        $hash = ($hash == 'nohash') ? null : $hash;
         if (!$hash) {
             if (!S::logged()) {
                 return PL_DO_AUTH;
