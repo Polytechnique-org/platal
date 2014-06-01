@@ -20,10 +20,14 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if !hasPerm('directory_private') && ($nw.pub eq 'private') && !empty($nw.address|smarty:nodefaults)}
-{assign var=hiddennw value=true}
+{if $isMe || hasPerm('admin') || empty($nw.address|smarty:nodefaults)}
+  {assign var=hiddennw value=false}
+{elseif hasPerm('directory_hidden') || (($nw.pub neq 'hidden') && ($nw.pub neq 'private'))}
+  {assign var=hiddennw value=false}
+{elseif hasPerm('directory_private') && ($nw.pub neq 'hidden')}
+  {assign var=hiddennw value=false}
 {else}
-{assign var=hiddennw value=false}
+  {assign var=hiddennw value=true}
 {/if}
 
 <tr id="networking_{$i}">

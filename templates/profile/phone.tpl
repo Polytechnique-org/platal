@@ -22,10 +22,14 @@
 
 {assign var=telpref value="`$prefname`[`$telid`]"}
 {assign var=id value="`$prefid`_`$telid`"}
-{if !hasPerm('directory_private') && ($tel.pub eq 'private') && !empty($tel.display|smarty:nodefaults)}
-{assign var=hiddentel value=true}
+{if $isMe || hasPerm('admin') || empty($tel.display|smarty:nodefaults)}
+  {assign var=hiddentel value=false}
+{elseif hasPerm('directory_hidden') || (($tel.pub neq 'hidden') && ($tel.pub neq 'private'))}
+  {assign var=hiddentel value=false}
+{elseif hasPerm('directory_private') && ($tel.pub neq 'hidden')}
+  {assign var=hiddentel value=false}
 {else}
-{assign var=hiddentel value=false}
+  {assign var=hiddentel value=true}
 {/if}
 <div class="titre" style="float: left; width: 2.5em">N°{$telid+1}</div>
 <div style="float: left;">
