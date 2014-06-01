@@ -1515,12 +1515,14 @@ class AdminModule extends PLModule
             $sex = Post::s('sex');
             $email = Post::t('email');
             $type = Post::s('type');
-            $login = PlUser::makeHrid($firstname, $lastname, $type);
-            if (!isvalid_email($email)) {
+            if (!$type) {
+                $page->trigError("Empty account type");
+            } elseif (!isvalid_email($email)) {
                 $page->trigError("Invalid email address: $email");
-            } else if (strlen(Post::s('pwhash')) != 40) {
+            } elseif (strlen(Post::s('pwhash')) != 40) {
                 $page->trigError("Invalid password hash");
             } else {
+                $login = PlUser::makeHrid($firstname, $lastname, $type);
                 $full_name = $firstname . ' ' . $lastname;
                 $directory_name = $lastname . ' ' . $firstname;
                 XDB::execute("INSERT INTO  accounts (hruid, type, state, password,

@@ -75,6 +75,7 @@ function add_user_to_url(f) {
         <td class="titre">Type de compte</td>
         <td>
           <select name="type">
+            <option value="" disabled selected>-</option>
             <option value="ax">Personnel de l'AX</option>
             <option value="fx">Personnel de la FX</option>
             <option value="school">Personnel de l'Ecole</option>
