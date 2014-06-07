@@ -1,8 +1,27 @@
 ================================================================================
-VERSION 1.1.12                                                       XX XX XXXX
+VERSION 1.1.13                                                       XX XX XXXX
+
+================================================================================
+VERSION 1.1.12                                                       08 03 2014
+
+    * NL:
+        - Improve Community Letter CSS & template.                         -KIT
+        - Improve mail headers.                                            -IOS
+
+    * Profile:
+        - Activating 'hidden' visibility flag.                             -LEV
+        - #1697: Add hobby visibility on profile.                          -LEV
+        - Small fixes for AX.                                              -FUL
 
     * Usability:
         - Make /emails page clearer                                        -IOS
+        - Sort validations categories.                                     -IOS
+
+    * XnetEvent:
+        - Prevent notifications if no changes were done.                   -KIT
+
+    * XnetGrp:
+        - Fix bugs with former members which were still members.           -KIT
 
 ================================================================================
 VERSION 1.1.11                                                       31 12 2013
@@ -2027,6 +2046,7 @@ ACRONYMS:
     * JS : Jean Sébastien Bedo              <jean-sebastien.bedo@m4x.org>
     * KIT: Anne Limoges         (Kithyane)  <anne.limoges@m4x.org>
     * KRL: Pierre-Étienne Marx  (Karlos)    <pierre-etienne.marx@m4x.org>
+    * LEV: Victor Berger        (Levans)    <victor.berger@m4x.org>
     * MC : Pierre Habouzit      (MadCoder)  <pierre.habouzit@m4x.org>
     * mYk: Aymeric Augustin     (mYk)       <aymeric.augustin@m4x.org>
     * OG : Olivier Guillaumin               <olivier.guillaumin@m4x.org>

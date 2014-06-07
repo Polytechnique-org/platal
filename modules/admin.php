@@ -971,12 +971,37 @@ class AdminModule extends PLModule
             } else if (Env::t('add_type') == 'ax_id') {
                 $type = 'x';
                 foreach ($lines as $line) {
-                    if ($infos = self::formatNewUser($page, $line, $separator, $promotion, 3)) {
-                        XDB::execute('UPDATE  profiles
-                                         SET  ax_id = {?}
-                                       WHERE  hrpid = {?}',
-                                     $infos[2], $infos['hrid']);
+                    $infos = explode($separator, $line);
+                    if (sizeof($infos) > 3 || sizeof($infos) < 2) {
+                        $page->trigError("La ligne $line n'a pas été ajoutée : mauvais nombre de champs.");
+                        continue;
                     }
+                    $infos = array_map('trim', $infos);
+                    if (sizeof($infos) == 3) {
+                        // Get human readable ID with first name and last name
+                        $hrid = User::makeHrid($infos[1], $infos[0], $promotion);
+                        $user = User::getSilent($hrid);
+                    } else {
+                        // The first column is the hrid, possibly without the promotion
+                        $user = User::getSilent($infos[0] . '.' . $promotion);
+                        if (is_null($user)) {
+                            $user = User::getSilent($infos[0]);
+                        }
+                    }
+                    if (is_null($user)) {
+                        $page->trigError("La ligne $line n'a pas été ajoutée : aucun compte trouvé.");
+                        continue;
+                    }
+                    $profile = $user->profile();
+                    if ($profile->ax_id) {
+                        $page->trigError("Le profil " . $profile->hrpid . " a déjà l'ID AX " . $profile->ax_id);
+                        continue;
+                    }
+                    XDB::execute('UPDATE  profiles
+                                     SET  ax_id = {?}
+                                   WHERE  pid = {?}',
+                                 $infos[2], $profile->id());
+
                 }
             }
 
@@ -1515,12 +1540,14 @@ class AdminModule extends PLModule
             $sex = Post::s('sex');
             $email = Post::t('email');
             $type = Post::s('type');
-            $login = PlUser::makeHrid($firstname, $lastname, $type);
-            if (!isvalid_email($email)) {
+            if (!$type) {
+                $page->trigError("Empty account type");
+            } elseif (!isvalid_email($email)) {
                 $page->trigError("Invalid email address: $email");
-            } else if (strlen(Post::s('pwhash')) != 40) {
+            } elseif (strlen(Post::s('pwhash')) != 40) {
                 $page->trigError("Invalid password hash");
             } else {
+                $login = PlUser::makeHrid($firstname, $lastname, $type);
                 $full_name = $firstname . ' ' . $lastname;
                 $directory_name = $lastname . ' ' . $firstname;
                 XDB::execute("INSERT INTO  accounts (hruid, type, state, password,
@@ -1546,6 +1573,10 @@ class AdminModule extends PLModule
         $table_editor->describe('type', 'Catégorie', true);
         $table_editor->describe('perms', 'Permissions associées', true);
         $table_editor->apply($page, $action, $id);
+
+        $page->trigWarning(
+            'Le niveau de visibilité "ax", utilisé par la permission "directory_ax", ' .
+            'correspond à la visibilité dans l\'annuaire papier.');
     }
 
     function handler_wiki($page, $action = 'list', $wikipage = null, $wikipage2 = null)
@@ -1808,9 +1839,10 @@ class AdminModule extends PLModule
             } else {
                 XDB::execute('UPDATE  profile_job_enum
                                  SET  name = {?}, acronym = {?}, url = {?}, email = {?},
-                                      NAF_code = {?}, AX_code = {?}, holdingid = {?}
+                                      SIREN_code = {?}, NAF_code = {?}, AX_code = {?}, holdingid = {?}
                                WHERE  id = {?}',
                              Env::t('name'), Env::t('acronym'), Env::t('url'), Env::t('email'),
+                             (Env::t('SIREN') == 0 ? null : Env::t('SIREN')),
                              (Env::t('NAF_code') == 0 ? null : Env::t('NAF_code')),
                              (Env::i('AX_code') == 0 ? null : Env::t('AX_code')),
                              (Env::i('holdingId') == 0 ? null : Env::t('holdingId')), $id);
@@ -1829,7 +1861,7 @@ class AdminModule extends PLModule
         }
 
         if (!Env::has('change') && $id != -1) {
-            $res = XDB::query("SELECT  e.id, e.name, e.acronym, e.url, e.email, e.NAF_code, e.AX_code,
+            $res = XDB::query("SELECT  e.id, e.name, e.acronym, e.url, e.email, e.SIREN_code AS SIREN, e.NAF_code, e.AX_code,
                                        h.id AS holdingId, h.name AS holdingName, h.acronym AS holdingAcronym,
                                        t.display_tel AS tel, f.display_tel AS fax, a.text AS address
                                  FROM  profile_job_enum  AS e

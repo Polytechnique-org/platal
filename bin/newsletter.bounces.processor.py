@@ -200,6 +200,8 @@ def findAddressInBounce(bounce):
     failure_hints = [
         "insufficient system storage",
         "mailbox full",
+        "mailbox recipient does not have a mailbox database",
+        "over quota",
         "requested action aborted: local error in processing",
         "user unknown",
         ]

@@ -22,10 +22,14 @@
 
 {assign var=prefname value="addresses[$i]"}
 {assign var=prefid value="addresses_$i"}
-{if !hasPerm('directory_private') && ($address.pub eq 'private') && !$new}
-{assign var=hiddenaddr value=true}
+{if $isMe || hasPerm('admin') || $new}
+  {assign var=hiddenaddr value=false}
+{elseif hasPerm('directory_hidden') || (($address.pub neq 'hidden') && ($address.pub neq 'private'))}
+  {assign var=hiddenaddr value=false}
+{elseif hasPerm('directory_private') && ($address.pub neq 'hidden')}
+  {assign var=hiddenaddr value=false}
 {else}
-{assign var=hiddenaddr value=false}
+  {assign var=hiddenaddr value=true}
 {/if}
 
 <table class="bicol" style="display: none; margin-bottom: 1em" id="{$prefid}_grayed">

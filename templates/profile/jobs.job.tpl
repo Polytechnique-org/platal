@@ -27,20 +27,32 @@
 {assign var=sector_text value="sector_text_"|cat:$i}
 {assign var=sector value="sector_"|cat:$i}
 {assign var=entreprise value="entreprise_"|cat:$i}
-{if !hasPerm('directory_private') && ($job.pub eq 'private') && !$new}
-{assign var=hiddenjob value=true}
+{if $isMe || hasPerm('admin')}
+  {assign var=hiddenjob value=false}
+  {assign var=hiddenaddr value=false}
+  {assign var=hiddenemail value=false}
 {else}
-{assign var=hiddenjob value=false}
-{/if}
-{if !hasPerm('directory_private') && ($job.w_address.pub eq 'private') && !empty($job.w_address.text|smarty:nodefaults)}
-{assign var=hiddenaddr value=true}
-{else}
-{assign var=hiddenaddr value=false}
-{/if}
-{if !hasPerm('directory_private') && ($job.w_email_pub eq 'private') && !empty($job.w_email|smarty:nodefaults)}
-{assign var=hiddenemail value=true}
-{else}
-{assign var=hiddenemail value=false}
+  {if hasPerm('directory_hidden') || ( ($job.pub neq 'hidden') && ($job.pub neq 'private')) || $new}
+    {assign var=hiddenjob value=false}
+  {elseif hasPerm('directory_private') && ($job.pub neq 'hidden')}
+    {assign var=hiddenjob value=false}
+  {else}
+    {assign var=hiddenjob value=true}
+  {/if}
+  {if hasPerm('directory_hidden') || ( ($job.w_address.pub neq 'hidden') && ($job.w_address.pub neq 'private')) || empty($job.w_address.text|smarty:nodefaults)}
+    {assign var=hiddenaddr value=false}
+  {elseif hasPerm('directory_private') && ($job.w_address.pub neq 'hidden')}
+    {assign var=hiddenaddr value=false}
+  {else}
+    {assign var=hiddenaddr value=true}
+  {/if}
+  {if hasPerm('directory_hidden') || ( ($job.w_email_pub neq 'hidden') && ($job.w_email_pub neq 'private')) || empty($job.w_email|smarty:nodefaults)}
+    {assign var=hiddenemail value=false}
+  {elseif hasPerm('directory_private') && ($job.w_email_pub neq 'hidden')}
+    {assign var=hiddenemail value=false}
+  {else}
+    {assign var=hiddenemail value=true}
+  {/if}
 {/if}
 <div id="{$jobid}">
   <input type="hidden" name="{$jobpref}[removed]" value="0" />

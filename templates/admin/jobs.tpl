@@ -57,6 +57,10 @@
       <td><input type="text" name="email" value="{$selectedJob.email}" /></td>
     </tr>
     <tr>
+      <td>Code SIREN</td>
+      <td><input type="text" name="SIREN" value="{$selectedJob.SIREN}" /></td>
+    </tr>
+    <tr>
       <td>Code NAF</td>
       <td><input type="text" name="NAF_code" value="{$selectedJob.NAF_code}" /></td>
     </tr>

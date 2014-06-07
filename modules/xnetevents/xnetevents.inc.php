@@ -19,6 +19,121 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+// {{{ function get_event_order()
+/* get the order to paste the events
+ * @param $asso_id: group's id
+ */
+function get_event_order($asso_id)
+{
+    $order = XDB::fetchOneCell('SELECT g.event_order
+                                  FROM groups as g
+                                 WHERE id = {?}',
+                                       $asso_id);
+    return $order;
+}
+// }}}
+
+// {{{ function get_events()
+/* get the events of the given group ordered by the standard order for the group
+ * @param $asso_id: group's id
+ * @param $order: order to paste the events (asc or desc)
+ * @param $archive: whether to get the archived events (1) or the actuals (0)
+ */
+function get_events($asso_id, $order, $archive)
+{
+    if ($order != 'asc' && $order != 'desc') {
+        $order = 'desc';
+    }
+    $evts = XDB::fetchAllAssoc('eid', "SELECT ge.eid, ge.uid, ge.intitule, ge.debut, ge.fin, ge.show_participants, ge.deadline_inscription, ge.accept_nonmembre, ge.paiement_id
+                                         FROM group_events as ge
+                                        WHERE asso_id = {?} and archive = {?}
+                                     ORDER BY ge.debut $order",
+                                              $asso_id, $archive);
+    return $evts;
+}
+// }}}
+
+// {{{ function get_event() (detail, for subs page only for now)
+/* get event details
+ * @param $eid: event's id
+ */
+function get_event(&$eid)
+{
+    if (!is_numeric($eid)) {
+        $id = XDB::fetchOneCell("SELECT eid
+                                   FROM group_events
+                                  WHERE short_name = {?}",
+                                        $eid);
+        $eid = $id;
+    }
+    $evt = XDB::fetchOneAssoc('SELECT ge.uid, ge.intitule, ge.descriptif, ge.debut, ge.fin, ge.deadline_inscription, ge.accept_nonmembre, ge.noinvite, ge.paiement_id
+                                         FROM group_events as ge
+                                        WHERE eid = {?}',
+                                        $eid);
+    if (!is_null($evt['deadline_inscription']) && strtotime($evt['deadline_inscription']) <= time()) {
+        $evt['inscr_open'] = false;
+    } else {
+        $evt['inscr_open'] = true;
+    }
+    $evt['organizer'] = User::getSilent($evt['uid']);
+    $evt['date'] = make_event_date($evt['debut'], $evt['fin']);
+
+    return $evt;
+}
+// }}}
+
+// {{{ function get_event_items()
+/** get items of the given event
+ *
+ * @param $eid : event's id
+ *
+ */
+function get_event_items($eid)
+{
+    $evt = XDB::fetchAllAssoc('item_id', 'SELECT gei.item_id, gei.titre, gei.details, gei.montant
+        FROM group_event_items as gei
+        WHERE eid = {?}',
+        $eid);
+    return $evt;
+}
+// }}}
+
+// {{{ function get_event_subscription()
+/* get all participations if uid is not specified, only the user's participation if uid specified
+ * @param $eid: event's id
+ * @param $uid: user's id
+ */
+function get_event_subscription($eid, $uid = null)
+{
+    if (!is_null($uid)) {
+        $where = ' and gep.uid = '.$uid;
+    }
+    else {
+        $where = '';
+    }
+   $sub =  XDB::fetchAllAssoc('item_id','SELECT gep.item_id, gep.nb, gep.paid FROM group_event_participants as gep
+                                          WHERE gep.eid = {?}'.$where,
+                                                $eid);
+   return $sub;
+}
+// }}}
+
+// {{{ function get_event_telepaid()
+/* get the total payments made by a user for an event
+ * @param $eid: event's id
+ * @param $uid: user's id
+ */
+function get_event_telepaid($eid, $uid)
+{
+   $telepaid = XDB::fetchOneCell('SELECT SUM(pt.amount)
+                                    FROM payment_transactions AS pt
+                               LEFT JOIN group_events as ge ON (ge.paiement_id = pt.ref)
+                                   WHERE pt.status = "confirmed" AND ge.eid = {?} AND pt.uid = {?}',
+                                         $eid, $uid);
+    return $telepaid;
+}
+// }}}
+
 // {{{ function get_event_detail()
 
 function get_event_detail($eid, $item_id = false, $asso_id = null)
@@ -90,13 +205,13 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
 
     $montant = XDB::fetchOneCell('SELECT  SUM(amount) AS sum_amount
                                     FROM  payment_transactions AS t
-                                   WHERE  ref = {?} AND uid = {?}',
+                                   WHERE  status = "confirmed" AND ref = {?} AND uid = {?}',
                                    $evt['paiement_id'], S::v('uid'));
     $evt['telepaid'] = $montant;
     $evt['paid'] += $montant;
     $evt['organizer'] = User::getSilent($evt['uid']);
 
-    make_event_date($evt);
+    $evt['date'] = make_event_date($evt['debut'], $evt['fin']);
 
     $evt['show_participants'] = ($evt['show_participants'] && $GLOBALS['IS_XNET_SITE'] && (is_member() || may_update()));
 
@@ -143,7 +258,7 @@ function get_event_participants(&$evt, $item_id, array $tri = array(), $limit = 
         if ($money && $pay_id) {
             $montant = XDB::fetchOneCell('SELECT  SUM(amount)
                                             FROM  payment_transactions AS t
-                                           WHERE  ref = {?} AND uid = {?}',
+                                           WHERE  status = "confirmed" AND ref = {?} AND uid = {?}',
                                          $pay_id, $uid);
             $u['paid'] += $montant;
         }
@@ -166,6 +281,83 @@ function get_event_participants(&$evt, $item_id, array $tri = array(), $limit = 
 }
 // }}}
 
+//  {{{ function subscribe()
+/** set or update the user's subscription
+ *
+ * @param $uid: user's id
+ * @param $eid: event's id
+ * @param $subs: user's new subscription
+ *
+ */
+function subscribe($uid, $eid, $subs = array())
+{
+    global $globals;
+    // get items
+    $items = get_event_items($eid);
+    // get previous subscription
+    $old_subs = get_event_subscription($eid, $uid);
+    $participate = false;
+    $updated = false;
+    // TODO : change the way to deal with manual payment
+    $paid = 0;
+    foreach ($old_subs as $item_id => $s) {
+        $paid += $s['paid'];
+    }
+    $paid_updated = false;
+    // for each item of the event
+    foreach ($items as $item_id => $details) {
+        // check if there is an old subscription
+        if (array_key_exists($item_id, $old_subs)) {
+            // compares new and old subscription
+            if ($old_subs[$item_id]['nb'] != $subs[$item_id]) {
+                if ($subs[$item_id] != 0) {
+                    XDB::execute('INSERT INTO group_event_participants (eid, uid, item_id, nb, flags, paid)
+                                       VALUES ({?}, {?}, {?}, {?}, {?}, {?})
+                      ON DUPLICATE KEY UPDATE nb = VALUES(nb), flags = VALUES(flags), paid = VALUES(paid)',
+                                             $eid, $uid, $item_id, $subs[$item_id],(Env::has('notify_payment') ? 'notify_payment' : 0), (!$paid_updated ? $paid : 0));
+                    $participate = true;
+                    $paid_updated = true;
+                } else { // we do not store non-subscription to event items
+                    XDB::execute('DELETE FROM group_event_participants
+                                        WHERE eid = {?} AND uid = {?} AND item_id = {?}',
+                                              $eid, $uid, $item_id);
+                }
+                $updated = true;
+            }
+        } else { // if no old subscription
+            if ($subs[$item_id] != 0) {
+                XDB::execute('INSERT INTO group_event_participants (eid, uid, item_id, nb, flags, paid)
+                                   VALUES ({?}, {?}, {?}, {?}, {?}, {?})',
+                                          $eid, $uid, $item_id, $subs[$item_id], '', 0);
+                $participate = true;
+                $updated = true;
+            }
+        }
+    }
+    // item 0 stores whether the user participates globally or not, if he has to be notified when payment is created and his manual payment
+    /*
+    if (array_key_exists(0, $old_subs)) {
+        XDB::execute('UPDATE group_event_participants
+                         SET nb = {?}
+                       WHERE eid = {?}, uid = {?}, item_id = 0',
+                             ($participate ? 1 : 0), $eid, $uid);
+    } else {
+        XDB::execute('INSERT INTO group_event_participants (eid, uid, item_id, nb, flags, paid)
+                           VALUES ({?}, {?}, {?}, {?}, {?}, {?})',
+                                  $eid, $uid, 0, ($participate ? 1 : 0), (Env::has('notify_payment') ? 'notify_payment' : ''), 0);
+    }
+    */
+    // if subscription is updated, we have to update the event aliases
+    if ($updated) {
+        $short_name = get_event_detail($eid)['short_name'];
+        subscribe_lists_event($uid, $short_name, ($participate ? 1 : -1), 0);
+    }
+    return $updated;
+}
+//  }}}
+
+// TODO : correct this function to be compatible with subscribe() (use $eid, remove useless argument)
+// TODO : correct other calls
 //  {{{ function subscribe_lists_event()
 /** Subscribes user to various event related mailing lists.
  *
@@ -324,13 +516,14 @@ function event_change_shortname($page, $eid, $old, $new)
 // }}}
 
 //  {{{ function make_event_date()
-function make_event_date(&$e)
+function make_event_date($debut, $fin)
 {
-    $start     = strtotime($e['debut']);
-    $end       = strtotime($e['fin']);
-    $first_day = $e['first_day'];
-    $last_day  = $e['last_day'];
-
+    $start     = strtotime($debut);
+    $end       = strtotime($fin);
+//    $first_day = $e['first_day'];
+//    $last_day  = $e['last_day'];
+    $first_day = strftime("%d %B %Y", $start);
+    $last_day = strftime("%d %B %Y", $end);
     $date = "";
     if ($start && $end != $start) {
         if ($first_day == $last_day) {
@@ -343,7 +536,7 @@ function make_event_date(&$e)
     } else {
         $date .= "le " . strftime("%d %B %Y à %H:%M", $start);
     }
-    $e['date'] = $date;
+    return $date;
 }
 // }}}
 

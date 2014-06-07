@@ -118,8 +118,17 @@
       <td class='titre'>
         Intro de la lettre<br />(ou contenu pour les lettres exceptionnelles)
       </td>
-      <td>
+      <td rowspan="2">
         <textarea name='head' cols='60' rows='20'>{$issue->head()}</textarea>
+      </td>
+    </tr>
+    <tr>
+      <td class="smaller">
+        <p><a href="wiki_help/notitle" class="popup3">{icon name=information} Voir la documentation du wiki</a>
+        </p>
+        <p>{icon name=information} Dans le message, "&lt;cher&gt; &lt;prenom&gt;"
+        sera remplacé par ce que chaque destinataire a défini dans son profil pour le paramètre "Comment t'appeler".
+        </p>
       </td>
     </tr>
     <tr>

@@ -33,7 +33,7 @@ class ComLetterModule extends NewsletterModule
             'comletter'                   => $this->make_hook('nl',              AUTH_COOKIE, 'user'),
             'comletter/submit'            => $this->make_hook('coml_submit',     AUTH_PASSWD, 'user'),
             'comletter/remaining'         => $this->make_hook('coml_remaining',  AUTH_PASSWD, 'user'),
-            'comletter/out'               => $this->make_hook('out',             AUTH_PUBLIC),
+            'comletter/out'               => $this->make_hook('out',             AUTH_COOKIE, 'user'),
             'comletter/show'              => $this->make_hook('nl_show',         AUTH_COOKIE, 'user'),
             'comletter/search'            => $this->make_hook('nl_search',       AUTH_COOKIE, 'user'),
             'comletter/admin'             => $this->make_hook('admin_nl',        AUTH_PASSWD, 'user'),
@@ -94,6 +94,7 @@ class ComLetterModule extends NewsletterModule
 
     function handler_out($page, $hash = null, $issue_id = null)
     {
+        $hash = ($hash == 'nohash') ? null : $hash;
         if (!$hash) {
             if (!S::logged()) {
                 return PL_DO_AUTH;

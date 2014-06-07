@@ -37,6 +37,9 @@ masculin ou féminin, par son prénom, ou son nom.
         form.sujet.focus();
         return false;
     }
+    var bouton = document.getElementById('submit_bt');
+    bouton.disabled = "disabled";
+    bouton.value="Envoi...";
   }
 
   function updateWikiView(box) {
@@ -79,11 +82,7 @@ masculin ou féminin, par son prénom, ou son nom.
       </td>
       <td>
         <label><input type="checkbox" name="membres[X]" value="1"  {if $smarty.request.membres.X}checked="checked"{/if} />
-        <em>écrire à tous les X de l'annuaire du groupe</em></label><br />
-        <label><input type="checkbox" name="membres[ext]" value="1"  {if $smarty.request.membres.ext}checked="checked"{/if} />
-        <em>écrire à tous les extérieurs de l'annuaire du groupe</em></label><br />
-        <label><input type="checkbox" name="membres[groupe]" value="1"  {if $smarty.request.membres.groupe}checked="checked"{/if} />
-        <em>écrire à toutes les personnes morales de l'annuaire du groupe</em></label>
+        <em>écrire à tous les membres du groupe</em></label><br />
         <a href="{$platal->ns}annuaire" class='popup'>(voir annuaire)</a><br />
       </td>
     </tr>
@@ -148,9 +147,28 @@ Le bureau du groupe {$asso->nom}.
       </td>
     </tr>
     <tr>
+      <td colspan="2">
+        <p style="font-size: larger;">
+          <b>Attention</b>&nbsp;: si après avoir cliqué sur le bouton "Envoyer le message"
+          la page met un temps long à répondre, ceci peut être lié au fait que le serveur
+          est en train d'envoyer beaucoup de mails et cet outil n'est certainement pas
+          adapté pour cette situation.
+        </p>
+        <p>
+          Au lieu d'utiliser cet outil, il est possible d'utiliser la
+          <a href="{$platal->ns}nl">newsletter</a> du groupe pour écrire au groupe.
+        </p>
+        <p>
+          Pour connaître quelles solutions Polytechnique.org propose pour effectuer
+          un envoi massif de mails ciblés, merci de contacter
+          <a href="mailto:contact@polytechnique.org">contact@polytechnique.org</a>.
+        </p>
+      </td>
+    </tr>
+    <tr>
       <td colspan="2" align="center">
         <input type="submit" name="preview" id="preview_bt" value="Aperçu" onclick="previewWiki('mail_text', 'mail_preview', true, 'preview'); return false;" />
-        <input type="submit" name="send" value="Envoyer le message" />
+        <input type="submit" name="send" id="submit_bt" value="Envoyer le message" />
       </td>
     </tr>
   </table>

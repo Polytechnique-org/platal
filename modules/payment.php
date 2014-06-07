@@ -934,7 +934,7 @@ class PaymentModule extends PLModule
                                  FROM  payment_transactions AS t
                             LEFT JOIN  payments             AS p ON (t.ref = p.id)
                             LEFT JOIN  groups               AS g ON (p.asso_id = g.id)
-                                WHERE  t.recon_id IN {?}
+                                WHERE  t.recon_id IN {?} AND t.status = "confirmed"
                              GROUP BY  t.ref',
                          $recongp_id, $recon_ids);
 

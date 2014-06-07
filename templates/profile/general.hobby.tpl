@@ -20,10 +20,14 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if !hasPerm('directory_private') && ($hobby.pub eq 'private') && !empty($hobby.text|smarty:nodefaults)}
-{assign var=hiddenhobby value=true}
+{if $isMe || hasPerm('admin') || empty($hobby.text|smarty:nodefaults)}
+  {assign var=hiddenhobby value=false}
+{elseif hasPerm('directory_hidden') || (($hobby.pub neq 'hidden') && ($hobby.pub neq 'private'))}
+  {assign var=hiddenhobby value=false}
+{elseif hasPerm('directory_private') && ($hobby.pub neq 'hidden')}
+  {assign var=hiddenhobby value=false}
 {else}
-{assign var=hiddenhobby value=false}
+  {assign var=hiddenhobby value=true}
 {/if}
 
 <tr id="hobby_{$i}">

@@ -920,7 +920,11 @@ class XnetGrpModule extends PLModule
                 break;
             }
         }
-        http_redirect($_SERVER['HTTP_REFERER']);
+        if (!empty($_SERVER['HTTP_REFERER'])) {
+            http_redirect($_SERVER['HTTP_REFERER']);
+        } else {
+            pl_redirect('');
+        }
     }
 
     function handler_admin_annuaire($page)
@@ -1220,6 +1224,11 @@ class XnetGrpModule extends PLModule
             $mailer->assign('user', $user);
             $mailer->assign('selfdone', $user->id() == S::i('uid'));
             $mailer->send();
+        }
+
+        $nl = Newsletter::forGroup($globals->asso('shortname'));
+        if (!is_null($nl)) {
+            $nl->unsubscribe(null, S::i('uid'));
         }
 
         $domain = $globals->asso('mail_domain');

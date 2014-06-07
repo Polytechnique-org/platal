@@ -33,7 +33,7 @@ Ce certificat permet d'accéder à un formulaire de changement de mot de passe.
 expiration</strong> et utiliser le certificat comme expliqué dans l'email pour changer votre mot de passe.
 </p>
 <p>
-Si vous n'accéder pas à cet email dans les 6 heures, sollicitez un nouveau certificat sur cette page.
+Si vous n'accédez pas à cet email dans les 6 heures, sollicitez un nouveau certificat sur cette page.
 </p>
 
 {else}

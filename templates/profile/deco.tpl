@@ -20,10 +20,14 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if !hasPerm('directory_private') && ($medals_pub eq 'private') && ($medals|@count neq 0)}
-{assign var=hidden_medal value=true}
+{if $isMe || hasPerm('admin') || ($medals|@count eq 0)}
+  {assign var=hidden_medal value=false}
+{elseif hasPerm('directory_hidden') || (($medals_pub neq 'hidden') && ($medals_pub neq 'private'))}
+  {assign var=hidden_medal value=false}
+{elseif hasPerm('directory_private') && ($medals_pub neq 'hidden')}
+  {assign var=hidden_medal value=false}
 {else}
-{assign var=hidden_medal value=false}
+  {assign var=hidden_medal value=true}
 {/if}
 <table class="bicol">
   <tr>
