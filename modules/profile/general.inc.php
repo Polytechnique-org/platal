@@ -453,7 +453,7 @@ class ProfileSettingNetworking implements ProfileSetting
     }
 
     public function getText($value) {
-        static $pubs = array('public' => 'publique', 'ax' => 'annuaire AX', 'private' => 'privé');
+        static $pubs = array('public' => 'publique', 'ax' => 'annuaire papier', 'private' => 'privé', 'hidden' => 'administrateurs');
         $networkings = array();
         foreach ($value as $network) {
             $networkings[] = $network['name'] . ' : ' . $network['address'] . ' (affichage ' . $pubs[$network['pub']] . ')';
@@ -516,7 +516,7 @@ class ProfileSettingHobby implements ProfileSetting
     }
 
     public function getText($value) {
-        static $pubs = array('public' => 'publique', 'private' => 'privé');
+        static $pubs = array('public' => 'publique', 'ax' => 'annuaire papier', 'private' => 'privé', 'hidden' => 'administrateurs');
         $hobbies = array();
         foreach (self::$type as $type) {
             $hobbies[$type] = array();

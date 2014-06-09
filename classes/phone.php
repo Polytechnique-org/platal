@@ -263,7 +263,7 @@ class Phone
 
     private function toString()
     {
-        static $pubs = array('public' => 'publique', 'ax' => 'annuaire AX', 'private' => 'privé');
+        static $pubs = array('public' => 'publique', 'ax' => 'annuaire papier', 'private' => 'privé', 'hidden' => 'administrateurs');
         static $types = array('fax' => 'fax', 'fixed' => 'fixe', 'mobile' => 'mobile');
         return $this->display . ' (' . $types[$this->type] . (($this->comment) ? ', commentaire : « ' . $this->comment . ' »' : '')
             . ', affichage ' . $pubs[$this->pub] . ')';

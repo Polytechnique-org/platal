@@ -322,7 +322,7 @@ class ProfileSettingJob implements ProfileSetting
 
     public function getText($value)
     {
-        static $pubs = array('public' => 'publique', 'ax' => 'annuaire AX', 'private' => 'privé');
+        static $pubs = array('public' => 'publique', 'ax' => 'annuaire papier', 'private' => 'privé', 'hidden' => 'administrateurs');
         $jobs = array();
         foreach ($value as $id => $job) {
             $address = Address::formArrayToString(array($job['w_address']));
@@ -391,7 +391,7 @@ class ProfileSettingCorps implements ProfileSetting
 
     public function getText($value)
     {
-        static $pubs = array('public' => 'publique', 'ax' => 'annuaire AX', 'private' => 'privé');
+        static $pubs = array('public' => 'publique', 'ax' => 'annuaire papier', 'private' => 'privé', 'hidden' => 'administrateurs');
         $corpsList = DirEnum::getOptions(DirEnum::ORIGINCORPS);
         $rankList  = DirEnum::getOptions(DirEnum::CORPSRANKS);
         return $corpsList[$value['current']] . ', ' . $corpsList[$value['rank']] . ' ('
