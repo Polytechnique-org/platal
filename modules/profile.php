@@ -393,7 +393,7 @@ class ProfileModule extends PLModule
         pl_content_headers("text/html");
         $page->changeTpl('profile/adresses.address.tpl', NO_SKIN);
         $page->assign('i', $id);
-        $page->assign('address', array());
+        $page->assign('address', array('mail' => true));
         $page->assign('profile', Profile::get($pid));
         $page->assign('isMe', true);
         $page->assign('geocoding_removal', true);

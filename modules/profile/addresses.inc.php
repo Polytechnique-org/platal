@@ -32,7 +32,7 @@ class ProfileSettingAddresses implements ProfileSetting
                 $addresses[] = $address->toFormArray();
             }
             if (count($addresses) == 0) {
-                $address = new Address();
+                $address = new Address(array('mail' => 1));
                 $addresses[] = $address->toFormArray();
             }
             return $addresses;
