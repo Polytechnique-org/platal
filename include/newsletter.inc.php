@@ -1338,11 +1338,16 @@ class NLIssue
                        WHERE  id = {?}',
                        $this->id);
 
+        // Every minute, select BATCH_SIZE users who:
+        // * are subscribed to the newsletter
+        // * have not yet been mailed this issue of the newsletter
+        // * have a valid email address
+        // ... and send them the current issue.
+        // Once a mail is sent, newsletter_ins is updated to prevent selecting again the same user a minute later.
         $ufc = new PFC_And($this->getRecipientsUFC(), new UFC_NLSubscribed($this->nl->id, $this->id), new UFC_HasValidEmail());
         $uf = new UserFilter($ufc, array(new UFO_IsAdmin(true), new UFO_Uid()));
         $limit = new PlLimit(self::BATCH_SIZE);
         $global_sent = array();
-
         while (true) {
             $sent = array();
             $users = $uf->getUsers($limit);
@@ -1351,6 +1356,14 @@ class NLIssue
             }
             foreach ($users as $user) {
                 if (array_key_exists($user->id(), $global_sent)) {
+                    // Such a condition may happen if an user:
+                    // 1. was mailed the issue,
+                    // 2. unsubscribed the newsletter,
+                    // 3. subscribed again before the sending was done.
+                    // Such a case is reported by mail to people who monitor the website.
+                    // If you are reading this comment because of such a mail and the lines above explain what happened,
+                    // you only need to reset the state of the issue to "pending".
+                    // A cron script will then restart the mailing from where it stopped and only the problematic user will reveive the issue twice.
                     Platal::page()->kill('Sending the same newsletter issue ' . $this->id . ' to user ' . $user->id() . ' twice, something must be wrong.');
                 }
                 $sent[] = $user->id();
