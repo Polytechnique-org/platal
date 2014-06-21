@@ -517,7 +517,7 @@ class FusionAxModule extends PLModule
     function handler_promo($page, $action = '')
     {
         $page->changeTpl('fusionax/promo.tpl');
-        $res = XDB::iterator("SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
+        $res = XDB::iterator("SELECT  pid, ax_id, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
                                 FROM  fusionax_promo
                                WHERE  !(promo_etude_ax + 1 = promo_etude_xorg AND promo_etude_xorg + 3 = promo_sortie_xorg)
                                       AND !(promo_etude_ax + 1 = promo_etude_xorg AND promo_etude_xorg + 4 = promo_sortie_xorg)
@@ -527,7 +527,7 @@ class FusionAxModule extends PLModule
         $page->assign('nbMissmatchingPromos', $res->total());
         $page->assign('missmatchingPromos', $res);
 
-        $res = XDB::iterator("SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
+        $res = XDB::iterator("SELECT  pid, ax_id, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
                                 FROM  fusionax_promo
                                WHERE  promo_etude_ax = promo_etude_xorg + 1 AND groupe_promo = 'X'
                             ORDER BY  promo_etude_xorg");
@@ -535,7 +535,7 @@ class FusionAxModule extends PLModule
         $page->assign('nbMissmatchingPromos1', $res->total());
         $page->assign('missmatchingPromos1', $res);
 
-        $res = XDB::iterator("SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
+        $res = XDB::iterator("SELECT  pid, ax_id, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
                                 FROM  fusionax_promo
                                WHERE  promo_etude_ax + 1 = promo_etude_xorg AND promo_etude_xorg + 3 = promo_sortie_xorg AND groupe_promo = 'X'
                             ORDER BY  promo_etude_xorg");
@@ -543,7 +543,7 @@ class FusionAxModule extends PLModule
         $page->assign('nbMissmatchingPromos2', $res->total());
         $page->assign('missmatchingPromos2', $res);
 
-        $res = XDB::iterator("SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
+        $res = XDB::iterator("SELECT  pid, ax_id, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
                                 FROM  fusionax_promo
                                WHERE  promo_etude_ax + 1 = promo_etude_xorg AND promo_etude_xorg + 4 = promo_sortie_xorg AND groupe_promo = 'X'
                             ORDER BY  promo_etude_xorg");
@@ -551,7 +551,7 @@ class FusionAxModule extends PLModule
         $page->assign('nbMissmatchingPromos3', $res->total());
         $page->assign('missmatchingPromos3', $res);
 
-        $res = XDB::iterator("SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
+        $res = XDB::iterator("SELECT  pid, ax_id, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
                                 FROM  fusionax_promo
                                WHERE  groupe_promo = 'M'
                             ORDER BY  promo_etude_xorg");
@@ -560,7 +560,7 @@ class FusionAxModule extends PLModule
         $page->assign('missmatchingPromosM', $res);
 
 
-        $res = XDB::iterator("SELECT  pid, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
+        $res = XDB::iterator("SELECT  pid, ax_id, private_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax, promo
                                 FROM  fusionax_promo
                                WHERE  groupe_promo = 'D'
                             ORDER BY  promo_etude_xorg");
