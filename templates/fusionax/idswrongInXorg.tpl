@@ -26,7 +26,7 @@ dans la base de l'AX (mises à part les promo 1921, 1922, 1923, 1924, 1925, 1927
 <p></p>
 
 {if t($wrongInXorg)}
-{include file='fusionax/listFusion.tpl' fusionList=$wrongInXorg field1='pid' namefield1='ID X.org'}
+{include file='fusionax/listFusion.tpl' fusionList=$wrongInXorg field1='pid' namefield1='X.org' field2='ax_id' namefield2='AX'}
 
 <p><a href="fusionax/ids/cleanwronginxorg">Mettre à NULL le matricule_ax de ces camarades pour marquer le fait qu'ils ne figurent pas dans l'annuaire de l'AX</a></p>
 {/if}

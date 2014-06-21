@@ -45,7 +45,7 @@
     <tr class="{cycle values="pair,impair"}">
         <td>{$c.private_name} ({$c.promo})</td>
         <td style="text-align:center">
-            {if t($c.pid)}<a href="admin/user/{$c.pid}" class="popup2">{icon name="user_suit" title="Administrer utilisateur"}</a>{/if}
+            {if t($c.pid)}<a href="profile/{$c.pid}" class="popup2">{icon name="user_suit" title="Administrer utilisateur"}</a>{/if}
             {if t($c.ax_id)}<a href="http://kx.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;ancc_id={$c.ax_id}" class="popup2">{icon name="user_gray" title="fiche AX"}</a>{/if}
         </td>
         {if t($field1)}

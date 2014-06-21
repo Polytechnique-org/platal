@@ -310,7 +310,7 @@ class FusionAxModule extends PLModule
      * (mises à part les promo 1921, 1922, 1923, 1924, 1925, 1927, 1928, 1929 qui ne figurent pas dans les données de l'AX)*/
     private static function find_wrong_in_xorg($limit = 10)
     {
-        return XDB::iterator('SELECT  u.promo, u.pid, u.private_name
+        return XDB::iterator('SELECT  u.promo, u.pid, u.private_name, u.ax_id
                                 FROM  fusionax_xorg_anciens AS u
                                WHERE  NOT EXISTS (SELECT  *
                                                     FROM  fusionax_anciens AS f
