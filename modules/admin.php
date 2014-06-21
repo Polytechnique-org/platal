@@ -981,12 +981,18 @@ class AdminModule extends PLModule
                         // Get human readable ID with first name and last name
                         $hrid = User::makeHrid($infos[1], $infos[0], $promotion);
                         $user = User::getSilent($hrid);
+                        $axid = $infos[2];
                     } else {
                         // The first column is the hrid, possibly without the promotion
                         $user = User::getSilent($infos[0] . '.' . $promotion);
                         if (is_null($user)) {
                             $user = User::getSilent($infos[0]);
                         }
+                        $axid = $infos[1];
+                    }
+                    if (!$axid) {
+                        $page->trigError("La ligne $line n'a pas été ajoutée : matricule AX vide.");
+                        continue;
                     }
                     if (is_null($user)) {
                         $page->trigError("La ligne $line n'a pas été ajoutée : aucun compte trouvé.");
@@ -1000,7 +1006,7 @@ class AdminModule extends PLModule
                     XDB::execute('UPDATE  profiles
                                      SET  ax_id = {?}
                                    WHERE  pid = {?}',
-                                 $infos[2], $profile->id());
+                                 $axid, $profile->id());
 
                 }
             }
