@@ -644,7 +644,10 @@ class FusionAxModule extends PLModule
 
             $res = XDB::rawFetchAllAssoc('SELECT  p.pid, p.ax_id, p.hrpid,
                                                   f.Nom_patronymique, f.Nom_usuel, f.Nom_complet,
-                                                  ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary
+                                                  ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary,
+                                                  ' . $ax_patro . ' AS cond_patro,
+                                                  ' . $ax_ordinary . ' AS cond_ordinary,
+                                                  ' . $ax_full . ' AS cond_full
                                             FROM  fusionax_anciens     AS f
                                       INNER JOIN  profiles             AS p   ON (f.ax_id = p.ax_id)
                                       INNER JOIN  profile_public_names AS ppn ON (p.pid = ppn.pid)

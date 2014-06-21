@@ -94,9 +94,9 @@
     <td>{$profile.pid}</td>
     <td>{$profile.ax_id}</td>
     <td>{$profile.hrpid}</td>
-    <td>{$profile.Nom_patronymique}</td>
-    <td>{$profile.Nom_usuel}</td>
-    <td>{$profile.Nom_complet}</td>
+    <td style="{if $profile.cond_patro}font-weight:bold;{/if}">{$profile.Nom_patronymique}</td>
+    <td style="{if $profile.cond_ordinary}font-weight:bold;{/if}">{$profile.Nom_usuel}</td>
+    <td style="{if $profile.cond_full}font-weight:bold;{/if}">{$profile.Nom_complet}</td>
     <td>{$profile.lastname_initial}</td>
     <td>{$profile.lastname_main}</td>
     <td>{$profile.lastname_marital}</td>
