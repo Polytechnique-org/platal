@@ -1,5 +1,23 @@
 ================================================================================
-VERSION 1.1.13                                                       XX XX XXXX
+VERSION 1.1.13                                                       21 06 2014
+
+    * Fusion:
+        - Update scripts (MySQL compatibility, new AX data...)         -KIT/IOS
+
+    * Profile:
+        - Handle the new 'hidden' visibility flag on profile editor        -IOS
+
+    * NL:
+        - Improve the processing of broken addresses                       -IOS
+        - Fix unscription link                                             -IOS
+
+    * XnetGrp:
+        - Various fixes (ML owner deletion...)                             -KIT
+        - Fix the "sending mail" feature                                   -KIT
+
+    * XnetEvent:
+        - Fix archive events                                               -KIT
+        - Handle canceled payment transactions                             -KIT
 
 ================================================================================
 VERSION 1.1.12                                                       08 03 2014
