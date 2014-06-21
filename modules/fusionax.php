@@ -619,9 +619,26 @@ class FusionAxModule extends PLModule
                 $page->assign('firstnameIssues', $res);
             }
         } elseif ($action == 'last' || $action == 'last3' || $action == 'last2' || $action == 'last1') {
-            $ax_patro = "(IF(f.partic_patro, CONCAT(f.partic_patro, CONCAT(' ', f.Nom_patronymique)), f.Nom_patronymique) NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary))";
-            $ax_ordinary = "(IF(f.partic_nom, CONCAT(f.partic_nom, CONCAT(' ', f.Nom_usuel)), f.Nom_usuel) NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary))";
-            $ax_full = "(f.Nom_complet NOT IN (ppn.lastname_initial, ppn.lastname_main, ppn.lastname_marital, ppn.lastname_ordinary))";
+            // Define some variables to build queries
+            function sql_trim_partic($sqlstring) {
+                $sqlstring = 'TRIM(LEADING \'d\\\'\' FROM ' . $sqlstring . ')';
+                $sqlstring = 'TRIM(LEADING \'D\\\'\' FROM ' . $sqlstring . ')';
+                $sqlstring = 'TRIM(LEADING \'de \' FROM ' . $sqlstring . ')';
+                $sqlstring = 'TRIM(LEADING \'De \' FROM ' . $sqlstring . ')';
+                $sqlstring = 'TRIM(LEADING \'du \' FROM ' . $sqlstring . ')';
+                $sqlstring = 'TRIM(LEADING \'Du \' FROM ' . $sqlstring . ')';
+                return $sqlstring;
+            }
+            //$field_ax_patro = 'IF(f.partic_patro, CONCAT(f.partic_patro, CONCAT(\' \', f.Nom_patronymique)), f.Nom_patronymique)';
+            //$field_ax_usuel = 'IF(f.partic_nom, CONCAT(f.partic_nom, CONCAT(\' \', f.Nom_usuel)), f.Nom_usuel)';
+            $fields_p_list = '(' . \
+                sql_trim_partic('ppn.lastname_initial') . ', ' . \
+                sql_trim_partic('ppn.lastname_main') . ', ' . \
+                sql_trim_partic('ppn.lastname_marital') . ', ' . \
+                sql_trim_partic('ppn.lastname_ordinary') . ')';
+            $ax_patro = '(' . sql_trim_partic('f.Nom_patronymique') . ' NOT IN ' . $fields_p_list . ')';
+            $ax_ordinary = '(' . sql_trim_partic('f.Nom_usuel') . ' NOT IN ' . $fields_p_list . ')';
+            $ax_full = '(' . sql_trim_partic('f.Nom_complet') . ' NOT IN ' . $fields_p_list . ')';
 
             switch ($action) {
               case 'last':
@@ -651,7 +668,8 @@ class FusionAxModule extends PLModule
                                             FROM  fusionax_anciens     AS f
                                       INNER JOIN  profiles             AS p   ON (f.ax_id = p.ax_id)
                                       INNER JOIN  profile_public_names AS ppn ON (p.pid = ppn.pid)
-                                           WHERE  ' . $where);
+                                           WHERE  ' . $where . '
+                                        ORDER BY  p.ax_id');
 
             if ($csv) {
                 function format($string)
@@ -664,7 +682,11 @@ class FusionAxModule extends PLModule
                 pl_cached_content_headers('text/x-csv', 'utf-8', 1, 'lastnames.csv');
 
                 $csv = fopen('php://output', 'w');
-                fputcsv($csv,  array('pid', 'ax_id', 'hrpid', 'AX patro', 'AX usuel', 'AX complet', 'initial', 'principal', 'marital', 'ordinaire'), ';');
+                fputcsv($csv,  array(
+                    'pid', 'ax_id', 'hrpid',
+                    'AX patro', 'AX usuel', 'AX complet',
+                    'initial', 'principal', 'marital', 'ordinaire',
+                    'pb patro', 'pb usuel', 'pb complet'), ';');
                 foreach ($res as $item) {
                     $ax = array(
                         'Nom_patronymique' => format(mb_strtolower(replace_accent($item['Nom_patronymique']))),
