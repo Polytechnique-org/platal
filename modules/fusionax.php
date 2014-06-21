@@ -307,7 +307,7 @@ class FusionAxModule extends PLModule
     }
 
     /* Cherche les les anciens présents dans Xorg avec un matricule_ax ne correspondant à rien dans la base de l'AX
-     * (mises à part les promo 1921, 1922, 1923, 1924, 1925, 1927 qui ne figurent pas dans les données de l'AX)*/
+     * (mises à part les promo 1921, 1922, 1923, 1924, 1925, 1927, 1928, 1929 qui ne figurent pas dans les données de l'AX)*/
     private static function find_wrong_in_xorg($limit = 10)
     {
         return XDB::iterator('SELECT  u.promo, u.pid, u.private_name
@@ -315,7 +315,8 @@ class FusionAxModule extends PLModule
                                WHERE  NOT EXISTS (SELECT  *
                                                     FROM  fusionax_anciens AS f
                                                    WHERE  f.ax_id = u.ax_id)
-                                      AND u.ax_id IS NOT NULL AND promo NOT IN (\'X1921\', \'X1922\', \'X1923\', \'X1924\', \'X1925\', \'X1927\')');
+                                      AND u.ax_id IS NOT NULL
+                                      AND promo NOT IN (\'X1921\', \'X1922\', \'X1923\', \'X1924\', \'X1925\', \'X1927\', \'X1928\', \'X1929\')');
     }
 
     /** Lier les identifiants d'un ancien dans les deux annuaires
