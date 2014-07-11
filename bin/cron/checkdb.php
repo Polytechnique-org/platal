@@ -152,25 +152,25 @@ check("SELECT  a.*
         WHERE  a.type = 'home' AND NOT EXISTS (SELECT  *
                                                  FROM  profiles AS p
                                                 WHERE  a.pid = p.pid)",
-      "Adresses de type 'home' reliées à un profil inexsitant.");
+      "Adresses de type 'home' reliées à un profil inexistant.");
 check("SELECT  a.*
          FROM  profile_addresses AS a
         WHERE  a.type = 'job' AND NOT EXISTS (SELECT  *
                                                 FROM  profile_job AS j
                                                WHERE  a.pid = j.pid AND a.id = j.id)",
-      "Adresses de type 'job' reliées à un emploi inexsitant.");
+      "Adresses de type 'job' reliées à un emploi inexistant.");
 check("SELECT  a.*
          FROM  profile_addresses AS a
         WHERE  a.type = 'hq' AND NOT EXISTS (SELECT  *
                                                FROM  profile_job_enum AS je
                                               WHERE  a.jobid = je.id)",
-      "Adresses de type 'hq' reliées à une entreprise inexsitante.");
+      "Adresses de type 'hq' reliées à une entreprise inexistante.");
 check("SELECT  a.*
          FROM  profile_addresses AS a
         WHERE  a.type = 'group' AND NOT EXISTS (SELECT  *
                                                   FROM  groups AS g
                                                  WHERE  a.groupid = g.id)",
-      "Adresses de type 'group' reliées à un groupe inexsitant.");
+      "Adresses de type 'group' reliées à un groupe inexistant.");
 
 check("SELECT  m.*
          FROM  profile_medals AS m
@@ -215,7 +215,7 @@ check("SELECT  evd.name
          FROM  email_virtual_domains AS evd
    INNER JOIN  email_virtual_domains AS evd2 ON (evd.aliasing = evd2.id)
         WHERE  evd2.id != evd2.aliasing",
-      "Domaines aliasés de niveau 2 ou plus qui ne sont pas vu par postfix.");
+      "Domaines aliasés de niveau 2 ou plus qui ne sont pas vus par postfix.");
 
 // Account viewing statistics
 info("SELECT  nb_profiles, hruid
