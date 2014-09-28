@@ -27,6 +27,7 @@ class XnetModule extends PLModule
             'index'        => $this->make_hook('index',        AUTH_PUBLIC),
             'exit'         => $this->make_hook('exit',         AUTH_PUBLIC),
 
+            'login'        => $this->make_hook('login',        AUTH_COOKIE, 'groups'),
             'admin'        => $this->make_hook('admin',        AUTH_PASSWD, 'admin'),
             'groups'       => $this->make_hook('groups',       AUTH_PUBLIC),
             'groupes.php'  => $this->make_hook('groups2',      AUTH_PUBLIC),
@@ -38,6 +39,14 @@ class XnetModule extends PLModule
             'edit'         => $this->make_hook('edit',         AUTH_PASSWD, 'groups'),
             'Xnet'         => $this->make_wiki_hook(),
         );
+    }
+
+    function handler_login()
+    {
+        // We require different credentials for '/login/' (i.e groups).
+        // We have to redirect the call to the actual CoreModule->handler_login.
+        $args = func_get_args();
+        return call_user_func_array(array("CoreModule", "handler_login"), $args);
     }
 
     function handler_photo($page, $x = null)
