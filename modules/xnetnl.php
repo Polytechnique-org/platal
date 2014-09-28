@@ -26,9 +26,9 @@ class XnetNlModule extends NewsletterModule
     function handlers()
     {
         return array(
-            '%grp/nl'                   => $this->make_hook('nl',              AUTH_PASSWD, 'groups'),
-            '%grp/nl/show'              => $this->make_hook('nl_show',         AUTH_PASSWD, 'groups'),
-            '%grp/nl/search'            => $this->make_hook('nl_search',       AUTH_PASSWD, 'groups'),
+            '%grp/nl'                   => $this->make_hook('nl',              AUTH_PASSWD, 'groupmember'),
+            '%grp/nl/show'              => $this->make_hook('nl_show',         AUTH_PASSWD, 'groupmember'),
+            '%grp/nl/search'            => $this->make_hook('nl_search',       AUTH_PASSWD, 'groupmember'),
             '%grp/admin/nl'             => $this->make_hook('admin_nl',        AUTH_PASSWD, 'groupadmin'),
             '%grp/admin/nl/sync'        => $this->make_hook('admin_nl_sync',   AUTH_PASSWD, 'groupadmin'),
             '%grp/admin/nl/enable'      => $this->make_hook('admin_nl_enable', AUTH_PASSWD, 'groupadmin'),
