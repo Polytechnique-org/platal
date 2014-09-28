@@ -116,7 +116,7 @@ class XnetSession extends XorgSession
         S::set('is_admin', $user->is_admin);
 
         // Add the 'user' perms to the user.
-        $this->makePerms($user->perms . ',' . PERMS_USER, $user->is_admin);
+        $this->makePerms($user->perms, $user->is_admin);
         S::kill('challenge');
         S::kill('loginX');
         S::kill('may_update');
@@ -137,7 +137,7 @@ class XnetSession extends XorgSession
         if (!$this->startSUID($user)) {
             return false;
         }
-        S::set('perms', User::makePerms(PERMS_USER . ",groups"));
+        S::set('perms', User::makePerms("groups"));
         return true;
     }
 
