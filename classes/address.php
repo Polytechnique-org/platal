@@ -834,8 +834,26 @@ class Address
         if (!$where) {
             throw new Exception("Unable to delete all addresses of the given type, the request was too generic");
         }
+        $where_pub = $where . (($deletePrivate) ? '' : ' AND pub IN (\'public\', \'ax\')');
+
+        if ($deletePrivate) {
+            XDB::execute('DELETE FROM  profile_addresses_components
+                                WHERE  type = {?}' . $where,
+                         $type);
+        } else {
+            // Delete address components one by one if $deletePrivate is not requested
+            $res = XDB::iterator('SELECT  pid, jobid, groupid, type, id
+                                    FROM  profile_addresses
+                                   WHERE  type = {?}' . $where_pub,
+                                 $type);
+            while (($values = $res->next())) {
+                XDB::execute('DELETE FROM  profile_addresses_components
+                                    WHERE  pid = {?} AND jobid = {?} AND groupid = {?} AND type = {?} AND id = {?}',
+                             $values['pid'], $values['jobid'], $values['groupid'], $values['type'], $values['id']);
+            }
+        }
         XDB::execute('DELETE FROM  profile_addresses
-                            WHERE  type = {?}' . $where . (($deletePrivate) ? '' : ' AND pub IN (\'public\', \'ax\')'),
+                            WHERE  type = {?}' . $where_pub,
                      $type);
         if ($type == self::LINK_PROFILE) {
             Phone::deletePhones($pid, Phone::LINK_ADDRESS, null, $deletePrivate);
