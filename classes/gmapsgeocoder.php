@@ -241,6 +241,9 @@ class GMapsGeocoder extends Geocoder {
         }
         $textLines  = explode("\n", $text);
         $countLines = count($textLines);
+        if ($countLines < 2) {
+            return $text;
+        }
         $needle     = strtoupper(trim($textLines[$countLines - 2]));
         $isPseudoCountry = false;
         if ($needle) {
