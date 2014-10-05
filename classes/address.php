@@ -822,13 +822,17 @@ class Address
     {
         $where = '';
         if (!is_null($pid)) {
-            $where = XDB::format(' AND pid = {?}', $pid);
+            $where .= XDB::format(' AND pid = {?}', $pid);
         }
         if (!is_null($jobid)) {
-            $where = XDB::format(' AND jobid = {?}', $jobid);
+            $where .= XDB::format(' AND jobid = {?}', $jobid);
         }
         if (!is_null($groupid)) {
-            $where = XDB::format(' AND groupid = {?}', $groupid);
+            $where .= XDB::format(' AND groupid = {?}', $groupid);
+        }
+        // Prevent buggy callers from accidentally dropping profile_addresses
+        if (!$where) {
+            throw new Exception("Unable to delete all addresses of the given type, the request was too generic");
         }
         XDB::execute('DELETE FROM  profile_addresses
                             WHERE  type = {?}' . $where . (($deletePrivate) ? '' : ' AND pub IN (\'public\', \'ax\')'),
