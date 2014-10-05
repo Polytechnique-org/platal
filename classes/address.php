@@ -704,6 +704,11 @@ class Address
                          $this->types, $this->formatted_address, $this->location_type, $this->partial_match, $this->latitude, $this->longitude,
                          $this->southwest_latitude, $this->southwest_longitude, $this->northeast_latitude, $this->northeast_longitude, $this->geocoding_calls, $this->postal_code_fr);
 
+            // In an ideal world there would not be any components to clean up before insertion.
+            // In real world, it happens that some addresses are badly removed and this query removes the leaked trash.
+            XDB::execute('DELETE FROM  profile_addresses_components
+                                WHERE  pid = {?} AND jobid = {?} AND groupid = {?} AND type = {?} AND id = {?}',
+                         $this->pid, $this->jobid, $this->groupid, $this->type, $this->id);
             if ($this->componentsIds) {
                 foreach (explode(',', $this->componentsIds) as $component_id) {
                     XDB::execute('INSERT IGNORE INTO  profile_addresses_components (pid, jobid, groupid, type, id, component_id)
