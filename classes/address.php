@@ -776,7 +776,7 @@ class Address
         return $best_mail;
     }
 
-    public function updateGeocoding($text)
+    public function updateGeocoding()
     {
         XDB::execute('UPDATE  profile_addresses
                          SET  text = {?}, postalText = {?}, types = {?}, formatted_address = {?},

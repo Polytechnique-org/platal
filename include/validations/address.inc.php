@@ -126,7 +126,7 @@ class AddressReq extends ProfileValidate
         $this->address['changed'] = 0;
         $address = new Address($this->address);
         $address->format();
-        $address->updateGeocoding($this->given_text);
+        $address->updateGeocoding();
 
         return true;
     }
