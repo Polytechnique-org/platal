@@ -1,0 +1,11 @@
+DELETE FROM profile_education WHERE pid = 43014 AND id = 101;
+DELETE FROM profile_education WHERE pid = 42132 AND id = 101;
+DELETE FROM profile_education WHERE pid = 41502 AND id = 101;
+DELETE FROM profile_education WHERE pid = 42517 AND id = 101;
+DELETE FROM profile_education WHERE pid = 41549 AND id = 101;
+DELETE FROM profile_education WHERE pid = 42442 AND id = 101;
+DELETE FROM profile_education WHERE pid = 42197 AND id = 101;
+DELETE FROM profile_education WHERE pid = 42248 AND id = 101;
+DELETE FROM profile_education WHERE pid = 42435 AND id = 101;
+DELETE FROM profile_education WHERE pid = 41998 AND id = 101;
+DELETE FROM profile_education WHERE pid = 24507 AND id = 101;
