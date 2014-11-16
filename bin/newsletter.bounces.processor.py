@@ -351,6 +351,7 @@ def findAddressInPlainBounce(bounce, real_bounce=None):
         "I'm sorry to have to inform you that your message could not",
         "I wasn't able to deliver your message",
         "try to send your message again at a later time",
+        "User unknown in local recipient table",
         "> was undeliverable.",
         "we were unable to deliver your message",
     ]
@@ -365,7 +366,9 @@ def findAddressInPlainBounce(bounce, real_bounce=None):
     permanent_error_hints = [
         "Delivery to the following recipient failed permanently",
         "failed due to an unavailable mailbox",
+        "following addresses had permanent fatal errors",
         "I'm sorry to have to inform you that your message could not",
+        "The email account that you tried to reach does not exist",
         "This is a permanent error",
         "Unknown address error",
         "unreachable for too long",
