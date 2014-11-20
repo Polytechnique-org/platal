@@ -1,9 +1,9 @@
 [submodule "core"]
 	path = core
-	url = ./
+	url = .
 [submodule "banana"]
 	path = banana
-	url = git://git.polytechnique.org/banana.git
+	url = git://github.com/Polytechnique-org/banana.git
 [submodule "include/raven"]
 	path = include/raven
 	url = git://github.com/getsentry/raven-php.git
