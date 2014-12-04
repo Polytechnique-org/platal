@@ -9,3 +9,4 @@ DELETE FROM profile_education WHERE pid = 42248 AND id = 101;
 DELETE FROM profile_education WHERE pid = 42435 AND id = 101;
 DELETE FROM profile_education WHERE pid = 41998 AND id = 101;
 DELETE FROM profile_education WHERE pid = 24507 AND id = 101;
+DELETE FROM profile_education WHERE pid = 44386 AND id = 101;
