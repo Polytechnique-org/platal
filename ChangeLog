@@ -1,5 +1,17 @@
 ================================================================================
-VERSION 1.1.14                                                       XX XX XXXX
+VERSION 1.1.14                                                       07 12 2014
+
+    * Address:
+        - Fix address deletion so that every component is deleted          -IOS
+
+    * Fusion:
+        - Improve the pages presenting the diff of names                   -IOS
+
+    * Letters:
+        - Remove community letters from non-community members menu         -FUL
+
+    * XnetGrp:
+        - Change the checked permission of the newsletter pages            -XEL
 
 ================================================================================
 VERSION 1.1.13                                                       21 06 2014
