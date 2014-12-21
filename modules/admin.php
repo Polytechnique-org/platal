@@ -1913,7 +1913,7 @@ class AdminModule extends PLModule
                           INNER JOIN  profile_display       AS pd ON (pm.pid = pd.pid)
                                WHERE  pm.type = \'self\'
                             GROUP BY  pd.directory_name
-                            ORDER BY  pd.directory_name');
+                            ORDER BY  pm.timestamp DESC');
         $page->assign('updates', $res);
     }
 
