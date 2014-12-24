@@ -50,7 +50,7 @@
     {else}
     {icon name=null}&nbsp;
     {/if}
-    <a href='{$platal->pl_self(1)}?{$delete}={$member.email}&amp;token={xsrf_token}'>{icon name=cross title='Retirer'}</a>
+    <a href='{$platal->pl_self(1)}?{$delete}={$member.email|urlencode}&amp;token={xsrf_token}'>{icon name=cross title='Retirer'}</a>
   </td>
   {/if}
 </tr>
