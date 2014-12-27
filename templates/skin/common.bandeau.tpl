@@ -46,8 +46,7 @@
 
 <div id="bandeau-X">
   <img src="{if t($external)}bandeau/icone.png{else}images/x.png{/if}" width="13" height="14" alt=""/>
-  <a href="http://www.polytechnique.fr/">L'&Eacute;cole</a> &middot;
-  <a href="http://www.polytechnique.edu/">Institutional site</a>
+  <a href="http://www.polytechnique.edu/">L'&Eacute;cole</a> &middot;
   &tilde;&tilde;
   <a href="http://www.fondationx.org/">FX</a> &middot;
   <a href="http://www.ax.polytechnique.edu/">AX</a>
