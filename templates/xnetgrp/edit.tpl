@@ -249,6 +249,18 @@
         prévenir les animateurs lors de la désinscription d'un membre</label>
       </td>
     </tr>
+    <tr>
+      <td class="titre">
+        État du groupe&nbsp;:
+      </td>
+      <td>
+        <select name="status">
+          <option value="active" {if $status eq 'active'}selected="selected"{/if}>Actif</option>
+          <option value="inactive" {if $status eq 'inactive'}selected="selected"{/if}>Inactif (visible sur la page "tous les groupes")</option>
+          <option value="dead" {if $status eq 'dead'}selected="selected"{/if}>Mort (absent de la page "tous les groupes")</option>
+        </select>
+      </td>
+    </tr>
   </table>
 
   <div class="center">

@@ -246,6 +246,7 @@ class XnetGrpModule extends PLModule
                     $page->assign('notif_unsub', Post::i('notif_unsub'));
                     $page->assign('descr', Post::t('descr'));
                     $page->assign('disable_mails', Post::b('disable_mails'));
+                    $page->assign('status', Post::v('status'));
                     $page->assign('error', $error);
                     return;
                 }
@@ -262,7 +263,8 @@ class XnetGrpModule extends PLModule
                              descr={?}, site={?}, mail={?}, resp={?},
                              forum={?}, mail_domain={?}, ax={?}, axDate = {?}, pub={?},
                              sub_url={?}, inscriptible={?}, unsub_url={?},
-                             flags = {?}, welcome_msg = {?}, disable_mails = {?}
+                             flags = {?}, welcome_msg = {?}, disable_mails = {?},
+                             status = {?}
                       WHERE  id={?}",
                       Post::v('nom'), Post::v('diminutif'),
                       Post::v('cat'), (Post::i('dom') == 0) ? null : Post::i('dom'),
@@ -272,7 +274,7 @@ class XnetGrpModule extends PLModule
                       Post::has('ax'), $axDate, Post::v('pub'),
                       Post::v('sub_url'), Post::v('inscriptible'),
                       Post::v('unsub_url'), $flags, Post::t('welcome_msg'),
-                      Post::b('disable_mails'),
+                      Post::b('disable_mails'), Post::v('status'),
                       $globals->asso('id'));
                 if (Post::v('mail_domain')) {
                     XDB::execute('INSERT IGNORE INTO  email_virtual_domains (name)
@@ -288,13 +290,15 @@ class XnetGrpModule extends PLModule
                     "UPDATE  groups
                         SET  descr={?}, site={?}, mail={?}, resp={?},
                              forum={?}, pub= {?}, sub_url={?},
-                             unsub_url = {?}, flags = {?}, welcome_msg = {?}
+                             unsub_url = {?}, flags = {?}, welcome_msg = {?},
+                             status = {?}
                       WHERE  id={?}",
                       Post::v('descr'), $site,
                       Post::v('mail'), Post::v('resp'),
                       Post::v('forum'), Post::v('pub'),
                       Post::v('sub_url'), Post::v('unsub_url'),
                       $flags, Post::t('welcome_msg'),
+                      Post::v('status'),
                       $globals->asso('id'));
             }
 
@@ -350,6 +354,7 @@ class XnetGrpModule extends PLModule
         $page->assign('notif_unsub', $globals->asso('notif_unsub'));
         $page->assign('notify_all', $globals->asso('notify_all'));
         $page->assign('disable_mails', $globals->asso('disable_mails'));
+        $page->assign('status', $globals->asso('status'));
     }
 
     function handler_mail($page)
