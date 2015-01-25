@@ -232,7 +232,7 @@ class AuthModule extends PLModule
                     // just before returning.
                     // See classes/xorgsession.php:startSessionAs
                     if (S::b('external_auth_exit')) {
-                        S::logger()->log('decconnexion', @$_SERVER['HTTP_REFERER']);
+                        S::logger()->log('deconnexion', @$_SERVER['HTTP_REFERER']);
                         Platal::session()->killAccessCookie();
                         Platal::session()->destroy();
                     }
