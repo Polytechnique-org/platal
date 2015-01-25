@@ -121,5 +121,28 @@ function kill_sessions()
     shell_exec('sudo -u root ' . dirname(dirname(__FILE__)) . '/bin/kill_sessions.sh');
 }
 
+/** Compares two strings in *constant* time.
+ * Avoids timing attacks.
+ */
+function secure_string_compare($known, $user_provided)
+{
+    if (PHP_MAJOR_VERSION >= 5 && PHP_MINOR_VERSION >= 6) {
+        // Defined as 'hash_equals' in PHP>=5.6
+        // See http://php.net/manual/en/function.hash-equals.php
+        return hash_equals($known, $user_provided);
+    }
+
+    if (strlen($known) != strlen($user_provided)) {
+        return false;
+    }
+    $result = 0;
+    for ($i = 0; $i < strlen($known); $i++) {
+        // a ^ b == 0 <=> a == b
+        $result |= ord($known[$i]) ^ ord($user_provided[$i]);
+    }
+
+    return ($result == 0);
+}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
 ?>

@@ -56,7 +56,8 @@ class Xorg extends Platal
             'sharingapi',
             'stats',
             'survey',
-            'urlshortener'
+            'urlshortener',
+            'wats4u'
         );
     }
 
