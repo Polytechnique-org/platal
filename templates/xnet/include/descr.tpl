@@ -67,6 +67,18 @@ de ces promotions d'organiser des repas promos, de faire partager des souvenirs 
 se retrouver sur internet&hellip; En voici des exemples&nbsp;:
 </p>
 
+{elseif $cat eq 'deads'}
+
+<p class="descr">
+Au fil des années, de nouveaux groupes se créent et d'autres disparaissent. Lorsqu'il est déterminé
+qu'un groupe devient inactif, il est d'abord marqué comme tel dans la liste des groupes et reste
+accessible dans les listes par domaine. Certains groupes inactifs ont particulièrement peu de
+chance d'intéresser de nouvelles bonnes volontés, mais garder l'historique des événements et des
+messages des listes de diffusion peut être important. Ces groupes deviennent alors archivés, sont
+retirés des listes des domaines et catégories auxquelles ils appartiennent, et sont enumérés sur
+cette page.
+</p>
+
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

@@ -109,5 +109,9 @@
 <p class="descr">
 (*) Groupe inactif
 </p>
+<p class="descr">
+Les groupes archivés n'apparaissent pas sur cette page. Pour les trouver, il faut consulter
+<a href="groups/deads">la liste des groupes archivés</a>.
+</p>
 
 {* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

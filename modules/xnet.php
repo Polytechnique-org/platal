@@ -203,30 +203,40 @@ class XnetModule extends PLModule
         $page->assign('cat', $cat);
         $page->assign('dom', $dom);
 
-        $res  = XDB::query("SELECT  id,nom
-                              FROM  group_dom
-                             WHERE  FIND_IN_SET({?}, cat)
-                          ORDER BY  nom", $cat);
-        $doms = $res->fetchAllAssoc();
-        $page->assign('doms', $doms);
+        if ($cat == 'deads') {
+            // Show dead groups
+            $res = XDB::query("SELECT  diminutif, nom, site, status
+                                 FROM  groups
+                                WHERE  status = 'dead'
+                                ORDER  BY nom", $cat);
+            $page->assign('doms', array());
+            $page->assign('gps', $res->fetchAllAssoc());
+        } else {
+            $res  = XDB::query("SELECT  id,nom
+                                  FROM  group_dom
+                                 WHERE  FIND_IN_SET({?}, cat)
+                              ORDER BY  nom", $cat);
+            $doms = $res->fetchAllAssoc();
+            $page->assign('doms', $doms);
 
-        if (empty($doms)) {
-            $res = XDB::query("SELECT  diminutif, nom, site, status
-                                 FROM  groups
-                                WHERE  FIND_IN_SET({?}, cat)
-                                       AND status IN ('active', 'inactive')
-                                ORDER  BY status, nom", $cat);
-            $page->assign('gps', $res->fetchAllAssoc());
-        } elseif (!is_null($dom)) {
-            $res = XDB::query("SELECT  diminutif, nom, site, status
-                                 FROM  groups
-                                WHERE  FIND_IN_SET({?}, cat) AND dom={?}
-                                       AND status IN ('active', 'inactive')
-                             ORDER BY  status,nom", $cat, $dom);
-            $page->assign('gps', $res->fetchAllAssoc());
+            if (empty($doms)) {
+                $res = XDB::query("SELECT  diminutif, nom, site, status
+                                     FROM  groups
+                                    WHERE  FIND_IN_SET({?}, cat)
+                                           AND status IN ('active', 'inactive')
+                                    ORDER  BY status, nom", $cat);
+                $page->assign('gps', $res->fetchAllAssoc());
+            } elseif (!is_null($dom)) {
+                $res = XDB::query("SELECT  diminutif, nom, site, status
+                                     FROM  groups
+                                    WHERE  FIND_IN_SET({?}, cat) AND dom={?}
+                                           AND status IN ('active', 'inactive')
+                                 ORDER BY  status,nom", $cat, $dom);
+                $page->assign('gps', $res->fetchAllAssoc());
+            }
+
+            $page->setType($cat);
         }
-
-        $page->setType($cat);
     }
 
     function handler_autologin($page)
