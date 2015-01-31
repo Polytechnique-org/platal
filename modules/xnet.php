@@ -211,16 +211,18 @@ class XnetModule extends PLModule
         $page->assign('doms', $doms);
 
         if (empty($doms)) {
-            $res = XDB::query("SELECT  diminutif, nom, site
+            $res = XDB::query("SELECT  diminutif, nom, site, status
                                  FROM  groups
                                 WHERE  FIND_IN_SET({?}, cat)
-                                ORDER  BY nom", $cat);
+                                       AND status IN ('active', 'inactive')
+                                ORDER  BY status, nom", $cat);
             $page->assign('gps', $res->fetchAllAssoc());
         } elseif (!is_null($dom)) {
-            $res = XDB::query("SELECT  diminutif, nom, site
+            $res = XDB::query("SELECT  diminutif, nom, site, status
                                  FROM  groups
                                 WHERE  FIND_IN_SET({?}, cat) AND dom={?}
-                             ORDER BY  nom", $cat, $dom);
+                                       AND status IN ('active', 'inactive')
+                             ORDER BY  status,nom", $cat, $dom);
             $page->assign('gps', $res->fetchAllAssoc());
         }
 

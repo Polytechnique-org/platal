@@ -22,6 +22,7 @@
 
 {include file="xnet/include/descr.tpl"}
 
+{assign var="has_inactive" value=false}
 <table id="content" cellspacing="0" cellpadding="4">
   <tr>
     <td style="vertical-align: top">
@@ -49,7 +50,12 @@
         <tr>
         {/if}
           <td class="oval{if $doms}2{/if} {if $cat eq 'promotions'}{if $g.diminutif is odd}jone{else}rouje{/if}{/if}">
-            <a href="{$g.diminutif}/" {if $g.site}class="has_site"{/if}>{$g.nom}</a>
+          {if $g.status eq 'inactive'}
+            <a href="{$g.diminutif}/" class="grp_inactive{if $g.site} has_site{/if}" title="Groupe inactif">{$g.nom}&nbsp;*</a>
+            {assign var="has_inactive" value=true}
+          {else}
+            <a href="{$g.diminutif}/" {if $g.site} has_site{/if}">{$g.nom}</a>
+          {/if}
           </td>
         {if !$doms && $i is even && $smarty.foreach.all.last}<td></td>{/if}
         {if $doms || $i is odd || $smarty.foreach.all.last}
@@ -61,5 +67,11 @@
     </td>
   </tr>
 </table>
+
+{if $has_inactive}
+<p class="descr">
+(*) Groupe inactif
+</p>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}
