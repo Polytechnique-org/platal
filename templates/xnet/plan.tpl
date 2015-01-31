@@ -32,7 +32,11 @@
             {foreach from=$groupesx key=id item=dom}
             <a class="cat" href="groups/groupesx/{$id}">{$dom[0].domnom}</a>
             {foreach from=$dom item=g}
-            <a href="{$g.diminutif}/">{$g.nom}</a>
+              {if $g.status eq 'inactive'}
+                <a class="grp_inactive" href="{$g.diminutif}/" title="Groupe inactif">{$g.nom}&nbsp;*</a>
+              {else}
+                <a href="{$g.diminutif}/">{$g.nom}</a>
+              {/if}
             {/foreach}
             {/foreach}
           </td>
@@ -50,7 +54,11 @@
             {foreach from=$binets key=id item=dom}
             <a class="cat" href="groups/binets/{$id}">{$dom[0].domnom}</a>
             {foreach from=$dom item=g}
-            <a href="{$g.diminutif}/">{$g.nom}</a>
+              {if $g.status eq 'inactive'}
+                <a class="grp_inactive" href="{$g.diminutif}/" title="Groupe inactif">{$g.nom}&nbsp;*</a>
+              {else}
+                <a href="{$g.diminutif}/">{$g.nom}</a>
+              {/if}
             {/foreach}
             {/foreach}
           </td>
@@ -66,7 +74,11 @@
         <tr>
           <td class="listec">
             {iterate from=$promos item=g}
-            <a href="{$g.diminutif}/">{$g.nom}</a>
+              {if $g.status eq 'inactive'}
+                <a class="grp_inactive" href="{$g.diminutif}/" title="Groupe inactif">{$g.nom}&nbsp;*</a>
+              {else}
+                <a href="{$g.diminutif}/">{$g.nom}</a>
+              {/if}
             {/iterate}
           </td>
         </tr>
@@ -81,7 +93,11 @@
         <tr>
           <td class="listec">
             {iterate from=$inst item=g}
-            <a href="{$g.diminutif}/">{$g.nom}</a>
+              {if $g.status eq 'inactive'}
+                <a class="grp_inactive" href="{$g.diminutif}/" title="Groupe inactif">{$g.nom}&nbsp;*</a>
+              {else}
+                <a href="{$g.diminutif}/">{$g.nom}</a>
+              {/if}
             {/iterate}
           </td>
         </tr>
@@ -89,5 +105,9 @@
     </td>
   </tr>
 </table>
+
+<p class="descr">
+(*) Groupe inactif
+</p>
 
 {* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}
