@@ -372,6 +372,7 @@ td.oval2 {
 
 .oval a, .oval2 a { color: #d0c198; }
 .oval a.has_site { color: white; }
+.oval a.grp_inactive, .oval2 a.grp_inactive { font-style:italic; }
 .jone a { color: #FF9; }
 .rouje a { color: #D88; }
 .jone a.has_site { color: #FE0; }
