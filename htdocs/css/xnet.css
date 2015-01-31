@@ -322,6 +322,10 @@ table#liste td.liste a:hover, table#liste td.listec a:hover {
     background: #d0c198;
 }
 
+table#liste td.liste a.grp_inactive {
+    font-style: italic;
+}
+
 #wikitext {
     text-align: justify;
     font-size: 90%;
