@@ -30,6 +30,7 @@
       <div class="cat {if $cat eq 'binets'}sel{/if}"><a href="groups/binets">Binets</a></div>
       <div class="cat {if $cat eq 'institutions'}sel{/if}"><a href="groups/institutions">Institutions</a></div>
       <div class="cat {if $cat eq 'promotions'}sel{/if}"><a href="groups/promotions">Promotions</a></div>
+      <div class="cat {if $cat eq 'deads'}sel{/if}"><a href="groups/deads">Groupes archivés</a></div>
     </td>
 
     {if $doms}
