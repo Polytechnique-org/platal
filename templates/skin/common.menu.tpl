@@ -97,7 +97,7 @@
 
 <div class="menu_title">Informations</div>
 <div class="menu_item"><a href="Xorg/">Documentations</a></div>
-{if hasPerm('directory_private') && $smarty.session.user->hasProfile()}
+{if hasPerm('user')}
 <div class="menu_item"><a href="nl">Lettres mensuelles</a></div>
 <div class="menu_item"><a href="comletter">Lettres de la communauté</a></div>
 <div class="menu_item"><a href="ax">Lettres de l'AX</a></div>
