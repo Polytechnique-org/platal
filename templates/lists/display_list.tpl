@@ -38,7 +38,7 @@
       {if $user->lost}{assign var=lostUsers value=true}{/if}
       {profile user=$user profile=$profile promo=$promo}
     {elseif t($user)}
-      <a href="mailto:{$email}">{if $user->directoryName}{$user->directoryName}{else}{$email}{/if}{if not t($promo)} (extérieur){/if}</a>
+      <a href="mailto:{$email}">{if $user->directoryName()}{$user->directoryName()}{else}{$email}{/if}{if not t($promo)} (extérieur){/if}</a>
     {else}{* Email without account or email *}
       <a href="mailto:{$email}">{$email}</a>
     {/if}

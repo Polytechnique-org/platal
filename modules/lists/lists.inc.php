@@ -76,7 +76,7 @@ function list_sort_owners($emails, $tri_promo = true)
         }
 
         $main_sort_key = $tri_promo ? $category : strtoupper($name{0});
-        $alt_sort_key = $name;
+        $alt_sort_key = $name . $member['email'] ;
 
         if (!array_key_exists($main_sort_key, $sorted_members)) {
             $sorted_members[$main_sort_key] = array();
