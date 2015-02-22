@@ -38,7 +38,7 @@ function list_sort_owners($emails, $tri_promo = true)
             'user' => $u,
             'profile' => null,
             'email' => $u->forlifeEmail());
-        $seen[] = $u->forlifeEmail();
+        $seen[] = strtolower($u->forlifeEmail());
     }
 
     $pf = new ProfileFilter(new UFC_Email($emails));
@@ -51,6 +51,7 @@ function list_sort_owners($emails, $tri_promo = true)
     }
 
     foreach ($emails as $email) {
+        $email = strtolower($email);
         if (!in_array($email, $seen)) {
             $seen[] = $email;
             $members[$email] = array('user' => null, 'profile' => null,
