@@ -73,7 +73,7 @@
 <table class="bicol">
   <tr>
     <th>alias concerné</th>
-    <th>alias prémimé depuis</th>
+    <th>alias périmé depuis</th>
     <th>actions</th>
   </tr>
   {foreach from=$homonyms key=login item=row}
