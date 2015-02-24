@@ -1,0 +1,75 @@
+/*
+ * Written by Guillaume Gris.
+ */
+
+a {
+   text-decoration: none;
+   color: inherit;
+}
+
+h1 {
+}
+
+h2 {
+}
+
+body {
+    background: #e4e4e4;
+    margin: 0;
+    font-family: arial,sans-serif;
+    font-width: 100%;
+}
+
+header {
+    background: #b84030;
+
+    padding: 4px;
+    color: #e8e8e8;
+    text-shadow: 1px 1px #fa8;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+}
+
+.search_bar input{
+    width: 500px;
+    margin: 0 40px;
+
+}
+
+.logo img {
+    height: 80px;
+    margin-right: 8px;
+}
+
+nav {
+    background: #e8b830;
+    display: flex;
+    justify-content: center;
+}
+
+nav a  {
+    width:120px;
+    text-align: center;
+    padding: 0.2em;
+
+    font-size: 1.4em;
+}
+
+main {
+    background: #ff0;
+}
+
+section {
+    background: #00f;
+}
+
+aside {
+    background: #f0f;
+}
+
