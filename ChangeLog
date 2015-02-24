@@ -1,6 +1,23 @@
 ================================================================================
 VERSION 1.1.15                                                       XX XX XXXX
 
+    * Admin:
+        - Sort recent modifications page by timestamp instead of name      -FUL
+        - Fix the filling of recent modifications table                    -FUL
+
+    * Links:
+        - Update several links to external websistes                       -FUL
+
+    * NL:
+        - Improve the processing of broken addresses                       -IOS
+
+    * Wats4U:
+        - Add Wats4U SSO                                                   -XEL
+
+    * XnetGrp:
+        - Fix display for xnet accounts on lists                       -FUL/IOS
+        - Add a status field for inactive and dead groups                  -IOS
+
 ================================================================================
 VERSION 1.1.14                                                       07 12 2014
 
