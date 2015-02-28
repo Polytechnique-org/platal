@@ -20,15 +20,55 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<h1>Mise à jour des année de soutenance de thèse</h1>
 {if t($nothing)}
-<p>Rien à faire.</p>
+  <p>Rien à faire.</p>
+{* presentation page, listing possible graduation years *}
 {elseif t($promo_list)}
 <p>
-  Années de soutenance de thèse prévues pour lesquelles il reste des doctorants n'ayant pas soutenus&nbsp;:<br />|
+  Années de soutenance de thèse prévues pour lesquelles il reste des doctorants n'ayant pas soutenu&nbsp;:<br />|
   {foreach from=$promo_list item=promo}
-  <a href="admin/phd/{$promo}">{$promo}</a> |
+    <a href="admin/phd/{$promo}">{$promo}</a> |
   {/foreach}
+  <br />
+  <a href="admin/phd/bulk">Ajout d'une liste</a>
 </p>
+{* this page allows bulk updating, several graduation years at once *}
+{elseif $promo=="bulk"}
+  {if t($updatedAccounts)}
+    <p>
+      Les comptes suivants ont été mis à jour&nbsp;:
+      <ul>
+      {foreach from=$updatedAccounts key=hruid item=name}
+       <li><a href="{$platal->ns}admin/user/{$hruid}">{$name}</a></li>
+      {/foreach}
+      </ul>
+    </p>
+  {/if}
+
+  <form action="admin/phd/bulk/validate" id="phd_bulk" method="post">
+    {xsrf_token_field}
+  <table class="bicol">
+   <tr>
+     <td>Identifiant (prenom.nom ou hrid)</td>
+     <td>Année de soutenance</td>
+   </tr>
+    <tr>
+      <td colspan="2"><textarea name="people" rows="20" cols="80"></textarea></td>
+    </tr>
+  </table>
+
+  <p class="center">
+    <strong>Séparateur&nbsp;:</strong>
+    <input type="text" name="separator" value=";" size="1" maxlength="1" /><br /><br />
+    <input type='submit' value='Ajouter' />
+  </p>
+  </form>
+
+  <p>
+   <a href="admin/phd">Revenir à la liste des années de soutenance de thèse prévues pour lesquelles il reste des doctorants n'ayant pas soutenus.</a>
+  </p>
+{* else, we list members of the selected graduation year *}
 {else}
 <script type="text/javascript">//<![CDATA[
 {literal}

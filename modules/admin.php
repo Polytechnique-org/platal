@@ -1923,18 +1923,86 @@ class AdminModule extends PLModule
         $eduDegrees = DirEnum::getOptions(DirEnum::EDUDEGREES);
         $eduDegrees = array_flip($eduDegrees);
 
+        // get the list of the years when phd students are supposed to finish but have not yet been flagged as completed
+        $promo_list = XDB::fetchColumn('SELECT  DISTINCT(grad_year)
+                                          FROM  profile_education
+                                         WHERE  FIND_IN_SET(\'primary\', flags) AND NOT FIND_IN_SET(\'completed\', flags) AND degreeid = {?}
+                                      ORDER BY  grad_year',
+                                    $eduDegrees[Profile::DEGREE_D]);
+
+        // case when no promo was selected that is the admin/phd page
         if (is_null($promo)) {
-            $promo_list = XDB::fetchColumn('SELECT  DISTINCT(grad_year)
-                                              FROM  profile_education
-                                             WHERE  FIND_IN_SET(\'primary\', flags) AND NOT FIND_IN_SET(\'completed\', flags) AND degreeid = {?}
-                                          ORDER BY  grad_year',
-                                           $eduDegrees[Profile::DEGREE_D]);
             $page->assign('promo_list', $promo_list);
             $page->assign('nothing', count($promo_list) == 0);
             return;
         }
 
-        if ($validate) {
+        // case when we want to add a list and we have data, that is admin/phd/bulk/validate
+        if ($promo == "bulk" && Post::has('people')) {
+            $lines = explode("\n", Env::t('people'));
+            $separator = Env::t('separator');
+            foreach ($lines as $line) {
+                $infos = explode($separator, $line);
+                if (sizeof($infos) !== 2) {
+                    $page->trigError("La ligne $line n'a pas été ajoutée : mauvais nombre de champs.");
+                    continue;
+                }
+                $infos = array_map('trim', $infos);
+                // $info[0] is prenom.nom or hrid. We first try the hrid case, then we try over the possible promos.
+                // We trigger an error if the search was unsuccessful.
+                $user = User::getSilent($infos[0]);
+                foreach($promo_list as $promo_possible) {
+                    if (!is_null($user)) {
+                        continue;
+                    }
+                    $user = User::getSilent($infos[0] . '.d' . $promo_possible);
+                }
+                $grad_year = $infos[1];
+                if (!$grad_year) {
+                    $page->trigError("La ligne $line n'a pas été ajoutée : année de soutenance vide.");
+                    continue;
+                }
+                if (is_null($user)) {
+                    $page->trigError("La ligne $line n'a pas été ajoutée : aucun compte trouvé.");
+                    continue;
+                }
+                if ($user->type !== 'phd') {
+                    $page->trigError("La ligne $line n'a pas été ajoutée : le compte n'est pas celui d'un doctorant.");
+                    continue;
+                }
+                $profile = $user->profile();
+                // We have the pid, we now need the id that completes the PK in profile_education.
+                $res = XDB::fetchOneCell('SELECT  pe.id
+                                            FROM  profile_education AS pe
+                                           WHERE  FIND_IN_SET(\'primary\', pe.flags) AND NOT FIND_IN_SET(\'completed\', pe.flags)
+                                                  AND pe.pid = {?}',
+                    $profile->id());
+                if (!$res) {
+                    $page->trigError("Le profil " . $profile->hrid() . " a déjà une année de soutenance indiquée.");
+                    continue;
+                }
+                // When we are here, we have the pid, id for profile_education table, and $grad_year. Time to UPDATE !
+                XDB::execute('UPDATE  profile_education
+                                 SET  flags = \'primary,completed\', grad_year = {?}
+                               WHERE  pid = {?} AND id = {?}',
+                    $grad_year, $profile->id(), $res);
+                XDB::execute('UPDATE  profile_display
+                                 SET  promo = {?}
+                               WHERE  pid = {?}',
+                               'D' . $grad_year, $profile->id());
+                $page->trigSuccess("Promotion de " . $profile->fullName() . " validée.");
+            }
+
+            $errors = $page->nb_errs();
+            if ($errors == 0) {
+                $page->trigSuccess("L'opération a été effectuée avec succès.");
+            } else {
+                $page->trigSuccess('L\'opération a été effectuée avec succès, sauf pour '
+                    . (($errors == 1) ? 'l\'erreur signalée' : "les $errors erreurs signalées") . ' ci-dessus.');
+            }
+        }
+        // case when we are on a graduation year and we have data to update, e.g. admin/phd/2007/validate
+        elseif ($validate) {
             S::assert_xsrf_token();
 
             $list = XDB::iterator('SELECT  pe.pid, pd.directory_name
@@ -1961,6 +2029,7 @@ class AdminModule extends PLModule
             }
         }
 
+        // case we are on a graduation year page, e.g. admin/phd/2007 or admin/phd/2007/validate
         $list = XDB::iterator('SELECT  pe.pid, pd.directory_name
                                  FROM  profile_education AS pe
                            INNER JOIN  profile_display   AS pd ON (pe.pid = pd.pid)
