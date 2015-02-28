@@ -1923,18 +1923,78 @@ class AdminModule extends PLModule
         $eduDegrees = DirEnum::getOptions(DirEnum::EDUDEGREES);
         $eduDegrees = array_flip($eduDegrees);
 
+        $promo_list = XDB::fetchColumn('SELECT  DISTINCT(grad_year)
+                                          FROM  profile_education
+                                         WHERE  FIND_IN_SET(\'primary\', flags) AND NOT FIND_IN_SET(\'completed\', flags) AND degreeid = {?}
+                                      ORDER BY  grad_year',
+                                    $eduDegrees[Profile::DEGREE_D]);
+
         if (is_null($promo)) {
-            $promo_list = XDB::fetchColumn('SELECT  DISTINCT(grad_year)
-                                              FROM  profile_education
-                                             WHERE  FIND_IN_SET(\'primary\', flags) AND NOT FIND_IN_SET(\'completed\', flags) AND degreeid = {?}
-                                          ORDER BY  grad_year',
-                                           $eduDegrees[Profile::DEGREE_D]);
             $page->assign('promo_list', $promo_list);
             $page->assign('nothing', count($promo_list) == 0);
             return;
         }
 
-        if ($validate) {
+        if ($promo == "bulk" && Env::has('people')) {
+            $lines = explode("\n", Env::t('people'));
+            $separator = Env::t('separator');
+            foreach ($lines as $line) {
+                $infos = explode($separator, $line);
+                if (sizeof($infos) !== 2) {
+                    $page->trigError("La ligne $line n'a pas été ajoutée : mauvais nombre de champs.");
+                    continue;
+                }
+                $infos = array_map('trim', $infos);
+                $user = User::getSilent($infos[0]);
+                foreach($promo_list as $promo_possible) {
+                    if (!is_null($user)) {
+                        continue;
+                    }
+                    $user = User::getSilent($infos[0] . '.d' . $promo_possible);
+                }
+                $grad_year = $infos[1];
+                if (!$grad_year) {
+                    $page->trigError("La ligne $line n'a pas été ajoutée : année de soutenance vide.");
+                    continue;
+                }
+                if (is_null($user)) {
+                    $page->trigError("La ligne $line n'a pas été ajoutée : aucun compte trouvé.");
+                    continue;
+                }
+                if ($user->type !== 'phd') {
+                    $page->trigError("La ligne $line n'a pas été ajoutée : le compte n'est pas celui d'un doctorant.");
+                    continue;
+                }
+                $profile = $user->profile();
+                $res = XDB::fetchOneCell('SELECT  pe.id
+                    FROM  profile_education AS pe
+                    WHERE  FIND_IN_SET(\'primary\', pe.flags) AND NOT FIND_IN_SET(\'completed\', pe.flags)
+                    AND pe.pid = {?}',
+                    $profile->id());
+                if (!$res) {
+                    $page->trigError("Le profil " . $profile->hrid() . " a déjà une année de soutenance indiquée.");
+                    continue;
+                }
+                XDB::execute('UPDATE  profile_education
+                                 SET  flags = \'primary,completed\', grad_year = {?}
+                               WHERE  pid = {?} AND id = {?}',
+                    $grad_year, $profile->id(), $res);
+                XDB::execute('UPDATE  profile_display
+                                 SET  promo = {?}
+                               WHERE  pid = {?}',
+                               'D' . $grad_year, $profile->id());
+                $page->trigSuccess("Promotion de " . $profile->fullName() . " validée.");
+            }
+
+            $errors = $page->nb_errs();
+            if ($errors == 0) {
+                $page->trigSuccess("L'opération a été effectuée avec succès.");
+            } else {
+                $page->trigSuccess('L\'opération a été effectuée avec succès, sauf pour '
+                    . (($errors == 1) ? 'l\'erreur signalée' : "les $errors erreurs signalées") . ' ci-dessus.');
+            }
+        }
+        elseif ($validate) {
             S::assert_xsrf_token();
 
             $list = XDB::iterator('SELECT  pe.pid, pd.directory_name
