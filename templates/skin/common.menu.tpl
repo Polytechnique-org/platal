@@ -114,6 +114,7 @@
 <div class="menu_item"><a href="purge_cache?token={xsrf_token}">Clear cache</a></div>
 <div class="menu_item"><a href="http://trackers.polytechnique.org">Trackers</a></div>
 <div class="menu_item"><a href="https://support.polytechnique.org">Support</a></div>
+<div class="menu_item"><a href="https://github.com/Polytechnique-org">GitHub</a></div>
 <form method="post" action="set_skin">
   {xsrf_token_field}
   <div class="menu_item" style="clear: both">
