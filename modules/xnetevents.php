@@ -220,7 +220,7 @@ class XnetEventsModule extends PLModule
         if (!$evt['accept_nonmembre'] && !is_member() && !may_update()) {
             $url = $globals->asso('sub_url');
             if (empty($url)) {
-                $url = $platal->ns . 'subscribe';
+                $url = $platal->ns . $globals->asso('diminutif') . "/" . 'subscribe';
             }
             $page->kill('Cet événement est réservé aux membres du groupe ' . $globals->asso('nom') .
                         '. Pour devenir membre, rends-toi sur la page de <a href="' . $url . '">demande d\'inscripton</a>.');
