@@ -222,7 +222,7 @@ class XnetEventsModule extends PLModule
             if (empty($url)) {
                 $url = $platal->ns . 'subscribe';
             }
-            $page->kill('Cet événement est reservé aux membres du groupe ' . $globals->asso('nom') .
+            $page->kill('Cet événement est réservé aux membres du groupe ' . $globals->asso('nom') .
                         '. Pour devenir membre, rends-toi sur la page de <a href="' . $url . '">demande d\'inscripton</a>.');
         }
 
