@@ -202,7 +202,7 @@
             - <a href="send_bug/{ $smarty.server.REQUEST_URI }" class="popup_840x600">signaler un bug</a>
           {/if}
           <br />
-          Plat/al {#globals.version#} - © Copyright 1999-2014 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>
+          Plat/al {#globals.version#} - © Copyright 1999-2015 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>
           <div class="pem">
             <a href="{$globals->baseurl}/pem/{$platal->pl_self()|replace:'/':'_'}/200">Liste1</a>
             <a href="{$globals->baseurl}/pem/{$platal->pl_self()|replace:'/':'_'}/400">Liste2</a>
