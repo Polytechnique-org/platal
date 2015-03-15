@@ -482,7 +482,7 @@ $(function() {
 
 <table class="bicol">
   <tr>
-    <th colspan="3">Mailing lists auquelles l'utilisateur appartient</th>
+    <th colspan="3">Mailing lists auxquelles l'utilisateur appartient</th>
   </tr>
   {foreach from=$mlists item=mlist}
   <tr>
@@ -504,7 +504,7 @@ $(function() {
 <br />
 <table class="bicol">
   <tr>
-    <th>Alias de groupe auquel l'utilisateur appartient</th>
+    <th>Alias de groupe auxquels l'utilisateur appartient</th>
   </tr>
   {foreach from=$virtuals item=virtual}
   <tr class="{cycle values="impair,pair"}">
