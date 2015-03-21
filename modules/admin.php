@@ -1939,7 +1939,8 @@ class AdminModule extends PLModule
 
         // case when we want to add a list and we have data, that is admin/phd/bulk/validate
         if ($promo == "bulk" && Post::has('people')) {
-            $lines = explode("\n", Env::t('people'));
+            S::assert_xsrf_token();
+            $lines = explode("\n", Post::t('people'));
             $separator = Env::t('separator');
             foreach ($lines as $line) {
                 $infos = explode($separator, $line);
@@ -1951,23 +1952,26 @@ class AdminModule extends PLModule
                 // $info[0] is prenom.nom or hrid. We first try the hrid case, then we try over the possible promos.
                 // We trigger an error if the search was unsuccessful.
                 $user = User::getSilent($infos[0]);
-                foreach($promo_list as $promo_possible) {
-                    if (!is_null($user)) {
+                if (is_null($user)) {
+                    foreach($promo_list as $promo_possible) {
+                        $user = User::getSilent($infos[0] . '.d' . $promo_possible);
+                        if (!is_null($user)) {
+                            break;
+                        }
+                    }
+                    if (is_null($user)) {
+                        $page->trigError("La ligne $line n'a pas été ajoutée : aucun compte trouvé.");
                         continue;
                     }
-                    $user = User::getSilent($infos[0] . '.d' . $promo_possible);
-                }
-                $grad_year = $infos[1];
-                if (!$grad_year) {
-                    $page->trigError("La ligne $line n'a pas été ajoutée : année de soutenance vide.");
-                    continue;
-                }
-                if (is_null($user)) {
-                    $page->trigError("La ligne $line n'a pas été ajoutée : aucun compte trouvé.");
-                    continue;
                 }
                 if ($user->type !== 'phd') {
                     $page->trigError("La ligne $line n'a pas été ajoutée : le compte n'est pas celui d'un doctorant.");
+                    continue;
+                }
+
+                $grad_year = $infos[1];
+                if (!$grad_year) {
+                    $page->trigError("La ligne $line n'a pas été ajoutée : année de soutenance vide.");
                     continue;
                 }
                 $profile = $user->profile();
@@ -1983,7 +1987,7 @@ class AdminModule extends PLModule
                 }
                 // When we are here, we have the pid, id for profile_education table, and $grad_year. Time to UPDATE !
                 XDB::execute('UPDATE  profile_education
-                                 SET  flags = \'primary,completed\', grad_year = {?}
+                                 SET  flags = CONCAT(flags, \',completed\'), grad_year = {?}
                                WHERE  pid = {?} AND id = {?}',
                     $grad_year, $profile->id(), $res);
                 XDB::execute('UPDATE  profile_display
@@ -2017,7 +2021,7 @@ class AdminModule extends PLModule
                 if (Post::b('completed_' . $pid)) {
                     $grad_year = Post::t('grad_year_' . $pid);
                     XDB::execute('UPDATE  profile_education
-                                     SET  flags = \'primary,completed\', grad_year = {?}
+                                     SET  flags = CONCAT(flags, \',completed\'), grad_year = {?}
                                    WHERE  FIND_IN_SET(\'primary\', flags) AND pid = {?}',
                                  $grad_year, $pid);
                     XDB::execute('UPDATE  profile_display
