@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e  # Fail on errors
 
 # Hardcoded paths
 DUMP_SCRIPT=../dump_wats4u.php
@@ -18,4 +19,6 @@ $DUMP_SCRIPT > ${CSVFILE}
 # Compute md5
 md5sum "${CSVFILE}" | sed 's/ .*//' > "${MD5FILE}"
 # Upload files (we need to use login/password).
-sshpass -f"${SSH_PASSWORD_FILE}" scp "${CSVFILE}" "${MD5FILE} "${SSH_HOST}"
+sshpass "-f${SSH_PASSWORD_FILE}" scp "${CSVFILE}" "${MD5FILE}" "${SSH_HOST}"
+
+rm "${CSVFILE}" "${MD5FILE}"
