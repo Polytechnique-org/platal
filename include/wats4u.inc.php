@@ -32,7 +32,7 @@ function _map_profile(Profile $profile)
         'last_name' => $profile->lastname_ordinary,
         'birth_name' => $profile->lastname,
         'female' => $profile->isFemale(),
-        'email' => $profile->email_directory,
+        'email' => '',
         'paying' => 1,
     );
 }
