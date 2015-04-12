@@ -633,6 +633,8 @@ class PaymentModule extends PLModule
         $table_editor->describe('owner', 'titulaire', true);
         $table_editor->add_option_table('groups', 'groups.id = t.asso_id');
         $table_editor->add_option_field('groups.diminutif', 'group_name', 'groupe', 'varchar','iban');
+        $table_editor->add_sort_field('status');
+        $table_editor->add_sort_field('group_name', false);
 
         /* check RIB key     FIXME: the column format (and name) changed
         if ($action == 'update' && Post::has('account') && !check_rib(Post::v('account'))) {
@@ -979,9 +981,6 @@ class PaymentLogsImporter extends CSVImporter {
 
     public function __construct() {
         parent::__construct('');
-        $this->registerFunction('systempay_commission', 'Compute BPLC commission', array($this, 'compute_systempay_commission'));
-        $this->registerFunction('payment_id', 'Autocompute payment ID', array($this, 'compute_payment_id'));
-        //$this->forceValue('payment_id','func_payment_id');
     }
 
     public function run($action = null, $insert_relation = null, $update_relation = null) {
@@ -994,44 +993,13 @@ class PaymentLogsImporter extends CSVImporter {
 
             // convert money
             $a['amount'] = str_replace(',', '.', $a['amount']);
-            $a['commission'] = str_replace(',', '.', $a['commission']);
+            $a['commission'] = str_replace(' EUR', '', str_replace(',', '.', $a['commission']));
             $this->result[] = $a;
         }
     }
 
     public function get_result() {
         return $this->result;
-    }
-
-    static public function compute_systempay_commission($line, $key, $relation) {
-        static $EEE_countries = array(
-            'France', 'Allemagne', 'Autriche', 'Belgique', 'Bulgarie', 'Chypre', 'Croatie',
-            'Danemark', 'Espagne', 'Estonie', 'Finlande', 'Grèce', 'Hongrie', 'Irlande', 'Islande', 'Italie',
-            'Lettonie', 'Liechtenstein', 'Lituanie', 'Luxembourg', 'Malte', 'Norvège', 'Pays-Bas', 'Pologne',
-            'Portugal', 'Roumanie', 'Royaume-Uni', 'Slovaquie', 'Slovénie', 'Suède', 'République Tchèque'
-        );
-
-        if($key!='commission' || !array_key_exists('carte', $line)) {
-            return null;
-        }
-        $amount = self::getValue($line, 'amount', $relation['amount']);
-        if (in_array($line['pays carte'], $EEE_countries)) {
-            return -0.20 - round($amount * 0.005, 2);
-        } else {
-            return -0.20 - round($amount * 0.005, 2) - 0.75;
-        }
-    }
-
-    static public function compute_payment_id($line, $key, $relation) {
-        if ($key != 'payment_id') {
-            return null;
-        }
-        $reference = self::getValue($line, 'reference', $relation['reference']);
-        if (preg_match('/-([0-9]+)$/', $reference, $matches)) {
-            return $matches[1];
-        } else {
-            return null;
-        }
     }
 }
 
