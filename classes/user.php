@@ -842,7 +842,7 @@ class User extends PlUser
         }
 
         $mmlist = new MMList(S::user());
-        $mmlist->kill($this->hruid, $clearAll);
+        $mmlist->kill($this->forlife, $this->promo(), $clearAll);
     }
 
     // Merge all infos in other user and then clean this one

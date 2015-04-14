@@ -130,15 +130,16 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
             self.end_headers()
 
     def getUser(self, uid, md5, vhost):
-        res = mysql_fetchone ("""SELECT  a.full_name, IF(s.email IS NULL, a.email, CONCAT(s.email, '@%s')),
+        res = mysql_fetchone ("""SELECT  a.full_name, IF(esa.email IS NULL, a.email, CONCAT(esa.email, '@', evd.name)),
                                          IF (a.is_admin, 'admin',
                                                          IF(FIND_IN_SET('lists', at.perms) OR FIND_IN_SET('lists', a.user_perms), 'lists', NULL))
                                    FROM  accounts AS a
                              INNER JOIN  account_types AS at ON (at.type = a.type)
-                              LEFT JOIN  email_source_account AS s ON (s.uid = a.uid AND s.type = 'forlife')
+                              LEFT JOIN  email_source_account AS esa ON (esa.uid = a.uid AND esa.type = 'forlife')
+                              LEFT JOIN  email_virtual_domains AS evd ON (esa.domain = evd.id)
                                   WHERE  a.uid = '%s' AND a.password = '%s' AND a.state = 'active'
                                   LIMIT  1""" \
-                              % (PLATAL_DOMAIN, uid, md5))
+                              % (uid, md5))
         if res:
             name, forlife, perms = res
             if vhost != PLATAL_DOMAIN and perms != 'admin':
@@ -197,24 +198,37 @@ def quote(s, is_header=False):
     return Utils.uquote(h.replace('&', '&amp;').replace('>', '&gt;').replace('<', '&lt;'))
 
 def to_forlife(email):
+    """Convert any email to the related forlife.
+
+    Returns:
+        (email, full_name)
+    """
     try:
         mbox, fqdn = email.split('@')
-    except:
+    except ValueError:
         mbox = email
         fqdn = PLATAL_DOMAIN
-    if ( fqdn == PLATAL_DOMAIN ) or ( fqdn == PLATAL_DOMAIN2 ):
-        res = mysql_fetchone("""SELECT  CONCAT(s1.email, '@%s'), a.full_name
-                                  FROM  accounts AS a
-                            INNER JOIN  email_source_account AS s1 ON (a.uid = s1.uid AND s1.type = 'forlife')
-                            INNER JOIN  email_source_account AS s2 ON (a.uid = s2.uid AND s2.email = '%s')
-                                 WHERE  a.state = 'active'
-                                 LIMIT  1""" \
-                              % (PLATAL_DOMAIN, mbox))
-        if res:
-            return res
-        else:
-            return (None, None)
-    return (email.lower(), mbox)
+
+    # Slightly complex here:
+    # - First, find the aliased email (using email_source_account/email_virtual_domains)
+    # - Then, go up to accounts
+    # - Finally, compute the forlife alias
+    #
+    # Table schema:
+    # email_source_account: uid => (mbox, domain_id)
+    # email_virtual_domains: domain_id => (fqdn, alias_of)
+    res = mysql_fetchone("""SELECT  CONCAT(esa_forlife.email, '@', evd_forlife.name), a.full_name
+                              FROM  email_source_account AS esa_source
+                         LEFT JOIN  email_virtual_domains AS evd_source ON (evd_source.aliasing = esa_source.domain)
+                         LEFT JOIN  accounts AS a ON (esa_source.uid = a.uid)
+                         LEFT JOIN  email_source_account AS esa_forlife ON (a.uid = esa_forlife.uid AND esa_forlife.type = 'forlife')
+                         LEFT JOIN  email_virtual_domains AS evd_forlife ON (evd_forlife.id = esa_forlife.domain)
+                             WHERE  esa_source.email = '%s' AND evd_source.name = '%s' AND a.state = 'active'
+                             LIMIT  1;""" % (mbox, fqdn))
+    if res:
+        return res
+    else:
+        return (email.lower(), mbox)
 
 ##
 # see /usr/lib/mailman/bin/rmlist
@@ -988,12 +1002,17 @@ def delete_list(userdesc, perms, mlist, del_archives=0):
     map(lambda dir: remove_it(lname, os.path.join(mm_cfg.VAR_PREFIX, dir)), REMOVABLES)
     return 1
 
-def kill(userdesc, perms, vhost, alias, del_from_promo):
+def kill(userdesc, perms, vhost, forlife, promo, del_from_promo):
     """ Remove a user from all the lists.
+
+    Args:
+        forlife: the user's forlife email
+        promo: the user's promo, if any (format: X2006)
+        del_from_promo: bool, whether to delete from the promo lists as well.
     """
     exclude = []
-    if not del_from_promo:
-        exclude.append(PLATAL_DOMAIN + VHOST_SEP + 'promo' + alias[-4:])
+    if promo and promo[0] == 'X' and not del_from_promo:
+        exclude.append(PLATAL_DOMAIN + VHOST_SEP + 'promo' + promo[1:])
     for list in Utils.list_names():
         if list in exclude:
             continue
@@ -1003,7 +1022,7 @@ def kill(userdesc, perms, vhost, alias, del_from_promo):
             continue
         try:
             mlist.Lock()
-            mlist.ApprovedDeleteMember(alias+'@'+PLATAL_DOMAIN, None, 0, 0)
+            mlist.ApprovedDeleteMember(forlife, None, 0, 0)
             mlist.Save()
             mlist.Unlock()
         except:
