@@ -203,6 +203,9 @@ def to_forlife(email):
     except ValueError:
         mbox = email
         fqdn = PLATAL_DOMAIN
+    else:
+        if fqdn == PLATAL_DOMAIN2:
+            fqdn = PLATAL_DOMAIN
 
     res = mysql_fetchone("""SELECT  CONCAT(esa_forlife.email, '@', evd_forlife.name), a.full_name
                               FROM  email_source_account AS esa_source
