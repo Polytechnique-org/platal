@@ -136,7 +136,7 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
                                    FROM  accounts AS a
                              INNER JOIN  account_types AS at ON (at.type = a.type)
                               LEFT JOIN  email_source_account AS esa ON (esa.uid = a.uid AND esa.type = 'forlife')
-                              LEFT JOIN  email_virtual_domain AS evd ON (esa.domain = evd.id)
+                              LEFT JOIN  email_virtual_domains AS evd ON (esa.domain = evd.id)
                                   WHERE  a.uid = '%s' AND a.password = '%s' AND a.state = 'active'
                                   LIMIT  1""" \
                               % (uid, md5))
@@ -206,11 +206,11 @@ def to_forlife(email):
 
     res = mysql_fetchone("""SELECT  CONCAT(esa_forlife.email, '@', evd_forlife.name), a.full_name
                               FROM  email_source_account AS esa_source
-                         LEFT JOIN  email_virtual_domain AS evd_source ON (evd.id = esa_source.domain)
-                         LEFT JOIN  accounts AS a ON (esa.uid = a.uid)
+                         LEFT JOIN  email_virtual_domains AS evd_source ON (evd_source.id = esa_source.domain)
+                         LEFT JOIN  accounts AS a ON (esa_source.uid = a.uid)
                          LEFT JOIN  email_source_account AS esa_forlife ON (a.uid = esa_forlife.uid AND esa_forlife.type = 'forlife')
-                         LEFT JOIN  email_virtual_domain AS evd_forlife ON (evd.id = esa_forlife.domain)
-                             WHERE  esa_source = '%s' AND evd_source = '%s' AND a.state = 'active'
+                         LEFT JOIN  email_virtual_domains AS evd_forlife ON (evd_forlife.id = esa_forlife.domain)
+                             WHERE  esa_source.email = '%s' AND evd_source.name = '%s' AND a.state = 'active'
                              LIMIT  1;""" % (mbox, fqdn))
     if res:
         return res
