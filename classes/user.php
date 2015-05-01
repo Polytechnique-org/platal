@@ -471,7 +471,24 @@ class User extends PlUser
      */
     public function emailGroupAliases($domain = null)
     {
-        if (is_null($domain)) {
+        if ($this->type == 'xnet') {
+            if (is_null($domain)) {
+                return XDB::fetchColumn('SELECT  CONCAT(v.email, \'@\', dv.name) AS alias
+                                           FROM  email_virtual         AS v
+                                     INNER JOIN  email_virtual_domains AS dv ON (v.domain = dv.id)
+                                          WHERE  v.redirect = {?} AND v.type = \'alias\'',
+                    $this->email);
+            } else {
+                return XDB::fetchAllAssoc('alias',
+                                      'SELECT  CONCAT(v.email, \'@\', dv.name) AS alias, MAX(v.redirect = {?}) AS sub
+                                         FROM  email_virtual         AS v
+                                   INNER JOIN  email_virtual_domains AS dv ON (v.domain = dv.id AND dv.name = {?})
+                                        WHERE  v.type = \'alias\'
+                                     GROUP BY  v.email
+                                     ORDER BY  v.email',
+                                      $this->email, $domain);
+            }
+        } elseif (is_null($domain)) {
             return XDB::fetchColumn('SELECT  CONCAT(v.email, \'@\', dv.name) AS alias
                                        FROM  email_virtual         AS v
                                  INNER JOIN  email_virtual_domains AS dv ON (v.domain = dv.id)
