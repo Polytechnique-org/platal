@@ -198,18 +198,28 @@ def quote(s, is_header=False):
     return Utils.uquote(h.replace('&', '&amp;').replace('>', '&gt;').replace('<', '&lt;'))
 
 def to_forlife(email):
+    """Convert any email to the related forlife.
+
+    Returns:
+        (email, full_name)
+    """
     try:
         mbox, fqdn = email.split('@')
     except ValueError:
         mbox = email
         fqdn = PLATAL_DOMAIN
-    else:
-        if fqdn == PLATAL_DOMAIN2:
-            fqdn = PLATAL_DOMAIN
 
+    # Slightly complex here:
+    # - First, find the aliased email (using email_source_account/email_virtual_domains)
+    # - Then, go up to accounts
+    # - Finally, compute the forlife alias
+    #
+    # Table schema:
+    # email_source_account: uid => (mbox, domain_id)
+    # email_virtual_domains: domain_id => (fqdn, alias_of)
     res = mysql_fetchone("""SELECT  CONCAT(esa_forlife.email, '@', evd_forlife.name), a.full_name
                               FROM  email_source_account AS esa_source
-                         LEFT JOIN  email_virtual_domains AS evd_source ON (evd_source.id = esa_source.domain)
+                         LEFT JOIN  email_virtual_domains AS evd_source ON (evd_source.aliasing = esa_source.domain)
                          LEFT JOIN  accounts AS a ON (esa_source.uid = a.uid)
                          LEFT JOIN  email_source_account AS esa_forlife ON (a.uid = esa_forlife.uid AND esa_forlife.type = 'forlife')
                          LEFT JOIN  email_virtual_domains AS evd_forlife ON (evd_forlife.id = esa_forlife.domain)
