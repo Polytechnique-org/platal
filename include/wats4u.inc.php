@@ -45,6 +45,7 @@ function _filter_profile(Profile $profile)
 function generate_wats4u_extract()
 {
     $pf = new ProfileFilter(new PFC_True());
+    // For debug: replace with iterProfiles(new PlLimit(100));
     $profiles = $pf->iterProfiles();
     $alive_profiles = PlIteratorUtils::filter($profiles, '_filter_profile');
     return PlIteratorUtils::map($alive_profiles, '_map_profile');
