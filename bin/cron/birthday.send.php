@@ -119,20 +119,5 @@ $mailer->setSubject("Envoi de l'email anniversaire");
 $mailer->setTxtBody($texte);
 $mailer->send();
 
-unset($mailer);
-unset($count_mail);
-unset($liste);
-unset($pf);
-unset($limit);
-unset($texte);
-unset($liste);
-unset($iterator);
-unset($profile);
-unset($mlpromo);
-unset($groups);
-unset($groupx);
-unset($binets);
-unset($group);
-
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
 ?>
