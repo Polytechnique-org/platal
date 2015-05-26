@@ -1,75 +1,881 @@
 /*
- * Written by Guillaume Gris.
- */
+    Written by Guillaume Gris for polytechnique.org
 
-a {
-   text-decoration: none;
-   color: inherit;
+    All rights reserved.
+*/
+
+/*******************************************************************************
+       Abstract classes
+*******************************************************************************/
+.smaller {
+    font-size: 0.8em;
+    font-weight: 400;
+    font-style: italic;
+    padding: 1em 0.2em;
+    color: #831;
 }
 
-h1 {
+.spacer {
+    clear: both;
 }
 
-h2 {
+.center {
+    text-align: center;
 }
+
+.right  {
+    text-align: right;
+}
+
+/*******************************************************************************
+        [ balises sans attributs ou classes sans contexte ]
+*******************************************************************************/
 
 body {
-    background: #e4e4e4;
-    margin: 0;
-    font-family: arial,sans-serif;
-    font-width: 100%;
+    color: #222;
+    background: #e5e5e5;
+    font-family: "Georgia",sans-serif;
+    font-size: 80%;
 }
 
 header {
-    background: #b84030;
-
-    padding: 4px;
-    color: #e8e8e8;
-    text-shadow: 1px 1px #fa8;
-
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    background: linear-gradient(#f0f0f0,#f8f8f8,#f8f8f8);
+    line-height: 200%;
 }
 
-.logo {
-    display: flex;
-}
-
-.search_bar input{
-    width: 500px;
-    margin: 0 40px;
-
-}
-
-.logo img {
-    height: 80px;
-    margin-right: 8px;
-}
-
-nav {
-    background: #e8b830;
+section {
     display: flex;
     justify-content: center;
 }
 
-nav a  {
-    width:120px;
+nav {
+    font-size: 1.1em;
+    background: #f8f8f8;
+    box-shadow: -0.5em 0 0.5em -0.5em #bbb;
+    vertical-align: top;
+    margin-right: 2%;
+    height: 100%;
+}
+
+article {
+    width: 60%;
+    line-height: 120%;
+}
+
+
+footer {
+    clear: both;
     text-align: center;
+    color: #464544;
+    font-weight: 300;
+    font-size: 0.8em;
+    background: linear-gradient(#e4e4e4,#e4e4e4,#ddd);
+    border-top: 2px solid #ddd;
+    padding: 1em 1em 4em 1em;
+}
+
+a:link, a:visited {
+    text-decoration: none;
+    color: #4880b8;
     padding: 0.2em;
-
-    font-size: 1.4em;
+}
+a:active, a:hover {
+    color: #d62000;
 }
 
-main {
-    background: #ff0;
+img   {
+    vertical-align: middle;
+}
+a img {
 }
 
-section {
+li    {
+    text-align: justify;
+}
+
+hr    {
+    margin: 1em 0 1em 0;
+    border: 1px solid #ccc;
+    border-bottom: none;
+}
+
+fieldset {
+    background: #f8f8f8;
+
+    margin: 3em auto 1em auto;
+    max-width: 100%;
+    padding: 0.5em 1.5em 0.5em 1em;
+    border-radius: 3px;
+    border: solid;
+    border-width: 0 0 1px 0;
+    border-color: #ddd #ccc #bbb #ddd;
+    
+    
+}
+
+legend {
+    font: 400 1.4em Roboto,arial,sans-serif;
+    color: #555;
+    
+    position: relative;
+    top: -0.8em;
+    
+    background: linear-gradient(#f4f4f4,#f4f4f4,#f8f8f8);
+    
+    border-radius: 3px 3px 0 0;
+    border: solid;
+    border-width: 1px;
+    border-color: #ddd #ccc #aaa #ddd;
+    border-bottom: none;
+    
+    padding: 0.2em 2em 0.2em 1em;
+    
+    z-index: 0;
+}
+
+#mail_text {
+    width: 100%;
+    margin: 1em 0.5em;
+}
+
+#form_mail input {
+    width: 80% ;
+}
+
+#form_mail legend {
+    top: -1.1em;
+}
+
+/*******************************************************************************
+    2   Styles <p>, <div>, <span>, <li>
+        [ styles classiques d'effets de texte ]
+*******************************************************************************/
+
+
+p,dd {
+    text-align: justify;
+    padding:  0.1em 0.5em;
+    margin: 0.5em 2em 0.5em 1em;
+}
+
+.errors {
+    margin-top: 10px;
+    border: 1px solid #f00;
+    background-color: #fcc;
+    width: 98%;
+}
+
+.warnings {
+    margin-top: 10px;
+    border: 1px solid #ed0;
+    background-color: #ffc;
+    width: 98%;
+}
+
+.success {
+    margin-top: 10px;
+    border: 1px solid #0d2;
+    background-color: #cfd;
+    width: 98%;
+}
+
+.erreur {
+    font-weight: bold;
+    color: #ff0000;
     background: #00f;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
 }
 
-aside {
+.erreur a:link, .erreur a:visited, .erreur a:active, .erreur a:hover {
+    color: #ff3333;
+    background: #0f0;
+}
+
+input.error, textarea.error {
+    background-color: #faa;
+}
+
+input.valid, textarea.valid {
+    background-color: #afa;
+}
+
+input.warning, textarea.warning {
+    background-color: #fda;
+}
+
+h1 {
+    font: 400 1.4em Roboto,Droid Serif,sans-serif;
+    color: #555;
+    
+    background: linear-gradient(#f4f4f4,#f4f4f4,#f8f8f8);
+    
+    border-radius: 3px;
+    border: solid;
+    border-width: 0 0 1px 0;
+    border-color: #ccc;
+    
+    padding: 0.2em 2em 0.2em 1em;
+    margin: 0;
+}
+
+#pagetop {
+    border-radius: 0 0 3px 3px;
+}
+
+h2, dt {
+    font: 400 1.3em Roboto,arial,sans-serif;
+    color: #567;
+    padding: 0.5em 0 0.5em 1em;
+    margin: 0.27em 0 0 2em;
+    border-top: 0.1em solid #ccc;
+}
+
+h3 {
+    margin: 0;
+    font-weight: bold;
+    padding: 0.5em 0;
+    font-size: 100%;
+}
+
+select {;    
+    font: 400 1.4em Roboto,arial,sans-serif;
+    color: #555;
+    text-align: left;
+    width: inherit;
+    max-width: 80%;
+    
+    padding: 0.1em 1em;
+}
+
+
+
+optgroup {
+    font-size: 0.9em;
+    background: #f8f8f8;
+    border-radius: 3px;
+    border: solid;
+    border-width: 1px 1px 2px 1px;
+    border-color: #ddd #ccc #bbb #ddd;
+    padding: 0.2em;
+    margin: 0.1em 0.2em;
+}
+
+option {
+    background: #f8f8f8;
+    font-size: 0.9em;
+    padding: 0.1em 0.2em;
+}
+
+
+p.explication, div.explication {
+    font-style: italic;
+    padding: 0 1ex 1ex 1ex;
+}
+
+.spaced {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    text-align: justify;
+}
+
+/*******************************************************************************
+    3   Tableaux bicolores + classes utiles
+*******************************************************************************/
+
+table {
+    margin: 0 auto 0 auto;
+    border-spacing: 0;
+    :max-width: 100%;
+    width: 100%;
+    
+    background: #f8f8f8;
+    
+    padding: 0.5em 1.5em 1em 0.5em;
+}
+
+table.bicol {
+    border-radius: 3px;
+    border: solid;
+    border-width: 0 0 1px 0;
+    border-color: #ddd #ccc #bbb #ddd;
+}
+
+table.tinybicol {
+    :max-width: 80%;
+    :width: 80%;
+    border-radius: 3px;
+    border: solid;
+    border-width: 0 0 1px 0;
+    border-color: #ddd #ccc #bbb #ddd;
+}
+
+table.tinybicol tr.impair, table.bicol tr.impair {}
+
+table.tinybicol tr.pair, table.bicol tr.pair {
+}
+
+table.tinybicol th, table.bicol th {
+    font: 400 1.4em Roboto,arial,sans-serif;
+    color: #555;
+    text-align: center;
+    
+    padding: 0.3em 0.5em 0.2em 0.5em;
+}
+
+table.tinybicol td.error, table.bicol td.error {
+}
+
+table.tinybicol td.warning, table.bicol td.warning {
+}
+
+table.tinybicol td.valid, table.bicol td.valid {
+}
+
+td.titre {
+    font: 400 1.3em Roboto,arial,sans-serif;
+    color: #666;
+    text-align: center;
+    
+    padding: 0.3em 0.5em 0.2em 0.5em;
+}
+
+td.action {
+}
+
+td.action a {
+    padding: 0 0;
+}
+
+div.titre {
+}
+
+span.titre {
+}
+
+/*******************************************************************************
+    4   Tableau de choix de skins
+        [ Styles pour les tableaux de types de ceux des skins ]
+*******************************************************************************/
+
+#skin {
+    border-bottom: 1px solid #ff00ff;
+    border-top: 1px solid #a2c2e1;
+    :width: 98%;
+    margin-left: 1%;
+}
+#skin td {
+    border-top: 1px solid #a2c2e1;
+    border-bottom: 1px solid #a2c2e1;
+}
+#skin .skigauche {
     background: #f0f;
+    color: inherit;
+}
+#skin .skimilieu {
+    padding-left: 1em;
+    :width: 100%;
+}
+#skin .skidroite { padding: 0; }
+
+/*******************************************************************************
+    5   Contacts
+*******************************************************************************/
+
+div.contact-list div.contact {
+    
+    background: #f8f8f8;
+    
+    border-radius: 3px;
+    border: solid;
+    border-width: 1px 1px 2px 1px;
+    border-color: #ddd #ccc #bbb #ddd;
+    
+    padding: 0.5em 0.2em;
+    margin: 1em 2em;
+    min-height:16em;
+    
+    z-index: +2;
 }
 
+div.contact-list .grayed {
+    color: #444444;
+    background: #f00;
+    font-style: italic;
+}
+
+div.contact div.photo {
+    float: left;
+}
+
+div.contact div.photo img {
+    border-radius: 3px;
+    margin: 0.5em;
+    height: 15em;
+}
+
+div.contact .identity {
+}
+
+div.contact .nom {
+    font: 400 1.4em Roboto,arial,sans-serif;
+    color: #555;
+    
+    margin: 0.5em 0 0 0.5em;
+    float: left;
+    width: 45%;
+    font-weight: bold;
+}
+
+div.contact .edu {
+    margin: 0.5em 0 0 1em;
+    float: left;
+    width: 45%;
+}
+
+div.contact .bits {
+    margin: 0.5em 1em 0 0;
+    text-align: right;
+}
+
+div.contact div.long {
+}
+
+
+div.long table {
+    margin: 4em 0 0 0;
+    border: none;
+    width: auto;
+}
+div.long .lt {
+    padding: 0.2em 1em 1em 0.2em;
+    font-weight: bold;
+}
+div.long .rt {
+    padding: 0.2em 1em 1em 0.2em;
+    
+}
+
+#body-top div.contact-list div.contact {
+    min-height: 9em;
+    width: 28em;
+    
+}
+
+#body-top div.contact div.photo img {
+    height: 8em;
+    display: initial;
+}
+
+/*******************************************************************************
+    6   Profil
+        [ onglets des profils ]
+*******************************************************************************/
+
+.wizard {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.wizard .wiz_header {
+    background: #f8f8f8;
+    margin: -1em 0 1em 0;
+    box-shadow: 0 0.3em 0.5em -0.2em #bbb;
+}
+
+.wizard .wiz_header .wiz_tab {
+    color: #464544;
+    font-weight: 500;
+    text-align: center;
+    padding: 0.3em 0.1em 0.1em 0.1em;
+    
+    margin: 0;
+    
+    border-top: 0.4em solid #ddd;
+    border-bottom-left-radius: 0.1em;
+    border-bottom-right-radius: 0.1em;
+    
+    height: 3em;
+    width: 16.33% !important;
+}
+
+.wizard .wiz_header .wiz_tab:hover {
+    color: #262524;
+    background: #d0d4d8;
+    border-color: #004566;
+}
+
+.wizard .wiz_header .active, .wizard .wiz_header .active:hover {
+    color: #262524;
+    background: #d0d4d8;
+    border-color: #004566;
+}
+
+.wizard .wiz_header a {
+    color: #000;
+    text-decoration: none;
+}
+
+.wizard .wiz_header a.active {
+    font-weight: bold;
+}
+
+.wizard .wiz_content {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.flags .texte {
+    font-size: smaller;
+    font-weight: bold;
+    margin-left: -6px;
+    padding: 0 12px 0 0;
+}
+.flags img {
+    padding: 0 8px 0 0;
+}
+
+.marker_label {
+    border: 1px solid black;
+    background-color: white;
+    white-space: nowrap;
+}
+
+.marker_label a {
+    color: black;
+}
+
+/*******************************************************************************
+    7   fiche.php & fiche_referent.php
+        [ cas de la fiche ]
+*******************************************************************************/
+
+div#content {
+    padding: 0;
+}
+
+#fiche {
+    background: #f8f8f8;
+    
+    border-radius: 3px;
+    border: solid;
+    border-width: 1px 1px 2px 1px;
+    border-color: #ddd #ccc #bbb #ddd;
+    width: 800px;
+    margin: 0.2em;
+    
+    padding: 0.5em;
+}
+
+#fiche em { color: #831; }
+
+#fiche .part {
+    float: left;
+    clear: left;
+    width: 70%;
+    padding: 0em;
+    margin: 0em;
+}
+
+#fiche #photo {
+    float: right;
+    padding: 0;
+    margin: 0;
+    clear: right;
+    width: 30%;
+}
+
+#fiche #photo img {
+    :width: 100%;
+    display: block;
+    margin: 0 0 0 auto;
+    border-width: 1px;
+    border-style: outset;
+    border-radius: 0.3em;
+}
+
+#fiche_identite {
+}
+
+#photo {
+}
+
+#fiche_identite div.civilite {
+    text-align: center;
+    font-weight: bold;
+    font: bold 1.6em Roboto,arial,sans-serif;
+    color: #333;
+    text-align: center;
+    width: 80%;
+    float: left;
+    margin: 0 0 1em 0;
+}
+
+#fiche_identite div.maj {
+    float: left;
+    width: 20%;
+    font-size: 80%;
+    text-align: right;
+    clear: right;
+}
+
+#fiche_identite div.contact {
+    clear: both;
+    margin: 1em;
+}
+#fiche_identite div.email {
+    clear: left;
+    float: left;
+}
+#fiche_identite div.mob {
+    float: right;
+    clear: right;
+    text-align: right;
+}
+
+#fiche_identite div.formation {
+    margin: 0 1em;
+    padding: 1em 0 0 0;
+    border-top: 1px solid #ddd;
+}
+
+div.adresse {
+    min-width: 30%;
+    padding: 0;
+    margin: 0 0.5em;
+}
+
+div.adresse ul {
+margin: 0;
+}
+
+div.adresse div.titre {
+    color: #831;
+}
+
+#fiche .medal_frame {
+    float: left;
+    width: 33%;
+}
+
+#fiche .medal_frame img {
+    float: left;
+    padding: 0ex 1ex;
+}
+
+#fiche .medal_text {
+    vertical-align: middle;
+    font-weight: bold;
+}
+
+/* only for fiche_referent.php*/
+
+#fiche_referent{
+    padding: 10px;
+    width: 100%;
+}
+
+#fiche_referent div.rubrique_referent{
+    float: left;
+    width: 31%;
+    padding: 0px;
+    margin: 0px 1% 1ex 1%;
+}
+
+#fiche_referent em{color: purple;}
+#fiche_referent ul { margin: 0; padding: 0 1em; }
+#fiche_referent li { font-weight: bold; margin: 0; padding: 0; text-align: left; }
+
+/*******************************************************************************
+    A   SKIN
+        [ choix de classes faites par le skinneur
+*******************************************************************************/
+
+.phperror {
+    color: red;
+    background: white;
+    margin: 2px auto;
+    padding: 4px 2px;
+    border: 1px solid black;
+    width: 80%;
+    white-space: pre;
+}
+
+#dev {
+    width: auto;
+    text-align: center;
+    padding: 1px;
+
+    font-family: 'Bauhaus Md BT','Bitstream Vera',sans-serif;
+    font-size: 10pt;
+    font-weight: bold;
+    color: #000;
+    background: #f5f8fc;
+}
+
+#suid {
+    color: red;
+    background: #ffc0cb;
+    width: auto;
+    font-weight: bold;
+    text-align: center;
+}
+#suid a {
+    color: red;
+    background: #ff0000;
+    text-decoration: none;
+    display: block;
+}
+#suid:hover {
+    color: red;
+    background: #ffffcb;
+}
+#suid a:hover {
+    color: #ff7000;
+    background: #ff0000;
+}
+
+/*
+table#body {
+    background: transparent;
+    border: none;
+    box-shadow: -0.5em 0 0.5em -0.5em #bbb;
+
+    max-width: 1024px;
+    margin: auto;
+    padding: 0;
+}*/
+
+#body-logo   {
+    text-align: left;
+    padding: 0.2em 0.2em 0.2em 0.2em;
+    width: 128px;
+    :lex-grow: 1;
+    border-top: 0.1em solid #bbbbbb;
+    border-bottom: 1em solid #e65;
+}
+
+#body-logo img {
+    height: 5em;
+}
+
+#body-top table {
+    background: transparent;
+}
+
+#body-top    {
+    text-align: center;
+    flex-grow: 4;
+    
+    color: #464544;
+    font-weight: 300;
+    
+    border-top: 0.1em solid #bbbbbb;
+    border-bottom: 1em solid #ec7;
+}
+
+
+#body-top .date-heure {
+    display: none;
+}
+#body-top .inscrits {
+    padding: 0.0em 4em;
+    text-align: left;
+}
+
+#body-top input {
+    width: 30em;
+}
+
+#body-top button {
+    display: none !important;
+}
+
+#body-top img {
+    display: none;
+}
+
+input {
+    font: 400 1.1rem Roboto,arial,sans-serif;
+    color: #888;
+    text-align: left;
+    
+    padding: 0.2em 0.5em;
+    
+    border: 1px solid #ccc;
+    border-radius: 2px;
+}
+
+input:hover, input:focus {
+    box-shadow: 0 0 0.5em -0.1em #bbb;
+}
+
+#body button {
+    color: #edf1f3;
+    background: #004566;
+    border-style: solid;
+    border-color: #206586;
+    border-width: 0.1em;
+    font-weight: 600;
+    border-top-left-radius: 0.2em;
+    border-top-right-radius: 0.2em;
+    border-bottom-left-radius: 0.2em;
+    border-bottom-right-radius: 0.2em;
+    
+}
+
+#body button:hover {
+    background: #406586;
+    
+}
+
+#body-menu {
+}
+
+#body-menu a {
+    color: #464544;
+    font-weight: 500;
+    display: block;
+    margin: 0.0 1.5em 0 0;
+    padding: 0.3em 0.2em 0.2em 0.5em;
+    text-align: left;
+    
+    border-left: 0.4em solid #88a0b8;
+    border-top-right-radius: 0.1em;
+    border-bottom-right-radius: 0.1em;
+}
+
+#body-menu a:hover {
+    color: #262524;
+    background: #d0d4d8;
+    margin: 0.0 1.5em 0 0;
+    padding: 0.3em 0.2em 0.2em 0.5em;
+    border-color: #4880b8;
+}
+
+.menu_title {
+    
+    background: linear-gradient(#e4e4e4,#e4e4e4,#ddd);
+    font-family: "Droid Serif",serif;
+    font-size: 1.3em;
+    color: #321;
+    
+    border-left: 0.6em solid #4880b8;
+    
+    padding: 0.2em 0.5em 0.2em 0.2em;
+    margin: 0.5em 0.8em 0 0;
+ 
+    text-align: left;
+}
+
+#content {
+    vertical-align: top;
+    margin: 0 0 5em 2em;
+
+}
+
+#content-margin {
+}
+
+/* vim: set et ts=4 sts=4 sw=4: */

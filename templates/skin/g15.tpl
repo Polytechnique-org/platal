@@ -46,32 +46,27 @@
 
   {else}
 
-    <table id="body" cellpadding="0" cellspacing="0">
-      <tr>
-        <td id="body-logo">
+    <div id="body">
+      <header>
+        <div id="body-logo">
           <a href="index"><img src="images/skins/default_headlogo.jpg" alt="[ LOGO ]" /></a>
-        </td>
-        <td id="body-top">
-          <a href="index"><img src="images/skins/default_ban.jpg" alt="[ Polytechnique.org ]" /></a>
+        </div>
+        <div id="body-top">
           {include file="skin/common.title.header.tpl"}
-        </td>
-      </tr>
-      <tr>
-        <td id="body-menu">
-        {include file=skin/common.menu.tpl}
-        </td>
-        <td style="vertical-align: top">
-          <div id="content">
+        </div>
+      </header>
+      <section>
+      <nav id="body-menu">
+          {include file=skin/common.menu.tpl}
+      </nav>
+	<article>
           {include core=plpage.content.tpl}
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td id="body-bottom" colspan='2'>
+	</article>
+      </section>
+      <footer>
           {include file=skin/common.footer.tpl}
-        </td>
-      </tr>
-    </table>
+      </footer>
+    </div>
   {/if}
   </body>
 </html>
