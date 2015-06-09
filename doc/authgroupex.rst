@@ -62,7 +62,7 @@ The parameters in the response are the following.
 
 * A ``timestamp`` parameter, holding the Unix timestamp of the current UTC time.
 * The initial ``challenge`` parameter, as it was defined by the third-party website.
-* A ``sign`` parameter, containing the cryptographic signature of the response, using the same algorithm as for the initial request (hexadecimal representation of an HMAC of every other parameters).
+* A ``sign`` parameter, containing the cryptographic signature of the response, using the same algorithm as for the initial request (hexadecimal representation of an HMAC of every other parameter).
 * Other fields depending on what the third-party website agreed to receive from the account provider:
 
   - ``authreq``: if ``authreq`` parameter is present in the request, the value of ``authreq`` in the response is ``password`` if the user authenticated herself by submitting her credentials, ``weak`` otherwise. If it was not present, no ``authreq`` parameter is added to the response.
@@ -77,8 +77,8 @@ The parameters in the response are the following.
   - ``data_axid``: a unique user identifier delivered by the AX.
 
 
-Client set-up procedure
------------------------
+Third-party website set-up procedure
+------------------------------------
 
 In order of a third-party website to use Authgroupex, it needs to communicate to the identity provider administrators (Polytechnique.org association) the following information:
 
