@@ -1,6 +1,22 @@
 ================================================================================
 VERSION 1.1.16                                                       XX XX XXXX
 
+    * Admin:
+        - Add bulk PhD validation                                          -FUL
+
+    * Profile:
+        - Add birthday notification                                        -FUL
+
+    * Skins:
+        - New sking: g15                                                   -GAL
+
+    * Wats4U:
+        - Add Wats4U batch export                                          -XEL
+
+    * XnetGrp:
+        - Fix non-member subscription to events                            -FUL
+        - Properly display email aliases for xnet members                  -FUL
+
 ================================================================================
 VERSION 1.1.15                                                       28 02 2015
 
@@ -2094,6 +2110,7 @@ ACRONYMS:
     * FAL: Raphaël Marichez     (Falco)     <raphael.marichez@m4x.org>
     * FRU: Florent Bruneau      (Fruneau)   <florent.bruneau@m4x.org>
     * FUL: Thomas Minvielle     (Fulanor)   <thomas.minvielle@m4x.org>
+    * GAL: Guillaume Gris       (Galdor)    <guillaume.gris@m4x.org>
     * GLN: Brice Gelineau       (brice)     <brice.gelineau@m4x.org>
     * GUI: Guillaume Bandet     (GUI)       <guillaume.bandet@m4x.org>
     * IOS: Nicolas Iooss        (Ioonag)    <nicolas.iooss@m4x.org>
