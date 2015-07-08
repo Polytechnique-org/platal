@@ -994,6 +994,9 @@ class PaymentLogsImporter extends CSVImporter {
             // convert money
             $a['amount'] = str_replace(',', '.', $a['amount']);
             $a['commission'] = str_replace(' EUR', '', str_replace(',', '.', $a['commission']));
+            if (substr($a['commission'],0,1) != '-') {
+                $a['commission'] = "-".$a['commission'];
+            }
             $this->result[] = $a;
         }
     }
