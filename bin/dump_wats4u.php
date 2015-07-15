@@ -46,7 +46,7 @@ while ($line = $lines->next()) {
     $nb_lines += 1;
 }
 
-fwrite(STDERR, "Wrote $nb_lines lines.");
+fwrite(STDERR, "Wrote $nb_lines lines.\n");
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
 ?>

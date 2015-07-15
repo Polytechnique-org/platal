@@ -17,7 +17,7 @@ CSVFILE="${TMPDIR}/extract_polytechnique_${DATE}.csv"
 MD5FILE="${TMPDIR}/extract_polytechnique_${DATE}.csv.md5"
 
 # Generate the dump
-$DUMP_SCRIPT > ${CSVFILE}
+(cd $(dirname $0) && $DUMP_SCRIPT > ${CSVFILE})
 # Compute md5
 md5sum "${CSVFILE}" | sed 's/ .*//' > "${MD5FILE}"
 # Upload files (we need to use login/password).
