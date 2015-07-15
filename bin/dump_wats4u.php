@@ -27,18 +27,22 @@ ini_set('memory_limit', '128M');
 $lines = generate_wats4u_extract();
 $nb_lines = 0;
 while ($line = $lines->next()) {
-    fputcsv(STDOUT, array(
-        $line['hrid'],
-        $line['school'],
-        $line['diploma'],
-        $line['promo'],
-        $line['birth_name'],
-        $line['last_name'],
-        $line['first_name'],
-        $line['female'] ? 'F' : 'M',
-        $line['email'],
-        $line['paying'],
-    ));
+    fputcsv(
+        STDOUT,  // Handle
+        array(  // Fields
+            $line['hrid'],
+            $line['school'],
+            $line['diploma'],
+            $line['promo'],
+            $line['birth_name'],
+            $line['last_name'],
+            $line['first_name'],
+            $line['female'] ? 'F' : 'M',
+            $line['email'],
+            $line['paying'],
+        ),
+        ';' // Delimiter
+    );
     $nb_lines += 1;
 }
 
