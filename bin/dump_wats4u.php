@@ -30,7 +30,7 @@ while ($line = $lines->next()) {
     fputcsv(
         STDOUT,  // Handle
         array(  // Fields
-            $line['hrid'],
+            $line['ax_id'],
             $line['school'],
             $line['diploma'],
             $line['promo'],

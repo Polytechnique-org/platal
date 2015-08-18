@@ -24,7 +24,7 @@ define('WATS4U_SCHOOL_NAME', "École polytechnique");
 function _map_profile(Profile $profile)
 {
     return array(
-        'hrid' => $profile->hrid(),
+        'ax_id' => $profile->ax_id,
         'school' => WATS4U_SCHOOL_NAME,
         'diploma' => $profile->mainGrade(),
         'promo' => $profile->yearpromo(),
