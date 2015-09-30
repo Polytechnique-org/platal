@@ -71,19 +71,19 @@
 //----------------------------------------------------------------------
 
 ## [[hidden-email:target]]
-Markup('hidden-email','<links',
-  "/\\[\\[hidden-email:([^\\s$UrlExcludeChars]*)\\s*\\]\\]($SuffixPattern)/e",
-    "eProtectDecode('$1','')");
+Markup_e('hidden-email','<links',
+  "/\\[\\[hidden-email:([^\\s$UrlExcludeChars]*)\\s*\\]\\]($SuffixPattern)/",
+    "eProtectDecode(\$m[1],'')");
 
 ## [[hidden-email:target | text]]
-Markup('hidden-email|','<hidden-email',
-  "/\\[\\[hidden-email:([^\\s$UrlExcludeChars]*)\\s*\\|\\s*(.*?)\\s*\\]\\]($SuffixPattern)/e",
-    "eProtectDecode('$1','$2')");
+Markup_e('hidden-email|','<hidden-email',
+  "/\\[\\[hidden-email:([^\\s$UrlExcludeChars]*)\\s*\\|\\s*(.*?)\\s*\\]\\]($SuffixPattern)/",
+    "eProtectDecode(\$m[1],\$m[2])");
 
 ## [[ text -> hidden-email:target]]
-Markup('-hidden-email','<hidden-email',
-  "/\\[\\[(.*?)\\s*-+&gt;\\s*hidden-email:([^\\s$UrlExcludeChars]*)\\s*\\]\\]($SuffixPattern)/e",
-    "eProtectDecode('$2','$1')");
+Markup_e('-hidden-email','<hidden-email',
+  "/\\[\\[(.*?)\\s*-+&gt;\\s*hidden-email:([^\\s$UrlExcludeChars]*)\\s*\\]\\]($SuffixPattern)/",
+    "eProtectDecode(\$m[2],\$m[1])");
 
 ## Add own function in array $EditFunctions before ReplaceOnSave, so it is called, when saving is performed.
 array_splice ($EditFunctions, array_search('ReplaceOnSave',$EditFunctions), 1,
@@ -119,7 +119,7 @@ function eProtectDecode ($CompressedEmailAddress,$AlternateText) {
 }
 
 //----------------------------------------------------------------------
-function eProtectEncode ($pagename,$page,&$new) {
+function eProtectEncode ($pagename,&$page,&$new) {
 //----------------------------------------------------------------------
   global $KeepToken, $KPV, $UrlExcludeChars;
   if (!@$_POST['post']) return; // only Encode, when posting
