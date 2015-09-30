@@ -121,13 +121,13 @@ function eProtectDecode ($CompressedEmailAddress,$AlternateText) {
 //----------------------------------------------------------------------
 function eProtectEncode ($pagename,&$page,&$new) {
 //----------------------------------------------------------------------
-  global $KeepToken, $KPV, $UrlExcludeChars;
+  global $KeepToken, $UrlExcludeChars;
   if (!@$_POST['post']) return; // only Encode, when posting
   $text = $new['text'];
   $text = preg_replace_callback("/\\[\\=(.*?)\\=\\]/s", create_function('$str', 'return Keep($str[0]);'), $text);    // extract the [= .. =] and temporarily store in $KPV[]
 #  $text = preg_replace_callback("/\\[\\[mailto:([^\\s$UrlExcludeChars]*)/", create_function('$m','return "[[hidden-email:".trim(eProtectStrRecode($m[1]));'), $text);
   $text = preg_replace_callback("/\\[\\[(.*?)mailto:([^\\s$UrlExcludeChars]*)(.*?)\\]\\]/", create_function('$m','return "[[".$m[1]."hidden-email:".trim(eProtectStrRecode($m[2])).$m[3]."]]";'), $text);
-  $text = preg_replace("/$KeepToken(\\d+)$KeepToken/e",'$KPV[$1]',$text);   // put the [= .. =] back in to the text
+  $text = preg_replace_callback("/$KeepToken(\\d+)$KeepToken/", function ($matches) { global $KVP; return $KPV[$matches[1]]; },$text);   // put the [= .. =] back in to the text
   $new['text'] = $text;
 }
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
