@@ -440,39 +440,26 @@ function escape_html($string)
 // {{{ function at_to_globals()
 
 /**
- * helper
- */
-
-function _to_globals($s) {
-    global $globals;
-    $t = explode('.',$s);
-    if (count($t) == 1) {
-        return var_export($globals->$t[0],true);
-    } else {
-        return var_export($globals->$t[0]->$t[1],true);
-    }
-}
-
-/**
  * compilation plugin used to import $globals confing through #globals.foo.bar# directives
  */
 
 function at_to_globals($tpl_source, $smarty)
 {
-    return preg_replace_callback('/#globals\.([a-zA-Z0-9_.]+?)#/', function ($matches) { return _to_globals($matches[1]); }, $tpl_source);
+    $to_globals = function($matches) {
+        global $globals;
+        $t = explode('.', $matches[1]);
+        if (count($t) == 1) {
+            return var_export($globals->$t[0],true);
+        } else {
+            return var_export($globals->$t[0]->$t[1],true);
+        }
+    };
+
+    return preg_replace_callback('/#globals\.([a-zA-Z0-9_.]+?)#/', $to_globals, $tpl_source);
 }
 
 // }}}
 // {{{ function get_class_constants()
-
-/**
- * helper
- */
-
-function _get_class_const($class, $const)
-{
-    return var_export(constant($class . '::' . $const), true);
-}
 
 /**
  * Compilation plugin used to import class constants through calls to #Class::CONSTANT#
@@ -480,7 +467,11 @@ function _get_class_const($class, $const)
 
 function get_class_constants($tpl_source, $smarty)
 {
-    return preg_replace_callback('/#([a-zA-Z0-9_]+)::([A-Z0-9_]+)#/', function ($matches) { return _get_class_const($matches[1], $matches[2]); }, $tpl_source);
+    $get_class_const = function($matches) {
+        return var_export(constant($matches[1] . '::' . $matches[2]), true);
+    };
+
+    return preg_replace_callback('/#([a-zA-Z0-9_]+)::([A-Z0-9_]+)#/', $get_class_const, $tpl_source);
 }
 
 // }}}
