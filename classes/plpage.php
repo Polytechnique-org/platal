@@ -459,7 +459,7 @@ function _to_globals($s) {
 
 function at_to_globals($tpl_source, $smarty)
 {
-    return preg_replace('/#globals\.([a-zA-Z0-9_.]+?)#/e', '_to_globals(\'\\1\')', $tpl_source);
+    return preg_replace_callback('/#globals\.([a-zA-Z0-9_.]+?)#/', function ($matches) { return _to_globals($matches[1]); }, $tpl_source);
 }
 
 // }}}
@@ -480,7 +480,7 @@ function _get_class_const($class, $const)
 
 function get_class_constants($tpl_source, $smarty)
 {
-    return preg_replace('/#([a-zA-Z0-9_]+)::([A-Z0-9_]+)#/e', '_get_class_const(\'\\1\',\'\\2\')', $tpl_source);
+    return preg_replace_callback('/#([a-zA-Z0-9_]+)::([A-Z0-9_]+)#/', function ($matches) { return _get_class_const($matches[1], $matches[2]); }, $tpl_source);
 }
 
 // }}}
@@ -495,7 +495,7 @@ function trimwhitespace($source, $smarty)
     // remove all leading spaces, tabs and carriage returns NOT
     // preceeded by a php close tag.
     $source = preg_replace('/((?<!\?>)\n)[\s]+/m', '\1', $source);
-    $source = preg_replace("!&&&tags&&&!e",  'array_shift($tagsmatches[0])', $source);
+    $source = preg_replace_callback("!&&&tags&&&!", function ($_) use (&$tagsmatches) { return array_shift($tagsmatches[0]); }, $source);
 
     return $source;
 }
@@ -573,12 +573,12 @@ function hide_emails($source, $smarty)
     $source = preg_replace("!<[^>]+[-a-z0-9_+.]+@[-a-z0-9_.]+.+?>!ius", '&&&misc&&&', $source);
 
     //catch !
-    $source = preg_replace('!([-a-z0-9_+.]+@[-a-z0-9_.]+)!iue', '_hide_email("\1")', $source);
-    $source = preg_replace('!&&&ahref&&&!e', '_hide_email(array_shift($ahref[0]))', $source);
+    $source = preg_replace_callback('!([-a-z0-9_+.]+@[-a-z0-9_.]+)!iu', function ($matches) { return _hide_email($matches[1]); }, $source);
+    $source = preg_replace_callback('!&&&ahref&&&!', function ($_) use (&$ahref) { return _hide_email(array_shift($ahref[0])); }, $source);
 
     // restore data
-    $source = preg_replace('!&&&misc&&&!e', 'array_shift($misc[0])', $source);
-    $source = preg_replace("!&&&tags&&&!e",  'array_shift($tagsmatches[0])', $source);
+    $source = preg_replace_callback('!&&&misc&&&!', function ($_) use (&$misc) { return array_shift($misc[0]); }, $source);
+    $source = preg_replace_callback("!&&&tags&&&!", function ($_) use (&$tagsmatches) { return array_shift($tagsmatches[0]); }, $source);
 
     return $source;
 }
