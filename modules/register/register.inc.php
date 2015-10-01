@@ -37,7 +37,17 @@ function strongCheckId($subState)
     if (is_null($profile)) {
         $max_promo_year = XDB::fetchOneCell("SELECT  MAX(promo_year)
                                                FROM  profile_education
-                                              WHERE  FIND_IN_SET(flags, 'primary') AND eduid = 28 AND degreeid = 2");
+                                              WHERE  FIND_IN_SET(flags, 'primary')
+                                                     AND eduid = (
+                                                         SELECT  id
+                                                         FROM    profile_education_enum
+                                                         WHERE   abbreviation='X'
+                                                     )
+                                                     AND degreeid = (
+                                                         SELECT  id
+                                                         FROM    profile_education_degree_enum
+                                                         WHERE   abbreviation = 'Ing.'
+                                                     )");
         if ($subState->i('yearpromo') > $max_promo_year) {
             return "Ta promo n'est pas encore dans l'annuaire, réessaie dans quelques semaines."
         }
