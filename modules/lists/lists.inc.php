@@ -146,7 +146,10 @@ function list_header_decode($value) {
         return "[pas de sujet]";
     }
     $val = preg_replace('/(=\?[^?]*\?[BQbq]\?[^?]*\?=) (=\?[^?]*\?[BQbq]\?[^?]*\?=)/', '\1\2', $value);
-    return preg_replace('/=\?([^?]*)\?([BQbq])\?([^?]*)\?=/e', '_list_header_decode("\1", "\2", "\3")', $val);
+    return preg_replace_callback(
+        '/=\?([^?]*)\?([BQbq])\?([^?]*)\?=/',
+        function ($matches) { return _list_header_decode($matches[1], $matches[2], $matches[3]); },
+        $val);
 }
 
 // }}}
