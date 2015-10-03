@@ -1,4 +1,12 @@
 ================================================================================
+VERSION 1.1.14                                                        XX XX XXXX
+
+Bugs:
+
+    * Fix MiniWiki::WikiToText $title handling                              -IOS
+    * Use preg_replace_callback instead of deprecated /e modifier       -FEA/IOS
+
+================================================================================
 VERSION 1.1.13                                                        21 06 2014
 
 Bugs:
@@ -159,6 +167,7 @@ ACRONYMS:
     * Car: Pascal Corpet        (Caribou)   <pascal.corpet@m4x.org>
     * CAT: Florian El Ahdab     (LeChat)    <florian.el-ahdab@m4x.org>
     * FAL: Raphaël Marichez     (Falco)     <raphael.marichez@m4x.org>
+    * FEA: Vincent Brillault    (Feandil)   <vincent.brillault@m4x.org>
     * FRU: Florent Bruneau      (Fruneau)   <florent.bruneau@m4x.org>
     * FUL: Thomas Minvielle     (Fulanor)   <thomas.minvielle@m4x.org>
     * IOS: Nicolas Iooss        (Ioonag)    <nicolas.iooss@m4x.org>
