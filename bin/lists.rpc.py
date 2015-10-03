@@ -137,17 +137,17 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
                              INNER JOIN  account_types AS at ON (at.type = a.type)
                               LEFT JOIN  email_source_account AS esa ON (esa.uid = a.uid AND esa.type = 'forlife')
                               LEFT JOIN  email_virtual_domains AS evd ON (esa.domain = evd.id)
-                                  WHERE  a.uid = '%s' AND a.password = '%s' AND a.state = 'active'
-                                  LIMIT  1""" \
-                              % (uid, md5))
+                                  WHERE  a.uid = %s AND a.password = %s AND a.state = 'active'
+                                  LIMIT  1""",
+                              (uid, md5))
         if res:
             name, forlife, perms = res
             if vhost != PLATAL_DOMAIN and perms != 'admin':
                 res = mysql_fetchone ("""SELECT  m.uid, IF(m.perms = 'admin', 'admin', 'lists')
                                            FROM  group_members AS m
                                      INNER JOIN  groups        AS g ON (m.asso_id = g.id)
-                                          WHERE  uid = '%s' AND mail_domain = '%s'""" \
-                                      % (uid, vhost))
+                                          WHERE  uid = %s AND mail_domain = %s""",
+                                      (uid, vhost))
                 if res:
                     _, perms = res
             userdesc = UserDesc(forlife, name, None, 0)
@@ -174,11 +174,11 @@ def connectDB():
     db.autocommit(True)
     return db.cursor()
 
-def mysql_fetchone(query):
+def mysql_fetchone(query, params):
     ret = None
     try:
         lock.acquire()
-        mysql.execute(query)
+        mysql.execute(query, params)
         if int(mysql.rowcount) > 0:
             ret = mysql.fetchone()
     finally:
@@ -232,8 +232,9 @@ def to_forlife(email):
                          LEFT JOIN  accounts AS a ON (esa_source.uid = a.uid)
                          LEFT JOIN  email_source_account AS esa_forlife ON (a.uid = esa_forlife.uid AND esa_forlife.type = 'forlife')
                          LEFT JOIN  email_virtual_domains AS evd_forlife ON (evd_forlife.id = esa_forlife.domain)
-                             WHERE  esa_source.email = '%s' AND evd_source.name = '%s' AND a.state = 'active'
-                             LIMIT  1;""" % (mbox, fqdn))
+                             WHERE  esa_source.email = %s AND evd_source.name = %s AND a.state = 'active'
+                             LIMIT  1""",
+                         (mbox, fqdn))
     if res:
         return res
     else:
