@@ -161,8 +161,8 @@ class MiniWiki
     public static function WikiToText($wiki, $just=false, $indent=0, $width=68, $title=false)
     {
         if (!$title) {
-            $oldrule12 = MiniWiki::$replacementHTML[MiniWiki::$title_index];
-            MiniWiki::$replacementHTML[MiniWiki::$title_index] = "'$0'";
+            $oldrule12 = MiniWiki::$replacementText[MiniWiki::$title_index];
+            MiniWiki::$replacementText[MiniWiki::$title_index] = "'$0'";
         }
         //$text = trim($wiki);
         //foreach (MiniWiki::$patternsWiki as $key=>$pattern) {
@@ -171,7 +171,7 @@ class MiniWiki
         //}
         $text = preg_replace(MiniWiki::$patternsWiki, MiniWiki::$replacementText, trim($wiki));
         if (!$title) {
-            MiniWiki::$replacementHTML[MiniWiki::$title_index] = $oldrule12;
+            MiniWiki::$replacementText[MiniWiki::$title_index] = $oldrule12;
         }
         $text = $just ? MiniWiki::justify($text, $width - $indent) :  wordwrap($text, $width - $indent);
         if($indent) {
