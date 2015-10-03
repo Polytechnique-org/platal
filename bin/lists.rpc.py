@@ -191,11 +191,20 @@ def is_admin_on(userdesc, perms, mlist):
 
 def quote(s, is_header=False):
     if is_header:
-        h = Utils.oneline(s, 'iso-8859-1')
+        h = Utils.oneline(s, 'utf-8')
     else:
         h = s
-    h = str('').join(re.split('[\x00-\x08\x0B-\x1f]+', h))
-    return Utils.uquote(h.replace('&', '&amp;').replace('>', '&gt;').replace('<', '&lt;'))
+
+    # Remove illegal XML characters
+    # Try to decode UTF-8, so that Utils.uquote can escape multibyte characters
+    # correctly.
+    try:
+        hclean = h.decode('utf-8')
+        hclean = u''.join(re.split(u'[\x00-\x08\x0B-\x1f]+', hclean))
+    except UnicodeDecodeError:
+        hclean = ''.join(re.split('[\x00-\x08\x0B-\x1f]+', h))
+    return Utils.uquote(hclean.replace('&', '&amp;').replace('>', '&gt;').replace('<', '&lt;'))
+
 
 def to_forlife(email):
     """Convert any email to the related forlife.
