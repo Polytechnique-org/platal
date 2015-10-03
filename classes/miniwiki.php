@@ -10,6 +10,11 @@ class MiniWiki
     private static $title_index = -1;
     private static $info     = array();
 
+    /**
+     * Add a Markup rule to know pattern substitutions.
+     * $replacement and $replacementTxt can be either replacement strings or
+     * callback functions (used with preg_replace_callback).
+     */
     public static function Markup($pattern, $replacement, $replacementTxt, $info = null)
     {
         $id = count(MiniWiki::$patternsWiki);
@@ -30,23 +35,31 @@ class MiniWiki
         MiniWiki::Markup("/(\r\n|\r([^\n]))/", "\n$2", "\n$2");
 
         // retours à la ligne avec \\
-        MiniWiki::Markup("/\\\\(?".">(\\\\*))\n/e", "str_repeat('<br />\n',mb_strlen('$1'))", "str_repeat('\n',mb_strlen('$1'))", "ligne1\\\\\nligne2");
+        MiniWiki::Markup("/\\\\(?".">(\\\\*))\n/",
+                         function ($matches) { return str_repeat("<br />\n", mb_strlen($matches[1])); },
+                         function ($matches) { return str_repeat("\n", mb_strlen($matches[1])); },
+                         "ligne1\\\\\nligne2");
 
         // || Tables
-        MiniWiki::Markup("/((^|\n)\|\|(([^\n]*(\n|$))(\|\|[^\n]*(\n|$))*))/se",
-                         "'</p><table class=\"tinybicol\">'
-                         . str_replace(\"\n\", '', str_replace('||', '</td><td>', preg_replace(\"/\|\|($|\\n)/\", '</td></tr>\n', preg_replace(\"/(^|\\n)\|\|/\", '\n<tr><td>', '$1'))))
-                         . '</table><p>'",
-                         "str_replace('||', '|', '$1')",
+        MiniWiki::Markup("/((^|\n)\|\|(([^\n]*(\n|$))(\|\|[^\n]*(\n|$))*))/s",
+                         function ($matches) {
+                             return '</p><table class="tinybicol">'
+                                 . str_replace("\n", '', str_replace('||', '</td><td>', preg_replace("/\|\|($|\n)/", "</td></tr>\n", preg_replace("/(^|\n)\|\|/", "\n<tr><td>", $matches[1]))))
+                                 . '</table><p>';
+                         },
+                         function ($matches) { return str_replace('||', '|', $matches[1]); },
                          "||ligne1 colonne1||ligne1 colonne2||\n||ligne2 colonne1||ligne2 colonne2||");
 
         // * unordered list
-        MiniWiki::Markup("/(^|\n)\*(([^\n]*(\n|$))(\*[^\n]*(\n|$))*)/se",
-                         "'</p>\n<ul><li>'.str_replace(\"\\n*\",'</li><li>','$2').'</li></ul>\n<p>'",
-                         "'$1 -' . str_replace(\"\\n*\", \"\\n -\", '$2')",
+        MiniWiki::Markup("/(^|\n)\*(([^\n]*(\n|$))(\*[^\n]*(\n|$))*)/s",
+                         function ($matches) { return "</p>\n<ul><li>" . str_replace("\n*", '</li><li>', $matches[2]) . "</li></ul>\n<p>"; },
+                         function ($matches) { return $matches[1] . ' -' . str_replace("\n*", "\n -", $matches[2]); },
                          "* element1\n* element2\n* element3");
         // # ordered list
-        MiniWiki::Markup("/(^|\n)#(([^\n]*(\n|$))(#[^\n]*(\n|$))*)/se", "'</p>\n<ol><li>'.str_replace(\"\\n#\",'</li><li>','$2').'</li></ol>\n<p>'", "'$0'", "# element1\n# element2\n# element3");
+        MiniWiki::Markup("/(^|\n)#(([^\n]*(\n|$))(#[^\n]*(\n|$))*)/s",
+                         function ($matches) { return "</p>\n<ol><li>" . str_replace("\n#", '</li><li>', $matches[2]) . "</li></ol>\n<p>"; },
+                         '$0',
+                         "# element1\n# element2\n# element3");
 
         // bold, italic and others
         // ''' bold '''
@@ -69,14 +82,22 @@ class MiniWiki
         MiniWiki::Markup("/%([a-z]+|\#[0-9a-f]{3,6})%(.*?)%%/i", "<span style='color: $1;'>$2</span>", "$2",
                          "%red% texte en rouge %%\\\\\n%#ff0% texte en jaune %%\\\\\n%#0000ff% texte en bleu %%");
         // [+ big +] [++ bigger ++] [+++ even bigger +++] ...
-        MiniWiki::Markup("/\\[(([-+])+)(.*?)\\1\\]/e","'<span style=\'font-size:'.(round(pow(6/5,$2mb_strlen('$1'))*100,0)).'%\'>$3</span>'", "'$3'", "[+ grand +]\n\n[++ plus grand ++]\n\n[+++ encore plus grand +++]");
+        MiniWiki::Markup("/\\[(([-+])+)(.*?)\\1\\]/",
+                         function ($matches) {
+                             return '<span style="font-size:'
+                                . round(pow(6/5, ($matches[2] == '-' ? -1 : 1) * mb_strlen($matches[1])) * 100, 0)
+                                . '%">' . $matches[3] . '</span>';
+                         },
+                         '$3',
+                         "[+ grand +]\n\n[++ plus grand ++]\n\n[+++ encore plus grand +++]");
 
         // ----- <hr/>
         MiniWiki::Markup("/(\n|^)--(--+| \n)/s", '$1<hr/>', '$1-- '."\n", "----\n");
         // titles
-        MiniWiki::$title_index = MiniWiki::Markup('/(\n|^)(!+)([^\n]*)/se',
-                                                  "'$1<h'.mb_strlen('$2').'>$3</h'.mb_strlen('$2').'>'",
-                                                  "'$1$3'", "!titre1\n\n!!titre2\n\n!!!titre3");
+        MiniWiki::$title_index = MiniWiki::Markup('/(\n|^)(!+)([^\n]*)/s',
+                                                  function ($matches) { return $matches[1] . '<h' . mb_strlen($matches[2]) . '>' . $matches[3] . '</h' . mb_strlen($matches[2]) . '>'; },
+                                                  '$1$3',
+                                                  "!titre1\n\n!!titre2\n\n!!!titre3");
 
         // links
         MiniWiki::Markup('/((?:https?|ftp):\/\/(?:[\.\,\;\!\:]*[\w@~%$£µ&i#\-+=_\/\?])*)/ui',
@@ -101,11 +122,17 @@ class MiniWiki
     {
         if (!$title) {
             $oldrule12 = MiniWiki::$replacementHTML[MiniWiki::$title_index];
-            MiniWiki::$replacementHTML[MiniWiki::$title_index] = "'$0'";
+            MiniWiki::$replacementHTML[MiniWiki::$title_index] = "$0";
         }
-        $html = preg_replace(MiniWiki::$patternsWiki,
-                             MiniWiki::$replacementHTML,
-                             htmlentities(trim($wiki), ENT_COMPAT, 'UTF-8'));
+        $html = htmlentities(trim($wiki), ENT_COMPAT, 'UTF-8');
+        for ($idx = 0; $idx < count(MiniWiki::$patternsWiki); $idx++) {
+            $repl = MiniWiki::$replacementHTML[$idx];
+            if (is_callable($repl)) {
+                $html = preg_replace_callback(MiniWiki::$patternsWiki[$idx], $repl, $html);
+            } else {
+                $html = preg_replace(MiniWiki::$patternsWiki[$idx], $repl, $html);
+            }
+        }
         if (!$title) {
             MiniWiki::$replacementHTML[MiniWiki::$title_index] = $oldrule12;
         }
@@ -162,14 +189,17 @@ class MiniWiki
     {
         if (!$title) {
             $oldrule12 = MiniWiki::$replacementText[MiniWiki::$title_index];
-            MiniWiki::$replacementText[MiniWiki::$title_index] = "'$0'";
+            MiniWiki::$replacementText[MiniWiki::$title_index] = "$0";
         }
-        //$text = trim($wiki);
-        //foreach (MiniWiki::$patternsWiki as $key=>$pattern) {
-        //    echo $key . " -  " . $pattern . "\n";
-        //    $text = preg_replace($pattern, MiniWiki::$replacementText[$key], $text);
-        //}
-        $text = preg_replace(MiniWiki::$patternsWiki, MiniWiki::$replacementText, trim($wiki));
+        $text = trim($wiki);
+        for ($idx = 0; $idx < count(MiniWiki::$patternsWiki); $idx++) {
+            $repl = MiniWiki::$replacementText[$idx];
+            if (is_callable($repl)) {
+                $text = preg_replace_callback(MiniWiki::$patternsWiki[$idx], $repl, $text);
+            } else {
+                $text = preg_replace(MiniWiki::$patternsWiki[$idx], $repl, $text);
+            }
+        }
         if (!$title) {
             MiniWiki::$replacementText[MiniWiki::$title_index] = $oldrule12;
         }

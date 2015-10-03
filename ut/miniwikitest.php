@@ -59,7 +59,7 @@ class MiniWikiTest extends PlTestCase
             ),
             array(
                 "[+big1+] [++big2++] [+++big3+++]",
-                "<span style='font-size:120%'>big1</span> <span style='font-size:144%'>big2</span> <span style='font-size:173%'>big3</span>",
+                '<span style="font-size:120%">big1</span> <span style="font-size:144%">big2</span> <span style="font-size:173%">big3</span>',
                 "big1 big2 big3"
             ),
             array(
