@@ -1,6 +1,22 @@
 ================================================================================
 VERSION 1.1.17                                                       XX XX XXXX
 
+    * Lists:
+        - Handle unicode characters nicely in mailman-rpc                  -IOS
+        - Use prepared statements to query the SQL database                -IOS
+
+    * Payments:
+        - Fix payment commission sign for BPLC                             -KIT
+
+    * Registration:
+        - Make registration error messages clearer                         -FUL
+
+    * Wats4U:
+        - Improve data export scripts                                  -FUL/XEL
+
+    * Wiki
+        - Upgrade e-protect2 plugin to use preg_replace_callback           -FEA
+
 ================================================================================
 VERSION 1.1.16                                                       22 06 2015
 
@@ -2114,6 +2130,7 @@ ACRONYMS:
     * Car: Pascal Corpet        (Caribou)   <pascal.corpet@m4x.org>
     * CAT: Florian El Ahdab     (LeChat)    <florian.el-ahdab@m4x.org>
     * FAL: Raphaël Marichez     (Falco)     <raphael.marichez@m4x.org>
+    * FEA: Vincent Brillault    (Feandil)   <vincent.brillault@m4x.org>
     * FRU: Florent Bruneau      (Fruneau)   <florent.bruneau@m4x.org>
     * FUL: Thomas Minvielle     (Fulanor)   <thomas.minvielle@m4x.org>
     * GAL: Guillaume Gris       (Galdor)    <guillaume.gris@m4x.org>
