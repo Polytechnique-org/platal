@@ -178,9 +178,9 @@ class PlMailer extends Mail_Mime {
         }
         $email = preg_replace('!(^|, *)([^<"]+?) *(<[^>]*>)!u',
                               '\1 "\2" \3', $email);
-        return preg_replace('/"([^<]+)"/e',
-                            '"\\"" . PlMailer::encodeStringQP("\1") . "\\""',
-                            $email);
+        return preg_replace_callback('/"([^<]+)"/',
+                                     function ($matches) { return '"' . PlMailer::encodeStringQP($matches[1]) . '"'; },
+                                     $email);
     }
 
     public function addTo($email)
@@ -217,7 +217,11 @@ class PlMailer extends Mail_Mime {
     static function encodeStringQP($string)
     {
         if (!preg_match('/^[\x20-\x7e]*$/', $string)) {
-            $string = '=?UTF-8?Q?' . preg_replace('/[^\x21-\x3C\x3e\x40-\x7e]/e', 'PlMailer::encodeQP("\0")', $string)
+            $string = '=?UTF-8?Q?'
+                     . preg_replace_callback(
+                        '/[^\x21-\x3C\x3e\x40-\x7e]/',
+                        function ($matches) { return PlMailer::encodeQP($matches[0]); },
+                        $string)
                      . '?=';
         }
         return $string;
