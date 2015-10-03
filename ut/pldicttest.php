@@ -40,7 +40,7 @@ class PlDictTest extends PlTestCase
     public function testEmpty()
     {
         $dict = new PlDict();
-        $this->checkEmpty($dict, $key);
+        $this->checkEmpty($dict, 'key');
     }
 
     public function testPrefilled()
