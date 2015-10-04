@@ -1,5 +1,5 @@
 ================================================================================
-VERSION 1.1.17                                                       XX XX XXXX
+VERSION 1.1.17                                                       04 10 2015
 
     * Lists:
         - Handle unicode characters nicely in mailman-rpc                  -IOS
