@@ -49,7 +49,7 @@ function strongCheckId($subState)
                                                          WHERE   abbreviation = 'Ing.'
                                                      )");
         if ($subState->i('yearpromo') > $max_promo_year) {
-            return "Ta promo n'est pas encore dans l'annuaire, réessaie dans quelques semaines."
+            return "Ta promo n'est pas encore dans l'annuaire, réessaie dans quelques semaines.";
         }
         return "Cherche ton nom dans l'annuaire public. Si tu te trouves, tu es déjà inscrit ou ton matricule est incorrect ! Sinon envoie-nous un email à support@polytechnique.org";
     }
