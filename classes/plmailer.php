@@ -352,7 +352,8 @@ class PlMailer extends Mail_Mime {
         foreach (Array('To', 'Cc', 'Bcc') as $hdr) {
             if (isset($this->_headers[$hdr])) {
                 require_once 'Mail/RFC822.php';
-                $parsed = @Mail_RFC822::parseAddressList($this->_headers[$hdr]);
+                $_mail = new Mail_RFC822($this->_headers[$hdr]);
+                $parsed = @$_mail->parseAddressList();
                 if (is_array($parsed)) {
                     $addrs = array_merge($addrs, $parsed);
                 }
@@ -373,7 +374,8 @@ class PlMailer extends Mail_Mime {
         global $globals;
         if ($globals->email_catchall && $globals->core->restricted_platal) {
             require_once 'Mail/RFC822.php';
-            if (@Mail_RFC822::isValidInetAddress($globals->email_catchall)) {
+            $_mail = new Mail_RFC822()
+            if (@$_mail->isValidInetAddress($globals->email_catchall)) {
                 $dests = array($globals->email_catchall);
             }
         }
