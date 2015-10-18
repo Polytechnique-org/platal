@@ -1,5 +1,11 @@
 ================================================================================
-VERSION 1.1.18                                                       XX XX XXXX
+VERSION 1.1.18                                                       14 10 2015
+
+    * Core:
+        - Fix Mail_RFC822 warnings                                          -XEL
+
+    * Profile:
+        - Hide ax_id to non-admin members                                   -FUL
 
 ================================================================================
 VERSION 1.1.17                                                       04 10 2015
@@ -17,7 +23,7 @@ VERSION 1.1.17                                                       04 10 2015
     * Wats4U:
         - Improve data export scripts                                  -FUL/XEL
 
-    * Wiki
+    * Wiki:
         - Upgrade e-protect2 plugin to use preg_replace_callback           -FEA
 
 ================================================================================
