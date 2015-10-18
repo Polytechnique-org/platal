@@ -374,7 +374,7 @@ class PlMailer extends Mail_Mime {
         global $globals;
         if ($globals->email_catchall && $globals->core->restricted_platal) {
             require_once 'Mail/RFC822.php';
-            $_mail = new Mail_RFC822()
+            $_mail = new Mail_RFC822();
             if (@$_mail->isValidInetAddress($globals->email_catchall)) {
                 $dests = array($globals->email_catchall);
             }
