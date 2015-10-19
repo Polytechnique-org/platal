@@ -97,13 +97,14 @@ function pl_error_handler($errno, $errstr, $errfile, $errline)
             E_USER_WARNING    => "User Warning",
             E_USER_NOTICE     => "User Notice",
             E_STRICT          => "Runtime Notice",
-            E_RECOVERABLE_ERROR => "Recoverable Error"
+            E_RECOVERABLE_ERROR => "Recoverable Error",
+            E_DEPRECATED      => "Deprecation Notice"
         );
     }
 
     global $globals;
     if (isset($globals) && !$globals->debug) {
-        if ($errno == E_NOTICE || $errno == E_USER_NOTICE || $errno == E_STRICT) {
+        if ($errno == E_NOTICE || $errno == E_USER_NOTICE || $errno == E_STRICT || $errno == E_DEPRECATED) {
             return;
         }
     }
