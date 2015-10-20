@@ -62,10 +62,10 @@ function wats4u_sso_check()
         $challenge = Get::s('challenge');
         $pass = Get::s('pass');
         $shared_key = $globals->wats4u->shared_key;
-        $valid_return_url_prefix = $globals->wats4u->return_url_prefix;
+        $valid_return_url_regex = $globals->wats4u->return_url_regex;
 
         return wats4u_sso_v1_check($return_url, $challenge, $pass,
-            $shared_key, $valid_return_url_prefix);
+            $shared_key, $valid_return_url_regex);
 
     default:
         return false;
@@ -101,7 +101,7 @@ function wats4u_sso_build_return_url($user)
  * "pure" function.
  */
 function wats4u_sso_v1_check($return_url, $challenge, $pass,
-    $shared_key, $valid_return_url_prefix)
+    $shared_key, $valid_return_url_regex)
 {
     if (strlen($challenge) < WATS4U_MINIMUM_CHALLENGE_LENGTH) {
         return false;
@@ -112,8 +112,8 @@ function wats4u_sso_v1_check($return_url, $challenge, $pass,
         return false;
     }
 
-    $return_url_prefix = substr($return_url, 0, strlen($valid_return_url_prefix));
-    if (strcmp($return_url_prefix, $valid_return_url_prefix) !== 0) {
+    $return_url_regex = substr($return_url, 0, strlen($valid_return_url_regex));
+    if (!preg_match($return_url_regex, $return_url)) {
         return false;
     }
 
