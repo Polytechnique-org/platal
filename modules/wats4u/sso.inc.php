@@ -112,8 +112,7 @@ function wats4u_sso_v1_check($return_url, $challenge, $pass,
         return false;
     }
 
-    $return_url_regex = substr($return_url, 0, strlen($valid_return_url_regex));
-    if (!preg_match($return_url_regex, $return_url)) {
+    if (!preg_match($valid_return_url_regex, $return_url)) {
         return false;
     }
 
