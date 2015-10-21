@@ -33,6 +33,9 @@ WD=/home/web/prod/platal/bin/cron
 # homonymes
 0 0 * * 1	web	cd $WD; ./homonyms.php
 
+# Wats4U Sync
+30 1 * * *      web	cd $WD; ./export_wats4u.sh
+
 # ml moderation
 * * * * *       web     cd $WD; ./cron_ml_moderate.php > /dev/null
 
