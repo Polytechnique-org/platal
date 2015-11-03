@@ -21,7 +21,9 @@
 {**************************************************************************}
 
 {include file=skin/common.doctype.tpl}
-    <link rel="stylesheet" type="text/css" href="css/default.css" media="all" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+    integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
+    crossorigin="anonymous">
     {include file=skin/common.header.tpl}
   </head>
   <body>
@@ -45,32 +47,25 @@
 
   {else}
 
-    <table id="body" cellpadding="0" cellspacing="0">
-      <tr>
-        <td id="body-logo">
-          <a href="index"><img src="images/skins/default_headlogo.jpg" alt="[ LOGO ]" /></a>
-        </td>
-        <td id="body-top">
-          <a href="index"><img src="images/skins/default_ban.jpg" alt="[ Polytechnique.org ]" /></a>
-          {include file="skin/common.title.header.tpl"}
-          <a href="index"><img src="images/skins/default_lesX.gif" alt="[LES X SUR LE WEB]" /></a>
-        </td>
-      </tr>
-      <tr>
-        <td id="body-menu">
+  <div id="body" class="container">
+    <header>
+      {include file="g15/common/header.tpl"}
+    </header>
+    <section>
+      <nav id="body-menu">
         {include file=skin/common.menu.tpl}
-        </td>
-        <td id="content">
-          {include core=plpage.content.tpl}
-        </td>
-      </tr>
-      <tr>
-        <td id="body-bottom" colspan="2">
-          {include file=skin/common.footer.tpl}
-        </td>
-      </tr>
-    </table>
+      </nav>
+      <article id="content">
+        {include core=plpage.content.tpl}
+      </article>
+    </section>
+    <footer id="body-bottom">
+      {include file=skin/common.footer.tpl}
+    </footer>
+  </div>
+
   {/if}
+
   </body>
 </html>
 {* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}
