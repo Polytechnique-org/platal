@@ -904,7 +904,17 @@ class AdminModule extends PLModule
                             $sortName = build_sort_name($firstname, $lastname);
                             $birthDate = self::formatBirthDate($infos[2]);
                             if ($type == 'x') {
-                                $xorgId = Profile::getXorgId($infos[4]);
+                                if ($promotion < 1996 && preg_match('/^[0-9]{8}$/', $infos[4])) {
+                                    /* Allow using Xorg ID for old promotions, to allow fixing typos in names */
+                                    $xorgId = $infos[4];
+                                    $year = intval(substr($xorgId, 0, 4));
+                                    if ($year != $promotion) {
+                                        $page->trigError("La ligne $line n'a pas été ajoutée car le matricule Xorg n'a pas la date correspondant à la promotion.");
+                                        continue;
+                                    }
+                                } else {
+                                    $xorgId = Profile::getXorgId($infos[4]);
+                                }
                             } elseif (isset($infos[4])) {
                                 $xorgId = trim($infos[4]);
                             } else {
