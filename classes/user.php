@@ -131,6 +131,104 @@ class User extends PlUser
         throw new UserNotFoundException($res->fetchColumn(1));
     }
 
+    // Get an UID from an hruid or an email address
+    public static function getUidFromEmail($email)
+    {
+        $email = trim(strtolower($email));
+
+        // If $email is an hruid, returns the account
+        $res = XDB::fetchOneCell('SELECT  uid
+                                    FROM  accounts
+                                   WHERE  hruid = {?}', $email);
+        if ($res) {
+            return $res;
+        }
+
+        if (strstr($email, '@') === false) {
+            // If $email is not an email address, accept first.lastname when it is unique
+            // and is associated to a domain which satisfies isMainMailDomain()
+            $res = XDB::query('SELECT  s.uid, d.name
+                                 FROM  email_source_account  AS s
+                           INNER JOIN  email_virtual_domains AS d ON (s.domain = d.id)
+                                WHERE  s.email = {?}',
+                              $email);
+            if ($res->numRows() == 1) {
+                list($uid, $domain) = $res->fetchOneRow();
+                if (User::isMainMailDomain($domain)) {
+                    return $uid;
+                }
+            }
+            throw new UserNotFoundException();
+        }
+
+        // If $email is an email address we provide, returns the associated account
+        list($user, $domain) = explode('@', $email);
+        $res = XDB::fetchOneCell('SELECT  s.uid
+                                    FROM  email_source_account  AS s
+                              INNER JOIN  email_virtual_domains AS m ON (s.domain = m.id)
+                              INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
+                                   WHERE  s.email = {?} AND d.name = {?}',
+                                 $user, $domain);
+        if ($res) {
+            return $res;
+        }
+
+        // Looks for an account with the given email.
+        $res = XDB::query('SELECT  uid
+                             FROM  accounts
+                            WHERE  email = {?}', $email);
+        if ($res->numRows() == 1) {
+            return $res->fetchOneCell();
+        }
+
+        // $email may also be an email redirection.
+        $res = XDB::query('SELECT  uid
+                             FROM  email_redirect_account
+                            WHERE  redirect = {?}', $email);
+        if ($res->numRows() == 1) {
+            return $res->fetchOneCell();
+        }
+        throw new UserNotFoundException();
+    }
+
+    // Get an user from an hruid or an email address
+    public static function getUserFromEmail($email)
+    {
+        try {
+            return new User(null, array('uid' => User::getUidFromEmail($email)));
+        } catch (UserNotFoundException $e) {
+            return null;
+        }
+    }
+
+    // Transform a list of hruids and emails to forlife emails or external emails
+    public static function getBulkForlifeEmailsFromEmail($emails)
+    {
+        if (!is_array($emails)) {
+            if (strlen(trim($emails)) == 0) {
+                return null;
+            }
+            $emails = preg_split("/[; ,\r\n\|]+/", $emails);
+        }
+        if ($emails) {
+            $list = array();
+            foreach ($emails as $i => $email) {
+                $email = trim($email);
+                if (empty($email)) {
+                    continue;
+                }
+
+                if (($user = User::getUserFromEmail($email))) {
+                    $list[$i] = $user->forlifeEmail();
+                } else if (User::isForeignEmailAddress($email) && isvalid_email($email)) {
+                    $list[$i] = $email;
+                }
+            }
+            return array_unique($list);
+        }
+        return null;
+    }
+
     protected static function loadMainFieldsFromUIDs(array $uids, $respect_order = true)
     {
         if (empty($uids)) {

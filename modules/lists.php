@@ -244,8 +244,8 @@ class ListsModule extends PLModule
         if (Post::has('add_owner_sub') && Post::has('add_owner')) {
             // if we want to add an owner and then type <enter>, then both
             // add_owner_sub and add_owner are filled.
-            $oforlifes = User::getBulkForlifeEmails(Post::v('add_owner'), true);
-            $mforlifes = User::getBulkForlifeEmails(Post::v('add_member'), true);
+            $oforlifes = User::getBulkForlifeEmailsFromEmail(Post::v('add_owner'));
+            $mforlifes = User::getBulkForlifeEmailsFromEmail(Post::v('add_member'));
             if (!is_null($oforlifes)) {
                 $owners = array_merge($owners, $oforlifes);
             }
@@ -258,7 +258,7 @@ class ListsModule extends PLModule
 
         // click on validate button 'add_member_sub'
         if (Post::has('add_member_sub') && Post::has('add_member')) {
-            $forlifes = User::getBulkForlifeEmails(Post::v('add_member'), true);
+            $forlifes = User::getBulkForlifeEmailsFromEmail(Post::v('add_member'));
             if (!is_null($forlifes)) {
                 $members = array_merge($members, $forlifes);
             }
@@ -268,7 +268,7 @@ class ListsModule extends PLModule
             if (!$upload) {
                 $page->trigError('Une erreur s\'est produite lors du téléchargement du fichier');
             } else {
-                $forlifes = User::getBulkForlifeEmails($upload->getContents(), true);
+                $forlifes = User::getBulkForlifeEmailsFromEmail($upload->getContents());
                 if (!is_null($forlifes)) {
                     $members = array_merge($members, $forlifes);
                 }
@@ -733,9 +733,7 @@ class ListsModule extends PLModule
             }
 
             $logins = preg_split("/[; ,\r\n\|]+/", $logins);
-            $members = User::getBulkForlifeEmails($logins,
-                                                  true,
-                                                  array('ListsModule', 'no_login_callback'));
+            $members = User::getBulkForlifeEmailsFromEmail($logins);
             $unfound = array_diff_key($logins, $members);
 
             // Make sure we send a list (array_values) of unique (array_unique)
@@ -784,7 +782,7 @@ class ListsModule extends PLModule
         if (Env::has('add_owner')) {
             S::assert_xsrf_token();
 
-            $owners = User::getBulkForlifeEmails(Env::v('add_owner'), false, array('ListsModule', 'no_login_callback'));
+            $owners = User::getBulkForlifeEmailsFromEmail(Env::v('add_owner'));
             if ($owners) {
                 foreach ($owners as $forlife_email) {
                     if ($mlist->addOwner($forlife_email)) {
