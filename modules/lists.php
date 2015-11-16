@@ -798,6 +798,9 @@ class ListsModule extends PLModule
             if (strpos(Env::v('del_owner'), '@') === false) {
                 if ($del_owner = User::getSilent(Env::t('del_owner'))) {
                     $mlist->removeOwner($del_owner->forlifeEmail());
+                } else {
+                    // Shit happens, and a non-email could be set as the owner
+                    $mlist->removeOwner(Env::v('del_owner'));
                 }
             } else {
                 $mlist->removeOwner(Env::v('del_owner'));
