@@ -228,7 +228,7 @@
   <tr class="{$class}">
     <td><span class="titre">Domaine de formation&nbsp;:</span></td>
     <td>
-      <select name="main_edus[{$main_edu.degreeid}][fieldid]">
+      <select name="main_edus[{$eduid}][fieldid]">
         <option value="">&nbsp;</option>
         {foreach from=$edu_fields item=field}
         <option value="{$field.id}" {if $field.id eq $main_edu.fieldid}selected="selected"{/if}>{$field.field}</option>
@@ -239,9 +239,10 @@
   <tr class="{$class}">
     <td><span class="titre">Description de la formation&nbsp;:</span></td>
     <td>
-      <input type="text" name="main_edus[{$main_edu.degreeid}][program]" value="{$main_edu.program}" size="30" maxlength="255" />
-      <input type="hidden" name="main_edus[{$main_edu.degreeid}][degreeid]" value="{$main_edu.degreeid}" />
-      <input type="hidden" name="main_edus[{$main_edu.degreeid}][cycle]" value="{$main_edu.cycle}" />
+      <input type="text" name="main_edus[{$eduid}][program]" value="{$main_edu.program}" size="30" maxlength="255" />
+      <input type="hidden" name="main_edus[{$eduid}][degreeid]" value="{$main_edu.degreeid}" />
+      <input type="hidden" name="main_edus[{$eduid}][promo_year]" value="{$main_edu.promo_year}" />
+      <input type="hidden" name="main_edus[{$eduid}][cycle]" value="{$main_edu.cycle}" />
     </td>
   </tr>
   {/foreach}
