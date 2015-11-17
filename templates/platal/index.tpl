@@ -34,14 +34,14 @@
 <ul>
   <li class="spaced">
     vous avez la possibilité
-    <strong><a href="http://www.manageurs.com/?langue=fr">d'utiliser le site
-        Manageurs.com</a></strong> pour rentrer en contact avec les
+    <strong><a href="http://www.wats4u.com/">d'utiliser le site
+        Wats4U</a></strong> pour rentrer en contact avec les
     polytechniciens, mettre en ligne des offres d'emploi, consulter l'annuaire
     inter-écoles et consulter la base de données de CV.
   </li>
   <li class="spaced">
-    you can <strong><a href="http://www.manageurs.com/?langue=en">access
-        Manageurs.com</a></strong> to get in touch with alumni and students of
+    you can <strong><a href="http://www.wats4u.com/">access
+        Wats4U</a></strong> to get in touch with alumni and students of
     École polytechnique, submit job offers, use the directory and browse the
     resume database.
   </li>

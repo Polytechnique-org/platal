@@ -29,7 +29,7 @@
 <div class="menu_title">Visiteurs</div>
 <div class="menu_item"><a href="search">Annuaire de l'X</a></div>
 <div class="menu_item"><a href="http://www.polytechnique.net/">Associations X</a></div>
-<div class="menu_item"><a href="http://www.manageurs.com/">Recrutement</a></div>
+<div class="menu_item"><a href="http://www.wats4u.com/">Recrutement</a></div>
 
 <div class="menu_title">Informations</div>
 <div class="menu_item"><a href="Equipe/APropos">À propos du site</a></div>

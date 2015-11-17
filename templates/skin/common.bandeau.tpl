@@ -54,7 +54,7 @@
   <a href="https://www.polytechnique.org">Polytechnique.org</a> &middot;
   <a href="http://www.polytechnique.net{if t($login)}/login{/if}">Associations polytechniciennes</a> &middot;
   <a href="http://www.polytechnique.fr/eleves/">&Eacute;l&egrave;ves</a> &middot;
-  <a href="http://www.manageurs.com/{if t($login)}anciens_accueil.php?asso=X.org{/if}">Manageurs</a>
+  <a href="http://www.wats4u.com/{if t($login)}manageurs/login.mj?association=polytechnique{/if}">Wats4U</a>
 </div>
 
 {* vim:set et sw=2 sts=2 sws=2 fenc=utf8: *}
