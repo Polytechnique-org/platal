@@ -203,6 +203,12 @@ class ProfileSettingEdu implements ProfileSetting
                                           WHERE  pid = {?} AND !(FIND_IN_SET('primary', flags) OR FIND_IN_SET('secondary', flags))
                                        ORDER BY  id",
                                         $page->pid());
+            foreach ($value as &$edu) {
+                // Add $edu['warning'] so that $values can be compared with values from a form
+                if (!$edu['grad_year']) {
+                    $edu['warning'] = true;
+                }
+            }
         } else if (!is_array($value)) {
             $value = null;
         } else {
