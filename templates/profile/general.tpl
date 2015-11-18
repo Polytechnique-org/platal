@@ -160,6 +160,7 @@
       <input type="text" {if $errors.birthdate_ref}class="error"{/if} name="birthdate_ref" value="{$birthdate_ref}" />
     {else}
       {$birthdate_ref}
+      <input type="hidden" name="birthdate_ref" value="{$birthdate_ref}" />
     {/if}
     </td>
   </tr>

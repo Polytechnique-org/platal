@@ -131,6 +131,8 @@ class Profile implements PlExportable
         'main_edus'       => 'Formations à l\'X',
         'promo'           => 'Promotion de sortie',
         'birthdate'       => 'Date de naissance',
+        'birthdate_ref'   => 'Date de naissance de référence',
+        'deathdate'       => 'Date de décès',
         'yourself'        => 'Nom affiché',
         'freetext'        => 'Commentaire',
         'freetext_pub'    => 'Affichage du commentaire',
