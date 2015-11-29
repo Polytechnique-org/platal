@@ -121,28 +121,28 @@ class CheckDB extends PlTestCase
 
         $tests = array(
             'profiles' => array(
-                'freetext_pub' => array('public', 'private'),
-                'medals_pub'   => array('public', 'private'),
-                'alias_pub'    => array('public', 'private')
+                'freetext_pub' => array('public', 'private', 'hidden'),
+                'medals_pub'   => array('public', 'private', 'hidden'),
+                'alias_pub'    => array('public', 'private', 'hidden')
             ),
             'profile_addresses' => array(
-                'pub' => array('public', 'ax', 'private')
+                'pub' => array('public', 'ax', 'private', 'hidden')
             ),
             'profile_corps' => array(
-                'corps_pub' => array('public', 'ax', 'private')
+                'corps_pub' => array('public', 'ax', 'private', 'hidden')
             ),
             'profile_job' => array(
-                'pub'       => array('public', 'ax', 'private'),
-                'email_pub' => array('public', 'ax', 'private')
+                'pub'       => array('public', 'ax', 'private', 'hidden'),
+                'email_pub' => array('public', 'ax', 'private', 'hidden')
             ),
             'profile_networking' => array(
-                'pub' => array('public', 'private')
+                'pub' => array('public', 'private', 'hidden')
             ),
             'profile_phones' => array(
-                'pub' => array('public', 'ax', 'private')
+                'pub' => array('public', 'ax', 'private', 'hidden')
             ),
             'profile_photos' => array(
-                'pub' => array('public', 'private')
+                'pub' => array('public', 'private', 'hidden')
             ),
         );
 
