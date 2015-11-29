@@ -23,15 +23,6 @@ require_once dirname(__FILE__) . '/../include/test.inc.php';
 
 class NameTest extends PlTestCase
 {
-    private static function checkPlatal()
-    {
-        global $platal;
-
-        if (is_null($platal)) {
-            $platal = new Xorg();
-        }
-    }
-
     public static function nameProvider()
     {
         return array(
@@ -55,8 +46,7 @@ class NameTest extends PlTestCase
      */
     public function testName($name, $capitalized_name, $sort_name)
     {
-        self::checkPlatal();
-        require_once 'name.func.inc.php';
+        require_once dirname(__FILE__) . '/../include/name.func.inc.php';
 
         $test = capitalize_name($name);
         $this->assertEquals($test, $capitalized_name);
