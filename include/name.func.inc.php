@@ -268,6 +268,12 @@ function capitalize_name($name)
         $tail = (strlen($tail) > 2 ? substr($tail, 2) : false);
     }
 
+    // Special case for double-dash
+    if ($separator == '-' && strlen($tail) >= 1 && $tail[0] == '-') {
+        $separator = '--';
+        $tail = (strlen($tail) > 1 ? substr($tail, 1) : false);
+    }
+
     // Capitalizes the first token.
     if (!in_array($token, Particles::$particles)) {
         $token = mb_ucfirst($token);

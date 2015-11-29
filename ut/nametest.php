@@ -37,7 +37,8 @@ class NameTest extends PlTestCase
             array("ÖZTÜRK-N'Dong-Nzue", "Öztürk-N'Dong-Nzue", "Öztürk-N'Dong-Nzue"),
             array('MAC NAMARA', 'Mac Namara', 'MacNamara'),
             array('MACNAMARA', 'Macnamara', 'Macnamara'),
-            array('MCNAMARA', 'Mcnamara', 'Macnamara')
+            array('MCNAMARA', 'Mcnamara', 'Macnamara'),
+            array('DOUBLE--TIRET', 'Double--Tiret', 'Double--Tiret')
         );
     }
 
