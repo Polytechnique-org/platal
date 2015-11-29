@@ -147,7 +147,7 @@ class CheckDB extends PlTestCase
         );
 
         foreach ($tests as $table => $test) {
-            $select = 'p.pid, p.hrpid';
+            $select = '"' . $table.'" AS table, p.pid, p.hrpid';
             $where  = array();;
             foreach ($test as $field => $pubs) {
                 $select .= ", t.$field";
