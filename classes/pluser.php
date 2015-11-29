@@ -404,8 +404,12 @@ abstract class PlUser implements PlUserInterface
 
     private static function stripBadChars($text)
     {
-        return str_replace(array(' ', "'", '+'), array('-', '', '_'),
-                           strtolower(stripslashes(replace_accent(trim($text)))));
+        $text = str_replace(array(' ', "'", '+'), array('-', '', '_'),
+                            strtolower(stripslashes(replace_accent(trim($text)))));
+        // Trim special characters
+        $text = preg_replace('/[^-._0-9a-zA-Z]/', '', $text);
+        // Merge double dashes
+        return preg_replace('/--+/', '-', $text);
     }
 
     /** Creates a username from a first and last name
