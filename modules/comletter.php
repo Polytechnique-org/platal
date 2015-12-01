@@ -20,7 +20,6 @@
  ***************************************************************************/
 
 Platal::load('newsletter');
-require_once 'comletter.inc.php';
 
 /**
  * Newsletter for community
@@ -68,6 +67,7 @@ class ComLetterModule extends NewsletterModule
             if (!Post::has('see')) {
                 $page->trigError("L'article doit avoir un titre et un contenu");
             }
+            require_once 'comletter.inc.php';
             $art = new ComLArticle(Post::v('title'), Post::v('body'), Post::v('append'));
             $page->assign('art', $art);
         } elseif (Post::has('valid')) {
@@ -84,6 +84,7 @@ class ComLetterModule extends NewsletterModule
         pl_content_headers('text/html');
         $page->changeTpl('newsletter/remaining.tpl', NO_SKIN);
 
+        require_once 'comletter.inc.php';
         $article = new ComLArticle('', Post::t('body'), '');
         $rest = $article->remain();
 
