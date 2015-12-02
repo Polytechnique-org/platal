@@ -18,6 +18,9 @@ WD=/home/web/prod/platal/bin/cron
 0  2 * * *	web	cd $WD; ./notifs.birthday.php
 0  4 * * 6	web	cd $WD; ./notifs.send.php
 
+# birthday emails
+0 0 * * *	web	cd $WD; ./birthday.send.php
+
 # profile modification notifications
 0 23 * * *	web	cd $WD; ./profile_modification.php
 

@@ -26,7 +26,7 @@ ini_set('memory_limit', '128M');
 
 // This cron sends a birthday email once a year to all users who have a profile.
 // It is useful technically (for 'unsubscribed users' to get at least one broken level a year) ;
-// and for the community management (it is very easy to unsubscribe and then difficult tu subscribe again).
+// and for the community management (it is very easy to unsubscribe and then difficult to subscribe again).
 $pf = new ProfileFilter(new PFC_And(
                 new UFC_Birthday('=', time()),
                 new UFC_HasValidEmail(),
