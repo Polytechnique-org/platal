@@ -130,8 +130,8 @@ class Profile implements PlExportable
         'edus'            => 'Formations',
         'main_edus'       => 'Formations à l\'X',
         'promo'           => 'Promotion de sortie',
-        'birthdate'       => 'Date de naissance',
-        'birthdate_ref'   => 'Date de naissance de référence',
+        'birthdate'       => 'Date de naissance', // This field must be field upon registration if birthdate_ref is known, and may be updated by the user
+        'birthdate_ref'   => 'Date de naissance de référence', // This field is used to check users when they register
         'deathdate'       => 'Date de décès',
         'yourself'        => 'Nom affiché',
         'freetext'        => 'Commentaire',
