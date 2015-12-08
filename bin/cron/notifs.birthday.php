@@ -22,16 +22,26 @@
 
 require './connect.db.inc.php';
 
-$it = 0;
-do {
-    XDB::execute('UPDATE  profiles
-                     SET  next_birthday = DATE_ADD(next_birthday, INTERVAL 1 YEAR)
-                   WHERE  (next_birthday != 0 AND next_birthday IS NOT NULL AND next_birthday < CURDATE())
-                           AND deathdate IS NULL');
-    ++$it;
-    $affected = XDB::affectedRows();
-    //echo "Iteration $it => $affected changes\n";
-} while ($affected > 0);
+// Set next_birthday according to birthdate, so that people born on February
+// 29th get their birthdays the correct day.
+XDB::execute('UPDATE  profiles
+                 SET  next_birthday = DATE_ADD(birthdate,
+                        INTERVAL
+                            YEAR(CURDATE()) - YEAR(birthdate) +
+                            IF(DAYOFYEAR(CURDATE()) > DAYOFYEAR(birthdate),1,0)
+                        YEAR)
+               WHERE  birthdate AND (deathdate IS NULL OR deathdate = 0) AND (
+                          next_birthday IS NULL OR
+                          next_birthday < CURDATE() OR
+                          MONTH(birthdate) != MONTH(next_birthday) OR (
+                              DAY(birthdate) != DAY(next_birthday) AND NOT (
+                                  DAY(birthdate) = 29 AND
+                                  DAY(next_birthday) = 28 AND
+                                  MONTH(birthdate) = 2
+                              )
+                          )
+                      )');
+$affected = XDB::affectedRows();
+//echo "$affected next-birthday updated\n";
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker fenc=utf-8:
-?>
