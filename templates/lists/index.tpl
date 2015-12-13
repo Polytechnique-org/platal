@@ -112,7 +112,7 @@ thématique particulière.
 <h1>Listes de diffusion publiques auxquelles tu peux t'inscrire</h1>
 
 <p>
-Les listes de diffusion publiques sont visibles par tous les X inscrits à Polytechnique.org.
+Les listes de diffusion publiques sont visibles par tous les X inscrits à Polytechnique.org. Des listes de diffusion destinées aux Groupes X sont par ailleurs disponibles sur <a href="https://www.polytechnique.net/plan">polytechnique.net</a>.
 </p>
 
 {if $public|@count}
