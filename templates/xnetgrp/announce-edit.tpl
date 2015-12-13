@@ -137,7 +137,7 @@ function visibilityChange(box)
     <tr>
       <td class="titre">Date de péremption&nbsp;:</td>
       <td>
-        {valid_date name="expiration" value=$art.expiration}
+        {valid_date name="expiration" value=$art.expiration to=90}
       </td>
     </tr>
     {if $events}
