@@ -45,14 +45,17 @@
  * discovery. This works with any version of the protocol.
  */
 
-/* Testing suite is here:
- * http://openidenabled.com/resources/openid-test/
+/* Testing suite is here: http://janrain.com/openid-enabled/
  * It only supports User Indentifiers.
  *
  * To test OP Identifiers, download the JanRain PHP library and use the
  * consumer provided as an example (although it appears that a failure is
  * mistakenly reported: 'Server denied check_authentication').
  * Reading the source of the server can also help understanding the code below.
+ *
+ * It is also possible to perform testing using the script examples/consumer.py
+ * provided by this Python library:
+ * https://github.com/openid/python-openid
  */
 
 
