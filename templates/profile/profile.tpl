@@ -106,7 +106,7 @@ $($.closeOnEsc);
       {if $profile->isFemale()}&bull;{/if}
       {if $view->isVisible(#Visibility::EXPORT_PRIVATE#)}{$profile->private_name}{else}{$profile->public_name}{/if}
       {if $logged && ( hasPerm('admin') || ($smarty.session.user->canEdit($profile) && !($smarty.session.user->isMyProfile($profile)))) && $view->isVisible(#Visibility::EXPORT_PRIVATE#)}
-        <span title="Identifiant AX, uniquement visible par les administrateurs du site" style="font-weight:normal;font-style:italic;"> ({$profile->ax_id})</span>
+        <span title="Identifiant AX, uniquement visible par les administrateurs du site" style="font-weight:normal;font-style:italic;"> (<a href="http://kx.polytechniciens.com/?page=AX_FICHE_ANCIEN&ancc_id={$profile->ax_id}">{$profile->ax_id}</a>)</span>
       {/if}
 
       {if $logged}
