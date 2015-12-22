@@ -381,11 +381,10 @@ class XnetGrpModule extends PLModule
             $body  = Post::v('body');
 
             $mls = array_keys(Env::v('ml', array()));
-            $mbr = array_keys(Env::v('membres', array()));
 
             $this->load('mail.inc.php');
             set_time_limit(120);
-            $tos = get_all_redirects($mbr,  $mls, $mmlist);
+            $tos = get_all_redirects($mls, $mmlist);
 
             $upload = PlUpload::get($_FILES['uploaded'], S::user()->login(), 'xnet.emails', true);
             if (!$upload && @$_FILES['uploaded']['name'] && PlUpload::$lastError != null) {

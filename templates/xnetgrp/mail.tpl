@@ -74,17 +74,6 @@ masculin ou féminin, par son prénom, ou son nom.
     <tr>
       <th colspan="2">Destinataires</th>
     </tr>
-    <tr valign="top">
-      <td style='padding-left: 1em' class='titre'>
-        <em>annuaire</em>
-      </td>
-      <td>
-        <label><input type="checkbox" name="membres[X]" value="1"  {if $smarty.request.membres.X}checked="checked"{/if} />
-        <em>écrire à tous les membres du groupe</em></label><br />
-        <a href="{$platal->ns}annuaire" class='popup'>(voir annuaire)</a><br />
-      </td>
-    </tr>
-
     {assign var=ml_members value=""}
     {foreach from=$listes item=l}
       {if $l.list == "members" || $l.list == "membres" || $l.list == "membre"}

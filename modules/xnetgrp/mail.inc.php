@@ -21,17 +21,11 @@
 
 // {{{ get_all_redirects
 
-function get_all_redirects($membres, $mls, $client)
+function get_all_redirects($mls, $client)
 {
     global $globals;
 
     $tos = array();
-
-    // TODO: add more filters to choose users
-    if (!empty($membres)) {
-        $uf = new UserFilter(new UFC_Group($globals->asso('id')));
-        $tos = $uf->getUsers();
-    }
 
     foreach ($mls as $ml) {
         // $list_members is a (list_details, members, list_owners) array, where
