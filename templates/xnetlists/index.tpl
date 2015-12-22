@@ -56,9 +56,9 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscrip
       <a href="{$platal->ns}lists/list/{if $order_by eq 'list' && $order eq 'asc'}desc{else}asc{/if}">
         {if $order_by eq 'list'}
         {if $order eq 'desc'}
-          <img src="{$platal->baseurl}images/up.png" alt="" title="Tri décroissant" />
+          <img src="{$globals->baseurl}/images/up.png" alt="" title="Tri décroissant" />
         {else}
-          <img src="{$platal->baseurl}images/dn.png" alt="" title="Tri croissant" />
+          <img src="{$globals->baseurl}/images/dn.png" alt="" title="Tri croissant" />
         {/if}
         {/if}
         Liste
@@ -68,9 +68,9 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscrip
       <a href="{$platal->ns}lists/desc/{if $order_by eq 'desc' && $order eq 'asc'}desc{else}asc{/if}">
         {if $order_by eq 'desc'}
         {if $order eq 'desc'}
-          <img src="{$platal->baseurl}images/up.png" alt="" title="Tri décroissant" />
+          <img src="{$globals->baseurl}/images/up.png" alt="" title="Tri décroissant" />
         {else}
-          <img src="{$platal->baseurl}images/dn.png" alt="" title="Tri croissant" />
+          <img src="{$globals->baseurl}/images/dn.png" alt="" title="Tri croissant" />
         {/if}
         {/if}
         Description
@@ -82,9 +82,9 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscrip
       <a href="{$platal->ns}lists/nbsub/{if $order_by eq 'nbsub' && $order eq 'asc'}desc{else}asc{/if}">
         {if $order_by eq 'nbsub'}
         {if $order eq 'desc'}
-          <img src="{$platal->baseurl}images/up.png" alt="" title="Tri décroissant" />
+          <img src="{$globals->baseurl}/images/up.png" alt="" title="Tri décroissant" />
         {else}
-          <img src="{$platal->baseurl}images/dn.png" alt="" title="Tri croissant" />
+          <img src="{$globals->baseurl}/images/dn.png" alt="" title="Tri croissant" />
         {/if}
         {/if}
         Nb

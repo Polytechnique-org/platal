@@ -88,7 +88,7 @@ il suffit de cliquer sur le titre de la colonne concernée.
     <th>
       {if $order eq 'timestamp' && $order_id eq $p.id}
         <a href='{$platal->ns}payment?order={$order}&amp;order_inv={$order_inv}&amp;order_id={$p.id}'>
-          <img src="{$platal->baseurl}images/{if !$order_inv}dn{else}up{/if}.png" alt="" title="Tri {if $order_inv}dé{/if}croissant" />
+          <img src="{$globals->baseurl}/images/{if !$order_inv}dn{else}up{/if}.png" alt="" title="Tri {if $order_inv}dé{/if}croissant" />
       {else}
         <a href='{$platal->ns}payment?order=timestamp&amp;order_id={$p.id}'>
       {/if}Date</a>
@@ -96,7 +96,7 @@ il suffit de cliquer sur le titre de la colonne concernée.
     <th colspan="2">
       {if $order eq 'directory_name' && $order_id eq $p.id}
         <a href='{$platal->ns}payment?order={$order}&amp;order_inv={$order_inv}&amp;order_id={$p.id}'>
-          <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}croissant" />
+          <img src="{$globals->baseurl}/images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}croissant" />
       {else}
         <a href='{$platal->ns}payment?order=directory_name&amp;order_id={$p.id}'>{/if}
       NOM Prénom</a>
@@ -104,7 +104,7 @@ il suffit de cliquer sur le titre de la colonne concernée.
     <th>
       {if $order eq 'promo' && $order_id eq $p.id}
         <a href='{$platal->ns}payment?order={$order}&amp;order_inv={$order_inv}&amp;order_id={$p.id}'>
-          <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}croissant" />
+          <img src="{$globals->baseurl}/images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}croissant" />
       {else}
         <a href='{$platal->ns}payment?order=promo&amp;order_id={$p.id}'>
       {/if}Promo</a>
@@ -112,7 +112,7 @@ il suffit de cliquer sur le titre de la colonne concernée.
     <th>
       {if $order eq 'comment' && $order_id eq $p.id}
         <a href='{$platal->ns}payment?order=comment&amp;order_inv={$order_inv}&amp;order_id={$p.id}'>
-          <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}   siant" />
+          <img src="{$globals->baseurl}/images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}   siant" />
       {else}
         <a href='{$platal->ns}payment?order=comment&amp;order_id={$p.id}'>
       {/if}Commentaire</a>
@@ -120,7 +120,7 @@ il suffit de cliquer sur le titre de la colonne concernée.
     <th>
       {if $order eq 'amount' && $order_id eq $p.id}
         <a href='{$platal->ns}payment?order={$order}&amp;order_inv={$order_inv}&amp;order_id={$p.id}'>
-          <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}croissant" />
+          <img src="{$globals->baseurl}/images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}croissant" />
       {else}
         <a href='{$platal->ns}payment?order=amount&amp;order_id={$p.id}'>
       {/if}Montant</a>
