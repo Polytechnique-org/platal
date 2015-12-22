@@ -1,4 +1,16 @@
 ================================================================================
+VERSION 1.1.16                                                        XX XX XXXX
+
+New:
+
+    * Ignore E_DEPRECATED PHP errors                                        -XEL
+    * Be more strict on characters allowed for an HRID                      -IOS
+
+Bugs:
+
+    * Fix typo in PlMailer                                                  -XEL
+
+================================================================================
 VERSION 1.1.15                                                        18 10 2015
 
 Bugs:
