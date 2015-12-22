@@ -86,7 +86,7 @@
     <tr>
       <td class="titre center" colspan="2">
         <label><input type="checkbox" value="1" name="disable_mails" {if $disable_mails}checked="checked"{/if} />
-        désactiver l'envoi de mails</label>
+        désactiver la fonctionnalité obsolète "envoyer un mail"</label>
       </td>
     </tr>
   </table>

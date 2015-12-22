@@ -85,7 +85,11 @@ masculin ou féminin, par son prénom, ou son nom.
       </td>
     </tr>
 
+    {assign var=ml_members value=""}
     {foreach from=$listes item=l}
+      {if $l.list == "members" || $l.list == "membres" || $l.list == "membre"}
+        {assign var=ml_members value=$l.addr}
+      {/if}
     <tr>
       <td style='padding-left: 1em' class='titre'>
         {$l.list}
@@ -152,10 +156,20 @@ Le bureau du groupe {$asso->nom}.
           est en train d'envoyer beaucoup de mails et cet outil n'est certainement pas
           adapté pour cette situation.
         </p>
+        {if $ml_members}
         <p>
           Au lieu d'utiliser cet outil, il est possible d'utiliser la
+          liste de diffusion <a href="mailto:{$ml_members}">{$ml_members}</a>
+          ainsi que la
           <a href="{$platal->ns}nl">newsletter</a> du groupe pour écrire au groupe.
         </p>
+        {else}
+        <p>
+          Au lieu d'utiliser cet outil, il est possible d'utiliser la
+          <a href="{$platal->ns}nl">newsletter</a> du groupe pour écrire au groupe,
+          ou alors de créer une liste de diffusion membres@{$asso->mail_domain}.
+        </p>
+        {/if}
         <p>
           Pour connaître quelles solutions Polytechnique.org propose pour effectuer
           un envoi massif de mails ciblés, merci de contacter
