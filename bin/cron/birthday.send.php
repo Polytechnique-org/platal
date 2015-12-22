@@ -54,20 +54,28 @@ while($profile = $iterator->next()) {
     $mailer->assign('sex', $user->isFemale());
     $mailer->assign('yourself', $user->display_name);
     $mailer->assign('groups', $user->groups());
-    $mailer->assign('isX', $profile->mainEducation() == 'X');
-    $mailer->assign('promoX', $profile->yearpromo());
+    $isX = ($profile->mainEducation() == 'X');
+    $promoX = $profile->yearpromo();
+    $mailer->assign('isX', $isX);
+    $mailer->assign('promoX', $promoX);
     $mailer->assign('hrid', $profile->hrid());
     // A profile is considered recent if the last change happened less than 6 months ago.
     $mailer->assign('recent_update', $profile->last_change > date('Y-m-d', -180*24*60*60));
 
-    //TODO check if the user subscribed to the promo ML
-    // $listClient = new MMList(S::user());
-    // $mlists = $listClient->get_all_user_lists($user->forlifeEmail()); // Problem here because the cron does not have any plat/al permissions.
+    // Check if the user subscribed to the promo ML
     $mlpromo = false;
-    // foreach ($mlists as $mlist) {
-    //    $mlpromo = $mlpromo || ($mlist.addr == 'promo@' . $promoX . '.polytechnique.org');
-    // }
-    $mailer->assign('ml_promo', $mlpromo);
+    if ($isX && $promoX) {
+        $listClient = new MMList($user, $promoX . '.' . $globals->mail->domain);
+        $mlists = $listClient->get_lists($user->forlifeEmail());
+        foreach ($mlists as $mlist) {
+            if ($mlist['list'] == 'promo') {
+                // $mlist['sub'] is 0 for not-subscribed, 1 for pending and 2 for subscribed
+                $mlpromo = ($mlist['sub'] >= 1);
+                break;
+            }
+        }
+    }
+    $mailer->assign('mlpromo', $mlpromo);
     $mailer->assign('nlAX', NewsLetter::forGroup(NewsLetter::GROUP_AX)->subscriptionState($user));
     $mailer->assign('nlXorg', NewsLetter::forGroup(NewsLetter::GROUP_XORG)->subscriptionState($user));
     // We are going to pick up a random Groupe X (preferably) or Binet from the $user.
@@ -83,7 +91,7 @@ while($profile = $iterator->next()) {
         if ($data['cat'] == Group::CAT_BINETS) {
             $binets[$group_id] = $data['nom'];
         }
-        if (($profile->mainEducation() == 'X') && ($data['cat'] == Group::CAT_PROMOTIONS)) {
+        if ($isX && ($data['cat'] == Group::CAT_PROMOTIONS)) {
             $promoGroup = $promoGroup || ($data['diminutif'] == $profile->yearpromo());
         }
     }
