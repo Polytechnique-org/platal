@@ -93,7 +93,8 @@
   </tr>
   {/if}
 
-  {if !$is_member && $is_logged && $asso->inscriptible && $xnet_type != 'promotions'}
+  {* Allow subscribing to promo group for X accounts if the year matches *}
+  {if !$is_member && $is_logged && $asso->inscriptible && ($xnet_type != 'promotions' || (t($user_xpromo) && $asso->diminutif == $user_xpromo))}
   <tr>
     <td class="titre">
       M'inscrire&nbsp;:

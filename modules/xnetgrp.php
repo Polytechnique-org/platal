@@ -91,7 +91,12 @@ class XnetGrpModule extends PLModule
             /* TODO: refines this filter on promotions by using userfilter. */
             $user = S::user();
             if ($user->hasProfile()) {
-                $promo = XDB::format('{?}', $user->profile()->entry_year);
+                $profile = $user->profile();
+                $promo = $profile->entry_year;
+                if ($profile->mainEducation() == 'X') {
+                    $page->assign('user_xpromo', $promo);
+                }
+                $promo = XDB::format('{?}', $promo);
                 $minCondition = ' OR promo_min <= ' . $promo;
                 $maxCondition = ' OR promo_max >= ' . $promo;
             } else {
