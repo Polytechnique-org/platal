@@ -206,10 +206,10 @@ class NewsletterModule extends PLModule
         }
 
         if ($new == 'new') {
-            // Logs NL creation.
-            S::logger()->log('nl_issue_create', $nid);
-
             $id = $nl->createPending();
+
+            // Logs NL creation.
+            S::logger()->log('nl_issue_create', $id);
             pl_redirect($nl->adminPrefix(true, false) . '/edit/' . $id);
         }
 
