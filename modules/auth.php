@@ -279,21 +279,26 @@ class AuthModule extends PLModule
         } elseif (empty($globals->discourse->$domain)) {
             $page->kill("Domaine inconnu");
         }
-        $ext_url = 'http://' . $domain. '/session/sso_login';
+        $ext_url = 'https://' . $domain. '/session/sso_login';
         $key = $globals->discourse->$domain;
 
-        // Chech the signature of the given nonce
+        // Check the signature of the given nonce
         $sso_data_b64 = Get::s('sso');
         $sign = hash_hmac('sha256', $sso_data_b64, $key);
         if (!secure_string_compare($sign, Get::s('sig'))) {
             $page->kill("Signature invalide");
         }
         $sso_data = array();
+
+        // Decode the SSO data, which must contain two fields:
+        // * nonce: a nonce which has to be given back in the SSO response
+        // * return_sso_url: the return URL, which should be $ext_url
         parse_str(base64_decode($sso_data_b64), $sso_data);
         if (empty($sso_data['nonce'])) {
             $page->kill("Données SSO non valides");
         }
-        if (!empty($sso_data['return_sso_url']) && $sso_data['return_sso_url'] !== $ext_url) {
+        // return_sso_url is allowed to be either HTTP or HTTPS, even though we are forcing an HTTPS response
+        if (empty($sso_data['return_sso_url']) || !in_array($sso_data['return_sso_url'], array($ext_url, 'http://' . substr($ext_url, 8)))) {
             $page->kill("URL de retour non valide");
         }
         $nonce = $sso_data['nonce'];
@@ -305,9 +310,6 @@ class AuthModule extends PLModule
             $page->setTitle('Authentification');
             $page->setDefaultSkin('group_login');
             $page->assign('group', null);
-
-            // Add a P3P header for compatibility with IE in iFrames (http://www.w3.org/TR/P3P11/#compact_policies)
-            header('P3P: CP="CAO COR CURa ADMa DEVa OUR IND PHY ONL COM NAV DEM CNT STA PRE"');
             return PL_DO_AUTH;
         }
 
