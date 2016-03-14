@@ -33,6 +33,8 @@ class AuthModule extends PLModule
             'auth-groupex.php'              => $this->make_hook('groupex_old',        AUTH_COOKIE, ''),
             'auth-groupex'                  => $this->make_hook('groupex',            AUTH_PUBLIC, ''),
             'admin/auth-groupes-x'          => $this->make_hook('admin_authgroupesx', AUTH_PASSWD, 'admin'),
+
+            'auth-discourse'                => $this->make_hook('discourse',          AUTH_PUBLIC, ''),
         );
     }
 
@@ -259,6 +261,94 @@ class AuthModule extends PLModule
         $table_editor->describe('returnurls','urls de retour',true);
         $table_editor->describe('last_used', 'dernière utilisation', true);
         $table_editor->apply($page, $action, $id);
+    }
+
+    /** Handles the Discourse SSO authentication.
+     * https://meta.discourse.org/t/official-single-sign-on-for-discourse/13045
+     * Expects the Discourse domain as the last component of the URL path
+     * Expects the following GET parameters: sso, sig
+     * e.g. https://www.polytechnique.org/auth-discourse/forum.polytechnique.org?sso=...&sig=...
+     */
+    function handler_discourse($page, $domain = '')
+    {
+        global $globals;
+
+        // Load the key
+        if (!preg_match('/^[a-zA-Z0-9\-.]+$/', $domain)) {
+            $page->kill("Domaine non valide");
+        } elseif (empty($globals->discourse->$domain)) {
+            $page->kill("Domaine inconnu");
+        }
+        $ext_url = 'https://' . $domain. '/session/sso_login';
+        $key = $globals->discourse->$domain;
+
+        // Check the signature of the given nonce
+        $sso_data_b64 = Get::s('sso');
+        $sign = hash_hmac('sha256', $sso_data_b64, $key);
+        if (!secure_string_compare($sign, Get::s('sig'))) {
+            $page->kill("Signature invalide");
+        }
+        $sso_data = array();
+
+        // Decode the SSO data, which must contain two fields:
+        // * nonce: a nonce which has to be given back in the SSO response
+        // * return_sso_url: the return URL, which should be $ext_url
+        parse_str(base64_decode($sso_data_b64), $sso_data);
+        if (empty($sso_data['nonce'])) {
+            $page->kill("Données SSO non valides");
+        }
+        // return_sso_url is allowed to be either HTTP or HTTPS, even though we are forcing an HTTPS response
+        if (empty($sso_data['return_sso_url']) || !in_array($sso_data['return_sso_url'], array($ext_url, 'http://' . substr($ext_url, 8)))) {
+            $page->kill("URL de retour non valide");
+        }
+        $nonce = $sso_data['nonce'];
+
+        // Authenticate the user
+        if (!S::logged()) {
+            $page->assign('external_auth', true);
+            $page->assign('ext_url', $ext_url);
+            $page->setTitle('Authentification');
+            $page->setDefaultSkin('group_login');
+            $page->assign('group', null);
+            return PL_DO_AUTH;
+        }
+
+        if (!S::user()->checkPerms('groups')) {
+            return PL_FORBIDDEN;
+        }
+
+        // Update the last login information (unless the user is in SUID).
+        $uid = S::i('uid');
+        if (!S::suid()) {
+            global $platal;
+            S::logger($uid)->log('connexion_auth_ext', $platal->path.' '.urldecode($_GET['url']));
+        }
+
+        // Build Discourse SSO response
+        $parameters = array(
+            'nonce' => $nonce,
+            'email' => S::user()->forlifeEmail(),
+            'name' => S::user()->fullName(),
+            'external_id' => S::user()->hruid,
+        );
+        $sso_data_b64 = base64_encode(http_build_query($parameters)) . "\n";
+        $query = array(
+            'sso' => $sso_data_b64,
+            'sig' => hash_hmac('sha256', $sso_data_b64, $key),
+        );
+
+        $returl = $ext_url . '?' . http_build_query($query);
+
+        // If we logged in specifically for this 'external_auth' request
+        // and didn't want to "keep access to services", we kill the session
+        // just before returning.
+        // See classes/xorgsession.php:startSessionAs
+        if (S::b('external_auth_exit')) {
+            S::logger()->log('deconnexion', @$_SERVER['HTTP_REFERER']);
+            Platal::session()->killAccessCookie();
+            Platal::session()->destroy();
+        }
+        http_redirect($returl);
     }
 }
 
