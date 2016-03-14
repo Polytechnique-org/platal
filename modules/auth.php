@@ -274,7 +274,7 @@ class AuthModule extends PLModule
         global $globals;
 
         // Load the key
-        if (!preg_match('/^[a-zA-Z0-9\-.:]+$/', $domain)) {
+        if (!preg_match('/^[a-zA-Z0-9\-.]+$/', $domain)) {
             $page->kill("Domaine non valide");
         } elseif (empty($globals->discourse->$domain)) {
             $page->kill("Domaine inconnu");
