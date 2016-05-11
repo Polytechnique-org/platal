@@ -52,6 +52,9 @@ function show_promo_stats_from_uids($uids_query) {
     $promos_stats = array();
     foreach ($pids as $pid) {
         $profile = Profile::get($pid);
+        if ($profile->isDead()) {
+            continue;
+        }
         $promo = $profile->promo();
         unset($profile);
 
