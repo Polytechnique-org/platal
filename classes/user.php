@@ -376,6 +376,12 @@ class User extends PlUser
                                    WHERE  a.uid = {?}', $this->id());
     }
 
+    // Is the password equal to the weak_password ?
+    public function hasDuplicatePassword()
+    {
+        return sha1($this->weak_password) == $this->password();
+    }
+
     public function isActive()
     {
         return $this->state == 'active';

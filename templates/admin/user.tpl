@@ -193,6 +193,9 @@ $(function() {
           {if $user->weak_access}
           <input type="submit" name="disable_weak_access" value="Supprimer" />
           {/if}
+          {if $user->hasDuplicatePassword()}
+            {icon name=error} Mot de passe faible = mot de passe fort
+          {/if}
         </div>
       </td>
     </tr>
