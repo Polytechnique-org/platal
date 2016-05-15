@@ -28,7 +28,7 @@ class MailingList
     public $domain;         // domain for the list
     protected $mmclient;    // The XML-RPC client for Mailman requests
 
-    public function __construct($mbox, $domain, $user=null)
+    public function __construct($mbox, $domain, $user=null, $sudo=false)
     {
         $this->mbox = $mbox;
         $this->domain = $domain;
@@ -37,12 +37,22 @@ class MailingList
         if (is_null($user)) {
             $user = S::user();
         }
-        $this->mmclient = new MMList($user, $this->domain);
+
+        if ($sudo) {
+            // Sudo mode can only be used from crons & co
+            $login = $globals->lists->system_login . "+" . $user->id();
+            $pass = $globals->lists->system_password;
+        } else {
+            $login = $user->id();
+            $pass = $user->password();
+        }
+
+        $this->mmclient = new MMList($login, $pass, $this->domain);
     }
 
     /** Instantiate a MailingList from its address.
      */
-    public static function fromAddress($address, $user=null)
+    public static function fromAddress($address, $user=null, $sudo=false)
     {
         if (strstr($address, '@') !== false) {
             list($mbox, $domain) = explode('@', $address);
@@ -51,16 +61,16 @@ class MailingList
             $mbox = $address;
             $domain = $globals->mail->domain;
         }
-        return new MailingList($mbox, $domain, $user);
+        return new MailingList($mbox, $domain, $user, $sudo);
     }
 
     /** Retrieve the MailingList associated with a given promo.
      */
-    public static function promo($promo, $user=null)
+    public static function promo($promo, $user=null, $sudo=false)
     {
         global $globals;
         $mail_domain = $globals->mail->domain;
-        return new MailingList('promo', "$promo.$mail_domain", $user);
+        return new MailingList('promo', "$promo.$mail_domain", $user, $sudo);
     }
 
     const KIND_BOUNCE = 'bounces';
@@ -77,15 +87,15 @@ class MailingList
         return $this->mmclient->subscribe($this->mbox);
     }
 
-    public static function subscribeTo($mbox, $domain, $user=null)
+    public static function subscribeTo($mbox, $domain, $user=null, $sudo=false)
     {
-        $mlist = new MailingList($mbox, $domain, $user);
+        $mlist = new MailingList($mbox, $domain, $user, $sudo);
         return $mlist->subscribe();
     }
 
-    public static function subscribePromo($promo, $user=null)
+    public static function subscribePromo($promo, $user=null, $sudo=false)
     {
-        $mlist = MailingList::promo($promo, $user);
+        $mlist = MailingList::promo($promo, $user, $sudo);
         return $mlist->subscribe();
     }
 
@@ -191,9 +201,9 @@ class MailingList
      */
     public static function create($mbox, $domain, $user, $description,
         $advertise, $moderation_level, $subscription_level,
-        $owners, $members)
+        $owners, $members, $sudo=false)
     {
-        $mlist = new MailingList($mbox, $domain, $user);
+        $mlist = new MailingList($mbox, $domain, $user, $sudo);
         return $mlist->mmclient->create_list($mlist->mbox, utf8_decode($description),
             $advertise, $moderation_level, $subscription_level,
             $owners, $members);

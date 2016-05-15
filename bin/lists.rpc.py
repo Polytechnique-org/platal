@@ -83,6 +83,9 @@ ON_CREATE_CMD  = get_config('Lists', 'on_create', '')
 SRV_HOST       = get_config('Lists', 'rpchost', 'localhost')
 SRV_PORT       = int(get_config('Lists', 'rpcport', '4949'))
 
+SYSTEM_LOGIN   = get_config('Lists', 'system_login')
+SYSTEM_PASS    = get_config('Lists', 'system_password')
+
 ################################################################################
 #
 # CLASSES
@@ -130,6 +133,31 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
             self.end_headers()
 
     def getUser(self, uid, md5, vhost):
+        # Check perms
+        if '+' in uid and uid.split('+')[0] == SYSTEM_LOGIN and md5 == SYSTEM_PASS:
+            # This is a "sudo" login, format is <SYSTEM_LOGIN>+<REAL_LOGIN>
+            uid = uid.split('+', 1)[1]
+
+            res = mysql_fetchone("""SELECT  a.uid
+                                      FROM  accounts AS a
+                                     WHERE  a.uid = %s AND a.state = 'active'
+                                     LIMIT  1""",
+                                     (uid,))
+
+        else:
+            # Normal login, check password
+            res = mysql_fetchone("""SELECT  a.uid
+                                      FROM  accounts AS a
+                                     WHERE  a.uid = %s AND a.password = %s AND a.state = 'active'
+                                     LIMIT  1""",
+                (uid, md5))
+
+        if not res:
+            # Invalid/inactive account, even with superuser access
+            print >> sys.stderr, "no user found for uid: %s, passwd: %s" % (uid, md5)
+            return None
+
+        # Fetch profile
         res = mysql_fetchone ("""SELECT  a.full_name, IF(esa.email IS NULL, a.email, CONCAT(esa.email, '@', evd.name)),
                                          IF (a.is_admin, 'admin',
                                                          IF(FIND_IN_SET('lists', at.perms) OR FIND_IN_SET('lists', a.user_perms), 'lists', NULL))
@@ -137,9 +165,11 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
                              INNER JOIN  account_types AS at ON (at.type = a.type)
                               LEFT JOIN  email_source_account AS esa ON (esa.uid = a.uid AND esa.type = 'forlife')
                               LEFT JOIN  email_virtual_domains AS evd ON (esa.domain = evd.id)
-                                  WHERE  a.uid = %s AND a.password = %s AND a.state = 'active'
+                                  WHERE  a.uid = %s
                                   LIMIT  1""",
-                              (uid, md5))
+                              (uid,))
+
+        # Alternate perm lookup for X.net requests
         if res:
             name, forlife, perms = res
             if vhost != PLATAL_DOMAIN and perms != 'admin':
@@ -152,9 +182,10 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
                     _, perms = res
             userdesc = UserDesc(forlife, name, None, 0)
             return (userdesc, perms, vhost)
-        else:
-            print >> sys.stderr, "no user found for uid: %s, passwd: %s" % (uid, md5)
-            return None
+
+        # No account found
+        print >> sys.stderr, "no user found for uid: %s, passwd: %s" % (uid, md5)
+        return None
 
 ################################################################################
 #
