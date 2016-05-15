@@ -161,6 +161,18 @@ class MailingList
         return $this->mmclient->get_members_limit($this->mbox, $page, $number_per_page);
     }
 
+    const SUB_ENOACCESS = -1;
+    const SUB_NOTSUBSCRIBED = 0;
+    const SUB_PENDING = 1;
+    const SUB_SUBSCRIBED = 2;
+
+    /** Check the subscription status of the user
+     */
+    public function subscriptionState()
+    {
+        return $this->mmclient->get_subscription_status($this->mbox);
+    }
+
     /** Fetch pending list operations.
      *
      * TODO: document the return type

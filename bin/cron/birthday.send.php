@@ -65,15 +65,10 @@ while($profile = $iterator->next()) {
     // Check if the user subscribed to the promo ML
     $mlpromo = false;
     if ($isX && $promoX) {
-        $listClient = new MMList($user, $promoX . '.' . $globals->mail->domain);
-        $mlists = $listClient->get_lists($user->forlifeEmail());
-        foreach ($mlists as $mlist) {
-            if ($mlist['list'] == 'promo') {
-                // $mlist['sub'] is 0 for not-subscribed, 1 for pending and 2 for subscribed
-                $mlpromo = ($mlist['sub'] >= 1);
-                break;
-            }
-        }
+        // Load the MailingList in 'sudo' mode: the user might not be fully active
+        $promo_list = MailingList::promo($promoX, $user, true);
+        $mlpromo_sub = $promo_list->subscriptionState();
+        $mlpromo = ($mlpromo_sub == MailingList::SUB_PENDING || $mlpromo_sub == MailingList::SUB_SUBSCRIBED);
     }
     $mailer->assign('mlpromo', $mlpromo);
     $mailer->assign('nlAX', NewsLetter::forGroup(NewsLetter::GROUP_AX)->subscriptionState($user));

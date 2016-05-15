@@ -483,6 +483,17 @@ def get_members(userdesc, perms, mlist):
     return (details, members, mlist.owner)
 
 
+def get_subscription_status(userdesc, perms, mlist):
+    """ Retrieve the subscription status of a user.
+            @mlist
+    """
+    infos = get_list_info(userdesc, perms, mlist)
+    if infos is None:
+        return -1  # ENOACCESS
+    details, _members = infos
+    return details['sub']
+
+
 #-------------------------------------------------------------------------------
 # users procedures for [ trombi.php ]
 #
