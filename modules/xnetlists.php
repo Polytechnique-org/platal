@@ -225,7 +225,7 @@ class XnetListsModule extends ListsModule
 
         $not_in_list = array();
         foreach ($users as $user) {
-            if (!in_array(strtolower($user->forlifeEmail()), $subscribers)) {
+            if (!in_array(strtolower($user->forlifeEmail()), $subscribers) && $user->isActive()) {
                 $not_in_list[] = $user;
             }
         }
