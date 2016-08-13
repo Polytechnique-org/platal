@@ -1,4 +1,22 @@
 ================================================================================
+VERSION 1.1.21                                                       13 08 2016
+
+    * Account:
+        - Add Discourse Single-Sign-On module                               -IOS
+
+    * Admin:
+        - Display a warning when strong and weak passwords match            -XEL
+
+    * AXLetter:
+        - Update letter header                                              -IOS
+
+    * Profile:
+        - Fix birthday mail emission                                        -XEL
+
+    * XnetList:
+        - Only display active users when syncing list and directory         -FUL
+
+================================================================================
 VERSION 1.1.20                                                       31 01 2016
 
     * Account:
