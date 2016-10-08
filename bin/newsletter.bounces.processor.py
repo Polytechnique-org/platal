@@ -349,6 +349,7 @@ def findAddressInPlainBounce(bounce, real_bounce=None):
         "could not be delivered to",
         "Delivery to the following recipient failed permanently",
         "I'm sorry to have to inform you that your message could not",
+        "I'm afraid I wasn't able to deliver the following message",
         "I wasn't able to deliver your message",
         "try to send your message again at a later time",
         "User unknown in local recipient table",
@@ -373,6 +374,8 @@ def findAddressInPlainBounce(bounce, real_bounce=None):
         "Unknown address error",
         "unreachable for too long",
         "550 Requested action not taken",
+        "550 5.2.1 The email account that you tried to reach is disabled.",
+        "550-5.2.1 The email account that you tried to reach is disabled.",  # GMail
     ]
     if not any(any(hint in line for hint in permanent_error_hints) for line in lines):
         print('! Unknown mailer-daemon message, unable to find an hint for permanent error in message:')
@@ -384,6 +387,9 @@ def findAddressInPlainBounce(bounce, real_bounce=None):
         match = re.match(r'.*?<([0-9a-zA-Z_.-]+@[0-9a-zA-Z_.-]+)>', line)
         if match is None:
             match = re.match(r'^\s*"?([0-9a-zA-Z_.-]+@[0-9a-zA-Z_.-]+)"?\s*$', line)
+        if match is None:
+            # sometimes it is a "To: email" header
+            match = re.match(r'^To: ([0-9a-zA-Z_.-]+@[0-9a-zA-Z_.-]+)\s*$', line)
         if match is not None:
             email = match.group(1)
             if email.endswith('@polytechnique.org'):
