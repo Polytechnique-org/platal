@@ -54,6 +54,7 @@ class MboxProcessor:
             CheckNonSpamFilter(),
             OutOfOfficeFilter(),
             DeliveryStatusNotificationFilter(),
+            ForwardedMessageFilter(),
             CatchAllFilter()
         ]
 
@@ -306,34 +307,9 @@ def findAddressInWeirdDeliveryStatus(message):
     return None
 
 
-def findAddressInPlainBounce(bounce, real_bounce=None):
-    """Finds the faulty email address in a non-RFC-1894 bounced email
+def findAddressInPlainText(lines):
+    """Finds the faulty email address in a raw text, which has been line-splitted
     """
-    # real_bounce is the full email and bounce only the text/plain part, if email have several MIME parts
-    real_bounce = real_bounce or bounce
-    lower_from = real_bounce['From'].lower()
-    if 'mailer-daemon@' not in lower_from and 'postmaster' not in lower_from:
-        print('! Not a valid plain bounce (expected from MAILER-DAEMON or postmaster, found %s).' % bounce['From'])
-        return None
-    if bounce.get_content_type() != 'text/plain':
-        print('! Not a valid plain bounce (expected text/plain, found %s).' % bounce.get_content_type())
-        return None
-    subject = findSubject(real_bounce).lower()
-    known_subjects = [
-        "delivery status notification (failure)",
-        "failure notice",
-        "mail delivery failure",
-        "returned mail: see transcript for details",
-        "undeliverable message",
-        "undelivered mail returned to sender",
-        ]
-    if subject not in known_subjects and not subject.startswith('mail delivery failed'):
-        print('! Not a valid plain bounce (unknown subject: %s).' % subject)
-        return None
-
-    # Read the 15 first lines of content and find some relevant keywords to validate the bounce
-    lines = bounce.get_payload().splitlines()[:15]
-
     # ALTOSPAM is a service which requires to click on a link when sending an email
     # Don't consider the "554 5.0.0 Service unavailable" returned by ALTOSPAM as a failure
     # but put this message in the dsn-temp mailbox so that it can be processed by hand.
@@ -400,6 +376,36 @@ def findAddressInPlainBounce(bounce, real_bounce=None):
     print('! Unknown mailer-daemon message, unable to find email address:')
     print('\n'.join(lines))
     return None
+
+
+def findAddressInPlainBounce(bounce, real_bounce=None):
+    """Finds the faulty email address in a non-RFC-1894 bounced email
+    """
+    # real_bounce is the full email and bounce only the text/plain part, if email have several MIME parts
+    real_bounce = real_bounce or bounce
+    lower_from = real_bounce['From'].lower()
+    if 'mailer-daemon@' not in lower_from and 'postmaster' not in lower_from:
+        print('! Not a valid plain bounce (expected from MAILER-DAEMON or postmaster, found %s).' % bounce['From'])
+        return None
+    if bounce.get_content_type() != 'text/plain':
+        print('! Not a valid plain bounce (expected text/plain, found %s).' % bounce.get_content_type())
+        return None
+    subject = findSubject(real_bounce).lower()
+    known_subjects = [
+        "delivery status notification (failure)",
+        "failure notice",
+        "mail delivery failure",
+        "returned mail: see transcript for details",
+        "undeliverable message",
+        "undelivered mail returned to sender",
+        ]
+    if subject not in known_subjects and not subject.startswith('mail delivery failed'):
+        print('! Not a valid plain bounce (unknown subject: %s).' % subject)
+        return None
+
+    # Read the 15 first lines of content and find some relevant keywords to validate the bounce
+    lines = bounce.get_payload().splitlines()[:15]
+    return findAddressInPlainText(lines)
 
 #----------------------------------------------------------------------------#
 
@@ -645,6 +651,76 @@ class DeliveryStatusNotificationFilter(MboxFilter):
         print('Found %d temporary and invalid delivery status notifications.' % len(self.mbox_temp))
         print('They were saved in %s.' % self.mbox_temp_file)
         self.mbox_temp.close()
+
+#----------------------------------------------------------------------------#
+
+class ForwardedMessageFilter(MboxFilter):
+
+    def initialize(self, mbox_file):
+        self.emails = []
+        self.mbox_file = '%s.dsnfwd' % mbox_file
+        self.mbox = mailbox.mbox(self.mbox_file)
+        self.mbox.clear()
+
+    def process(self, message):
+        # Filter on the subject
+        subject = findSubject(message)
+        if subject != 'Fwd: Undelivered Mail Returned to Sender':
+            return False
+
+        if message.get_content_type() == 'multipart/alternative':
+            # Get the first part
+            text_message = message.get_payload(0)
+            if text_message.get_content_type() == 'text/plain':
+                # Build a new header
+                all_lines = text_message.get_payload().splitlines()
+                if all_lines[0].strip() not in (
+                    '---------- Forwarded message ----------',
+                    '---------- Message transf=C3=A9r=C3=A9 ----------'):
+                    print("! Not a plain forwarded message: %s" % all_lines[0].strip())
+                    return False
+                fwd_headers = {}
+                last_header_line = 1
+                for line in all_lines[1:16]:
+                    line = line.rstrip()
+                    if not line or ':' not in line:
+                        break
+                    last_header_line += 1
+                    key, value = line.split(':', 1)
+                    key = key.strip()
+                    if key == 'De':
+                        key = 'From'
+                    elif key == 'Objet':
+                        key = 'Subject'
+                    elif key == '=C3=80':
+                        key = 'To'
+                    fwd_headers[key] = value.strip()
+
+                # Verify some headers
+                if 'MAILER-DAEMON@' not in fwd_headers.get('From', ''):
+                    print("! Unknown from in forwaded bounce: %s" % fwd_headers.get('From'))
+                    return False
+                if fwd_headers.get('Subject') != 'Undelivered Mail Returned to Sender':
+                    print("! Unknown subject in forwaded bounce: %s" % fwd_headers.get('Subject'))
+                    return False
+                email = findAddressInPlainText(all_lines[last_header_line:])
+                if email is not None:
+                    self.emails.append(email)
+                    self.mbox.add(message)
+                    return True
+        return False
+
+    def finalize(self):
+        print('Found %d forwarded text delivery status notifications.' % len(self.mbox))
+        print('They were saved in %s.' % self.mbox_file)
+        if len(self.mbox):
+            print('')
+            print('Here is the list of email adresses for these bounces:')
+            print('')
+            for email in self.emails:
+                print(email)
+            print('')
+        self.mbox.close()
 
 #----------------------------------------------------------------------------#
 
