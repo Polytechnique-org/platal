@@ -348,6 +348,12 @@ class AuthModule extends PLModule
             Platal::session()->killAccessCookie();
             Platal::session()->destroy();
         }
+
+        // Run discourse-sync in per-user mode
+        if ($globals->discourse->discourse_sync_path) {
+            exec($globals->discourse->discourse_sync_path . ' --user ' . S::user()->hruid . ' --sleep 5 &>/dev/null &');
+        }
+
         http_redirect($returl);
     }
 }
