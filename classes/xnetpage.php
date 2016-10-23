@@ -105,7 +105,7 @@ class XnetPage extends PlPage
                 $sub['trombinoscope'] = "$dim/trombi";
             }
             if ($globals->asso('forum')) {
-                $sub['forum'] = "$dim/forum";
+                $sub['forum'] = "https://forum.polytechnique.org/";
             }
             if ($perms->hasFlag('groupmember')) {
                 if ($globals->asso('mail_domain')) {

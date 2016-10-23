@@ -50,7 +50,7 @@ class EventsModule extends PLModule
                          'text' => 'Le site a été mis à jour depuis ta dernière visite vers la version ' . $globals->version
                                    . '.<br /> Nous t\'invitons à <a href="review">faire un tour d\'horizon des '
                                    . 'nouveautés</a>.<br /><br />'
-                                   . 'Tu peux également retrouver ces informations sur <a href="banana/xorg.m4x.innovation">'
+                                   . 'Tu peux également retrouver ces informations sur <a href="https://forum.polytechnique.org">'
                                    . 'les forums</a>, ou sur <a href="changelog">la liste exhaustive des modifications</a>.',
                          'priorite' => 255,
                          'promo_min' => 0,
