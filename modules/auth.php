@@ -350,7 +350,9 @@ class AuthModule extends PLModule
         }
 
         // Run discourse-sync in per-user mode
-        exec($globals->discourse->discourse_sync_path . ' --user ' . S::user()->hruid . ' --sleep 5 &>/dev/null &');
+        if ($globals->discourse->discourse_sync_path) {
+            exec($globals->discourse->discourse_sync_path . ' --user ' . S::user()->hruid . ' --sleep 5 &>/dev/null &');
+        }
 
         http_redirect($returl);
     }
