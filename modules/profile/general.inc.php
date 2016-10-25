@@ -212,7 +212,6 @@ class ProfileSettingEdu implements ProfileSetting
         } else if (!is_array($value)) {
             $value = null;
         } else {
-            $i = 0;
             foreach ($value as $key=>&$edu) {
                 if ($edu['eduid'] < 1 || !isset($edu['degreeid']) || $edu['degreeid'] < 1) {
                     Platal::page()->trigError('L\'université ou le diplôme d\'une formation manque.');
@@ -223,11 +222,6 @@ class ProfileSettingEdu implements ProfileSetting
                     $edu['grad_year'] = null;
                     $edu['warning'] = true;
                 }
-                if ($key != $i) {
-                    $value[$i] = $edu;
-                    unset($value[$key]);
-                }
-                $i++;
             }
             usort($value, array("ProfileSettingEdu", "sortByGradYear"));
         }
