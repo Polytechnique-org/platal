@@ -937,7 +937,14 @@ class EmailModule extends PLModule
                     foreach ($networkings as $networking) {
                         $networking_list[] = $networking['address'];
                     }
-                    fputcsv($csv, array($profile->fullName(), $profile->promo(),
+
+                    // Indicate people who are dead near their names
+                    $name = $profile->fullName();
+                    if ($profile->isDead()) {
+                        $name .= ' (décédé)';
+                    }
+
+                    fputcsv($csv, array($name, $profile->promo(),
                                         join(',', $mails), $broken_user_email_count[$pid],
                                         'https://www.polytechnique.org/marketing/broken/' . $profile->hrid(),
                                         $current_corps, implode(',', $companies), implode(',', $networking_list)), ';');
