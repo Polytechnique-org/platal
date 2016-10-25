@@ -383,12 +383,13 @@ class MapView implements PlView
         Platal::load('geoloc');
 
         if (Get::b('ajax')) {
-            $uids = $this->set->getIds(new PlLimit());
-            $pids = Profile::getPIDsFromUIDs($uids);
+            $pids = $this->set->getIds(new PlLimit());
             GeolocModule::assign_json_to_map($page, $pids);
             $page->runJSON();
             exit;
         } else {
+            // Run the query to get the right count
+            $this->set->get();
             GeolocModule::prepare_map($page);
             return 'geoloc/index.tpl';
         }
