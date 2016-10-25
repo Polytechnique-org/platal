@@ -70,7 +70,8 @@ function get_event(&$eid)
                                          FROM group_events as ge
                                         WHERE eid = {?}',
                                         $eid);
-    if (!is_null($evt['deadline_inscription']) && strtotime($evt['deadline_inscription']) <= time()) {
+    // Add 24 hours to the deadline as it is a date which goes until 23:59:59
+    if (!is_null($evt['deadline_inscription']) && strtotime($evt['deadline_inscription']) + 86400 < time()) {
         $evt['inscr_open'] = false;
     } else {
         $evt['inscr_open'] = true;

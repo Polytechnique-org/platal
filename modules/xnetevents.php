@@ -187,10 +187,11 @@ class XnetEventsModule extends PLModule
             $e['paid'] += $telepaid;
 
             $e['date'] = make_event_date($e['debut'], $e['fin']);
-            if ($e['deadline_inscription'] == null || strtotime($e['deadline_inscription']) >= time()) {
-                $e['inscr_open'] = true;
-            } else {
+            // Add 24 hours to the deadline as it is a date which goes until 23:59:59
+            if (!is_null($e['deadline_inscription']) && strtotime($e['deadline_inscription']) + 86400 < time()) {
                 $e['inscr_open'] = false;
+            } else {
+                $e['inscr_open'] = true;
             }
 
             if (Env::has('updated') && $e['eid'] == Env::i('updated')) {
