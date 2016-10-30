@@ -1,4 +1,21 @@
 ================================================================================
+VERSION 1.1.22                                                       30 10 2016
+
+    * Broken emails management:
+        - Add some hints from the latest bounced emails                     -IOS
+        - Indicate dead people in broken email marketing                    -IOS
+
+    * Forums:
+        - Change links to Discourse forums                                  -FUL
+        - Adds a hook for discourse-sync in Discourse's SSO                 -PAD
+
+    * Profile:
+        - Fix a potential infinite loop when removing an education entry    -IOS
+
+    * XnetEvent:
+        - Fix closing date of events                                        -IOS
+
+================================================================================
 VERSION 1.1.21                                                       13 08 2016
 
     * Account:
@@ -2208,6 +2225,7 @@ ACRONYMS:
     * MC : Pierre Habouzit      (MadCoder)  <pierre.habouzit@m4x.org>
     * mYk: Aymeric Augustin     (mYk)       <aymeric.augustin@m4x.org>
     * OG : Olivier Guillaumin               <olivier.guillaumin@m4x.org>
+    * PAD: Pierre-Alain Dupont  (pad)       <pad@melix.net>
     * PIK: Fabien Laborde       (pika)      <fabien.laborde@m4x.org>
     * SHK: Jeremy Lainé         (Sharky)    <jeremy.laine@m4x.org>
     * THD: Thomas Deniau        (Totom)     <thomas.deniau@m4x.org>
