@@ -24,9 +24,11 @@
 function map_initialize(baseUrl)
 {
     var myOptions = {
-        zoom: 1,
-        center: new google.maps.LatLng(0, 0),
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+        zoom: 5,
+        center: new google.maps.LatLng(48, 2),
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        fullscreenControl: true,
+        streetViewControl: false
     };
     var map = new google.maps.Map($('#map_canvas').get(0), myOptions);
 
