@@ -30,8 +30,7 @@ function map_initialize(baseUrl)
     };
     var map = new google.maps.Map($('#map_canvas').get(0), myOptions);
 
-    $.xget(window.location.href, {ajax: true}, function(json_data) {
-        var data = jQuery.parseJSON(json_data);
+    $.xgetJSON(window.location.href, {ajax: true}, function(data) {
         var dots = data.data;
         var count = dots.length;
         var info_window = new google.maps.InfoWindow({});
