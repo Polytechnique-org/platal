@@ -255,18 +255,24 @@ $(JSTREE_PATH):
 maps: htdocs/javascript/markerclusterer.js htdocs/images/m1.png htdocs/images/m2.png htdocs/images/m3.png htdocs/images/m4.png htdocs/images/m5.png
 
 ## Download markerclusterer source and images (from https://github.com/googlemaps/js-marker-clusterer)
+htdocs/javascript/markerclusterer.js: DOWNLOAD_SRC=https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/$(MAPS_MARKER_CLUSTERER_VERSION)/src/markerclusterer.js
 htdocs/javascript/markerclusterer.js:
-	wget 'https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/$(MAPS_MARKER_CLUSTERER_VERSION)/src/markerclusterer.js' -O $@
+	$(download)
+htdocs/images/m1.png: DOWNLOAD_SRC=https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/$(MAPS_MARKER_CLUSTERER_VERSION)/images/m1.png
 htdocs/images/m1.png:
-	wget 'https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/$(MAPS_MARKER_CLUSTERER_VERSION)/images/m1.png' -O $@
+	$(download)
+htdocs/images/m2.png: DOWNLOAD_SRC=https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/$(MAPS_MARKER_CLUSTERER_VERSION)/images/m2.png
 htdocs/images/m2.png:
-	wget 'https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/$(MAPS_MARKER_CLUSTERER_VERSION)/images/m2.png' -O $@
+	$(download)
+htdocs/images/m3.png: DOWNLOAD_SRC=https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/$(MAPS_MARKER_CLUSTERER_VERSION)/images/m3.png
 htdocs/images/m3.png:
-	wget 'https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/$(MAPS_MARKER_CLUSTERER_VERSION)/images/m3.png' -O $@
+	$(download)
+htdocs/images/m4.png: DOWNLOAD_SRC=https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/$(MAPS_MARKER_CLUSTERER_VERSION)/images/m4.png
 htdocs/images/m4.png:
-	wget 'https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/$(MAPS_MARKER_CLUSTERER_VERSION)/images/m4.png' -O $@
+	$(download)
+htdocs/images/m5.png: DOWNLOAD_SRC=https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/$(MAPS_MARKER_CLUSTERER_VERSION)/images/m5.png
 htdocs/images/m5.png:
-	wget 'https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/$(MAPS_MARKER_CLUSTERER_VERSION)/images/m5.png' -O $@
+	$(download)
 
 
 ##
