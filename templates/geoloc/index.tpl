@@ -23,7 +23,7 @@
 <div id="map_canvas" style="width: 100%; height: 600px"></div>
 
 <script type="text/javascript">
-  map_initialize();
+  map_initialize('{$globals->baseurl}');
 </script>
 
 {* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

@@ -249,14 +249,25 @@ $(JSTREE_PATH):
 ##
 ## Maps auxiliary scripts
 ##
-maps: htdocs/javascript/markerclusterer.js
+maps: htdocs/javascript/markerclusterer.js htdocs/images/m1.png htdocs/images/m2.png htdocs/images/m3.png htdocs/images/m4.png htdocs/images/m5.png
 
 ## Try and use taged version asap (from http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclusterer/...).
 ## Force to use https to retrieve images
 htdocs/javascript/markerclusterer.js:
-	wget 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_compiled.js?r=308' -O $@.tmp -q || ($(RM) $@.tmp; false)
+	wget 'https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/gh-pages/src/markerclusterer.js' -O $@.tmp || ($(RM) $@.tmp; false)
 	sed 's,http\(://google-maps-utility-library-v3.googlecode.com\),https\1,g' < $@.tmp > $@
 	$(RM) $@.tmp
+
+htdocs/images/m1.png:
+	wget 'https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/gh-pages/images/m1.png' -O $@
+htdocs/images/m2.png:
+	wget 'https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/gh-pages/images/m2.png' -O $@
+htdocs/images/m3.png:
+	wget 'https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/gh-pages/images/m3.png' -O $@
+htdocs/images/m4.png:
+	wget 'https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/gh-pages/images/m4.png' -O $@
+htdocs/images/m5.png:
+	wget 'https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/gh-pages/images/m5.png' -O $@
 
 ##
 ## Raven-js

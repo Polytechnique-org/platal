@@ -21,7 +21,7 @@
 // http://code.google.com/apis/maps/documentation/javascript/
 // http://code.google.com/p/google-maps-utility-library-v3/wiki/Libraries
 
-function map_initialize()
+function map_initialize(baseUrl)
 {
     var myOptions = {
         zoom: 1,
@@ -69,6 +69,7 @@ function map_initialize()
             });
             markers.push(marker);
         }
+        MarkerClusterer.prototype.MARKER_CLUSTER_IMAGE_PATH_ = baseUrl + "/images/m"
         var mc = new MarkerClusterer(map, markers, {'averageCenter': true});
     });
 }
