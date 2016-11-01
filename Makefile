@@ -1,6 +1,9 @@
 
 # $Id: Makefile,v 1.5 2004/11/25 20:18:39 x99laine Exp $
 ################################################################################
+#Commit reference of https://github.com/googlemaps/js-marker-clusterer for script & image download
+MAPS_MARKER_CLUSTERER_VERSION=dc326b9b9234ce964861eb35b416a6be1ca7d7cf
+
 # definitions
 
 VERSNUM := $(shell grep VERSION ChangeLog | head -1 | sed -e "s/VERSION //;s/ .*//")
@@ -249,14 +252,28 @@ $(JSTREE_PATH):
 ##
 ## Maps auxiliary scripts
 ##
-maps: htdocs/javascript/markerclusterer.js
+maps: htdocs/javascript/markerclusterer.js htdocs/images/m1.png htdocs/images/m2.png htdocs/images/m3.png htdocs/images/m4.png htdocs/images/m5.png
 
-## Try and use taged version asap (from http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclusterer/...).
-## Force to use https to retrieve images
+## Download markerclusterer source and images (from https://github.com/googlemaps/js-marker-clusterer)
+htdocs/javascript/markerclusterer.js: DOWNLOAD_SRC=https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/$(MAPS_MARKER_CLUSTERER_VERSION)/src/markerclusterer.js
 htdocs/javascript/markerclusterer.js:
-	wget 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_compiled.js?r=308' -O $@.tmp -q || ($(RM) $@.tmp; false)
-	sed 's,http\(://google-maps-utility-library-v3.googlecode.com\),https\1,g' < $@.tmp > $@
-	$(RM) $@.tmp
+	$(download)
+htdocs/images/m1.png: DOWNLOAD_SRC=https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/$(MAPS_MARKER_CLUSTERER_VERSION)/images/m1.png
+htdocs/images/m1.png:
+	$(download)
+htdocs/images/m2.png: DOWNLOAD_SRC=https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/$(MAPS_MARKER_CLUSTERER_VERSION)/images/m2.png
+htdocs/images/m2.png:
+	$(download)
+htdocs/images/m3.png: DOWNLOAD_SRC=https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/$(MAPS_MARKER_CLUSTERER_VERSION)/images/m3.png
+htdocs/images/m3.png:
+	$(download)
+htdocs/images/m4.png: DOWNLOAD_SRC=https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/$(MAPS_MARKER_CLUSTERER_VERSION)/images/m4.png
+htdocs/images/m4.png:
+	$(download)
+htdocs/images/m5.png: DOWNLOAD_SRC=https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/$(MAPS_MARKER_CLUSTERER_VERSION)/images/m5.png
+htdocs/images/m5.png:
+	$(download)
+
 
 ##
 ## Raven-js

@@ -21,17 +21,18 @@
 // http://code.google.com/apis/maps/documentation/javascript/
 // http://code.google.com/p/google-maps-utility-library-v3/wiki/Libraries
 
-function map_initialize()
+function map_initialize(baseUrl)
 {
     var myOptions = {
-        zoom: 1,
-        center: new google.maps.LatLng(0, 0),
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+        zoom: 5,
+        center: new google.maps.LatLng(48, 2),
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        fullscreenControl: true,
+        streetViewControl: false
     };
     var map = new google.maps.Map($('#map_canvas').get(0), myOptions);
 
-    $.xget(window.location.href, {ajax: true}, function(json_data) {
-        var data = jQuery.parseJSON(json_data);
+    $.xgetJSON(window.location.href, {ajax: true}, function(data) {
         var dots = data.data;
         var count = dots.length;
         var info_window = new google.maps.InfoWindow({});
@@ -69,6 +70,7 @@ function map_initialize()
             });
             markers.push(marker);
         }
+        MarkerClusterer.prototype.MARKER_CLUSTER_IMAGE_PATH_ = baseUrl + "/images/m"
         var mc = new MarkerClusterer(map, markers, {'averageCenter': true});
     });
 }

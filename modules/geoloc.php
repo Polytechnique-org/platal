@@ -33,7 +33,10 @@ class GeolocModule extends PLModule
     {
         global $globals;
         $page->changeTpl('geoloc/index.tpl');
-        $map_url = $globals->maps->dynamic_map . '?&sensor=false&v=' . $globals->maps->api_version . '&language=' . $globals->maps->language;
+        $map_url = $globals->maps->dynamic_map . '?v=' . $globals->maps->api_version . '&language=' . $globals->maps->language;
+        if ($globals->maps->api_key) {
+            $map_url .= '&key=' . $globals->maps->api_key;
+        }
         $page->addJsLink($map_url, false);
         $page->addJsLink('maps.js');
         $page->addJsLink('markerclusterer.js');
