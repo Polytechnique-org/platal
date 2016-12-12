@@ -91,6 +91,8 @@ function _send_xnet_mail($user, $body, $wiki, $mailer, $replyto = null)
     }
 
     $mailer->setTo($user);
+    $mailer->addHeader('List-Id', "${grp_name} <${grp_short}.groups.lists.polytechnique.net>");
+    $mailer->addHeader('List-Unsubscribe', "<http://www.polytechnique.net/${grp_short}/unsubscribe>");
     if ($replyto) {
         $mailer->addHeader('Reply-To', $replyto);
     }
