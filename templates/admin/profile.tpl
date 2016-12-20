@@ -47,7 +47,7 @@
     {iterate item=update from=$updates}
     <tr class="{cycle values="impair,pair"}">
       <td>{$update.directory_name}</td>
-      <td class="center">{$update.field|wordwrap:80:'<br />'}</td>
+      <td class="center">{$update.fields_display|wordwrap:80:'<br />'}</td>
       <td class="center">
         <a href="profile/{$update.hrpid}" class="popup2">{icon name=user_suit title="Voir le profil"}</a>
         <a href="profile/edit/{$update.hrpid}">{icon name=user_edit title="Éditer le profil"}</a>

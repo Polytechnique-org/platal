@@ -1422,6 +1422,17 @@ class Profile implements PlExportable
             return sprintf('%04u%04u', 1900 + $year, $rank);
         }
     }
+
+    public static function field_display($field_name)
+    {
+        if (array_key_exists($field_name, Profile::$descriptions)) {
+            return Profile::$descriptions[$field_name];
+        } else {
+            // Return the raw field_name, as legacy updates in DB used to store the field_display
+            // instead of its name.
+            return $field_name;
+        }
+    }
 }
 
 

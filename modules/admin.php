@@ -1917,14 +1917,30 @@ class AdminModule extends PLModule
             }
         }
 
-        $res = XDB::iterator('SELECT  p.hrpid, pm.pid, pd.directory_name, GROUP_CONCAT(pm.field SEPARATOR \', \') AS field
+        $res = XDB::iterator('SELECT  p.hrpid, pm.pid, pd.directory_name, GROUP_CONCAT(pm.field SEPARATOR \'|\') AS field
                                 FROM  profile_modifications AS pm
                           INNER JOIN  profiles              AS p  ON (pm.pid = p.pid)
                           INNER JOIN  profile_display       AS pd ON (pm.pid = pd.pid)
                                WHERE  pm.type = \'self\'
                             GROUP BY  pd.directory_name
                             ORDER BY  pm.timestamp DESC, pd.directory_name');
-        $page->assign('updates', $res);
+        $display_res = PlIteratorUtils::map($res, array('AdminModule', '_prepare_profile_modification_display'));
+        $page->assign('updates', $display_res);
+    }
+
+    function _prepare_profile_modification_display($profile_modification)
+    {
+
+        $altered_modification = $profile_modification;
+        $fields_display = implode(", ",
+            array_map(
+                array(Profile, 'field_display'),
+                explode("|", $profile_modification['field'])
+            )
+        );
+        $altered_modification['fields_display'] = $fields_display;
+
+        return $altered_modification;
     }
 
     function handler_phd($page, $promo = null, $validate = false)

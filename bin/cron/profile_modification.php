@@ -45,7 +45,7 @@ if ($res->total() > 0) {
     $modifications = array();
     $modifications[] = array(
         'full_name' => $values['full_name'],
-        'field'     => $values['field'],
+        'field'     => Profile::field_display($values['field']),
         'oldText'   => $values['oldText'],
         'newText'   => $values['newText'],
     );
@@ -69,7 +69,7 @@ if ($res->total() > 0) {
         $hrpid = $values['hrpid'];
         $modifications[] = array(
             'full_name' => $values['full_name'],
-            'field'     => $values['field'],
+            'field'     => Profile::field_display($values['field']),
             'oldText'   => $values['oldText'],
             'newText'   => $values['newText'],
         );
