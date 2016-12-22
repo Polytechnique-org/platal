@@ -29,8 +29,9 @@
 <strong>Mot de passe enregistré le {$smarty.now|date_format}</strong>
 </p>
 <p>
-  <strong>Attention&nbsp;!</strong> Il est crypté irréversiblement,
-  donc <strong>non récupérable</strong>. Pour retrouver un accès au site
+  <strong>Attention&nbsp;!</strong> Le mot de passe est transformé par une
+  opération cryptographique irréversible avant d'être enregistré. Il n'est donc
+  <strong>pas récupérable</strong>. Pour retrouver un accès au site
   consécutivement à une perte de mot de passe, la procédure
   est longue et laborieuse&hellip;
 </p>

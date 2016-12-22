@@ -26,9 +26,10 @@
 <strong>Mot de passe enregistré le {$smarty.now|date_format}</strong>
 </p>
 <p>
-  Cette procédure n'est pas sécurisée. Ton mot de passe est certes crypté, mais le
-  certificat envoyé par mail permet à toute personne pouvant lire ton email (qui n'est
-  pas crypté), de changer ton mot de passe. C'est pourquoi, dans ton intérêt, il est
+  Cette procédure n'est pas sécurisée. Ton mot de passe est certes protégé par
+  une opération cryptographique irréversible, mais le certificat envoyé par
+  mail permet à toute personne pouvant lire ton email (qui n'est pas chiffré),
+  de changer ton mot de passe. C'est pourquoi, dans ton intérêt, il est
   préférable que tu ne perdes pas ton mot de passe&nbsp;!!!
 </p>
 {* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}
