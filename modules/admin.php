@@ -1924,6 +1924,7 @@ class AdminModule extends PLModule
                                WHERE  pm.type = \'self\'
                             GROUP BY  pd.directory_name
                             ORDER BY  pm.timestamp DESC, pd.directory_name');
+        // Call Profile::field_display() on each field in order to populate a "fields_display" item with what is displayed
         $display_res = PlIteratorUtils::map($res, array('AdminModule', '_prepare_profile_modification_display'));
         $page->assign('updates', $display_res);
     }
