@@ -214,6 +214,9 @@ class XorgSession extends PlSession
      */
     public function logAsUser(User $user)
     {
+        // Kill any current session
+        $this->destroy();
+
         // It is like the user has authenticated with a cookie
         S::set('auth', AUTH_COOKIE);
 
