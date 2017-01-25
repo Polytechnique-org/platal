@@ -244,10 +244,33 @@ class XnetEventsModule extends PLModule
 
         //if we arrived here via a confirmation email, process it
         if(Get::has('nom') && Get::has('prenom') && Get::has('email') && Get::has('token')){
-            if(Get::v('token')!=make_confirmation_token($nom,$prenom,$email)){
+            if(Get::v('token')!=$this->make_confirmation_token(Get::v('nom'),Get::v('prenom'),Get::v('email'))){
                 $page->kill('Ce lien n\'est pas valide.');
             }
-            XDB::execute('INSERT INTO accounts SET firstname={?}, lastname={?}, hruid={?}, email={?}', Get::v('prenom'), Get::v('nom'), Get::v('prenom').".".Get::v('nom'), Get::v('email'));
+
+            //check if the email address is already registered
+            $res=XDB::query("SELECT hruid FROM accounts WHERE email={?}", Get::v('email'));            
+
+            if($res->numRows()>0){
+                //the email address is already registered, use the registered account
+                $hruid=(string)$res->fetchOneCell();
+            }else{
+                //the email address is not registered, create a new user
+                require_once 'name.func.inc.php';
+                list($local_part, $domain) = explode('@', strtolower(Get::v('email')));
+                $firstname=Get::v('prenom');
+                $lastname=Get::v('nom');
+                $hruid = User::makeHrid($local_part, $domain, 'ext');
+                $full_name = build_full_name($firstname, $lastname);
+                $directory_name = build_directory_name($firstname, $lastname);
+                $sort_name = build_sort_name($firstname, $lastname);
+                XDB::execute('INSERT INTO accounts SET firstname={?}, lastname={?}, full_name={?}, directory_name={?}, sort_name={?}, hruid={?}, email={?}, type={?}, state={?}', $firstname, $lastname, $full_name, $directory_name, $sort_name, $hruid, Get::v('email'), "xnet", "active");
+            }
+            $user=User::get($hruid);
+            var_dump($user);
+            if(!Platal::session()->logAsUser($user)){
+                $page->kill("Authentication failed for $hruid.");
+            }
         }
 
         if (S::logged()) {
@@ -360,7 +383,7 @@ class XnetEventsModule extends PLModule
                 $nom=Post::v('nom');
                 $prenom=Post::v('prenom');
                 $email=Post::v('email');
-                $token=make_confirmation_token($nom,$prenom,$email);
+                $token=$this->make_confirmation_token($nom,$prenom,$email);
                 $base = $globals->baseurl . '/' . $platal->ns . $globals->asso('diminutif');
                 $url = "$base/events/sub/$eid?nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&email=".urlencode($email)."&token=$token";
 
