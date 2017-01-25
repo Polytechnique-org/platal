@@ -147,11 +147,13 @@ function deadlineChange(box)
         non</label>
 
         <br />
-        Autoriser les non-membres&nbsp;:
-        <label><input type="radio" name="accept_nonmembre" value="1" {if $evt.accept_nonmembre}checked="checked"{/if} />
-        oui</label>
-        <label><input type="radio" name="accept_nonmembre" value="0" {if !$evt.accept_nonmembre}checked="checked"{/if}/>
-        non</label>
+        Accepter les&nbsp;:
+        <label><input type="radio" name="access_control" value="group" {if $evt.access_control eq group}checked="checked"{/if} />
+        membres du groupe</label>
+        <label><input type="radio" name="access_control" value="registered" {if $evt.access_control eq registered}checked="checked"{/if}/>
+        membres de polytechnique.net</label>
+        <label><input type="radio" name="access_control" value="all" {if $evt.access_control eq all}checked="checked"{/if}/>
+        tout le monde</label>
 
         <br />
         Autoriser les invités&nbsp;:

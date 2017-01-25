@@ -44,7 +44,7 @@ function get_events($asso_id, $order, $archive)
     if ($order != 'asc' && $order != 'desc') {
         $order = 'desc';
     }
-    $evts = XDB::fetchAllAssoc('eid', "SELECT ge.eid, ge.uid, ge.intitule, ge.debut, ge.fin, ge.show_participants, ge.deadline_inscription, ge.accept_nonmembre, ge.paiement_id
+    $evts = XDB::fetchAllAssoc('eid', "SELECT ge.eid, ge.uid, ge.intitule, ge.debut, ge.fin, ge.show_participants, ge.deadline_inscription, ge.access_control, ge.paiement_id
                                          FROM group_events as ge
                                         WHERE asso_id = {?} and archive = {?}
                                      ORDER BY ge.debut $order",
@@ -66,7 +66,7 @@ function get_event(&$eid)
                                         $eid);
         $eid = $id;
     }
-    $evt = XDB::fetchOneAssoc('SELECT ge.uid, ge.intitule, ge.descriptif, ge.debut, ge.fin, ge.deadline_inscription, ge.accept_nonmembre, ge.noinvite, ge.paiement_id
+    $evt = XDB::fetchOneAssoc('SELECT ge.uid, ge.intitule, ge.descriptif, ge.debut, ge.fin, ge.deadline_inscription, ge.access_control, ge.noinvite, ge.paiement_id
                                          FROM group_events as ge
                                         WHERE eid = {?}',
                                         $eid);
@@ -167,7 +167,7 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
     if (!$evt) {
         return null;
     }
-    if ($GLOBALS['IS_XNET_SITE'] && $evt['accept_nonmembre'] == 0 && !is_member() && !may_update()) {
+    if ($GLOBALS['IS_XNET_SITE'] && $evt['access_control'] == AccessControl::Group && !is_member() && !may_update()) {
         return false;
     }
 

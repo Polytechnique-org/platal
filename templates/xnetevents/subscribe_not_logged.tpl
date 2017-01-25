@@ -19,31 +19,37 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-BEGIN:VCALENDAR
-{display_ical name="prodid" value="-//Polytechnique.org//Plat-al//FR"}
-VERSION:2.0
-CALSCALE:GREGORIAN
-X-WR-TIMEZONE:Europe/Paris
-METHOD:PUBLISH
-{display_ical name="x-wr-calname" value=$asso->nom}
-BEGIN:VEVENT
-DSTAMP:{$timestamp|date_format:"%Y%m%dT%H%M%SZ"}
-DTSTART;VALUE=DATE;TZID=Europe/Paris:{$e.debut}
-DTEND;VALUE=DATE;TZID=Europe/Paris:{$e.fin}
-ORGANIZER;CN="{$e.prenom} {$e.nom}":MAILTO:{$e.alias}@polytechnique.org
-UID:event-{$e.short_name}-{$e.eid}@{$asso->diminutif}.polytechnique.org
-{if $admin}
-{foreach from=$participants item=m}
-ATTENDEE;CN="{$m.user->fullName('promo')}":MAILTO:{$m.user->bestEmail()}
-{/foreach}
-{/if}
-{if $e.access_control!=AccessControl::Group}
-CLASS:PUBLIC
+
+<h1>{$asso->nom}&nbsp;: Evénement {$event.intitule}</h1>
+
+<p class='descr'>
+  {assign var=profile value=$event.organizer->profile()}
+  Cet événement a lieu <strong>{$event.date}</strong> et a été proposé par
+  <a href='https://www.polytechnique.org/profile/{$profile->hrpid}' class='popup2'>
+    {$event.organizer->fullName('promo')}
+  </a>.
+</p>
+
+<p class='descr'>
+  {$event.descriptif|nl2br}
+</p>
+
+{if $form_sent}
+Un email de confirmation vous à été envoyé à {$email}.
 {else}
-CLASS:PRIVATE
+<form action="{$platal->ns}events/sub/{$eid}" method="post">
+  {xsrf_token_field}
+  <p style="text-align:center">
+    Nom : <input type="text" name='nom' />
+    Prénom : <input type="text" name='prenom' />
+    E-mail : <input type="text" name='email' />
+	<br/>
+	<br/>
+	<br/>
+    <input type="submit" name='submit' value="Valider mes inscriptions" />
+  </p>
+</form>
 {/if}
-{display_ical name="summary" value=$e.intitule}
-{display_ical name="description" value=$e.descriptif}
-END:VEVENT
-END:VCALENDAR
+
 {* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}
+
