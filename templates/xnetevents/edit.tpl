@@ -148,12 +148,11 @@ function deadlineChange(box)
 
         <br />
         Accepter les&nbsp;:
-        <label><input type="radio" name="access_control" value="group" {if $evt.access_control eq group}checked="checked"{/if} />
-        membres du groupe</label>
-        <label><input type="radio" name="access_control" value="registered" {if $evt.access_control eq registered}checked="checked"{/if}/>
-        membres de polytechnique.net</label>
-        <label><input type="radio" name="access_control" value="all" {if $evt.access_control eq all}checked="checked"{/if}/>
-        tout le monde</label>
+        <select name="access_control">
+          <option value="group" {if $evt.access_control eq group}selected{/if}>membres du groupe</option>
+          <option value="registered" {if $evt.access_control eq registered}selected{/if}>utilisateurs de polytechnique.net</option>
+          <option value="all" {if $evt.access_control eq all}selected{/if}>tout le monde</option>
+        </select>
 
         <br />
         Autoriser les invités&nbsp;:
