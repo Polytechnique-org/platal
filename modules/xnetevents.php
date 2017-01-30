@@ -267,7 +267,6 @@ class XnetEventsModule extends PLModule
                 XDB::execute('INSERT INTO accounts SET firstname={?}, lastname={?}, full_name={?}, directory_name={?}, sort_name={?}, hruid={?}, email={?}, type={?}, state={?}', $firstname, $lastname, $full_name, $directory_name, $sort_name, $hruid, Get::v('email'), "xnet", "active");
             }
             $user=User::get($hruid);
-            var_dump($user);
             if(!Platal::session()->logAsUser($user)){
                 $page->kill("Authentication failed for $hruid.");
             }
