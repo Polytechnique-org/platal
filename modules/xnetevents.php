@@ -212,7 +212,7 @@ class XnetEventsModule extends PLModule
         $page->assign('undisplayed_events', $undisplayed_events);
     }
 
-    function make_confirmation_token($nom,$prenom,$email){
+    function make_id_for_new_user($nom,$prenom,$email){
         return sha1("bfpPUBEfsfj".$nom."##".$prenom.";%".$email);
     }
 
@@ -244,9 +244,26 @@ class XnetEventsModule extends PLModule
 
         //if we arrived here via a confirmation email, process it
         if(Get::has('nom') && Get::has('prenom') && Get::has('email') && Get::has('token')){
-            if(Get::v('token')!=$this->make_confirmation_token(Get::v('nom'),Get::v('prenom'),Get::v('email'))){
+            //check if the request is valid
+            //IMPORTANT: this page can log any existing user or new non x user, the security here must be at least as strong as the password recovery functionality (generate a random one time confirmation token, and send an url with is to the given email, the token expires after 6 hours)
+            XDB::execute('DELETE FROM  unlogged_users_event_subscription
+                                WHERE  DATE_SUB(NOW(), INTERVAL 380 MINUTE) > created');
+            $res = XDB::query('SELECT  uid
+                                 FROM  unlogged_users_event_subscription
+                                WHERE  certificat = {?}', Get::v('token'));
+            if($res->numRows()===0) {
                 $page->kill('Ce lien n\'est pas valide.');
             }
+
+            $found_user_id = $res->fetchOneCell();
+            $user_id=$this->make_id_for_new_user(Get::v('nom'),Get::v('prenom'),Get::v('email'));
+
+            if($user_id!==$found_user_id){
+                $page->kill('Ce lien n\'est pas valide.');
+            }
+
+            XDB::execute('DELETE FROM  unlogged_users_event_subscription
+                                WHERE  certificat = {?}', Get::v('token'));
 
             //check if the email address is already registered
             $user=User::getSilent(Get::v('email'));
@@ -393,9 +410,14 @@ class XnetEventsModule extends PLModule
                 $nom=Post::v('nom');
                 $prenom=Post::v('prenom');
                 $email=Post::v('email');
-                $token=$this->make_confirmation_token($nom,$prenom,$email);
+                $id=$this->make_id_for_new_user($nom,$prenom,$email);
+                $token=rand_url_id();
                 $base = $globals->baseurl . '/' . $platal->ns . $globals->asso('diminutif');
                 $url = "$base/events/sub/$eid?nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&email=".urlencode($email)."&token=$token";
+
+                //remember our randomly generated id (valid 6 hours)
+                XDB::execute('INSERT INTO  unlogged_users_event_subscription (certificat,uid,created)
+                              VALUES  ({?},{?},NOW())', $token, $id);
 
                 $mailer = new PlMailer('xnetevents/subscribe_not_logged_confirm.mail.tpl');
                 $mailer->assign('group', $globals->asso('nom'));

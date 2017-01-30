@@ -27,9 +27,11 @@
 {elseif $mail_part eq 'wiki'}
 M. {$prenom} {$nom},
 
-Pour valider votre inscription l'événement {$event}, veuillez suivre ce lien de confirmation :
+Pour valider votre inscription l'événement {$event}, veuillez suivre le lien de confirmation suivant qui expire dans six heures:
 
 {$url}
+
+Si vous n'arrivez pas à cliquer sur le lien, copiez intégralement l'adresse dans la barre de votre navigateur. Ce lien n'est valable qu'une fois. Si vous avez besoin d'un nouveau lien, vous pouvez tout simplement recommencer cette procédure.
 
 {include file="include/signature.mail.tpl"}
 {/if}
