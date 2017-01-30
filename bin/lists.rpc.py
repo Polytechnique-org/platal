@@ -879,7 +879,7 @@ def check_options_runner(userdesc, perms, mlist, listname, correct):
     if mlist.real_name.lower() != listname:
         options['real_name'] = listname, mlist.real_name
         if correct: mlist.real_name = listname
-    return 1
+    return options
 
 
 def check_options(userdesc, perms, vhost, listname, correct=False):
