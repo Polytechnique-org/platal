@@ -249,11 +249,11 @@ class XnetEventsModule extends PLModule
             }
 
             //check if the email address is already registered
-            $res=XDB::query("SELECT hruid FROM accounts WHERE email={?}", Get::v('email'));            
+            $user=User::getSilent(Get::v('email'));
 
-            if($res->numRows()>0){
+            if($user){
                 //the email address is already registered, use the registered account
-                $hruid=(string)$res->fetchOneCell();
+                $hruid=$user->hruid;
             }else{
                 //the email address is not registered, create a new user
                 require_once 'name.func.inc.php';
@@ -271,13 +271,13 @@ class XnetEventsModule extends PLModule
                     if($res->numRows()===0) break;
                     $i=1;
                     $hruid = User::makeHrid($local_part, $domain.".$i", 'ext');
-                    ++$i:
+                    ++$i;
                 }
 
                 //insert the user in the database
                 XDB::execute('INSERT INTO accounts SET firstname={?}, lastname={?}, full_name={?}, directory_name={?}, sort_name={?}, hruid={?}, email={?}, type={?}, state={?}', $firstname, $lastname, $full_name, $directory_name, $sort_name, $hruid, Get::v('email'), "xnet", "active");
+                $user=User::get($hruid);
             }
-            $user=User::get($hruid);
             if(!Platal::session()->logAsUser($user)){
                 $page->kill("Authentication failed for $hruid.");
             }
