@@ -264,6 +264,17 @@ class XnetEventsModule extends PLModule
                 $full_name = build_full_name($firstname, $lastname);
                 $directory_name = build_directory_name($firstname, $lastname);
                 $sort_name = build_sort_name($firstname, $lastname);
+
+                //ensure that the hruid does not already exist
+                while(true){
+                    $res=XDB::query("SELECT hruid FROM accounts WHERE hruid={?}", $hruid);
+                    if($res->numRows()===0) break;
+                    $i=1;
+                    $hruid = User::makeHrid($local_part, $domain.".$i", 'ext');
+                    ++$i:
+                }
+
+                //insert the user in the database
                 XDB::execute('INSERT INTO accounts SET firstname={?}, lastname={?}, full_name={?}, directory_name={?}, sort_name={?}, hruid={?}, email={?}, type={?}, state={?}', $firstname, $lastname, $full_name, $directory_name, $sort_name, $hruid, Get::v('email'), "xnet", "active");
             }
             $user=User::get($hruid);
