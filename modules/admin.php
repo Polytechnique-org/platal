@@ -1929,13 +1929,13 @@ class AdminModule extends PLModule
         $page->assign('updates', $display_res);
     }
 
-    function _prepare_profile_modification_display($profile_modification)
+    static function _prepare_profile_modification_display($profile_modification)
     {
 
         $altered_modification = $profile_modification;
         $fields_display = implode(", ",
             array_map(
-                array(Profile, 'field_display'),
+                array('Profile', 'field_display'),
                 explode("|", $profile_modification['field'])
             )
         );
