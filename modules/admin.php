@@ -54,6 +54,7 @@ class AdminModule extends PLModule
             'admin/xnet_without_group'     => $this->make_hook('xnet_without_group',     AUTH_PASSWD, 'admin'),
             'admin/jobs'                   => $this->make_hook('jobs',                   AUTH_PASSWD, 'admin,edit_directory'),
             'admin/profile'                => $this->make_hook('profile',                AUTH_PASSWD, 'admin,edit_directory'),
+            'admin/profile_json'           => $this->make_hook('profile_json',           AUTH_PASSWD, 'admin,edit_directory'),
             'admin/phd'                    => $this->make_hook('phd',                    AUTH_PASSWD, 'admin'),
             'admin/name'                   => $this->make_hook('admin_name',             AUTH_PASSWD, 'admin'),
             'admin/add_secondary_edu'      => $this->make_hook('add_secondary_edu',      AUTH_PASSWD, 'admin')
@@ -1942,6 +1943,33 @@ class AdminModule extends PLModule
         $altered_modification['fields_display'] = $fields_display;
 
         return $altered_modification;
+    }
+
+    function handler_profile_json($page)
+    {
+        $res = XDB::iterator('SELECT  p.hrpid, pm.pid, pd.directory_name AS name, pm.field AS field, pm.newtext AS newtext, pm.timestamp AS timestamp
+                                FROM  profile_modifications AS pm
+                          INNER JOIN  profiles              AS p  ON (pm.pid = p.pid)
+                          INNER JOIN  profile_display       AS pd ON (pm.pid = pd.pid)
+                               WHERE  pm.type = \'self\'
+                            ORDER BY  pm.timestamp DESC, pd.directory_name');
+        $modifications = array();
+        foreach (PlIteratorUtils::foreachIterator($res) as $modif)
+        {
+            if (!array_key_exists($modif['name'], $modifications)) {
+                $modifications[$modif['name']] = array();
+            }
+            // Only keep most recent modification
+            if (!array_key_exists($display_field, $modifications[$modif['name']])) {
+                $display_field = Profile::field_display($modif['field']);
+                $modifications[$modif['name']][$display_field] = array(
+                    "newtext" => $modif['newtext'],
+                    "timestamp" => $modif['timestamp']
+                );
+            }
+        }
+        $page->jsonAssign('modifications', $modifications);
+        return PL_JSON;
     }
 
     function handler_phd($page, $promo = null, $validate = false)
