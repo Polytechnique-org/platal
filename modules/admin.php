@@ -1959,9 +1959,9 @@ class AdminModule extends PLModule
             if (!array_key_exists($modif['name'], $modifications)) {
                 $modifications[$modif['name']] = array();
             }
-            // Only keep most recent modification
+            // Only keep the most recent modification
+            $display_field = Profile::field_display($modif['field']);
             if (!array_key_exists($display_field, $modifications[$modif['name']])) {
-                $display_field = Profile::field_display($modif['field']);
                 $modifications[$modif['name']][$display_field] = array(
                     "newtext" => $modif['newtext'],
                     "timestamp" => $modif['timestamp']
