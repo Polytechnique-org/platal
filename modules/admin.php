@@ -1947,7 +1947,7 @@ class AdminModule extends PLModule
 
     function handler_profile_json($page)
     {
-        $res = XDB::iterator('SELECT  p.hrpid, pm.pid, pd.directory_name AS name, pm.field AS field, pm.newtext AS newtext, pm.timestamp AS timestamp
+        $res = XDB::iterator('SELECT  p.hrpid, pm.pid, CONCAT(p.ax_id, " (", pd.directory_name, ")") AS name, pm.field AS field, pm.newtext AS newtext, pm.timestamp AS timestamp
                                 FROM  profile_modifications AS pm
                           INNER JOIN  profiles              AS p  ON (pm.pid = p.pid)
                           INNER JOIN  profile_display       AS pd ON (pm.pid = pd.pid)
