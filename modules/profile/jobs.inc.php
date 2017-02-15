@@ -329,7 +329,7 @@ class ProfileSettingJob implements ProfileSetting
             $phones = Phone::formArrayToString($job['w_phone']);
             $jobs[$id] = $job['name'];
             $jobs[$id] .= ($job['description'] ? (', ' . $job['description']) : '');
-            $jobs[$id] .= ' (affichage ' . $pubs[$job['pub']];
+            $jobs[$id] .= ' (affichage ' . $pubs[$job['pub']] . ')';
             if (count($job['terms'])) {
                 $terms = array();
                 foreach ($job['terms'] as $term) {

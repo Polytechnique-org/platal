@@ -651,14 +651,14 @@ class Address
         $address = $this->text;
         if ($this->type == self::LINK_PROFILE || $this->type == self::LINK_JOB) {
             static $pubs = array('public' => 'publique', 'ax' => 'annuaire papier', 'private' => 'privé', 'hidden' => 'administrateurs');
-            $address .= ' (affichage ' . $pubs[$this->pub];
+            $address .= ' (affichage ' . $pubs[$this->pub] . ')';
         }
         if ($this->type == self::LINK_PROFILE) {
             static $flags = array(
                 'current'       => 'actuelle',
                 'temporary'     => 'temporaire',
                 'secondary'     => 'secondaire',
-                'mail'          => 'conctactable par courier',
+                'mail'          => 'contactable par courier',
                 'deliveryIssue' => 'n\'habite pas à l\'adresse indiquée',
                 'cedex'         => 'type cédex',
             );
