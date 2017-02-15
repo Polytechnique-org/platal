@@ -35,6 +35,8 @@
 {/literal}
 //]]></script>
 
+<p><a href="admin/profile_json" download="profile.json">Télécharger la liste des modifications au format JSON</a></p>
+
 <form action="admin/profile" method="post">
   {xsrf_token_field}
   <table class="bicol" summary="liste des modifications de profil récentes">
