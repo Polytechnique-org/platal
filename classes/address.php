@@ -658,7 +658,7 @@ class Address
                 'current'       => 'actuelle',
                 'temporary'     => 'temporaire',
                 'secondary'     => 'secondaire',
-                'mail'          => 'conctactable par courier',
+                'mail'          => 'contactable par courier',
                 'deliveryIssue' => 'n\'habite pas à l\'adresse indiquée',
                 'cedex'         => 'type cédex',
             );
