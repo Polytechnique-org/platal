@@ -651,7 +651,7 @@ class Address
         $address = $this->text;
         if ($this->type == self::LINK_PROFILE || $this->type == self::LINK_JOB) {
             static $pubs = array('public' => 'publique', 'ax' => 'annuaire papier', 'private' => 'privé', 'hidden' => 'administrateurs');
-            $address .= ' (affichage ' . $pubs[$this->pub];
+            $address .= ' (affichage ' . $pubs[$this->pub] . ')';
         }
         if ($this->type == self::LINK_PROFILE) {
             static $flags = array(
