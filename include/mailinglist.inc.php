@@ -30,6 +30,8 @@ class MailingList
 
     public function __construct($mbox, $domain, $user=null, $sudo=false)
     {
+        global $globals;
+
         $this->mbox = $mbox;
         $this->domain = $domain;
         $this->address = "$mbox@$domain";
