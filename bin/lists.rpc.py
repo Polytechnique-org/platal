@@ -1129,6 +1129,7 @@ server.register_function(subscribe)
 server.register_function(unsubscribe)
 # members.php
 server.register_function(get_members)
+server.register_function(get_subscription_status)
 # trombi.php
 server.register_function(get_members_limit)
 server.register_function(get_owners)
