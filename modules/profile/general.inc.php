@@ -370,6 +370,11 @@ class ProfileSettingEmailDirectory implements ProfileSetting
                 $success = false;
             } else {
                 $p->assign('email_error', '0');
+                if ($page->values['email_directory'] == 'new@example.org') {
+                    // Update the values so that the form gets handled as if
+                    // the new email address was in email_directory
+                    $page->values['email_directory'] = $email_stripped;
+                }
             }
         }
         return $value;
@@ -628,7 +633,7 @@ class ProfilePageGeneral extends ProfilePage
                                         = $this->settings['profile_title']
                                         = null;
         $this->settings['email_directory'] = new ProfileSettingEmail();
-        $this->settings['email_directory_new'] = new ProfileSettingEmailDirectory();
+        $this->settings['email_directory_new'] = new ProfileSettingEmailDirectory(); // This field needs to be processed after email_directory
         $this->settings['tels'] = new ProfileSettingPhones();
         $this->settings['edus'] = new ProfileSettingEdu();
         $this->settings['main_edus'] = new ProfileSettingMainEdu();
