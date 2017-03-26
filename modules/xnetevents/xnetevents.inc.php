@@ -180,10 +180,14 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
         $evt['user_count'] = $evt['nb_tot'] = $evt['nb'];
         $evt['titre'] = '';
         $evt['item_id'] = 0;
-        $evt['csv_name'] = urlencode($evt['intitule']);
+        $csv_name = $evt['intitule'];
     } else {
-        $evt['csv_name'] = urlencode($evt['intitule'] . '.' . $evt['titre']);
+        $csv_name = $evt['intitule'] . '.' . $evt['titre'];
     }
+    // Remove slashes from the CSV name
+    $csv_name = str_replace('/', '_', $csv_name);
+    $csv_name = str_replace('\\', '_', $csv_name);
+    $evt['csv_name'] = urlencode($csv_name);
 
     $evt['moments'] = XDB::fetchAllAssoc('SELECT  titre, details, montant, ei.item_id, nb,
                                                   ep.paid, FIND_IN_SET(\'notify_payment\', ep.flags) AS notify_payment
