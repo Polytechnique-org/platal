@@ -118,6 +118,8 @@ class Profile implements PlExportable
 
     const FETCH_ALL          = 0x007FFF; // OR of FETCH_*
 
+    const EXAMPLE_EMAIL = 'new@example.org'; // email used in profile email management
+
     static public $descriptions = array(
         'search_names'    => 'Noms',
         'nationality1'    => 'Nationalité',

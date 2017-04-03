@@ -363,14 +363,14 @@ class ProfileSettingEmailDirectory implements ProfileSetting
         $success = true;
         if (!is_null($value)) {
             $email_stripped = strtolower(trim($value));
-            if ((!isvalid_email($email_stripped)) && ($email_stripped) && ($page->values['email_directory'] == "new@example.org")) {
+            if ((!isvalid_email($email_stripped)) && ($email_stripped) && ($page->values['email_directory'] == Profile::EXAMPLE_EMAIL)) {
                 $p->assign('email_error', '1');
                 $p->assign('email_directory_error', $email_stripped);
                 $p->trigError('Adresse Email invalide');
                 $success = false;
             } else {
                 $p->assign('email_error', '0');
-                if ($page->values['email_directory'] == 'new@example.org') {
+                if ($page->values['email_directory'] == Profile::EXAMPLE_EMAIL) {
                     // Update the values so that the form gets handled as if
                     // the new email address was in email_directory
                     $page->values['email_directory'] = $email_stripped;
@@ -729,7 +729,7 @@ class ProfilePageGeneral extends ProfilePage
                 $this->values['nationality3'] = NULL;
             }
 
-            $new_email = ($this->values['email_directory'] == "new@example.org") ?
+            $new_email = ($this->values['email_directory'] == Profile::EXAMPLE_EMAIL) ?
                 $this->values['email_directory_new'] : $this->values['email_directory'];
             if ($new_email == "") {
                 $new_email = NULL;

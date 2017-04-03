@@ -277,7 +277,7 @@ class EmailModule extends PLModule
             if (Env::v('emailop') == "ajouter" && Env::has('email')) {
                 $error_email = false;
                 $new_email = Env::v('email');
-                if ($new_email == "new@example.org") {
+                if ($new_email == Profile::EXAMPLE_EMAIL) {
                     $new_email = Env::v('email_new');
                 }
                 $result = $redirect->add_email($new_email);
