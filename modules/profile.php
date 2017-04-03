@@ -337,7 +337,7 @@ class ProfileModule extends PLModule
         }
         $wiz->addPage('ProfilePageDecos', 'Décorations - Medailles', 'deco');
         if ($viewPrivate) {
-            $wiz->addPage('ProfilePageMentor', 'Mentoring', 'mentor');
+            $wiz->addPage('ProfilePageMentor', 'Référents', 'mentor');
         }
         if ($viewPrivate && $profile->isDeltatenEnabled(Profile::DELTATEN_OLD)) {
             $wiz->addPage('ProfilePageDeltaten', 'Opération N N-10', 'deltaten');

@@ -30,7 +30,7 @@
 <a id="mentors"></a>
 
 <p>
-Actuellement, {$mentors_number} mentors et référents se sont déclarés sur {#globals.core.sitename#}.
+Actuellement, {$mentors_number} référents se sont déclarés sur {#globals.core.sitename#}.
 </p>
 
 {javascript name=jquery.jstree}

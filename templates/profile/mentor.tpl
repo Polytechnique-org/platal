@@ -26,7 +26,7 @@
 </div>
 {if !$expertise || !t($sectors) || !($sectors|@count)}
   <br /><div>
-    <strong>{icon name=error title="Attention"} Attention&nbsp;: pour figurer dans la base de données des mentors, il faut remplir la
+    <strong>{icon name=error title="Attention"} Attention&nbsp;: pour figurer dans la base de données des référents, il faut remplir la
     dernière case en bas de cette page et avoir au moins un secteur d'activité de prédilection.</strong><br />
   </div>
 {/if}
@@ -40,7 +40,7 @@
   notamment internationales sur la base desquels tu seras identifiable depuis
   <a href="referent/search#mentors">la page de recherche d'un conseil professionnel</a>.<br />
 </p>
-<p>Le mentoring est particulièrement important pour les camarades&nbsp;:</p>
+<p>Le renseignement de référents est particulièrement important pour les camarades&nbsp;:</p>
 <ul>
   <li>encore jeunes, qui sont en train de bâtir leur projet professionnel&nbsp;;</li>
   <li>ou bien, plus âgés, qui souhaitent réorienter leur carrière.</li>
@@ -119,7 +119,7 @@
   </tr>
  </table>
 
-<table class="bicol" id="countries_table" style="margin-bottom: 1em" summary="Profil&nbsp;: Mentoring">
+<table class="bicol" id="countries_table" style="margin-bottom: 1em" summary="Profil&nbsp;: Référent">
   <tr>
     <th>
       <div class="flags" style="float: left">
@@ -159,7 +159,7 @@
 
 <script type="text/javascript" src="javascript/jquery.jstree.js"></script>
 
-<table class="bicol" style="margin-bottom: 1em" summary="Profil&nbsp;: Mentoring">
+<table class="bicol" style="margin-bottom: 1em" summary="Profil&nbsp;: Référent">
   <tr>
     <th colspan="2">
       <div class="flags" style="float: left">
@@ -207,7 +207,7 @@
   </tr>
 </table>
 
-<table class="bicol" summary="Profil&nbsp;: Mentoring">
+<table class="bicol" summary="Profil&nbsp;: Référent">
   <tr>
     <th>
       <div class="flags" style="float: left">
@@ -224,7 +224,7 @@
       veux bien que ceux de nos camarades qui seraient intéressés par un
       contact avec toi, en prennent l'initiative. <strong>Il est obligatoire de
       remplir cette dernière case pour apparaître dans la base de données
-      des "Mentors".</strong>
+      des "Référents".</strong>
     </td>
   </tr>
   <tr>
