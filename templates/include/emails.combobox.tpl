@@ -47,7 +47,7 @@
       {/if}
       {/foreach}
       <optgroup label="Autres choix">
-        <option value="new@example.org" {if ($val eq '' && !$error && $name eq 'email') || $error}selected="selected"{/if}>Nouvelle adresse email</option>
+        <option value="{#Profile::EXAMPLE_EMAIL#}" {if ($val eq '' && !$error && $name eq 'email') || $error}selected="selected"{/if}>Nouvelle adresse email</option>
         {if $name neq "email"}<option value="" {if $val eq '' && !$error}selected="selected"{/if}>Ne pas mettre d'adresse email</option>{/if}
       </optgroup>
     </select>
@@ -87,7 +87,7 @@
         var i = {/literal}{$i}{literal};
         $('select#combobox' + i).change(function() {
           $('.new' + i).hide();
-          if ($('select#combobox' + i).val() == "new@example.org") {
+          if ($('select#combobox' + i).val() == '{/literal}{#Profile::EXAMPLE_EMAIL#}{literal}') {
             $('.new' + i).show();
           }
         }).change();

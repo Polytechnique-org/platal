@@ -133,7 +133,7 @@ class ProfileSettingJob implements ProfileSetting
 
     private function cleanJob(ProfilePage $page, $jobid, array &$job, &$success, $job_level)
     {
-        if ($job['w_email'] == "new@example.org") {
+        if ($job['w_email'] == Profile::EXAMPLE_EMAIL) {
             $job['w_email'] = $job['w_email_new'];
         }
         foreach ($this->checks as $obj=>&$fields) {
