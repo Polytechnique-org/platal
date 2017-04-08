@@ -347,6 +347,7 @@ def findAddressInPlainText(lines):
         "I'm sorry to have to inform you that your message could not",
         "The email account that you tried to reach does not exist",
         "This is a permanent error",
+        "Unable to deliver message after multiple retries, giving up.",
         "Unknown address error",
         "unreachable for too long",
         "550 Requested action not taken",
