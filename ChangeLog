@@ -1,3 +1,29 @@
+VERSION 1.1.23                                                       XX XX XXXX
+
+    * Emails
+        - Don't notify end users deathdate update                           -XEL
+        - Mailing lists should now include RFC2369 headers                  -PAD
+        - Fix email address in profile modification email                   -IOS
+
+    * Forums
+        - Fix Discourse's SSO                                               -PAD
+
+    * Maps:
+        - Use a Google API key and fix geoloc's MarkerClusterer             -PAD
+
+    * Newsletter:
+        - Process text messages (in-message attachment bounces)             -IOS
+
+    * Profiles:
+        - Add a profile_json admin endpoint                                 -LEV
+        - Close parentheses when displaying field visibility                -IOS
+
+    * Scripts:
+        - Add a script which computes group members statistics              -IOS
+
+    * XnetEvent:
+        - Remove / and \ from the CSV file name                             -IOS
+
 ================================================================================
 VERSION 1.1.22                                                       30 10 2016
 
