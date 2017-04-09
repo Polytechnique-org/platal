@@ -97,12 +97,13 @@ foreach ($promo_groups as $pg) {
 }
 */
 
-echo "Statistiques tous groupes actifs:\n";
+echo "Statistiques tous groupes actifs (hors promo et institutions):\n";
 $uids_query = XDB::query(
     'SELECT  gm.uid
        FROM  group_members AS gm
   LEFT JOIN  groups AS g ON (gm.asso_id = g.id)
-      WHERE  g.status = "active"');
+      WHERE  g.status = "active"
+             AND g.cat NOT IN ("Institutions", "Promotions")');
 show_promo_stats_from_uids($uids_query);
 echo "\n";
 
@@ -111,7 +112,9 @@ $uids_query = XDB::query(
     'SELECT  gm.uid
        FROM  group_members AS gm
   LEFT JOIN  groups AS g ON (gm.asso_id = g.id)
-      WHERE  g.status = "active" AND g.ax');
+      WHERE  g.status = "active"
+             AND g.ax
+             AND g.cat NOT IN ("Institutions", "Promotions")');
 show_promo_stats_from_uids($uids_query);
 echo "\n\n";
 
