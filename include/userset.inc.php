@@ -489,7 +489,7 @@ class AddressesView implements PlView
                             LEFT JOIN  profile_job_enum     AS pje  ON (pj.jobid = pje.id)
                                 WHERE  pa.pid IN {?} AND FIND_IN_SET('dn_best_mail', pa.flags)", $pids);
             foreach ($res->fetchAllRow() as $item) {
-                list($axid, $promo, $title, $lastname, $firstname, $company, $full_address, $zipcode, $email, $delivery_issue) = array_map('utf8_decode', $item);
+                list($axid, $promo, $title, $firstname, $lastname, $company, $full_address, $zipcode, $email, $delivery_issue) = array_map('utf8_decode', $item);
                 $lines = self::split_address($full_address);
                 fputcsv($csv, array(
                     $axid, $promo, $title, $lastname, $firstname, $company,
