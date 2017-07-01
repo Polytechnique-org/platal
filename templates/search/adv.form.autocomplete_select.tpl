@@ -27,7 +27,7 @@
     <input name="{$name}_text" type="text" class="autocomplete" size="32" value="{$value_text}" />
     <input name="{$name}" type="hidden" class="autocomplete_target" value="{$value}" />
     <a href="{$name}" class="autocomplete_to_select" title="display" id="{$name}_table">
-      {icon name="table" title=$title}
+      <img src="images/icons/table.gif" alt="{$title}" title="{$title}" />
     </a>
   </td>
 </tr>
