@@ -99,7 +99,7 @@ class PayReq extends Validate
             return false;
         }
         if (!preg_match('/<montant>/', $this->msg_reponse)) {
-            $this->trigError("Le demande de paiement ne contient pas la balise obligatoire &lt;montant&gt;");
+            $this->trigError("La demande de paiement ne contient pas la balise obligatoire &lt;montant&gt;");
             return false;
         }
         return true;
