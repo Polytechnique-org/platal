@@ -255,7 +255,7 @@ Donne ici son email, ainsi que le nombre de participants.
     <input type="submit" />
   </p>
   <p class="descr">
-    Tu peux aussi enlever toute trace de son inscription ou de sa décision de ne pas s'insscrire (s'il n'a rien payé).
+    Tu peux aussi enlever toute trace de son inscription ou de sa décision de ne pas s'inscrire (s'il n'a rien payé).
     <div class="center">
       <input type="submit" name="cancel" value="Annuler l'inscription" />
     </div>
