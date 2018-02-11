@@ -35,16 +35,16 @@ class XorgGroupeXSession extends XorgSession
         }
 
         global $globals;
-        if (!S::logged() && $globals->xnet->auth_baseurl) {
+        if (!S::logged() && $globals->xorgauth->auth_baseurl) {
             // prevent connection to be linked to disconnection
             if (($i = strpos($_SERVER['REQUEST_URI'], 'exit')) !== false)
                 $returl = "https://{$_SERVER['SERVER_NAME']}".substr($_SERVER['REQUEST_URI'], 0, $i);
             else
                 $returl = "https://{$_SERVER['SERVER_NAME']}{$_SERVER['REQUEST_URI']}";
-            $url  = $globals->xnet->auth_baseurl;
+            $url  = $globals->xorgauth->auth_baseurl;
             $url .= "?session=" . session_id();
             $url .= "&challenge=" . S::v('challenge');
-            $url .= "&pass=" . md5(S::v('challenge') . $globals->xnet->secret);
+            $url .= "&pass=" . md5(S::v('challenge') . $globals->xorgauth->secret);
             $url .= "&url=".urlencode($returl);
             S::set('loginX', $url);
         }
@@ -61,7 +61,7 @@ class XorgGroupeXSession extends XorgSession
             return null;
         }
         global $globals;
-        if (md5('1' . S::v('challenge') . $globals->xnet->secret . Get::i('uid') . '1' ) != Get::v('auth')) {
+        if (md5('1' . S::v('challenge') . $globals->xorgauth->secret . Get::i('uid') . '1' ) != Get::v('auth')) {
             return null;
         }
         Get::kill('auth');
