@@ -71,6 +71,17 @@ class Xorg extends Platal
 
     public function force_login(PlPage $page)
     {
+        $redirect = S::v('loginX');
+        if (!$redirect) {
+            $page->trigError('Impossible de s\'authentifier. Problème de configuration de plat/al.');
+            return;
+        }
+        http_redirect($redirect);
+    }
+
+/* -- old auth --
+    public function force_login(PlPage $page)
+    {
         header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
         if (S::logged()) {
             $page->changeTpl('core/password_prompt_logged.tpl');
@@ -80,7 +91,7 @@ class Xorg extends Platal
         $page->assign_by_ref('platal', $this);
         $page->run();
     }
-
+*/
     public function setup_raven()
     {
         $sentry_dsn = self::globals()->core->sentry_dsn;
