@@ -24,6 +24,10 @@ class ProfileModule extends PLModule
     function handlers()
     {
         return array(
+            'photo'           => $this->make_hook('moved',        AUTH_PUBLIC),
+            'fiche.php'       => $this->make_hook('moved',        AUTH_PUBLIC),
+            'profile'         => $this->make_hook('moved',        AUTH_PUBLIC),
+        /*
             'photo'                      => $this->make_hook('photo',                      AUTH_PUBLIC),
             'photo/change'               => $this->make_hook('photo_change',               AUTH_PASSWD, 'user'),
 
@@ -68,7 +72,13 @@ class ProfileModule extends PLModule
             'admin/trombino'             => $this->make_hook('admin_trombino',             AUTH_PASSWD, 'admin'),
             'admin/corps_enum'           => $this->make_hook('admin_corps_enum',           AUTH_PASSWD, 'admin'),
             'admin/corps_rank'           => $this->make_hook('admin_corps_rank',           AUTH_PASSWD, 'admin'),
+            */
         );
+    }
+
+    function handler_moved($page)
+    {
+        $page->changeTpl('profile/moved.tpl');
     }
 
     /* Function needed for compatibility reasons.
