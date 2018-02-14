@@ -41,6 +41,8 @@ Bienvenue {$smarty.session.user->displayName()}{if t($birthday)}
 </div>
 {/if}
 
+{include file="include/migration.msg.tpl"}
+
 {if t($reminder)}
 {include file="reminder/base.tpl"}
 {else}

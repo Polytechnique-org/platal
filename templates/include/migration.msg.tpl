@@ -20,6 +20,14 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{include file="include/migration.msg.tpl"}
+<fieldset>
+  <legend style="border: 1px #993333 solid; background: #ff9c9c">Annuaire migré </legend>
+  <p>L'annuaire des X a été migré à une nouvelle adresse: <a href="https://ax.polytechnique.org/">https://ax.polytechnique.org/</a>.</p>
+{if $smarty.session.auth}
+  <p>Si tu y as déjà activé ton compte, tu peux y modifier ton profil en cliquant sur <a href="https://ax.polytechnique.org/my-profile/preferences/contact-info">ce lien.</a></p>
+
+  <p>Pour y activer ton compte, rends-toi sur <a href="https://ax.polytechnique.org/">https://ax.polytechnique.org/</a> et clique sur le bouton "Je me connecte". Les données de connexion sont les mêmes que sur polytechnique.org.</p>
+{/if}
+</fieldset>
 
 {* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}
