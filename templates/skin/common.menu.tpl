@@ -27,9 +27,9 @@
 <div class="menu_item"><a href="Xorg/PourquoiMInscrire">Pourquoi m'inscrire&nbsp;?</a></div>
 
 <div class="menu_title">Visiteurs</div>
-<div class="menu_item"><a href="search">Annuaire de l'X</a></div>
-<div class="menu_item"><a href="http://www.polytechnique.net/">Associations X</a></div>
-<div class="menu_item"><a href="http://www.wats4u.com/">Recrutement</a></div>
+<div class="menu_item"><a href="https://ax.polytechnique.org/">Annuaire de l'X</a></div>
+<div class="menu_item"><a href="https://www.polytechnique.net/">Associations X</a></div>
+<div class="menu_item"><a href="https://www.wats4u.com/">Recrutement</a></div>
 
 <div class="menu_title">Informations</div>
 <div class="menu_item"><a href="Equipe/APropos">À propos du site</a></div>
@@ -48,14 +48,10 @@
 {if hasPerm('mail')}
 <div class="menu_item"><a href="emails">Mes emails</a></div>
 {/if}
-{if $smarty.session.user->hasProfile()}
-<div class="menu_item"><a href="profile/edit">Mon profil</a></div>
-{/if}
 {if hasPerm('directory_private')}
 <div class="menu_item"><a href="carnet/contacts">Mes contacts</a></div>
 <div class="menu_item"><a href="carnet">Mon carnet</a></div>
 {/if}
-<div class="menu_item"><a href="password">Mon mot de passe</a></div>
 <div class="menu_item"><a href="prefs">Mes préférences</a></div>
 
 <div class="menu_title">Services</div>
@@ -77,15 +73,8 @@
 <div class="menu_item"><a href="emails/broken">Patte cassée</a></div>
 
 <div class="menu_title">Communauté X</div>
-<div class="menu_item"><a href="search">Annuaire</a></div>
-{if hasPerm('directory_private,edit_directory')}
-<div class="menu_item"><a href="map">Planisphère</a></div>
-{/if}
 {if hasPerm('directory_private')}
 <div class="menu_item"><a href="jobs">Emploi &amp; Carrières</a></div>
-{/if}
-{if hasPerm('groups')}
-<div class="menu_item"><a href="groupes-x">Mes groupes X</a></div>
 {/if}
 <div class="menu_item"><a href="survey">Sondages</a></div>
 {if hasPerm('directory_private') && $smarty.session.user->hasProfile()}
