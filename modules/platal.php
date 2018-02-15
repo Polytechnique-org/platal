@@ -560,6 +560,8 @@ Adresse de secours : ' . $to));
 
     function handler_exit($page, $level = null)
     {
+        global $globals;
+
         if (S::suid()) {
             $old = S::user()->login();
             S::logger()->log('suid_stop', $old . " by " . S::suid('hruid'));
@@ -583,6 +585,18 @@ Adresse de secours : ' . $to));
         if (S::logged()) {
             S::logger()->log('deconnexion', @$_SERVER['HTTP_REFERER']);
             Platal::session()->destroy();
+
+            // Disconnect from the SSO too, if there is no redirection
+            // When the user gets back from the SSO, there is no longer a logged session
+            if (!Get::has('redirect') && $globals->xorgauth->auth_logout_url) {
+                $challenge = sha1(uniqid(rand(), true));
+                $returl = "https://{$_SERVER['SERVER_NAME']}{$_SERVER['REQUEST_URI']}";
+                $url  = $globals->xorgauth->auth_logout_url;
+                $url .= "?challenge=" . $challenge;
+                $url .= "&pass=" . md5($challenge . $globals->xorgauth->secret);
+                $url .= "&url=" . urlencode($returl);
+                http_redirect($url);
+            }
         }
 
         if (Get::has('redirect')) {
