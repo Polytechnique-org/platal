@@ -8,6 +8,9 @@ VERSION 1.1.23                                                       XX XX XXXX
     * Forums
         - Fix Discourse's SSO                                               -PAD
 
+    * Login:
+        - Move to auth.polytechnique.org's new SSO                          -LEV
+
     * Maps:
         - Use a Google API key and fix geoloc's MarkerClusterer             -PAD
 
@@ -17,6 +20,10 @@ VERSION 1.1.23                                                       XX XX XXXX
     * Profiles:
         - Add a profile_json admin endpoint                                 -LEV
         - Close parentheses when displaying field visibility                -IOS
+        - Move to ax.polytechnique.org                                      -LEV
+
+    * Search:
+        - Move to ax.polytechnique.org                                      -LEV
 
     * Scripts:
         - Add a script which computes group members statistics              -IOS
