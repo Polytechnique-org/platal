@@ -20,15 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<table>
-  <tr>
-    <td class="date-heure"></td>
-    <td class="inscrits">
-      {$globals->core->NbIns|number_format} étudiants et anciens de l'X sur le web
-      {if $smarty.session.auth gt AUTH_PUBLIC && $smarty.session.notifs}
-      <a href="carnet/panel">{$smarty.session.notifs} événement{if $smarty.session.notifs gt 1}s{/if}</a>
-      {/if}
-    </td>
-  </tr>
-</table>
+{include file="include/migration.msg.tpl"}
+
 {* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}
