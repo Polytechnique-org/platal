@@ -71,14 +71,26 @@ class Xorg extends Platal
 
     public function force_login(PlPage $page)
     {
-        header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
-        if (S::logged()) {
-            $page->changeTpl('core/password_prompt_logged.tpl');
+        global $globals;
+        if (!empty($globals->xorgauth->secret)) {
+            // Use auth.polytechnique.org if it is configured
+            $redirect = S::v('loginX');
+            if (!$redirect) {
+                $page->trigError('Impossible de s\'authentifier. Problème de configuration de plat/al.');
+                return;
+            }
+            http_redirect($redirect);
         } else {
-            $page->changeTpl('core/password_prompt.tpl');
+            // Deprecated local authentication
+            header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
+            if (S::logged()) {
+                $page->changeTpl('core/password_prompt_logged.tpl');
+            } else {
+                $page->changeTpl('core/password_prompt.tpl');
+            }
+            $page->assign_by_ref('platal', $this);
+            $page->run();
         }
-        $page->assign_by_ref('platal', $this);
-        $page->run();
     }
 
     public function setup_raven()
