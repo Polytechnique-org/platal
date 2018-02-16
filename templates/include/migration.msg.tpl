@@ -22,7 +22,7 @@
 
 <fieldset>
   <legend style="border: 1px #993333 solid; background: #ff9c9c">Annuaire migré </legend>
-  <p>L'annuaire des X a été migré à une nouvelle adresse: <a href="https://ax.polytechnique.org/">https://ax.polytechnique.org/</a>.</p>
+  <p>L'annuaire des X a été migré à une nouvelle adresse&nbsp;: <a href="https://ax.polytechnique.org/">https://ax.polytechnique.org/</a>.</p>
 {if $smarty.session.auth}
   <p>Si tu y as déjà activé ton compte, tu peux y modifier ton profil en cliquant sur <a href="https://ax.polytechnique.org/my-profile/preferences/contact-info">ce lien.</a></p>
 
