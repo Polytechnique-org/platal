@@ -120,6 +120,20 @@ class AuthModule extends PLModule
      */
     function handler_groupex($page, $charset = 'utf8')
     {
+        // If using a non-legacy and deprecated endpoint, move to the new SSO
+        if ($charset == 'utf8') {
+            // Make sure we drop "utf8" from the request URI. The GET parameters
+            // are transmitted as they are.
+            $pos = strpos($_SERVER['REQUEST_URI'], '?');
+            if ($pos) {
+                $request_variables = substr($_SERVER['REQUEST_URI'], $pos + 1);
+            } else {
+                $request_variables = '';
+            }
+            http_redirect('https://auth.polytechnique.org/auth-groupex?' . $request_variables);
+            return;
+        }
+
         $ext_url = urldecode(Get::s('url'));
 
         if (!S::logged()) {
