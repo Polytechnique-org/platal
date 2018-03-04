@@ -37,10 +37,11 @@ class XnetSession extends XorgSession
         global $globals;
         if (!S::logged() && $globals->xnet->auth_baseurl) {
             // prevent connection to be linked to disconnection
+            $proto = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
             if (($i = strpos($_SERVER['REQUEST_URI'], 'exit')) !== false)
-                $returl = "http://{$_SERVER['SERVER_NAME']}".substr($_SERVER['REQUEST_URI'], 0, $i);
+                $returl = $proto . $_SERVER['SERVER_NAME'] . substr($_SERVER['REQUEST_URI'], 0, $i);
             else
-                $returl = "http://{$_SERVER['SERVER_NAME']}{$_SERVER['REQUEST_URI']}";
+                $returl = $proto . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
             $url  = $globals->xnet->auth_baseurl;
             $url .= "?session=" . session_id();
             $url .= "&challenge=" . S::v('challenge');
