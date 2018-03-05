@@ -173,7 +173,19 @@ class WSDirectoryRequest
                                   $value),
                     new UFC_Promo(UserFilter::OP_EQUALS,
                                   UserFilter::GRADE_PHD,
-                                  $value)
+                                  $value),
+                    new UFC_Promo(UserFilter::OP_EQUALS,
+                                  UserFilter::GRADE_BAC,
+                                  $value),
+                    new UFC_Promo(UserFilter::OP_EQUALS,
+                                  UserFilter::GRADE_EXE,
+                                  $value),
+                    new UFC_Promo(UserFilter::OP_EQUALS,
+                                  UserFilter::GRADE_GRD,
+                                  $value),
+                    new UFC_Promo(UserFilter::OP_EQUALS,
+                                  UserFilter::GRADE_MSP,
+                                  $value),
                 ));
                 break;
             case WSRequestCriteria::ALT_DIPLOMA:
@@ -630,6 +642,10 @@ class WSRequestCriteria
     const DIPLOMA_ING = 'ING';
     const DIPLOMA_MASTER = 'MASTER';
     const DIPLOMA_PHD = 'PHD';
+    const DIPLOMA_BACHELOR = 'BACHELOR';
+    const DIPLOMA_EXECUTIVE = 'EXECUTIVE';
+    const DIPLOMA_GRADUATE = 'GRADUATE';
+    const DIPLOMA_MASTERSPE = 'MASTERSPE';
 
     public static $choices_enum = array(
         self::SCHOOL => array(
@@ -651,6 +667,10 @@ class WSRequestCriteria
             self::DIPLOMA_ING => UserFilter::GRADE_ING,
             self::DIPLOMA_MASTER => UserFilter::GRADE_MST,
             self::DIPLOMA_PHD => UserFilter::GRADE_PHD,
+            self::DIPLOMA_BACHELOR => UserFilter::GRADE_BAC,
+            self::DIPLOMA_EXECUTIVE => UserFilter::GRADE_EXE,
+            self::DIPLOMA_GRADUATE => UserFilter::GRADE_GRD,
+            self::DIPLOMA_MASTERSPE => UserFilter::GRADE_MSP,
         ),
     );
 
@@ -707,6 +727,10 @@ class WSRequestFields
     const DIPLOMA_ING = 'engineer';
     const DIPLOMA_MASTER = 'master';
     const DIPLOMA_PHD = 'phd';
+    const DIPLOMA_BACHELOR = 'bachelor';
+    const DIPLOMA_EXECUTIVE = 'executive';
+    const DIPLOMA_GRADUATE = 'graduate';
+    const DIPLOMA_MASTERSPE = 'masterspe';
 
     public static $choices = array(
         self::UID,
@@ -751,6 +775,14 @@ class WSRequestFields
                 return self::DIPLOMA_MASTER;
             case Profile::DEGREE_D:
                 return self::DIPLOMA_PHD;
+            case Profile::DEGREE_B:
+                return self::DIPLOMA_BACHELOR;
+            case Profile::DEGREE_E:
+                return self::DIPLOMA_EXECUTIVE;
+            case Profile::DEGREE_G:
+                return self::DIPLOMA_GRADUATE;
+            case Profile::DEGREE_S:
+                return self::DIPLOMA_MASTERSPE;
             default:
                 return null;
         }

@@ -782,7 +782,15 @@ class UFBF_Quick extends UFB_Field
         $s = preg_replace('![^0-9xmd\-><]!i', ' ', $s);
         $s = preg_replace('![<>\-] !', '', $s);
         $ranges = preg_split('! +!', strtolower($s), -1, PREG_SPLIT_NO_EMPTY);
-        $grades = array('' => UserFilter::GRADE_ING, 'x' => UserFilter::GRADE_ING, 'm' => UserFilter::GRADE_MST, 'd' => UserFilter::GRADE_PHD);
+        $grades = array(
+            '' => UserFilter::GRADE_ING,
+            'x' => UserFilter::GRADE_ING,
+            'm' => UserFilter::GRADE_MST,
+            'd' => UserFilter::GRADE_PHD,
+            'b' => UserFilter::GRADE_BAC,
+            'e' => UserFilter::GRADE_EXE,
+            'g' => UserFilter::GRADE_GRD,
+            's' => UserFilter::GRADE_MSP);
         foreach ($ranges as $r) {
             if (preg_match('!^([xmd]?)(\d{4})$!', $r, $matches)) {
                 $conds->addChild(new UFC_Promo('=', $grades[$matches[1]], $matches[2]));
@@ -920,7 +928,14 @@ class UFBF_Name extends UFBF_Text
 class UFBF_Promo extends UFB_Field
 {
     private static $validcomps = array('<', '<=', '=', '>=', '>');
-    private static $validtypes = array(UserFilter::GRADE_ING, UserFilter::GRADE_PHD, UserFilter::GRADE_MST);
+    private static $validtypes = array(
+        UserFilter::GRADE_ING,
+        UserFilter::GRADE_PHD,
+        UserFilter::GRADE_MST,
+        UserFilter::GRADE_BAC,
+        UserFilter::GRADE_EXE,
+        UserFilter::GRADE_GRD,
+        UserFilter::GRADE_MSP);
     private $comp;
     private $type;
     private $envfieldcomp;

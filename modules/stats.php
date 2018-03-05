@@ -241,7 +241,7 @@ EOF2;
     function handler_promos($page, $required_promo = null)
     {
         $page->changeTpl('stats/nb_by_promo.tpl');
-        $cycles = array('X' => 'Polytechniciens', 'M' => 'Masters', 'D' => 'Docteurs');
+        $cycles = array('X' => 'Polytechniciens', 'M' => 'Masters', 'D' => 'Docteurs', 'B' => 'Bachelors', 'E' => 'Executives', 'G' => 'Graduates', 'S' => 'Masters Spé');
 
         $res = XDB::iterRow('SELECT  pd.promo, COUNT(*)
                                FROM  accounts         AS a

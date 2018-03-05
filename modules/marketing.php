@@ -47,7 +47,11 @@ class MarketingModule extends PLModule
             'x'      => new ProfileFilter(new PFC_And(new PFC_Not(new UFC_Dead()), new UFC_AccountType('x'))),
             '72'     => new ProfileFilter(new PFC_And(new UFC_Promo('>=', UserFilter::GRADE_ING, 1972), new PFC_Not(new UFC_Dead()))),
             'master' => new ProfileFilter(new PFC_And(new PFC_Not(new UFC_Dead()), new UFC_AccountType('master'))),
-            'phd'    => new ProfileFilter(new PFC_And(new PFC_Not(new UFC_Dead()), new UFC_AccountType('phd')))
+            'phd'    => new ProfileFilter(new PFC_And(new PFC_Not(new UFC_Dead()), new UFC_AccountType('phd'))),
+            'bachelor' => new ProfileFilter(new PFC_And(new PFC_Not(new UFC_Dead()), new UFC_AccountType('bachelor'))),
+            'executive' => new ProfileFilter(new PFC_And(new PFC_Not(new UFC_Dead()), new UFC_AccountType('executive'))),
+            'graduate' => new ProfileFilter(new PFC_And(new PFC_Not(new UFC_Dead()), new UFC_AccountType('graduate'))),
+            'masterspe' => new ProfileFilter(new PFC_And(new PFC_Not(new UFC_Dead()), new UFC_AccountType('masterspe'))),
         );
         $registered = array(
             'all'    => new ProfileFilter(new PFC_And(new UFC_Registered(true), new PFC_Not(new UFC_Dead()))),
@@ -55,7 +59,11 @@ class MarketingModule extends PLModule
             'x'      => new ProfileFilter(new PFC_And(new UFC_Registered(true), new PFC_Not(new UFC_Dead()), new UFC_AccountType('x'))),
             '72'     => new ProfileFilter(new PFC_And(new UFC_Registered(true), new UFC_Promo('>=', UserFilter::GRADE_ING, 1972), new PFC_Not(new UFC_Dead()))),
             'master' => new ProfileFilter(new PFC_And(new UFC_Registered(true), new PFC_Not(new UFC_Dead()), new UFC_AccountType('master'))),
-            'phd'    => new ProfileFilter(new PFC_And(new UFC_Registered(true), new PFC_Not(new UFC_Dead()), new UFC_AccountType('phd')))
+            'phd'    => new ProfileFilter(new PFC_And(new UFC_Registered(true), new PFC_Not(new UFC_Dead()), new UFC_AccountType('phd'))),
+            'bachelor' => new ProfileFilter(new PFC_And(new UFC_Registered(true), new PFC_Not(new UFC_Dead()), new UFC_AccountType('bachelor'))),
+            'executive' => new ProfileFilter(new PFC_And(new UFC_Registered(true), new PFC_Not(new UFC_Dead()), new UFC_AccountType('executive'))),
+            'graduate' => new ProfileFilter(new PFC_And(new UFC_Registered(true), new PFC_Not(new UFC_Dead()), new UFC_AccountType('graduate'))),
+            'masterspe' => new ProfileFilter(new PFC_And(new UFC_Registered(true), new PFC_Not(new UFC_Dead()), new UFC_AccountType('masterspe'))),
         );
         $statistics = array(
             'all'    => array('description' => "Étudiants et anciens de l'X"),
@@ -63,7 +71,11 @@ class MarketingModule extends PLModule
             'x'      => array('description' => 'X'),
             '72'     => array('description' => 'X vivants depuis la promo 1972'),
             'master' => array('description' => "Masters de l'X"),
-            'phd'    => array('description' => "Docteurs de l'X")
+            'phd'    => array('description' => "Docteurs de l'X"),
+            'bachelor' => array('description' => "Bachelors de l'X"),
+            'executive' => array('description' => "Executive Educations de l'X"),
+            'graduate' => array('description' => "Graduate Degrees de l'X"),
+            'masterspe' => array('description' => "Masters spécialisés de l'X"),
         );
         foreach ($statistics as $key => &$data) {
             $data['alive'] = $alive[$key]->getTotalCount();
