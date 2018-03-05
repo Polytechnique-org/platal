@@ -20,7 +20,9 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Recherche dans l'annuaire</h1>
+{include file="include/migration.msg.tpl"}
+
+<h1>Recherche dans l'ancien annuaire</h1>
 
 <form action="search" method="get"{if $show_js} id="quick_form"{/if}>
   {if $smarty.session.auth ge AUTH_COOKIE}
