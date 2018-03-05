@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 {if $do_title}
-{include file="include/migration.msg.tpl"}
+{include file="include/migration.msg.tpl" show_deprecation_warning=1}
 
 <h1>Recherche dans l'ancien annuaire</h1>
 {/if}
