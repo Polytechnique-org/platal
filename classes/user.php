@@ -36,6 +36,10 @@ class User extends PlUser
         'x'      => '',
         'master' => 'master.',
         'phd'    => 'doc.',
+        'bachelor' => 'bach.',
+        'executive' => 'exec.',
+        'graduate' => 'grad.',
+        'masterspe' => 'mspe.',
         'all'    => 'alumni.'
     );
 

@@ -754,9 +754,20 @@ class UserFilter extends PlFilter
     const GRADE_ING = Profile::DEGREE_X;
     const GRADE_PHD = Profile::DEGREE_D;
     const GRADE_MST = Profile::DEGREE_M;
+    const GRADE_BAC = Profile::DEGREE_B;
+    const GRADE_EXE = Profile::DEGREE_E;
+    const GRADE_GRD = Profile::DEGREE_G;
+    const GRADE_MSP = Profile::DEGREE_S;
     static public function isGrade($grade)
     {
-        return ($grade !== 0) && ($grade == self::GRADE_ING || $grade == self::GRADE_PHD || $grade == self::GRADE_MST);
+        return ($grade !== 0) && (
+            $grade == self::GRADE_ING ||
+            $grade == self::GRADE_PHD ||
+            $grade == self::GRADE_MST ||
+            $grade == self::GRADE_BAC ||
+            $grade == self::GRADE_EXE ||
+            $grade == self::GRADE_GRD ||
+            $grade == self::GRADE_MSP);
     }
 
     static public function assertGrade($grade)
@@ -769,7 +780,18 @@ class UserFilter extends PlFilter
     static public function promoYear($grade)
     {
         // XXX: Definition of promotion for phds and masters might change in near future.
-        return ($grade == UserFilter::GRADE_ING) ? 'entry_year' : 'grad_year';
+        switch ($grade) {
+            case UserFilter::GRADE_ING:
+            case UserFilter::GRADE_BAC:
+            case UserFilter::GRADE_EXE:
+            case UserFilter::GRADE_GRD:
+            case UserFilter::GRADE_MSP:
+                return 'entry_year';
+            case UserFilter::GRADE_PHD:
+            case UserFilter::GRADE_MST:
+            default:
+                return 'grad_year';
+        }
     }
 
     private $pepe     = array();

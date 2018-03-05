@@ -123,7 +123,7 @@ function display_list(field_name)
 // {{{ Regexps to wipe out from search queries
 
 var default_form_values = [ /&woman=0(&|$)/, /&subscriber=0(&|$)/, /&alive=0(&|$)/, /&egal2=[^&]*&promo2=(&|$)/,
-                            /&egal1=[^&]*&promo1=&edu_type=(?:Ing[^n]+nieur|Master|Doctorat)(&|$)/, /&networking_type=0(&|$)/,
+                            /&egal1=[^&]*&promo1=&edu_type=(?:Ing[^n]+nieur|Master|Doctorat|Bachelor|Executive|Graduate[ ]Degree|Master[ ]sp[^c]cialis[^&$])(&|$)/, /&networking_type=0(&|$)/,
                             /&origin_corps=0(&|$)/, /&current_corps=0(&|$)/,
                             /corps_rank=0(&|$)/, /&has_email_redirect=0(&|$)/, /&[^&=]+=(&|$)/g ];
 

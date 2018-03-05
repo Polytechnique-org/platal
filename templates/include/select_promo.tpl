@@ -33,6 +33,10 @@
   <option value="{#UserFilter::GRADE_ING#}" {if $promo_data.$edu_type eq #UserFilter::GRADE_ING#}selected="selected"{/if}>X</option>
   <option value="{#UserFilter::GRADE_MST#}" {if $promo_data.$edu_type eq #UserFilter::GRADE_MST#}selected="selected"{/if}>Master</option>
   <option value="{#UserFilter::GRADE_PHD#}" {if $promo_data.$edu_type eq #UserFilter::GRADE_PHD#}selected="selected"{/if}>Docteur</option>
+  <option value="{#UserFilter::GRADE_BAC#}" {if $promo_data.$edu_type eq #UserFilter::GRADE_BAC#}selected="selected"{/if}>Bachelor</option>
+  <option value="{#UserFilter::GRADE_EXE#}" {if $promo_data.$edu_type eq #UserFilter::GRADE_EXE#}selected="selected"{/if}>Executive Education</option>
+  <option value="{#UserFilter::GRADE_GRD#}" {if $promo_data.$edu_type eq #UserFilter::GRADE_GRD#}selected="selected"{/if}>Graduate Degree</option>
+  <option value="{#UserFilter::GRADE_MSP#}" {if $promo_data.$edu_type eq #UserFilter::GRADE_MSP#}selected="selected"{/if}>Master Spécialis&eacute;</option>
 </select>
 
 {* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

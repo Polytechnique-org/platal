@@ -885,6 +885,38 @@ class AdminModule extends PLModule
                     $hrpromo = 'D' . $promotion;
                     $type = 'phd';
                     break;
+                  case 'B':
+                    $degreeid = $eduDegrees[Profile::DEGREE_B];
+                    $entry_year = $promotion;
+                    $grad_year = $promotion + 3;
+                    $promo = 'B' . $promotion;
+                    $hrpromo = $promotion;
+                    $type = 'bachelor';
+                    break;
+                  case 'E':
+                    $degreeid = $eduDegrees[Profile::DEGREE_E];
+                    $entry_year = $promotion;
+                    $grad_year = $promotion + 2;
+                    $promo = 'E' . $promotion;
+                    $hrpromo = $promotion;
+                    $type = 'executive';
+                    break;
+                  case 'G':
+                    $degreeid = $eduDegrees[Profile::DEGREE_G];
+                    $entry_year = $promotion;
+                    $grad_year = $promotion + 2;
+                    $promo = 'G' . $promotion;
+                    $hrpromo = $promotion;
+                    $type = 'graduate';
+                    break;
+                  case 'S':
+                    $degreeid = $eduDegrees[Profile::DEGREE_S];
+                    $entry_year = $promotion;
+                    $grad_year = $promotion + 2;
+                    $promo = 'S' . $promotion;
+                    $hrpromo = $promotion;
+                    $type = 'masterspe';
+                    break;
                   default:
                     $page->killError("La formation n'est pas reconnue : " . Env::t('edu_type') . '.');
                 }
