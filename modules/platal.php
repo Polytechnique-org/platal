@@ -314,6 +314,8 @@ class PlatalModule extends PLModule
 
     function handler_recovery($page)
     {
+        http_redirect('https://auth.polytechnique.org/accounts/password/reset/');
+        /*
         global $globals;
 
         $page->changeTpl('platal/recovery.tpl');
@@ -430,6 +432,7 @@ Adresse de secours : ' . $to));
         $mymail->send();
 
         S::logger($user->id())->log('recovery', $user->bestEmail());
+        */
     }
 
     function handler_tmpPWD($page, $certif = null)
