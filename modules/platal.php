@@ -247,32 +247,6 @@ class PlatalModule extends PLModule
     {
         global $globals;
 
-        if (Post::has('pwhash') && Post::t('pwhash'))  {
-            S::assert_xsrf_token();
-
-            S::set('password', $password = Post::t('pwhash'));
-            XDB::execute('UPDATE  accounts
-                             SET  password = {?}
-                           WHERE  uid={?}', $password,
-                         S::i('uid'));
-
-            // If GoogleApps is enabled, and the user did choose to use synchronized passwords,
-            // updates the Google Apps password as well.
-            if ($globals->mailstorage->googleapps_domain) {
-                require_once 'googleapps.inc.php';
-                $account = new GoogleAppsAccount(S::user());
-                if ($account->active() && $account->sync_password) {
-                    $account->set_password($password);
-                }
-            }
-
-            S::logger()->log('passwd');
-            Platal::session()->setAccessCookie(true);
-
-            $page->changeTpl('platal/password.success.tpl');
-            $page->run();
-        }
-
         $page->changeTpl('platal/password.tpl');
         $page->setTitle('Mon mot de passe');
         $page->assign('do_auth', 0);
