@@ -41,6 +41,9 @@ $($.closeOnEsc);
 
 //]]></script>
 {/literal}
+
+{include file="include/migration.msg.tpl" show_deprecation_warning=1}
+
 <div id="fiche">
   <div id="photo" class="part">
     {assign var=photo value=$profile->getPhoto(false)}

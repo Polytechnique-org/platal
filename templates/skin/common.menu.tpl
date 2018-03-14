@@ -28,6 +28,7 @@
 
 <div class="menu_title">Visiteurs</div>
 <div class="menu_item"><a href="https://ax.polytechnique.org/">Annuaire de l'X</a></div>
+<div class="menu_item"><a href="search">Ancien annuaire de l'X</a></div>
 <div class="menu_item"><a href="https://www.polytechnique.net/">Associations X</a></div>
 <div class="menu_item"><a href="https://www.wats4u.com/">Recrutement</a></div>
 
@@ -73,8 +74,13 @@
 <div class="menu_item"><a href="emails/broken">Patte cassée</a></div>
 
 <div class="menu_title">Communauté X</div>
+<div class="menu_item"><a href="https://ax.polytechnique.org/">Annuaire</a></div>
+<div class="menu_item"><a href="search">Ancien annuaire</a></div>
 {if hasPerm('directory_private')}
 <div class="menu_item"><a href="jobs">Emploi &amp; Carrières</a></div>
+{/if}
+{if hasPerm('groups')}
+<div class="menu_item"><a href="groupes-x">Mes groupes X</a></div>
 {/if}
 <div class="menu_item"><a href="survey">Sondages</a></div>
 {if hasPerm('directory_private') && $smarty.session.user->hasProfile()}

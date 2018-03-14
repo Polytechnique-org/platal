@@ -20,7 +20,11 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $do_title}<h1>Recherche dans l'annuaire</h1>{/if}
+{if $do_title}
+{include file="include/migration.msg.tpl" show_deprecation_warning=1}
+
+<h1>Recherche dans l'ancien annuaire</h1>
+{/if}
 
 <ul class="noprint">
   {if $with_soundex && ($smarty.request.firstname || $smarty.request.name)}

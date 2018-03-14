@@ -28,6 +28,10 @@
 
   <p>Pour y activer ton compte, rends-toi sur <a href="https://ax.polytechnique.org/">https://ax.polytechnique.org/</a> et clique sur le bouton "Je me connecte". Les données de connexion sont les mêmes que sur polytechnique.org.</p>
 {/if}
+
+{if t($show_deprecation_warning)}
+  <p>L'ancien annuaire est disponible en consultation sans modification possible, tant que le nouvel annuaire ne permettra pas d'accéder aux informations réservées aux X en suivant un simple lien. Les informations qu'il contient peuvent donc ne pas être à jour.</p>
+{/if}
 </fieldset>
 
 {* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

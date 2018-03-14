@@ -25,6 +25,20 @@
     <td class="date-heure"></td>
     <td class="inscrits">
       {$globals->core->NbIns|number_format} étudiants et anciens de l'X sur le web
+      {if t($smarty.request.quick)}
+        {assign var=requestQuick value=$smarty.request.quick|smarty:nodefaults}
+      {else}
+        {assign var=requestQuick value='Recherche dans l\'annuaire'}
+      {/if}
+      <form action="search" method="get">
+          <div>
+              <button id="quick_button" type="submit" style="display: none">
+                OK
+              </button>
+              <input type="text" size="20" name="quick" id="quick" class="quick_search"
+                     value="{$requestQuick}" />
+          </div>
+      </form>
       {if $smarty.session.auth gt AUTH_PUBLIC && $smarty.session.notifs}
       <a href="carnet/panel">{$smarty.session.notifs} événement{if $smarty.session.notifs gt 1}s{/if}</a>
       {/if}
