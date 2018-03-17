@@ -172,7 +172,7 @@ function createAliases($subState)
 
 
     $emailXorg  = PlUser::makeUserName($subState->t('firstname'), $subState->t('lastname'));
-    $suffix = (User::$sub_mail_domains[$type] ? substr(User::$sub_mail_domains[$type], 0, 1) : '') . substr($subState->v('yearpromo'), -2);
+    $suffix = User::$study_letter[$type] . substr($subState->v('yearpromo'), -2);
     $emailXorg2 = $emailXorg . '.' . $suffix;
     // Search for homonyms:
     //  * first case: only one homonym already registered.
