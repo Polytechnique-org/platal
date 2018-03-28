@@ -39,6 +39,14 @@ class User extends PlUser
         'all'    => 'alumni.'
     );
 
+    // letter used for the 100-year aliases, must match the lower-case
+    // of letters used for $hrpromo in /modules/admin.php:handler_add_accounts
+    public static $study_letter = array(
+        'x'      => '',
+        'master' => 'm',
+        'phd'    => 'd',
+    );
+
     private $_profile_fetched = false;
     private $_profile = null;
 
