@@ -49,6 +49,18 @@ class XorgGroupeXSession extends XorgSession
             S::set('loginX', $url);
         }
 
+        if (S::user()->type == 'xnet' && S::user()->state == 'pending') {
+            XDB::startTransaction();
+            XDB::query('UPDATE  accounts
+                           SET  state = \'active\', registration_date = NOW()
+                         WHERE  uid = {?} AND state = \'pending\' AND type = \'xnet\'',
+                       S::user()->id());
+            XDB::query('DELETE FROM  register_pending_xnet
+                              WHERE  uid = {?}',
+                       S::user()->id());
+            XDB::commit();
+        }
+
         return true;
     }
 
