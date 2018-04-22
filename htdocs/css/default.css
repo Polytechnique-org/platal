@@ -163,6 +163,10 @@ li.spaced {
     text-align: justify;
 }
 
+.nowrap {
+    white-space: nowrap;
+}
+
 /*******************************************************************************
     3   Tableaux bicolores + classes utiles
         [ Tableaux à lignes alternées, en taille normale, ou tiny ]
