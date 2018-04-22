@@ -42,13 +42,13 @@ class Profile implements PlExportable
     const DN_PUBLIC    = 'public_name';
     const DN_SHORT     = 'short_name';
     const DN_SORT      = 'sort_name';
-    /* education related names */
+    /* education related names. They MUST match records in table profile_education_degree_enum */
     const EDU_X    = 'École polytechnique';
     const DEGREE_X = 'Ingénieur';
     const DEGREE_M = 'Master';
     const DEGREE_D = 'Doctorat';
     const DEGREE_B = 'Bachelor';
-    const DEGREE_E = 'Executive';
+    const DEGREE_E = 'Executive Education';
     const DEGREE_G = 'Graduate Degree';
     const DEGREE_S = 'Master spécialisé';
 

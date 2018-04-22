@@ -920,6 +920,11 @@ class AdminModule extends PLModule
                   default:
                     $page->killError("La formation n'est pas reconnue : " . Env::t('edu_type') . '.');
                 }
+                if (empty($degreeid)) {
+                    $page->trigError("La base de données ne contient pas de description de la formation " . Env::t('edu_type') .
+                        ". Il faut ajouter une nouvelle formation dans les tables profile_education !");
+                    return;
+                }
                 $best_domain = XDB::fetchOneCell('SELECT  id
                                                     FROM  email_virtual_domains
                                                    WHERE  name = {?}',
