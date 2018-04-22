@@ -49,7 +49,7 @@ class XorgGroupeXSession extends XorgSession
             S::set('loginX', $url);
         }
 
-        if (S::user()->type == 'xnet' && S::user()->state == 'pending') {
+        if (S::user() !== null && S::user()->type == 'xnet' && S::user()->state == 'pending') {
             XDB::startTransaction();
             XDB::query('UPDATE  accounts
                            SET  state = \'active\', registration_date = NOW()
