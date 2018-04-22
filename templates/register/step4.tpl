@@ -28,7 +28,7 @@
 La pré-inscription que tu viens de soumettre a été enregistrée.
 </p>
 <p>
-Les instructions te permettant de valider ton inscription viennent de t'être envoyés
+Les instructions te permettant de valider ton inscription viennent de t'être envoyées
 à l'adresse <strong>{$smarty.session.subState.email}</strong>.
 </p>
 <p>
