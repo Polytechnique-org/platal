@@ -890,7 +890,7 @@ class AdminModule extends PLModule
                     $entry_year = $promotion;
                     $grad_year = $promotion + 3;
                     $promo = 'B' . $promotion;
-                    $hrpromo = $promotion;
+                    $hrpromo = $promo;
                     $type = 'bachelor';
                     break;
                   case 'E':
@@ -898,7 +898,7 @@ class AdminModule extends PLModule
                     $entry_year = $promotion;
                     $grad_year = $promotion + 2;
                     $promo = 'E' . $promotion;
-                    $hrpromo = $promotion;
+                    $hrpromo = $promo;
                     $type = 'executive';
                     break;
                   case 'G':
@@ -906,7 +906,7 @@ class AdminModule extends PLModule
                     $entry_year = $promotion;
                     $grad_year = $promotion + 2;
                     $promo = 'G' . $promotion;
-                    $hrpromo = $promotion;
+                    $hrpromo = $promo;
                     $type = 'graduate';
                     break;
                   case 'S':
@@ -914,7 +914,7 @@ class AdminModule extends PLModule
                     $entry_year = $promotion;
                     $grad_year = $promotion + 2;
                     $promo = 'S' . $promotion;
-                    $hrpromo = $promotion;
+                    $hrpromo = $promo;
                     $type = 'masterspe';
                     break;
                   default:
