@@ -36,7 +36,8 @@ class RegisterModule extends PLModule
         $alert = array();
         $alert_details = '';
         $subState = new PlDict(S::v('subState', array()));
-        if (!$subState->has('step')) {
+        // Restart the registration process after a successful registration
+        if (!$subState->has('step') || $subState->i('step') >= 5) {
             $subState->set('step', 0);
         }
         if (!$subState->has('backs')) {
