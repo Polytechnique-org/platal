@@ -387,7 +387,13 @@ class RegisterModule extends PLModule
 
         // Try to start a session (so the user don't have to log in); we will use
         // the password available in Post:: to authenticate the user.
-        Platal::session()->start(AUTH_PASSWD);
+        // ... but this does not work when using a SSO. Fix this with craftFakeAuthContext
+        Platal::session()->craftFakeAuthContext($uid, $forlife);
+        if (!Platal::session()->start(AUTH_PASSWD)) {
+            $page->trigError("Impossible de démarrer une session. Cela peut être dû à une erreur temporaire. Si cela se reproduit, merci de remonter ce bug par mail à contact@polytechnique.org");
+            S::logger($uid)->log('auth_fail', 'unable to start session (register/end)');
+            return;
+        }
 
         // Add the registration email address as first and only redirection.
         require_once 'emails.inc.php';
