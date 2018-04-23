@@ -570,7 +570,7 @@ class RegisterModule extends PLModule
         // Remove old pending marketing requests for the new user.
         Marketing::clear($uid);
 
-        pl_redirect('profile/edit');
+        pl_redirect('emails');
     }
 }
 
