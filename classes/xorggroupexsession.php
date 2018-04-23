@@ -81,6 +81,21 @@ class XorgGroupeXSession extends XorgSession
         return User::getSilentWithValues(null, array('uid' => Get::i('uid')));
     }
 
+    /* Fake an authentication request, to force the authentication of a given user.
+     * This is used for example in the last step of the registration process,
+     * in order to authenticate the user who is registering
+     */
+    public function craftFakeAuthContext($uid, $forlife)
+    {
+        global $globals;
+
+        // Use strings in $_GET
+        Get::set('uid', "$uid");
+        Get::set('forlife', "$forlife");
+        // Compute the fake response to the current session challenge
+        Get::set('auth', md5('1' . S::v('challenge') . $globals->xorgauth->secret . Get::i('uid') . '1'));
+    }
+
     protected function startSessionAs($user, $level) {
         S::kill('loginX');
         S::kill('challenge');
