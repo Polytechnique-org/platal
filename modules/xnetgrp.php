@@ -282,13 +282,18 @@ class XnetGrpModule extends PLModule
                       Post::b('disable_mails'), Post::v('status'),
                       $globals->asso('id'));
                 if (Post::v('mail_domain')) {
-                    XDB::execute('INSERT IGNORE INTO  email_virtual_domains (name)
-                                              VALUES  ({?})',
-                                 Post::t('mail_domain'));
-                    XDB::execute('UPDATE  email_virtual_domains
-                                     SET  aliasing = id
-                                   WHERE  name = {?}',
-                                 Post::t('mail_domain'));
+                    $count = XDB::fetchOneCell(
+                        'SELECT COUNT(*) FROM email_virtual_domains WHERE name = {?}',
+                        Post::t('mail_domain'));
+                    if ($count == 0) {
+                        XDB::execute('INSERT INTO  email_virtual_domains (name)
+                                                   VALUES  ({?})',
+                                     Post::t('mail_domain'));
+                        XDB::execute('UPDATE  email_virtual_domains
+                                         SET  aliasing = id
+                                       WHERE  name = {?}',
+                                     Post::t('mail_domain'));
+                    }
                 }
             } else {
                 XDB::execute(
