@@ -73,9 +73,11 @@ class EmailModule extends PLModule
                              SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'bestalias')
                            WHERE  s.uid = {?} AND s.email = {?} AND d.name = {?}",
                          $user->id(), $email, $domain);
+            // We enforce m.aliasing = m.id to ensure we select the proper line for
+            // the canonical version of the domain.
             XDB::execute('UPDATE  accounts              AS a
                       INNER JOIN  email_virtual_domains AS d ON (d.name = {?})
-                      INNER JOIN  email_virtual_domains AS m ON (d.aliasing = m.id)
+                      INNER JOIN  email_virtual_domains AS m ON (d.aliasing = m.id AND m.id = m.aliasing)
                              SET  a.best_domain = d.id
                            WHERE  a.uid = {?} AND m.name = {?}',
                          $domain, $user->id(), $user->mainEmailDomain());

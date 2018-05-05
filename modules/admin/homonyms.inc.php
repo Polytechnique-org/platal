@@ -98,7 +98,7 @@ function fix_homonym(PlUser $user, $email)
     XDB::execute('INSERT INTO  email_source_other (hrmid, email, domain, type, expire)
                        SELECT  {?}, {?}, id, \'homonym\', NOW()
                          FROM  email_virtual_domains
-                        WHERE  name = {?}',
+                        WHERE  name = {?} AND id = aliasing',
                  $hrmid, $email, $user->mainEmailDomain());
     XDB::execute("INSERT INTO  email_redirect_other (hrmid, redirect, type, action)
                        VALUES  ({?}, '', 'homonym', 'homonym')",

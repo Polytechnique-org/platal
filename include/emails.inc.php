@@ -67,7 +67,7 @@ function add_to_list_alias($email, $local_part, $domain, $type = 'alias')
     XDB::execute('INSERT IGNORE INTO  email_virtual (email, domain, redirect, type)
                               SELECT  {?}, id, {?}, {?}
                                 FROM  email_virtual_domains
-                               WHERE  name = {?}',
+                               WHERE  name = {?} AND id = aliasing',
                  $local_part, $email, $type, $domain);
     return true;
 }
@@ -166,7 +166,7 @@ function create_list($local_part, $domain)
         XDB::execute('INSERT IGNORE INTO  email_virtual (email, domain, redirect, type)
                                   SELECT  {?}, id, {?}, \'list\'
                                     FROM  email_virtual_domains
-                                   WHERE  name = {?}',
+                                   WHERE  name = {?} AND id = aliasing',
                      ($suffix == 'post') ? $local_part : $local_part . '-' . $suffix,
                      $redirect . $suffix . '@' . $globals->lists->redirect_domain, $domain);
     }

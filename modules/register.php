@@ -370,18 +370,18 @@ class RegisterModule extends PLModule
         XDB::execute('INSERT INTO  email_source_account (email, uid, type, flags, domain)
                            SELECT  {?}, {?}, \'forlife\', \'\', id
                              FROM  email_virtual_domains
-                            WHERE  name = {?}',
+                            WHERE  name = {?} AND id = aliasing',
                      $forlife, $uid, $mail_domain);
         XDB::execute('INSERT INTO  email_source_account (email, uid, type, flags, domain)
                            SELECT  {?}, {?}, \'alias\', \'bestalias\', id
                              FROM  email_virtual_domains
-                            WHERE  name = {?}',
+                            WHERE  name = {?} AND id = aliasing',
                      $bestalias, $uid, $mail_domain);
         if ($emailXorg2) {
             XDB::execute('INSERT INTO  email_source_account (email, uid, type, flags, domain)
                                SELECT  {?}, {?}, \'alias\', \'\', id
                                  FROM  email_virtual_domains
-                                WHERE  name = {?}',
+                                WHERE  name = {?} AND id = aliasing',
                          $emailXorg2, $uid, $mail_domain);
         }
         XDB::commit();

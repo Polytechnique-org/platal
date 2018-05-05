@@ -675,7 +675,7 @@ class AdminModule extends PLModule
                 XDB::execute('INSERT INTO  email_source_account (email, uid, domain, type, flags)
                                    SELECT  {?}, {?}, id, \'alias\', \'\'
                                      FROM  email_virtual_domains
-                                    WHERE  name = {?}',
+                                    WHERE  name = {?} AND id = aliasing',
                               $alias, $user->id(), $domain);
                 $page->trigSuccess("Nouvel alias '$alias' ajouté");
             } else {
@@ -691,7 +691,7 @@ class AdminModule extends PLModule
                            WHERE  s.email = {?} AND s.uid = {?} AND d.name = {?} AND type != \'forlife\'',
                           $email, $user->id(), $domain);
             XDB::execute('UPDATE  email_redirect_account AS r
-                      INNER JOIN  email_virtual_domains  AS m ON (m.name = {?})
+                      INNER JOIN  email_virtual_domains  AS m ON (m.name = {?} AND id = aliasing)
                       INNER JOIN  email_virtual_domains  AS d ON (d.aliasing = m.id)
                              SET  r.rewrite = \'\'
                            WHERE  r.uid = {?} AND r.rewrite = CONCAT({?}, \'@\', d.name)',
@@ -927,7 +927,7 @@ class AdminModule extends PLModule
                 }
                 $best_domain = XDB::fetchOneCell('SELECT  id
                                                     FROM  email_virtual_domains
-                                                   WHERE  name = {?}',
+                                                   WHERE  name = {?} AND id = aliasing',
                                                  User::$sub_mail_domains[$type] . Platal::globals()->mail->domain);
 
                 XDB::startTransaction();
