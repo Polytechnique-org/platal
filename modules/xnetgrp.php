@@ -476,7 +476,7 @@ class XnetGrpModule extends PLModule
         }
         $users = $globals->asso()->getMembersFilter(null, new UFO_Name())->getUsers();
         $admin = may_update();
-        pl_cached_content_headers('text/x-csv', 'iso-8859-1', 1);
+        pl_cached_content_headers('text/x-csv', 'iso-8859-1', 1, $filename);
 
         echo utf8_decode("Nom;Prénom;Sexe;Promotion;Commentaire");
         if ($admin) {
@@ -509,7 +509,7 @@ class XnetGrpModule extends PLModule
             $filename = $globals->asso('diminutif') . '.csv';
         }
         $users = $globals->asso()->getMembersFilter(null, new UFO_Name())->getUsers();
-        pl_cached_content_headers('text/x-csv', 'utf-8', 1);
+        pl_cached_content_headers('text/x-csv', 'utf-8', 1, $filename);
 
         echo "Groupe;Matricule AX;Nom;Prénom;Sexe;Promotion;Poste;Commentaire\n";
         foreach ($users as $user) {
