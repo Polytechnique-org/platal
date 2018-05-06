@@ -113,7 +113,7 @@ function weakCheckId($subState)
             }
         }
     }
-    return 'Nous n\'avons pas les mêmes informations (promo, accents…) que toi ! Tu peux vérifier en cherchant ta fiche sur l\'annuaire public, si ça ne fonctionne toujours pas tu peux nous envoyer un email à support@polytechnique.org';
+    return 'Nous n\'avons pas les mêmes informations (promo, accents…) que toi ! Il arrive que cela soit dû au fait que l\'École transmette les noms de famille en majuscule, enlevant ainsi les accents. Tu peux vérifier en cherchant ta fiche sur l\'annuaire public, si ça ne fonctionne toujours pas tu peux nous envoyer un email à support@polytechnique.org';
 }
 
 // }}}

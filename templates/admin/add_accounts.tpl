@@ -62,6 +62,7 @@
     <td class="center">
       <strong>Promotion&nbsp;:</strong>
       <input type="text" name="promotion" size="4" maxlength="4" />
+      (année de diplôme pour les masters et docteurs, année d'admission pour les autres)
       <input type="hidden" name="add_type" value="{$add_type}" />
     </td>
   </tr>
