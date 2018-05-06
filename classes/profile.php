@@ -1424,6 +1424,11 @@ class Profile implements PlExportable
      * This enables us to deal with bigger promotions and with a wider range
      * of promotions.
      *
+     * This changed for new curriculum opened by the school. For example
+     * Bachelor uses "BA7AA0NNN" where 20AA is the entry year and NNN the index
+     * in a promotion. BUT for such curriculum, Profile::getXorgId should never
+     * be called, and the raw school ID is stored in the database.
+     *
      * getSchoolId returns a school identifier given one of ours.
      * getXorgId returns a X.org identifier given a school identifier.
      */
