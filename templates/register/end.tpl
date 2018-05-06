@@ -28,6 +28,14 @@
 il te suffit de taper ton mot de passe ci-dessous. Tu pourras ensuite librement
 accéder au site, et à notre annuaire en ligne&nbsp;!</p>
 
+<p><strong>Information importante</strong>&nbsp;: suite à la migration de
+l'authentification Polytechnique.org sur
+<a href="https://auth.polytechnique.org/">auth.polytechnique.org</a>,
+la propagation du mot de passe pour se connecter au site peut prendre quelques
+dizaines de minutes, le temps que les bases de données se synchronisent.
+Si la connexion au site ne fonctionne pas immédiatement après l'inscription,
+cela est probablement dû à cette synchronisation.</p>
+
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit='doChallengeResponseLogged(); return false;'>
   <table class="bicol">
     <tr>
