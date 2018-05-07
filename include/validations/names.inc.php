@@ -139,7 +139,7 @@ class NamesReq extends ProfileValidate
                 XDB::execute('INSERT INTO  email_source_account (email, uid, type, flags, domain)
                                    SELECT  {?}, {?}, \'alias\', \'usage\', id
                                      FROM  email_virtual_domains
-                                    WHERE  name = {?}',
+                                    WHERE  name = {?} AND id = aliasing',
                              $this->new_alias, $this->profileOwner->id(), $this->profileOwner->mainEmailDomain());
             }
             require_once 'emails.inc.php';

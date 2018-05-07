@@ -293,7 +293,11 @@ class ProfileSettingMainEdu implements ProfileSetting
         $this->cycles = array(
             $eduDegrees[Profile::DEGREE_X] => 'Cycle polytechnicien',
             $eduDegrees[Profile::DEGREE_M] => 'Cycle master',
-            $eduDegrees[Profile::DEGREE_D] => 'Cycle doctoral'
+            $eduDegrees[Profile::DEGREE_D] => 'Cycle doctoral',
+            $eduDegrees[Profile::DEGREE_B] => 'Cycle bachelor',
+            $eduDegrees[Profile::DEGREE_E] => 'Cycle executive education',
+            $eduDegrees[Profile::DEGREE_G] => 'Cycle graduate',
+            $eduDegrees[Profile::DEGREE_S] => 'Cycle master spécialisé',
         );
     }
 

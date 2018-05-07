@@ -42,21 +42,33 @@ class Profile implements PlExportable
     const DN_PUBLIC    = 'public_name';
     const DN_SHORT     = 'short_name';
     const DN_SORT      = 'sort_name';
-    /* education related names */
+    /* education related names. They MUST match records in table profile_education_degree_enum */
     const EDU_X    = 'École polytechnique';
     const DEGREE_X = 'Ingénieur';
     const DEGREE_M = 'Master';
     const DEGREE_D = 'Doctorat';
+    const DEGREE_B = 'Bachelor';
+    const DEGREE_E = 'Executive Education';
+    const DEGREE_G = 'Graduate Degree';
+    const DEGREE_S = 'Master spécialisé';
 
     static public $cycles = array(
         self::DEGREE_X => 'polytechnicien',
         self::DEGREE_M => 'master',
-        self::DEGREE_D => 'docteur'
+        self::DEGREE_D => 'docteur',
+        self::DEGREE_B => 'bachelor',
+        self::DEGREE_E => 'executive',
+        self::DEGREE_G => 'graduate',
+        self::DEGREE_S => 'master spécialisé',
     );
     static public $cycle_prefixes = array(
         self::DEGREE_X => 'X',
         self::DEGREE_M => 'M',
-        self::DEGREE_D => 'D'
+        self::DEGREE_D => 'D',
+        self::DEGREE_B => 'B',
+        self::DEGREE_E => 'E',
+        self::DEGREE_G => 'G',
+        self::DEGREE_S => 'S',
     );
 
     static public $name_variants = array(
@@ -269,6 +281,14 @@ class Profile implements PlExportable
             return UserFilter::GRADE_MST;
           case 'D':
             return UserFilter::GRADE_PHD;
+          case 'B':
+            return UserFilter::GRADE_BAC;
+          case 'E':
+            return UserFilter::GRADE_EXE;
+          case 'G':
+            return UserFilter::GRADE_GRD;
+          case 'S':
+            return UserFilter::GRADE_MSP;
           default:
             return null;
         }
@@ -283,6 +303,14 @@ class Profile implements PlExportable
             return 2;
           case 'D':
             return 3;
+          case 'B':
+            return 3;
+          case 'E':
+            return 2;
+          case 'G':
+            return 2;
+          case 'S':
+            return 2;
           default:
             return 0;
         }
@@ -297,6 +325,14 @@ class Profile implements PlExportable
             return 2;
           case self::DEGREE_D:
             return 3;
+          case self::DEGREE_B:
+            return 3;
+          case self::DEGREE_E:
+            return 2;
+          case self::DEGREE_G:
+            return 2;
+          case self::DEGREE_S:
+            return 2;
           default:
             return 0;
         }
@@ -308,7 +344,7 @@ class Profile implements PlExportable
      */
     public function deltaPromoToGradYear()
     {
-        if ($this->mainEducation() == 'X') {
+        if (in_array($this->mainEducation(), array('X', 'B', 'E', 'G', 'S'))) {
             return $this->mainEducationDuration();
         }
         return 0;
@@ -325,6 +361,10 @@ class Profile implements PlExportable
                 return 'yellow';
             }
           case 'M':
+          case 'B':
+          case 'E':
+          case 'G':
+          case 'S':
             return 'green';
           case 'D':
             return 'blue';
@@ -1383,6 +1423,11 @@ class Profile implements PlExportable
      * Our identifier consists of 8 digits and both half have the same role.
      * This enables us to deal with bigger promotions and with a wider range
      * of promotions.
+     *
+     * This changed for new curriculum opened by the school. For example
+     * Bachelor uses "BA7AA0NNN" where 20AA is the entry year and NNN the index
+     * in a promotion. BUT for such curriculum, Profile::getXorgId should never
+     * be called, and the raw school ID is stored in the database.
      *
      * getSchoolId returns a school identifier given one of ours.
      * getXorgId returns a X.org identifier given a school identifier.

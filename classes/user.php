@@ -36,6 +36,10 @@ class User extends PlUser
         'x'      => '',
         'master' => 'master.',
         'phd'    => 'doc.',
+        'bachelor' => 'alumni.',
+        'executive' => 'alumni.',
+        'graduate' => 'alumni.',
+        'masterspe' => 'alumni.',
         'all'    => 'alumni.'
     );
 
@@ -45,6 +49,10 @@ class User extends PlUser
         'x'      => '',
         'master' => 'm',
         'phd'    => 'd',
+        'bachelor' => 'b',
+        'executive' => 'e',
+        'graduate' => 'g',
+        'masterspe' => 's',
     );
 
     private $_profile_fetched = false;

@@ -95,7 +95,7 @@ class AliasReq extends Validate
             $success = XDB::execute('INSERT INTO  email_source_account (email, uid, domain, type, flags)
                                           SELECT  {?}, {?}, id, \'alias_aux\', \'\'
                                             FROM  email_virtual_domains
-                                           WHERE  name = {?}',
+                                           WHERE  name = {?} AND id = aliasing',
                                      $this->alias, $this->user->id(), Platal::globals()->mail->alias_dom);
         }
 

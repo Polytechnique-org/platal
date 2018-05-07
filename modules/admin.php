@@ -675,7 +675,7 @@ class AdminModule extends PLModule
                 XDB::execute('INSERT INTO  email_source_account (email, uid, domain, type, flags)
                                    SELECT  {?}, {?}, id, \'alias\', \'\'
                                      FROM  email_virtual_domains
-                                    WHERE  name = {?}',
+                                    WHERE  name = {?} AND id = aliasing',
                               $alias, $user->id(), $domain);
                 $page->trigSuccess("Nouvel alias '$alias' ajouté");
             } else {
@@ -691,7 +691,7 @@ class AdminModule extends PLModule
                            WHERE  s.email = {?} AND s.uid = {?} AND d.name = {?} AND type != \'forlife\'',
                           $email, $user->id(), $domain);
             XDB::execute('UPDATE  email_redirect_account AS r
-                      INNER JOIN  email_virtual_domains  AS m ON (m.name = {?})
+                      INNER JOIN  email_virtual_domains  AS m ON (m.name = {?} AND id = aliasing)
                       INNER JOIN  email_virtual_domains  AS d ON (d.aliasing = m.id)
                              SET  r.rewrite = \'\'
                            WHERE  r.uid = {?} AND r.rewrite = CONCAT({?}, \'@\', d.name)',
@@ -885,12 +885,49 @@ class AdminModule extends PLModule
                     $hrpromo = 'D' . $promotion;
                     $type = 'phd';
                     break;
+                  case 'B':
+                    $degreeid = $eduDegrees[Profile::DEGREE_B];
+                    $entry_year = $promotion;
+                    $grad_year = $promotion + 3;
+                    $promo = 'B' . $promotion;
+                    $hrpromo = $promo;
+                    $type = 'bachelor';
+                    break;
+                  case 'E':
+                    $degreeid = $eduDegrees[Profile::DEGREE_E];
+                    $entry_year = $promotion;
+                    $grad_year = $promotion + 2;
+                    $promo = 'E' . $promotion;
+                    $hrpromo = $promo;
+                    $type = 'executive';
+                    break;
+                  case 'G':
+                    $degreeid = $eduDegrees[Profile::DEGREE_G];
+                    $entry_year = $promotion;
+                    $grad_year = $promotion + 2;
+                    $promo = 'G' . $promotion;
+                    $hrpromo = $promo;
+                    $type = 'graduate';
+                    break;
+                  case 'S':
+                    $degreeid = $eduDegrees[Profile::DEGREE_S];
+                    $entry_year = $promotion;
+                    $grad_year = $promotion + 2;
+                    $promo = 'S' . $promotion;
+                    $hrpromo = $promo;
+                    $type = 'masterspe';
+                    break;
                   default:
                     $page->killError("La formation n'est pas reconnue : " . Env::t('edu_type') . '.');
                 }
+                if (empty($degreeid)) {
+                    $page->trigError("La base de données ne contient pas de description de la formation " . Env::t('edu_type') .
+                        ". Il faut ajouter une nouvelle formation dans les tables profile_education !");
+                    return;
+                }
                 $best_domain = XDB::fetchOneCell('SELECT  id
                                                     FROM  email_virtual_domains
-                                                   WHERE  name = {?}',
+                                                   WHERE  name = {?} AND id = aliasing',
                                                  User::$sub_mail_domains[$type] . Platal::globals()->mail->domain);
 
                 XDB::startTransaction();

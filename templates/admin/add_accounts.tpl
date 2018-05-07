@@ -62,6 +62,7 @@
     <td class="center">
       <strong>Promotion&nbsp;:</strong>
       <input type="text" name="promotion" size="4" maxlength="4" />
+      (année de diplôme pour les masters et docteurs, année d'admission pour les autres)
       <input type="hidden" name="add_type" value="{$add_type}" />
     </td>
   </tr>
@@ -69,9 +70,13 @@
   <tr>
     <td class="center">
       <strong>Formation&nbsp;:</strong>
-      <label><input type="radio" name="edu_type" value="X" checked="checked" /> X</label> -
-      <label><input type="radio" name="edu_type" value="M" /> master</label> -
-      <label><input type="radio" name="edu_type" value="D" /> doctorat</label>
+      <label class="nowrap"><input type="radio" name="edu_type" value="X" checked="checked" /> X</label> -
+      <label class="nowrap"><input type="radio" name="edu_type" value="M" /> master</label> -
+      <label class="nowrap"><input type="radio" name="edu_type" value="D" /> doctorat</label> -
+      <label class="nowrap"><input type="radio" name="edu_type" value="B" /> bachelor</label> -
+      <label class="nowrap"><input type="radio" name="edu_type" value="E" /> executive</label> -
+      <label class="nowrap"><input type="radio" name="edu_type" value="G" /> graduate</label> -
+      <label class="nowrap"><input type="radio" name="edu_type" value="S" /> master sp&eacute;cialis&eacute;</label>
     </td>
   </tr>
 </table>

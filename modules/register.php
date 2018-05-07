@@ -36,7 +36,8 @@ class RegisterModule extends PLModule
         $alert = array();
         $alert_details = '';
         $subState = new PlDict(S::v('subState', array()));
-        if (!$subState->has('step')) {
+        // Restart the registration process after a successful registration
+        if (!$subState->has('step') || $subState->i('step') >= 5) {
             $subState->set('step', 0);
         }
         if (!$subState->has('backs')) {
@@ -369,18 +370,18 @@ class RegisterModule extends PLModule
         XDB::execute('INSERT INTO  email_source_account (email, uid, type, flags, domain)
                            SELECT  {?}, {?}, \'forlife\', \'\', id
                              FROM  email_virtual_domains
-                            WHERE  name = {?}',
+                            WHERE  name = {?} AND id = aliasing',
                      $forlife, $uid, $mail_domain);
         XDB::execute('INSERT INTO  email_source_account (email, uid, type, flags, domain)
                            SELECT  {?}, {?}, \'alias\', \'bestalias\', id
                              FROM  email_virtual_domains
-                            WHERE  name = {?}',
+                            WHERE  name = {?} AND id = aliasing',
                      $bestalias, $uid, $mail_domain);
         if ($emailXorg2) {
             XDB::execute('INSERT INTO  email_source_account (email, uid, type, flags, domain)
                                SELECT  {?}, {?}, \'alias\', \'\', id
                                  FROM  email_virtual_domains
-                                WHERE  name = {?}',
+                                WHERE  name = {?} AND id = aliasing',
                          $emailXorg2, $uid, $mail_domain);
         }
         XDB::commit();

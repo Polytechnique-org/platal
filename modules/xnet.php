@@ -98,7 +98,7 @@ class XnetModule extends PLModule
                                    WHERE  d.name = {?}',
                                  $domain);
                     XDB::execute('DELETE FROM  email_virtual_domains
-                                        WHERE  name = {?}', $domain);
+                                        WHERE  name = {?} AND id = aliasing', $domain);
                     $page->trigSuccess('suppression des alias mails');
 
                     $mmlist = new MMList(S::v('uid'), S::v('password'), $domain);

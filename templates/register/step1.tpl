@@ -26,7 +26,12 @@
 
 <form action="register" method="post">
   <p>
-    Avant toute chose, il te faut nous donner ta promotion&nbsp;:
+    Avant toute chose, il te faut nous donner ta «&nbsp;promotion d'annuaire&nbsp;»&nbsp;:
+    <ul>
+      <li>pour les polytechniciens (cursus ingénieur) il s'agit de la promotion habituelle (année d'admission)&nbsp;;</li>
+      <li>pour les masters, doctorants et docteurs, il s'agit de l'année théorique d'obtention du diplôme (année d'entrée + 2 ou 3)&nbsp;;</li>
+      <li>pour les cursus de Bachelor, Graduate Degree, Executive Education et Master Spécialisé, il s'agit de l'année d'entrée à l'École polytechnique.</li>
+    </ul>
   </p>
   <table class="tinybicol">
     <tr>
@@ -51,6 +56,10 @@
           <option value="{#Profile::DEGREE_X#}" selected="selected">polytechnicienne</option>
           <option value="{#Profile::DEGREE_M#}">master</option>
           <option value="{#Profile::DEGREE_D#}">doctorat</option>
+          <option value="{#Profile::DEGREE_B#}">bachelor</option>
+          <option value="{#Profile::DEGREE_E#}">executive education</option>
+          <option value="{#Profile::DEGREE_G#}">graduate degree</option>
+          <option value="{#Profile::DEGREE_S#}">master spécialisé</option>
         </select>
       </td>
     </tr>
