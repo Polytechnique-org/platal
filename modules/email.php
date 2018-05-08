@@ -97,8 +97,7 @@ class EmailModule extends PLModule
                                           ((s.type = 'alias_aux') AND d.aliasing = d.id) AS alias
                                     FROM  email_source_account  AS s
                               INNER JOIN  accounts              AS a ON (s.uid = a.uid)
-                              INNER JOIN  email_virtual_domains AS m ON (s.domain = m.id)
-                              INNER JOIN  email_virtual_domains AS d ON (d.aliasing = m.id)
+                              INNER JOIN  email_virtual_domains AS d ON (d.aliasing = s.domain)
                                    WHERE  s.uid = {?}
                                 ORDER BY  !alias, s.email, d.name",
                                  $user->id());
