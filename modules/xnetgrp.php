@@ -36,6 +36,7 @@ class XnetGrpModule extends PLModule
             '%grp/annuaire'        => $this->make_hook('annuaire',              AUTH_PASSWD, 'groupannu'),
             '%grp/annuaire/vcard'  => $this->make_hook('vcard',                 AUTH_PASSWD, 'groupmember:groupannu'),
             '%grp/annuaire/csv'    => $this->make_hook('csv',                   AUTH_PASSWD, 'groupmember:groupannu'),
+            '%grp/annuaire/csv-ax' => $this->make_hook('csv_ax',                AUTH_PASSWD, 'groupmember:groupannu'),
             '%grp/directory/sync'  => $this->make_hook('directory_sync',        AUTH_PASSWD, 'groupadmin'),
             '%grp/directory/unact' => $this->make_hook('non_active',            AUTH_PASSWD, 'groupadmin'),
             '%grp/directory/awact' => $this->make_hook('awaiting_active',       AUTH_PASSWD, 'groupadmin'),
@@ -475,7 +476,7 @@ class XnetGrpModule extends PLModule
         }
         $users = $globals->asso()->getMembersFilter(null, new UFO_Name())->getUsers();
         $admin = may_update();
-        pl_cached_content_headers('text/x-csv', 'iso-8859-1', 1);
+        pl_cached_content_headers('text/x-csv', 'iso-8859-1', 1, $filename);
 
         echo utf8_decode("Nom;Prénom;Sexe;Promotion;Commentaire");
         if ($admin) {
@@ -494,6 +495,37 @@ class XnetGrpModule extends PLModule
                 }
             }
             echo utf8_decode($line) . "\n";
+        }
+        exit();
+    }
+
+    /**
+     * Produce a CSV file suitable to be imported in AX website
+     */
+    function handler_csv_ax($page, $filename = null)
+    {
+        global $globals;
+        if (is_null($filename)) {
+            $filename = $globals->asso('diminutif') . '.csv';
+        }
+        $users = $globals->asso()->getMembersFilter(null, new UFO_Name())->getUsers();
+        pl_cached_content_headers('text/x-csv', 'utf-8', 1, $filename);
+
+        echo "Groupe;Matricule AX;Nom;Prénom;Sexe;Promotion;Poste;Commentaire\n";
+        foreach ($users as $user) {
+            $line = '"' . $globals->asso('diminutif') . '"';
+            if ($user->hasProfile()) {
+                $line .= ';' . $user->profile()->ax_id;
+            } else {
+                $line .= ';';
+            }
+            $line .= ';' . $user->lastName();
+            $line .= ';' . $user->firstName();
+            $line .= ';' . ($user->isFemale() ? 'F' : 'M');
+            $line .= ';' . $user->promo();
+            $line .= ';' . $user->group_position;
+            $line .= ';' . strtr($user->group_comm, ';', ',');
+            echo $line . "\n";
         }
         exit();
     }

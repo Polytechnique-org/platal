@@ -70,6 +70,13 @@ Le groupe {$asso->nom} compte {if t($full_count)}{$full_count}{elseif $plset_tot
     {include file="include/csv.tpl" url="`$platal->ns`annuaire/csv/`$asso->diminutif`.csv"}
   </li>
   <li>
+    <a href="{$platal->ns}annuaire/csv-ax/{$asso->diminutif}.csv">
+      {icon name="page_excel" title="Télécharger au format Excel"}
+      Télécharger la liste pour un import sur le site de l'AX
+    </a>
+    <small>(encodage&nbsp;: UTF-8, séparateur&nbsp;: point-virgule)</small>
+  </li>
+  <li>
     <a href="{$platal->ns}annuaire/vcard/photos/{$asso->diminutif}.vcf">
       {icon name=vcard title="Carte de visite"}
       Ajouter les membres à ton carnet d'adresse
