@@ -191,7 +191,7 @@ def findAddressInBounce(bounce):
     diag_code = content['Diagnostic-Code']
 
     # Permanent failure state
-    if int(status[:1]) == 5:
+    if status and int(status[:1]) == 5:
         return email
 
     # Mail forwarding loops, DNS errors and connection timeouts cause X-Postfix errors
@@ -206,7 +206,7 @@ def findAddressInBounce(bounce):
         "requested action aborted: local error in processing",
         "user unknown",
         ]
-    if 'quota' in status.lower():
+    if status and 'quota' in status.lower():
         return email
     if diag_code is not None:
         ldiag_code = diag_code.lower()
@@ -331,6 +331,7 @@ def findAddressInPlainText(lines):
         "User unknown in local recipient table",
         "> was undeliverable.",
         "we were unable to deliver your message",
+        "550-Mailbox unknown.  Either there is no mailbox associated with this",
     ]
     if not any(any(hint in line for hint in non_delivery_hints) for line in lines):
         print('! Unknown mailer-daemon message, unable to find an hint for non-delivery in message:')
