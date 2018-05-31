@@ -51,7 +51,7 @@ function strongCheckId($subState)
         if ($subState->i('yearpromo') > $max_promo_year) {
             return "Ta promo n'est pas encore dans l'annuaire, réessaie dans quelques semaines.";
         }
-        return "Cherche ton nom dans l'annuaire public. Si tu te trouves, tu es déjà inscrit ou ton matricule est incorrect ! Sinon envoie-nous un email à support@polytechnique.org";
+        return 'Cherche ton nom dans l\'annuaire public. Si tu te trouves, tu es déjà inscrit ou ton matricule est incorrect ! Sinon regarde la <a href="https://auth.polytechnique.org/faq">FAQ</a> ou envoie-nous un email à support@polytechnique.org';
     }
 
     if ($profile->promo() != $subState->s('promo')) {
@@ -113,7 +113,7 @@ function weakCheckId($subState)
             }
         }
     }
-    return 'Nous n\'avons pas les mêmes informations (promo, accents…) que toi ! Il arrive que cela soit dû au fait que l\'École transmette les noms de famille en majuscule, enlevant ainsi les accents. Tu peux vérifier en cherchant ta fiche sur l\'annuaire public, si ça ne fonctionne toujours pas tu peux nous envoyer un email à support@polytechnique.org';
+    return 'Nous n\'avons pas les mêmes informations (promo, accents…) que toi ! Il arrive que cela soit dû au fait que l\'École transmette les noms de famille en majuscule, enlevant ainsi les accents. Tu peux vérifier en cherchant ta fiche sur l\'annuaire public, si ça ne fonctionne toujours pas tu peux regarder la <a href="https://auth.polytechnique.org/faq">FAQ</a> ou nous envoyer un email à support@polytechnique.org';
 }
 
 // }}}
