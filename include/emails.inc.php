@@ -106,10 +106,14 @@ function update_list_alias($email, $former_email, $local_part, $domain, $type = 
 // Updates an email in all aliases (groups and events).
 function update_alias_user($former_email, $new_email)
 {
-    XDB::execute('UPDATE  email_virtual
-                     SET  redirect = {?}
-                   WHERE  redirect = {?} AND (type = \'alias\' OR type = \'event\')',
+    // This request fails to update if the new email is already subscribed to the alias/event
+    XDB::execute('UPDATE IGNORE  email_virtual
+                            SET  redirect = {?}
+                          WHERE  redirect = {?} AND (type = \'alias\' OR type = \'event\')',
                  $new_email, $former_email);
+    XDB::execute('DELETE FROM  email_virtual
+                        WHERE  redirect = {?} AND (type = \'alias\' OR type = \'event\')',
+                 $former_email);
 }
 
 function list_alias_members($local_part, $domain)
