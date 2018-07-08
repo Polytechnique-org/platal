@@ -78,7 +78,9 @@ class NewsletterModule extends PLModule
 
         $page->assign_by_ref('nl', $nl);
         $page->assign('nls', $nl->subscriptionState());
-        $page->assign('nl_list', $nl->listSentIssues(true));
+        // The AX has waaaay too many newsletter to display. Restrict to the recent ones only
+        $only_recent = ($nl->group == 'AX');
+        $page->assign('nl_list', $nl->listSentIssues(true, null, $only_recent));
     }
 
     function handler_nl_show($page, $nid = 'last')
@@ -214,7 +216,9 @@ class NewsletterModule extends PLModule
         }
 
         $page->assign_by_ref('nl', $nl);
-        $page->assign('nl_list', $nl->listAllIssues());
+        // The AX has waaaay too many newsletter to display. Restrict to the recent ones only
+        $only_recent = ($nl->group == 'AX');
+        $page->assign('nl_list', $nl->listAllIssues($only_recent));
     }
 
     function handler_admin_nl_groups($page, $sort = 'id', $order = 'ASC')

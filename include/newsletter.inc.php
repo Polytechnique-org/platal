@@ -196,16 +196,24 @@ class NewsLetter
     /** Return all sent issues of this newsletter.
      * @return An array of (id => NLIssue)
      */
-    public function listSentIssues($check_user = false, $user = null)
+    public function listSentIssues($check_user = false, $user = null, $only_recent = false)
     {
         if ($check_user && $user == null) {
             $user = S::user();
         }
 
-        $res = XDB::query('SELECT  id
-                             FROM  newsletter_issues
-                            WHERE  nlid = {?} AND state = \'sent\'
-                         ORDER BY  date DESC', $this->id);
+        if ($only_recent) {
+            $res = XDB::query('SELECT  id
+                                 FROM  newsletter_issues
+                                WHERE  nlid = {?} AND state = \'sent\'
+                                       AND date >= DATE_ADD(CURDATE(), INTERVAL -3 YEAR)
+                             ORDER BY  date DESC', $this->id);
+        } else {
+            $res = XDB::query('SELECT  id
+                                 FROM  newsletter_issues
+                                WHERE  nlid = {?} AND state = \'sent\'
+                             ORDER BY  date DESC', $this->id);
+        }
         $issues = array();
         foreach ($res->fetchColumn() as $id) {
             $issue = new NLIssue($id, $this, false);
@@ -219,12 +227,20 @@ class NewsLetter
     /** Return all issues of this newsletter, including invalid and sent.
      * @return An array of (id => NLIssue)
      */
-    public function listAllIssues()
+    public function listAllIssues($only_recent = false)
     {
-        $res = XDB::query('SELECT  id
-                             FROM  newsletter_issues
-                            WHERE  nlid = {?}
-                         ORDER BY  FIELD(state, \'pending\', \'new\') DESC, date DESC', $this->id);
+        if ($only_recent) {
+            $res = XDB::query('SELECT  id
+                                 FROM  newsletter_issues
+                                WHERE  nlid = {?}
+                                       AND date >= DATE_ADD(CURDATE(), INTERVAL -3 YEAR)
+                             ORDER BY  FIELD(state, \'pending\', \'new\') DESC, date DESC', $this->id);
+        } else {
+            $res = XDB::query('SELECT  id
+                                 FROM  newsletter_issues
+                                WHERE  nlid = {?}
+                             ORDER BY  FIELD(state, \'pending\', \'new\') DESC, date DESC', $this->id);
+        }
         $issues = array();
         foreach ($res->fetchColumn() as $id) {
             $issues[$id] = new NLIssue($id, $this, false);
