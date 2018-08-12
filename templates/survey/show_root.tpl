@@ -37,7 +37,7 @@
         <td class="titre">Type de sondage&nbsp;:</td>
         <td>{$survey_modes[$survey.mode]}</td>
       </tr>
-      {if $survey.mode != Survey::MODE_ALL}
+      {if $survey.mode != #Survey::MODE_ALL#}
       <tr>
         <td class="titre">Promotions&nbsp;:</td>
         <td>
