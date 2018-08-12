@@ -91,6 +91,9 @@ class Survey
 
     public function canSeeEarlyResults(User $user)
     {
+        if (empty($user)) {
+            return false;
+        }
         return $user->id() == $this->creator || $user->checkPerms('admin');
     }
     // }}}
@@ -349,7 +352,7 @@ class Survey
         default:
             return null;
         }
-        if (!S::user()->checkPerms(PERMS_USER)) {
+        if (!S::logged() || !S::user()->checkPerms(PERMS_USER)) {
             $where .=  XDB::format(' AND mode = {?}', self::MODE_ALL);
         }
         $sql = 'SELECT id, title, uid, end, mode
