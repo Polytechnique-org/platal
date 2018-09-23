@@ -36,7 +36,7 @@
     <link rel="bookmark" href="http://www.polytechnique.fr/"        title="| École polytechnique" />
     <link rel="bookmark" href="http://www.polytechnique.edu/"       title="| Institutionnal site" />
     <link rel="bookmark" href="http://www.fondationx.org/"          title="| FX" />
-    <link rel="bookmark" href="http://www.ax.polytechnique.edu/"    title="| AX" />
+    <link rel="bookmark" href="https://ax.polytechnique.org/"       title="| AX" />
     <link rel="bookmark" href="http://www.polytechnique.org/"       title="| Polytechnique.org" />
     <link rel="bookmark" href="http://www.polytechnique.fr/eleves/" title="| Site d'élèves" />
 

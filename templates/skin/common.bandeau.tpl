@@ -49,7 +49,7 @@
   <a href="http://www.polytechnique.edu/">L'&Eacute;cole</a> &middot;
   &tilde;&tilde;
   <a href="http://www.fondationx.org/">FX</a> &middot;
-  <a href="http://www.ax.polytechnique.edu/">AX</a>
+  <a href="https://ax.polytechnique.org/">AX</a>
   &tilde;&tilde;
   <a href="https://www.polytechnique.org">Polytechnique.org</a> &middot;
   <a href="http://www.polytechnique.net{if t($login)}/login{/if}">Associations polytechniciennes</a> &middot;
