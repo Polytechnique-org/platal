@@ -88,6 +88,11 @@ Il te faut te limiter à 8 lignes de 68 caractères.
 <h2>Proposer un article</h2>
 
 <p>
+La procédure de soumission d'articles pour la lettre mensuelle a changé, tu peux la trouver à l'addresse suivante: <a href="https://ax.polytechnique.org/page/proposer-un-article-dans-notre-newsletter">instructions sur le site de l'AX</a>.
+</p>
+
+<!--
+<p>
 Tu peux <a href='nl/submit#conseils'>lire les conseils de rédaction</a> avant de proposer ton article.
 </p>
 <form action="nl/submit" method='post'>
@@ -135,7 +140,8 @@ Tu peux <a href='nl/submit#conseils'>lire les conseils de rédaction</a> avant d
 </form>
 
 <a id='conseils'></a>
-{include wiki=Xorg.LettreMensuelle}
+{* {include wiki=Xorg.LettreMensuelle} *}
+-->
 
 {/if}
 
