@@ -89,6 +89,7 @@ Il te faut te limiter à 8 lignes de 68 caractères.
 
 <p>
 La procédure de soumission d'articles pour la lettre mensuelle a changé, tu peux la trouver à l'addresse suivante: <a href="https://ax.polytechnique.org/page/proposer-un-article-dans-notre-newsletter">instructions sur le site de l'AX</a>.
+Si la page est vide, connecte-toi d'abord sur le site de l'AX en cliquant sur le bouton « Je me connecte » de <a href="https://ax.polytechnique.org">https://ax.polytechnique.org</a> avant d'aller de nouveau sur <a href="https://ax.polytechnique.org/page/proposer-un-article-dans-notre-newsletter">la page des instructions</a>.
 </p>
 
 <!--
