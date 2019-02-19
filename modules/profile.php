@@ -33,8 +33,7 @@ class ProfileModule extends PLModule
             'profile/private'            => $this->make_hook('profile',                    AUTH_COOKIE, 'user'),
             //'profile/ax'                 => $this->make_hook('ax',                         AUTH_COOKIE, 'admin,edit_directory'),
             'profile/ax'                 => $this->make_hook('moved',                      AUTH_PUBLIC),
-            //'profile/edit'               => $this->make_hook('p_edit',                     AUTH_PASSWD, 'user'),
-            'profile/edit'               => $this->make_hook('moved',                      AUTH_PUBLIC),
+            'profile/edit'               => $this->make_hook('p_edit',                     AUTH_PASSWD, 'user'),
             'profile/ajax/address'       => $this->make_hook('ajax_address',               AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/address/del'   => $this->make_hook('ajax_address_del',           AUTH_PASSWD, 'user'),
             'profile/ajax/tel'           => $this->make_hook('ajax_tel',                   AUTH_COOKIE, 'user', NO_AUTH),
@@ -310,6 +309,11 @@ class ProfileModule extends PLModule
     function handler_p_edit($page, $hrpid = null, $opened_tab = null, $mode = null, $success = null)
     {
         global $globals;
+
+        if (!S::user()->is_admin) {
+            // return non-admins to moved pages
+            return $this->handler_moved($page);
+        }
 
         if (in_array($hrpid, array('general', 'adresses', 'emploi', 'poly', 'deco', 'mentor', 'deltaten'))) {
             $aux = $opened_tab;
