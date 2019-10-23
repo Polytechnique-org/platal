@@ -985,8 +985,18 @@ class ListsModule extends PLModule
             S::assert_xsrf_token();
             $mlist->checkOptions(true);
         }
-
-        if (list($details, $options) = $mlist->checkOptions()) {
+        $diff = $mlist->checkOptions();
+        if (isset($diff)) {
+            $options = $diff;
+            #We will now expand internal arrays
+            foreach ($options as $key => $diff) {
+                if( is_array($diff) ) { #This should always be true
+                    $diff[0] = var_export($diff[0], true);
+                    $diff[1] = var_export($diff[1], true);
+                }
+                $options[$key] = $diff; #Overwrites original array
+            }
+            $details = $mlist->address;
             $page->assign_by_ref('details', $details);
             $page->assign_by_ref('options', $options);
         } else {
