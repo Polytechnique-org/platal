@@ -71,12 +71,12 @@
     <td class="center">
       <strong>Formation&nbsp;:</strong>
       <label class="nowrap"><input type="radio" name="edu_type" value="X" checked="checked" /> X</label> -
-      <label class="nowrap"><input type="radio" name="edu_type" value="M" /> master</label> -
+      <label class="nowrap"><input type="radio" name="edu_type" value="M" /> master et MSc&amp;T&ge;2019</label> -
       <label class="nowrap"><input type="radio" name="edu_type" value="D" /> doctorat</label> -
       <label class="nowrap"><input type="radio" name="edu_type" value="B" /> bachelor</label> -
       <label class="nowrap"><input type="radio" name="edu_type" value="E" /> executive</label> -
-      <label class="nowrap"><input type="radio" name="edu_type" value="G" /> graduate</label> -
-      <label class="nowrap"><input type="radio" name="edu_type" value="S" /> master sp&eacute;cialis&eacute;</label>
+      <label class="nowrap"><input type="radio" name="edu_type" value="G" /> graduate&le;2018</label> -
+      {* <label class="nowrap"><input type="radio" name="edu_type" value="S" /> master sp&eacute;cialis&eacute;</label> *}
     </td>
   </tr>
 </table>

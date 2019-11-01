@@ -54,12 +54,12 @@
       <td>
         <select name="edu_type">
           <option value="{#Profile::DEGREE_X#}" selected="selected">polytechnicienne</option>
-          <option value="{#Profile::DEGREE_M#}">master</option>
+          <option value="{#Profile::DEGREE_M#}">master (et Master of Science and Technology depuis 2019)</option>
           <option value="{#Profile::DEGREE_D#}">doctorat</option>
           <option value="{#Profile::DEGREE_B#}">bachelor</option>
           <option value="{#Profile::DEGREE_E#}">executive education</option>
-          <option value="{#Profile::DEGREE_G#}">graduate degree</option>
-          <option value="{#Profile::DEGREE_S#}">master spécialisé</option>
+          <option value="{#Profile::DEGREE_G#}">graduate degree (avant 2019)</option>
+          {* <option value="{#Profile::DEGREE_S#}">master spécialisé</option> *}
         </select>
       </td>
     </tr>
