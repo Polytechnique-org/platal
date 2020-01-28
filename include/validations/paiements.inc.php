@@ -42,6 +42,7 @@ class PayReq extends Validate
     public $rib_nom;
 
     public $rules = "Vérifier la présence d'un montant, de la balise &lt;montant&gt;, et associer le RIB du groupe. Si le groupe n'a pas de RIB &quot;used&quot; ou en a plusieurs, laisser au trésorier.";
+    public $notifyList = "tresorier+validation@staff.polytechnique.org";
     // }}}
     // {{{ constructor
 

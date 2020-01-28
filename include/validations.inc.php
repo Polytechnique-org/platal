@@ -46,6 +46,9 @@ abstract class Validate
     // Unless differently stated, a validation must be done by a site administrator.
     public $requireAdmin = true;
 
+    // The mailing list to notify when a new pending notification arises
+    public $notifyList = null;
+
     // }}}
     // {{{ constructor
 
@@ -83,6 +86,15 @@ abstract class Validate
         XDB::execute('INSERT INTO  requests (uid, type, data, stamp)
                            VALUES  ({?}, {?}, {?}, {?})',
                      $this->user->id(), $this->type, $this, $this->stamp);
+
+        if (!is_null($this->notifyList)) {
+            global $globals;
+            $mailer = new PlMailer('admin/validation-notif.mail.tpl');
+            $mailer->setFrom("validation+{$this->type}@{$globals->mail->domain}");
+            $mailer->setTo($this->notifyList);
+            $mailer->assign('validation', $this->_mail_subj());
+            $mailer->send();
+        }
 
         global $globals;
         $globals->updateNbValid();
