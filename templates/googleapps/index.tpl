@@ -325,6 +325,12 @@
     <th colspan="2">Ton mot de passe Google Apps</th>
   </tr>
 
+  <tr class="impair">
+    <td>N.B: depuis la fusion de l'annuaire avec celui de l'AX, la synchronisation des mots de passe se désactive parfois. Le temps que le problème soit résolu, 
+    il est recommandé de ne pas choisir la synchronisation des mots de passe.</td>
+  </tr>
+
+
   {if $account->pending_update_password}
   <tr class="pair">
     <td class="middle">{icon name=error}</td>
