@@ -205,6 +205,11 @@ class Profile implements PlExportable
         return $this->hrpid;
     }
 
+    public function schoolId()
+    {
+        return Profile::getSchoolId($this->xorg_id);
+    }
+
     public function owner()
     {
         if ($this->owner == null && !$this->owner_fetched) {
