@@ -326,7 +326,7 @@
   </tr>
 
   <tr class="impair">
-    <td>N.B: depuis la fusion de l'annuaire avec celui de l'AX, la synchronisation des mots de passe se désactive parfois. Le temps que le problème soit résolu, 
+    <td colspan="2">N.B: depuis la fusion de l'annuaire avec celui de l'AX, la synchronisation des mots de passe se désactive parfois. Le temps que le problème soit résolu, 
     il est recommandé de ne pas choisir la synchronisation des mots de passe.</td>
   </tr>
 
