@@ -3,6 +3,9 @@ VERSION 1.1.24                                                       XX XX XXXX
     * Profiles:
         - Display the school id on profiles                                 -XEL
 
+    * Admin:
+        - Improve the help message on AX ID batch edition page              -XEL
+
 ================================================================================
 VERSION 1.1.23                                                       15 02 2018
 

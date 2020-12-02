@@ -124,11 +124,12 @@
 <br />
 <table class="bicol">
   <tr>
-    <td>Nom Prénom ou Identifiant (hrid)</td>
+    <td>Identifiant (hrid) : prenom.nom.promo</td>
+    <td>;</td>
     <td>Matricule AX</td>
   </tr>
   <tr>
-    <td colspan="2"><textarea name="people" rows="20" cols="80"></textarea></td>
+    <td colspan="3"><textarea name="people" rows="20" cols="80"></textarea></td>
   </tr>
 </table>
 {/if}
