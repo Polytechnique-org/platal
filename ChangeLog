@@ -3,6 +3,9 @@ VERSION 1.1.24                                                       XX XX XXXX
     * Profiles:
         - Display the school id on profiles                                 -XEL
 
+    * Emails:
+        - Open up access to the "lost users" page                           -XEL
+
     * Admin:
         - Improve the help message on AX ID batch edition page              -XEL
 

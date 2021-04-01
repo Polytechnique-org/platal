@@ -32,6 +32,7 @@ class EmailModule extends PLModule
             'emails/send'             => $this->make_hook('send',        AUTH_PASSWD, 'mail'),
             'emails/antispam/submit'  => $this->make_hook('submit',      AUTH_COOKIE, 'user'),
             'emails/test'             => $this->make_hook('test',        AUTH_COOKIE, 'mail', NO_AUTH),
+            'emails/lost'             => $this->make_hook('lost',        AUTH_COOKIE, 'user'),
 
             'emails/rewrite/in'       => $this->make_hook('rewrite_in',  AUTH_PUBLIC),
             'emails/rewrite/out'      => $this->make_hook('rewrite_out', AUTH_PUBLIC),
