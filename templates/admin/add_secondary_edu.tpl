@@ -22,8 +22,12 @@
 
 <h1>Ajout de formations secondaires</h1>
 
+<p>{icon name=information} Cet écran permet uniquement d'ajouter des formations complémentaires aux
+camarades dont les prénoms, nom et promotion courante sont indiqués. Elle ne permet pas de créer les
+adresses mails associées à la nouvelle formation.</p>
+
 <form action="{$platal->pl_self()}" method="post">
-<table class="tinybicol" style="margin-bottom: 1em">
+<table class="bicol" style="margin-bottom: 1em">
   <tr>
     <td>
       <strong>Promotion&nbsp;:</strong>
@@ -37,8 +41,9 @@
       <strong>Formation&nbsp;:</strong>
     </td>
     <td>
-      <label><input type="radio" name="degree" value="Master" {if !t($degree) || $degree eq "Master"}checked="checked"{/if} /> master</label> -
-      <label><input type="radio" name="degree" value="Doctorat" {if t($degree) && $degree eq "Doctorat"}checked="checked"{/if} /> doctorat</label>
+      {foreach from=$cycles key=cycle_degree item=cycle_title name=loop}
+      <label><input type="radio" name="degree" value="{$cycle_degree}" {if t($degree) && $degree eq $cycle_degree}checked="checked"{/if} /> {$cycle_title}</label>{if ! $smarty.foreach.loop.last}<br />{/if}
+      {/foreach}
     </td>
   </tr>
   <tr>

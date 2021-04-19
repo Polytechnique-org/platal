@@ -2140,6 +2140,7 @@ class AdminModule extends PLModule
     function handler_add_secondary_edu($page)
     {
         $page->changeTpl('admin/add_secondary_edu.tpl');
+        $page->assign('cycles', Profile::$cycles);
 
         if (!(Post::has('verify') || Post::has('add'))) {
             return;
