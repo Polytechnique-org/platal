@@ -71,6 +71,7 @@
 {if hasPerm('mail')}
 <div class="menu_item"><a href="emails/antispam/submit">Soumettre un spam</a></div>
 {/if}
+<div class="menu_item"><a href="emails/lost">Perdus de vue</a></div>
 <div class="menu_item"><a href="emails/broken">Patte cassée</a></div>
 
 <div class="menu_title">Communauté X</div>
