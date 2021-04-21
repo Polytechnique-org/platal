@@ -179,6 +179,7 @@
 <p>
   <small>{icon name=information title="Envoi d'email"} Pour envoyer un email, tu peux soit le faire depuis l'interface
   ci-dessous, soit utiliser <a href="Xorg/SMTPSecurise">notre serveur d'envoi SMTP</a>.</small>
+  Nous recommandons d'utiliser ton client mail plutôt que cette page !
 </p>
 
 <form action="emails/send" method="post" enctype="multipart/form-data" id="form_mail" onsubmit="return check(this);">
