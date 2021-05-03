@@ -307,7 +307,7 @@
   {$user->forlifeEmail()} (attention, cela demande de la concentration).
 </p>
 <p>
-  Si tu utilises le service POP de poly pour récupérer tes emails dans ton logiciel de courrier,
+  Si tu utilises le service Zimbra de l'École pour consulter tes emails,
   l'équipe de Polytechnique.org te conseille de rediriger&nbsp;:
 </p>
 <ul>

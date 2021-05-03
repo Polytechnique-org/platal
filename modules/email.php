@@ -307,7 +307,8 @@ class EmailModule extends PLModule
           case ERROR_LOOP_EMAIL:
             $page->trigError('Erreur : ' . $user->forlifeEmail()
                              . ' ne doit pas être renvoyé vers lui-même, ni vers son équivalent en '
-                             . $globals->mail->domain2 . ' ni vers polytechnique.edu.');
+                             . $globals->mail->domain2 . ' ni vers polytechnique.edu. Dans ce dernier'
+                             . ' cas, utilise plutôt l\'adresse @zimbra.polytehchnique.fr.');
             break;
         }
         // Fetch existing email aliases.

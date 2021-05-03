@@ -320,12 +320,7 @@ function valide_email($str)
  */
 function isvalid_email_redirection($email, User $user)
 {
-    $valid = isvalid_email($email) && User::isForeignEmailAddress($email);
-    if (!$user->hasProfile() || ($user->profile()->grad_year > date('Y') - 3)) {
-        return $valid && !preg_match("/@polytechnique\.edu$/", $email);
-    } else {
-        return $valid;
-    }
+    return isvalid_email($email) && User::isForeignEmailAddress($email);
 }
 
 // function ids_from_mails() {{{1
