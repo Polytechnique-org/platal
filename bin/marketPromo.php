@@ -55,12 +55,12 @@ while ($data = fgetcsv($handle)) {
         echo "WARNING Can't find uid for matricule $xorgid (login $login)\n";
         continue;
     }
-    $market = Marketing::get($uid, "$login@poly.polytechnique.fr");
+    $market = Marketing::get($uid, "$login@zimbra.polytechnique.fr");
     if (!is_null($market)) {
         echo "WARNING A marketing has already been to $xorgid on $login\n";
         continue;
     }
-    $market = new Marketing($uid, "$login@poly.polytechnique.fr", 'default', null, 'staff');
+    $market = new Marketing($uid, "$login@zimbra.polytechnique.fr", 'default', null, 'staff');
     $market->add(false);
     $market->send();
 }

@@ -300,8 +300,9 @@
 {if $eleve}
 <h1>Pour les élèves (non encore diplômés)</h1>
 <p>
-  L'X te fournit aussi une adresse à vie en <strong>«prenom.nom»@polytechnique.edu</strong> qui par défaut est
-  une redirection vers «login»@poly.polytechnique.fr. <a href="https://www.mail.polytechnique.edu/">
+  L'X te fournit aussi une adresse (valable uniquement pendant la scolairté) en
+  <strong>«prenom.nom»@polytechnique.edu</strong> qui par défaut est
+  une redirection vers «login»@zimbra.polytechnique.fr. <a href="https://www.mail.polytechnique.edu/">
   Tu peux modifier cette redirection</a> et la faire pointer vers ton adresse
   {$user->forlifeEmail()} (attention, cela demande de la concentration).
 </p>
@@ -311,7 +312,7 @@
 </p>
 <ul>
   <li>«prenom.nom»@polytechnique.edu vers {$user->forlifeEmail()}&nbsp;;</li>
-  <li>{$user->forlifeEmail()} vers «login»@poly.polytechnique.fr.</li>
+  <li>{$user->forlifeEmail()} vers «login»@zimbra.polytechnique.fr.</li>
 </ul>
 <p>
   Attention à ne pas faire une boucle quand tu manipules tes redirections&nbsp;! Tes emails seraient
