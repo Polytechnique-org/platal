@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2018 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2016 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -19,31 +19,21 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-BEGIN:VCALENDAR
-{display_ical name="prodid" value="-//Polytechnique.org//Plat-al//FR"}
-VERSION:2.0
-CALSCALE:GREGORIAN
-X-WR-TIMEZONE:Europe/Paris
-METHOD:PUBLISH
-{display_ical name="x-wr-calname" value=$asso->nom}
-BEGIN:VEVENT
-DSTAMP:{$timestamp|date_format:"%Y%m%dT%H%M%SZ"}
-DTSTART;VALUE=DATE;TZID=Europe/Paris:{$e.debut}
-DTEND;VALUE=DATE;TZID=Europe/Paris:{$e.fin}
-ORGANIZER;CN="{$e.prenom} {$e.nom}":MAILTO:{$e.alias}@polytechnique.org
-UID:event-{$e.short_name}-{$e.eid}@{$asso->diminutif}.polytechnique.org
-{if $admin}
-{foreach from=$participants item=m}
-ATTENDEE;CN="{$m.user->fullName('promo')}":MAILTO:{$m.user->bestEmail()}
-{/foreach}
+
+{config_load file="mails.conf" section="xnet_notification"}
+{if $mail_part eq 'head'}
+{from full=#from#}
+{subject text="[`$group`] $event"}
+{elseif $mail_part eq 'wiki'}
+M. {$prenom} {$nom},
+
+Pour valider votre inscription l'événement {$event}, veuillez suivre le lien de confirmation suivant qui expire dans six heures:
+
+{$url}
+
+Si vous n'arrivez pas à cliquer sur le lien, copiez intégralement l'adresse dans la barre de votre navigateur. Ce lien n'est valable qu'une fois. Si vous avez besoin d'un nouveau lien, vous pouvez tout simplement recommencer cette procédure.
+
+{include file="include/signature.mail.tpl"}
 {/if}
-{if $e.access_control!=AccessControl::Group}
-CLASS:PUBLIC
-{else}
-CLASS:PRIVATE
-{/if}
-{display_ical name="summary" value=$e.intitule}
-{display_ical name="description" value=$e.descriptif}
-END:VEVENT
-END:VCALENDAR
-{* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2: *}
+

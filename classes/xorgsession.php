@@ -208,6 +208,22 @@ class XorgSession extends PlSession
         return true;
     }
 
+    /**
+     * Directly start a session as the given user, without authentication
+     * TODO describe "auth by email"...
+     */
+    public function logAsUser(User $user)
+    {
+        // Kill any current session
+        $this->destroy();
+
+        // It is like the user has authenticated with a cookie
+        S::set('auth', AUTH_COOKIE);
+
+        // Enter the session
+        return $this->startSessionAs($user, AUTH_COOKIE);
+    }
+
     private function securityChecks()
     {
         $mail_subject = array();

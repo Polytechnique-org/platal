@@ -21,13 +21,22 @@
 
 define('NB_PER_PAGE', 25);
 
+//enum describing who can access the event
+abstract class AccessControl
+{
+    //use same values as the corresponding mysql enum
+    const Group = "group";
+    const Registered = "registered";
+    const All = "all";
+}
+
 class XnetEventsModule extends PLModule
 {
     function handlers()
     {
         return array(
             '%grp/events'       => $this->make_hook('events', AUTH_PASSWD, 'groups'),
-            '%grp/events/sub'   => $this->make_hook('sub',    AUTH_PASSWD, 'groups'),
+            '%grp/events/sub'   => $this->make_hook('sub',    AUTH_PUBLIC, 'groups'),
             '%grp/events/csv'   => $this->make_hook('csv',    AUTH_PASSWD, 'groups', NO_HTTPS),
             '%grp/events/ical'  => $this->make_hook('ical',   AUTH_PASSWD, 'groups', NO_HTTPS),
             '%grp/events/edit'  => $this->make_hook('edit',   AUTH_PASSWD, 'groupadmin'),
@@ -160,7 +169,7 @@ class XnetEventsModule extends PLModule
 
         $undisplayed_events = 0;
         foreach ($evts as $eid => &$e) {
-            if (!is_member() && !may_update() && !$e['accept_nonmembre']) {
+            if (!is_member() && !may_update() && $e['access_control']==AccessControl::Group) {
                 $undisplayed_events ++;
                 continue;
             }
@@ -203,10 +212,13 @@ class XnetEventsModule extends PLModule
         $page->assign('undisplayed_events', $undisplayed_events);
     }
 
+    function make_id_for_new_user($nom,$prenom,$email){
+        return sha1("bfpPUBEfsfj".$nom."##".$prenom.";%".$email);
+    }
+
     function handler_sub($page, $eid = null)
     {
         $this->load('xnetevents.inc.php');
-        $page->changeTpl('xnetevents/subscribe.tpl');
 
         $evt = get_event($eid);
         if (is_null($evt)) {
@@ -218,7 +230,10 @@ class XnetEventsModule extends PLModule
         if (!$evt['inscr_open']) {
             $page->kill('Les inscriptions pour cet événement sont closes');
         }
-        if (!$evt['accept_nonmembre'] && !is_member() && !may_update()) {
+        if ($evt['access_control']!=AccessControl::All && !S::logged()) {
+            $page->kill('Connecte-toi pour accéder à cet événement');
+        }
+        if ($evt['access_control']==AccessControl::Group && !is_member() && !may_update()) {
             $url = $globals->asso('sub_url');
             if (empty($url)) {
                 $url = $platal->ns . $globals->asso('diminutif') . "/" . 'subscribe';
@@ -227,100 +242,193 @@ class XnetEventsModule extends PLModule
                         '. Pour devenir membre, rends-toi sur la page de <a href="' . $url . '">demande d\'inscripton</a>.');
         }
 
-        $res = XDB::query("SELECT  stamp
-                             FROM  requests
-                            WHERE  type = 'paiements' AND data LIKE {?}",
-                           PayReq::same_event($eid, $globals->asso('id')));
-        $page->assign('validation', $res->numRows());
-
-        $page->assign('eid', $eid);
-        $page->assign('event', $evt);
-
-        $items = get_event_items($eid);
-        $subs = get_event_subscription($eid, S::v('uid'));
-
-        if (Post::has('submit')) {
-            S::assert_xsrf_token();
-            $moments = Post::v('moment',    array());
-            $pers    = Post::v('personnes', array());
-            $old_subs = $subs;
-            $subs    = array();
-
-            foreach ($moments as $j => $v) {
-                $subs[$j] = intval($v);
-
-                // retrieve other field when more than one person
-                if ($subs[$j] == 2) {
-                    if (!isset($pers[$j]) || !is_numeric($pers[$j]) || $pers[$j] < 0) {
-                        $page->trigError("Tu dois choisir un nombre d'invités correct&nbsp;!");
-                        return;
-                    }
-                    $subs[$j] = $pers[$j];
-                }
+        //if we arrived here via a confirmation email, process it
+        if(Get::has('nom') && Get::has('prenom') && Get::has('email') && Get::has('token')){
+            //check if the request is valid
+            //IMPORTANT: this page can log any existing user or new non x user, the security here must be at least as strong as the password recovery functionality (generate a random one time confirmation token, and send an url with is to the given email, the token expires after 6 hours)
+            XDB::execute('DELETE FROM  unlogged_users_event_subscription
+                                WHERE  DATE_SUB(NOW(), INTERVAL 380 MINUTE) > created');
+            $res = XDB::query('SELECT  uid
+                                 FROM  unlogged_users_event_subscription
+                                WHERE  certificat = {?}', Get::v('token'));
+            if($res->numRows()===0) {
+                $page->kill('Ce lien n\'est pas valide.');
             }
 
-            // count what the user must pay, and what he manually paid
-            $manual_paid = 0;
-            foreach ($items as $item_id => $item) {
-                if (array_key_exists($item_id, $old_subs)) {
-                    $manual_paid += $old_subs[$item_id]['paid'];
-                }
+            $found_user_id = $res->fetchOneCell();
+            $user_id=$this->make_id_for_new_user(Get::v('nom'),Get::v('prenom'),Get::v('email'));
+
+            if($user_id!==$found_user_id){
+                $page->kill('Ce lien n\'est pas valide.');
             }
-            // impossible to unsubscribe if you already paid sthing
-            if (!array_sum($subs) && $manual_paid != 0) {
-                $page->trigError("Impossible de te désinscrire complètement " .
-                                "parce que tu as fait un paiement par " .
-                                "chèque ou par liquide. Contacte un " .
-                                "administrateur du groupe si tu es sûr de " .
-                                "ne pas venir.");
-                $updated = false;
-            } else {
-                // update actual inscriptions
-                $updated = subscribe(S::v('uid'), $eid, $subs);
-            }
-            if ($updated) {
-                $evt = get_event_detail($eid);
-                if ($evt['topay'] > 0) {
-                    $page->trigSuccess('Ton inscription à l\'événement a été mise à jour avec succès, tu peux payer ta participation en cliquant ci-dessous');
-                } else {
-                    $page->trigSuccess('Ton inscription à l\'événement a été mise à jour avec succès.');
+
+            XDB::execute('DELETE FROM  unlogged_users_event_subscription
+                                WHERE  certificat = {?}', Get::v('token'));
+
+            //check if the email address is already registered
+            $user=User::getSilent(Get::v('email'));
+
+            if($user){
+                //the email address is already registered, use the registered account
+                $hruid=$user->hruid;
+            }else{
+                //the email address is not registered, create a new user
+                require_once 'name.func.inc.php';
+                list($local_part, $domain) = explode('@', strtolower(Get::v('email')));
+                $firstname=Get::v('prenom');
+                $lastname=Get::v('nom');
+                $hruid = User::makeHrid($local_part, $domain, 'ext');
+                $full_name = build_full_name($firstname, $lastname);
+                $directory_name = build_directory_name($firstname, $lastname);
+                $sort_name = build_sort_name($firstname, $lastname);
+
+                //ensure that the hruid does not already exist
+                while(true){
+                    $res=XDB::query("SELECT hruid FROM accounts WHERE hruid={?}", $hruid);
+                    if($res->numRows()===0) break;
+                    $i=1;
+                    $hruid = User::makeHrid($local_part, $domain.".$i", 'ext');
+                    ++$i;
                 }
 
-                if ($evt['subscription_notification'] != 'nobody') {
-                    $mailer = new PlMailer('xnetevents/subscription-notif.mail.tpl');
-                    if ($evt['subscription_notification'] != 'creator') {
-                        $admins = $globals->asso()->iterAdmins();
-                        while ($admin = $admins->next()) {
-                            $mailer->addTo($admin);
+                //insert the user in the database
+                XDB::execute('INSERT INTO accounts SET firstname={?}, lastname={?}, full_name={?}, directory_name={?}, sort_name={?}, hruid={?}, email={?}, type={?}, state={?}', $firstname, $lastname, $full_name, $directory_name, $sort_name, $hruid, Get::v('email'), "xnet", "active");
+                $user=User::get($hruid);
+            }
+            if(!Platal::session()->logAsUser($user)){
+                $page->kill("Authentication failed for $hruid.");
+            }
+        }
+
+        if (S::logged()) {
+            $page->changeTpl('xnetevents/subscribe.tpl');
+            $res = XDB::query("SELECT  stamp
+                FROM  requests
+                WHERE  type = 'paiements' AND data LIKE {?}",
+                PayReq::same_event($eid, $globals->asso('id')));
+            $page->assign('validation', $res->numRows());
+
+            $page->assign('eid', $eid);
+            $page->assign('event', $evt);
+
+            $items = get_event_items($eid);
+            $subs = get_event_subscription($eid, S::v('uid'));
+
+            if (Post::has('submit')) {
+                S::assert_xsrf_token();
+                $moments = Post::v('moment',    array());
+                $pers    = Post::v('personnes', array());
+                $old_subs = $subs;
+                $subs    = array();
+
+                foreach ($moments as $j => $v) {
+                    $subs[$j] = intval($v);
+
+                    // retrieve other field when more than one person
+                    if ($subs[$j] == 2) {
+                        if (!isset($pers[$j]) || !is_numeric($pers[$j]) || $pers[$j] < 0) {
+                            $page->trigError("Tu dois choisir un nombre d'invités correct&nbsp;!");
+                            return;
                         }
+                        $subs[$j] = $pers[$j];
                     }
-                    if ($evt['subscription_notification'] != 'animator') {
-                        $mailer->addTo($evt['organizer']);
+                }
+
+                // count what the user must pay, and what he manually paid
+                $manual_paid = 0;
+                foreach ($items as $item_id => $item) {
+                    if (array_key_exists($item_id, $old_subs)) {
+                        $manual_paid += $old_subs[$item_id]['paid'];
                     }
-                    $mailer->assign('group', $globals->asso('nom'));
-                    $mailer->assign('event', $evt['intitule']);
-                    $mailer->assign('subs', $subs);
-                    $mailer->assign('moments', $evt['moments']);
-                    $mailer->assign('name', S::user()->fullName('promo'));
-                    $mailer->send();
+                }
+                // impossible to unsubscribe if you already paid sthing
+                if (!array_sum($subs) && $manual_paid != 0) {
+                    $page->trigError("Impossible de te désinscrire complètement " .
+                        "parce que tu as fait un paiement par " .
+                        "chèque ou par liquide. Contacte un " .
+                        "administrateur du groupe si tu es sûr de " .
+                        "ne pas venir.");
+                    $updated = false;
+                } else {
+                    // update actual inscriptions
+                    $updated = subscribe(S::v('uid'), $eid, $subs);
+                }
+                if ($updated) {
+                    $evt = get_event_detail($eid);
+                    if ($evt['topay'] > 0) {
+                        $page->trigSuccess('Ton inscription à l\'événement a été mise à jour avec succès, tu peux payer ta participation en cliquant ci-dessous');
+                    } else {
+                        $page->trigSuccess('Ton inscription à l\'événement a été mise à jour avec succès.');
+                    }
+
+                    if ($evt['subscription_notification'] != 'nobody') {
+                        $mailer = new PlMailer('xnetevents/subscription-notif.mail.tpl');
+                        if ($evt['subscription_notification'] != 'creator') {
+                            $admins = $globals->asso()->iterAdmins();
+                            while ($admin = $admins->next()) {
+                                $mailer->addTo($admin);
+                            }
+                        }
+                        if ($evt['subscription_notification'] != 'animator') {
+                            $mailer->addTo($evt['organizer']);
+                        }
+                        $mailer->assign('group', $globals->asso('nom'));
+                        $mailer->assign('event', $evt['intitule']);
+                        $mailer->assign('subs', $subs);
+                        $mailer->assign('moments', $evt['moments']);
+                        $mailer->assign('name', S::user()->fullName('promo'));
+                        $mailer->send();
+                    }
                 }
             }
+            $subs = get_event_subscription($eid, S::v('uid'));
+            // count what the user must pay
+            $topay = 0;
+            $manually_paid = 0;
+            foreach ($items as $item_id => $item) {
+                if (array_key_exists($item_id, $subs)) {
+                    $topay += $item['montant']*$subs[$item_id]['nb'];
+                    $manually_paid += $subs[$item_id]['paid'];
+                }
+            }
+            $paid = $manually_paid + get_event_telepaid($eid, S::v('uid'));
+            $page->assign('moments', $items);
+            $page->assign('subs', $subs);
+            $page->assign('topay', $topay);
+            $page->assign('paid', $paid);
         }
-        $subs = get_event_subscription($eid, S::v('uid'));
-        // count what the user must pay
-        $topay = 0;
-        $manually_paid = 0;
-        foreach ($items as $item_id => $item) {
-            if (array_key_exists($item_id, $subs)) {
-                $topay += $item['montant']*$subs[$item_id]['nb'];
-                $manually_paid += $subs[$item_id]['paid'];
+        else {
+            $page->changeTpl('xnetevents/subscribe_not_logged.tpl');
+            $page->assign('eid', $eid);
+            $page->assign('event', $evt);
+
+            if (Post::has('submit')) {
+                S::assert_xsrf_token();
+                $page->assign('email', Post::v('email'));
+                $page->assign('form_sent', 1);
+
+                $nom=Post::v('nom');
+                $prenom=Post::v('prenom');
+                $email=Post::v('email');
+                $id=$this->make_id_for_new_user($nom,$prenom,$email);
+                $token=rand_url_id();
+                $base = $globals->baseurl . '/' . $platal->ns . $globals->asso('diminutif');
+                $url = "$base/events/sub/$eid?nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&email=".urlencode($email)."&token=$token";
+
+                //remember our randomly generated id (valid 6 hours)
+                XDB::execute('INSERT INTO  unlogged_users_event_subscription (certificat,uid,created)
+                              VALUES  ({?},{?},NOW())', $token, $id);
+
+                $mailer = new PlMailer('xnetevents/subscribe_not_logged_confirm.mail.tpl');
+                $mailer->assign('group', $globals->asso('nom'));
+                $mailer->assign('event', $evt['intitule']);
+                $mailer->assign('nom', $nom);
+                $mailer->assign('prenom', $prenom);
+                $mailer->assign('url', $url);
+                $mailer->addTo($email);
+                $mailer->send();
             }
         }
-        $paid = $manually_paid + get_event_telepaid($eid, S::v('uid'));
-        $page->assign('moments', $items);
-        $page->assign('subs', $subs);
-        $page->assign('topay', $topay);
-        $page->assign('paid', $paid);
     }
 
     function handler_csv($page, $eid = null, $item_id = null)
@@ -484,10 +592,11 @@ class XnetEventsModule extends PLModule
             );
 
             $trivial = array('intitule', 'descriptif', 'noinvite', 'subscription_notification',
-                             'show_participants', 'accept_nonmembre', 'uid');
+                             'show_participants', 'access_control', 'uid');
             foreach ($trivial as $k) {
                 $evt[$k] = Post::v($k);
             }
+
             if (!$eid) {
                 $evt['uid'] = S::v('uid');
             }
@@ -504,18 +613,18 @@ class XnetEventsModule extends PLModule
             XDB::execute('INSERT INTO  group_events (eid, asso_id, uid, intitule, paiement_id,
                                                      descriptif, debut, fin, show_participants,
                                                      short_name, deadline_inscription, noinvite,
-                                                     accept_nonmembre, subscription_notification)
+                                                     access_control, subscription_notification)
                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})
               ON DUPLICATE KEY UPDATE  asso_id = VALUES(asso_id), uid = VALUES(uid), intitule = VALUES(intitule),
                                        paiement_id = VALUES(paiement_id), descriptif = VALUES(descriptif), debut = VALUES(debut),
                                        fin = VALUES(fin), show_participants = VALUES(show_participants), short_name = VALUES(short_name),
                                        deadline_inscription = VALUES(deadline_inscription), noinvite = VALUES(noinvite),
-                                       accept_nonmembre = VALUES(accept_nonmembre), subscription_notification = VALUES(subscription_notification)',
+                                       access_control = VALUES(access_control), subscription_notification = VALUES(subscription_notification)',
                          $evt['eid'], $evt['asso_id'], $evt['uid'],
                          $evt['intitule'], $evt['paiement_id'], $evt['descriptif'],
                          $evt['debut'], $evt['fin'], $evt['show_participants'],
                          $evt['short_name'], $evt['deadline_inscription'],
-                         $evt['noinvite'], $evt['accept_nonmembre'], $evt['subscription_notification']);
+                         $evt['noinvite'], $evt['access_control'], $evt['subscription_notification']);
 
             // if new event, get its id
             if (!$eid) {
@@ -581,7 +690,7 @@ class XnetEventsModule extends PLModule
             $res = XDB::query(
                     "SELECT  eid, intitule, descriptif, debut, fin, uid,
                              show_participants, paiement_id, short_name,
-                             deadline_inscription, noinvite, accept_nonmembre, subscription_notification
+                             deadline_inscription, noinvite, access_control, subscription_notification
                        FROM  group_events
                       WHERE eid = {?}", $eid);
             $evt = $res->fetchOneAssoc();
