@@ -49,6 +49,9 @@
 {if hasPerm('mail')}
 <div class="menu_item"><a href="emails">Mes emails</a></div>
 {/if}
+{if $smarty.session.user->hasProfile()}
+<div class="menu_item"><a href="profile/edit">Mon profil</a></div>
+{/if}
 {if hasPerm('directory_private')}
 <div class="menu_item"><a href="carnet/contacts">Mes contacts</a></div>
 <div class="menu_item"><a href="carnet">Mon carnet</a></div>
