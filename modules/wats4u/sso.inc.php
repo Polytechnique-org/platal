@@ -152,10 +152,12 @@ function wats4u_sso_v1_build_return_url($user)
     $ax_id = $profile->ax_id;
     $email = $user->forlifeEmail();
     $contributing = 1;  // TODO: Fetch actual data
+    $last_name = $profile->lastName();
+    $first_name = $profile->firstName();
 
     $signature = md5("1" . $challenge . $globals->wats4u->shared_key . $ax_id . "1");
 
-    $cleartext_data = "$challenge\n$ax_id\n$email\n$contributing";
+    $cleartext_data = "$challenge\n$ax_id\n$email\n$contributing\n$last_name\n$first_name";
     $encrypted_data = wats4u_sso_v1_encrypt_data($cleartext_data, $globals->wats4u->shared_key);
     if ($encrypted_data === false) {
         return "";
