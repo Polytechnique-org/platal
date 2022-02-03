@@ -176,12 +176,6 @@ class GMapsGeocoder extends Geocoder {
         if ($status == 'OK') {
             return $data['results'][0];
         }
-
-        // Report the error.
-        $mailer = new PlMailer('profile/geocoding.mail.tpl');
-        $mailer->assign('status', $status);
-        $mailer->assign('url', $url);
-        $mailer->send();
         return null;
     }
 
