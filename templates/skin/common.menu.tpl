@@ -48,6 +48,7 @@
 <div class="menu_title">Personnaliser</div>
 {if hasPerm('mail')}
 <div class="menu_item"><a href="emails">Mes emails</a></div>
+<div class="menu_item"><a href="googleapps">Mon compte Google</a></div>
 {/if}
 {if $smarty.session.user->hasProfile()}
 <div class="menu_item"><a href="profile/edit">Mon profil</a></div>
