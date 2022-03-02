@@ -98,6 +98,10 @@
 <div class="menu_title">Informations</div>
 <div class="menu_item"><a href="Xorg/">Documentations</a></div>
 {if hasPerm('user')}
+<div class="menu_item"><a href="nl">Lettres mensuelles</a></div>
+<div class="menu_item"><a href="comletter">Lettres de la communauté</a></div>
+<div class="menu_item"><a href="ax">Lettres de l'AX</a></div>
+<div class="menu_item"><a href="epletter">Lettres de l'École</a></div>
 <div class="menu_item"><a href="fxletter">Lettres de la FX</a></div>
 {/if}
 <div class="menu_item"><a href="Xorg/NousContacter">Nous contacter</a></div>
