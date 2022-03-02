@@ -43,9 +43,11 @@ Tu es actuellement inscrit à la {$nl->name} (pour choisir le format HTML ou tex
 <p>
 Tu n'es actuellement pas inscrit à la {$nl->name}.
 </p>
+{if $nl->maySubscribe()}
 <div class='center'>
   [<a href='{$nl->prefix()}/in'>{icon name=add} m'inscrire à la {$nl->name}</a>]
 </div>
+{/if}
 {/if}
 
 {include file="newsletter/search.tpl" nl_search_type="1" nl_search=""}

@@ -4,6 +4,9 @@ VERSION 1.1.24                                                       XX XX XXXX
         - Display the school id on profiles                                 -XEL
         - Don't notify geocoding errors, we don't care                      -XEL
 
+    * Newsletter:
+        - Disable subscription to X.org & co                                -XEL
+
     * Emails:
         - Open up access to the "lost users" page                           -XEL
         - Allow @polytechnique.edu redirection for everyone, incl. students -XEL

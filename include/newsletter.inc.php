@@ -488,7 +488,15 @@ class NewsLetter
      */
     public function maySubscribe($user = null)
     {
-        return true;
+        if (is_null($user)) {
+            $user = S::user();
+        }
+        return ! (
+            $this->group == self::GROUP_XORG
+            || $this->group == self::GROUP_COMMUNITY
+            || $this->group == self::GROUP_AX
+            || $this->group == self::GROUP_EP
+        );
     }
 
     /** Whether a given user may edit this newsletter
