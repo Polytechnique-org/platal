@@ -1,5 +1,8 @@
 VERSION 1.1.24                                                       XX XX XXXX
 
+    * XnetEvents:
+        - Users can see their subscription status to closed events          -XEL
+
     * Profiles:
         - Display the school id on profiles                                 -XEL
         - Don't notify geocoding errors, we don't care                      -XEL

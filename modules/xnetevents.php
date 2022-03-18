@@ -215,9 +215,6 @@ class XnetEventsModule extends PLModule
 
         global $globals;
 
-        if (!$evt['inscr_open']) {
-            $page->kill('Les inscriptions pour cet événement sont closes');
-        }
         if (!$evt['accept_nonmembre'] && !is_member() && !may_update()) {
             $url = $globals->asso('sub_url');
             if (empty($url)) {
@@ -240,6 +237,10 @@ class XnetEventsModule extends PLModule
         $subs = get_event_subscription($eid, S::v('uid'));
 
         if (Post::has('submit')) {
+            if (!$evt['inscr_open']) {
+                $page->kill('Les inscriptions pour cet événement sont closes');
+            }
+
             S::assert_xsrf_token();
             $moments = Post::v('moment',    array());
             $pers    = Post::v('personnes', array());
