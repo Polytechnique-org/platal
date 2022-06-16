@@ -13,6 +13,7 @@ VERSION 1.1.24                                                       XX XX XXXX
     * Emails:
         - Open up access to the "lost users" page                           -XEL
         - Allow @polytechnique.edu redirection for everyone, incl. students -XEL
+        - Don't mention newsletters in birthday emails                      -FEA
 
     * Admin:
         - Improve the help message on AX ID batch edition page              -XEL
