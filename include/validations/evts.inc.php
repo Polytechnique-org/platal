@@ -160,19 +160,6 @@ class EvtReq extends Validate
                                       SET eid = {?}, attachmime = {?}, x = {?}, y = {?}, attach = {?}",
                              XDB::insertId(), $this->imgtype, $this->imgx, $this->imgy, $this->img);
             }
-            global $globals;
-            if ($globals->banana->event_forum) {
-                require_once 'banana/forum.inc.php';
-                $banana = new ForumsBanana($this->user);
-                $post = $banana->post($globals->banana->event_forum,
-                                      $globals->banana->event_reply,
-                                      $this->titre, MiniWiki::wikiToText($this->texte, false, 0, 80));
-                if ($post != -1) {
-                    XDB::execute("UPDATE  announces
-                                     SET  creation_date = creation_date, post_id = {?}
-                                   WHERE  id = {?}", $post, $eid);
-                }
-            }
             return true;
         }
         return false;

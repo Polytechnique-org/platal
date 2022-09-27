@@ -407,19 +407,6 @@ class XnetGrpModule extends PLModule
         }
     }
 
-    function handler_forum($page, $group = null, $artid = null)
-    {
-        global $globals;
-        $page->changeTpl('xnetgrp/forum.tpl');
-        if (!$globals->asso('forum')) {
-            return PL_NOT_FOUND;
-        }
-        require_once 'banana/forum.inc.php';
-        $get = array();
-        get_banana_params($get, $globals->asso('forum'), $group, $artid);
-        run_banana($page, 'ForumsBanana', $get);
-    }
-
     function handler_annuaire($page, $action = null, $subaction = null)
     {
         global $globals;
@@ -1730,12 +1717,6 @@ class XnetGrpModule extends PLModule
                     $fulltext .= "\n\n'''Contacts :'''\\\\\n" . $art['contact_html'];
                 }
                 $post = null;
-                if ($globals->asso('forum')) {
-                    require_once 'banana/forum.inc.php';
-                    $banana = new ForumsBanana(S::user());
-                    $post = $banana->post($globals->asso('forum'), null,
-                                          $art['titre'], MiniWiki::wikiToText($fulltext, false, 0, 80));
-                }
                 XDB::query('INSERT INTO  group_announces (uid, asso_id, create_date, titre, texte, contacts,
                                                           expiration, promo_min, promo_max, flags, post_id)
                                  VALUES  ({?}, {?}, NOW(), {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',

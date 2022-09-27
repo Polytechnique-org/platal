@@ -479,42 +479,6 @@ class RegisterModule extends PLModule
                             WHERE  ni_id = {?}', $uid);
         Platal::session()->updateNbNotifs();
 
-        // Forcibly register the new user on default forums.
-        $registeredForums = array('xorg.general', 'xorg.pa.divers', 'xorg.pa.logements');
-
-        if ($isX) {
-            $promoForum = 'xorg.promo.' . strtolower($promo);
-            $exists = XDB::fetchOneCell('SELECT  COUNT(*)
-                                           FROM  forums
-                                          WHERE  name = {?}',
-                                        $promoForum);
-
-            if ($exists == 0) {
-                // Notify the newsgroup admin of the promotion forum needs be created.
-                $promoFull = new UserFilter(new UFC_Promo('=', UserFilter::DISPLAY, $promo));
-                $promoRegistered = new UserFilter(new PFC_And(
-                        new UFC_Promo('=', UserFilter::DISPLAY, $promo),
-                        new UFC_Registered(true),
-                        new PFC_Not(new UFC_Dead())
-                ));
-                if ($promoRegistered->getTotalCount() > 0.2 * $promoFull->getTotalCount()) {
-                    $mymail = new PlMailer('admin/forums-promo.mail.tpl');
-                    $mymail->assign('promo', $promo);
-                    $mymail->send();
-                }
-            } else {
-                $registeredForums[] = $promoForum;
-            }
-        }
-
-        foreach ($registeredForums as $forum) {
-            XDB::execute("INSERT INTO  forum_subs (fid, uid)
-                               SELECT  fid, {?}
-                                 FROM  forums
-                                WHERE  name = {?}",
-                         $uid, $val);
-        }
-
         // Update the global registration count stats.
         $globals->updateNbIns();
 

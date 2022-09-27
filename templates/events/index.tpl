@@ -182,11 +182,6 @@ Bienvenue {$smarty.session.user->displayName()}{if t($birthday)}
     <tr class="pair">
       <td class="half smaller">
         <div style="display:block; float: right; padding-left:1em">
-          {if $ev.post_id}
-          <a href="banana/{#globals.banana.event_reply#|default:#globals.banana.event_forum#}/read/{$ev.post_id}">
-            {icon name="comments" title="Discussion"}Suivre la discussion
-          </a> &bull;
-          {/if}
           <a href="events#pagetop">
             <img alt="Sommaire" title="Remonter tout en haut" src="images/up.png"/>
           </a>

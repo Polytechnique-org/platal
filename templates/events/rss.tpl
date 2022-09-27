@@ -25,12 +25,4 @@
 </div>
 {/if}
 <div>{if $article->wiki}{$article->texte|miniwiki}{else}{$article->texte}{/if}</div>
-{if $article->post_id neq -1}
-<div style="clear: both">
-  <br />
-  <a href="{#globals.baseurl#}/banana/{#globals.banana.event_reply#|default:#globals.banana.event_forum#}/read/{$article->post_id}">
-  {icon name=comments full=true} Suivre la discussion
-  </a>
-</div>
-{/if}
 {* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}
