@@ -109,7 +109,7 @@
 
 <p class="smaller">
 {assign var="profile" value=$smarty.session.user->profile()}
-(*) Ces adresses email te sont réservées pour une période de 100 ans après ton entrée à l'X (dans ton cas, jusqu'en {$profile->yearpromo()+100}).
+(*) Ces adresses email te sont réservées pour une période de 100 ans après ton entrée à l'X{if $profile} (dans ton cas, jusqu'en {$profile->yearpromo()+100}){/if}.
 </p>
 <p class="smaller">
 {if $aliases_other|@count}(**) {/if}
