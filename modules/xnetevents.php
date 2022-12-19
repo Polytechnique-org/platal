@@ -540,11 +540,29 @@ class XnetEventsModule extends PLModule
             }
             // request for a new payment
             if (Post::v('paiement_id') == -1 && $money_defaut >= 0) {
+                $res = XDB::query('SELECT  id
+                                     FROM  payment_bankaccounts
+                                    WHERE  asso_id = {?} AND status = \'used\'
+                                 ORDER BY  id DESC
+                                    LIMIT  1', $evt['asso_id']);
+                if ($res->numRows()) {
+                    $rib_id = (int)$res->fetchOneCell();
+                } else {
+                    $rib_id = 0;
+                }
+
                 $p = new PayReq(S::user(),
                                 $globals->asso('nom')." - ".Post::v('intitule'),
-                                Post::v('site'), $money_defaut,
-                                Post::v('confirmation'), 0, 999,
-                                $globals->asso('id'), $eid, Post::v('payment_public') == 'yes');
+                                Post::v('site'),  // $_site
+                                $money_defaut,  // $_montant
+                                Post::v('confirmation'),  // $_msg
+                                0,  // $_montantmin
+                                999,  // $_montantmax
+                                $globals->asso('id'),  // $_asso_id
+                                $eid,  // $_evt
+                                Post::v('payment_public') == 'yes',  // $_public
+                                $rib_id,  // $_rib_id
+                );
                 if ($p->accept()) {
                     $p->submit();
                 } else {

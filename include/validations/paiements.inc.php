@@ -47,7 +47,7 @@ class PayReq extends Validate
 
     public function __construct(User $_user, $_intitule, $_site, $_montant, $_msg,
                                 $_montantmin=0, $_montantmax=999, $_asso_id = 0,
-                                $_evt = 0, $_public = false, $_stamp = 0)
+                                $_evt = 0, $_public = false, $_rib_id = 0, $_stamp = 0)
     {
         parent::__construct($_user, false, 'paiements', $_stamp);
 
@@ -60,6 +60,7 @@ class PayReq extends Validate
         $this->montant_min  = $_montantmin;
         $this->montant_max  = $_montantmax;
         $this->public       = $_public;
+        $this->rib_id       = $_rib_id;
 
         if ($_asso_id) {
             $res = XDB::query("SELECT nom FROM groups WHERE id = {?}", $_asso_id);
