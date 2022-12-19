@@ -561,7 +561,7 @@ class XnetEventsModule extends PLModule
                                 $globals->asso('id'),  // $_asso_id
                                 $eid,  // $_evt
                                 Post::v('payment_public') == 'yes',  // $_public
-                                $rib_id,  // $_rib_id
+                                $rib_id  // $_rib_id
                 );
                 if ($p->accept()) {
                     $p->submit();
