@@ -10,6 +10,9 @@ VERSION 1.1.24                                                       XX XX XXXX
     * Newsletter:
         - Disable subscription to X.org & co                                -XEL
 
+    * Register:
+        - Fix sending "lost alias" emails                                   -XEL
+
     * Emails:
         - Open up access to the "lost users" page                           -XEL
         - Allow @polytechnique.edu redirection for everyone, incl. students -XEL

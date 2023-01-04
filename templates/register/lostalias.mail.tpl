@@ -20,10 +20,10 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{config_load file="mails.conf" section="inscrire"}
+{config_load file="mails.conf" section="inscription"}
 {if $mail_part eq 'head'}
 {from full=#from#}
-{from full=#cc#}
+{cc full=#cc#}
 {elseif $mail_part eq 'text'}
 Bonjour,
 
