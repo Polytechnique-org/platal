@@ -82,7 +82,7 @@
 <div class="menu_item"><a href="https://ax.polytechnique.org/">Annuaire</a></div>
 <div class="menu_item"><a href="search">Ancien annuaire</a></div>
 {if hasPerm('directory_private')}
-<div class="menu_item"><a href="jobs">Emploi &amp; Carrières</a></div>
+<div class="menu_item"><a href="https://ax.polytechnique.org/fr/page/carrieres-accueil">Emploi &amp; Carrières</a></div>
 {/if}
 {if hasPerm('groups')}
 <div class="menu_item"><a href="groupes-x">Mes groupes X</a></div>
