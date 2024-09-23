@@ -1475,7 +1475,7 @@ class Profile implements PlExportable
     {
         if (preg_match('/^EX[0-9]{6}$/', $schoolId)) {
             // New format since X2024: EX240123 for X2024 / 123
-            $year = 2000 + intval(substr($schoolId, 2, 3));
+            $year = 2000 + intval(substr($schoolId, 2, 2));
             $rank = intval(substr($schoolId, 5, 3));
         } elseif (preg_match('/^1[0-9]{5}$/', $schoolId)) {
             // X2000 => X2023: 106123 for X2006 / 123
