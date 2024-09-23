@@ -1443,36 +1443,52 @@ class Profile implements PlExportable
             return null;
         }
 
+        // Format: YYYY0NNN, where NNN is the rank
         $year = intval(substr($xorgId, 0, 4));
         $rank = intval(substr($xorgId, 5, 3));
         if ($year < 1996) {
             return null;
         } elseif ($year < 2000) {
-            $year = intval(substr(1900 - $year, 1, 3));
-            return sprintf('%02u0%03u', $year, $rank);
+            // 19960012 => 960012
+            return sprintf('%02u0%03u', $year % 100, $rank);
+        } elseif ($year < 2024) {
+            // 20060076 => 106076
+            return sprintf('%03u%03u', $year - 1900, $rank);
         } else {
-            $year = intval(substr(1900 - $year, 1, 3));
-            return sprintf('%03u%03u', $year, $rank);
+            // 20240012 => EX240012
+            return sprintf('EX%02u0%03u', $year % 100, $rank);
         }
     }
 
+    /** Parse schoolId for polytechniciens.
+     * - Pre-X1996: no schoolId support in our system
+     * - X1996-X1999: YY0NNN, e.g 990123 for X1999 / rank 123
+     * - X1999-X2023: YYYNNN, e.g 100123 for X2000 / rank 123
+     * - X2024-X????: EXYY0NNN, e.g EX240123 for X2024 / rank 123
+     *
+     * Examples:
+     * - 960123 => 19960123
+     * - 106123 => 20060123
+     * - EX240123 => 20240123
+     */
     public static function getXorgId($schoolId)
     {
-        if (!preg_match('/^[0-9]{6}$/', $schoolId)) {
+        if (preg_match('/^EX[0-9]{6}$/', $schoolId)) {
+            // New format since X2024: EX240123 for X2024 / 123
+            $year = 2000 + intval(substr($schoolId, 2, 3));
+            $rank = intval(substr($schoolId, 5, 3));
+        } elseif (preg_match('/^1[0-9]{5}$/', $schoolId)) {
+            // X2000 => X2023: 106123 for X2006 / 123
+            $year = 1900 + intval(substr($schoolId, 0, 3));
+            $rank = intval(substr($schoolId, 3, 3));
+        } elseif (preg_match('/^9[0-9]{5}$/', $schoolId)) {
+            // X1996 => X1999: 980123 for X1998 / 123
+            $year = 1900 + intval(substr($schoolId, 0, 2));
+            $rank = intval(substr($schoolId, 3, 3));
+        } else {  // Unsupported format
             return null;
         }
-
-        $year = intval(substr($schoolId, 0, 3));
-        $rank = intval(substr($schoolId, 3, 3));
-
-        if ($year > 200) {
-            $year /= 10;
-        }
-        if ($year < 96) {
-            return null;
-        } else {
-            return sprintf('%04u%04u', 1900 + $year, $rank);
-        }
+        return sprintf('%04u%04u', $year, $rank);
     }
 
     public static function field_display($field_name)
