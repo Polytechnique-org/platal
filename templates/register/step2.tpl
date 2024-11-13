@@ -46,9 +46,12 @@
     <tr class="pair">
       <td></td>
       <td>
-        6 chiffres terminant par le numéro d'entrée (ex&nbsp;: {$smarty.session.subState.schoolid_exemple}).
-        Voir sur le GU ou un bulletin de solde pour trouver cette information.<br /><br />
-        Pour les élèves étrangers voie 2, il peut être aussi du type&nbsp;: {$smarty.session.subState.schoolid_exemple_ev2}.
+        Pour les matricules créés à partir de 2024, la structure du matricules est EXYYnnnn, ou BXYYnnnn, ou MT24nnnn, XM ou XSYYnnnn.
+        <br /><br />
+        Pour les X et masters des promotions précédentes : 6 chiffres terminant par le numéro d'entrée (ex&nbsp;: {$smarty.session.subState.schoolid_exemple}).
+        Voir sur le GU ou un bulletin de solde pour trouver cette information.
+        <br /><br />
+        Pour les élèves étrangers voie 2, il peut être aussi du type&nbsp;: {$smarty.session.subState.schoolid_exemple_ev2}.<br /><br />
       </td>
     </tr>
     {/if}
