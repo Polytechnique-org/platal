@@ -39,7 +39,7 @@
         Matricule École&nbsp;:
       </td>
       <td>
-        <input type="text" size="6" maxlength="6" name="schoolid"
+        <input type="text" size="8" maxlength="8" name="schoolid"
           value="{$smarty.request.schoolid|default:$smarty.session.subState.schoolid}" />
       </td>
     </tr>
