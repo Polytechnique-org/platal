@@ -116,18 +116,20 @@ class RegisterModule extends PLModule
                         $subState->set('yearpromo', $yearpromo);
                         $subState->set('edu_type', $edu_type);
                         if ($edu_type == Profile::DEGREE_X) {
-                            if ($yearpromo >= 1996 && $yearpromo < 2000) {
-                                $subState->set('schoolid', ($yearpromo % 100) * 10 . '???');
-                                $subState->set('schoolid_exemple', ($yearpromo % 100) * 10000 + 532);
-                                $subState->set('schoolid_exemple_ev2', (($yearpromo + 1) % 100) * 10000 + 532);
-                            } elseif($yearpromo <= 2023) {  // 123532 for X2023, rank 532
-                                $subState->set('schoolid', 100 + ($yearpromo % 100) . '???');
-                                $subState->set('schoolid_exemple', (100 + ($yearpromo % 100)) * 1000 + 532);
-                                $subState->set('schoolid_exemple_ev2', (100 + (($yearpromo + 1) % 100)) * 1000 + 532);
-                            } else {  // EX240532 for X2024, rank 532
-                                $subState->set('schoolid', 'EX' . ($yearpromp % 100) . '0???');
-                                $subState->set('schoolid_exemple', 'EX' . ($yearpromo % 100) * 10000 + 532);
-                                $subState->set('schoolid_exemple_ev2', 'EX' . (($yearpromo + 1) % 100) * 10000 + 532);
+                            $yearpromo_2digits = $yearpromo % 100;
+
+                            if ($yearpromo >= 1996 && $yearpromo < 2000) {  // 960532 for X1996, rank 532
+                                $subState->set('schoolid', sprintf('%02d0532', $yearpromo_2digits));
+                                $subState->set('schoolid_exemple', sprintf('%02d0532', $yearpromo_2digits));
+                                $subState->set('schoolid_exemple_ev2', sprintf('%02d0532', $yearpromo_2digits + 1));
+                            } elseif($yearpromo >= 2000 && $yearpromo < 2024) {  // 123532 for X2023, rank 532
+                                $subState->set('schoolid', sprintf('1%02d???', $yearpromo_2digits));
+                                $subState->set('schoolid_exemple', sprintf('1%02d532', $yearpromo_2digits));
+                                $subState->set('schoolid_exemple_ev2', sprintf('1%02d532', $yearpromo_2digits + 1));
+                            } elseif ($yearpromo >= 2024) {  // EX240532 for X2024, rank 532
+                                $subState->set('schoolid', sprintf('EX%02d0???', $yearpromo_2digits));
+                                $subState->set('schoolid_exemple', sprintf('EX%02d0532', $yearpromo_2digits));
+                                $subState->set('schoolid_exemple_ev2', sprintf('EX%02d0532', $yearpromo_2digits + 1));
                             }
                         }
                     }
