@@ -120,14 +120,14 @@ class RegisterModule extends PLModule
                                 $subState->set('schoolid', ($yearpromo % 100) * 10 . '???');
                                 $subState->set('schoolid_exemple', ($yearpromo % 100) * 10000 + 532);
                                 $subState->set('schoolid_exemple_ev2', (($yearpromo + 1) % 100) * 10000 + 532);
-                            } elseif($yearpromo <= 2023) {
+                            } elseif($yearpromo <= 2023) {  // 123532 for X2023, rank 532
                                 $subState->set('schoolid', 100 + ($yearpromo % 100) . '???');
                                 $subState->set('schoolid_exemple', (100 + ($yearpromo % 100)) * 1000 + 532);
                                 $subState->set('schoolid_exemple_ev2', (100 + (($yearpromo + 1) % 100)) * 1000 + 532);
-                            } else {
-                                $subState->set('schoolid', '??????'); // Ne doit pas être vide, on simplifie // , 'EX' . ($yearpromo % 100) . '???');
-                                $subState->set('schoolid_exemple', (100 + ($yearpromo % 100)) * 1000 + 532);
-                                $subState->set('schoolid_exemple_ev2', (100 + (($yearpromo + 1) % 100)) * 1000 + 532);
+                            } else {  // EX240532 for X2024, rank 532
+                                $subState->set('schoolid', 'EX' . ($yearpromp % 100) . '0???');
+                                $subState->set('schoolid_exemple', 'EX' . ($yearpromo % 100) * 10000 + 532);
+                                $subState->set('schoolid_exemple_ev2', 'EX' . (($yearpromo + 1) % 100) * 10000 + 532);
                             }
                         }
                     }
