@@ -142,7 +142,7 @@ class RegisterModule extends PLModule
                     $subState->set('firstname', Post::t('firstname'));
                     $subState->set('lastname', Post::t('lastname'));
                     if (Post::has('schoolid')) {
-                        $subState->set('schoolid', Post::i('schoolid'));
+                        $subState->set('schoolid', Post::t('schoolid'));
                     }
                     $error = checkNewUser($subState);
 

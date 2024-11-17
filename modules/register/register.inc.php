@@ -23,9 +23,9 @@
 
 function strongCheckId($subState)
 {
-    $subState->set('xorgid', Profile::getXorgId($subState->i('schoolid')));
+    $subState->set('xorgid', Profile::getXorgId($subState->v('schoolid')));
     if (!$subState->v('xorgid')) {
-        return 'Le matricule est incorrect.';
+        return 'Le matricule est incorrect: '.$subState->v('schoolid');
     }
 
     $uf = new UserFilter(new PFC_And(
