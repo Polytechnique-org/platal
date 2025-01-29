@@ -30,7 +30,7 @@
 {/if}
 
 {if t($show_deprecation_warning)}
-  <p>L'ancien annuaire est disponible en consultation sans modification possible, tant que le nouvel annuaire ne permettra pas d'accéder aux informations réservées aux X en suivant un simple lien. Les informations qu'il contient peuvent donc ne pas être à jour.</p>
+  <p>L'ancien annuaire reste disponible ci-dessous. Les noms, prénoms et adresses e-mail à vie sont à jour. Les éventuelles autres informations (téléphone, adresse, photo, binets, parcours, CV) ne sont actuellement pas synchronisées avec l’annuaire de l’AX.</p>
 {/if}
 </fieldset>
 
