@@ -84,7 +84,7 @@ class NamesReq extends ProfileValidate
     // }}}
     // {{{ function _mail_subj()
 
-    protected function _mail_subj()
+    public function _mail_subj()
     {
         return "[Polytechnique.org/NOMS] Changement de noms";
     }
@@ -92,7 +92,7 @@ class NamesReq extends ProfileValidate
     // }}}
     // {{{ function _mail_body
 
-    protected function _mail_body($isok)
+    public function _mail_body($isok)
     {
         if ($isok) {
             $res = "  Le changement de nom que tu as demandé vient d'être effectué.";

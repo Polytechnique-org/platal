@@ -41,7 +41,7 @@ function toggleField(name, id, obj) {
 <br />
 <table class="bicol">
   <tr>
-    <th colspan="2"><a id="valid{$valid->id()}"></a>{$valid->type}</th>
+    <th colspan="2"><a id="valid{$valid->id()}"></a>Validation de type "{$valid->type}"</th>
   </tr>
   <tr>
     <td class="titre" style="width: 20%">Demandeur&nbsp;:</td>
@@ -100,6 +100,18 @@ function toggleField(name, id, obj) {
     </td>
   </tr>
   {/if}
+<tr>
+<td class="titre">Sujet du mail généré&nbsp;:</td>
+<td>{$valid->_mail_subj()}</td>
+</tr>
+<tr>
+<td class="titre">Corps du mail généré en cas d'acceptation&nbsp;:</td>
+<td>{$valid->_mail_body(true)}</td>
+</tr>
+<tr>
+<td class="titre">Corps du mail généré en cas de refus&nbsp;:</td>
+<td>{$valid->_mail_body(false)}</td>
+</tr>
   <tr onclick="toggleField('comment', '{$valid->id()}')" style="cursor: pointer">
     <th colspan='2'>
       {if $valid->comments|@count eq 0}

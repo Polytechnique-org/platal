@@ -68,7 +68,7 @@ class AccountReq extends Validate
     // }}}
     // {{{ function _mail_subj
 
-    protected function _mail_subj()
+    public function _mail_subj()
     {
         return "[Polytechnique.org] Création d'un compte Polytechnique.net";
     }
@@ -76,7 +76,7 @@ class AccountReq extends Validate
     // }}}
     // {{{ function _mail_body
 
-    protected function _mail_body($isok)
+    public function _mail_body($isok)
     {
         if ($isok) {
             return "  Un email vient d'être envoyé à {$this->email} pour que cette personne puisse activer son compte sur Polytechnique.net.";

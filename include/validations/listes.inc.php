@@ -105,7 +105,7 @@ class ListeReq extends Validate
     // }}}
     // {{{ function _mail_subj
 
-    protected function _mail_subj()
+    public function _mail_subj()
     {
         return "[Polytechnique.org/LISTES] Demande de la liste {$this->liste}@{$this->domain}";
     }
@@ -113,7 +113,7 @@ class ListeReq extends Validate
     // }}}
     // {{{ function _mail_body
 
-    protected function _mail_body($isok)
+    public function _mail_body($isok)
     {
         if ($isok) {
             return "  Suite à ta demande de création de liste de diffusion, nous avons créé l'adresse {$this->liste}@{$this->domain}, qui est maintenant à ta disposition.";

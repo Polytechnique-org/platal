@@ -56,7 +56,7 @@ class BrokenReq extends Validate
     // }}}
     // {{{ function _mail_subj
 
-    protected function _mail_subj()
+    public function _mail_subj()
     {
         return "[Polytechnique.org] Récupération de {$this->m_user->fullName()} ({$this->m_user->promo()})";
     }
@@ -64,7 +64,7 @@ class BrokenReq extends Validate
     // }}}
     // {{{ function _mail_body
 
-    protected function _mail_body($isok)
+    public function _mail_body($isok)
     {
         $your = ($this->formal ? 'votre' : 'ta');
         if ($isok && !$this->m_reactive) {

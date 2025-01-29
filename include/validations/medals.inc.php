@@ -59,7 +59,7 @@ class MedalReq extends ProfileValidate
     // }}}
     // {{{ function _mail_subj
 
-    protected function _mail_subj()
+    public function _mail_subj()
     {
         return '[Polytechnique.org/Décoration] Demande de décoration : ' . $this->medal_name();
     }
@@ -67,7 +67,7 @@ class MedalReq extends ProfileValidate
     // }}}
     // {{{ function _mail_body
 
-    protected function _mail_body($isok)
+    public function _mail_body($isok)
     {
         if ($isok) {
             return '  La décoration ' . $this->medal_name() . ' vient d\'être ajoutée à ta fiche.';

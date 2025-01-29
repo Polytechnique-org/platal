@@ -69,7 +69,7 @@ class MarkReq extends Validate
     // }}}
     // {{{ function _mail_subj
 
-    protected function _mail_subj()
+    public function _mail_subj()
     {
         return "[Polytechnique.org] Marketing de {$this->m_user->fullName()} ({$this->m_user->promo()})";
     }
@@ -77,7 +77,7 @@ class MarkReq extends Validate
     // }}}
     // {{{ function _mail_body
 
-    protected function _mail_body($isok)
+    public function _mail_body($isok)
     {
         $your1 = ($this->formal ? 'votre' : 'ton');
         $your2 = ($this->formal ? 'votre' : 'ta');

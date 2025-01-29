@@ -56,7 +56,7 @@ class BulkAccountsReq extends Validate
     // }}}
     // {{{ function _mail_subj
 
-    protected function _mail_subj()
+    public function _mail_subj()
     {
         return "[Polytechnique.org] Création de comptes Polytechnique.net";
     }
@@ -64,7 +64,7 @@ class BulkAccountsReq extends Validate
     // }}}
     // {{{ function _mail_body
 
-    protected function _mail_body($isok)
+    public function _mail_body($isok)
     {
         if ($isok) {
             return "  Un email vient d'être envoyé aux personnes concernées pour qu'elles puissent activer leur compte sur Polytechnique.net.";

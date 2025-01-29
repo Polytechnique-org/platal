@@ -63,7 +63,7 @@ class HomonymeReq extends Validate
     // }}}
     // {{{ function _mail_subj
 
-    protected function _mail_subj()
+    public function _mail_subj()
     {
         return "[Polytechnique.org/Support] "
             . ($this->warning ? "Dans une semaine : suppression de l'alias " : "Mise en place du robot")
@@ -73,7 +73,7 @@ class HomonymeReq extends Validate
     // }}}
     // {{{ function _mail_body
 
-    protected function _mail_body($isok)
+    public function _mail_body($isok)
     {
         return
 "

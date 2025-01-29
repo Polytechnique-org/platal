@@ -46,12 +46,12 @@ class GoogleAppsUnsuspendReq extends Validate
         return 'include/form.valid.gapps-unsuspend.tpl';
     }
 
-    protected function _mail_subj()
+    public function _mail_subj()
     {
         return "[Polytechnique.org] Demande de réactivation de ton compte Google Apps";
     }
 
-    protected function _mail_body($isok)
+    public function _mail_body($isok)
     {
         if (!$isok) {
             return "  La demande que tu avais faite de réactivation de compte Google Apps a été refusée.";

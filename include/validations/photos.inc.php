@@ -115,7 +115,7 @@ class PhotoReq extends ProfileValidate
     // }}}
     // {{{ function _mail_subj
 
-    protected function _mail_subj()
+    public function _mail_subj()
     {
         return "[Polytechnique.org/PHOTO] Changement de photo";
     }
@@ -123,7 +123,7 @@ class PhotoReq extends ProfileValidate
     // }}}
     // {{{ function _mail_body
 
-    protected function _mail_body($isok)
+    public function _mail_body($isok)
     {
         if ($isok) {
             return "Le changement de photo que tu as demandé vient d'être effectué.";

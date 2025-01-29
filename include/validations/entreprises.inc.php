@@ -117,7 +117,7 @@ class EntrReq extends ProfileValidate
     // }}}
     // {{{ function _mail_subj
 
-    protected function _mail_subj()
+    public function _mail_subj()
     {
         return '[Polytechnique.org/Entreprises] Demande d\'ajout d\'une entreprise';
     }
@@ -125,7 +125,7 @@ class EntrReq extends ProfileValidate
     // }}}
     // {{{ function _mail_body
 
-    protected function _mail_body($isok)
+    public function _mail_body($isok)
     {
         if ($isok) {
             return "  L'entreprise " . $this->name . " vient d'être ajoutée à ta fiche.";

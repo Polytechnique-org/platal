@@ -159,7 +159,7 @@ class PayReq extends Validate
     // }}}
     // {{{ function _mail_subj
 
-    protected function _mail_subj()
+    public function _mail_subj()
     {
         return "[Polytechnique.org/Paiments] Demande de création de paiement {$this->titre}";
     }
@@ -167,7 +167,7 @@ class PayReq extends Validate
     // }}}
     // {{{ function _mail_body
 
-    protected function _mail_body($isok)
+    public function _mail_body($isok)
     {
         if ($isok) {
             return "  Le paiement demandé pour {$this->titre} vient d'être créé.".($this->evt?" Il a bien été associé à la gestion de l'événement du groupe":"");

@@ -62,7 +62,7 @@ class OrangeReq extends ProfileValidate
     // }}}
     // {{{ function _mail_subj()
 
-    protected function _mail_subj()
+    public function _mail_subj()
     {
         return "[Polytechnique.org/ORANGE] Changement de promo de sortie";
     }
@@ -70,7 +70,7 @@ class OrangeReq extends ProfileValidate
     // }}}
     // {{{ function _mail_body
 
-    protected function _mail_body($isok)
+    public function _mail_body($isok)
     {
         if ($isok) {
             return "  La demande de changement de promotion que tu as demandée vient d'être effectuée. "

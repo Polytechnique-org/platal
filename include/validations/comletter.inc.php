@@ -43,7 +43,7 @@ class ComLReq extends NLReq
     // }}}
     // {{{ function _mail_subj
 
-    protected function _mail_subj()
+    public function _mail_subj()
     {
         return "[Polytechnique.org/LettreCommunauté] Proposition d'article dans la Lettre de la communauté";
     }

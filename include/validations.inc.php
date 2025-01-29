@@ -331,12 +331,12 @@ abstract class Validate
     // }}}
     // {{{ function _mail_body
 
-    abstract protected function _mail_body($isok);
+    abstract public function _mail_body($isok);
 
     // }}}
     // {{{ function _mail_subj
 
-    abstract protected function _mail_subj();
+    abstract public function _mail_subj();
 
     // }}}
     // {{{ function _mail_ps

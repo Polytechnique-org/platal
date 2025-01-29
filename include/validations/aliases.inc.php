@@ -58,14 +58,14 @@ class AliasReq extends Validate
     }
 
     // function _mail_subj {{{2
-    protected function _mail_subj()
+    public function _mail_subj()
     {
         global $globals;
         return "[Polytechnique.org/MELIX] Demande de l'alias {$this->alias}@{$globals->mail->alias_dom}";
     }
 
     // function _mail_body {{{2
-    protected function _mail_body($isok)
+    public function _mail_body($isok)
     {
         global $globals;
         if ($isok) {

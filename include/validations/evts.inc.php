@@ -112,7 +112,7 @@ class EvtReq extends Validate
     // }}}
     // {{{ function _mail_subj
 
-    protected function _mail_subj()
+    public function _mail_subj()
     {
         return "[Polytechnique.org/EVENEMENTS] Proposition d'événement";
     }
@@ -120,7 +120,7 @@ class EvtReq extends Validate
     // }}}
     // {{{ function _mail_body
 
-    protected function _mail_body($isok)
+    public function _mail_body($isok)
     {
         $you_have = ($this->formal ? 'vous aviez' : 'tu avais');
         if ($isok) {

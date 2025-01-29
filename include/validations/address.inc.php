@@ -93,7 +93,7 @@ class AddressReq extends ProfileValidate
     // }}}
     // {{{ function _mail_subj
 
-    protected function _mail_subj()
+    public function _mail_subj()
     {
         return '[Polytechnique.org/Adresse] Demande d\'amélioration de la localisation d\'une adresse';
     }
@@ -101,7 +101,7 @@ class AddressReq extends ProfileValidate
     // }}}
     // {{{ function _mail_body
 
-    protected function _mail_body($isok)
+    public function _mail_body($isok)
     {
         if ($isok) {
             return "  Nous avons réussi à mieux localiser l'adresse suivante :\n{$this->given_text}.";
