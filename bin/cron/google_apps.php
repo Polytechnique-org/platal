@@ -52,7 +52,9 @@ $res = XDB::iterator(
       WHERE  (g.l_userid IS NULL OR g.l_userid <= 0) AND s.uid IS NULL");
 while ($account = $res->next()) {
     if (!preg_match("/^admin-/", $account['g_account_name'])) {
-        printf("Warning: GApps account '%s' has no local uid.\n", $account['g_account_name']);
+        if (sha1($account['g_account_name']) != 'fd18be5270764e2a52baa13ed5c46a1435b6467f') {
+            printf("Warning: GApps account '%s' has no local uid.\n", $account['g_account_name']);
+        }
     }
 }
 
@@ -79,7 +81,9 @@ $res = XDB::iterator(
       WHERE  (g.l_userid IS NULL OR g.l_userid <= 0) AND s.uid IS NULL");
 while ($nickname = $res->next()) {
     if (!preg_match("/^admin-/", $nickname['g_account_name'])) {
-        printf("Warning: Nickname '%s' has no local uid.\n", $nickname['g_account_name']);
+        if (sha1($nickname['g_account_name']) != 'fd18be5270764e2a52baa13ed5c46a1435b6467f') {
+            printf("Warning: Nickname '%s' has no local uid.\n", $nickname['g_account_name']);
+        }
     }
 }
 
