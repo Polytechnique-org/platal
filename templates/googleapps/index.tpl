@@ -34,11 +34,12 @@
 <p>Tu peux créer ce compte indépendant <em>Google Apps pour Polytechnique.org</em> en utilisant le
   formulaire ci-dessous.
 </p>
+{/if}
+
 <p><strong>Attention&nbsp;:</strong> ce compte Google Apps est hébergé par <em>Google</em>, et non
   par Polytechnique.org. Nous te déconseillons d'y conserver des informations
   confidentielles ou sensibles&nbsp;!<br />&nbsp;
 </p>
-{/if}
 
 <table class="bicol" id="create">
   <col width="8%" />
