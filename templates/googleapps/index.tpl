@@ -29,6 +29,11 @@
   sur ton adresse Polytechnique.org habituelle (<a href="Xorg/GoogleApps">en savoir plus</a>).
 </p>
 
+<p><strong>Note&nbsp;:</strong> Le service Google Drive inclus dans Google Apps pour Polytechnique.org est limité à
+  une capacité maximale de <strong>100 Go</strong>. Au-delà de cette limite, tu ne pourras plus ajouter de fichiers
+  sur ton compte Google Apps.
+</p>
+
 {if !$account->g_status}
 {if !$has_password_sync}
 <p>Tu peux créer ce compte indépendant <em>Google Apps pour Polytechnique.org</em> en utilisant le
