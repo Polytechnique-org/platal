@@ -48,13 +48,13 @@ class GoogleAppsUnsuspendReq extends Validate
 
     public function _mail_subj()
     {
-        return "[Polytechnique.org] Demande de réactivation de ton compte Google Apps";
+        return "[Polytechnique.org] Demande de réactivation de ton compte Google Workspace";
     }
 
     public function _mail_body($isok)
     {
         if (!$isok) {
-            return "  La demande que tu avais faite de réactivation de compte Google Apps a été refusée.";
+            return "  La demande que tu avais faite de réactivation de compte Google Workspace a été refusée.";
         }
     }
 

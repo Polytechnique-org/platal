@@ -45,7 +45,7 @@ class ReminderGapps extends Reminder
     }
     public function title()
     {
-        return "Création d'un compte Google Apps";
+        return "Création d'un compte Google Workspace";
     }
     public function info()
     {

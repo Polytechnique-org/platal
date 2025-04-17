@@ -67,7 +67,7 @@
 <div class="menu_item"><a href="https://forum.polytechnique.org/">Forums &amp; PA</a></div>
 {/if}
 {if $smarty.session.user->googleapps}
-<div class="menu_item"><a href="http://gmail.polytechnique.org/">Emails Google Apps</a></div>
+<div class="menu_item"><a href="http://gmail.polytechnique.org/">Emails Google Workspace</a></div>
 {/if}
 {if hasPerm('user')}
 <div class="menu_item"><a href="lists">Listes de diffusion</a></div>

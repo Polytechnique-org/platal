@@ -25,18 +25,18 @@
 {from full=#from#}
 {to addr=$email}
 {cc full=#cc#}
-{subject text="[Polytechnique.org] Création de ton compte Google Apps"}
+{subject text="[Polytechnique.org] Création de ton compte Google Workspace"}
 {elseif $mail_part eq 'wiki'}
 {if $sexe}Chère{else}Cher{/if} {$prenom},
 
-Ton compte Google Apps pour Polytechnique.org vient d'être crée.
+Ton compte Google Workspace pour Polytechnique.org vient d'être crée.
 
-Tu peux accèder aux services offerts par Google Apps aux adresses suivantes:
-* [[http://google.polytechnique.org/|iGoogle, le portail des services Google Apps]] ;
+Tu peux accèder aux services offerts par Google Workspace aux adresses suivantes:
+* [[http://google.polytechnique.org/|iGoogle, le portail des services Google Workspace]] ;
 {if $account->activate_mail_redirection}
-* [[https://mail.google.com/a/{$googleapps_domain}/|GMail, pour accéder à tes emails Polytechnique.org]] ;
+* [[https://mail.google.com/a/{$googleapps_domain}/|Gmail, pour accéder à tes emails Polytechnique.org]] ;
 {/if}
-* [[https://www.polytechnique.org/googleapps|Polytechnique.org, pour modifier les préférences de ton compte Google Apps]].
+* [[https://www.polytechnique.org/googleapps|Polytechnique.org, pour modifier les préférences de ton compte Google Workspace]].
 
 Ton nom d'utilisateur pour ces services Google est '''{$account->g_account_name}'''
 {if $account->sync_password}

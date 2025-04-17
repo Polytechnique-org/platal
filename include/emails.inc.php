@@ -476,7 +476,7 @@ class Email
     // Shortname to realname mapping for known mail storage backends.
     static private $display_names = array(
         'imap'       => 'Accès de secours aux emails (IMAP)',
-        'googleapps' => 'Compte Google Apps',
+        'googleapps' => 'Compte Google Workspace',
     );
     static private $storage_domains = array(
         'imap'       => 'imap',

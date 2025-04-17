@@ -41,7 +41,7 @@ class GoogleAppsModule extends PLModule
         require_once 'emails.inc.php';
         require_once 'googleapps.inc.php';
         $page->changeTpl('googleapps/index.tpl');
-        $page->setTitle('Compte Google Apps');
+        $page->setTitle('Compte Google Workspace');
 
         $user = S::user();
         $account = new GoogleAppsAccount($user);
@@ -87,9 +87,9 @@ class GoogleAppsModule extends PLModule
                 } else {
                     if (!$redirect_active || $redirect->modify_one_email($gapps_email, false) == SUCCESS) {
                         $account->suspend();
-                        $page->trigSuccess("Ton compte Google Apps est dorénavant désactivé.");
+                        $page->trigSuccess("Ton compte Google Workspace est dorénavant désactivé.");
                     } else {
-                        $page->trigError("Ton compte Google Apps est ta seule adresse de redirection. Ton compte ne peux pas être désactivé.");
+                        $page->trigError("Ton compte Google Workspace est ta seule adresse de redirection. Ton compte ne peux pas être désactivé.");
                     }
                 }
             } elseif ($action == 'unsuspend' && Post::has('unsuspend') && $account->suspended()) {
@@ -113,7 +113,7 @@ class GoogleAppsModule extends PLModule
                 }
 
                 $account->create($password_sync, $password, $redirect_mails);
-                $page->trigSuccess("La demande de création de ton compte Google Apps a bien été enregistrée.");
+                $page->trigSuccess("La demande de création de ton compte Google Workspace a bien été enregistrée.");
             }
         }
 
@@ -123,7 +123,7 @@ class GoogleAppsModule extends PLModule
     function handler_admin($page, $action = null) {
         require_once 'googleapps.inc.php';
         $page->changeTpl('googleapps/admin.tpl');
-        $page->setTitle('Administration Google Apps');
+        $page->setTitle('Administration Google Workspace');
         $page->assign('googleapps_admin', GoogleAppsAccount::is_administrator(S::v('uid')));
 
         if ($action == 'ack') {
@@ -169,7 +169,7 @@ class GoogleAppsModule extends PLModule
     function handler_admin_job($page, $job = null) {
         require_once 'googleapps.inc.php';
         $page->changeTpl('googleapps/admin.job.tpl');
-        $page->setTitle('Administration Google Apps');
+        $page->setTitle('Administration Google Workspace');
         $page->assign('googleapps_admin', GoogleAppsAccount::is_administrator(S::v('uid')));
 
         if ($job) {
@@ -189,7 +189,7 @@ class GoogleAppsModule extends PLModule
         require_once 'emails.inc.php';
         require_once 'googleapps.inc.php';
         $page->changeTpl('googleapps/admin.user.tpl');
-        $page->setTitle('Administration Google Apps');
+        $page->setTitle('Administration Google Workspace');
         $page->assign('googleapps_admin', GoogleAppsAccount::is_administrator(S::v('uid')));
 
         if (!$user && Post::has('login')) {
