@@ -34,17 +34,17 @@
   sur ton compte Google Workspace.
 </p>
 
+<p><strong>Attention&nbsp;:</strong> ce compte Google Workspace est hébergé par <em>Google</em>, et non
+  par Polytechnique.org. Nous te déconseillons d'y conserver des informations
+  confidentielles ou sensibles&nbsp;!<br />&nbsp;
+</p>
+
 {if !$account->g_status}
 {if !$has_password_sync}
 <p>Tu peux créer ce compte indépendant <em>Google Workspace pour Polytechnique.org</em> en utilisant le
   formulaire ci-dessous.
 </p>
 {/if}
-
-<p><strong>Attention&nbsp;:</strong> ce compte Google Workspace est hébergé par <em>Google</em>, et non
-  par Polytechnique.org. Nous te déconseillons d'y conserver des informations
-  confidentielles ou sensibles&nbsp;!<br />&nbsp;
-</p>
 
 <table class="bicol" id="create">
   <col width="8%" />
