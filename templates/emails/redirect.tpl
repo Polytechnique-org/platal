@@ -58,6 +58,8 @@
     passe par nos serveurs. Ceci arrive lorsque tu écris à un camarade sur son adresse {#globals.mail.domain#} ou
     {#globals.mail.domain2#}, ou lorsque tu utilises notre
     <a href="Xorg/SMTPSecurise">service d'envoi d'email SMTP sécurisé</a>.
+    <strong>Il est maintenant fortement déconseillé d'utiliser la réécriture de l'émetteur car les contrôles anti-usurpation 
+    renforcés risquent de mettre en spam ou de rejeter vos mails. Décocher cette réécriture si elle avait été sélectionnée. </strong>
   </p>
 
   <script type="text/javascript">//<![CDATA[
