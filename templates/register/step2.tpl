@@ -73,7 +73,7 @@
         Prénom
       </td>
       <td>
-        <input type="text" size="15" maxlength="20" name="firstname" value="{$smarty.request.firstname}" />
+        <input type="text" size="15" maxlength="30" name="firstname" value="{$smarty.request.firstname}" />
       </td>
     </tr>
     <tr>
