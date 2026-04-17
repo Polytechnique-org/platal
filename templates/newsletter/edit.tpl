@@ -191,7 +191,7 @@
             {if $smarty.request.edu_type eq #UserFilter::GRADE_MST#}(Master et MSc&amp;T&ge;2019){/if}
             {if $smarty.request.edu_type eq #UserFilter::GRADE_PHD#}(Docteur){/if}
             {if $smarty.request.edu_type eq #UserFilter::GRADE_BAC#}(Bachelor){/if}
-            {if $smarty.request.edu_type eq #UserFilter::GRADE_EXE#}(Executive Education){/if}
+            {if $smarty.request.edu_type eq #UserFilter::GRADE_EXE#}(Executive Master){/if}
             {if $smarty.request.edu_type eq #UserFilter::GRADE_GRD#}(Graduate Degree&le;2018){/if}
             {if $smarty.request.edu_type eq #UserFilter::GRADE_MSP#}(Master Spécialis&eacute;){/if}
           {/if}

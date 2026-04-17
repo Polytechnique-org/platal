@@ -73,7 +73,7 @@ class MarketingModule extends PLModule
             'master' => array('description' => "Masters de l'X"),
             'phd'    => array('description' => "Docteurs de l'X"),
             'bachelor' => array('description' => "Bachelors de l'X"),
-            'executive' => array('description' => "Executive Educations de l'X"),
+            'executive' => array('description' => "Executive Masters de l'X"),
             'graduate' => array('description' => "Graduate Degrees de l'X"),
             'masterspe' => array('description' => "Masters spécialisés de l'X"),
         );

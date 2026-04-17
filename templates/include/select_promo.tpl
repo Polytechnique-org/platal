@@ -34,7 +34,7 @@
   <option value="{#UserFilter::GRADE_MST#}" {if $promo_data.$edu_type eq #UserFilter::GRADE_MST#}selected="selected"{/if}>Master et MSc&amp;T&ge;2019</option>
   <option value="{#UserFilter::GRADE_PHD#}" {if $promo_data.$edu_type eq #UserFilter::GRADE_PHD#}selected="selected"{/if}>Docteur</option>
   <option value="{#UserFilter::GRADE_BAC#}" {if $promo_data.$edu_type eq #UserFilter::GRADE_BAC#}selected="selected"{/if}>Bachelor</option>
-  <option value="{#UserFilter::GRADE_EXE#}" {if $promo_data.$edu_type eq #UserFilter::GRADE_EXE#}selected="selected"{/if}>Executive Education</option>
+  <option value="{#UserFilter::GRADE_EXE#}" {if $promo_data.$edu_type eq #UserFilter::GRADE_EXE#}selected="selected"{/if}>Executive Master</option>
   <option value="{#UserFilter::GRADE_GRD#}" {if $promo_data.$edu_type eq #UserFilter::GRADE_GRD#}selected="selected"{/if}>Graduate Degree &le; 2018</option>
   {* <option value="{#UserFilter::GRADE_MSP#}" {if $promo_data.$edu_type eq #UserFilter::GRADE_MSP#}selected="selected"{/if}>Master Sp&eacute;cialis&eacute;</option> *}
 </select>
