@@ -48,7 +48,7 @@ class Profile implements PlExportable
     const DEGREE_M = 'Master';
     const DEGREE_D = 'Doctorat';
     const DEGREE_B = 'Bachelor';
-    const DEGREE_E = 'Executive Education';
+    const DEGREE_E = 'Executive Master';
     const DEGREE_G = 'Graduate Degree';
     const DEGREE_S = 'Master spécialisé';
 
