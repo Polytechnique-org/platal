@@ -772,7 +772,7 @@ class ProfileModule extends PLModule
     }
     function handler_admin_education_degree($page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Niveau de formation');
-        $page->assign('title', 'Gestion des niveau de formation');
+        $page->assign('title', 'Gestion des niveau de formation -- ATTENTION les intitulés doivent impérativement correspondre à ceux apparaissant dans le code PHP');
         $table_editor = new PLTableEditor('admin/education_degree', 'profile_education_degree_enum', 'id');
         $table_editor->add_join_table('profile_education_degree', 'degreeid', true);
         $table_editor->add_join_table('profile_education', 'degreeid', true);
