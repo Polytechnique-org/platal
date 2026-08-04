@@ -970,7 +970,7 @@ class Profile implements PlExportable
         }
     }
 
-    /* Languades */
+    /* Languages */
     private $languages = null;
     public function setLanguages(ProfileLanguages $languages)
     {
@@ -1135,7 +1135,7 @@ class Profile implements PlExportable
         $lastname   = mb_strtoupper($lastname);
         $firstname  = mb_strtoupper($firstname);
 
-        $isOk  = (mb_strtoupper($_firstname) == mb_strtoupper($firstname));
+        $isOk  = ($_firstname == $firstname);
         $tokens = preg_split("/[ \-']/", $lastname, -1, PREG_SPLIT_NO_EMPTY);
         $maxlen = 0;
 
@@ -1144,7 +1144,7 @@ class Profile implements PlExportable
             $maxlen = max($maxlen, strlen($str));
         }
 
-        return ($isOk && ($maxlen > 2 || $maxlen == strlen($_lastname)));
+        return ($isOk && ($maxlen > 2 || $maxlen == strlen($_lastname) || $_lastname == $lastname));
     }
 
     /* Export to JSON
