@@ -213,7 +213,7 @@ class MinificheView extends MixedView
     public function __construct(PlSet $set, array $params)
     {
         global $globals;
-        $this->entriesPerPage = $globals->search->per_page;
+        $this->entriesPerPage = Env::has('per_page') ? Env::i('per_page') : $globals->search->per_page;
         if (@$params['with_score']) {
             $this->addSort(new PlViewOrder('score', array(
                     new UFO_Score(true),
