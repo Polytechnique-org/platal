@@ -21,8 +21,8 @@
 {**************************************************************************}
 
 <div style="margin-bottom: 0.5em">
-  Polytechnique.org te fournit un compte Google Apps qui te permet
-  de disposer des applications web de Google (GMail, Google Calendar,
+  Polytechnique.org te fournit un compte Google Workspace (ex Google Apps) qui te permet
+  de disposer des applications web de Google (Gmail, Google Calendar,
   Google Docs, et bien d'autres) sur ton adresse Polytechnique.org
   habituelle (en savoir plus).
 </div>

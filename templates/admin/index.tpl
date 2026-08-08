@@ -120,7 +120,7 @@
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/account/watch">Administrateurs/Désactivations</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/googleapps">Google Apps</a>
+      <a href="admin/googleapps">Google Workspace</a>
     </td>
   </tr>
   <tr class="impair">

@@ -109,7 +109,7 @@ class NamesReq extends ProfileValidate
                     require_once 'googleapps.inc.php';
                     $account = new GoogleAppsAccount($this->profileOwner);
                     if ($account->active()) {
-                        $res .= "\n\n  Si tu utilises Google Apps, tu peux changer ton nom d'usage sur https://mail.google.com/a/polytechnique.org/#settings/accounts.";
+                        $res .= "\n\n  Si tu utilises Google Workspace, tu peux changer ton nom d'usage sur https://mail.google.com/a/polytechnique.org/#settings/accounts.";
                     }
                 }
             }

@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Compte Google Apps</h1>
+<h1>Compte Google Workspace</h1>
 
 {if $account && $account->provisioned()}
 {assign var=a value=$account}
@@ -43,7 +43,7 @@
     <td class="titre">Statut du compte</td>
     <td>
       <strong>{$a->g_status}</strong>
-      {if $admin_account}<br /><strong>Compte administrateur de Google Apps</strong>{/if}
+      {if $admin_account}<br /><strong>Compte administrateur de Google Workspace</strong>{/if}
     </td>
   </tr>
   {if $a->suspended()}
@@ -142,11 +142,11 @@
   {/iterate}
 </table>
 {elseif $account}
-<p><strong>Cet utilisateur n'a pas de compte Google Apps.</strong></p>
+<p><strong>Cet utilisateur n'a pas de compte Google Workspace.</strong></p>
 {else}
 <p><strong>Aucun utilisateur n'a été trouvé.</strong></p>
 {/if}
 
-<p>Retourner à la <a href="admin/googleapps">page d'administration de Google Apps</a>.</p>
+<p>Retourner à la <a href="admin/googleapps">page d'administration de Google Workspace</a>.</p>
 
 {* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

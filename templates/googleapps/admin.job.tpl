@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Requête de la queue Google Apps</h1>
+<h1>Requête de la queue Google Workspace</h1>
 
 {if $job}
 <table class="bicol">
@@ -81,6 +81,6 @@
 <p><strong>Aucune requête n'a été trouvée.</strong></p>
 {/if}
 
-<p>Retourner à la <a href="admin/googleapps">page d'administration de Google Apps</a>.</p>
+<p>Retourner à la <a href="admin/googleapps">page d'administration de Google Workspace</a>.</p>
 
 {* vim:set et sw=2 sts=2 sws=2 fenc=utf-8: *}

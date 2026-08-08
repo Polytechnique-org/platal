@@ -25,11 +25,11 @@
 {from full=#from#}
 {to addr=$email}
 {cc full=#cc#}
-{subject text="[Polytechnique.org] Réactivation de ton compte Google Apps"}
+{subject text="[Polytechnique.org] Réactivation de ton compte Google Workspace"}
 {elseif $mail_part eq 'wiki'}
 {if $sexe}Chère{else}Cher{/if} {$prenom},
 
-Ton compte Google Apps pour Polytechnique.org vient d'être réactivé.\\
+Ton compte Google Workspace pour Polytechnique.org vient d'être réactivé.\\
 Ton nom d'utilisateur pour ces services Google est '''{$account->g_account_name}'''
 {if $account->sync_password}
 et ton mot de passe est celui de Polytechnique.org.

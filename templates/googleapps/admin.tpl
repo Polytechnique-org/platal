@@ -25,7 +25,7 @@
 <form method="post" action="admin/googleapps/user">
 <table class="tinybicol" cellspacing="0" cellpadding="2">
   <tr>
-    <th>Administrer un utilisateur (Google Apps)</th>
+    <th>Administrer un utilisateur (Google Workspace)</th>
   </tr>
   <tr>
     <td class="center"><input type="text" name="login" size="40" maxlength="255" value="" /></td>
@@ -36,11 +36,11 @@
 </table>
 </form>
 
-<h1>Queue de requêtes vers Google Apps</h1>
+<h1>Queue de requêtes vers Google Workspace</h1>
 
 <p>
   Requête nécessitant <a href="Equipe/Infra-GoogleApps#admin-cli">l'intervention manuelle</a>
-  d'un administrateur Google Apps {if $googleapps_admin}(tu en es un){/if}&nbsp;:
+  d'un administrateur Google Workspace {if $googleapps_admin}(tu en es un){/if}&nbsp;:
 </p>
 <table class="bicol" style="text-align: center">
   <tr>
@@ -85,21 +85,21 @@
   {/iterate}
 </table>
 
-<h1>Statistiques d'utilisation de Google Apps</h1>
+<h1>Statistiques d'utilisation de Google Workspace</h1>
 
 <div style="text-align: center">
-  <img src="images/googleapps/activity-monthly.png" alt="Activité Google Apps - 1 mois" width="500" height="250" />
-  <br /><em>Utilisation des comptes Google Apps sur les 31 derniers jours</em>.
+  <img src="images/googleapps/activity-monthly.png" alt="Activité Google Workspace - 1 mois" width="500" height="250" />
+  <br /><em>Utilisation des comptes Google Workspace sur les 31 derniers jours</em>.
 </div>
 
 <div style="text-align: center">
-  <img src="images/googleapps/activity-yearly.png" alt="Activité Google Apps - 1 an" width="500" height="250" />
+  <img src="images/googleapps/activity-yearly.png" alt="Activité Google Workspace - 1 an" width="500" height="250" />
   <br /><em>Utilisation disque des comptes sur les 12 derniers mois</em>.
 </div>
 
 <div style="text-align: center">
   <img src="images/googleapps/usage-monthly.png" alt="Utilisation disque - 1 mois" width="500" height="250" />
-  <br /><em>Utilisation des comptes Google Apps sur les 31 derniers jours</em>.
+  <br /><em>Utilisation des comptes Google Workspace sur les 31 derniers jours</em>.
 </div>
 
 <div style="text-align: center">

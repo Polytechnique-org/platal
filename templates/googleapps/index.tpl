@@ -20,23 +20,29 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Ton compte Google Apps pour Polytechnique.org</h1>
+<h1>Ton compte Google Workspace pour Polytechnique.org</h1>
 
-<p>Polytechnique.org te fournit un compte <strong>Google Apps</strong> qui te permet de disposer
-  des applications web de Google (<a href="http://mail.google.com/a/polytechnique.org/">GMail</a>,
+<p>Polytechnique.org te fournit un compte <strong>Google Workspace</strong> (ex <strong>Google Apps</strong>) qui te
+  permet de disposer des applications web de Google (<a href="http://mail.google.com/a/polytechnique.org/">Gmail</a>,
   <a href="http://www.google.com/calendar/hosted/polytechnique.org/">Google Calendar</a>,
   <a href="http://docs.google.com/a/polytechnique.org/">Google Docs</a>, et bien d'autres)
   sur ton adresse Polytechnique.org habituelle (<a href="Xorg/GoogleApps">en savoir plus</a>).
 </p>
 
-{if !$account->g_status}
-{if !$has_password_sync}
-<p>Tu peux créer ce compte indépendant <em>Google Apps pour Polytechnique.org</em> en utilisant le
-  formulaire ci-dessous.
+<p><strong>Note&nbsp;:</strong> Le service Google Drive inclus dans Google Workspace pour Polytechnique.org est limité à
+  une capacité maximale de <strong>100 Go</strong>. Au-delà de cette limite, tu ne pourras plus ajouter de fichiers
+  sur ton compte Google Workspace.
 </p>
-<p><strong>Attention&nbsp;:</strong> ce compte Google Apps est hébergé par <em>Google</em>, et non
+
+<p><strong>Attention&nbsp;:</strong> ce compte Google Workspace est hébergé par <em>Google</em>, et non
   par Polytechnique.org. Nous te déconseillons d'y conserver des informations
   confidentielles ou sensibles&nbsp;!<br />&nbsp;
+</p>
+
+{if !$account->g_status}
+{if !$has_password_sync}
+<p>Tu peux créer ce compte indépendant <em>Google Workspace pour Polytechnique.org</em> en utilisant le
+  formulaire ci-dessous.
 </p>
 {/if}
 
@@ -44,7 +50,7 @@
   <col width="8%" />
   <col width="92%" />
   <tr>
-    <th colspan="2">Création de ton compte Google Apps</th>
+    <th colspan="2">Création de ton compte Google Workspace</th>
   </tr>
 
   {if !$has_password_sync}
@@ -57,9 +63,9 @@
         <input type="radio" name="password_sync" value="1" checked="checked" id="pwsync_true" />
       </td>
       <td>
-        <label for="pwsync_true">Utiliser ton mot de passe Polytechnique.org pour ton compte Google Apps.</label><br />
+        <label for="pwsync_true">Utiliser ton mot de passe Polytechnique.org pour ton compte Google Workspace.</label><br />
         <span style="font-size: smaller; font-style: italic;">
-          Les futurs changements de ton mot de passe seront répercutés sur ton compte Google Apps.
+          Les futurs changements de ton mot de passe seront répercutés sur ton compte Google Workspace.
         </span><br />
         <span style="font-size: smaller; font-weight: bold;">
           Réglage recommandé par Polytechnique.org.
@@ -71,7 +77,7 @@
         <input type="radio" name="password_sync" value="0" id="pwsync_false" />
       </td>
       <td>
-        <label for="pwsync_false">Utiliser un nouveau mot de passe pour ton compte Google Apps.</label>
+        <label for="pwsync_false">Utiliser un nouveau mot de passe pour ton compte Google Workspace.</label>
       </td>
     </tr>
     <tr class="impair">
@@ -88,14 +94,14 @@
       <tr class="impair">
         <td></td>
         <td>
-          Tu as choisi d'avoir le même mot de passe pour Google Apps et Polytechnique.org.<br />
+          Tu as choisi d'avoir le même mot de passe pour Google Workspace et Polytechnique.org.<br />
           Tu peux encore choisir d'utiliser des <a href="googleapps/create?password_sync=0">mots de passe différents</a>.
         </td>
       </tr>
     {else}
       <tr class="impair">
         <td></td>
-        <td>Tu as choisi d'avoir un nouveau mot de passe pour ton compte Google Apps&nbsp;:</td>
+        <td>Tu as choisi d'avoir un nouveau mot de passe pour ton compte Google Workspace&nbsp;:</td>
       </tr>
       <tr class="impair">
         <td colspan="2">
@@ -135,12 +141,12 @@
         <input type="radio" name="redirect_mails" value="1" checked="checked" id="redirection_true" />
       </td>
       <td>
-        <label for="redirection_true">Ajouter une redirection de mes emails vers mon compte Google Apps.</label><br />
+        <label for="redirection_true">Ajouter une redirection de mes emails vers mon compte Google Workspace.</label><br />
         <span style="font-size: smaller;">
           Tes <em>Polytechnique.org</em> seront redirigés vers ton nouveau webmail, en plus de tes redirections actuelles.<br /><br />
-          <strong>Attention&nbsp;: ton compte Google Apps est hébergé par <em>Google</em>.</strong><br />
+          <strong>Attention&nbsp;: ton compte Google Workspace est hébergé par <em>Google</em>.</strong><br />
           Si tu utilises tes adresses <em>Polytechnique.org</em> pour des communications confidentielles ou dans un cadre professionnel,
-          nous te déconseillons donc de rediriger tes emails vers Google Apps.
+          nous te déconseillons donc de rediriger tes emails vers Google Workspace.
         </span>
       </td>
     </tr>
@@ -152,9 +158,9 @@
         <input type="radio" name="redirect_mails" value="0" id="redirection_false" />
       </td>
       <td>
-        <label for="redirection_false">Ne <i>pas</i> rediriger mes emails vers mon compte Google Apps.</label><br />
+        <label for="redirection_false">Ne <i>pas</i> rediriger mes emails vers mon compte Google Workspace.</label><br />
         <span style="font-size: smaller;">
-          Tu ne pourras pas lire tes emails dans ton nouveau webmail Google Apps.<br />
+          Tu ne pourras pas lire tes emails dans ton nouveau webmail Google Workspace.<br />
           <strong>Ce réglage n'est pas recommandé par Polytechnique.org.</strong>
         </span>
       </td>
@@ -165,7 +171,7 @@
     </tr>
     <tr class="impair">
       <td></td>
-      <td>La mise en place du compte Google Apps prend quelques minutes. Tu recevras un email explicatif dès l'opération terminée.</td>
+      <td>La mise en place du compte Google Workspace prend quelques minutes. Tu recevras un email explicatif dès l'opération terminée.</td>
     </tr>
     <tr class="impair">
       <td colspan="2" style="text-align:center">
@@ -190,7 +196,7 @@
   </tr>
   <tr class="impair">
     <td>
-      Ton compte Google Apps est en cours de création.<br />
+      Ton compte Google Workspace est en cours de création.<br />
       Tu recevras un email dès que l'opération sera terminée.
     </td>
   </tr>
@@ -204,7 +210,7 @@
   </tr>
   <tr class="impair">
     <td>
-      Ton compte Google Apps est en cours de suppression.
+      Ton compte Google Workspace est en cours de suppression.
     </td>
   </tr>
 </table>
@@ -217,7 +223,7 @@
   </tr>
   <tr class="impair">
     <td>
-      Ton compte Google Apps est actuellement <b>désactivé</b>. Tu ne reçois donc plus aucun
+      Ton compte Google Workspace est actuellement <b>désactivé</b>. Tu ne reçois donc plus aucun
       message sur ce compte.
     </td>
   </tr>
@@ -231,7 +237,7 @@
   {elseif !$account->suspended() and $account->pending_update_suspension}
   <tr class="pair">
     <td>
-      Les opérations de désactivation de ton compte Google Apps ne sont pas terminées, tu ne peux donc pas encore demander sa réactivation.
+      Les opérations de désactivation de ton compte Google Workspace ne sont pas terminées, tu ne peux donc pas encore demander sa réactivation.
     </td>
   </tr>
   {else}
@@ -250,12 +256,12 @@
       <div class="center">
         <form action="googleapps/unsuspend" method="post">
           <input type="hidden" name="redirect_mails" value="1" />
-          <input type="submit" name="unsuspend" value="Réactiver mon compte Google Apps et y rediriger mes emails" />
+          <input type="submit" name="unsuspend" value="Réactiver mon compte Google Workspace et y rediriger mes emails" />
         </form>
         <br />
         <form action="googleapps/unsuspend" method="post">
           <input type="hidden" name="redirect_mails" value="0" />
-          <input type="submit" name="unsuspend" value="Réactiver mon compte Google Apps et ne pas y rediriger mes emails" />
+          <input type="submit" name="unsuspend" value="Réactiver mon compte Google Workspace et ne pas y rediriger mes emails" />
         </form>
       </div><br />
       Tu pourras toujours <a href="emails/redirect">changer la redirection de tes emails</a> plus tard.
@@ -270,7 +276,7 @@
   <li>Soit en passant par la <a href="http://google.polytechnique.org/">la page d'accueil Google de Polytechnique.org</a>&nbsp;;</li>
   <li>Soit en utilisant directement les différents services&nbsp;:
     <ul>
-      <li>Pour tes emails, sur le <a href="http://mail.google.com/a/polytechnique.org/">GMail de Polytechnique.org</a>&nbsp;;</li>
+      <li>Pour tes emails, sur le <a href="http://mail.google.com/a/polytechnique.org/">Gmail de Polytechnique.org</a>&nbsp;;</li>
       <li>Pour ton calendrier, sur <a href="http://www.google.com/calendar/hosted/polytechnique.org/">Google Calendar</a>&nbsp;;</li>
       <li>Pour tes documents, sur <a href="http://docs.google.com/a/polytechnique.org/">Google Docs</a>.</li>
     </ul>
@@ -293,7 +299,7 @@
   <tr class="impair">
     <td class="middle">{icon name=error}</td>
     <td class="smaller">
-      Ta seule adresse de redirection de tes emails est celle de ton compte Google Apps.<br />
+      Ta seule adresse de redirection de tes emails est celle de ton compte Google Workspace.<br />
       Si tu souhaites désactiver celui-ci, tu dois d'abord <a href="emails/redirect">ajouter une nouvelle adresse de redirection</a>.
     </td>
   </tr>
@@ -304,7 +310,7 @@
       <div class="center">
         <form action="googleapps/suspend" method="post">
           {xsrf_token_field}
-          <input type="submit" name="suspend" value="Désactiver mon compte Google Apps" />
+          <input type="submit" name="suspend" value="Désactiver mon compte Google Workspace" />
         </form>
       </div>
     </td>
@@ -312,7 +318,7 @@
   <tr class="impair">
     <td class="middle">{icon name=error}</td>
     <td class="smaller">
-      Une fois ton compte désactivé, tu ne pourras plus accéder à tes emails sur Google Apps.
+      Une fois ton compte désactivé, tu ne pourras plus accéder à tes emails sur Google Workspace.
       La réactivation est possible, mais nécessite d'être validée par un administrateur.
     </td>
   </tr>
@@ -322,11 +328,11 @@
 
 <table class="bicol" id="password">
   <tr>
-    <th colspan="2">Ton mot de passe Google Apps</th>
+    <th colspan="2">Ton mot de passe Google Workspace</th>
   </tr>
 
   <tr class="impair">
-    <td colspan="2">N.B: depuis la fusion de l'annuaire avec celui de l'AX, la synchronisation des mots de passe se désactive parfois. Le temps que le problème soit résolu, 
+    <td colspan="2">N.B: depuis la fusion de l'annuaire avec celui de l'AX, la synchronisation des mots de passe se désactive parfois. Le temps que le problème soit résolu,
     il est recommandé de ne pas choisir la synchronisation des mots de passe.</td>
   </tr>
 
@@ -348,24 +354,24 @@
         <label>
           <input type="radio" name="pwsync" value="sync" onchange="this.form.submit();"
               {if $account->sync_password}checked="checked" {/if}/>
-          Utiliser le même mot de passe pour Polytechnique.org et Google Apps.</label><br />
+          Utiliser le même mot de passe pour Polytechnique.org et Google Workspace.</label><br />
         <label>
           <input type="radio" name="pwsync" value="nosync" onchange="this.form.submit();"
               {if !$account->sync_password}checked="checked" {/if}/>
-          Utiliser deux mots de passes différents pour Polytechnique.org et Google Apps.</label><br />
+          Utiliser deux mots de passes différents pour Polytechnique.org et Google Workspace.</label><br />
       </form>
     </td>
   </tr>
 
   {if $account->sync_password}
   <tr class="impair"><td colspan="2">
-    Tes mots de passes Polytechnique.org et Google Apps sont identiques et synchronisés.
+    Tes mots de passes Polytechnique.org et Google Workspace sont identiques et synchronisés.
     <div class="center"><a href="password">Changer ce mot de passe commun</a></div>
   </td></tr>
 
   {else}
   <tr class="impair"><td colspan="2">
-    Changer le mot de passe de ton compte Google Apps&nbsp;:<br /><br />
+    Changer le mot de passe de ton compte Google Workspace&nbsp;:<br /><br />
     <form action="googleapps/password" method="post">
       {xsrf_token_field}
       <table class="bicol">
@@ -401,16 +407,16 @@
 
 <table class="bicol" id="emails">
   <tr>
-    <th>Redirection des emails vers Google Apps</th>
+    <th>Redirection des emails vers Google Workspace</th>
   </tr>
 
   <tr class="impair">
     {if $redirect_active and !$redirect_unique}
-    <td>Tes emails Polytechnique.org sont redirigés vers Google Apps, en plus de tes autres redirections.</td>
+    <td>Tes emails Polytechnique.org sont redirigés vers Google Workspace, en plus de tes autres redirections.</td>
     {elseif $redirect_active}
-    <td>Tes emails Polytechnique.org ne sont redirigés que vers Google Apps.</td>
+    <td>Tes emails Polytechnique.org ne sont redirigés que vers Google Workspace.</td>
     {else}
-    <td>Tu ne reçois <em>pas</em> tes emails Polytechnique.org sur ton webmail Google Apps.</td>
+    <td>Tu ne reçois <em>pas</em> tes emails Polytechnique.org sur ton webmail Google Workspace.</td>
     {/if}
   </tr>
   <tr class="pair">

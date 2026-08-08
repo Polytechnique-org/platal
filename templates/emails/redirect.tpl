@@ -263,7 +263,7 @@
 <br />
 <p id="googleapps">
   Grâce à un partenariat avec Google, Polytechnique.org te propose également un compte
-  <b>Google Apps</b>, qui te permet de disposer des services Google (GMail pour
+  <b>Google Workspace</b> (ex <b>Google Apps</b>), qui te permet de disposer des services Google (Gmail pour
   tes emails, Google Calendar, Google Docs&hellip;) sur une adresse polytechnique.org.
 </p>
 
@@ -277,19 +277,19 @@
     {if $googleapps eq 'active'}
     <td>
       <a href="googleapps">
-        <strong>Compte Google Apps / Polytechnique.org</strong>
+        <strong>Compte Google Workspace / Polytechnique.org</strong>
       </a><br />Hébergé par Google
     </td>
     <td style="text-align: center; vertical-align: middle">
-      Ton compte Google Apps est actif.<br />
-      <a href="emails/redirect#line_googleapps">Voir l'état de la redirection vers GMail</a>
+      Ton compte Google Workspace est actif.<br />
+      <a href="emails/redirect#line_googleapps">Voir l'état de la redirection vers Gmail</a>
     </td>
     {else}
     <td colspan="2">
       {if $googleapps eq 'disabled'}
-      Ton compte Google Apps est actuellement inactif.<br />
+      Ton compte Google Workspace est actuellement inactif.<br />
       {else}
-      Tu n'as pas encore de compte Google Apps pour Polytechnique.org.<br />
+      Tu n'as pas encore de compte Google Workspace pour Polytechnique.org.<br />
       {/if}
       <a href="googleapps">Plus d'informations &hellip;</a>
     </td>

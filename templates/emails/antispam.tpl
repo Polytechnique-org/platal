@@ -45,7 +45,7 @@
           var id = $(this).attr('name').replace('filter_status_', '');
           var redirection = $('#bogo_' + id).val();
           $(':radio[name=filter_status]').removeAttr('checked');
-          $("#bogo-msg-mult").successMessage(url + $(this).val() + "/" + redirection, msg + redirection.replace('googleapps', 'ton compte Google Apps') + ".");
+          $("#bogo-msg-mult").successMessage(url + $(this).val() + "/" + redirection, msg + redirection.replace('googleapps', 'ton compte Google Workspace') + ".");
       });
   });
   {/literal}
@@ -97,7 +97,7 @@
   {foreach from=$redirections key=i item=redirection}
   <tr>
     <td class="titre">
-      {$redirection.redirect|replace:'googleapps':'Compte Google Apps'}
+      {$redirection.redirect|replace:'googleapps':'Compte Google Workspace'}
       <input id="bogo_{$i}" type="hidden" value="{$redirection.redirect}" />
     </td>
     <td class="center">

@@ -98,7 +98,7 @@ function addSearchEngine()
                  title: 'Ajouter à Google Calendar'},
                 {url_prefix: 'https://www.google.com/calendar/hosted/polytechnique.org/render?cid=',
                  img: 'images/goodies/add-google-calendar.gif',
-                 title: 'Ajouter à Google Apps / Calendar'}
+                 title: 'Ajouter à Google Workspace / Calendar'}
             ]
         },
 
