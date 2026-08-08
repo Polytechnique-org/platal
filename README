@@ -31,4 +31,14 @@ Languages and countries administration
 * iso-codes
 * isoquery
 
+Cloning
+=======
+
+Ce repo utilise des submodules dans leur branches dédiées. Seulement cette fonctionalité a été
+déprécié car vulnérable. L'initialisation des submodules doit se faire avec:
+
+```sh
+git -c protocol.file.allow=always submodule update --init
+```
+
 // vim:ft=asciidoc:
